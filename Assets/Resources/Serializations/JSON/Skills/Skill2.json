@@ -1,8 +1,6 @@
 {
     "skillId": 0,
     "skillName": "新技能",
-    "version": "1.0",
-    "duration": 3.1666667461395265,
     "isLoop": true,
     "groups": [
         {
@@ -28,18 +26,6 @@
                     "rid": 1001
                 }
             ]
-        },
-        {
-            "groupId": "c094a651-78fb-4fce-97dd-fcfa159aa14c",
-            "groupName": "分组 3",
-            "isCollapsed": false,
-            "isEnabled": true,
-            "isLocked": false,
-            "tracks": [
-                {
-                    "rid": 1002
-                }
-            ]
         }
     ],
     "references": {
@@ -63,7 +49,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1003
+                            "rid": 1002
                         }
                     ]
                 }
@@ -86,36 +72,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1004
+                            "rid": 1003
                         }
                     ]
                 }
             },
             {
                 "rid": 1002,
-                "type": {
-                    "class": "DamageTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "3fcf1918-fd92-49c6-bccf-13dd9783ee34",
-                    "trackType": "DamageTrack",
-                    "trackName": "伤害判定轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": true,
-                    "clips": [
-                        {
-                            "rid": 1005
-                        }
-                    ]
-                }
-            },
-            {
-                "rid": 1003,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -130,19 +93,21 @@
                     "blendInDuration": 0.20000000298023225,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 30150
+                        "instanceID": 31020
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "5ae7dd75483496b46a09884c7811402b",
-                    "maskGuid": ""
+                    "clipGuid": "3b177f8cda8c2214c98f0ea0565f0911",
+                    "clipAssetName": "Combo01_2",
+                    "maskGuid": "",
+                    "maskAssetName": ""
                 }
             },
             {
-                "rid": 1004,
+                "rid": 1003,
                 "type": {
                     "class": "VFXClip",
                     "ns": "SkillEditor",
@@ -152,14 +117,15 @@
                     "clipId": "265993f1-a78c-4874-8ebc-32310f004f97",
                     "clipName": "特效轨道片段",
                     "isEnabled": true,
-                    "startTime": 0.6666666865348816,
+                    "startTime": 1.1666667461395264,
                     "duration": 1.0,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 32144
+                        "instanceID": 33722
                     },
                     "prefabGuid": "83e244af1d719994ab693b7cedf89951",
+                    "prefabAssetName": "Slash_fx_01",
                     "bindPoint": 0,
                     "customBoneName": "",
                     "followTarget": true,
@@ -169,9 +135,9 @@
                         "z": 0.0
                     },
                     "rotationOffset": {
-                        "x": 2.239110589649651e-12,
-                        "y": 291.4178771972656,
-                        "z": 180.0
+                        "x": 319.2066955566406,
+                        "y": 61.161556243896487,
+                        "z": 19.785892486572267
                     },
                     "scale": {
                         "x": 1.0,
@@ -180,59 +146,6 @@
                     },
                     "destroyOnEnd": true,
                     "stopEmissionOnEnd": false
-                }
-            },
-            {
-                "rid": 1005,
-                "type": {
-                    "class": "DamageClip",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "65208b73-34c0-4b77-9fbd-45b9bca94ac4",
-                    "clipName": "伤害判定轨道片段",
-                    "isEnabled": true,
-                    "startTime": 0.6666666865348816,
-                    "duration": 1.0,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "eventTag": "Hit_Default",
-                    "targetTags": [],
-                    "hitFrequency": 0,
-                    "checkInterval": 0.5,
-                    "maxHitTargets": 0,
-                    "targetSortMode": 1,
-                    "hitLayerMask": {
-                        "serializedVersion": "2",
-                        "m_Bits": 4294967295
-                    },
-                    "serializedHitLayerMask": -1,
-                    "isSelfImpacted": false,
-                    "shape": {
-                        "shapeType": 3,
-                        "size": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "radius": 2.0,
-                        "height": 1.0,
-                        "angle": 120.0,
-                        "innerRadius": 1.0
-                    },
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 0.5,
-                        "z": 0.0
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
                 }
             }
         ]

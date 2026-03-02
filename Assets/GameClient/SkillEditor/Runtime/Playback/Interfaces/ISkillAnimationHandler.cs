@@ -21,7 +21,7 @@ namespace SkillEditor
         void ClearPlayGraph();
 
         // 采样与手动更新（编辑器预览用）
-        void Evaluate(float time);
+        void Evaluate(AnimationClip clip, int layerIndex, float time);
         void ManualUpdate(float deltaTime);
     }
 }

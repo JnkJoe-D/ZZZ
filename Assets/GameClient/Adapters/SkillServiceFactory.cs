@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using SkillEditor;
 using Game.MAnimSystem;
@@ -10,9 +11,26 @@ namespace Game.Adapters
     {
         private GameObject _owner;
 
+        // 全局静态缓存：以角色 (Owner) 为 Key
+        // 解决每次播放重新 new Factory 导致的服务被重复创建引发内存泄漏
+        private static Dictionary<GameObject, Dictionary<Type, object>> _staticCache = 
+            new Dictionary<GameObject, Dictionary<Type, object>>();
+
         public SkillServiceFactory(GameObject owner)
         {
             _owner = owner;
+
+            // 被动清理已销毁的 Owner 缓存
+            var keys = new System.Collections.Generic.List<GameObject>(_staticCache.Keys);
+            foreach (var key in keys)
+            {
+                if (key == null) _staticCache.Remove(key);
+            }
+
+            if (_owner != null && !_staticCache.ContainsKey(_owner))
+            {
+                _staticCache[_owner] = new System.Collections.Generic.Dictionary<Type, object>();
+            }
         }
 
         public object ProvideService(Type serviceType)
@@ -42,7 +60,12 @@ namespace Game.Adapters
             //4. 音频管理服务
             if(serviceType == typeof(ISkillAudioHandler))
             {
-                return _owner.AddComponent<GameSkillAudioHandler>();
+                var audioComp = _owner.GetComponent<GameSkillAudioHandler>();
+                if (audioComp == null)
+                {
+                    audioComp = _owner.AddComponent<GameSkillAudioHandler>();
+                }
+                return audioComp;
             }
 
             //5. 伤害处理服务
@@ -62,7 +85,39 @@ namespace Game.Adapters
             {
                 return new SkillSpawnHandler();
             }
+
+            if(serviceType == typeof(ISkillCameraHandler))
+            {
+                if (_owner != null)
+                {
+                    if (_staticCache[_owner].TryGetValue(serviceType, out var cached))
+                    {
+                        if(cached != null) return cached;
+                    }
+                    var handler = new SkillCameraHandler();
+                    _staticCache[_owner][serviceType] = handler;
+                    return handler;
+                }
+                return new SkillCameraHandler();
+            }
             return null;
+        }
+        public static void ClearAllStaticCaches()
+        {
+            foreach (var outerKvp in _staticCache)
+            {
+                if (outerKvp.Value != null)
+                {
+                    foreach (var innerKvp in outerKvp.Value)
+                    {
+                        if (innerKvp.Value is System.IDisposable disposable)
+                        {
+                            disposable.Dispose();
+                        }
+                    }
+                }
+            }
+            _staticCache.Clear();
         }
     }
 

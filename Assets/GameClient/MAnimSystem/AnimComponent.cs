@@ -1,81 +1,60 @@
+﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
-using UnityEngine.Playables;
 using UnityEngine.Animations;
-using System.Collections.Generic;
-using System;
+using UnityEngine.Playables;
 
 namespace Game.MAnimSystem
 {
+    public struct AnimComponentPoolMetrics
+    {
+        public int LayerCount;
+        public int TotalConnectedStates;
+        public int TotalActiveStates;
+        public int TotalFadingStates;
+        public int TotalIdleStates;
+        public int TotalFreePorts;
+        public int TotalNewStateCount;
+        public int TotalReusedStateCount;
+        public int TotalReturnedToPoolCount;
+        public int TotalDestroyedStateCount;
+        public int PeakConnectedStates;
+        public int PeakIdleStates;
+        public int PeakFadingStates;
+
+        public int TotalAcquireCount => TotalNewStateCount + TotalReusedStateCount;
+        public float TotalReuseHitRate => TotalAcquireCount > 0 ? (float)TotalReusedStateCount / TotalAcquireCount : 0f;
+    }
+
     /// <summary>
-    /// MAnimSystem 的核心组件。
-    /// 挂载在角色上，作为外部系统播放动画的主要入口。
-    /// 负责管理 PlayableGraph 的生命周期以及多层动画层。
-    /// 支持多层混合：AvatarMask、Additive 模式、层权重淡入淡出。
-    /// 
-    /// 设计说明：
-    /// - 动画始终由 Unity Update 自动驱动。
-    /// - Play: 播放动画（运行时和编辑器都需要）。
-    /// - SetSpeed: 速度控制（用于帧同步场景）。
-    /// - Evaluate: 编辑器预览专用，手动采样动画帧。
+    /// Core runtime animation entry for one character/object.
+    /// Owns PlayableGraph and multiple AnimLayer instances.
     /// </summary>
-    // [RequireComponent(typeof(Animator))]
     public class AnimComponent : MonoBehaviour
     {
-        [SerializeField]private Animator _animator;
-        /// <summary>
-        /// 关联的 Animator 组件。
-        /// </summary>
-        public Animator Animator => _animator;
+        #region Serialized
+        [SerializeField] private Animator _animator;
+        public bool PlayAutomatically = true;
+        #endregion
 
-        /// <summary>
-        /// 管理的 PlayableGraph 实例。
-        /// </summary>
+        #region Runtime Fields
+        public Animator Animator => _animator;
         public PlayableGraph Graph { get; private set; }
 
-        /// <summary>
-        /// 层混合器（用于多层混合）。
-        /// </summary>
         private AnimationLayerMixerPlayable _layerMixer;
+        private readonly List<AnimLayer> _layers = new List<AnimLayer>();
+        private readonly Dictionary<int, double> _layerSpeeds = new Dictionary<int, double>();
 
-        /// <summary>
-        /// 所有动画层列表。
-        /// </summary>
-        private List<AnimLayer> _layers = new List<AnimLayer>();
-        /// <summary>
-        /// 每层的速度倍率
-        /// </summary>
-        private Dictionary<int, double> _layerSpeeds = new Dictionary<int, double>();
-        /// <summary>
-        /// 获取指定索引的动画层（延迟创建）。
-        /// </summary>
-        /// <param name="index">层索引</param>
-        /// <returns>动画层实例</returns>
-        public AnimLayer this[int index] => GetLayer(index);
-
-        /// <summary>
-        /// 获取层总数。
-        /// </summary>
-        public int LayerCount => _layers.Count;
-
-        /// <summary>
-        /// 图是否已创建并初始化。
-        /// </summary>
         private bool _isGraphCreated;
+        private bool _isInitialized;
+        #endregion
 
-        /// <summary>
-        /// 是否在 OnEnable 时自动初始化图。
-        /// </summary>
-        public bool PlayAutomatically = true;
-        /// <summary>
-        /// 组件是否已初始化
-        /// </summary>
-        private bool _isInitialized = false;
-        public void Initialize()
-        {
-            if (_isInitialized) return;
-            _animator ??= GetComponentInChildren<Animator>();
-            _isInitialized = true;
-        }
+        #region Indexer
+        public AnimLayer this[int index] => GetLayer(index);
+        public int LayerCount => _layers.Count;
+        #endregion
+
+        #region Unity Lifecycle
         private void Awake()
         {
             Initialize();
@@ -84,7 +63,9 @@ namespace Game.MAnimSystem
         private void OnEnable()
         {
             if (PlayAutomatically)
+            {
                 InitializeGraph();
+            }
         }
 
         private void OnDisable()
@@ -92,17 +73,29 @@ namespace Game.MAnimSystem
             ClearPlayGraph();
         }
 
-        private void Update() //更新权重，控制过渡
+        private void Update()
         {
-            if (!_isGraphCreated) return;
+            if (!_isGraphCreated)
+            {
+                return;
+            }
 
-            // 始终自动更新，由 Unity 驱动
             UpdateInternal(Time.deltaTime);
         }
-        /// <summary>
-        /// 内部更新逻辑,帮助在MonoUpdate中同步每层的播放速度（过渡）
-        /// </summary>
-        /// <param name="deltaTime">时间增量</param>
+        #endregion
+
+        #region Init and Update
+        public void Initialize()
+        {
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            _animator ??= GetComponentInChildren<Animator>();
+            _isInitialized = true;
+        }
+
         private void UpdateInternal(float deltaTime)
         {
             for (int i = 0; i < _layers.Count; i++)
@@ -111,224 +104,243 @@ namespace Game.MAnimSystem
                 if (_layerSpeeds.TryGetValue(i, out double speed))
                 {
                     _layers[i]?.SetSpeed((float)speed);
-                    layerDeltaTime *= (float)speed; // 叠加速度控制
+                    layerDeltaTime *= (float)speed;
                 }
+
                 _layers[i]?.Update(layerDeltaTime);
             }
         }
-        /// <summary>
-        /// 外部手动更新逻辑（供技能编辑器预览使用）。
-        /// 支持手动驱动权重计算和状态更新。
-        /// </summary>
-        /// <param name="deltaTime">时间增量</param>
+
         public void ManualUpdate(float deltaTime)
         {
-            if (!_isGraphCreated) return;
-            ManualUpdateInternal(deltaTime);
-        }
-        /// <summary>
-        /// 内部更新逻辑，deltatime已包含速度控制，并由顶层线性传递
-        /// </summary>
-        /// <param name="deltaTime">时间增量</param>
-        private void ManualUpdateInternal(float deltaTime)
-        {
+            if (!_isGraphCreated)
+            {
+                return;
+            }
+
             for (int i = 0; i < _layers.Count; i++)
             {
                 _layers[i]?.Update(deltaTime);
             }
         }
+        #endregion
 
-
-        /// <summary>
-        /// 设置动画播放速度。
-        /// 用于帧同步场景下的速度控制。
-        /// </summary>
-        /// <param name="speedScale">速度缩放因子 (1.0 = 正常速度)</param>
-        public void SetLayerSpeed(int layerIndex, float speedScale)
-        {
-            if (!_isGraphCreated) return;
-            if (layerIndex < 0 || layerIndex >= _layers.Count) return;
-            if(_layerSpeeds.ContainsKey(layerIndex))
-            {
-                _layerSpeeds[layerIndex] = speedScale;
-            }
-            else
-            {
-                _layerSpeeds.Add(layerIndex, speedScale);
-            }
-            _layers[layerIndex].SetSpeed(speedScale);
-        }
-
-        /// <summary>
-        /// 初始化 PlayableGraph 和基础层。
-        /// </summary>
+        #region Graph and Layers
         public void InitializeGraph()
         {
-            if (_isGraphCreated) return;
+            if (_isGraphCreated)
+            {
+                return;
+            }
 
-            // 创建 Graph，名称方便调试器识别
             Graph = PlayableGraph.Create($"AnimComponent_{gameObject.name}");
             Graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
 
-            // 创建层混合器
             _layerMixer = AnimationLayerMixerPlayable.Create(Graph, 1);
-
-            // 创建基础层 (Layer 0)
             CreateLayer(0);
 
-            // 将层混合器连接到 Animator 的 Output
             var output = AnimationPlayableOutput.Create(Graph, "Animation", Animator);
             output.SetSourcePlayable(_layerMixer);
 
-            // 开始运行图
             Graph.Play();
             _isGraphCreated = true;
         }
 
-        // --- 层管理 ---
-
-        /// <summary>
-        /// 获取或创建指定索引的动画层。
-        /// 如果层不存在，会自动创建该层及之前的所有层。
-        /// </summary>
-        /// <param name="index">层索引</param>
-        /// <returns>动画层实例</returns>
         public AnimLayer GetLayer(int index)
         {
-            if (!_isGraphCreated) InitializeGraph();
+            if (!_isGraphCreated)
+            {
+                InitializeGraph();
+            }
 
-            // 确保索引有效
-            if (index < 0) return null;
+            if (index < 0)
+            {
+                return null;
+            }
 
-            // 延迟创建层
             while (_layers.Count <= index)
             {
                 CreateLayer(_layers.Count);
             }
+
             return _layers[index];
         }
 
-        /// <summary>
-        /// 创建指定索引的动画层。
-        /// </summary>
-        /// <param name="index">层索引</param>
         private void CreateLayer(int index)
         {
-            if (index < 0) return;
-            // 确保 LayerMixer 有足够的输入端口
+            if (index < 0)
+            {
+                return;
+            }
+
             if (index >= _layerMixer.GetInputCount())
             {
                 _layerMixer.SetInputCount(index + 1);
             }
 
-            // 创建层
             var layer = new AnimLayer(Graph, index, _layerMixer);
-
-            // 将层的 Mixer 连接到 LayerMixer
             Graph.Connect(layer.Mixer, 0, _layerMixer, index);
 
-            // 添加到列表
             while (_layers.Count <= index)
             {
                 _layers.Add(null);
             }
+
             _layers[index] = layer;
-            _layerSpeeds.Add(index, 1.0);// 默认速度为 1.0
+            if (_layerSpeeds.ContainsKey(index))
+            {
+                _layerSpeeds[index] = 1.0;
+            }
+            else
+            {
+                _layerSpeeds.Add(index, 1.0);
+            }
         }
 
-        // --- 公共 API ---
+        public void SetLayerSpeed(int layerIndex, float speedScale)
+        {
+            if (!_isGraphCreated)
+            {
+                return;
+            }
 
-        /// <summary>
-        /// 播放一个动画片段（在基础层播放）。
-        /// </summary>
-        /// <param name="clip">动画片段</param>
-        /// <returns>创建并播放的 AnimState</returns>
+            if (layerIndex < 0 || layerIndex >= _layers.Count)
+            {
+                return;
+            }
+
+            _layerSpeeds[layerIndex] = speedScale;
+            _layers[layerIndex].SetSpeed(speedScale);
+        }
+
+        public void ClearPlayGraph()
+        {
+            if (_isGraphCreated)
+            {
+                foreach (AnimLayer layer in _layers)
+                {
+                    layer?.Destroy();
+                }
+
+                _layers.Clear();
+                _layerSpeeds.Clear();
+                Graph.Destroy();
+                _isGraphCreated = false;
+            }
+
+            if (!Animator.isActiveAndEnabled)
+            {
+                return;
+            }
+
+            Animator.Rebind();
+            Animator.Update(0f);
+        }
+        #endregion
+
+        #region Play API - Clip
         public AnimState Play(AnimationClip clip)
         {
             return Play(clip, 0.25f);
         }
 
-        /// <summary>
-        /// 播放一个动画片段，并指定过渡时间（在基础层播放）。
-        /// </summary>
-        /// <param name="clip">动画片段</param>
-        /// <param name="fadeDuration">过渡时长 (秒)</param>
-        /// <returns>创建并播放的 AnimState</returns>
         public AnimState Play(AnimationClip clip, float fadeDuration = 0.25f, bool forceResetTime = false)
         {
             return GetLayer(0).Play(clip, fadeDuration, forceResetTime);
         }
 
-        /// <summary>
-        /// 在指定层播放一个动画片段。
-        /// </summary>
-        /// <param name="clip">动画片段</param>
-        /// <param name="layerIndex">层索引</param>
-        /// <param name="fadeDuration">过渡时长 (秒)</param>
-        /// <returns>创建并播放的 AnimState</returns>
         public AnimState Play(AnimationClip clip, int layerIndex, float fadeDuration = 0.25f, bool forceResetTime = false)
         {
             return GetLayer(layerIndex).Play(clip, fadeDuration, forceResetTime);
         }
+        #endregion
 
-        /// <summary>
-        /// 播放任意 AnimState 节点 (如 MixerState)。
-        /// 使用默认 0.25s 过渡。
-        /// </summary>
-        /// <param name="state">状态节点</param>
-        /// <returns>播放的状态</returns>
+        #region Play API - AnimState
         public AnimState Play(AnimState state)
         {
             return Play(state, 0.25f);
         }
 
-        /// <summary>
-        /// 播放任意 AnimState 节点，并指定过渡时间。
-        /// </summary>
-        /// <param name="state">状态节点</param>
-        /// <param name="fadeDuration">过渡时长 (秒)</param>
-        /// <returns>播放的状态</returns>
         public AnimState Play(AnimState state, float fadeDuration, bool forceResetTime = false)
         {
             GetLayer(0).Play(state, fadeDuration, forceResetTime);
             return state;
         }
 
-        /// <summary>
-        /// 在指定层播放任意 AnimState 节点。
-        /// </summary>
-        /// <param name="state">状态节点</param>
-        /// <param name="layerIndex">层索引</param>
-        /// <param name="fadeDuration">过渡时长 (秒)</param>
-        /// <returns>播放的状态</returns>
         public AnimState Play(AnimState state, int layerIndex, float fadeDuration = 0.25f, bool forceResetTime = false)
         {
             GetLayer(layerIndex).Play(state, fadeDuration, forceResetTime);
             return state;
         }
 
-        /// <summary>
-        /// 交叉淡入淡出到指定状态 (Play 的别名)。
-        /// </summary>
-        /// <param name="state">目标状态</param>
-        /// <param name="fadeDuration">淡入时长</param>
         public void CrossFade(AnimState state, float fadeDuration)
         {
             Play(state, fadeDuration);
         }
-        // --- 采样功能 (用于编辑器预览) ---
+        #endregion
 
-        /// <summary>
-        /// 采样当前动画到指定时间。
-        /// 仅用于编辑器预览或时间轴拖拽。
-        /// 运行时请勿调用此方法。
-        /// </summary>
-        /// <param name="time">目标时间（秒）</param>
-        public void Evaluate(float time)
+        #region Play API - Generic StateBase
+        public StateBase Play(StateBase state)
         {
-            if (!_isGraphCreated) return;
+            return Play(state, 0.25f);
+        }
 
-            var state = GetLayer(0).GetCurrentState();
+        public StateBase Play(StateBase state, float fadeDuration, bool forceResetTime = false)
+        {
+            GetLayer(0).Play(state, fadeDuration, forceResetTime);
+            return state;
+        }
+
+        public StateBase Play(StateBase state, int layerIndex, float fadeDuration = 0.25f, bool forceResetTime = false)
+        {
+            GetLayer(layerIndex).Play(state, fadeDuration, forceResetTime);
+            return state;
+        }
+
+        public void CrossFade(StateBase state, float fadeDuration)
+        {
+            Play(state, fadeDuration);
+        }
+        #endregion
+
+        #region BlendTree Factory
+        public BlendTree1DState CreateBlendTree1DState(IReadOnlyList<BlendTree1DChild> children, float initialParameter = 0f)
+        {
+            var state = new BlendTree1DState();
+            state.SetChildren(children);
+            state.Parameter = initialParameter;
+            return state;
+        }
+
+        public BlendTree2DState CreateBlendTree2DState(IReadOnlyList<BlendTree2DChild> children)
+        {
+            return CreateBlendTree2DState(children, Vector2.zero);
+        }
+
+        public BlendTree2DState CreateBlendTree2DState(IReadOnlyList<BlendTree2DChild> children, Vector2 initialParameter)
+        {
+            var state = new BlendTree2DState();
+            state.SetChildren(children);
+            state.Parameter = initialParameter;
+            return state;
+        }
+        #endregion
+
+        #region Evaluate and Sampling
+        public void Evaluate(AnimationClip clip, int layerIndex, float time)
+        {
+            if (!_isGraphCreated || clip == null)
+            {
+                return;
+            }
+
+            AnimLayer layer = GetLayer(layerIndex);
+            if (layer == null)
+            {
+                return;
+            }
+
+            AnimState state = layer.GetState(clip);
             if (state != null)
             {
                 state.Time = time;
@@ -336,107 +348,171 @@ namespace Game.MAnimSystem
             }
         }
 
-        /// <summary>
-        /// 采样指定动画片段到指定归一化时间。
-        /// 会立即切换到该动画并采样。
-        /// 仅用于编辑器预览。
-        /// </summary>
-        /// <param name="clip">动画片段</param>
-        /// <param name="normalizedTime">归一化时间 (0~1)</param>
         public void SampleClip(AnimationClip clip, float normalizedTime)
         {
-            if (!_isGraphCreated || clip == null) return;
+            if (!_isGraphCreated || clip == null)
+            {
+                return;
+            }
 
-            var state = GetLayer(0).Play(clip, 0f);
+            AnimState state = GetLayer(0).Play(clip, 0f);
             state.NormalizedTime = normalizedTime;
             Graph.Evaluate(0f);
         }
+        #endregion
 
-        // --- 状态查询 (便捷方法) ---
-
-        /// <summary>
-        /// 获取当前播放的状态（基础层）。
-        /// </summary>
-        /// <returns>当前状态</returns>
+        #region Query API
         public StateBase GetCurrentState()
         {
             return GetLayer(0).GetCurrentState();
         }
 
-        /// <summary>
-        /// 获取当前播放的动画片段（基础层）。
-        /// </summary>
-        /// <returns>当前动画片段</returns>
         public AnimationClip GetCurrentClip()
         {
             return GetLayer(0).GetCurrentClip();
         }
 
-        /// <summary>
-        /// 检查是否正在播放指定片段（基础层）。
-        /// </summary>
-        /// <param name="clip">动画片段</param>
-        /// <returns>是否正在播放</returns>
         public bool IsPlaying(AnimationClip clip)
         {
             return GetLayer(0).IsPlaying(clip);
         }
 
-        /// <summary>
-        /// 获取当前播放时间（基础层）。
-        /// </summary>
-        /// <returns>当前时间（秒）</returns>
         public float GetCurrentTime()
         {
             return GetLayer(0).GetCurrentTime();
         }
 
-        /// <summary>
-        /// 获取当前播放进度（基础层）。
-        /// </summary>
-        /// <returns>归一化进度 (0~1)</returns>
         public float GetCurrentProgress()
         {
             return GetLayer(0).GetCurrentProgress();
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        public void ClearPlayGraph()
+        #endregion
+
+        #region Pool Metrics
+        public AnimComponentPoolMetrics GetPoolMetrics()
         {
-            if (_isGraphCreated)
+            var metrics = new AnimComponentPoolMetrics
             {
-                // 销毁所有层
-                foreach (var layer in _layers)
+                LayerCount = _layers.Count
+            };
+
+            for (int i = 0; i < _layers.Count; i++)
+            {
+                AnimLayer layer = _layers[i];
+                if (layer == null)
                 {
-                    layer?.Destroy();
+                    continue;
                 }
-                _layers.Clear();
-                _layerSpeeds.Clear();
-                // 销毁图，释放非托管内存
-                Graph.Destroy();
-                _isGraphCreated = false;
+
+                AnimLayerPoolMetrics layerMetrics = layer.GetPoolMetrics();
+                metrics.TotalConnectedStates += layerMetrics.ConnectedStateCount;
+                metrics.TotalActiveStates += layerMetrics.ActiveStateCount;
+                metrics.TotalFadingStates += layerMetrics.FadingStateCount;
+                metrics.TotalIdleStates += layerMetrics.IdleStateCount;
+                metrics.TotalFreePorts += layerMetrics.FreePortCount;
+                metrics.TotalNewStateCount += layerMetrics.NewStateCount;
+                metrics.TotalReusedStateCount += layerMetrics.ReusedStateCount;
+                metrics.TotalReturnedToPoolCount += layerMetrics.ReturnedToPoolCount;
+                metrics.TotalDestroyedStateCount += layerMetrics.DestroyedStateCount;
+                metrics.PeakConnectedStates += layerMetrics.PeakConnectedStateCount;
+                metrics.PeakIdleStates += layerMetrics.PeakIdleStateCount;
+                metrics.PeakFadingStates += layerMetrics.PeakFadingStateCount;
             }
-            if(!Animator.isActiveAndEnabled)return;
-            Animator.Rebind(); // 强制刷新 Animator 状态，避免残留影响
-            Animator.Update(0f); // 立即应用状态重置
+
+            return metrics;
         }
-         /// <summary>
+
+        public string GetPoolMetricsReport(bool includePerLayer = true)
+        {
+            AnimComponentPoolMetrics total = GetPoolMetrics();
+            var sb = new StringBuilder(512);
+
+            sb.Append("[MAnimSystem.Pool] ")
+              .Append("layers=").Append(total.LayerCount)
+              .Append(", connected=").Append(total.TotalConnectedStates)
+              .Append(", active=").Append(total.TotalActiveStates)
+              .Append(", fading=").Append(total.TotalFadingStates)
+              .Append(", idle=").Append(total.TotalIdleStates)
+              .Append(", freePorts=").Append(total.TotalFreePorts)
+              .Append(", new=").Append(total.TotalNewStateCount)
+              .Append(", reused=").Append(total.TotalReusedStateCount)
+              .Append(", returned=").Append(total.TotalReturnedToPoolCount)
+              .Append(", destroyed=").Append(total.TotalDestroyedStateCount)
+              .Append(", reuseRate=").Append((total.TotalReuseHitRate * 100f).ToString("F1")).Append("%")
+              .Append(", peakConnected=").Append(total.PeakConnectedStates)
+              .Append(", peakIdle=").Append(total.PeakIdleStates)
+              .Append(", peakFading=").Append(total.PeakFadingStates);
+
+            if (includePerLayer)
+            {
+                for (int i = 0; i < _layers.Count; i++)
+                {
+                    AnimLayer layer = _layers[i];
+                    if (layer == null)
+                    {
+                        continue;
+                    }
+
+                    AnimLayerPoolMetrics m = layer.GetPoolMetrics();
+                    sb.Append("\n  [Layer ").Append(m.LayerIndex).Append("] ")
+                      .Append("connected=").Append(m.ConnectedStateCount)
+                      .Append(", active=").Append(m.ActiveStateCount)
+                      .Append(", fading=").Append(m.FadingStateCount)
+                      .Append(", idle=").Append(m.IdleStateCount)
+                      .Append(", freePorts=").Append(m.FreePortCount)
+                      .Append(", new=").Append(m.NewStateCount)
+                      .Append(", reused=").Append(m.ReusedStateCount)
+                      .Append(", returned=").Append(m.ReturnedToPoolCount)
+                      .Append(", destroyed=").Append(m.DestroyedStateCount)
+                      .Append(", reuseRate=").Append((m.ReuseHitRate * 100f).ToString("F1")).Append("%")
+                      .Append(", peakConnected=").Append(m.PeakConnectedStateCount)
+                      .Append(", peakIdle=").Append(m.PeakIdleStateCount)
+                      .Append(", peakFading=").Append(m.PeakFadingStateCount);
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public void LogPoolMetrics(bool includePerLayer = true)
+        {
+            Debug.Log(GetPoolMetricsReport(includePerLayer));
+        }
+
+        public void ResetPoolMetricsCounters()
+        {
+            for (int i = 0; i < _layers.Count; i++)
+            {
+                _layers[i]?.ResetPoolMetricsCounters();
+            }
+        }
+        #endregion
+
+        #region Layer Helpers
+        public AvatarMask GetLayerMask(int layer)
+        {
+            if (layer < 0 || layer >= _layers.Count)
+            {
+                return null;
+            }
+
+            return _layers[layer].Mask;
+        }
+
+        public void SetLayerMask(int layer, AvatarMask avatarMask)
+        {
+            if (layer < 0 || layer >= _layers.Count)
+            {
+                return;
+            }
+
+            _layers[layer].Mask = avatarMask;
+        }
+
         public void Log(string message)
         {
             Debug.Log($"[AnimComponent] {message}");
         }
-        public AvatarMask GetLayerMask(int layer)
-        {
-            // if (layer < 0 || layer >= _layers.Count) return null;
-            if (layer < 0) return null;
-            return _layers[layer].Mask;
-        }
-        public void SetLayerMask(int layer, AvatarMask avatarMask)
-        {
-            // if (layer < 0 || layer >= _layers.Count) return;
-            if (layer < 0) return;
-            _layers[layer].Mask = avatarMask;
-        }
+        #endregion
     }
 }

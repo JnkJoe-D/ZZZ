@@ -68,17 +68,25 @@ namespace SkillEditor
                     if (clip is SkillAnimationClip animClip)
                     {
                         if(animClip.animationClip != null)
+                        {
                             animClip.clipGuid = GetAssetGuid(animClip.animationClip);
+                            animClip.clipAssetName = animClip.animationClip.name;
+                        }
                         if(animClip.overrideMask != null)
+                        {
                             animClip.maskGuid = GetAssetGuid(animClip.overrideMask);
+                            animClip.maskAssetName = animClip.overrideMask.name;
+                        }
                     }
                     else if (clip is VFXClip vfxClip && vfxClip.effectPrefab != null)
                     {
                         vfxClip.prefabGuid = GetAssetGuid(vfxClip.effectPrefab);
+                        vfxClip.prefabAssetName = vfxClip.effectPrefab.name;
                     }
                     else if (clip is SkillAudioClip audioClip && audioClip.audioClip != null)
                     {
                         audioClip.clipGuid = GetAssetGuid(audioClip.audioClip);
+                        audioClip.clipAssetName = audioClip.audioClip.name;
                     }
                 }
             }
@@ -99,20 +107,20 @@ namespace SkillEditor
                     {
                         if(!string.IsNullOrEmpty(animClip.clipGuid))
                         {
-                            animClip.animationClip = ResolveAsset<AnimationClip>(animClip.clipGuid);
+                            animClip.animationClip = ResolveAsset<AnimationClip>(animClip.clipGuid, animClip.clipAssetName);
                         }
                         if(!string.IsNullOrEmpty(animClip.maskGuid))
                         {
-                            animClip.overrideMask = ResolveAsset<AvatarMask>(animClip.maskGuid);
+                            animClip.overrideMask = ResolveAsset<AvatarMask>(animClip.maskGuid, animClip.maskAssetName);
                         }
                     }
                     else if (clip is VFXClip vfxClip && !string.IsNullOrEmpty(vfxClip.prefabGuid))
                     {
-                        vfxClip.effectPrefab = ResolveAsset<GameObject>(vfxClip.prefabGuid);
+                        vfxClip.effectPrefab = ResolveAsset<GameObject>(vfxClip.prefabGuid, vfxClip.prefabAssetName);
                     }
                     else if (clip is SkillAudioClip audioClip && !string.IsNullOrEmpty(audioClip.clipGuid))
                     {
-                        audioClip.audioClip = ResolveAsset<AudioClip>(audioClip.clipGuid);
+                        audioClip.audioClip = ResolveAsset<AudioClip>(audioClip.clipGuid, audioClip.clipAssetName);
                     }
                 }
             }
@@ -126,10 +134,26 @@ namespace SkillEditor
             return "";
 #endif
         }
-        private static T ResolveAsset<T>(string guid) where T:Object
+        private static T ResolveAsset<T>(string guid, string assetName = null) where T:Object
         {
 #if UNITY_EDITOR
             string assetPath =  AssetDatabase.GUIDToAssetPath(guid);
+            if (string.IsNullOrEmpty(assetPath)) return null;
+
+            if (!string.IsNullOrEmpty(assetName))
+            {
+                Object[] allAssets = AssetDatabase.LoadAllAssetsAtPath(assetPath);
+                foreach (var obj in allAssets)
+                {
+                    // 仅当类型匹配且名称匹配时返回，实现对嵌套 FBX 等多对象的精确抓取
+                    if (obj is T targetType && obj.name == assetName)
+                    {
+                        return targetType;
+                    }
+                }
+            }
+
+            // 回退兼容：如果没配置名称或没找到，就直接加载该路径的主返回资产
             T asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
             return asset;
 #else

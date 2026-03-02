@@ -44,25 +44,22 @@ namespace Game.Input
         // 这些事件未来可被 Unity New Input System 改键
         // ==========================================
 
-        /// <summary>跳跃指令触发 (如 Space 键)</summary>
-        event Action OnJumpStarted;
-        
-        /// <summary>冲刺/翻滚指令触发 (如 Shift 键)</summary>
-        event Action OnDashStarted;
+        /// <summary>切换下一个指令触发 (如 Space 键)</summary>
+        event Action OnSwitchNext;
+
+        /// <summary>切换上一个指令触发 (如 C 键)</summary>
+        event Action OnSwitchPre;
+        /// <summary>闪避触发 (如 Shift 键)</summary>
+        event Action OnDodgeStarted;
 
         /// <summary>基础普攻指令触发 (如 鼠标左键)</summary>
         event Action OnBasicAttackStarted;
 
-        /// <summary>技能插槽 1 触发 (如 数字键 1)</summary>
-        event Action OnSkill1Started;
-        
-        /// <summary>技能插槽 2 触发 (如 数字键 2)</summary>
-        event Action OnSkill2Started;
-        
-        /// <summary>技能插槽 3 触发 (如 数字键 3)</summary>
-        event Action OnSkill3Started;
-        
-        /// <summary>技能插槽 4 触发 (如 数字键 4)</summary>
-        event Action OnSkill4Started;
+        /// <summary>特殊攻击触发 (如 E)</summary>
+        event Action OnSpecialAttack;
+        /// <summary>终结技触发 (如 Q)</summary>
+        event Action OnUltimate;
+        /// <summary>非城镇下交互 (如 F)</summary>
+        event Action OnGameplayInteract;
     }
 }

@@ -27,9 +27,9 @@ namespace Game.Adapters
             _target?.ClearPlayGraph();
         }
 
-        public void Evaluate(float time)
+        public void Evaluate(AnimationClip clip, int layerIndex, float time)
         {
-            _target?.Evaluate(time);
+            _target?.Evaluate(clip, layerIndex, time);
         }
 
         public void ManualUpdate(float deltaTime)

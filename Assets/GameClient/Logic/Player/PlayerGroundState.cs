@@ -68,8 +68,7 @@ namespace Game.Logic.Player
             var provider = Entity.InputProvider;
             if (provider != null)
             {
-                provider.OnJumpStarted += HandleJump;
-                provider.OnDashStarted += HandleDodge;
+                provider.OnDodgeStarted += HandleDodge;
             }
         }
 
@@ -89,8 +88,7 @@ namespace Game.Logic.Player
         {
             if (Entity.InputProvider != null)
             {
-                Entity.InputProvider.OnJumpStarted -= HandleJump;
-                Entity.InputProvider.OnDashStarted -= HandleDodge;
+                Entity.InputProvider.OnDodgeStarted -= HandleDodge;
             }
             
             CurrentSubState?.OnExit();
@@ -139,11 +137,6 @@ namespace Game.Logic.Player
             {
                 return new Vector3(inputDir.x, 0, inputDir.y).normalized;
             }
-        }
-
-        private void HandleJump()
-        {
-            Machine.ChangeState<PlayerAirborneState>();
         }
 
         private void HandleDodge()

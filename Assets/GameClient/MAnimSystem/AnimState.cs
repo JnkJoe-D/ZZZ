@@ -1,49 +1,33 @@
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
+using System.Collections.Generic;
 
 namespace Game.MAnimSystem
 {
     /// <summary>
-    /// 单个动画片段 (AnimationClip) 的状态封装。
+    /// 单个 AnimationClip 的状态封装。
     /// </summary>
     public class AnimState : StateBase
     {
-        /// <summary>
-        /// 引用的动画片段资源。
-        /// </summary>
         public AnimationClip Clip { get; private set; }
 
-        /// <summary>
-        /// 具体的 AnimationClipPlayable 实例。
-        /// 这是主要的数据存储，_playableCache 是其缓存副本。
-        /// </summary>
         private AnimationClipPlayable _clipPlayable;
-
-        /// <summary>
-        /// 构造一个新的 State。
-        /// </summary>
-        /// <param name="clip">要播放的动画片段</param>
         private float _cachedLength;
         private bool _cachedIsLooping;
+        private readonly Dictionary<float, StateEventHandler> _scheduledEvents = new Dictionary<float, StateEventHandler>();
 
         /// <summary>
-        /// 构造一个新的 ClipState。
+        /// 播放完成事件 (非循环且 Time >= Length 时触发)。
         /// </summary>
-        /// <param name="clip">要播放的动画片段</param>
-        public AnimState(AnimationClip clip)
+        public StateEventHandler OnEnd;
+
+        public AnimState(AnimationClip clip = null)
         {
             Clip = clip;
-            if (Clip != null)
-            {
-                _cachedLength = Clip.length;
-                _cachedIsLooping = Clip.isLooping;
-            }
+            UpdateClipMetadata(clip);
         }
 
-        /// <summary>
-        /// 创建 AnimationClipPlayable。
-        /// </summary>
         protected override Playable CreatePlayable(PlayableGraph graph)
         {
             if (Clip == null) return Playable.Null;
@@ -52,13 +36,57 @@ namespace Game.MAnimSystem
         }
 
         /// <summary>
-        /// 获取动画片段的长度。
+        /// 绑定播放片段并将状态复位为可播放状态。
+        /// 当 clip 变化时才重建底层 playable；否则仅复位运行态。
         /// </summary>
+        public void BindClip(AnimationClip clip, PlayableGraph graph)
+        {
+            if (clip == null) return;
+
+            bool clipChanged = Clip != clip;
+            Clip = clip;
+            UpdateClipMetadata(clip);
+
+            if (!_playableCache.IsValid() || clipChanged)
+            {
+                bool wasConnected = ParentLayer != null && PortIndex >= 0;
+                if (wasConnected)
+                {
+                    ParentLayer.Graph.Disconnect(ParentLayer.Mixer, PortIndex);
+                }
+
+                if (_playableCache.IsValid())
+                {
+                    _playableCache.Destroy();
+                }
+
+                _clipPlayable = AnimationClipPlayable.Create(graph, clip);
+                _playableCache = _clipPlayable;
+
+                if (wasConnected)
+                {
+                    ParentLayer.Graph.Connect(_playableCache, 0, ParentLayer.Mixer, PortIndex);
+                }
+            }
+
+            RebuildPlayable();
+        }
+
+        private void UpdateClipMetadata(AnimationClip clip)
+        {
+            if (clip == null)
+            {
+                _cachedLength = 0f;
+                _cachedIsLooping = false;
+                return;
+            }
+
+            _cachedLength = clip.length;
+            _cachedIsLooping = clip.isLooping;
+        }
+
         public float Length => _cachedLength;
 
-        /// <summary>
-        /// 是否循环播放。
-        /// </summary>
         public bool IsLooping
         {
             get => _cachedIsLooping;
@@ -81,22 +109,86 @@ namespace Game.MAnimSystem
                 }
             }
         }
-        
-        /// <summary>
-        /// 辅助属性：检查动画是否已播放完毕 (非循环模式且时间超过长度)。
-        /// </summary>
+
         public bool IsDone => !IsLooping && Time >= Length;
 
         public override void OnUpdate(float deltaTime)
         {
             base.OnUpdate(deltaTime);
-            if (IsDone)
+            UpdateScheduledEvents();
+
+            if (IsDone && OnEnd != null)
             {
-                if (OnEnd != null)
+                OnEnd.Invoke(this);
+                OnEnd = null;
+            }
+        }
+
+        public void AddScheduledEvent(float triggerTime, StateEventHandler callback)
+        {
+            if (triggerTime < 0f || callback == null) return;
+
+            if (_scheduledEvents.ContainsKey(triggerTime))
+            {
+                _scheduledEvents[triggerTime] += callback;
+            }
+            else
+            {
+                _scheduledEvents[triggerTime] = callback;
+            }
+        }
+
+        public void RemoveScheduledEvent(float triggerTime, StateEventHandler callback)
+        {
+            if (!_scheduledEvents.ContainsKey(triggerTime)) return;
+
+            _scheduledEvents[triggerTime] -= callback;
+            if (_scheduledEvents[triggerTime] == null)
+            {
+                _scheduledEvents.Remove(triggerTime);
+            }
+        }
+
+        public void RemoveScheduledEvents(float triggerTime)
+        {
+            _scheduledEvents.Remove(triggerTime);
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            OnEnd = null;
+            _scheduledEvents.Clear();
+        }
+
+        private void UpdateScheduledEvents()
+        {
+            if (_scheduledEvents.Count == 0) return;
+
+            float now = Time;
+            List<float> keysToFire = null;
+            foreach (var kvp in _scheduledEvents)
+            {
+                if (now >= kvp.Key)
                 {
-                    OnEnd.Invoke(this);
-                    OnEnd = null;
+                    if (keysToFire == null) keysToFire = new List<float>();
+                    keysToFire.Add(kvp.Key);
                 }
+            }
+
+            if (keysToFire == null || keysToFire.Count == 0) return;
+
+            keysToFire.Sort();
+            for (int i = 0; i < keysToFire.Count; i++)
+            {
+                float key = keysToFire[i];
+                if (!_scheduledEvents.TryGetValue(key, out StateEventHandler callback) || callback == null)
+                {
+                    continue;
+                }
+
+                _scheduledEvents.Remove(key);
+                callback.Invoke(this);
             }
         }
     }

@@ -126,6 +126,7 @@ namespace SkillEditor
             this.Timeline = timeline;
             this.context = context;
             this.context.IsInterrupted = false; // 重置打断状态
+            this.context.SetSkillId(timeline.skillId); // 注入技能标识
             CurrentTime = 0f;
             CurrentState = State.Playing;
 
@@ -175,7 +176,7 @@ namespace SkillEditor
         /// 跳转到指定时间点（编辑器 Seek）
         /// 直接跳转：Exit 脱离区间的 Process，Enter 进入新区间的 Process
         /// </summary>
-        public void Seek(float targetTime)
+        public void Seek(float targetTime,float deltaTime)
         {
             for (int i = 0; i < processes.Count; i++)
             {
@@ -185,6 +186,15 @@ namespace SkillEditor
 
                 if (inst.isActive && !willBeActive)
                 {
+                    // 补充正好脱离时的最后一帧表现，保证终态不丢失
+                    if (targetTime >= inst.clip.EndTime)
+                    {
+                        inst.process.OnUpdate(inst.clip.EndTime, 0f);
+                    }
+                    else if (targetTime < inst.clip.startTime)
+                    {
+                        inst.process.OnUpdate(inst.clip.startTime, 0f);
+                    }
                     inst.process.OnExit();
                     inst.isActive = false;
                 }
@@ -204,7 +214,7 @@ namespace SkillEditor
             {
                 if (inst.isActive)
                 {
-                    inst.process.OnUpdate(CurrentTime, 0f); // deltaTime = 0 表示静态采样
+                    inst.process.OnUpdate(CurrentTime, deltaTime); 
                 }
             }
         }
@@ -247,6 +257,15 @@ namespace SkillEditor
                 // 离开区间
                 if (!shouldBeActive && inst.isActive)
                 {
+                    // 如果因为正向或反向步进刚好越界，在退出前强制做一次边界插值保证终态
+                    if (CurrentTime >= inst.clip.EndTime)
+                    {
+                        inst.process.OnUpdate(inst.clip.EndTime, deltaTime);
+                    }
+                    else if (CurrentTime < inst.clip.startTime)
+                    {
+                        inst.process.OnUpdate(inst.clip.startTime, deltaTime);
+                    }
                     inst.process.OnExit();
                     inst.isActive = false;
                 }
@@ -257,7 +276,7 @@ namespace SkillEditor
             OnTick?.Invoke(CurrentTime);
 
             // 播放结束检测
-            if (Timeline != null && CurrentTime >= Timeline.duration)
+            if (Timeline != null && CurrentTime >= Timeline.Duration)
             {
                 if (Timeline.isLoop)
                 {

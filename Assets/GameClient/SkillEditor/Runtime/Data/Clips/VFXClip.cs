@@ -10,8 +10,10 @@ namespace SkillEditor
         [SkillProperty("特效预制体")]
         public GameObject effectPrefab;
         
-        [HideInInspector]
+        [SerializeField][HideInInspector]
         public string prefabGuid;
+        [SerializeField][HideInInspector]
+        public string prefabAssetName;
 
         [Header("挂点设置")]
         [SkillProperty("挂载位置")]
@@ -61,6 +63,7 @@ namespace SkillEditor
                 isEnabled = this.isEnabled,
                 effectPrefab = this.effectPrefab,
                 prefabGuid = this.prefabGuid,
+                prefabAssetName = this.prefabAssetName,
                 bindPoint = this.bindPoint,
                 customBoneName = this.customBoneName,
                 followTarget = this.followTarget,

@@ -14,9 +14,7 @@ namespace SkillEditor.Editor
         private SkillEditorState state;
         private SkillEditorEvents events;
         
-        // 常量定义
-        private const float TRACK_HEIGHT = 40f;
-        private const float GROUP_HEIGHT = 30f;
+        // 常量定义 (已迁移至 SkillEditorStyles)
         
         // 重命名状态
         private TrackBase renamingTrack = null;
@@ -86,8 +84,7 @@ namespace SkillEditor.Editor
         
         public void DoGUI()
         {
-            const float HEADER_HEIGHT = 30f;
-            const float TRACK_LIST_WIDTH = 200f;
+
             
             SkillTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
@@ -114,15 +111,15 @@ namespace SkillEditor.Editor
             // 2. 处理快捷键 (Ctrl+D)
             HandleShortcuts();
             
-            float viewportHeight = window.position.height - HEADER_HEIGHT;
+            float viewportHeight = window.position.height - SkillEditorStyles.HEADER_HEIGHT;
             float scrollOffset = state.verticalScrollOffset;
 
             // 2. 绘制轨道列表内容（带裁剪区域）
-            Rect contentGroupRect = new Rect(0, HEADER_HEIGHT, TRACK_LIST_WIDTH, viewportHeight);
+            Rect contentGroupRect = new Rect(0, SkillEditorStyles.HEADER_HEIGHT, SkillEditorStyles.TRACK_LIST_WIDTH, viewportHeight);
             GUI.BeginGroup(contentGroupRect);
             {
                 float virtualY = 0; 
-                DrawTrackListInGroup(ref virtualY, scrollOffset, viewportHeight, TRACK_LIST_WIDTH);
+                DrawTrackListInGroup(ref virtualY, scrollOffset, viewportHeight, SkillEditorStyles.TRACK_LIST_WIDTH);
                 
                 // 处理拖拽指示线
                 if (dropIndicatorY >= 0)
@@ -133,12 +130,12 @@ namespace SkillEditor.Editor
             GUI.EndGroup();
 
             // 3. 处理鼠标事件
-            HandleDragAndDrop(new Rect(0, HEADER_HEIGHT, TRACK_LIST_WIDTH, viewportHeight), HEADER_HEIGHT);
+            HandleDragAndDrop(new Rect(0, SkillEditorStyles.HEADER_HEIGHT, SkillEditorStyles.TRACK_LIST_WIDTH, viewportHeight), SkillEditorStyles.HEADER_HEIGHT);
 
             if (evt.type == EventType.MouseDown)
             {
                 float totalHeight = state.CalculateTotalHeight() - scrollOffset;
-                if (evt.mousePosition.x < TRACK_LIST_WIDTH && evt.mousePosition.y > totalHeight)
+                if (evt.mousePosition.x < SkillEditorStyles.TRACK_LIST_WIDTH && evt.mousePosition.y > totalHeight)
                 {
                     if (evt.button == 0)
                     {
@@ -154,7 +151,7 @@ namespace SkillEditor.Editor
             }
 
             // 4. 绘制标题栏
-            DrawHeader(TRACK_LIST_WIDTH, HEADER_HEIGHT);
+            DrawHeader(SkillEditorStyles.TRACK_LIST_WIDTH, SkillEditorStyles.HEADER_HEIGHT);
         }
 
         private void DrawHeader(float width, float height)
@@ -194,11 +191,11 @@ namespace SkillEditor.Editor
 
         private void DrawGroup(Group group, ref float virtualY, float scrollOffset, float viewportHeight, float baseOffset)
         {
-            float TRACK_LIST_WIDTH = 200f;
+
             
-            bool isVisible = (virtualY + GROUP_HEIGHT > scrollOffset && virtualY < scrollOffset + viewportHeight);
+            bool isVisible = (virtualY + SkillEditorStyles.GROUP_HEIGHT > scrollOffset && virtualY < scrollOffset + viewportHeight);
             float drawY = virtualY - scrollOffset + baseOffset;
-            Rect groupRect = new Rect(0, drawY, TRACK_LIST_WIDTH, GROUP_HEIGHT);
+            Rect groupRect = new Rect(0, drawY, SkillEditorStyles.TRACK_LIST_WIDTH, SkillEditorStyles.GROUP_HEIGHT);
             
             if (isVisible)
             {
@@ -209,13 +206,13 @@ namespace SkillEditor.Editor
                 EditorGUI.DrawRect(groupRect, bgColor);
                 
                 string arrowIcon = group.isCollapsed ? "▶" : "▼";
-                if (GUI.Button(new Rect(4, drawY, 16, GROUP_HEIGHT), arrowIcon, EditorStyles.label))
+                if (GUI.Button(new Rect(4, drawY, 16, SkillEditorStyles.GROUP_HEIGHT), arrowIcon, EditorStyles.label))
                 {
                     group.isCollapsed = !group.isCollapsed;
                     window.RefreshWindow();
                 }
                 
-                Rect labelRect = new Rect(22, drawY, TRACK_LIST_WIDTH - 26, GROUP_HEIGHT);
+                Rect labelRect = new Rect(22, drawY, SkillEditorStyles.TRACK_LIST_WIDTH - 26, SkillEditorStyles.GROUP_HEIGHT);
                 if (renamingGroup == group)
                 {
                     GUI.SetNextControlName("GroupRename");
@@ -225,7 +222,7 @@ namespace SkillEditor.Editor
                         needsFocusOnRename = false;
                     }
                     float fieldHeight = 18f;
-                    Rect fieldRect = new Rect(labelRect.x, labelRect.y + (GROUP_HEIGHT - fieldHeight) / 2, labelRect.width, fieldHeight);
+                    Rect fieldRect = new Rect(labelRect.x, labelRect.y + (SkillEditorStyles.GROUP_HEIGHT - fieldHeight) / 2, labelRect.width, fieldHeight);
                     renamingText = EditorGUI.TextField(fieldRect, renamingText);
                 }
                 else
@@ -269,7 +266,7 @@ namespace SkillEditor.Editor
                 }
             }
             
-            virtualY += GROUP_HEIGHT;
+            virtualY += SkillEditorStyles.GROUP_HEIGHT;
             
             // 树状结构：直接遍历 group.tracks
             if (!group.isCollapsed && group.tracks != null)
@@ -284,15 +281,15 @@ namespace SkillEditor.Editor
 
         private void DrawTrackItem(TrackBase track, ref float virtualY, float scrollOffset, float viewportHeight, float baseOffset)
         {
-            float TRACK_LIST_WIDTH = 200f;
-            if (virtualY + TRACK_HEIGHT < scrollOffset || virtualY > scrollOffset + viewportHeight)
+
+            if (virtualY + SkillEditorStyles.TRACK_HEIGHT < scrollOffset || virtualY > scrollOffset + viewportHeight)
             {
-                virtualY += TRACK_HEIGHT;
+                virtualY += SkillEditorStyles.TRACK_HEIGHT;
                 return;
             }
 
             float drawY = virtualY - scrollOffset + baseOffset;
-            Rect trackRect = new Rect(0, drawY, TRACK_LIST_WIDTH, TRACK_HEIGHT);
+            Rect trackRect = new Rect(0, drawY, SkillEditorStyles.TRACK_LIST_WIDTH, SkillEditorStyles.TRACK_HEIGHT);
             
             Color bgColor = (state.selectedTrack == track) ? new Color(0.25f, 0.35f, 0.55f) : new Color(0.2f, 0.2f, 0.2f);
             if (!track.isEnabled) bgColor.a *= 0.5f;
@@ -300,7 +297,7 @@ namespace SkillEditor.Editor
             
             GUI.Label(new Rect(4, drawY + 8, 24, 24), GetTrackIcon(track.trackType));
             
-            Rect textRect = new Rect(32, drawY, TRACK_LIST_WIDTH - 36, TRACK_HEIGHT);
+            Rect textRect = new Rect(32, drawY, SkillEditorStyles.TRACK_LIST_WIDTH - 36, SkillEditorStyles.TRACK_HEIGHT);
             if (renamingTrack == track)
             {
                 GUI.SetNextControlName("TrackRename");
@@ -310,7 +307,7 @@ namespace SkillEditor.Editor
                     needsFocusOnRename = false;
                 }
                 float fieldHeight = 18f;
-                Rect fieldRect = new Rect(textRect.x, textRect.y + (TRACK_HEIGHT - fieldHeight) / 2, textRect.width, fieldHeight);
+                Rect fieldRect = new Rect(textRect.x, textRect.y + (SkillEditorStyles.TRACK_HEIGHT - fieldHeight) / 2, textRect.width, fieldHeight);
                 renamingText = EditorGUI.TextField(fieldRect, renamingText);
             }
             else
@@ -353,8 +350,8 @@ namespace SkillEditor.Editor
                 }
             }
             
-            EditorGUI.DrawRect(new Rect(0, drawY + TRACK_HEIGHT - 1, TRACK_LIST_WIDTH, 1), new Color(0.1f, 0.1f, 0.1f));
-            virtualY += TRACK_HEIGHT;
+            EditorGUI.DrawRect(new Rect(0, drawY + SkillEditorStyles.TRACK_HEIGHT - 1, SkillEditorStyles.TRACK_LIST_WIDTH, 1), new Color(0.1f, 0.1f, 0.1f));
+            virtualY += SkillEditorStyles.TRACK_HEIGHT;
         }
 
         #region 分组管理
@@ -618,7 +615,7 @@ namespace SkillEditor.Editor
                 {
                     var group = timeline.groups[i];
                     float groupTop = y;
-                    float groupBottom = y + GROUP_HEIGHT;
+                    float groupBottom = y + SkillEditorStyles.GROUP_HEIGHT;
                     
                     if (virtualMouseY >= groupTop && virtualMouseY <= groupBottom)
                     {
@@ -629,12 +626,12 @@ namespace SkillEditor.Editor
                         else if (isDraggingGroup)
                         {
                             dropTargetIndex = i;
-                            isDropAfter = virtualMouseY > (groupTop + GROUP_HEIGHT / 2);
+                            isDropAfter = virtualMouseY > (groupTop + SkillEditorStyles.GROUP_HEIGHT / 2);
                             dropIndicatorY = isDropAfter ? groupBottom : groupTop;
                         }
                         return;
                     }
-                    y += GROUP_HEIGHT;
+                    y += SkillEditorStyles.GROUP_HEIGHT;
                     
                     // 树状结构：直接遍历 group.tracks
                     if (!group.isCollapsed && group.tracks != null)
@@ -642,19 +639,19 @@ namespace SkillEditor.Editor
                         for (int j = 0; j < group.tracks.Count; j++)
                         {
                             float trackTop = y;
-                            float trackBottom = y + TRACK_HEIGHT;
+                            float trackBottom = y + SkillEditorStyles.TRACK_HEIGHT;
                             if (virtualMouseY >= trackTop && virtualMouseY <= trackBottom)
                             {
                                 if (isDraggingTrack)
                                 {
                                     dropTargetIndex = j;
                                     dropTargetGroupId = group.groupId;
-                                    isDropAfter = virtualMouseY > (trackTop + TRACK_HEIGHT / 2);
+                                    isDropAfter = virtualMouseY > (trackTop + SkillEditorStyles.TRACK_HEIGHT / 2);
                                     dropIndicatorY = isDropAfter ? trackBottom : trackTop;
                                 }
                                 return;
                             }
-                            y += TRACK_HEIGHT;
+                            y += SkillEditorStyles.TRACK_HEIGHT;
                         }
                     }
                 }

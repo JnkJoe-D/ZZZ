@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - uiComponent
   - Enemy
+  - CloseShot
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - Water
   - UI
   - Char
-  - 
+  - Player
   - 
   - 
   - 

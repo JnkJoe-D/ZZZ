@@ -5,6 +5,8 @@ namespace Game.MAnimSystem
 public class Test2 : MonoBehaviour
 {
     public AnimComponent animComponent;
+    [Range(0,3f)]
+    public float speed = 1;
     [Header("动画片段 (Clip)")]
     public AnimationClip clip1;
     public float blendInDuration1 = 0.2f; // 淡入时间
@@ -22,6 +24,7 @@ public class Test2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        animComponent?.SetLayerSpeed(0, speed);
         if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
         {
             AnimState state = animComponent.Play(clip1, blendInDuration1);

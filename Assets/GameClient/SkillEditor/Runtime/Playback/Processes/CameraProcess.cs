@@ -1,25 +1,44 @@
+using UnityEngine;
+
 namespace SkillEditor
 {
     /// <summary>
-    /// 摄像机片段 Process（编辑器和运行时共用）
+    /// 相机轨道 Process（编辑器与运行时共用）
+    /// 通过 AnimationCurve 采样驱动 ISkillCameraHandler 的 PathPosition
     /// </summary>
     [ProcessBinding(typeof(CameraClip), PlayMode.EditorPreview)]
     [ProcessBinding(typeof(CameraClip), PlayMode.Runtime)]
-    public class CameraProcess : ProcessBase<CameraClip>
+    public class RuntimeCameraProcess : ProcessBase<CameraClip>
     {
+        private ISkillCameraHandler cameraHandler;
+
+        public override void OnEnable()
+        {
+            cameraHandler = context.GetService<ISkillCameraHandler>();
+        }
+
         public override void OnEnter()
         {
-            // TODO: 摄像机效果开始
+            cameraHandler?.SetCamera(clip.cameraId, context.Owner);
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            // TODO: 更新摄像机（抖动、跟随等）
+            if (cameraHandler == null) return;
+
+            float localTime = currentTime - clip.startTime;
+            float t = clip.sampleMode == CurveSampleMode.NormalizedTime
+                ? Mathf.Clamp01(localTime / clip.duration)
+                : localTime;
+
+            float pathPos = clip.pathCurve.Evaluate(t);
+            cameraHandler.SetPathPosition(pathPos);
+            Debug.Log($"POS:<color=#DC143C>{pathPos}</color>,T:<color=#0000FF>{t}</color>");
         }
 
         public override void OnExit()
         {
-            // TODO: 重置摄像机
+            cameraHandler?.ReleaseCamera();
         }
     }
 }

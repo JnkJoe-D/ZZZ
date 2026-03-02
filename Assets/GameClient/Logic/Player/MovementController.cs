@@ -17,6 +17,7 @@ namespace Game.Logic.Player
                 _cc.height = 1.6f;
                 _cc.radius = 0.3f; // 稍微窄一点防卡墙
                 _cc.center = new Vector3(0, 0.8f, 0);
+                _cc.excludeLayers = LayerMask.GetMask("Player"); 
             }
         }
 

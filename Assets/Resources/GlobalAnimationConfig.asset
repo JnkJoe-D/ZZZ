@@ -26,22 +26,31 @@ MonoBehaviour:
     Jog:
       clip: {fileID: 1537088672141427755, guid: 88147f5881834894285e9387fb160241,
         type: 3}
-      fadeDuration: 0.01
+      fadeDuration: 0.5
     JogStop:
       clip: {fileID: 6032505460816376181, guid: 88147f5881834894285e9387fb160241,
         type: 3}
-      fadeDuration: 0.2
+      fadeDuration: 0.3
     DashStart:
       clip: {fileID: -2123373851565751571, guid: eaa7a1da500fc7d468b990ed3e487be3,
         type: 3}
-      fadeDuration: 0.3
+      fadeDuration: 1
     Dash:
       clip: {fileID: -8483063365841296365, guid: 88147f5881834894285e9387fb160241,
         type: 3}
-      fadeDuration: 0.2
+      fadeDuration: 0.6
     DashStop:
-      clip: {fileID: 0}
+      clip: {fileID: 6032505460816376181, guid: 88147f5881834894285e9387fb160241,
+        type: 3}
       fadeDuration: 0.2
+    DodgeFront:
+      clip: {fileID: -7101804230258378353, guid: 88147f5881834894285e9387fb160241,
+        type: 3}
+      fadeDuration: 0.05
+    DodgeBack:
+      clip: {fileID: -7099793632113807657, guid: 88147f5881834894285e9387fb160241,
+        type: 3}
+      fadeDuration: 0.05
     JumpStart:
       clip: {fileID: 0}
       fadeDuration: 0

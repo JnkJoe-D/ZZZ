@@ -9,52 +9,49 @@ namespace Game.Input
     /// </summary>
     public class LocalPlayerInputProvider : MonoBehaviour, IInputProvider
     {
-        public event Action OnJumpStarted;
-        public event Action OnDashStarted;
+        public event Action OnSwitchNext;
+        public event Action OnSwitchPre;
+        public event Action OnDodgeStarted;
         public event Action OnBasicAttackStarted;
-        public event Action OnSkill1Started;
-        public event Action OnSkill2Started;
-        public event Action OnSkill3Started;
-        public event Action OnSkill4Started;
+        public event Action OnSpecialAttack;
+        public event Action OnUltimate;
+        public event Action OnGameplayInteract;
 
+        private PlayerControl _input;
         private Vector2 _currentMoveInput;
+
+        private void Awake()
+        {
+            _input = new PlayerControl();
+
+            // 订阅瞬发事件
+            _input.GamePlay.Dodge.started += _ => OnDodgeStarted?.Invoke();
+            _input.GamePlay.Attack.started += _ => OnBasicAttackStarted?.Invoke();
+            _input.GamePlay.SpecialAttack.started += _ => OnSpecialAttack?.Invoke();
+            _input.GamePlay.Ultimate.started += _ => OnUltimate?.Invoke();
+            _input.GamePlay.Interact.started += _ => OnGameplayInteract?.Invoke();
+
+            // 将您配好的按键映射推测性发送给已有事件：
+            _input.GamePlay.SwitchNext.started += _ => OnSwitchNext?.Invoke();
+            _input.GamePlay.SwitchPre.started += _ => OnSwitchPre?.Invoke();
+
+        }
 
         private void OnEnable()
         {
-            // TODO: 当 InputManager 拥有 Actions 后，在这里进行注册
-            // var actions = InputManager.Instance.Actions.Player;
-            // actions.Move.performed += OnMovePerformed;
-            // actions.Move.canceled += OnMoveCanceled;
-            // actions.Jump.started += _ => OnJumpStarted?.Invoke();
-            // actions.Attack.started += _ => OnAttackStarted?.Invoke();
-            // actions.Dash.started += _ => OnDashStarted?.Invoke();
+            _input.Enable();
         }
 
         private void OnDisable()
         {
-            // TODO: 对应的反注册逻辑，防止内存泄漏
-            // var actions = InputManager.Instance?.Actions?.Player;
-            // if (actions == null) return;
-            // actions.Move.performed -= OnMovePerformed;
-            // actions.Move.canceled -= OnMoveCanceled;
-            // 等等...
+            _input.Disable();
         }
 
-        // ==========================================
-        // 具体按键映射逻辑 (等待 Unity 新 Input 处理)
-        // ==========================================
-        
-        /*
-        private void OnMovePerformed(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+        private void Update()
         {
-            _currentMoveInput = ctx.ReadValue<Vector2>();
+            // 每帧获取摇杆/WASD数据
+            _currentMoveInput = _input.GamePlay.Move.ReadValue<Vector2>();
         }
-
-        private void OnMoveCanceled(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
-        {
-            _currentMoveInput = Vector2.zero;
-        }
-        */
 
         // ==========================================
         // 实现 IInputProvider 接口
@@ -72,34 +69,13 @@ namespace Game.Input
 
         public bool GetActionState(InputActionType type)
         {
-#if ENABLE_LEGACY_INPUT_MANAGER
-            // 旧版 Input 的兜底：后续接入 New Input System 时，
-            // 只需要在这里按照 type 获取对应的 InputAction 返回 `action.IsPressed()` 即可。
+            // 用 IsPressed 支持长按检测
             if (type == InputActionType.Dash)
             {
-                return UnityEngine.Input.GetKey(KeyCode.LeftShift);
+                // 注意这里查的是您在 InputMap 里命名的 Dodge
+                return _input.GamePlay.Dodge.IsPressed();
             }
-#endif
             return false;
-        }
-
-        // --- 临时为了不装配 InputSystem 也能测试而写的 Fallback 逻辑 ---
-        private void Update()
-        {
-#if ENABLE_LEGACY_INPUT_MANAGER
-            // 兼容性 Fallback：确保在这个框架没建好 Action表 之前跑得通
-            float h = UnityEngine.Input.GetAxisRaw("Horizontal");
-            float v = UnityEngine.Input.GetAxisRaw("Vertical");
-            _currentMoveInput = new Vector2(h, v).normalized;
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Space)) OnJumpStarted?.Invoke();
-            if (UnityEngine.Input.GetKey(KeyCode.LeftShift)) OnDashStarted?.Invoke();
-            if (UnityEngine.Input.GetMouseButtonDown(0)) OnBasicAttackStarted?.Invoke();
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1)) OnSkill1Started?.Invoke();
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2)) OnSkill2Started?.Invoke();
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3)) OnSkill3Started?.Invoke();
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha4)) OnSkill4Started?.Invoke();
-#endif
         }
     }
 }

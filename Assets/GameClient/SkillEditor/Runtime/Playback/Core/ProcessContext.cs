@@ -43,6 +43,13 @@ namespace SkillEditor
         /// 供 Process 在 OnExit 时判断是自然结束还是被强制终止
         /// </summary>
         public bool IsInterrupted { get; set; } = false;
+
+        /// <summary>
+        /// 当前播放的技能 ID（由 SkillRunner.Play 注入）
+        /// </summary>
+        public int SkillId { get; private set; }
+
+        public void SetSkillId(int id) { SkillId = id; }
         
         // 单层字典，Key 为服务接口类型
         private Dictionary<Type, object> _services = new Dictionary<Type, object>();
@@ -195,10 +202,10 @@ namespace SkillEditor
         /// </summary>
         internal void Clear()
         {
+            ExecuteCleanups();
             _services.Clear();
             _componentCache.Clear();
             _layerMaskStates.Clear();
-            _cleanupActions.Clear();
         }
     }
 }

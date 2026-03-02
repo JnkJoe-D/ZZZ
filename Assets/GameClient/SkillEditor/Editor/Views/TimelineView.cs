@@ -24,10 +24,7 @@ namespace SkillEditor.Editor
         private TimelineClipOperations clipOps;
         private TimelineClipInteraction clipInteraction;
 
-        // 常量
-        private const float TIME_RULER_HEIGHT = 30f;
-        private const float MIN_ZOOM = 10f;
-        private const float MAX_ZOOM = 6000f;
+        // 常量 (已移至 SkillEditorStyles)
 
         // 框选
         private bool isBoxSelecting = false;
@@ -62,10 +59,10 @@ namespace SkillEditor.Editor
             HandlePanning(rect);
 
             // 2. 绘制轨道区域（带裁剪，防止溢出到标尺）
-            Rect tracksGroupRect = new Rect(0, TIME_RULER_HEIGHT, rect.width, viewHeight - TIME_RULER_HEIGHT);
+            Rect tracksGroupRect = new Rect(0, SkillEditorStyles.TIME_RULER_HEIGHT, rect.width, viewHeight - SkillEditorStyles.TIME_RULER_HEIGHT);
             GUI.BeginGroup(tracksGroupRect);
             {
-                DrawTracksArea(new Rect(0, -TIME_RULER_HEIGHT, rect.width, viewHeight));
+                DrawTracksArea(new Rect(0, -SkillEditorStyles.TIME_RULER_HEIGHT, rect.width, viewHeight));
             }
             GUI.EndGroup();
 
@@ -104,7 +101,7 @@ namespace SkillEditor.Editor
         /// </summary>
         private void DrawTimeRuler(Rect rect)
         {
-            Rect rulerRect = new Rect(0, 0, rect.width, TIME_RULER_HEIGHT);
+            Rect rulerRect = new Rect(0, 0, rect.width, SkillEditorStyles.TIME_RULER_HEIGHT);
             EditorGUI.DrawRect(rulerRect, new Color(0.25f, 0.25f, 0.25f));
 
             float visibleTimeStart = Mathf.Max(0, coords.PhysXToTime(0));
@@ -138,7 +135,7 @@ namespace SkillEditor.Editor
 
                 if (isMajor)
                 {
-                    EditorGUI.DrawRect(new Rect(xPos, TIME_RULER_HEIGHT - 18, 1, 18), new Color(0.6f, 0.6f, 0.6f));
+                    EditorGUI.DrawRect(new Rect(xPos, SkillEditorStyles.TIME_RULER_HEIGHT - 18, 1, 18), new Color(0.6f, 0.6f, 0.6f));
 
                     string text;
                     if (isFrameIndexMode)
@@ -155,11 +152,11 @@ namespace SkillEditor.Editor
                 }
                 else if (isSub)
                 {
-                    EditorGUI.DrawRect(new Rect(xPos, TIME_RULER_HEIGHT - 10, 1, 10), new Color(0.5f, 0.5f, 0.5f));
+                    EditorGUI.DrawRect(new Rect(xPos, SkillEditorStyles.TIME_RULER_HEIGHT - 10, 1, 10), new Color(0.5f, 0.5f, 0.5f));
                 }
                 else
                 {
-                    EditorGUI.DrawRect(new Rect(xPos, TIME_RULER_HEIGHT - 5, 1, 5), new Color(0.35f, 0.35f, 0.35f));
+                    EditorGUI.DrawRect(new Rect(xPos, SkillEditorStyles.TIME_RULER_HEIGHT - 5, 1, 5), new Color(0.35f, 0.35f, 0.35f));
                 }
             }
         }
@@ -172,8 +169,8 @@ namespace SkillEditor.Editor
             SkillTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
-            const float TRACK_HEIGHT = 40f;
-            const float GROUP_HEIGHT = 30f;
+
+
 
             float yOffset = 0;
             int trackIndex = 0;
@@ -190,11 +187,11 @@ namespace SkillEditor.Editor
                 {
                     var group = timeline.groups[i];
 
-                    bool isGroupVisible = (yOffset + GROUP_HEIGHT > scrollOffset && yOffset < scrollOffset + viewportHeight);
+                    bool isGroupVisible = (yOffset + SkillEditorStyles.GROUP_HEIGHT > scrollOffset && yOffset < scrollOffset + viewportHeight);
                     if (isGroupVisible)
                     {
                         float drawY = yOffset - scrollOffset;
-                        Rect groupRect = new Rect(0, drawY, rect.width, GROUP_HEIGHT);
+                        Rect groupRect = new Rect(0, drawY, rect.width, SkillEditorStyles.GROUP_HEIGHT);
 
                         EditorGUI.DrawRect(groupRect, new Color(0.13f, 0.13f, 0.13f));
 
@@ -207,10 +204,10 @@ namespace SkillEditor.Editor
                             }
                         }
 
-                        EditorGUI.DrawRect(new Rect(groupRect.x, groupRect.y + GROUP_HEIGHT - 1, groupRect.width, 1), new Color(0.1f, 0.1f, 0.1f));
+                        EditorGUI.DrawRect(new Rect(groupRect.x, groupRect.y + SkillEditorStyles.GROUP_HEIGHT - 1, groupRect.width, 1), new Color(0.1f, 0.1f, 0.1f));
                     }
 
-                    yOffset += GROUP_HEIGHT;
+                    yOffset += SkillEditorStyles.GROUP_HEIGHT;
 
                     if (!group.isCollapsed && group.tracks != null)
                     {
@@ -228,7 +225,7 @@ namespace SkillEditor.Editor
                                     }
                                 }
 
-                                float trackHeight = TRACK_HEIGHT;
+                                float trackHeight = SkillEditorStyles.TRACK_HEIGHT;
                                 bool isTrackVisible = (yOffset + trackHeight > scrollOffset && yOffset < scrollOffset + viewportHeight);
                                 if (isTrackVisible)
                                 {
@@ -294,10 +291,8 @@ namespace SkillEditor.Editor
         {
             if (track.clips == null || track.clips.Count == 0) return;
 
-            const float CLIP_HEIGHT = 36f;
-            const float CLIP_MARGIN_TOP = 2f;
 
-            // 第一阶段：绘制片段背景和边框
+
             for (int i = 0; i < track.clips.Count; i++)
             {
                 ClipBase clip = track.clips[i];
@@ -305,55 +300,17 @@ namespace SkillEditor.Editor
                 float clipWidth = clip.duration * state.zoom;
                 if (clipStartX + clipWidth < 0 || clipStartX > trackRect.width) continue;
 
-                Rect clipRect = new Rect(trackRect.x + clipStartX, trackRect.y + CLIP_MARGIN_TOP, clipWidth, CLIP_HEIGHT);
+                Rect clipRect = new Rect(trackRect.x + clipStartX, trackRect.y + SkillEditorStyles.CLIP_MARGIN_TOP, clipWidth, SkillEditorStyles.CLIP_HEIGHT);
+                
+                // Get precomputed variables for Drawer
                 Color clipColor = clipInteraction.GetClipColor(track.trackType);
-                if (!clip.isEnabled) clipColor.a *= 0.5f;
 
-                EditorGUI.DrawRect(clipRect, clipColor);
-                if (!clip.isEnabled) EditorGUI.DrawRect(clipRect, new Color(0.5f, 0.5f, 0.5f, 0.2f));
-
-                EditorGUI.DrawRect(new Rect(clipRect.x, clipRect.y, clipRect.width, 1), Color.black);
-                EditorGUI.DrawRect(new Rect(clipRect.x, clipRect.y + clipRect.height - 1, clipRect.width, 1), Color.black);
-                EditorGUI.DrawRect(new Rect(clipRect.x, clipRect.y, 1, clipRect.height), Color.black);
-                EditorGUI.DrawRect(new Rect(clipRect.x + clipRect.width - 1, clipRect.y, 1, clipRect.height), Color.black);
-
-                if (state.selectedClips.Contains(clip))
-                {
-                    Color highlightColor = Color.white;
-                    float borderWidth = 2f;
-                    EditorGUI.DrawRect(new Rect(clipRect.x, clipRect.y, clipRect.width, borderWidth), highlightColor);
-                    EditorGUI.DrawRect(new Rect(clipRect.x, clipRect.y + clipRect.height - borderWidth, clipRect.width, borderWidth), highlightColor);
-                    EditorGUI.DrawRect(new Rect(clipRect.x, clipRect.y, borderWidth, clipRect.height), highlightColor);
-                    EditorGUI.DrawRect(new Rect(clipRect.x + clipRect.width - borderWidth, clipRect.y, borderWidth, clipRect.height), highlightColor);
-                }
-            }
-
-            // 第二阶段：绘制融合区域
-            for (int i = 0; i < track.clips.Count; i++)
-            {
-                ClipBase clip = track.clips[i];
-                float clipStartX = coords.TimeToPhysX(clip.startTime);
-                float clipWidth = clip.duration * state.zoom;
-                if (clipStartX + clipWidth < 0 || clipStartX > trackRect.width) continue;
-
-                Rect clipRect = new Rect(trackRect.x + clipStartX, trackRect.y + CLIP_MARGIN_TOP, clipWidth, CLIP_HEIGHT);
-                DrawClipBlending(clip, clipRect);
-            }
-
-            // 第三阶段：绘制名称并注入交互逻辑
-            for (int i = 0; i < track.clips.Count; i++)
-            {
-                ClipBase clip = track.clips[i];
-                float clipStartX = coords.TimeToPhysX(clip.startTime);
-                float clipWidth = clip.duration * state.zoom;
-                if (clipStartX + clipWidth < 0 || clipStartX > trackRect.width) continue;
-
-                Rect clipRect = new Rect(trackRect.x + clipStartX, trackRect.y + CLIP_MARGIN_TOP, clipWidth, CLIP_HEIGHT);
-
+                // Compute truncated name for Drawer
                 float blendInW = clip.SupportsBlending ? (clip.blendInDuration * state.zoom) : 0;
                 float blendOutW = clip.SupportsBlending ? (clip.blendOutDuration * state.zoom) : 0;
                 Rect textRect = new Rect(clipRect.x + blendInW, clipRect.y, Mathf.Max(0, clipRect.width - blendInW - blendOutW), clipRect.height);
 
+                string displayName = "";
                 if (textRect.width > 15)
                 {
                     GUIStyle clipStyle = new GUIStyle(EditorStyles.whiteLabel)
@@ -363,71 +320,19 @@ namespace SkillEditor.Editor
                         padding = new RectOffset(2, 2, 0, 0),
                         clipping = TextClipping.Clip
                     };
-                    string displayName = clipInteraction.GetTruncatedText(clip.clipName, textRect.width, clipStyle);
-                    GUI.Label(textRect, displayName, clipStyle);
+                    displayName = clipInteraction.GetTruncatedText(clip.clipName, textRect.width, clipStyle);
                 }
 
+                // Delegate rendering to Drawer
+                ClipDrawer drawer = ClipDrawerFactory.GetDrawerInstance(clip);
+                drawer.DrawTimelineGUI(clip, clipRect, state, clipColor, displayName);
+
+                // Interaction injection remains in TimelineView
                 clipInteraction.HandleClipInteraction(clip, clipRect);
             }
         }
 
-        /// <summary>
-        /// 绘制片段的融合区域
-        /// </summary>
-        private void DrawClipBlending(ClipBase clip, Rect clipRect)
-        {
-            if (!clip.SupportsBlending) return;
 
-            if (clip.blendInDuration > 0)
-            {
-                float blendInWidth = clip.blendInDuration * state.zoom;
-                blendInWidth = Mathf.Min(blendInWidth, clipRect.width);
-
-                Color blendColor = new Color(0f, 0f, 0f, 0.25f);
-                Vector3[] verts = new Vector3[] {
-                    new Vector3(clipRect.x, clipRect.y + clipRect.height, 0),
-                    new Vector3(clipRect.x + blendInWidth, clipRect.y, 0),
-                    new Vector3(clipRect.x, clipRect.y, 0)
-                };
-
-                Handles.BeginGUI();
-                Handles.color = blendColor;
-                Handles.DrawAAConvexPolygon(verts);
-
-                Handles.color = new Color(0f, 0f, 0f, 0.4f);
-                Handles.DrawLine(verts[0], verts[1]);
-
-                Handles.color = new Color(0f, 0f, 0f, 0.6f);
-                Handles.DrawLine(new Vector3(clipRect.x, clipRect.y, 0), new Vector3(clipRect.x, clipRect.y + clipRect.height, 0));
-
-                Handles.EndGUI();
-            }
-
-            if (clip.blendOutDuration > 0)
-            {
-                float blendOutWidth = clip.blendOutDuration * state.zoom;
-                blendOutWidth = Mathf.Min(blendOutWidth, clipRect.width);
-
-                Color blendColor = new Color(0f, 0f, 0f, 0.25f);
-                Vector3[] verts = new Vector3[] {
-                    new Vector3(clipRect.x + clipRect.width - blendOutWidth, clipRect.y, 0),
-                    new Vector3(clipRect.x + clipRect.width, clipRect.y + clipRect.height, 0),
-                    new Vector3(clipRect.x + clipRect.width, clipRect.y, 0)
-                };
-
-                Handles.BeginGUI();
-                Handles.color = blendColor;
-                Handles.DrawAAConvexPolygon(verts);
-
-                Handles.color = new Color(0f, 0f, 0f, 0.4f);
-                Handles.DrawLine(verts[0], verts[1]);
-
-                Handles.color = new Color(0f, 0f, 0f, 0.6f);
-                Handles.DrawLine(new Vector3(clipRect.x + clipRect.width, clipRect.y, 0), new Vector3(clipRect.x + clipRect.width, clipRect.y + clipRect.height, 0));
-
-                Handles.EndGUI();
-            }
-        }
 
         /// <summary>
         /// 绘制吸附线
@@ -441,7 +346,7 @@ namespace SkillEditor.Editor
 
             Color snapColor = new Color(1f, 1f, 0f, 0.6f);
 
-            for (float y = TIME_RULER_HEIGHT; y < rect.height; y += 10)
+            for (float y = SkillEditorStyles.TIME_RULER_HEIGHT; y < rect.height; y += 10)
             {
                 EditorGUI.DrawRect(new Rect(x - 1, y, 2, 5), snapColor);
             }
@@ -474,7 +379,7 @@ namespace SkillEditor.Editor
         {
             Event e = Event.current;
 
-            if (e.type == EventType.MouseDown && (e.button == 1 || e.button == 2) && e.mousePosition.y >= TIME_RULER_HEIGHT)
+            if (e.type == EventType.MouseDown && (e.button == 1 || e.button == 2) && e.mousePosition.y >= SkillEditorStyles.TIME_RULER_HEIGHT)
             {
                 isPanning = true;
                 panningStartMousePos = e.mousePosition;
@@ -519,10 +424,10 @@ namespace SkillEditor.Editor
             SkillTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
-            const float TRACK_HEIGHT = 40f;
-            const float GROUP_HEIGHT = 30f;
+
+
             float vScroll = state.verticalScrollOffset;
-            float vMouseY = mousePosition.y - TIME_RULER_HEIGHT + vScroll;
+            float vMouseY = mousePosition.y - SkillEditorStyles.TIME_RULER_HEIGHT + vScroll;
 
             float currentVirtualY = 0;
 
@@ -531,7 +436,7 @@ namespace SkillEditor.Editor
                 for (int i = 0; i < timeline.groups.Count; i++)
                 {
                     var group = timeline.groups[i];
-                    currentVirtualY += GROUP_HEIGHT;
+                    currentVirtualY += SkillEditorStyles.GROUP_HEIGHT;
 
                     if (!group.isCollapsed && group.tracks != null)
                     {
@@ -540,7 +445,7 @@ namespace SkillEditor.Editor
                             TrackBase track = group.tracks[j];
                             if (track != null)
                             {
-                                if (vMouseY >= currentVirtualY && vMouseY < currentVirtualY + TRACK_HEIGHT)
+                                if (vMouseY >= currentVirtualY && vMouseY < currentVirtualY + SkillEditorStyles.TRACK_HEIGHT)
                                 {
                                     ClipBase clickedClip = null;
                                     if (track.clips != null)
@@ -550,7 +455,7 @@ namespace SkillEditor.Editor
                                             var clip = track.clips[k];
                                             float clipStartX = coords.TimeToPhysX(clip.startTime);
                                             float clipWidth = clip.duration * state.zoom;
-                                            float drawY = currentVirtualY - vScroll + TIME_RULER_HEIGHT;
+                                            float drawY = currentVirtualY - vScroll + SkillEditorStyles.TIME_RULER_HEIGHT;
                                             Rect clipRect = new Rect(clipStartX, drawY + 2, clipWidth, 36);
 
                                             if (clipRect.Contains(mousePosition))
@@ -574,7 +479,7 @@ namespace SkillEditor.Editor
                                     }
                                     return;
                                 }
-                                currentVirtualY += TRACK_HEIGHT;
+                                currentVirtualY += SkillEditorStyles.TRACK_HEIGHT;
                             }
                         }
                     }
@@ -590,7 +495,7 @@ namespace SkillEditor.Editor
             Event e = Event.current;
 
             // 处理刻度尺点击/拖拽（移动时间指针）
-            if (!isBoxSelecting && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.mousePosition.y < TIME_RULER_HEIGHT)
+            if (!isBoxSelecting && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.mousePosition.y < SkillEditorStyles.TIME_RULER_HEIGHT)
             {
                 if(state.previewTarget==null)
                 {
@@ -612,17 +517,17 @@ namespace SkillEditor.Editor
             }
 
             // 优先处理鼠标点击（轨道、片段交互）
-            if (e.type == EventType.MouseDown && e.mousePosition.y >= TIME_RULER_HEIGHT)
+            if (e.type == EventType.MouseDown && e.mousePosition.y >= SkillEditorStyles.TIME_RULER_HEIGHT)
             {
                 SkillTimeline timeline = state.currentTimeline;
                 if (timeline == null) return;
 
-                const float TRACK_HEIGHT = 40f;
-                const float GROUP_HEIGHT = 30f;
+    
+    
                 bool clickedSomething = false;
 
                 float vScroll = state.verticalScrollOffset;
-                float vMouseY = e.mousePosition.y - TIME_RULER_HEIGHT + vScroll;
+                float vMouseY = e.mousePosition.y - SkillEditorStyles.TIME_RULER_HEIGHT + vScroll;
                 float currentVirtualY = 0;
 
                 if (timeline.groups != null)
@@ -630,7 +535,7 @@ namespace SkillEditor.Editor
                     for (int i = 0; i < timeline.groups.Count; i++)
                     {
                         var group = timeline.groups[i];
-                        currentVirtualY += GROUP_HEIGHT;
+                        currentVirtualY += SkillEditorStyles.GROUP_HEIGHT;
 
                         if (!group.isCollapsed && group.tracks != null)
                         {
@@ -639,7 +544,7 @@ namespace SkillEditor.Editor
                                 TrackBase track = group.tracks[j];
                                 if (track != null)
                                 {
-                                    if (vMouseY >= currentVirtualY && vMouseY < currentVirtualY + TRACK_HEIGHT)
+                                    if (vMouseY >= currentVirtualY && vMouseY < currentVirtualY + SkillEditorStyles.TRACK_HEIGHT)
                                     {
                                         ClipBase clickedClip = null;
                                         if (track.clips != null)
@@ -649,7 +554,7 @@ namespace SkillEditor.Editor
                                                 var clip = track.clips[k];
                                                 float clipStartX = coords.TimeToPhysX(clip.startTime);
                                                 float clipWidth = clip.duration * state.zoom;
-                                                float drawY = currentVirtualY - vScroll + TIME_RULER_HEIGHT;
+                                                float drawY = currentVirtualY - vScroll + SkillEditorStyles.TIME_RULER_HEIGHT;
                                                 Rect clipRect = new Rect(clipStartX, drawY + 5, clipWidth, 30);
 
                                                 if (clipRect.Contains(e.mousePosition))
@@ -690,7 +595,7 @@ namespace SkillEditor.Editor
                                     }
 
                                     if (clickedSomething) break;
-                                    currentVirtualY += TRACK_HEIGHT;
+                                    currentVirtualY += SkillEditorStyles.TRACK_HEIGHT;
                                 }
                             }
                             if (clickedSomething) break;
@@ -739,12 +644,12 @@ namespace SkillEditor.Editor
                         state.selectedClips.Clear();
                     }
 
-                    const float TRACK_HEIGHT = 40f;
-                    const float GROUP_HEIGHT = 30f;
-                    float yOffset = TIME_RULER_HEIGHT;
+        
+        
+                    float yOffset = SkillEditorStyles.TIME_RULER_HEIGHT;
 
                     System.Action<TrackBase> checkBoxTrack = (track) => {
-                        Rect trackRect = new Rect(0, yOffset, rect.width, TRACK_HEIGHT);
+                        Rect trackRect = new Rect(0, yOffset, rect.width, SkillEditorStyles.TRACK_HEIGHT);
                         foreach (var clip in track.clips)
                         {
                             float clipStartX = coords.TimeToPhysX(clip.startTime);
@@ -759,14 +664,14 @@ namespace SkillEditor.Editor
                                 }
                             }
                         }
-                        yOffset += TRACK_HEIGHT;
+                        yOffset += SkillEditorStyles.TRACK_HEIGHT;
                     };
 
                     if (timeline.groups != null)
                     {
                         foreach (var group in timeline.groups)
                         {
-                            yOffset += GROUP_HEIGHT;
+                            yOffset += SkillEditorStyles.GROUP_HEIGHT;
                             if (!group.isCollapsed && group.tracks != null)
                             {
                                 foreach (var track in group.tracks)
@@ -843,7 +748,7 @@ namespace SkillEditor.Editor
                 float zoomStep = Mathf.Max(5f, state.zoom * 0.15f);
                 float zoomDelta = Mathf.Sign(-e.delta.y) * zoomStep;
 
-                float newZoom = Mathf.Clamp(state.zoom + zoomDelta, MIN_ZOOM, MAX_ZOOM);
+                float newZoom = Mathf.Clamp(state.zoom + zoomDelta, SkillEditorStyles.MIN_ZOOM, SkillEditorStyles.MAX_ZOOM);
                 state.zoom = newZoom;
 
                 state.scrollOffset = (mouseTime * state.zoom + TimelineCoordinates.TIMELINE_START_OFFSET) - e.mousePosition.x;

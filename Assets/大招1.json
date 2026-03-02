@@ -1,12 +1,10 @@
 {
     "skillId": 0,
     "skillName": "新技能",
-    "version": "1.0",
-    "duration": 3.1666667461395265,
-    "isLoop": true,
+    "isLoop": false,
     "groups": [
         {
-            "groupId": "6bb4e390-22d6-480e-9ba7-96827a5c9fb4",
+            "groupId": "82fd8c6b-20fa-424d-8515-a02cb07d12dd",
             "groupName": "分组 1",
             "isCollapsed": false,
             "isEnabled": true,
@@ -18,7 +16,7 @@
             ]
         },
         {
-            "groupId": "8d4f326b-8e8c-4901-ae7b-bfb42e38c6c7",
+            "groupId": "48c347ba-576d-4544-9867-56caf6fcd1b0",
             "groupName": "分组 2",
             "isCollapsed": false,
             "isEnabled": true,
@@ -41,7 +39,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "04715858-f287-4023-8572-7d79e426c608",
+                    "trackId": "937f1449-7fce-437c-9747-bf5cc3852148",
                     "trackType": "AnimationTrack",
                     "trackName": "动画轨道",
                     "isMuted": false,
@@ -59,14 +57,14 @@
             {
                 "rid": 1001,
                 "type": {
-                    "class": "VFXTrack",
+                    "class": "CameraTrack",
                     "ns": "SkillEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "0440095f-5c51-4e39-956c-a7a178c3c105",
-                    "trackType": "VFXTrack",
-                    "trackName": "特效轨道",
+                    "trackId": "ec911d27-e292-4000-b02a-a18b5e7d4d06",
+                    "trackType": "CameraTrack",
+                    "trackName": "摄像机轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -87,64 +85,74 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "1aaf78d6-23f6-4485-b690-7ac26f3b4471",
+                    "clipId": "9569b5a1-c2f6-4e2b-8a20-f66f687cf7bc",
                     "clipName": "动画轨道片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.1666667461395265,
-                    "blendInDuration": 0.20000000298023225,
+                    "duration": 1.8000000715255738,
+                    "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 30300
+                        "instanceID": 33542
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "3b177f8cda8c2214c98f0ea0565f0911",
-                    "maskGuid": ""
+                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
+                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_SwitchIn_Attack_Ex_Start",
+                    "maskGuid": "",
+                    "maskAssetName": ""
                 }
             },
             {
                 "rid": 1003,
                 "type": {
-                    "class": "VFXClip",
+                    "class": "CameraClip",
                     "ns": "SkillEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "265993f1-a78c-4874-8ebc-32310f004f97",
-                    "clipName": "特效轨道片段",
+                    "clipId": "4ac07794-5c9e-40b7-b9f8-7d9704b105e5",
+                    "clipName": "摄像机轨道片段",
                     "isEnabled": true,
-                    "startTime": 1.1666667461395264,
-                    "duration": 1.0,
+                    "startTime": 0.0,
+                    "duration": 5.0,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "effectPrefab": {
-                        "instanceID": 32086
+                    "cameraId": 10001,
+                    "pathCurve": {
+                        "serializedVersion": "2",
+                        "m_Curve": [
+                            {
+                                "serializedVersion": "3",
+                                "time": 0.0,
+                                "value": 0.0,
+                                "inSlope": 3.0,
+                                "outSlope": 3.0,
+                                "tangentMode": 35,
+                                "weightedMode": 0,
+                                "inWeight": 0.0,
+                                "outWeight": 0.3333333432674408
+                            },
+                            {
+                                "serializedVersion": "3",
+                                "time": 1.0,
+                                "value": 3.0,
+                                "inSlope": 3.0,
+                                "outSlope": 3.0,
+                                "tangentMode": 35,
+                                "weightedMode": 0,
+                                "inWeight": 0.3333333432674408,
+                                "outWeight": 0.0
+                            }
+                        ],
+                        "m_PreInfinity": 2,
+                        "m_PostInfinity": 2,
+                        "m_RotationOrder": 4
                     },
-                    "prefabGuid": "83e244af1d719994ab693b7cedf89951",
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "followTarget": true,
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "rotationOffset": {
-                        "x": 319.2066955566406,
-                        "y": 61.161556243896487,
-                        "z": 19.785892486572267
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "destroyOnEnd": true,
-                    "stopEmissionOnEnd": false
+                    "sampleMode": 0
                 }
             }
         ]

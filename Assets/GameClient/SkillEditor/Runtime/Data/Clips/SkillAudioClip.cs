@@ -25,8 +25,10 @@ namespace SkillEditor
         [Range(0f, 1f)]
         public float spatialBlend = 0.0f;
 
-        [HideInInspector]
+        [SerializeField]
         public string clipGuid;
+        [SerializeField]
+        public string clipAssetName;
         
         public override bool SupportsBlending => true;
 
@@ -49,11 +51,12 @@ namespace SkillEditor
                 duration = this.duration,
                 isEnabled = this.isEnabled,
                 audioClip = this.audioClip,
+                clipGuid = this.clipGuid,
+                clipAssetName = this.clipAssetName,
+
                 volume = this.volume,
-                pitch = this.pitch,
                 loop = this.loop,
                 spatialBlend = this.spatialBlend,
-                clipGuid = this.clipGuid,
                 blendInDuration = this.blendInDuration,
                 blendOutDuration = this.blendOutDuration
             };

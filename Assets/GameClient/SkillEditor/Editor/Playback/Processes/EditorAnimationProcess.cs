@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using cfg;
 using UnityEngine;
 namespace SkillEditor.Editor
 {
@@ -17,7 +18,12 @@ namespace SkillEditor.Editor
             animHandler = context.GetService<ISkillAnimationHandler>(); // 懒加载
             animHandler?.Initialize();
             // 注册系统级清理（多个动画 Process 共享同一个 key，仅执行一次）
-            context.RegisterCleanup("ClearPlaygraph", () => animHandler?.ClearPlayGraph()); // 注册退出时的清理
+            context.RegisterCleanup("ClearPlaygraph",
+             () =>
+             {
+                 animHandler?.ClearPlayGraph();
+                 context.Owner.transform.position = Vector3.zero;
+             }); 
         }
 
             public override void OnEnter()
@@ -37,9 +43,8 @@ namespace SkillEditor.Editor
         public override void OnUpdate(float currentTime, float deltaTime)
         {
             // 仅控制播放状态
-            // 编辑器预览：手动 Sample
-            animHandler?.Evaluate(currentTime-clip.startTime);
-            // 手动驱动层逻辑（如权重 Fade），确保 Mixer 输入权重正确
+            // 编辑器预览：手动 Sample 时间
+            animHandler?.Evaluate(clip.animationClip, (int)clip.layer, currentTime - clip.startTime);
             animHandler?.ManualUpdate(deltaTime);
         }
 

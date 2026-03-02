@@ -1,9 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using System;
-using Game.Adapters;
-using Game.MAnimSystem;
-using SkillEditor;
 
 namespace SkillEditor.Editor
 {
@@ -35,7 +31,7 @@ namespace SkillEditor.Editor
                 state.previewRunner = previewRunner;
                 if (state.previewTarget != null)
                 {
-                    var factory = new SkillServiceFactory(state.previewTarget);
+                    var factory = SkillEditorGlobalSettings.DefaultServiceFactoryCreator?.Invoke(state.previewTarget);
                     var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview, factory);
                     previewRunner.PrewarmContext(ctx);
                 }
@@ -51,6 +47,9 @@ namespace SkillEditor.Editor
             previewRunner = null;
             EditorAudioManager.Instance.Dispose();
             EditorVFXManager.Instance.Dispose();
+            
+            // 向外部层抛出主动销毁指令，清理那些跨程序集缓存的重对象
+            SkillEditorGlobalSettings.OnEditorDispose?.Invoke();
         }
 
         /// <summary>
@@ -60,7 +59,7 @@ namespace SkillEditor.Editor
         {
             if (state.currentTimeline == null) return;
 
-            var factory = new SkillServiceFactory(state.previewTarget);
+            var factory = SkillEditorGlobalSettings.DefaultServiceFactoryCreator?.Invoke(state.previewTarget);
             var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview, factory);
             
             // 手动注入不再需要，由 Factory 懒加载提供
@@ -127,7 +126,7 @@ namespace SkillEditor.Editor
                 if (previewRunner.CurrentState == SkillRunner.State.Idle || state.isStopped)
                 {
                     // 如果当前在末尾，重置回开头
-                    float duration = state.currentTimeline != null ? state.currentTimeline.duration : 10f;
+                    float duration = state.currentTimeline != null ? state.currentTimeline.Duration : 10f;
                     if (state.timeIndicator >= duration - 0.05f)
                     {
                         state.timeIndicator = 0f;
@@ -141,7 +140,7 @@ namespace SkillEditor.Editor
                     // 如果 indicator > 0，则 Seek 过去
                     if (state.timeIndicator > 0)
                     {
-                        previewRunner.Seek(state.timeIndicator);
+                        previewRunner.Seek(state.timeIndicator,state.SnapInterval);
                     }
                 }
                 else
@@ -175,10 +174,10 @@ namespace SkillEditor.Editor
             
             float dt = 1.0f / (state.frameRate > 0 ? state.frameRate : 30);
             float targetTime = previewRunner.CurrentTime + dt;
-            float maxTime = state.currentTimeline != null ? state.currentTimeline.duration : 10f;
+            float maxTime = state.currentTimeline != null ? state.currentTimeline.Duration : 10f;
             targetTime = Mathf.Clamp(targetTime, 0, maxTime);
 
-            previewRunner.Seek(targetTime);
+            previewRunner.Seek(targetTime, state.SnapInterval);
             state.timeIndicator = targetTime;
             state.isStopped = false;
         }
@@ -197,7 +196,7 @@ namespace SkillEditor.Editor
             float targetTime = previewRunner.CurrentTime - dt;
             targetTime = Mathf.Max(0, targetTime);
 
-            previewRunner.Seek(targetTime);
+            previewRunner.Seek(targetTime, state.SnapInterval);
             state.timeIndicator = targetTime;
             state.isStopped = false;
         }
@@ -211,7 +210,7 @@ namespace SkillEditor.Editor
             if (IsPlaying) TogglePlay();
 
             EnsureRunnerActive();
-            previewRunner.Seek(0f);
+            previewRunner.Seek(0f, state.SnapInterval);
             state.timeIndicator = 0f;
             state.isStopped = false;
         }
@@ -225,8 +224,8 @@ namespace SkillEditor.Editor
             if (IsPlaying) TogglePlay();
 
             EnsureRunnerActive();
-            float duration = state.currentTimeline != null ? state.currentTimeline.duration : 10f;
-            previewRunner.Seek(duration);
+            float duration = state.currentTimeline != null ? state.currentTimeline.Duration : 10f;
+            previewRunner.Seek(duration, state.SnapInterval);
             state.timeIndicator = duration;
             state.isStopped = false;
         }
@@ -246,7 +245,7 @@ namespace SkillEditor.Editor
             }
 
             Debug.Log($"[SkillEditorWindow] Seek -> {time}");
-            previewRunner?.Seek(time);
+            previewRunner?.Seek(time, state.SnapInterval);
             state.timeIndicator = previewRunner != null ? previewRunner.CurrentTime : time;
             Debug.Log($"[SkillEditorWindow] SeekPreview finished. RunnerTime={previewRunner?.CurrentTime}, Indicator={state.timeIndicator}");
             // Seek 后确保不是 Stopped 状态，使红线可见

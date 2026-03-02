@@ -1,0 +1,185 @@
+{
+    "skillId": 0,
+    "skillName": "新技能",
+    "isLoop": false,
+    "groups": [
+        {
+            "groupId": "82fd8c6b-20fa-424d-8515-a02cb07d12dd",
+            "groupName": "分组 1",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1000
+                }
+            ]
+        },
+        {
+            "groupId": "9504ede6-68f0-46aa-b60f-9dc7a8fc1a5a",
+            "groupName": "分组 2",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1001
+                }
+            ]
+        }
+    ],
+    "references": {
+        "version": 2,
+        "RefIds": [
+            {
+                "rid": 1000,
+                "type": {
+                    "class": "AnimationTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "937f1449-7fce-437c-9747-bf5cc3852148",
+                    "trackType": "AnimationTrack",
+                    "trackName": "动画轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1002
+                        },
+                        {
+                            "rid": 1003
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1001,
+                "type": {
+                    "class": "VFXTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "11435b9f-b7d5-474b-a217-a332b82693e0",
+                    "trackType": "VFXTrack",
+                    "trackName": "特效轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1004
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1002,
+                "type": {
+                    "class": "SkillAnimationClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "9569b5a1-c2f6-4e2b-8a20-f66f687cf7bc",
+                    "clipName": "动画轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.6947270631790161,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.1947270631790161,
+                    "animationClip": {
+                        "instanceID": 33504
+                    },
+                    "playbackSpeed": 1.0,
+                    "layer": 0,
+                    "overrideMask": {
+                        "instanceID": 0
+                    },
+                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
+                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Normal_01",
+                    "maskGuid": "",
+                    "maskAssetName": ""
+                }
+            },
+            {
+                "rid": 1003,
+                "type": {
+                    "class": "SkillAnimationClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "af5e9fb5-612c-49f1-a7c3-b0a47033c361",
+                    "clipName": "动画轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.5,
+                    "duration": 2.25,
+                    "blendInDuration": 0.1947270631790161,
+                    "blendOutDuration": 0.0,
+                    "animationClip": {
+                        "instanceID": 33506
+                    },
+                    "playbackSpeed": 1.0,
+                    "layer": 0,
+                    "overrideMask": {
+                        "instanceID": 0
+                    },
+                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
+                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Normal_01_End",
+                    "maskGuid": "",
+                    "maskAssetName": ""
+                }
+            },
+            {
+                "rid": 1004,
+                "type": {
+                    "class": "VFXClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "f793007b-7c46-4206-80d0-442e854f5685",
+                    "clipName": "特效轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.3333333432674408,
+                    "duration": 1.0,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "effectPrefab": {
+                        "instanceID": 33722
+                    },
+                    "prefabGuid": "83e244af1d719994ab693b7cedf89951",
+                    "prefabAssetName": "Slash_fx_01",
+                    "bindPoint": 0,
+                    "customBoneName": "",
+                    "followTarget": true,
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "destroyOnEnd": true,
+                    "stopEmissionOnEnd": false
+                }
+            }
+        ]
+    }
+}

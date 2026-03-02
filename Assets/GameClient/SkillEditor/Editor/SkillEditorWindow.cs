@@ -230,7 +230,7 @@ namespace SkillEditor.Editor
 
                 state.timeIndicator += deltaTime;
 
-                float maxDuration = state.currentTimeline != null ? state.currentTimeline.duration : 10f;
+                float maxDuration = state.currentTimeline != null ? state.currentTimeline.Duration : 10f;
                 
                 // 播放结束处理
                 if (state.timeIndicator >= maxDuration)

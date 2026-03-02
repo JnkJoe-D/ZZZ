@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1183ee470e4d9d846a09855c8b343016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 1025190078}
   PlayAutomatically: 1
 --- !u!114 &1025190076
 MonoBehaviour:
@@ -148,12 +149,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1025190074}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bcd4f0bd681fcc345992195662c89761, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animancer: {fileID: 1025190075}
+  animComponent: {fileID: 1025190075}
   idleClip: {fileID: 7400000, guid: 061ad049ab405ed4794b0825b39975a1, type: 2}
   attackClip: {fileID: 7400000, guid: ae7b310bcb9b9a347989b5d679b12716, type: 2}
   walkClip: {fileID: 7400000, guid: 854cba89c21b29945b984a0d16344fed, type: 2}
@@ -161,6 +162,78 @@ MonoBehaviour:
   idle2D: {fileID: 0}
   walkFwd: {fileID: 0}
   walkRight: {fileID: 0}
+  upperBodyClip: {fileID: 0}
+  breatheClip: {fileID: 0}
+  upperBodyMask: {fileID: 0}
+--- !u!114 &1025190077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1025190074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94c614c853b8506499a25d6c469b0617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animComponent: {fileID: 1025190075}
+  speed: 0.32
+  clip1: {fileID: 7400000, guid: 5ae7dd75483496b46a09884c7811402b, type: 2}
+  blendInDuration1: 0.2
+  clip2: {fileID: 7400000, guid: 3b177f8cda8c2214c98f0ea0565f0911, type: 2}
+  blendInDuration2: 0.5
+  clip3: {fileID: 7400000, guid: 37fb4d489a1d9a74c99dbe7485bc2964, type: 2}
+  blendInDuration3: 0.5
+  clip4: {fileID: 7400000, guid: 70bd96fc874aa44438e9bd2e90f1e7cd, type: 2}
+  blendInDuration4: 0.2
+--- !u!95 &1025190078 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 2ea7f527bed7ede488717e392517626f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1203850848}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1025190080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1025190074}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bfd824d71c145eea56969836bd58dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animComponent: {fileID: 1025190075}
+  clip1: {fileID: 7400000, guid: 5ae7dd75483496b46a09884c7811402b, type: 2}
+  clip2: {fileID: 7400000, guid: e4c32d89d48a0224a888b166af318bcd, type: 2}
+  clip3: {fileID: 7400000, guid: 37fb4d489a1d9a74c99dbe7485bc2964, type: 2}
+  clip4: {fileID: 7400000, guid: 70bd96fc874aa44438e9bd2e90f1e7cd, type: 2}
+  runOnStart: 1
+  loopRun: 0
+  loopInterval: 1
+  verbose: 1
+  failOnUnityError: 1
+  randomSeed: 20260302
+  fadeDuration: 0.08
+  lowFreqSwitchCount: 12
+  lowFreqInterval: 0.12
+  highFreqSwitchCount: 120
+  highFreqInterval: 0.01
+  sameClipReentryCount: 80
+  pressureSwitchCount: 240
+  randomSwitchCount: 160
+  speedProbeDuration: 0.16
+  speedPauseMaxDelta: 0.02
+  speedResumeMinDelta: 0.02
+  speedFastMultiplierMin: 1.2
+  maxConnectedAfterLowFreq: 8
+  maxConnectedAfterHighFreq: 12
+  maxConnectedAfterSameClip: 10
+  maxConnectedAfterPressure: 14
+  maxConnectedAfterSettle: 6
+  minReuseRateAfterBurst: 0.4
 --- !u!1001 &1203850848
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -229,6 +302,11 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 2ea7f527bed7ede488717e392517626f,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -241,6 +319,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1025190075}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2ea7f527bed7ede488717e392517626f,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1025190077}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2ea7f527bed7ede488717e392517626f,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1025190080}
   m_SourcePrefab: {fileID: 100100000, guid: 2ea7f527bed7ede488717e392517626f, type: 3}
 --- !u!1 &1241346328
 GameObject:
