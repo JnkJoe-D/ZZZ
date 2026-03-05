@@ -18,10 +18,5 @@ namespace SkillEditor
         
         // 基础属性
         void Initialize();
-        void ClearPlayGraph();
-
-        // 采样与手动更新（编辑器预览用）
-        void Evaluate(AnimationClip clip, int layerIndex, float time);
-        void ManualUpdate(float deltaTime);
     }
 }

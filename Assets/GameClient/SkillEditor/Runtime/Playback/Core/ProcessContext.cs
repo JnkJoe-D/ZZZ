@@ -61,6 +61,9 @@ namespace SkillEditor
 
         // 系统级清理注册（同 key 去重）
         private Dictionary<string, Action> _cleanupActions = new Dictionary<string, Action>();
+        private Dictionary<string, Action> _startActions = new Dictionary<string, Action>();
+        private Dictionary<string, Action<float, float>> _tickActions = new Dictionary<string, Action<float, float>>();
+        private bool _startActionsExecuted;
 
         public ProcessContext(GameObject owner, PlayMode playMode, IServiceFactory factory = null)
         {
@@ -185,6 +188,30 @@ namespace SkillEditor
             _cleanupActions[key] = cleanup;
         }
 
+        public void RegisterStartAction(string key, Action action)
+        {
+            if (string.IsNullOrEmpty(key) || action == null) return;
+            _startActions[key] = action;
+        }
+
+        public void UnregisterStartAction(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return;
+            _startActions.Remove(key);
+        }
+
+        public void RegisterTickAction(string key, Action<float, float> action)
+        {
+            if (string.IsNullOrEmpty(key) || action == null) return;
+            _tickActions[key] = action;
+        }
+
+        public void UnregisterTickAction(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return;
+            _tickActions.Remove(key);
+        }
+
         /// <summary>
         /// 执行所有注册的系统级清理（Runner 结束时调用）
         /// </summary>
@@ -195,6 +222,27 @@ namespace SkillEditor
                 action?.Invoke();
             }
             _cleanupActions.Clear();
+            _startActions.Clear();
+            _tickActions.Clear();
+            _startActionsExecuted = false;
+        }
+
+        internal void ExecuteStartActionsOnce()
+        {
+            if (_startActionsExecuted) return;
+            foreach (var action in _startActions.Values)
+            {
+                action?.Invoke();
+            }
+            _startActionsExecuted = true;
+        }
+
+        internal void ExecuteTickActions(float currentTime, float deltaTime)
+        {
+            foreach (var action in _tickActions.Values)
+            {
+                action?.Invoke(currentTime, deltaTime);
+            }
         }
 
         /// <summary>

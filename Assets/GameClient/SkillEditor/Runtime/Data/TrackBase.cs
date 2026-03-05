@@ -58,6 +58,10 @@ namespace SkillEditor
         /// 是否允许片段重叠
         /// </summary>
         public virtual bool CanOverlap => false;
+        /// <summary>
+        /// 是否允许播放，如存在多个动画轨道时，只有一个轨道能播放，其他轨道仅供预览和编辑
+        /// </summary>
+        public virtual bool CanPlay{get;private set;} = true;
 
         /// <summary>
         /// 添加片段
@@ -115,7 +119,7 @@ namespace SkillEditor
             clone.isLocked = this.isLocked;
             clone.isHidden = this.isHidden;
             clone.isCollapsed = this.isCollapsed;
-            
+
             // 深拷贝片段
             clone.clips = new List<ClipBase>();
             if (this.clips != null)

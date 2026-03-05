@@ -136,6 +136,13 @@ namespace SkillEditor.Editor
 
         // 预览角色
         public GameObject previewTarget;
+        public bool hasPreviewOriginPose;
+        public GameObject previewOriginTarget;
+        public Vector3 previewOriginPos;
+        public Quaternion previewOriginRot = Quaternion.identity;
+        public bool hasPreviewTrackBasePose;
+        public Vector3 previewTrackBasePos;
+        public Quaternion previewTrackBaseRot = Quaternion.identity;
 
         /// <summary>
         /// 绑定的预览播放器实例（由 Window 注入，供 Drawer 获取上下文）

@@ -39,6 +39,7 @@ namespace SkillEditor
 
             // 导入后置处理：根据 GUID 还原资源引用
             ResolveAllAssets(timeline);
+            timeline.RecalculateDuration();
 
             return timeline;
         }
@@ -54,6 +55,7 @@ namespace SkillEditor
 
             // 导入后置处理：根据 GUID 还原资源引用
             ResolveAllAssets(timeline);
+            timeline.RecalculateDuration();
             return timeline;
         }
         /// <summary>

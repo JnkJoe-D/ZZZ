@@ -58,7 +58,7 @@ namespace Game.MAnimSystem
         public float Weight
         {
             get => _weight;
-            set => SetWeight(value);
+            set => SetLayerWeight(value);
         }
 
         public double PlaybackSpeed
@@ -146,7 +146,7 @@ namespace Game.MAnimSystem
         #endregion
 
         #region Layer Controls
-        public void SetWeight(float weight)
+        public void SetLayerWeight(float weight)
         {
             _weight = Mathf.Clamp01(weight);
             if (_layerMixer.IsValid())
@@ -174,7 +174,7 @@ namespace Game.MAnimSystem
             PlaybackSpeed = speed;
         }
 
-        public void StartFade(float targetWeight, float duration)
+        public void StartLayerFade(float targetWeight, float duration)
         {
             targetWeight = Mathf.Clamp01(targetWeight);
             if (Mathf.Abs(targetWeight - _weight) < 0.001f)
@@ -185,7 +185,7 @@ namespace Game.MAnimSystem
 
             if (duration <= 0f)
             {
-                SetWeight(targetWeight);
+                SetLayerWeight(targetWeight);
                 _isLayerFading = false;
                 return;
             }
@@ -208,12 +208,12 @@ namespace Game.MAnimSystem
             if ((direction > 0f && newWeight >= _targetLayerWeight) ||
                 (direction < 0f && newWeight <= _targetLayerWeight))
             {
-                SetWeight(_targetLayerWeight);
+                SetLayerWeight(_targetLayerWeight);
                 _isLayerFading = false;
             }
             else
             {
-                SetWeight(newWeight);
+                SetLayerWeight(newWeight);
             }
         }
         #endregion
@@ -276,9 +276,12 @@ namespace Game.MAnimSystem
 
             RemoveFromFadingStates(state);
 
+            float nextFadeSpeed = 1f / Mathf.Max(fadeDuration, 0.001f);
+
             if (_targetState != null)
             {
-                AddToFadingStates(_targetState, _fadeSpeed);
+                // The previous target should fade out with the current transition's duration.
+                AddToFadingStates(_targetState, nextFadeSpeed);
             }
 
             for (int i = 0; i < _fadingStates.Count; i++)
@@ -294,7 +297,7 @@ namespace Game.MAnimSystem
 
             _targetState?.Clear();
             _targetState = state;
-            _fadeSpeed = 1f / Mathf.Max(fadeDuration, 0.001f);
+            _fadeSpeed = nextFadeSpeed;
             _targetFadeProgress = salvagedWeight;
 
             if (!wasFading || forceResetTime)
@@ -382,7 +385,18 @@ namespace Game.MAnimSystem
         {
             return GetCurrentClip() == clip;
         }
-
+        public AnimState GetAnimState(AnimationClip clip)
+        {
+            if(clip==null)return null;
+            for(int i=0;i< _states.Count;++i)
+            {
+                if((_states[i] as AnimState).Clip == clip)
+                {
+                    return _states[i] as AnimState;
+                }
+            }
+            return null;
+        }
         public float GetCurrentTime()
         {
             return _targetState?.Time ?? 0f;

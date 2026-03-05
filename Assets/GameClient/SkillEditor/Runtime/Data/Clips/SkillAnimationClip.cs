@@ -20,14 +20,23 @@ namespace SkillEditor
         public EAnimLayer layer = EAnimLayer.Locomotion;
         [SkillProperty("目标动画遮罩")]
         public AvatarMask overrideMask;
-        [SerializeField]
+        [SkillProperty("片段位移偏移")]
+        public Vector3 positionOffset = Vector3.zero;
+
+        [SkillProperty("片段旋转偏移")]
+        public Vector3 rotationOffset = Vector3.zero;
+        
+        // 记录此片段是否启用了自动匹配
+        public bool useMatchOffset = false;
+
+        [SerializeField][HideInInspector]
         public string clipGuid;
-        [SerializeField]
+        [SerializeField][HideInInspector]
         public string clipAssetName;
 
-        [SerializeField]
+        [SerializeField][HideInInspector]
         public string maskGuid;
-        [SerializeField]
+        [SerializeField][HideInInspector]
         public string maskAssetName;
         public override bool SupportsBlending => true;
 
@@ -55,7 +64,10 @@ namespace SkillEditor
                 layer = this.layer,
                 overrideMask = this.overrideMask,
                 blendInDuration = this.blendInDuration,
-                blendOutDuration = this.blendOutDuration
+                blendOutDuration = this.blendOutDuration,
+                positionOffset = this.positionOffset,
+                rotationOffset = this.rotationOffset,
+                useMatchOffset = this.useMatchOffset
             };
         }
     }

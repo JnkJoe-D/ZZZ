@@ -22,21 +22,6 @@ namespace Game.Adapters
             _target?.InitializeGraph();
         }
 
-        public void ClearPlayGraph()
-        {
-            _target?.ClearPlayGraph();
-        }
-
-        public void Evaluate(AnimationClip clip, int layerIndex, float time)
-        {
-            _target?.Evaluate(clip, layerIndex, time);
-        }
-
-        public void ManualUpdate(float deltaTime)
-        {
-            _target?.ManualUpdate(deltaTime);
-        }
-
         public void SetLayerMask(int layerIndex, AvatarMask mask)
         {
             _target?.SetLayerMask(layerIndex, mask);
@@ -58,5 +43,6 @@ namespace Game.Adapters
         {
             _target?.SetLayerSpeed(layerIndex, speed);
         }
+
     }
 }

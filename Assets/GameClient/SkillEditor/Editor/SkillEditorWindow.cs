@@ -40,7 +40,7 @@ namespace SkillEditor.Editor
         /// <summary>
         /// 打开技能编辑器窗口
         /// </summary>
-        [MenuItem("Tools/技能编辑器")]
+        [MenuItem("SkillEditor/技能编辑器")]
         public static void ShowWindow()
         {
             SkillEditorWindow window = GetWindow<SkillEditorWindow>("技能编辑器");

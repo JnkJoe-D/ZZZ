@@ -33,6 +33,14 @@ namespace SkillEditor
         /// <param name="currentTime">当前播放时间</param>
         /// <param name="deltaTime">帧间隔</param>
         void OnUpdate(float currentTime, float deltaTime);
+        /// <summary>
+        /// Runner.Pause() 时调用，用于暂停状态
+        /// </summary>
+        void OnPause();
+        /// <summary>
+        /// Runner.Resume() 时调用，用于恢复状态
+        /// </summary>
+        void OnResume();
 
         /// <summary>
         /// 时间指针离开片段区间时调用，用于回收实例、重置临时状态

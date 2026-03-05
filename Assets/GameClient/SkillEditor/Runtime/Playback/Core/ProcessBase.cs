@@ -30,7 +30,7 @@ namespace SkillEditor
         {
             clip = default;
             context = null;
-        }
+        }  
 
         public virtual void OnEnable() { }
 
@@ -40,6 +40,8 @@ namespace SkillEditor
         /// 每帧更新，子类必须实现
         /// </summary>
         public abstract void OnUpdate(float currentTime, float deltaTime);
+        public virtual void OnPause(){}
+        public virtual void OnResume(){}
 
         public virtual void OnExit() { }
 

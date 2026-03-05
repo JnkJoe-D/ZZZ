@@ -35,6 +35,7 @@ namespace SkillEditor
         /// 当前播放时间（秒）
         /// </summary>
         public float CurrentTime { get; private set; }
+        private float previousTime;
 
         /// <summary>
         /// 当前播放的时间轴
@@ -84,7 +85,7 @@ namespace SkillEditor
         private ProcessContext context;
         public ProcessContext Context => context;
         private List<ProcessInstance> processes = new List<ProcessInstance>();
-
+        private List<ProcessInstance> activeProcesses = new List<ProcessInstance>();
         /// <summary>
         /// Process 实例与其运行状态的绑定
         /// </summary>
@@ -104,7 +105,7 @@ namespace SkillEditor
         }
 
         /// <summary>
-        /// 预热 Context（供编辑器静态预览等非播放状态使用）
+        /// 预热 Context（供编辑器静态预览等非播放状态使用，clipsDrawer能静态访问context的自定义服务以实时预览部分效果）
         /// </summary>
         public void PrewarmContext(ProcessContext initialContext)
         {
@@ -116,18 +117,18 @@ namespace SkillEditor
         /// <summary>
         /// 开始播放（如正在播放或暂停则先打断旧技能）
         /// </summary>
-        public void Play(SkillTimeline timeline, ProcessContext context)
+        public void Play(SkillTimeline timeline, ProcessContext context,float progress = 0f)
         {
             if (CurrentState != State.Idle)
             {
                 InterruptInternal();
             }
-
+            progress = progress<0f? 0f : (progress>1f? 1f : progress);
             this.Timeline = timeline;
             this.context = context;
             this.context.IsInterrupted = false; // 重置打断状态
             this.context.SetSkillId(timeline.skillId); // 注入技能标识
-            CurrentTime = 0f;
+            CurrentTime = progress * Timeline.Duration;
             CurrentState = State.Playing;
 
             BuildProcesses();
@@ -136,6 +137,8 @@ namespace SkillEditor
             {
                 inst.process.OnEnable();
             }
+
+            this.context.ExecuteStartActionsOnce();
 
             OnStart?.Invoke();
         }
@@ -147,6 +150,11 @@ namespace SkillEditor
         {
             if (CurrentState != State.Playing) return;
             CurrentState = State.Paused;
+            for(int i = 0; i < activeProcesses.Count; i++)
+            {
+                var inst = activeProcesses[i];
+                inst.process.OnPause();
+            }
             OnPause?.Invoke();
         }
 
@@ -157,6 +165,11 @@ namespace SkillEditor
         {
             if (CurrentState != State.Paused) return;
             CurrentState = State.Playing;
+            for (int i = 0; i < activeProcesses.Count; i++)
+            {
+                var inst = activeProcesses[i];
+                inst.process.OnResume();
+            }
             OnResume?.Invoke();
         }
 
@@ -178,23 +191,27 @@ namespace SkillEditor
         /// </summary>
         public void Seek(float targetTime,float deltaTime)
         {
+            if(targetTime<0f||targetTime>Timeline.Duration| Timeline == null)
+            {
+                return;
+            }
             for (int i = 0; i < processes.Count; i++)
             {
                 var inst = processes[i];
                 bool willBeActive = targetTime >= inst.clip.startTime
-                                 && targetTime < inst.clip.EndTime;
+                                 && targetTime <= inst.clip.EndTime;
 
                 if (inst.isActive && !willBeActive)
                 {
-                    // 补充正好脱离时的最后一帧表现，保证终态不丢失
-                    if (targetTime >= inst.clip.EndTime)
-                    {
-                        inst.process.OnUpdate(inst.clip.EndTime, 0f);
-                    }
-                    else if (targetTime < inst.clip.startTime)
-                    {
-                        inst.process.OnUpdate(inst.clip.startTime, 0f);
-                    }
+                    // // 补充正好脱离时的最后一帧表现，保证终态不丢失
+                    // if (targetTime >= inst.clip.EndTime)
+                    // {
+                    //     inst.process.OnUpdate(inst.clip.EndTime, 0f);
+                    // }
+                    // else if (targetTime < inst.clip.startTime)
+                    // {
+                    //     inst.process.OnUpdate(inst.clip.startTime, 0f);
+                    // }
                     inst.process.OnExit();
                     inst.isActive = false;
                 }
@@ -217,6 +234,8 @@ namespace SkillEditor
                     inst.process.OnUpdate(CurrentTime, deltaTime); 
                 }
             }
+
+            context?.ExecuteTickActions(CurrentTime, deltaTime);
         }
 
         // ─── 每帧驱动 ───
@@ -233,19 +252,19 @@ namespace SkillEditor
 
             float speed = context.GlobalPlaySpeed;
             CurrentTime += deltaTime * speed;
-
+            bool isReversing = CurrentTime - previousTime < 0 && speed < 0;
+            previousTime = CurrentTime;
             // 区间扫描
             for (int i = 0; i < processes.Count; i++)
             {
                 var inst = processes[i];
-                bool shouldBeActive = CurrentTime >= inst.clip.startTime
-                                   && CurrentTime < inst.clip.EndTime;
-
+                bool shouldBeActive =  CurrentTime >= inst.clip.startTime && CurrentTime <= inst.clip.EndTime;
                 // 进入区间
                 if (shouldBeActive && !inst.isActive)
                 {
                     inst.process.OnEnter();
                     inst.isActive = true;
+                    activeProcesses.Add(inst);
                 }
 
                 // 区间内更新
@@ -268,20 +287,24 @@ namespace SkillEditor
                     }
                     inst.process.OnExit();
                     inst.isActive = false;
+                    activeProcesses.Remove(inst);
                 }
 
                 processes[i] = inst;
             }
 
+            context?.ExecuteTickActions(CurrentTime, deltaTime);
+
             OnTick?.Invoke(CurrentTime);
 
             // 播放结束检测
-            if (Timeline != null && CurrentTime >= Timeline.Duration)
+            if (Timeline != null && 
+            ((!isReversing && CurrentTime >= Timeline.Duration)||(isReversing && CurrentTime <= 0f)))
             {
                 if (Timeline.isLoop)
                 {
                     ResetActiveProcesses();
-                    CurrentTime = 0f;
+                    CurrentTime = !isReversing ? 0f : Timeline.Duration;
                     OnLoopComplete?.Invoke();
                 }
                 else
@@ -322,7 +345,7 @@ namespace SkillEditor
 
             foreach (var track in Timeline.AllTracks)
             {
-                if (!track.isEnabled) continue;
+                if (!track.isEnabled || !track.CanPlay) continue;
 
                 foreach (var clip in track.clips)
                 {
@@ -370,7 +393,7 @@ namespace SkillEditor
             }
 
             processes.Clear();
-
+            activeProcesses.Clear();
             // 级别 3: 系统级清理
             context?.ExecuteCleanups();
         }

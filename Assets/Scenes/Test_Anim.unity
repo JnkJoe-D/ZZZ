@@ -172,7 +172,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1025190074}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 94c614c853b8506499a25d6c469b0617, type: 3}
   m_Name: 
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1025190074}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1bfd824d71c145eea56969836bd58dc6, type: 3}
   m_Name: 
@@ -224,6 +224,13 @@ MonoBehaviour:
   sameClipReentryCount: 80
   pressureSwitchCount: 240
   randomSwitchCount: 160
+  fadeDurationMismatchLong: 0.8
+  fadeDurationMismatchShort: 0.02
+  fadeDurationMismatchObserveTime: 0.25
+  transitionDurationTestA: 0.12
+  transitionDurationTestB: 0.35
+  transitionDurationTolerance: 0.06
+  transitionDurationTimeout: 2
   speedProbeDuration: 0.16
   speedPauseMaxDelta: 0.02
   speedResumeMinDelta: 0.02

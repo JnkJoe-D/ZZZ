@@ -111,6 +111,19 @@ namespace SkillEditor
             return result;
         }
 
+        public AnimationTrack GetMasterAnimationTrack()
+        {
+            foreach (var track in AllTracks)
+            {
+                if (!track.isEnabled) continue;
+                if (track is AnimationTrack animTrack && animTrack.isMasterTrack)
+                {
+                    return animTrack;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// 重新计算 Timeline 总时长
         /// </summary>

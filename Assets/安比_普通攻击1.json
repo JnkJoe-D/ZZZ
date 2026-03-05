@@ -26,6 +26,18 @@
                     "rid": 1001
                 }
             ]
+        },
+        {
+            "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
+            "groupName": "分组 3",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1002
+                }
+            ]
         }
     ],
     "references": {
@@ -49,12 +61,26 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1002
+                            "rid": 1003
                         },
                         {
-                            "rid": 1003
+                            "rid": 1004
+                        },
+                        {
+                            "rid": 1005
                         }
-                    ]
+                    ],
+                    "isMasterTrack": true,
+                    "offsetPos": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "offsetRot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 }
             },
             {
@@ -75,13 +101,47 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1004
+                            "rid": 1006
                         }
                     ]
                 }
             },
             {
                 "rid": 1002,
+                "type": {
+                    "class": "AnimationTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "2435099e-64d2-4ff1-84b6-26faa3e3ee76",
+                    "trackType": "AnimationTrack",
+                    "trackName": "动画轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1007
+                        }
+                    ],
+                    "isMasterTrack": false,
+                    "offsetPos": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "offsetRot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            },
+            {
+                "rid": 1003,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -96,13 +156,24 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1947270631790161,
                     "animationClip": {
-                        "instanceID": 33504
+                        "instanceID": 34258
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "useMatchOffset": false,
                     "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
                     "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Normal_01",
                     "maskGuid": "",
@@ -110,7 +181,7 @@
                 }
             },
             {
-                "rid": 1003,
+                "rid": 1004,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -125,13 +196,24 @@
                     "blendInDuration": 0.1947270631790161,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 33506
+                        "instanceID": 34256
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "useMatchOffset": false,
                     "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
                     "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Normal_01_End",
                     "maskGuid": "",
@@ -139,7 +221,47 @@
                 }
             },
             {
-                "rid": 1004,
+                "rid": 1005,
+                "type": {
+                    "class": "SkillAnimationClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "52d50290-5fe8-4628-926b-94a6af583f93",
+                    "clipName": "动画轨道片段",
+                    "isEnabled": true,
+                    "startTime": 2.8333334922790529,
+                    "duration": 1.0166667699813843,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "animationClip": {
+                        "instanceID": 35026
+                    },
+                    "playbackSpeed": 1.0,
+                    "layer": 0,
+                    "overrideMask": {
+                        "instanceID": 0
+                    },
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "useMatchOffset": false,
+                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
+                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Normal_04_Perfect",
+                    "maskGuid": "",
+                    "maskAssetName": ""
+                }
+            },
+            {
+                "rid": 1006,
                 "type": {
                     "class": "VFXClip",
                     "ns": "SkillEditor",
@@ -149,22 +271,22 @@
                     "clipId": "f793007b-7c46-4206-80d0-442e854f5685",
                     "clipName": "特效轨道片段",
                     "isEnabled": true,
-                    "startTime": 0.3333333432674408,
+                    "startTime": 0.10000000894069672,
                     "duration": 1.0,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 33722
+                        "instanceID": 35216
                     },
                     "prefabGuid": "83e244af1d719994ab693b7cedf89951",
                     "prefabAssetName": "Slash_fx_01",
                     "bindPoint": 0,
                     "customBoneName": "",
-                    "followTarget": true,
+                    "followTarget": false,
                     "positionOffset": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.0
+                        "z": 1.0
                     },
                     "rotationOffset": {
                         "x": 0.0,
@@ -178,6 +300,46 @@
                     },
                     "destroyOnEnd": true,
                     "stopEmissionOnEnd": false
+                }
+            },
+            {
+                "rid": 1007,
+                "type": {
+                    "class": "SkillAnimationClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "fbe69491-0c42-4557-9c13-5ddd2d36cd88",
+                    "clipName": "动画轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.0166667699813843,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "animationClip": {
+                        "instanceID": 35026
+                    },
+                    "playbackSpeed": 1.0,
+                    "layer": 0,
+                    "overrideMask": {
+                        "instanceID": 0
+                    },
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "useMatchOffset": false,
+                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
+                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Normal_04_Perfect",
+                    "maskGuid": "",
+                    "maskAssetName": ""
                 }
             }
         ]

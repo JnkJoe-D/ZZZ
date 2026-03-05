@@ -61,10 +61,10 @@ namespace SkillEditor.Editor
                         lastKey.value = endPoint.y;
                         curve.MoveKey(curve.keys.Length - 1, lastKey);
 
-                        AnimationUtility.SetKeyLeftTangentMode(curve, 0, AnimationUtility.TangentMode.Auto);
-                        AnimationUtility.SetKeyRightTangentMode(curve, 0, AnimationUtility.TangentMode.Auto);
-                        AnimationUtility.SetKeyLeftTangentMode(curve, curve.keys.Length - 1, AnimationUtility.TangentMode.Auto);
-                        AnimationUtility.SetKeyRightTangentMode(curve, curve.keys.Length - 1, AnimationUtility.TangentMode.Auto);
+                        UnityEditor.AnimationUtility.SetKeyLeftTangentMode(curve, 0, UnityEditor.AnimationUtility.TangentMode.Auto);
+                        UnityEditor.AnimationUtility.SetKeyRightTangentMode(curve, 0, UnityEditor.AnimationUtility.TangentMode.Auto);
+                        UnityEditor.AnimationUtility.SetKeyLeftTangentMode(curve, curve.keys.Length - 1, UnityEditor.AnimationUtility.TangentMode.Auto);
+                        UnityEditor.AnimationUtility.SetKeyRightTangentMode(curve, curve.keys.Length - 1, UnityEditor.AnimationUtility.TangentMode.Auto);
                         
                         EditorUtility.SetDirty(window.GetCurrentTimeline());
                         window.Repaint();
@@ -126,8 +126,8 @@ namespace SkillEditor.Editor
                         
                         for (int i = 0; i < curve.keys.Length; i++)
                         {
-                            AnimationUtility.SetKeyLeftTangentMode(curve, i, AnimationUtility.TangentMode.Auto);
-                            AnimationUtility.SetKeyRightTangentMode(curve, i, AnimationUtility.TangentMode.Auto);
+                            UnityEditor.AnimationUtility.SetKeyLeftTangentMode(curve, i, UnityEditor.AnimationUtility.TangentMode.Auto);
+                            UnityEditor.AnimationUtility.SetKeyRightTangentMode(curve, i, UnityEditor.AnimationUtility.TangentMode.Auto);
                         }
                         EditorUtility.SetDirty(window.GetCurrentTimeline());
                         window.Repaint();

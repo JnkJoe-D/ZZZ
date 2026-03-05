@@ -39,6 +39,15 @@ namespace Game.MAnimSystem
         public int sameClipReentryCount = 80;
         public int pressureSwitchCount = 240;
         public int randomSwitchCount = 160;
+        public float fadeDurationMismatchLong = 0.8f;
+        public float fadeDurationMismatchShort = 0.02f;
+        public float fadeDurationMismatchObserveTime = 0.25f;
+
+        [Header("Transition Duration Test")]
+        public float transitionDurationTestA = 0.12f;
+        public float transitionDurationTestB = 0.35f;
+        public float transitionDurationTolerance = 0.06f;
+        public float transitionDurationTimeout = 2f;
 
         [Header("Speed Test")]
         public float speedProbeDuration = 0.16f;
@@ -135,7 +144,9 @@ namespace Game.MAnimSystem
             animComponent.ResetPoolMetricsCounters();
 
             yield return StartCoroutine(RunCase("Basic Play/Fade", CaseBasicPlayFade()));
+            yield return StartCoroutine(RunCase("Transition Duration Accuracy", CaseTransitionDurationAccuracy()));
             yield return StartCoroutine(RunCase("Layer Speed Control", CaseLayerSpeedControl()));
+            yield return StartCoroutine(RunCase("Fade Duration Mismatch Transition", CaseFadeDurationMismatchTransition()));
             yield return StartCoroutine(RunCase("Scheduled Event Chain", CaseScheduledEventChain()));
             yield return StartCoroutine(RunCase("BlendTree1D State", CaseBlendTree1DState()));
             yield return StartCoroutine(RunCase("BlendTree2D State", CaseBlendTree2DState()));
@@ -209,6 +220,14 @@ namespace Game.MAnimSystem
             AssertTrue(animComponent.GetCurrentClip() == clip3, "Basic fade failed: current clip is not clip3.");
         }
 
+        private IEnumerator CaseTransitionDurationAccuracy()
+        {
+            animComponent.SetLayerSpeed(0, 1f);
+
+            yield return StartCoroutine(VerifyTransitionDurationOnce(transitionDurationTestA, "A"));
+            yield return StartCoroutine(VerifyTransitionDurationOnce(transitionDurationTestB, "B"));
+        }
+
         private IEnumerator CaseScheduledEventChain()
         {
             bool eventTriggered = false;
@@ -237,6 +256,90 @@ namespace Game.MAnimSystem
             AssertTrue(eventTriggered, "Scheduled event was not triggered.");
             yield return new WaitForSeconds(0.08f);
             AssertTrue(animComponent.GetCurrentClip() == clip2, "Scheduled event did not switch to clip2.");
+        }
+
+        private IEnumerator VerifyTransitionDurationOnce(float requestedDuration, string label)
+        {
+            if (requestedDuration <= 0f)
+            {
+                Fail($"Transition duration test {label} has invalid requestedDuration={requestedDuration:F4}.");
+                yield break;
+            }
+
+            animComponent.Play(clip1, 0f, true);
+            yield return null;
+            yield return null;
+
+            AnimState target = animComponent.Play(clip2, requestedDuration, true);
+            AssertTrue(target != null, $"Transition duration test {label} failed: Play(clip2) returned null.");
+            if (target == null)
+            {
+                yield break;
+            }
+
+            float start = Time.realtimeSinceStartup;
+            float fadeInDoneElapsed = -1f;
+            float fadeOutDoneElapsed = -1f;
+
+            while (Time.realtimeSinceStartup - start < transitionDurationTimeout)
+            {
+                float elapsed = Time.realtimeSinceStartup - start;
+                if (fadeInDoneElapsed < 0f && target.Weight >= 0.999f)
+                {
+                    fadeInDoneElapsed = elapsed;
+                }
+
+                AnimComponentPoolMetrics metrics = animComponent.GetPoolMetrics();
+                if (fadeOutDoneElapsed < 0f &&
+                    metrics.TotalFadingStates == 0 &&
+                    metrics.TotalConnectedStates <= 1 &&
+                    animComponent.GetCurrentClip() == clip2)
+                {
+                    fadeOutDoneElapsed = elapsed;
+                }
+
+                if (fadeInDoneElapsed >= 0f && fadeOutDoneElapsed >= 0f)
+                {
+                    break;
+                }
+
+                yield return null;
+            }
+
+            AssertTrue(fadeInDoneElapsed >= 0f,
+                $"Transition duration test {label} timeout: fade-in completion not reached within {transitionDurationTimeout:F2}s.");
+            AssertTrue(fadeOutDoneElapsed >= 0f,
+                $"Transition duration test {label} timeout: fade-out cleanup completion not reached within {transitionDurationTimeout:F2}s.");
+
+            if (fadeInDoneElapsed >= 0f)
+            {
+                float inDiff = Mathf.Abs(fadeInDoneElapsed - requestedDuration);
+                AssertTrue(inDiff <= transitionDurationTolerance,
+                    $"Transition duration test {label} fade-in mismatch: requested={requestedDuration:F4}, actual={fadeInDoneElapsed:F4}, diff={inDiff:F4}, tolerance={transitionDurationTolerance:F4}");
+            }
+
+            if (fadeOutDoneElapsed >= 0f)
+            {
+                float outTolerance = transitionDurationTolerance + Mathf.Max(0.01f, Time.deltaTime);
+                float outDiff = Mathf.Abs(fadeOutDoneElapsed - requestedDuration);
+                AssertTrue(outDiff <= outTolerance,
+                    $"Transition duration test {label} fade-out mismatch: requested={requestedDuration:F4}, actual={fadeOutDoneElapsed:F4}, diff={outDiff:F4}, tolerance={outTolerance:F4}");
+            }
+        }
+
+        private IEnumerator CaseFadeDurationMismatchTransition()
+        {
+            animComponent.ResetPoolMetricsCounters();
+
+            animComponent.Play(clip1, fadeDurationMismatchLong, true);
+            yield return new WaitForSeconds(0.02f);
+            animComponent.Play(clip2, fadeDurationMismatchShort, true);
+            yield return new WaitForSeconds(fadeDurationMismatchObserveTime);
+
+            AnimComponentPoolMetrics metrics = animComponent.GetPoolMetrics();
+            AssertTrue(animComponent.GetCurrentClip() == clip2, "Fade mismatch test failed: current clip is not clip2.");
+            AssertTrue(metrics.TotalConnectedStates <= 1,
+                $"Fade mismatch test failed: stale fading state detected. connected={metrics.TotalConnectedStates}");
         }
 
         private IEnumerator CaseLayerSpeedControl()

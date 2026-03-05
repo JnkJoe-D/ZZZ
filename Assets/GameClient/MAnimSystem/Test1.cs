@@ -319,14 +319,14 @@ public class Test1 : MonoBehaviour
 
         // 淡出层
         Debug.Log("[层淡入淡出] 开始淡出 Layer 1");
-        layer1.StartFade(0f, 1f);
+        layer1.StartLayerFade(0f, 1f);
 
         yield return new WaitForSeconds(1.5f);
         Debug.Log($"[层淡入淡出] Layer 1 权重: {layer1.Weight:F2}");
 
         // 淡入层
         Debug.Log("[层淡入淡出] 开始淡入 Layer 1");
-        layer1.StartFade(1f, 1f);
+        layer1.StartLayerFade(1f, 1f);
 
         yield return new WaitForSeconds(1.5f);
         Debug.Log($"[层淡入淡出] Layer 1 权重: {layer1.Weight:F2}");
