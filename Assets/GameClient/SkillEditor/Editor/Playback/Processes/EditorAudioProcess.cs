@@ -11,13 +11,20 @@ namespace SkillEditor.Editor
     {
         private UnityEngine.AudioSource audioSource;
         private bool isScrubbing = false;
+        private AudioClip _playingClip;
 
         public override void OnEnter()
         {
             audioSource = EditorAudioManager.Instance.Get();
-            if (audioSource != null && clip.audioClip != null)
+            if (audioSource != null && clip.audioClips != null && clip.audioClips.Count > 0)
             {
-                audioSource.clip = clip.audioClip;
+                var validClips = clip.audioClips.FindAll(c => c != null);
+                if (validClips.Count == 0) return;
+
+                _playingClip = validClips[Random.Range(0, validClips.Count)];
+                if (_playingClip == null) return;
+
+                audioSource.clip = _playingClip;
                 audioSource.volume = clip.volume;
                 audioSource.pitch = clip.pitch * context.GlobalPlaySpeed; // 初始 Pitch
                 audioSource.loop = clip.loop;
@@ -39,7 +46,7 @@ namespace SkillEditor.Editor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            if (audioSource == null || clip.audioClip == null) return;
+            if (audioSource == null || _playingClip == null) return;
 
             // 1. 同步 Pitch (支持变速预览)
             float targetPitch = clip.pitch * context.GlobalPlaySpeed;
@@ -50,8 +57,8 @@ namespace SkillEditor.Editor
 
             // 2. 处理 Timeline Scrubbing (拖拽时间轴)
             // 计算当前片段内的理论播放时间
-            float clipLocalTime = currentTime - clip.startTime;
-            float clipLength = clip.audioClip.length;
+            float clipLocalTime = currentTime - clip.StartTime;
+            float clipLength = _playingClip.length;
 
             if (clipLength <= 0.001f) return;
             
@@ -114,6 +121,7 @@ namespace SkillEditor.Editor
         {
             base.Reset();
             audioSource = null;
+            _playingClip = null;
         }
     }
 }

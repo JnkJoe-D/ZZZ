@@ -1,0 +1,450 @@
+{
+    "skillId": 0,
+    "skillName": "新技能",
+    "isLoop": false,
+    "groups": [
+        {
+            "groupId": "82fd8c6b-20fa-424d-8515-a02cb07d12dd",
+            "groupName": "分组 1",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1000
+                }
+            ]
+        },
+        {
+            "groupId": "9504ede6-68f0-46aa-b60f-9dc7a8fc1a5a",
+            "groupName": "分组 2",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1001
+                }
+            ]
+        },
+        {
+            "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
+            "groupName": "分组 3",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1002
+                },
+                {
+                    "rid": 1003
+                },
+                {
+                    "rid": 1004
+                }
+            ]
+        },
+        {
+            "groupId": "5e32243f-fd0e-4a9e-b870-e6e5ef0357fb",
+            "groupName": "分组 4",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1005
+                }
+            ]
+        }
+    ],
+    "references": {
+        "version": 2,
+        "RefIds": [
+            {
+                "rid": 1000,
+                "type": {
+                    "class": "AnimationTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "937f1449-7fce-437c-9747-bf5cc3852148",
+                    "trackType": "AnimationTrack",
+                    "trackName": "动画轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1006
+                        },
+                        {
+                            "rid": 1007
+                        }
+                    ],
+                    "isMasterTrack": true,
+                    "offsetPos": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "offsetRot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            },
+            {
+                "rid": 1001,
+                "type": {
+                    "class": "VFXTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "11435b9f-b7d5-474b-a217-a332b82693e0",
+                    "trackType": "VFXTrack",
+                    "trackName": "特效轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1008
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1002,
+                "type": {
+                    "class": "AudioTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "2dcc2480-bc30-484a-b6af-acc9c364d829",
+                    "trackType": "AudioTrack",
+                    "trackName": "挥刀",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1009
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1003,
+                "type": {
+                    "class": "AudioTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "474789eb-6680-4b49-97d6-7de6e20a7137",
+                    "trackType": "AudioTrack",
+                    "trackName": "语音",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1010
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1004,
+                "type": {
+                    "class": "AudioTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "46c40be1-8351-4ef3-9071-7490857e484b",
+                    "trackType": "AudioTrack",
+                    "trackName": "收刀",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1011
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1005,
+                "type": {
+                    "class": "EventTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "9c692c41-f19e-48d3-9b23-cdaabbe34bec",
+                    "trackType": "EventTrack",
+                    "trackName": "事件轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1012
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1006,
+                "type": {
+                    "class": "SkillAnimationClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "9569b5a1-c2f6-4e2b-8a20-f66f687cf7bc",
+                    "clipName": "动画轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.6500000357627869,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.15000003576278687,
+                    "animationClip": {
+                        "instanceID": 33842
+                    },
+                    "playbackSpeed": 1.0,
+                    "layer": 0,
+                    "overrideMask": {
+                        "instanceID": 0
+                    },
+                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
+                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Normal_02",
+                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比攻击.fbx",
+                    "maskGuid": "",
+                    "maskAssetName": "",
+                    "maskAssetPath": ""
+                }
+            },
+            {
+                "rid": 1007,
+                "type": {
+                    "class": "SkillAnimationClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "af5e9fb5-612c-49f1-a7c3-b0a47033c361",
+                    "clipName": "动画轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.5,
+                    "duration": 2.0333335399627687,
+                    "blendInDuration": 0.15000003576278687,
+                    "blendOutDuration": 0.0,
+                    "animationClip": {
+                        "instanceID": 33844
+                    },
+                    "playbackSpeed": 1.0,
+                    "layer": 0,
+                    "overrideMask": {
+                        "instanceID": 0
+                    },
+                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
+                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Normal_02_End",
+                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比攻击.fbx",
+                    "maskGuid": "",
+                    "maskAssetName": "",
+                    "maskAssetPath": ""
+                }
+            },
+            {
+                "rid": 1008,
+                "type": {
+                    "class": "VFXClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "f793007b-7c46-4206-80d0-442e854f5685",
+                    "clipName": "特效轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.23333333432674409,
+                    "duration": 1.0,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "effectPrefab": {
+                        "instanceID": 34056
+                    },
+                    "prefabGuid": "83e244af1d719994ab693b7cedf89951",
+                    "prefabAssetName": "Slash_fx_01",
+                    "prefabAssetPath": "Assets/Resources/Particles/Slash_effects/Prefabs/Single_Slash/Slash_fx_01.prefab",
+                    "bindPoint": 0,
+                    "customBoneName": "",
+                    "followTarget": false,
+                    "positionOffset": {
+                        "x": 0.1553967446088791,
+                        "y": 0.18000000715255738,
+                        "z": -0.026053428649902345
+                    },
+                    "rotationOffset": {
+                        "x": 83.78111267089844,
+                        "y": 180.00003051757813,
+                        "z": 90.0000228881836
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "destroyOnEnd": true,
+                    "stopEmissionOnEnd": false
+                }
+            },
+            {
+                "rid": 1009,
+                "type": {
+                    "class": "SkillAudioClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "d200574d-544b-4815-9b37-63c729395c78",
+                    "clipName": "音效轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.23333333432674409,
+                    "duration": 0.7666666507720947,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 34266
+                        }
+                    ],
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 0.0,
+                    "clipGuids": [
+                        "f6b7d84faf3f2e24590394e6228d3417"
+                    ],
+                    "clipAssetNames": [
+                        "安比攻击2"
+                    ],
+                    "clipAssetPaths": [
+                        "Assets/Resources/Audio/AnBi/安比攻击2.wav"
+                    ]
+                }
+            },
+            {
+                "rid": 1010,
+                "type": {
+                    "class": "SkillAudioClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "edf063d3-c43c-4257-a0e1-6f3e3caa7385",
+                    "clipName": "音效轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.23333333432674409,
+                    "duration": 0.7666666507720947,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 33660
+                        }
+                    ],
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 0.0,
+                    "clipGuids": [
+                        "9d2cba0049a938344b1ecf7ba5d1b748"
+                    ],
+                    "clipAssetNames": [
+                        "安比：嘿（攻击）"
+                    ],
+                    "clipAssetPaths": [
+                        "Assets/Resources/Audio/AnBi/安比：嘿（攻击）.wav"
+                    ]
+                }
+            },
+            {
+                "rid": 1011,
+                "type": {
+                    "class": "SkillAudioClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "2b66fad0-a817-40b7-a5b5-b6c550f7bb3f",
+                    "clipName": "音效轨道片段",
+                    "isEnabled": true,
+                    "startTime": 1.4199998378753663,
+                    "duration": 0.413333535194397,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 34304
+                        }
+                    ],
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 0.0,
+                    "clipGuids": [
+                        "2eb0e25f8b7e9ec40a17a8a8d9f8a069"
+                    ],
+                    "clipAssetNames": [
+                        "安比入鞘"
+                    ],
+                    "clipAssetPaths": [
+                        "Assets/Resources/Audio/AnBi/安比入鞘.wav"
+                    ]
+                }
+            },
+            {
+                "rid": 1012,
+                "type": {
+                    "class": "EventClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "88627e71-9330-46a7-be12-cc2c00ba9ceb",
+                    "clipName": "事件轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.4333333373069763,
+                    "duration": 0.10000000149011612,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "eventName": "InputAvailable",
+                    "parameters": []
+                }
+            }
+        ]
+    }
+}

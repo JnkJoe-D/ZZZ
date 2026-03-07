@@ -33,7 +33,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Attack",
+                    "name": "LightAttack",
                     "type": "Button",
                     "id": "d7db922d-12be-4cf7-9110-534542534d2a",
                     "expectedControlType": "Button",
@@ -69,7 +69,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SpecialAttack",
+                    "name": "SpecialSkill",
                     "type": "Button",
                     "id": "1fc0568c-c789-48e2-8dd8-41e80ab69f79",
                     "expectedControlType": "Button",
@@ -227,7 +227,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "LightAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -260,7 +260,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SpecialAttack",
+                    "action": "SpecialSkill",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

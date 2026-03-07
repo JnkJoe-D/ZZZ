@@ -16,10 +16,8 @@ namespace Game.UI
     ///   3. 驱动层级管理器和导航栈
     ///   4. 对外提供泛型和非泛型双重 API（兼容未来 XLua）
     /// </summary>
-    public class UIManager
+    public class UIManager : Game.Framework.Singleton<UIManager>
     {
-        public static UIManager Instance { get; private set; }
-
         // ── 子模块 ────────────────────────────────
         private readonly UILayerManager _layerManager = new();
         private readonly UIStack        _stack        = new();
@@ -42,7 +40,6 @@ namespace Game.UI
 
         public void Initialize(MonoBehaviour host)
         {
-            Instance = this;
             _coroutineHost = host;
 
             // 创建 UI 根节点（DontDestroyOnLoad）
@@ -233,7 +230,6 @@ namespace Game.UI
                 _uiRoot = null;
             }
 
-            Instance = null;
             Debug.Log("[UIManager] 已关闭");
         }
 

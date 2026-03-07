@@ -84,7 +84,7 @@ namespace SkillEditor.Editor
         private void DisposePreview()
         {
             StopPreview();
-            AnimationUtils.DisposeAll();
+            EditorAnimationUtils.DisposeAll();
             previewRunner = null;
             EditorAudioManager.Instance.Dispose();
             EditorVFXManager.Instance.Dispose();
@@ -101,9 +101,9 @@ namespace SkillEditor.Editor
             if (state.currentTimeline == null) return;
 
             CapturePreviewOriginPose();
-            AnimationUtils.SetTimeline(state.previewTarget, state.currentTimeline);
-            AnimationUtils.SetSamplingMode(state.previewTarget, false);
-            AnimationUtils.ApplyTrackBasePose(state.previewTarget);
+            EditorAnimationUtils.SetTimeline(state.previewTarget, state.currentTimeline);
+            EditorAnimationUtils.SetSamplingMode(state.previewTarget, false);
+            EditorAnimationUtils.ApplyTrackBasePose(state.previewTarget);
 
             var factory = SkillEditorGlobalSettings.DefaultServiceFactoryCreator?.Invoke(state.previewTarget);
             var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview, factory);
@@ -120,7 +120,7 @@ namespace SkillEditor.Editor
             previewRunner?.Stop();
             if (state != null && state.previewTarget != null)
             {
-                AnimationUtils.Dispose(state.previewTarget);
+                EditorAnimationUtils.Dispose(state.previewTarget);
             }
             RestorePreviewOriginPose();
         }
@@ -140,7 +140,7 @@ namespace SkillEditor.Editor
         {
             if (state != null && state.previewTarget != null)
             {
-                AnimationUtils.SetSamplingMode(state.previewTarget, false);
+                EditorAnimationUtils.SetSamplingMode(state.previewTarget, false);
             }
             previewRunner?.Resume();
             lastPreviewTime = EditorApplication.timeSinceStartup;
@@ -214,7 +214,7 @@ namespace SkillEditor.Editor
 
             if (state != null && state.previewTarget != null)
             {
-                AnimationUtils.SetSamplingMode(state.previewTarget, true);
+                EditorAnimationUtils.SetSamplingMode(state.previewTarget, true);
             }
             previewRunner?.Seek(time, state.SnapInterval);
             state.timeIndicator = previewRunner != null ? previewRunner.CurrentTime : time;
@@ -310,7 +310,7 @@ namespace SkillEditor.Editor
             EnsureRunnerActive();
             if (state != null && state.previewTarget != null)
             {
-                AnimationUtils.SetSamplingMode(state.previewTarget, true);
+                EditorAnimationUtils.SetSamplingMode(state.previewTarget, true);
             }
 
             float dt = 1.0f / (state.frameRate > 0 ? state.frameRate : 30);
@@ -333,7 +333,7 @@ namespace SkillEditor.Editor
             EnsureRunnerActive();
             if (state != null && state.previewTarget != null)
             {
-                AnimationUtils.SetSamplingMode(state.previewTarget, true);
+                EditorAnimationUtils.SetSamplingMode(state.previewTarget, true);
             }
 
             float dt = 1.0f / (state.frameRate > 0 ? state.frameRate : 30);
@@ -356,7 +356,7 @@ namespace SkillEditor.Editor
             EnsureRunnerActive();
             if (state != null && state.previewTarget != null)
             {
-                AnimationUtils.SetSamplingMode(state.previewTarget, true);
+                EditorAnimationUtils.SetSamplingMode(state.previewTarget, true);
             }
             previewRunner?.Seek(0f, state.SnapInterval);
             state.timeIndicator = 0f;
@@ -373,7 +373,7 @@ namespace SkillEditor.Editor
             EnsureRunnerActive();
             if (state != null && state.previewTarget != null)
             {
-                AnimationUtils.SetSamplingMode(state.previewTarget, true);
+                EditorAnimationUtils.SetSamplingMode(state.previewTarget, true);
             }
             float duration = state.currentTimeline != null ? state.currentTimeline.Duration : 10f;
             previewRunner?.Seek(duration, state.SnapInterval);

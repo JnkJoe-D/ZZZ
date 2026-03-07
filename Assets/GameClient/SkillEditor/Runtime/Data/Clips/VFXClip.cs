@@ -14,6 +14,8 @@ namespace SkillEditor
         public string prefabGuid;
         [SerializeField][HideInInspector]
         public string prefabAssetName;
+        [SerializeField][HideInInspector]
+        public string prefabAssetPath;
 
         [Header("挂点设置")]
         [SkillProperty("挂载位置")]
@@ -64,6 +66,7 @@ namespace SkillEditor
                 effectPrefab = this.effectPrefab,
                 prefabGuid = this.prefabGuid,
                 prefabAssetName = this.prefabAssetName,
+                prefabAssetPath = this.prefabAssetPath,
                 bindPoint = this.bindPoint,
                 customBoneName = this.customBoneName,
                 followTarget = this.followTarget,

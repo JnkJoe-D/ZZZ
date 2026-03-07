@@ -1,37 +1,37 @@
-﻿2026-02-26 15:49:19.363 [INFO] Begin to build package : Test1 by BuiltinBuildPipeline
-2026-02-26 15:49:19.364 [INFO] --------------------------------------------->TaskPrepare<--------------------------------------------
-2026-02-26 15:49:19.431 [INFO] Delete package root directory: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1
-2026-02-26 15:49:19.431 [INFO] Create pipeline output directory: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/OutputCache
-2026-02-26 15:49:19.431 [WARN] [ErrorCode130] Starting with UnityEngine2021, recommend use script build pipeline (SBP) !
-2026-02-26 15:49:19.431 [INFO] TaskPrepare It takes 0 seconds in total
-2026-02-26 15:49:19.431 [INFO] --------------------------------------------->TaskGetBuildMap<--------------------------------------------
-2026-02-26 15:49:30.414 [INFO] TaskGetBuildMap It takes 10 seconds in total
-2026-02-26 15:49:30.417 [INFO] --------------------------------------------->TaskBuilding<--------------------------------------------
-2026-02-26 15:49:46.334 [INFO] UnityEngine build success !
-2026-02-26 15:49:46.334 [INFO] TaskBuilding It takes 15 seconds in total
-2026-02-26 15:49:46.334 [INFO] --------------------------------------------->TaskVerifyBuildResult<--------------------------------------------
-2026-02-26 15:49:46.334 [INFO] Build results verify success!
-2026-02-26 15:49:46.334 [INFO] TaskVerifyBuildResult It takes 0 seconds in total
-2026-02-26 15:49:46.339 [INFO] --------------------------------------------->TaskEncryption<--------------------------------------------
-2026-02-26 15:49:46.340 [INFO] TaskEncryption It takes 0 seconds in total
-2026-02-26 15:49:46.341 [INFO] --------------------------------------------->TaskUpdateBundleInfo<--------------------------------------------
-2026-02-26 15:49:46.900 [INFO] TaskUpdateBundleInfo It takes 0 seconds in total
-2026-02-26 15:49:46.900 [INFO] --------------------------------------------->TaskCreateManifest<--------------------------------------------
-2026-02-26 15:49:46.908 [INFO] Create package manifest file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-02-26-949/Test1_2026-02-26-949.json
-2026-02-26 15:49:46.924 [INFO] Create package manifest file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-02-26-949/Test1_2026-02-26-949.bytes
-2026-02-26 15:49:46.954 [INFO] Create package manifest hash file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-02-26-949/Test1_2026-02-26-949.hash
-2026-02-26 15:49:46.954 [INFO] Create package manifest version file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-02-26-949/Test1.version
-2026-02-26 15:49:46.959 [INFO] TaskCreateManifest It takes 0 seconds in total
-2026-02-26 15:49:46.959 [INFO] --------------------------------------------->TaskCreateReport<--------------------------------------------
-2026-02-26 15:49:46.968 [INFO] Create build report file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-02-26-949/Test1_2026-02-26-949.report
-2026-02-26 15:49:46.968 [INFO] TaskCreateReport It takes 0 seconds in total
-2026-02-26 15:49:46.968 [INFO] --------------------------------------------->TaskCreatePackage<--------------------------------------------
-2026-02-26 15:49:46.968 [INFO] Start making patch package: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-02-26-949
-2026-02-26 15:49:47.010 [INFO] TaskCreatePackage It takes 0 seconds in total
-2026-02-26 15:49:47.010 [INFO] --------------------------------------------->TaskCopyBuildinFiles<--------------------------------------------
-2026-02-26 15:49:47.424 [INFO] Buildin files copy complete: D:/Unity/Server_Game/Assets/StreamingAssets/Test1/Test1
-2026-02-26 15:49:47.424 [INFO] TaskCopyBuildinFiles It takes 0 seconds in total
-2026-02-26 15:49:47.426 [INFO] --------------------------------------------->TaskCreateCatalog<--------------------------------------------
-2026-02-26 15:49:47.601 [INFO] TaskCreateCatalog It takes 0 seconds in total
-2026-02-26 15:49:47.601 [INFO] Total build process time: 25 seconds
-2026-02-26 15:49:47.601 [INFO] Resource pipeline build success
+﻿2026-03-07 02:18:55.191 [INFO] Begin to build package : Test1 by BuiltinBuildPipeline
+2026-03-07 02:18:55.191 [INFO] --------------------------------------------->TaskPrepare<--------------------------------------------
+2026-03-07 02:18:55.197 [INFO] Delete package root directory: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1
+2026-03-07 02:18:55.201 [INFO] Create pipeline output directory: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/OutputCache
+2026-03-07 02:18:55.201 [WARN] [ErrorCode130] Starting with UnityEngine2021, recommend use script build pipeline (SBP) !
+2026-03-07 02:18:55.201 [INFO] TaskPrepare It takes 0 seconds in total
+2026-03-07 02:18:55.202 [INFO] --------------------------------------------->TaskGetBuildMap<--------------------------------------------
+2026-03-07 02:19:05.335 [INFO] TaskGetBuildMap It takes 10 seconds in total
+2026-03-07 02:19:05.335 [INFO] --------------------------------------------->TaskBuilding<--------------------------------------------
+2026-03-07 02:19:38.607 [INFO] UnityEngine build success !
+2026-03-07 02:19:38.608 [INFO] TaskBuilding It takes 33 seconds in total
+2026-03-07 02:19:38.609 [INFO] --------------------------------------------->TaskVerifyBuildResult<--------------------------------------------
+2026-03-07 02:19:38.619 [INFO] Build results verify success!
+2026-03-07 02:19:38.619 [INFO] TaskVerifyBuildResult It takes 0 seconds in total
+2026-03-07 02:19:38.620 [INFO] --------------------------------------------->TaskEncryption<--------------------------------------------
+2026-03-07 02:19:38.621 [INFO] TaskEncryption It takes 0 seconds in total
+2026-03-07 02:19:38.621 [INFO] --------------------------------------------->TaskUpdateBundleInfo<--------------------------------------------
+2026-03-07 02:19:39.684 [INFO] TaskUpdateBundleInfo It takes 1 seconds in total
+2026-03-07 02:19:39.684 [INFO] --------------------------------------------->TaskCreateManifest<--------------------------------------------
+2026-03-07 02:19:39.725 [INFO] Create package manifest file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-03-07-138/Test1_2026-03-07-138.json
+2026-03-07 02:19:39.754 [INFO] Create package manifest file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-03-07-138/Test1_2026-03-07-138.bytes
+2026-03-07 02:19:39.763 [INFO] Create package manifest hash file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-03-07-138/Test1_2026-03-07-138.hash
+2026-03-07 02:19:39.766 [INFO] Create package manifest version file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-03-07-138/Test1.version
+2026-03-07 02:19:39.779 [INFO] TaskCreateManifest It takes 0 seconds in total
+2026-03-07 02:19:39.780 [INFO] --------------------------------------------->TaskCreateReport<--------------------------------------------
+2026-03-07 02:19:39.799 [INFO] Create build report file: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-03-07-138/Test1_2026-03-07-138.report
+2026-03-07 02:19:39.799 [INFO] TaskCreateReport It takes 0 seconds in total
+2026-03-07 02:19:39.799 [INFO] --------------------------------------------->TaskCreatePackage<--------------------------------------------
+2026-03-07 02:19:39.800 [INFO] Start making patch package: D:/Unity/Server_Game/Bundles/StandaloneWindows64/Test1/2026-03-07-138
+2026-03-07 02:19:39.939 [INFO] TaskCreatePackage It takes 0 seconds in total
+2026-03-07 02:19:39.940 [INFO] --------------------------------------------->TaskCopyBuildinFiles<--------------------------------------------
+2026-03-07 02:19:40.969 [INFO] Buildin files copy complete: D:/Unity/Server_Game/Assets/StreamingAssets/yoo/Test1
+2026-03-07 02:19:40.970 [INFO] TaskCopyBuildinFiles It takes 1 seconds in total
+2026-03-07 02:19:40.970 [INFO] --------------------------------------------->TaskCreateCatalog<--------------------------------------------
+2026-03-07 02:19:41.404 [INFO] TaskCreateCatalog It takes 0 seconds in total
+2026-03-07 02:19:41.405 [INFO] Total build process time: 45 seconds
+2026-03-07 02:19:41.405 [INFO] Resource pipeline build success

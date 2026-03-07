@@ -41,9 +41,9 @@ namespace SkillEditor.Editor
             // Blending 
             if (clip.SupportsBlending)
             {
-                if (clip.blendInDuration > 0)
+                if (clip.BlendInDuration > 0)
                 {
-                    float blendInWidth = Mathf.Min(clip.blendInDuration * state.zoom, clipRect.width);
+                    float blendInWidth = Mathf.Min(clip.BlendInDuration * state.zoom, clipRect.width);
                     Vector3[] verts = new Vector3[] {
                         new Vector3(clipRect.x, clipRect.y + clipRect.height, 0),
                         new Vector3(clipRect.x + blendInWidth, clipRect.y, 0),
@@ -60,9 +60,9 @@ namespace SkillEditor.Editor
                     Handles.EndGUI();
                 }
 
-                if (clip.blendOutDuration > 0)
+                if (clip.BlendOutDuration > 0)
                 {
-                    float blendOutWidth = Mathf.Min(clip.blendOutDuration * state.zoom, clipRect.width);
+                    float blendOutWidth = Mathf.Min(clip.BlendOutDuration * state.zoom, clipRect.width);
                     Vector3[] verts = new Vector3[] {
                         new Vector3(clipRect.x + clipRect.width - blendOutWidth, clipRect.y, 0),
                         new Vector3(clipRect.x + clipRect.width, clipRect.y + clipRect.height, 0),
@@ -81,8 +81,8 @@ namespace SkillEditor.Editor
             }
 
             // Name text
-            float blendInW = clip.SupportsBlending ? (clip.blendInDuration * state.zoom) : 0;
-            float blendOutW = clip.SupportsBlending ? (clip.blendOutDuration * state.zoom) : 0;
+            float blendInW = clip.SupportsBlending ? (clip.BlendInDuration * state.zoom) : 0;
+            float blendOutW = clip.SupportsBlending ? (clip.BlendOutDuration * state.zoom) : 0;
             Rect textRect = new Rect(clipRect.x + blendInW, clipRect.y, Mathf.Max(0, clipRect.width - blendInW - blendOutW), clipRect.height);
 
             if (textRect.width > 15)

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XLua.Cast;
-namespace Game.Logic.Player.Config
+namespace Game.Logic.Character.Config
 {
 [Serializable]
 public class AnimUnitConfig

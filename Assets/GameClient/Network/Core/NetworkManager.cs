@@ -20,10 +20,8 @@ namespace Game.Network
     ///   _networkManager.Initialize(host, tcpPort, udpPort);
     ///   _networkManager.Update();  // 每帧调用
     /// </summary>
-    public class NetworkManager
+    public class NetworkManager : Game.Framework.Singleton<NetworkManager>
     {
-        public static NetworkManager Instance { get; private set; }
-
         // ── 子模块 ─────────────────────────────
         private TcpChannel        _tcp;
         private UdpChannel        _udp;
@@ -51,7 +49,6 @@ namespace Game.Network
 
         public void Initialize(string host, int tcpPort, int udpPort)
         {
-            Instance    = this;
             _host       = host;
             _tcpPort    = tcpPort;
             _udpPort    = udpPort;
@@ -241,7 +238,6 @@ namespace Game.Network
             _tcp?.Dispose();
             _udp?.Dispose();
             _dispatcher?.ClearAll();
-            Instance = null;
             Debug.Log("[NetworkManager] 已关闭");
         }
     }

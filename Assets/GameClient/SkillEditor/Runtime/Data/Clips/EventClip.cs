@@ -41,7 +41,7 @@ namespace SkillEditor
         // 由于 SkillProperty 目前可能不支持复杂的 List 嵌套结构，
         // 这里暂时使用标准序列化。或者等后续实现自定义 Drawer。
         public List<SkillEventParam> parameters = new List<SkillEventParam>();
-
+        public override float Duration { get => duration; set => duration=0.1f; }
         public EventClip()
         {
             clipName = "Event Clip";

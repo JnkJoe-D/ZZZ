@@ -215,11 +215,11 @@ namespace SkillEditor.Editor
                 {
                     CurrentDragMode = DragMode.ResizeRight;
                 }
-                else if (clip.SupportsBlending && Mathf.Abs(localX - (clip.blendInDuration * state.zoom)) < EDGE_RESIZE_WIDTH)
+                else if (clip.SupportsBlending && Mathf.Abs(localX - (clip.BlendInDuration * state.zoom)) < EDGE_RESIZE_WIDTH)
                 {
                     CurrentDragMode = DragMode.BlendIn;
                 }
-                else if (clip.SupportsBlending && Mathf.Abs(localX - (clipRect.width - clip.blendOutDuration * state.zoom)) < EDGE_RESIZE_WIDTH)
+                else if (clip.SupportsBlending && Mathf.Abs(localX - (clipRect.width - clip.BlendOutDuration * state.zoom)) < EDGE_RESIZE_WIDTH)
                 {
                     CurrentDragMode = DragMode.BlendOut;
                 }
@@ -231,8 +231,8 @@ namespace SkillEditor.Editor
 
                 draggingClip = clip;
                 dragStartMouseX = e.mousePosition.x;
-                dragStartClipTime = clip.startTime;
-                dragStartClipDuration = clip.duration;
+                dragStartClipTime = clip.StartTime;
+                dragStartClipDuration = clip.Duration;
 
                 // 记录所有选中片段的初始状态
                 selectedClipsInitialStates.Clear();
@@ -247,7 +247,7 @@ namespace SkillEditor.Editor
                         selectedClipsInitialStates.Add(new SelectedClipInitialState
                         {
                             clip = c,
-                            initialStartTime = c.startTime,
+                            initialStartTime = c.StartTime,
                             initialTrack = track,
                             trackIndexOffset = trackIndex - mainTrackIndex
                         });
@@ -333,7 +333,7 @@ namespace SkillEditor.Editor
 
                     // 计算新位置（左右边界双重吸附）
                     float targetStartTime = dragStartClipTime + deltaTime;
-                    float targetEndTime = targetStartTime + draggingClip.duration;
+                    float targetEndTime = targetStartTime + draggingClip.Duration;
 
                     bool snappedStart, snappedEnd;
                     float distStart, distEnd;
@@ -352,13 +352,13 @@ namespace SkillEditor.Editor
 
                         if (snappedEnd && distEnd < distStart - 2.0f)
                         {
-                            finalStartTime = snappedEndVal - draggingClip.duration;
+                            finalStartTime = snappedEndVal - draggingClip.Duration;
                             usedEndSnap = true;
                         }
                     }
                     else if (snappedEnd)
                     {
-                        finalStartTime = snappedEndVal - draggingClip.duration;
+                        finalStartTime = snappedEndVal - draggingClip.Duration;
                         hasSnapped = true;
                         usedEndSnap = true;
                     }
@@ -367,7 +367,7 @@ namespace SkillEditor.Editor
 
                     if (hasSnapped)
                     {
-                        CurrentSnapTime = usedEndSnap ? newTime + draggingClip.duration : newTime;
+                        CurrentSnapTime = usedEndSnap ? newTime + draggingClip.Duration : newTime;
                     }
                     else
                     {
@@ -377,7 +377,7 @@ namespace SkillEditor.Editor
                     // 同轨道重叠检测
                     if (CurrentDragMode == DragMode.MoveClip && currentTrack != null && !coords.AllowsOverlap(currentTrack))
                     {
-                        if (coords.HasOverlap(currentTrack, newTime, draggingClip.duration, draggingClip))
+                        if (coords.HasOverlap(currentTrack, newTime, draggingClip.Duration, draggingClip))
                         {
                             float fixedTime = newTime;
                             float minDiff = float.MaxValue;
@@ -387,12 +387,12 @@ namespace SkillEditor.Editor
                             {
                                 if (cl == draggingClip) continue;
 
-                                if (!(newTime + draggingClip.duration <= cl.startTime || newTime >= cl.EndTime))
+                                if (!(newTime + draggingClip.Duration <= cl.StartTime || newTime >= cl.EndTime))
                                 {
-                                    float leftOption = cl.startTime - draggingClip.duration;
+                                    float leftOption = cl.StartTime - draggingClip.Duration;
                                     float rightOption = cl.EndTime;
 
-                                    if (leftOption >= 0 && !coords.HasOverlap(currentTrack, leftOption, draggingClip.duration, draggingClip))
+                                    if (leftOption >= 0 && !coords.HasOverlap(currentTrack, leftOption, draggingClip.Duration, draggingClip))
                                     {
                                         float diff = Mathf.Abs(leftOption - newTime);
                                         if (diff < minDiff)
@@ -403,7 +403,7 @@ namespace SkillEditor.Editor
                                         }
                                     }
 
-                                    if (!coords.HasOverlap(currentTrack, rightOption, draggingClip.duration, draggingClip))
+                                    if (!coords.HasOverlap(currentTrack, rightOption, draggingClip.Duration, draggingClip))
                                     {
                                         float diff = Mathf.Abs(rightOption - newTime);
                                         if (diff < minDiff)
@@ -423,9 +423,9 @@ namespace SkillEditor.Editor
                             }
                             else
                             {
-                                if (!coords.HasOverlap(currentTrack, draggingClip.startTime, draggingClip.duration, draggingClip))
+                                if (!coords.HasOverlap(currentTrack, draggingClip.StartTime, draggingClip.Duration, draggingClip))
                                 {
-                                    newTime = draggingClip.startTime;
+                                    newTime = draggingClip.StartTime;
                                 }
                                 else
                                 {
@@ -436,16 +436,16 @@ namespace SkillEditor.Editor
                         }
                     }
 
-                    draggingClip.startTime = newTime;
+                    draggingClip.StartTime = newTime;
 
                     // 同步移动其它选中片段
                     if (selectedClipsInitialStates.Count > 1)
                     {
-                        float delta = draggingClip.startTime - dragStartClipTime;
+                        float delta = draggingClip.StartTime - dragStartClipTime;
                         foreach (var initState in selectedClipsInitialStates)
                         {
                             if (initState.clip == draggingClip) continue;
-                            initState.clip.startTime = Mathf.Max(0, initState.initialStartTime + delta);
+                            initState.clip.StartTime = Mathf.Max(0, initState.initialStartTime + delta);
                         }
                     }
 
@@ -479,9 +479,9 @@ namespace SkillEditor.Editor
                         }
                     }
 
-                    draggingClip.startTime = newStartTime;
-                    draggingClip.duration = newDuration;
-                    CurrentSnapTime = hasSnapped ? draggingClip.startTime : -1f;
+                    draggingClip.StartTime = newStartTime;
+                    draggingClip.Duration = newDuration;
+                    CurrentSnapTime = hasSnapped ? draggingClip.StartTime : -1f;
 
                     if (currentTrack != null) coords.AutoResolveBlending(currentTrack, draggingClip);
                 }
@@ -490,12 +490,12 @@ namespace SkillEditor.Editor
                     float targetEndTime = dragStartClipTime + dragStartClipDuration + deltaTime;
                     float distEnd;
                     float snappedEndTime = coords.SnapTime(targetEndTime, draggingClip, out hasSnapped, out distEnd);
-                    float adjustedDuration = Mathf.Max(0.1f, snappedEndTime - draggingClip.startTime);
+                    float adjustedDuration = Mathf.Max(0.1f, snappedEndTime - draggingClip.StartTime);
                     CurrentSnapTime = hasSnapped ? snappedEndTime : -1f;
 
                     if (currentTrack != null && !coords.AllowsOverlap(currentTrack))
                     {
-                        if (coords.HasOverlap(currentTrack, draggingClip.startTime, adjustedDuration, draggingClip))
+                        if (coords.HasOverlap(currentTrack, draggingClip.StartTime, adjustedDuration, draggingClip))
                         {
                             CurrentSnapTime = -1f;
                             e.Use();
@@ -503,20 +503,20 @@ namespace SkillEditor.Editor
                         }
                     }
 
-                    draggingClip.duration = adjustedDuration;
-                    CurrentSnapTime = hasSnapped ? (draggingClip.startTime + draggingClip.duration) : -1f;
+                    draggingClip.Duration = adjustedDuration;
+                    CurrentSnapTime = hasSnapped ? (draggingClip.StartTime + draggingClip.Duration) : -1f;
 
                     if (currentTrack != null) coords.AutoResolveBlending(currentTrack, draggingClip);
                 }
                 else if (CurrentDragMode == DragMode.BlendIn)
                 {
                     float newBlendIn = (e.mousePosition.x - clipRect.x) / state.zoom;
-                    draggingClip.blendInDuration = Mathf.Clamp(newBlendIn, 0, draggingClip.duration);
+                    draggingClip.BlendInDuration = Mathf.Clamp(newBlendIn, 0, draggingClip.Duration);
                 }
                 else if (CurrentDragMode == DragMode.BlendOut)
                 {
                     float newBlendOut = (clipRect.x + clipRect.width - e.mousePosition.x) / state.zoom;
-                    draggingClip.blendOutDuration = Mathf.Clamp(newBlendOut, 0, draggingClip.duration);
+                    draggingClip.BlendOutDuration = Mathf.Clamp(newBlendOut, 0, draggingClip.Duration);
                 }
 
                 events.OnRepaintRequest?.Invoke();
@@ -547,7 +547,7 @@ namespace SkillEditor.Editor
 
                             if (!coords.AllowsOverlap(targetTrack))
                             {
-                                initState.clip.startTime = coords.FindNextAvailableTime(targetTrack, initState.clip.startTime, initState.clip.duration);
+                                initState.clip.StartTime = coords.FindNextAvailableTime(targetTrack, initState.clip.StartTime, initState.clip.Duration);
                             }
 
                             targetTrack.clips.Add(initState.clip);
@@ -579,8 +579,8 @@ namespace SkillEditor.Editor
                 {
                     EditorGUIUtility.AddCursorRect(clipRect, MouseCursor.ResizeHorizontal);
                 }
-                else if (clip.SupportsBlending && (Mathf.Abs(localX - (clip.blendInDuration * state.zoom)) < EDGE_RESIZE_WIDTH ||
-                         Mathf.Abs(localX - (clipRect.width - clip.blendOutDuration * state.zoom)) < EDGE_RESIZE_WIDTH))
+                else if (clip.SupportsBlending && (Mathf.Abs(localX - (clip.BlendInDuration * state.zoom)) < EDGE_RESIZE_WIDTH ||
+                         Mathf.Abs(localX - (clipRect.width - clip.BlendOutDuration * state.zoom)) < EDGE_RESIZE_WIDTH))
                 {
                     EditorGUIUtility.AddCursorRect(clipRect, MouseCursor.ResizeHorizontal);
                 }

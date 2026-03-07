@@ -8,16 +8,13 @@ namespace Game.FSM
     /// 统一驱动所有的 FSMSystem 的 Update，避免大量的 MonoBehaviour.Update 带来的性能损耗
     /// 也负责分配和回收 FSM
     /// </summary>
-    public class FSMManager : MonoBehaviour
+    public class FSMManager : Game.Framework.MonoSingleton<FSMManager>
     {
-        public static FSMManager Instance { get; private set; }
-
         private readonly List<System.Action<float>> _updateActions = new List<System.Action<float>>();
         private readonly List<System.Action<float>> _fixedUpdateActions = new List<System.Action<float>>();
 
         public void Initialize()
         {
-            Instance = this;
             Debug.Log("[FSMManager] 初始化完成");
         }
 
@@ -25,7 +22,6 @@ namespace Game.FSM
         {
             _updateActions.Clear();
             _fixedUpdateActions.Clear();
-            Instance = null;
             Debug.Log("[FSMManager] 已关闭");
         }
 

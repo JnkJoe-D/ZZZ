@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 2779058113
+CRC: 2022762113
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -10,65 +10,114 @@ AssetBundleManifest:
       Name: test1_assets_configs.bundle
       Dependencies: {}
     Info_2:
+      Name: test1_assets_resources_prefab_camera.bundle
+      Dependencies: {}
+    Info_3:
+      Name: test1_assets_resources_prefab_character.bundle
+      Dependencies:
+        Dependency_0: "test1_share_assets_resources_models_\u5B89\u6BD4.bundle"
+        Dependency_1: "test1_share_assets_resources_models_\u5B89\u6BD4_tex_materials.bundle"
+    Info_4:
+      Name: "test1_assets_resources_prefab_effect_\u7279\u6548.bundle"
+      Dependencies:
+        Dependency_0: test1_share_assets_resources_particles_slash_effects_meshes.bundle
+        Dependency_1: test1_share_assets_resources_particles_slash_effects_materials_slash_fx_03.bundle
+    Info_5:
+      Name: "test1_assets_resources_prefab_effect_\u7279\u6548_\u5B89\u6BD4\u7684\u7279\u6548\u7236\u7EA7\u70B9.bundle"
+      Dependencies: {}
+    Info_6:
       Name: test1_assets_resources_prefab_ui_panelview_common.bundle
       Dependencies:
         Dependency_0: test1_share_assets_resources_sprites_ui.bundle
         Dependency_1: test1_share_assets_textmesh_pro_fonts.bundle
-    Info_3:
+    Info_7:
       Name: test1_assets_resources_prefab_ui_panelview_hotupdate.bundle
       Dependencies:
         Dependency_0: test1_share_assets_resources_sprites_ui.bundle
         Dependency_1: test1_share_assets_textmesh_pro_fonts.bundle
-    Info_4:
+    Info_8:
       Name: test1_assets_resources_prefab_ui_panelview_loading.bundle
       Dependencies:
         Dependency_0: test1_share_assets_resources_sprites_ui.bundle
         Dependency_1: test1_share_assets_textmesh_pro_fonts.bundle
-    Info_5:
+    Info_9:
       Name: test1_assets_resources_prefab_ui_panelview_login.bundle
       Dependencies:
         Dependency_0: test1_share_assets_resources_sprites_ui.bundle
         Dependency_1: test1_share_assets_textmesh_pro_fonts.bundle
         Dependency_2: test1_share_assets_resources_textures_rendertexture.bundle
         Dependency_3: test1_share_assets_resources_videos.bundle
-    Info_6:
+    Info_10:
       Name: test1_assets_resources_prefab_ui_panelview_register.bundle
       Dependencies:
         Dependency_0: test1_share_assets_resources_sprites_ui.bundle
         Dependency_1: test1_share_assets_textmesh_pro_fonts.bundle
-    Info_7:
+    Info_11:
       Name: test1_assets_scenes.bundle
       Dependencies:
         Dependency_0: test1_share_packages_com_unity_render-pipelines_universal_runtime_materials.bundle
-        Dependency_1: test1_share_assets_resources_nuoaier.bundle
-    Info_8:
+        Dependency_1: test1_share_assets_resources_models_nuoaier.bundle
+    Info_12:
+      Name: test1_assets_resources_settings.bundle
+      Dependencies: {}
+    Info_13:
       Name: test1_share_packages_com_unity_render-pipelines_universal_runtime_materials.bundle
       Dependencies:
         Dependency_0: test1_share_packages_com_unity_render-pipelines_universal_shaders.bundle
-    Info_9:
+    Info_14:
       Name: test1_share_packages_com_unity_render-pipelines_universal_shaders.bundle
       Dependencies: {}
-    Info_10:
+    Info_15:
+      Name: "test1_share_assets_resources_models_\u5B89\u6BD4.bundle"
+      Dependencies:
+        Dependency_0: test1_share_packages_com_unity_render-pipelines_universal_runtime_materials.bundle
+    Info_16:
+      Name: "test1_share_assets_resources_models_\u5B89\u6BD4_tex_materials.bundle"
+      Dependencies:
+        Dependency_0: test1_share_assets_resources_shaders_unitygenshintoonshader-main_shaders.bundle
+        Dependency_1: "test1_share_assets_resources_models_\u5B89\u6BD4_tex.bundle"
+    Info_17:
+      Name: test1_share_assets_resources_shaders_unitygenshintoonshader-main_shaders.bundle
+      Dependencies: {}
+    Info_18:
+      Name: "test1_share_assets_resources_models_\u5B89\u6BD4_tex.bundle"
+      Dependencies: {}
+    Info_19:
+      Name: test1_share_assets_resources_particles_slash_effects_meshes.bundle
+      Dependencies:
+        Dependency_0: test1_share_packages_com_unity_render-pipelines_universal_runtime_materials.bundle
+    Info_20:
+      Name: test1_share_assets_resources_particles_slash_effects_materials_slash_fx_03.bundle
+      Dependencies:
+        Dependency_0: test1_share_assets_resources_particles_slash_effects_sprites.bundle
+        Dependency_1: test1_share_assets_resources_particles_slash_effects_shaders.bundle
+    Info_21:
+      Name: test1_share_assets_resources_particles_slash_effects_sprites.bundle
+      Dependencies: {}
+    Info_22:
+      Name: test1_share_assets_resources_particles_slash_effects_shaders.bundle
+      Dependencies: {}
+    Info_23:
       Name: test1_share_assets_resources_sprites_ui.bundle
       Dependencies: {}
-    Info_11:
+    Info_24:
       Name: test1_share_assets_textmesh_pro_fonts.bundle
       Dependencies:
         Dependency_0: test1_share_assets_textmesh_pro_shaders.bundle
-    Info_12:
+    Info_25:
       Name: test1_share_assets_textmesh_pro_shaders.bundle
       Dependencies: {}
-    Info_13:
+    Info_26:
       Name: test1_share_assets_resources_textures_rendertexture.bundle
       Dependencies: {}
-    Info_14:
+    Info_27:
       Name: test1_share_assets_resources_videos.bundle
       Dependencies: {}
-    Info_15:
-      Name: test1_share_assets_resources_nuoaier.bundle
+    Info_28:
+      Name: test1_share_assets_resources_models_nuoaier.bundle
       Dependencies:
-        Dependency_0: test1_share_packages_com_unity_render-pipelines_universal_shaders.bundle
-        Dependency_1: test1_share_assets_resources_nuoaier_texture.bundle
-    Info_16:
-      Name: test1_share_assets_resources_nuoaier_texture.bundle
+        Dependency_0: test1_share_assets_resources_shaders_unitygenshintoonshader-main_shaders.bundle
+        Dependency_1: test1_share_assets_resources_models_nuoaier_texture.bundle
+    Info_29:
+      Name: test1_share_assets_resources_models_nuoaier_texture.bundle
       Dependencies: {}

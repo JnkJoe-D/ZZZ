@@ -13,9 +13,7 @@ namespace SkillEditor
     public class SkillTimeline : ScriptableObject
     {
         // 技能基本信息
-        public int skillId;
-        public string skillName = "新技能";
-
+        public int Id{get;set;}
         // Timeline 参数
         private float duration = 0f;           // 持续时间（秒）
         public bool isLoop = false;             // 是否循环播放

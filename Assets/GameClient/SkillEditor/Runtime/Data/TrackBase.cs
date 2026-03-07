@@ -69,7 +69,7 @@ namespace SkillEditor
         public T AddClip<T>(float startTime) where T : ClipBase, new()
         {
             T clip = new T();
-            clip.startTime = startTime;
+            clip.StartTime = startTime;
             clips.Add(clip);
             return clip;
         }
@@ -92,7 +92,7 @@ namespace SkillEditor
             foreach (var clip in clips)
             {
                 if (clip == newClip) continue;
-                if (newClip.startTime < clip.EndTime && newClip.EndTime > clip.startTime)
+                if (newClip.StartTime < clip.EndTime && newClip.EndTime > clip.StartTime)
                 {
                     return false; // 重叠
                 }

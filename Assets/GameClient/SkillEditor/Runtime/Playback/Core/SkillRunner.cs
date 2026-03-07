@@ -127,7 +127,7 @@ namespace SkillEditor
             this.Timeline = timeline;
             this.context = context;
             this.context.IsInterrupted = false; // 重置打断状态
-            this.context.SetSkillId(timeline.skillId); // 注入技能标识
+            this.context.SetSkillId(timeline.Id); // 注入技能标识
             CurrentTime = progress * Timeline.Duration;
             CurrentState = State.Playing;
 
@@ -198,7 +198,7 @@ namespace SkillEditor
             for (int i = 0; i < processes.Count; i++)
             {
                 var inst = processes[i];
-                bool willBeActive = targetTime >= inst.clip.startTime
+                bool willBeActive = targetTime >= inst.clip.StartTime
                                  && targetTime <= inst.clip.EndTime;
 
                 if (inst.isActive && !willBeActive)
@@ -250,6 +250,8 @@ namespace SkillEditor
         {
             if (CurrentState != State.Playing) return;
 
+            var actingTimeline = Timeline; // 保存当前正在运行的时间轴，以检测运行中是否切招
+
             float speed = context.GlobalPlaySpeed;
             CurrentTime += deltaTime * speed;
             bool isReversing = CurrentTime - previousTime < 0 && speed < 0;
@@ -258,11 +260,14 @@ namespace SkillEditor
             for (int i = 0; i < processes.Count; i++)
             {
                 var inst = processes[i];
-                bool shouldBeActive =  CurrentTime >= inst.clip.startTime && CurrentTime <= inst.clip.EndTime;
+                bool shouldBeActive =  CurrentTime >= inst.clip.StartTime && CurrentTime <= inst.clip.EndTime;
                 // 进入区间
                 if (shouldBeActive && !inst.isActive)
                 {
                     inst.process.OnEnter();
+                    // 如果 OnEnter() 中的事件触发了外界强切技能，则 Runner 会重建，当前 foreach 需要直接打断
+                    if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
+                    
                     inst.isActive = true;
                     activeProcesses.Add(inst);
                 }
@@ -271,6 +276,7 @@ namespace SkillEditor
                 if (shouldBeActive && inst.isActive)
                 {
                     inst.process.OnUpdate(CurrentTime, deltaTime);
+                    if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
                 }
 
                 // 离开区间
@@ -281,11 +287,13 @@ namespace SkillEditor
                     {
                         inst.process.OnUpdate(inst.clip.EndTime, deltaTime);
                     }
-                    else if (CurrentTime < inst.clip.startTime)
+                    else if (CurrentTime < inst.clip.StartTime)
                     {
-                        inst.process.OnUpdate(inst.clip.startTime, deltaTime);
+                        inst.process.OnUpdate(inst.clip.StartTime, deltaTime);
                     }
                     inst.process.OnExit();
+                    if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
+                    
                     inst.isActive = false;
                     activeProcesses.Remove(inst);
                 }

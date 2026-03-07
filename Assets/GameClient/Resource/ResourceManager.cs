@@ -31,10 +31,8 @@ namespace Game.Resource
     ///   // 释放
     ///   ResourceManager.Instance.ReleaseAsset(handle);
     /// </summary>
-    public class ResourceManager
+    public class ResourceManager : Game.Framework.Singleton<ResourceManager>
     {
-        public static ResourceManager Instance { get; private set; }
-
         private ResourcePackage _package;
         private ResourceConfig  _config;
 
@@ -51,7 +49,6 @@ namespace Game.Resource
         /// </summary>
         public IEnumerator InitializeAsync(ResourceConfig config, MonoBehaviour runner)
         {
-            Instance = this;
             _config  = config;
 
             Debug.Log($"[ResourceManager] 初始化，模式: {config.playMode}，包名: {config.defaultPackageName}");
@@ -80,7 +77,7 @@ namespace Game.Resource
                     break;
 
                 case EPlayMode.HostPlayMode:
-                    initOp = InitHostPlay(config);
+                    initOp = InitHostPlay(config); //在这里获取远端包最新版本
                     break;
 
                 default:
@@ -233,6 +230,44 @@ namespace Game.Resource
         }
 
         /// <summary>
+        /// 异步加载子资源（Task 版本）
+        /// </summary>
+        public async Task<T> LoadSubAssetAsync<T>(string assetPath, string subAssetName) where T : UnityEngine.Object
+        {
+            var handle = _package.LoadSubAssetsAsync<T>(assetPath);
+            await handle.Task;
+
+            if (handle.Status != EOperationStatus.Succeed)
+            {
+                Debug.LogError($"[ResourceManager] 异步加载子资源失败: {assetPath}[{subAssetName}] | {handle.LastError}");
+                EventCenter.Publish(new AssetLoadFailedEvent { AssetPath = assetPath, Error = handle.LastError });
+                return null;
+            }
+
+            var subAsset = handle.GetSubAssetObject<T>(subAssetName);
+            if (subAsset == null)
+            {
+                Debug.LogError($"[ResourceManager] 在 {assetPath} 中找不到子资源: {subAssetName}");
+            }
+            return subAsset;
+        }
+
+        /// <summary>
+        /// 同步加载子资源
+        /// </summary>
+        public T LoadSubAsset<T>(string assetPath, string subAssetName) where T : UnityEngine.Object
+        {
+            var handle = _package.LoadSubAssetsSync<T>(assetPath);
+            if (handle.Status != EOperationStatus.Succeed)
+            {
+                Debug.LogError($"[ResourceManager] 同步加载子资源失败: {assetPath}[{subAssetName}] | {handle.LastError}");
+                return null;
+            }
+
+            return handle.GetSubAssetObject<T>(subAssetName);
+        }
+
+        /// <summary>
         /// 异步加载资源（协程版本）
         /// </summary>
         /// <param name="assetPath">资源路径（与打包时一致）</param>
@@ -261,6 +296,41 @@ namespace Game.Resource
             }
 
             onComplete?.Invoke(handle.AssetObject as T);
+        }
+
+        /// <summary>
+        /// 异步加载资源（Task 版本，支持 await）
+        /// 注意：在 WebGL 中使用 Task 可能会有线程环境限制，但标准跨平台通常支持基于协程/状态机的 Task。
+        /// </summary>
+        /// <param name="assetPath">资源路径</param>
+        /// <param name="onProgress">可选的进度回调</param>
+        /// <returns>加载完成返回资产引用，失败返回 null</returns>
+        public async Task<T> LoadAssetAsync<T>(string assetPath, Action<float> onProgress = null) where T : UnityEngine.Object
+        {
+            var handle = _package.LoadAssetAsync<T>(assetPath);
+
+            // 当不提供进度回调时，可以直接用 Task
+            if (onProgress == null)
+            {
+                await handle.Task;
+            }
+            else
+            {
+                while (!handle.IsDone)
+                {
+                    onProgress.Invoke(handle.Progress);
+                    await Task.Yield();
+                }
+            }
+
+            if (handle.Status != EOperationStatus.Succeed)
+            {
+                Debug.LogError($"[ResourceManager] 异步加载(Task)失败: {assetPath} | {handle.LastError}");
+                EventCenter.Publish(new AssetLoadFailedEvent { AssetPath = assetPath, Error = handle.LastError });
+                return null;
+            }
+
+            return handle.AssetObject as T;
         }
 
         /// <summary>
@@ -346,7 +416,6 @@ namespace Game.Resource
         {
             IsInitialized = false;
             YooAssets.Destroy();
-            Instance = null;
             Debug.Log("[ResourceManager] 已关闭");
         }
 

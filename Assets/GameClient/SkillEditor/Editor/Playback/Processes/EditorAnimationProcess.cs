@@ -26,22 +26,22 @@
 
             context.RegisterStartAction(startActionKey, () =>
             {
-                AnimationUtils.EnsureInitialized(context.Owner);
+                EditorAnimationUtils.EnsureInitialized(context.Owner);
             });
 
             context.RegisterTickAction(tickActionKey, (currentTime, deltaTime) =>
             {
-                AnimationUtils.Tick(context.Owner, currentTime, deltaTime, context.GlobalPlaySpeed);
+                EditorAnimationUtils.Tick(context.Owner, currentTime, deltaTime, context.GlobalPlaySpeed);
             });
 
             context.RegisterCleanup(cleanupActionKey, () =>
             {
-                AnimationUtils.Dispose(context.Owner);
+                EditorAnimationUtils.Dispose(context.Owner);
             });
 
             if (clip.animationClip != null && !string.IsNullOrEmpty(clip.clipId))
             {
-                AnimationUtils.RegisterClip(context.Owner, clip);
+                EditorAnimationUtils.RegisterClip(context.Owner, clip);
                 clipRegistered = true;
             }
         }
@@ -65,7 +65,7 @@
 
             if (clipRegistered && context != null && context.Owner != null && !string.IsNullOrEmpty(clip?.clipId))
             {
-                AnimationUtils.UnregisterClip(context.Owner, clip.clipId);
+                EditorAnimationUtils.UnregisterClip(context.Owner, clip.clipId);
             }
 
             clipRegistered = false;

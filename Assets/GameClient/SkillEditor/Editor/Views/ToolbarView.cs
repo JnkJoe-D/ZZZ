@@ -60,8 +60,8 @@ namespace SkillEditor.Editor
 
             // 3. 视口控制 (右侧)
             // Timeline 选中/Inspector 按钮
-            string timelineName = state.currentTimeline != null ? state.currentTimeline.skillName : "Timeline";
-            bool isSelected = GUILayout.Toggle(state.isTimelineSelected, timelineName, EditorStyles.toolbarButton, GUILayout.Width(120));
+            // string timelineName = state.currentTimeline != null ? state.currentTimeline.skillName : "Timeline";
+            bool isSelected = GUILayout.Toggle(state.isTimelineSelected, "Timeline", EditorStyles.toolbarButton, GUILayout.Width(120));
             if (isSelected && !state.isTimelineSelected)
             {
                 window.SelectTimeline();
@@ -171,7 +171,6 @@ namespace SkillEditor.Editor
                     window.SetCurrentTimeline(newTimeline);
                     state.RebuildTrackCache();
                     state.currentFilePath = path; // 记录路径
-                    Debug.Log($"[{Lan.EditorTitle}] {Lan.ImportFromJson}: {newTimeline.skillName} ({path})");
                 }
             }
         }
@@ -180,8 +179,7 @@ namespace SkillEditor.Editor
         {
             if (state.currentTimeline == null) return;
             
-            string defaultName = state.currentTimeline.skillName;
-            string path = EditorUtility.SaveFilePanel(Lan.ExportPanelTitle, "Assets", defaultName, "json");
+            string path = EditorUtility.SaveFilePanel(Lan.ExportPanelTitle, "Assets", "未命名", "json");
             
             if (!string.IsNullOrEmpty(path))
             {

@@ -27,6 +27,16 @@ namespace SkillEditor
         void UpdateSound(int soundId, float volume, float pitch, float time);
 
         /// <summary>
+        /// 暂停指定ID的音频
+        /// </summary>
+        void PauseSound(int soundId);
+
+        /// <summary>
+        /// 恢复指定ID的音频
+        /// </summary>
+        void ResumeSound(int soundId);
+
+        /// <summary>
         /// 停止所有音频（通常用于清理或重置）
         /// </summary>
         void StopAll();

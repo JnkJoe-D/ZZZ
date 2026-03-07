@@ -63,7 +63,18 @@
                         {
                             "rid": 1003
                         }
-                    ]
+                    ],
+                    "isMasterTrack": false,
+                    "offsetPos": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "offsetRot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 }
             },
             {
@@ -128,7 +139,7 @@
                     "blendInDuration": 0.20000000298023225,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 30832
+                        "instanceID": 31660
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -157,7 +168,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 33722
+                        "instanceID": 35216
                     },
                     "prefabGuid": "83e244af1d719994ab693b7cedf89951",
                     "prefabAssetName": "Slash_fx_01",

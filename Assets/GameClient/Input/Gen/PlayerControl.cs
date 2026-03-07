@@ -57,7 +57,7 @@ namespace Game.Input
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Attack"",
+                    ""name"": ""LightAttack"",
                     ""type"": ""Button"",
                     ""id"": ""d7db922d-12be-4cf7-9110-534542534d2a"",
                     ""expectedControlType"": ""Button"",
@@ -93,7 +93,7 @@ namespace Game.Input
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SpecialAttack"",
+                    ""name"": ""SpecialSkill"",
                     ""type"": ""Button"",
                     ""id"": ""1fc0568c-c789-48e2-8dd8-41e80ab69f79"",
                     ""expectedControlType"": ""Button"",
@@ -251,7 +251,7 @@ namespace Game.Input
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Attack"",
+                    ""action"": ""LightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -284,7 +284,7 @@ namespace Game.Input
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SpecialAttack"",
+                    ""action"": ""SpecialSkill"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -376,11 +376,11 @@ namespace Game.Input
             m_GamePlay_Move = m_GamePlay.FindAction("Move", throwIfNotFound: true);
             m_GamePlay_Dodge = m_GamePlay.FindAction("Dodge", throwIfNotFound: true);
             m_GamePlay_Look = m_GamePlay.FindAction("Look", throwIfNotFound: true);
-            m_GamePlay_Attack = m_GamePlay.FindAction("Attack", throwIfNotFound: true);
+            m_GamePlay_LightAttack = m_GamePlay.FindAction("LightAttack", throwIfNotFound: true);
             m_GamePlay_Interact = m_GamePlay.FindAction("Interact", throwIfNotFound: true);
             m_GamePlay_SwitchNext = m_GamePlay.FindAction("SwitchNext", throwIfNotFound: true);
             m_GamePlay_SwitchPre = m_GamePlay.FindAction("SwitchPre", throwIfNotFound: true);
-            m_GamePlay_SpecialAttack = m_GamePlay.FindAction("SpecialAttack", throwIfNotFound: true);
+            m_GamePlay_SpecialSkill = m_GamePlay.FindAction("SpecialSkill", throwIfNotFound: true);
             m_GamePlay_Ultimate = m_GamePlay.FindAction("Ultimate", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -452,11 +452,11 @@ namespace Game.Input
         private readonly InputAction m_GamePlay_Move;
         private readonly InputAction m_GamePlay_Dodge;
         private readonly InputAction m_GamePlay_Look;
-        private readonly InputAction m_GamePlay_Attack;
+        private readonly InputAction m_GamePlay_LightAttack;
         private readonly InputAction m_GamePlay_Interact;
         private readonly InputAction m_GamePlay_SwitchNext;
         private readonly InputAction m_GamePlay_SwitchPre;
-        private readonly InputAction m_GamePlay_SpecialAttack;
+        private readonly InputAction m_GamePlay_SpecialSkill;
         private readonly InputAction m_GamePlay_Ultimate;
         public struct GamePlayActions
         {
@@ -465,11 +465,11 @@ namespace Game.Input
             public InputAction @Move => m_Wrapper.m_GamePlay_Move;
             public InputAction @Dodge => m_Wrapper.m_GamePlay_Dodge;
             public InputAction @Look => m_Wrapper.m_GamePlay_Look;
-            public InputAction @Attack => m_Wrapper.m_GamePlay_Attack;
+            public InputAction @LightAttack => m_Wrapper.m_GamePlay_LightAttack;
             public InputAction @Interact => m_Wrapper.m_GamePlay_Interact;
             public InputAction @SwitchNext => m_Wrapper.m_GamePlay_SwitchNext;
             public InputAction @SwitchPre => m_Wrapper.m_GamePlay_SwitchPre;
-            public InputAction @SpecialAttack => m_Wrapper.m_GamePlay_SpecialAttack;
+            public InputAction @SpecialSkill => m_Wrapper.m_GamePlay_SpecialSkill;
             public InputAction @Ultimate => m_Wrapper.m_GamePlay_Ultimate;
             public InputActionMap Get() { return m_Wrapper.m_GamePlay; }
             public void Enable() { Get().Enable(); }
@@ -489,9 +489,9 @@ namespace Game.Input
                 @Look.started += instance.OnLook;
                 @Look.performed += instance.OnLook;
                 @Look.canceled += instance.OnLook;
-                @Attack.started += instance.OnAttack;
-                @Attack.performed += instance.OnAttack;
-                @Attack.canceled += instance.OnAttack;
+                @LightAttack.started += instance.OnLightAttack;
+                @LightAttack.performed += instance.OnLightAttack;
+                @LightAttack.canceled += instance.OnLightAttack;
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
@@ -501,9 +501,9 @@ namespace Game.Input
                 @SwitchPre.started += instance.OnSwitchPre;
                 @SwitchPre.performed += instance.OnSwitchPre;
                 @SwitchPre.canceled += instance.OnSwitchPre;
-                @SpecialAttack.started += instance.OnSpecialAttack;
-                @SpecialAttack.performed += instance.OnSpecialAttack;
-                @SpecialAttack.canceled += instance.OnSpecialAttack;
+                @SpecialSkill.started += instance.OnSpecialSkill;
+                @SpecialSkill.performed += instance.OnSpecialSkill;
+                @SpecialSkill.canceled += instance.OnSpecialSkill;
                 @Ultimate.started += instance.OnUltimate;
                 @Ultimate.performed += instance.OnUltimate;
                 @Ultimate.canceled += instance.OnUltimate;
@@ -520,9 +520,9 @@ namespace Game.Input
                 @Look.started -= instance.OnLook;
                 @Look.performed -= instance.OnLook;
                 @Look.canceled -= instance.OnLook;
-                @Attack.started -= instance.OnAttack;
-                @Attack.performed -= instance.OnAttack;
-                @Attack.canceled -= instance.OnAttack;
+                @LightAttack.started -= instance.OnLightAttack;
+                @LightAttack.performed -= instance.OnLightAttack;
+                @LightAttack.canceled -= instance.OnLightAttack;
                 @Interact.started -= instance.OnInteract;
                 @Interact.performed -= instance.OnInteract;
                 @Interact.canceled -= instance.OnInteract;
@@ -532,9 +532,9 @@ namespace Game.Input
                 @SwitchPre.started -= instance.OnSwitchPre;
                 @SwitchPre.performed -= instance.OnSwitchPre;
                 @SwitchPre.canceled -= instance.OnSwitchPre;
-                @SpecialAttack.started -= instance.OnSpecialAttack;
-                @SpecialAttack.performed -= instance.OnSpecialAttack;
-                @SpecialAttack.canceled -= instance.OnSpecialAttack;
+                @SpecialSkill.started -= instance.OnSpecialSkill;
+                @SpecialSkill.performed -= instance.OnSpecialSkill;
+                @SpecialSkill.canceled -= instance.OnSpecialSkill;
                 @Ultimate.started -= instance.OnUltimate;
                 @Ultimate.performed -= instance.OnUltimate;
                 @Ultimate.canceled -= instance.OnUltimate;
@@ -652,11 +652,11 @@ namespace Game.Input
             void OnMove(InputAction.CallbackContext context);
             void OnDodge(InputAction.CallbackContext context);
             void OnLook(InputAction.CallbackContext context);
-            void OnAttack(InputAction.CallbackContext context);
+            void OnLightAttack(InputAction.CallbackContext context);
             void OnInteract(InputAction.CallbackContext context);
             void OnSwitchNext(InputAction.CallbackContext context);
             void OnSwitchPre(InputAction.CallbackContext context);
-            void OnSpecialAttack(InputAction.CallbackContext context);
+            void OnSpecialSkill(InputAction.CallbackContext context);
             void OnUltimate(InputAction.CallbackContext context);
         }
         public interface IUIActions

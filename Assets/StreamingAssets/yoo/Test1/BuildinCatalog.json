@@ -1,7 +1,7 @@
 {
     "FileVersion": "1.0.0",
     "PackageName": "Test1",
-    "PackageVersion": "2026-02-26-949",
+    "PackageVersion": "2026-03-07-138",
     "Wrappers": [
         {
             "BundleGUID": "0e6095760d563c92df87ddde908b639f",
@@ -10,6 +10,22 @@
         {
             "BundleGUID": "589b1d8c3570c3f85b51d62923b59cdd",
             "FileName": "test1_assets_configs_589b1d8c3570c3f85b51d62923b59cdd.bundle"
+        },
+        {
+            "BundleGUID": "8bf18a3f270bf1d9bf1e91d1491311e7",
+            "FileName": "test1_assets_resources_prefab_camera_8bf18a3f270bf1d9bf1e91d1491311e7.bundle"
+        },
+        {
+            "BundleGUID": "8f016b75276a9afce484737d0b6dcdbd",
+            "FileName": "test1_assets_resources_prefab_character_8f016b75276a9afce484737d0b6dcdbd.bundle"
+        },
+        {
+            "BundleGUID": "b2006f589a25a159fdf5478f9b5d0438",
+            "FileName": "test1_assets_resources_prefab_effect_特效_b2006f589a25a159fdf5478f9b5d0438.bundle"
+        },
+        {
+            "BundleGUID": "4c14c571ee82ec60d70f5e7c8f3a059a",
+            "FileName": "test1_assets_resources_prefab_effect_特效_安比的特效父级点_4c14c571ee82ec60d70f5e7c8f3a059a.bundle"
         },
         {
             "BundleGUID": "33dd0d3fbb44bd8948cf6d8b60773e30",
@@ -32,16 +48,52 @@
             "FileName": "test1_assets_resources_prefab_ui_panelview_register_d0942d84618af64ba26be6647551d14b.bundle"
         },
         {
-            "BundleGUID": "fe1d272f82f74f463ed44b042dc0ad10",
-            "FileName": "test1_assets_scenes_fe1d272f82f74f463ed44b042dc0ad10.bundle"
+            "BundleGUID": "4f7f828e88f18d4d69ed126234b8d89f",
+            "FileName": "test1_assets_resources_settings_4f7f828e88f18d4d69ed126234b8d89f.bundle"
         },
         {
-            "BundleGUID": "ee237765401bd656a6797e590e63983b",
-            "FileName": "test1_share_assets_resources_nuoaier_ee237765401bd656a6797e590e63983b.bundle"
+            "BundleGUID": "7d0bb8a3e6b3f9efd04d5d0df5157bde",
+            "FileName": "test1_assets_scenes_7d0bb8a3e6b3f9efd04d5d0df5157bde.bundle"
         },
         {
-            "BundleGUID": "8bdf6a6d6184862664379faede26a3df",
-            "FileName": "test1_share_assets_resources_nuoaier_texture_8bdf6a6d6184862664379faede26a3df.bundle"
+            "BundleGUID": "91f93ae0d9eea393b9650298c103aec5",
+            "FileName": "test1_share_assets_resources_models_nuoaier_91f93ae0d9eea393b9650298c103aec5.bundle"
+        },
+        {
+            "BundleGUID": "9d0fc07ccaf7c0e5135bfc9406230221",
+            "FileName": "test1_share_assets_resources_models_nuoaier_texture_9d0fc07ccaf7c0e5135bfc9406230221.bundle"
+        },
+        {
+            "BundleGUID": "e3d286788a100732ed19b83417383880",
+            "FileName": "test1_share_assets_resources_models_安比_e3d286788a100732ed19b83417383880.bundle"
+        },
+        {
+            "BundleGUID": "77dd3114f532d2bdbe8d8bd5916a6ff1",
+            "FileName": "test1_share_assets_resources_models_安比_tex_77dd3114f532d2bdbe8d8bd5916a6ff1.bundle"
+        },
+        {
+            "BundleGUID": "59ca57425e9184d490994b2243c0a73e",
+            "FileName": "test1_share_assets_resources_models_安比_tex_materials_59ca57425e9184d490994b2243c0a73e.bundle"
+        },
+        {
+            "BundleGUID": "5b193952c914d207823cc956e048c321",
+            "FileName": "test1_share_assets_resources_particles_slash_effects_materials_slash_fx_03_5b193952c914d207823cc956e048c321.bundle"
+        },
+        {
+            "BundleGUID": "f1122b2cf802b52589caaba217e13166",
+            "FileName": "test1_share_assets_resources_particles_slash_effects_meshes_f1122b2cf802b52589caaba217e13166.bundle"
+        },
+        {
+            "BundleGUID": "ce9507f061e8a71a1e9bde68bd480151",
+            "FileName": "test1_share_assets_resources_particles_slash_effects_shaders_ce9507f061e8a71a1e9bde68bd480151.bundle"
+        },
+        {
+            "BundleGUID": "7ca02a155a4f8c0af5936e2897444c5c",
+            "FileName": "test1_share_assets_resources_particles_slash_effects_sprites_7ca02a155a4f8c0af5936e2897444c5c.bundle"
+        },
+        {
+            "BundleGUID": "23a72f3f3b2ee6c7751757f1615d4678",
+            "FileName": "test1_share_assets_resources_shaders_unitygenshintoonshader-main_shaders_23a72f3f3b2ee6c7751757f1615d4678.bundle"
         },
         {
             "BundleGUID": "dd3c336d97d0c8a3f8d727d357d3994c",

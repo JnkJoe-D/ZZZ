@@ -28,7 +28,7 @@ namespace SkillEditor
             // 调用接口播放控制 + 设置速度
             if (animHandler != null)
             {
-                animHandler.PlayAnimation(clip.animationClip, (int)clip.layer, clip.blendInDuration, clip.playbackSpeed * context.GlobalPlaySpeed);
+                animHandler.PlayAnimation(clip.animationClip, (int)clip.layer, clip.BlendInDuration, clip.playbackSpeed * context.GlobalPlaySpeed);
             }
             //这里的update频率比monoupdate低，所以在onenter先同步一次播放速度，确保动画按预期速度开始播放
             animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.GlobalPlaySpeed);
@@ -40,7 +40,14 @@ namespace SkillEditor
             // 仅控制播放状态和速度
             animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.GlobalPlaySpeed); // 叠加全局播放速度
         }
-
+        public override void OnPause()
+        {
+            animHandler?.SetLayerSpeed((int)clip.layer, 0);
+        }
+        public override void OnResume()
+        {
+            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.GlobalPlaySpeed);
+        }
         public override void OnExit()
         {
             if (clip.overrideMask != null)

@@ -57,6 +57,11 @@ namespace Game.Adapters
                  return new CharSkillActor(_owner);
             }
 
+            if (serviceType == typeof(ISkillEventHandler))
+            {
+                 return _owner.GetComponent<ISkillEventHandler>();
+            }
+
             //4. 音频管理服务
             if(serviceType == typeof(ISkillAudioHandler))
             {
@@ -69,9 +74,9 @@ namespace Game.Adapters
             }
 
             //5. 伤害处理服务
-            if(serviceType == typeof(ISkillDamageHandler))
+            if(serviceType == typeof(ISkillHitHandler))
             {
-                return new DamageHandler();
+                return new SkillHitHandler();
             }
 
             // 6. VFX 对象池服务
@@ -84,6 +89,12 @@ namespace Game.Adapters
             if (serviceType == typeof(ISkillSpawnHandler))
             {
                 return new SkillSpawnHandler();
+            }
+
+            // 8. 全局事件服务
+            if (serviceType == typeof(ISkillEventHandler))
+            {
+                return new SkillEventHandler();
             }
 
             if(serviceType == typeof(ISkillCameraHandler))

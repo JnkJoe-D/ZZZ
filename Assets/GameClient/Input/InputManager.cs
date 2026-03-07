@@ -8,10 +8,8 @@ namespace Game.Input
     /// 负责统筹 Input Actions 生命期，并控制 Action Map 的挂起和恢复（如打开 UI 时屏蔽底层操作）
     /// 挂靠于 GameRoot 下
     /// </summary>
-    public class InputManager
+    public class InputManager : Game.Framework.Singleton<InputManager>
     {
-        public static InputManager Instance { get; private set; }
-
         // 此处先不直接绑定特定的强类型 PlayerInputActions，
         // 而是提供一个标准的初始化和禁用/启用口子。
         // （待后续 Unity Editor 中生成具体的 PlayerInputActions 脚本后注入或在此处 new 出）
@@ -19,8 +17,6 @@ namespace Game.Input
         
         public void Initialize()
         {
-            Instance = this;
-            
             // TODO: 等待 PlayerInputActions 脚本生成后取消注释
             // _inputActions = new PlayerInputActions();
             // _inputActions.Enable();
@@ -35,7 +31,6 @@ namespace Game.Input
             //     _inputActions.Disable();
             //     _inputActions = null;
             // }
-            Instance = null;
             Debug.Log("[InputManager] 已关闭");
         }
 

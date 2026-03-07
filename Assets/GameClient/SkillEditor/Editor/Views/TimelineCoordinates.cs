@@ -151,7 +151,7 @@ namespace SkillEditor.Editor
                         var clip = track.clips[j];
                         if (clip == excludeClip) continue;
 
-                        float[] targets = { clip.startTime, clip.startTime + clip.duration };
+                        float[] targets = { clip.StartTime, clip.StartTime + clip.Duration };
                         for (int k = 0; k < targets.Length; k++)
                         {
                             float target = targets[k];
@@ -359,7 +359,7 @@ namespace SkillEditor.Editor
             {
                 if (clip == excludeClip) continue;
 
-                if (!(endTime <= clip.startTime || startTime >= clip.EndTime))
+                if (!(endTime <= clip.StartTime || startTime >= clip.EndTime))
                 {
                     return true;
                 }
@@ -383,7 +383,7 @@ namespace SkillEditor.Editor
                 for (int i = 0; i < track.clips.Count; i++)
                 {
                     var clip = track.clips[i];
-                    if (testTime < (clip.startTime + clip.duration) && testTime + duration > clip.startTime)
+                    if (testTime < (clip.StartTime + clip.Duration) && testTime + duration > clip.StartTime)
                     {
                         blockingClip = clip;
                         break;
@@ -392,7 +392,7 @@ namespace SkillEditor.Editor
 
                 if (blockingClip != null)
                 {
-                    testTime = SnapTime(blockingClip.startTime + blockingClip.duration);
+                    testTime = SnapTime(blockingClip.StartTime + blockingClip.Duration);
                 }
                 else
                 {
@@ -425,18 +425,18 @@ namespace SkillEditor.Editor
                 if (clip == modifiedClip) continue;
 
                 // Case 1: modifiedClip 头部 overlap 了 clip 的尾部
-                if (modifiedClip.startTime < clip.EndTime && modifiedClip.startTime > clip.startTime)
+                if (modifiedClip.StartTime < clip.EndTime && modifiedClip.StartTime > clip.StartTime)
                 {
-                    float overlap = clip.EndTime - modifiedClip.startTime;
-                    clip.blendOutDuration = overlap;
-                    modifiedClip.blendInDuration = overlap;
+                    float overlap = clip.EndTime - modifiedClip.StartTime;
+                    clip.BlendOutDuration = overlap;
+                    modifiedClip.BlendInDuration = overlap;
                 }
                 // Case 2: modifiedClip 尾部 overlap 了 clip 的头部
-                else if (modifiedClip.EndTime > clip.startTime && modifiedClip.EndTime < clip.EndTime)
+                else if (modifiedClip.EndTime > clip.StartTime && modifiedClip.EndTime < clip.EndTime)
                 {
-                    float overlap = modifiedClip.EndTime - clip.startTime;
-                    modifiedClip.blendOutDuration = overlap;
-                    clip.blendInDuration = overlap;
+                    float overlap = modifiedClip.EndTime - clip.StartTime;
+                    modifiedClip.BlendOutDuration = overlap;
+                    clip.BlendInDuration = overlap;
                 }
             }
         }

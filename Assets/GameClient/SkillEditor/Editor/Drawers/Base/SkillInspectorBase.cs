@@ -41,16 +41,59 @@ namespace SkillEditor.Editor
                 current = current.BaseType;
             }
 
-            // 按顺序绘制每一层的字段
+            // 按顺序绘制每一层的字段和属性
             foreach (var type in typeHierarchy)
             {
-                FieldInfo[] fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                FieldInfo[] fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                 
                 foreach (var field in fieldInfos)
                 {
+                    if (!field.IsPublic && !field.IsDefined(typeof(SkillPropertyAttribute), true))
+                    {
+                        continue;
+                    }
+
                     if (ShouldShow(field, obj))
                     {
                         DrawField(field, obj);
+                    }
+                }
+
+                PropertyInfo[] propInfos = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                
+                foreach (var prop in propInfos)
+                {
+                    if (prop.IsDefined(typeof(SkillPropertyAttribute), true))
+                    {
+                        if (prop.CanRead && prop.CanWrite && ShouldShowProperty(prop, obj))
+                        {
+                            DrawProperty(prop, obj);
+                        }
+                    }
+                }
+            }
+
+            // 全局兜底校验：防止因直接缩短 duration 导致 blendIn + blendOut > duration
+            if (obj is ClipBase clipBase && clipBase.SupportsBlending)
+            {
+                if (clipBase.BlendInDuration + clipBase.BlendOutDuration > clipBase.Duration)
+                {
+                    // 若超出总长，则按比例缩小，或简单地把二者都按其相对比例分配到剩余的 duration 里
+                    float totalBlend = clipBase.BlendInDuration + clipBase.BlendOutDuration;
+                    if (totalBlend > 0)
+                    {
+                        float ratioIn = clipBase.BlendInDuration / totalBlend;
+                        float ratioOut = clipBase.BlendOutDuration / totalBlend;
+                        
+                        // 强制写回，不走反射流程以防递归
+                        clipBase.BlendInDuration = clipBase.Duration * ratioIn;
+                        clipBase.BlendOutDuration = clipBase.Duration * ratioOut;
+                        
+                        // 由于我们在此处强制修改了数据，可能需要标记 Dirty 等，但 Inspector 基类通常只抛出 Changed
+                        if (UndoContext != null && UndoContext.Length > 0)
+                        {
+                            Undo.RecordObjects(UndoContext, "Auto Clamp Blend Durations");
+                        }
                     }
                 }
             }
@@ -83,6 +126,75 @@ namespace SkillEditor.Editor
             return true;
         }
 
+        protected virtual bool ShouldShowProperty(PropertyInfo prop, object obj)
+        {
+            // 额外的动态过滤可以在这里写
+            return true;
+        }
+
+        protected virtual void DrawProperty(PropertyInfo prop, object obj)
+        {
+            var value = prop.GetValue(obj);
+            var propType = prop.PropertyType;
+            var attribute = prop.GetCustomAttribute<SkillPropertyAttribute>();
+            var name = attribute != null ? attribute.Name : ObjectNames.NicifyVariableName(prop.Name);
+
+            object newValue = value;
+            EditorGUI.BeginChangeCheck();
+
+            if (propType == typeof(int)) { newValue = EditorGUILayout.IntField(name, (int)value); }
+            else if (propType == typeof(float)) 
+            { 
+                if (prop.Name == "BlendInDuration" || prop.Name == "BlendOutDuration")
+                {
+                    float maxDuration = 10f;
+                    // if (obj is ClipBase c) 
+                    // {
+                    //     if (prop.Name == "BlendInDuration")
+                    //     {
+                    //         maxDuration = Mathf.Max(0f, c.Duration - c.BlendOutDuration);
+                    //     }
+                    //     else
+                    //     {
+                    //         maxDuration = Mathf.Max(0f, c.Duration - c.BlendInDuration);
+                    //     }
+                    // }
+                    newValue = EditorGUILayout.Slider(name, (float)value, 0f, maxDuration);
+                }
+                else
+                {
+                    float floatVal = EditorGUILayout.FloatField(name, (float)value);
+                    // if (prop.Name == "StartTime")
+                    // {
+                    //     floatVal = Mathf.Max(0f, floatVal);
+                    // }
+                    // if (prop.Name == "Duration")
+                    // {
+                    //     floatVal = Mathf.Max(0.1f, floatVal);
+                    // }
+                    newValue = floatVal;
+                }
+            }
+            else if (propType == typeof(bool)) { newValue = EditorGUILayout.Toggle(name, (bool)value); }
+            else if (propType == typeof(string)) { newValue = EditorGUILayout.TextField(name, (string)value); }
+            else if (propType == typeof(Vector2)) { newValue = EditorGUILayout.Vector2Field(name, (Vector2)value); }
+            else if (propType == typeof(Vector3)) { newValue = EditorGUILayout.Vector3Field(name, (Vector3)value); }
+            else if (propType == typeof(Color)) { newValue = EditorGUILayout.ColorField(name, (Color)value); }
+            else if (propType == typeof(AnimationCurve)) { newValue = EditorGUILayout.CurveField(name, (AnimationCurve)value ?? new AnimationCurve()); }
+            else if (typeof(Object).IsAssignableFrom(propType)) { newValue = EditorGUILayout.ObjectField(name, (Object)value, propType, false); }
+            else if (propType.IsEnum) { newValue = EditorGUILayout.EnumPopup(name, (Enum)value); }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (UndoContext != null && UndoContext.Length > 0)
+                {
+                    Undo.RecordObjects(UndoContext, "Inspector Change: " + name);
+                }
+                prop.SetValue(obj, newValue);
+                OnInspectorChanged?.Invoke();
+            }
+        }
+
         protected virtual void DrawField(FieldInfo field, object obj)
         {
             var value = field.GetValue(obj);
@@ -105,18 +217,32 @@ namespace SkillEditor.Editor
                 
                 if (field.Name == "blendInDuration" || field.Name == "blendOutDuration")
                 {
-                    // 动态获取 duration 作为最大值
                     float maxDuration = 10f;
-                    if (obj is ClipBase c) maxDuration = c.Duration / 2f;
+                    if (obj is ClipBase c) 
+                    {
+                        // 动态阻隔：最大范围为总时长 - 另一端的时长
+                        if (field.Name == "blendInDuration")
+                        {
+                            maxDuration = Mathf.Max(0f, c.Duration - c.BlendOutDuration);
+                        }
+                        else
+                        {
+                            maxDuration = Mathf.Max(0f, c.Duration - c.BlendInDuration);
+                        }
+                    }
                     
                     newValue = EditorGUILayout.Slider(name, (float)value, 0f, maxDuration);
                 }
                 else
                 {
                     float floatVal = EditorGUILayout.FloatField(name, (float)value);
-                    if (field.Name == "startTime" || field.Name == "duration")
+                    if (field.Name == "startTime")
                     {
                         floatVal = Mathf.Max(0f, floatVal);
+                    }
+                    if (field.Name == "duration")
+                    {
+                        floatVal = Mathf.Max(0.1f, floatVal);
                     }
                     newValue = floatVal;
                 }

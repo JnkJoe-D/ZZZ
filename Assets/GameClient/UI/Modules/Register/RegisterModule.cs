@@ -102,12 +102,15 @@ namespace Game.UI.Modules.Register
             Model.Password = "";
             Model.RepeatPassword = "";
             RefreshView();
+
+            UIManager.Instance.Open<NetWaitModule>(new NetWaitModel() { TipMessage = "注册中..." });
         }
 
         private void OnRegisterResponse(S2C_Register response)
         {
             Debug.Log($"[RegisterModule] 收到注册响应 Code: {response.Code}, Message: {response.Message}");
-
+            // 收到任意结果，第一时间关闭转圈模块
+            UIManager.Instance.Close<NetWaitModule>();
             if (response.Code == (int)ErrorCode.Success)
             {
                 UIManager.Instance.Open<MessageBoxModule>(new MessageBoxModel

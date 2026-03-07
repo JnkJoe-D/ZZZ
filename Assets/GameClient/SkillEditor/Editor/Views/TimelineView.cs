@@ -221,7 +221,7 @@ namespace SkillEditor.Editor
                                     foreach (var clip in track.clips)
                                     {
                                         if(!clip.isEnabled)continue;
-                                        maxEndTime = Mathf.Max(maxEndTime, clip.startTime + clip.duration);
+                                        maxEndTime = Mathf.Max(maxEndTime, clip.StartTime + clip.Duration);
                                     }
                                 }
 
@@ -296,8 +296,8 @@ namespace SkillEditor.Editor
             for (int i = 0; i < track.clips.Count; i++)
             {
                 ClipBase clip = track.clips[i];
-                float clipStartX = coords.TimeToPhysX(clip.startTime);
-                float clipWidth = clip.duration * state.zoom;
+                float clipStartX = coords.TimeToPhysX(clip.StartTime);
+                float clipWidth = clip.Duration * state.zoom;
                 if (clipStartX + clipWidth < 0 || clipStartX > trackRect.width) continue;
 
                 Rect clipRect = new Rect(trackRect.x + clipStartX, trackRect.y + SkillEditorStyles.CLIP_MARGIN_TOP, clipWidth, SkillEditorStyles.CLIP_HEIGHT);
@@ -306,8 +306,8 @@ namespace SkillEditor.Editor
                 Color clipColor = clipInteraction.GetClipColor(track.trackType);
 
                 // Compute truncated name for Drawer
-                float blendInW = clip.SupportsBlending ? (clip.blendInDuration * state.zoom) : 0;
-                float blendOutW = clip.SupportsBlending ? (clip.blendOutDuration * state.zoom) : 0;
+                float blendInW = clip.SupportsBlending ? (clip.BlendInDuration * state.zoom) : 0;
+                float blendOutW = clip.SupportsBlending ? (clip.BlendOutDuration * state.zoom) : 0;
                 Rect textRect = new Rect(clipRect.x + blendInW, clipRect.y, Mathf.Max(0, clipRect.width - blendInW - blendOutW), clipRect.height);
 
                 string displayName = "";
@@ -453,8 +453,8 @@ namespace SkillEditor.Editor
                                         for (int k = 0; k < track.clips.Count; k++)
                                         {
                                             var clip = track.clips[k];
-                                            float clipStartX = coords.TimeToPhysX(clip.startTime);
-                                            float clipWidth = clip.duration * state.zoom;
+                                            float clipStartX = coords.TimeToPhysX(clip.StartTime);
+                                            float clipWidth = clip.Duration * state.zoom;
                                             float drawY = currentVirtualY - vScroll + SkillEditorStyles.TIME_RULER_HEIGHT;
                                             Rect clipRect = new Rect(clipStartX, drawY + 2, clipWidth, 36);
 
@@ -552,8 +552,8 @@ namespace SkillEditor.Editor
                                             for (int k = 0; k < track.clips.Count; k++)
                                             {
                                                 var clip = track.clips[k];
-                                                float clipStartX = coords.TimeToPhysX(clip.startTime);
-                                                float clipWidth = clip.duration * state.zoom;
+                                                float clipStartX = coords.TimeToPhysX(clip.StartTime);
+                                                float clipWidth = clip.Duration * state.zoom;
                                                 float drawY = currentVirtualY - vScroll + SkillEditorStyles.TIME_RULER_HEIGHT;
                                                 Rect clipRect = new Rect(clipStartX, drawY + 5, clipWidth, 30);
 
@@ -652,8 +652,8 @@ namespace SkillEditor.Editor
                         Rect trackRect = new Rect(0, yOffset, rect.width, SkillEditorStyles.TRACK_HEIGHT);
                         foreach (var clip in track.clips)
                         {
-                            float clipStartX = coords.TimeToPhysX(clip.startTime);
-                            float clipWidth = clip.duration * state.zoom;
+                            float clipStartX = coords.TimeToPhysX(clip.StartTime);
+                            float clipWidth = clip.Duration * state.zoom;
                             Rect clipRect = new Rect(trackRect.x + clipStartX, trackRect.y + 5, clipWidth, 30);
 
                             if (selectionRect.Overlaps(clipRect))

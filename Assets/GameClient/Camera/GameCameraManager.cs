@@ -7,10 +7,8 @@ namespace Game.Camera
     /// 统一接口中心，防止多个业务脚本争夺主相机的 Transform 与视角
     /// 未来建议直接在此接入 Unity.Cinemachine 做平滑越肩封装
     /// </summary>
-    public class GameCameraManager
+    public class GameCameraManager : Game.Framework.Singleton<GameCameraManager>
     {
-        public static GameCameraManager Instance { get; private set; }
-
         public UnityEngine.Camera MainCamera { get; private set; }
         public Transform MainCameraTransform => MainCamera != null ? MainCamera.transform : null;
         public Transform CurrentTarget { get; private set; }
@@ -19,7 +17,6 @@ namespace Game.Camera
 
         public void Initialize()
         {
-            Instance = this;
             ResolveMainCamera();
 
             if (MainCamera == null)
@@ -40,7 +37,6 @@ namespace Game.Camera
         public void Shutdown()
         {
             CurrentTarget = null;
-            Instance = null;
             MainCamera = null;
             // Brain = null;
             Debug.Log("[GameCameraManager] 已关闭");

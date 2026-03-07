@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc06e0520cbb132459d8e63f748b257e, type: 3}
+  m_Name: 1001
+  m_EditorClassIdentifier: 
+  RoleID: 1001
+  RoleName: 
+  CharacterPrefab: {fileID: 0}
+  GroundRadius: 0.3
+  GroundHeight: 1.8
+  GroundOffset: 0.1
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  JogMultipier: 1
+  DashMultipier: 1
+  DodgeMultipier: 1
+  AttackMultipier: 1.2
+  SkillMultipier: 1
+  AnimationSet:
+    RoleID: 0
+    WeaponType: 0
+    Idle:
+      clip: {fileID: 8406963695831445294, guid: 88147f5881834894285e9387fb160241,
+        type: 3}
+      fadeDuration: 0
+    JogStart:
+      clip: {fileID: -8346512432481799754, guid: eaa7a1da500fc7d468b990ed3e487be3,
+        type: 3}
+      fadeDuration: 0.1
+    Jog:
+      clip: {fileID: 1537088672141427755, guid: 88147f5881834894285e9387fb160241,
+        type: 3}
+      fadeDuration: 0.6
+    JogStop:
+      clip: {fileID: 6032505460816376181, guid: 88147f5881834894285e9387fb160241,
+        type: 3}
+      fadeDuration: 0.1
+    DashStart:
+      clip: {fileID: -2123373851565751571, guid: eaa7a1da500fc7d468b990ed3e487be3,
+        type: 3}
+      fadeDuration: 0.2
+    Dash:
+      clip: {fileID: -8483063365841296365, guid: 88147f5881834894285e9387fb160241,
+        type: 3}
+      fadeDuration: 0.6
+    DashStop:
+      clip: {fileID: 0}
+      fadeDuration: 0
+    DodgeFront:
+      clip: {fileID: -7101804230258378353, guid: 88147f5881834894285e9387fb160241,
+        type: 3}
+      fadeDuration: 0
+    DodgeBack:
+      clip: {fileID: -7099793632113807657, guid: 88147f5881834894285e9387fb160241,
+        type: 3}
+      fadeDuration: 0
+    JumpStart:
+      clip: {fileID: 0}
+      fadeDuration: 0
+    FallLoop:
+      clip: {fileID: 0}
+      fadeDuration: 0
+    Land:
+      clip: {fileID: 0}
+      fadeDuration: 0
+    JogStopLockTime: 0.25
+    DashStopLockTime: 0.5
+  lightAttacks:
+  - {fileID: 11400000, guid: d92d1f694208d2d4683e62dc210fbf35, type: 2}
+  - {fileID: 11400000, guid: 3234c5172f27bf04ab44ccd062212689, type: 2}
+  - {fileID: 11400000, guid: a27aaf74d907f784180fe4aaae2bf27f, type: 2}
+  - {fileID: 11400000, guid: 5db824db0cb6cde42a4bb39499f35970, type: 2}
+  heavyAttacks: []
+  dashAttack: {fileID: 11400000, guid: 7a51b91027c2ec94ba9740c476a93a5f, type: 2}
+  dodgeCounter: []
+  specialSkill: {fileID: 0}
+  enhancedSpecialSkill: {fileID: 0}
+  chainSkill: {fileID: 0}
+  assistSkill: {fileID: 0}
+  Ultimate: {fileID: 0}

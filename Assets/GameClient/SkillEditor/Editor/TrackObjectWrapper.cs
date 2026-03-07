@@ -153,13 +153,13 @@ namespace SkillEditor.Editor
                 };
                 drawer.DrawInspector(clip);
             }
-            else
+            else //没有Drawer的默认绘制，一般不会跳转到这里因为即使未定义也会默认Drawer
             {
                 // Fallback
                 if (clipObj.timeline != null) Undo.RecordObjects(new Object[] { clipObj, clipObj.timeline }, "编辑片段属性");
                 clip.clipName = EditorGUILayout.TextField("片段名称", clip.clipName);
-                clip.startTime = EditorGUILayout.FloatField("开始时间", clip.startTime);
-                clip.duration = EditorGUILayout.FloatField("持续时间", clip.duration);
+                clip.StartTime = EditorGUILayout.FloatField("开始时间", clip.StartTime);
+                clip.Duration = EditorGUILayout.FloatField("持续时间", clip.Duration);
             }
 
             if (EditorGUI.EndChangeCheck())

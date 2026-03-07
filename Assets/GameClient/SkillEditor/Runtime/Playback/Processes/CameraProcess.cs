@@ -26,9 +26,9 @@ namespace SkillEditor
         {
             if (cameraHandler == null) return;
 
-            float localTime = currentTime - clip.startTime;
+            float localTime = currentTime - clip.StartTime;
             float t = clip.sampleMode == CurveSampleMode.NormalizedTime
-                ? Mathf.Clamp01(localTime / clip.duration)
+                ? Mathf.Clamp01(localTime / clip.Duration)
                 : localTime;
 
             float pathPos = clip.pathCurve.Evaluate(t);

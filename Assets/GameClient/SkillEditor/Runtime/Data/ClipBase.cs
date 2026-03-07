@@ -16,24 +16,62 @@ namespace SkillEditor
         [SkillProperty("启用")]
         public bool isEnabled = true;
 
-        [SkillProperty("开始时间")]
-        public float startTime;
-        
-        [SkillProperty("持续时间")]
-        public float duration = 1.0f;
+        [SerializeField] protected float startTime;
+        [SerializeField] protected float duration = 1.0f;
+        [SerializeField] protected float blendInDuration;
+        [SerializeField] protected float blendOutDuration;
 
-        public float StartTime => startTime;
-        public float Duration => duration;
+        [SkillProperty("开始时间")]
+        public virtual float StartTime
+        {
+            get { return startTime; }
+            set
+            {
+                if (!Application.isPlaying)
+                {
+                    startTime = Mathf.Max(0,value);
+                }
+            }
+        }
+        [SkillProperty("持续时间")]
+        public virtual float Duration
+        {
+            get{return duration;}
+            set
+            {
+                if(!Application.isPlaying)
+                {
+                    duration=Mathf.Max(value,0.1f);
+                }
+            }
+        }
+        [SkillProperty("渐入时间")]
+        public virtual float BlendInDuration
+        {
+            get{return blendInDuration;}
+            set
+            {
+                if (!Application.isPlaying)
+                {
+                    blendInDuration = Mathf.Clamp(value, 0,duration-blendOutDuration);
+                }
+            }
+        }
+        [SkillProperty("渐出时间")]
+        public virtual float BlendOutDuration
+        {
+            get { return blendOutDuration; }
+            set
+            {
+                if (!Application.isPlaying)
+                {
+                    blendOutDuration = Mathf.Clamp(value, 0,duration - blendInDuration);
+                }
+            }
+        }
         public float EndTime => startTime + duration;
 
-        // Legacy / Blending support
         public virtual bool SupportsBlending => false;
-        
-        [SkillProperty("渐入时长")]
-        public float blendInDuration;
-        
-        [SkillProperty("渐出时长")]
-        public float blendOutDuration;
 
         public abstract ClipBase Clone();
     }

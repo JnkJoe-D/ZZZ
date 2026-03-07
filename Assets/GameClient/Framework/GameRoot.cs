@@ -3,10 +3,13 @@ using UnityEngine;
 using Game.Pool;
 using Game.Resource;
 using Game.Network;
-using Game.Scene;
-using Game.UI;
+using UnityEngine.EventSystems;
+using System.IO;
 using Game.Config;
+using Game.Logic.Skill;
 using Game.FSM;
+using Game.UI;
+using Game.Scene;
 
 
 namespace Game.Framework
@@ -33,15 +36,7 @@ namespace Game.Framework
         public static bool IsInitialized { get; private set; }
 
         // ── 子系统引用 ─────────────────────────
-        private ResourceManager _resourceManager;
-        private NetworkManager  _networkManager;
-        private SceneManager    _sceneManager;
-        private UIManager       _uiManager;
-        private FSMManager      _fsmManager;
-        private Game.Input.InputManager _inputManager;
-        private Game.Camera.GameCameraManager _cameraManager;
-        // private LuaManager _luaManager;
-        // private AudioManager _audioManager;
+        // (所有系统现已改为通过 Singleton / MonoSingleton 统一获取 Instance)
 
         [Header("资源管理配置")]
         [SerializeField] private ResourceConfig _resourceConfig;
@@ -77,8 +72,8 @@ namespace Game.Framework
             EventCenter.FlushPending();
 
             // 驱动网络管理器（主线程消息分发、心跳、重连）
-            _networkManager?.Update();
-            _cameraManager?.Update(Time.deltaTime);
+            Game.Network.NetworkManager.Instance?.Update();
+            Game.Camera.GameCameraManager.Instance?.Update(Time.deltaTime);
 
             // TODO: 驱动其他子系统
             // _luaManager?.Update();
@@ -102,43 +97,40 @@ namespace Game.Framework
             Debug.Log("[GameRoot] ===== 游戏启动 =====");
 
             // ── Step 1: 全局对象池 ────────────────────
-            InitPool();
+            GlobalPoolManager.Initialize();
             Debug.Log("[GameRoot] [1/9] Pool ... OK");
             yield return null;
 
             // ── Step 2: 核心底层服务启机 ─────────────────────
-            _fsmManager = gameObject.GetComponent<FSMManager>();
-            if (_fsmManager == null)
-            {
-                _fsmManager = gameObject.AddComponent<FSMManager>();
-            }
-            _fsmManager.Initialize();
+            FSMManager.Instance.Initialize();
             Debug.Log("[GameRoot] [2/11] FSM ... OK");
 
-            _networkManager = new NetworkManager();
-            _networkManager.Initialize(_serverHost, _tcpPort, _udpPort);
+            Game.Network.NetworkManager.Instance.Initialize(_serverHost, _tcpPort, _udpPort);
             Debug.Log("[GameRoot] [3/11] Network (Prepared) ... OK");
 
-            _uiManager = new UIManager();
-            _uiManager.Initialize(this);
+            UIManager.Instance.Initialize(this);
             Debug.Log("[GameRoot] [4/11] UI ... OK");
             yield return null;
 
             // ── Step 3: 唤起热更新界面以接收事件 ────────
-            _uiManager.Open<Game.UI.Modules.HotUpdate.HotUpdateModule>();  //Resource加载
+            UIManager.Instance.Open<Game.UI.Modules.HotUpdate.HotUpdateModule>();  //Resource加载
             yield return null;
 
             // ── Step 4: 资源管理器（YooAsset）────────────────
-            _resourceManager = new ResourceManager();
             yield return StartCoroutine(
-                _resourceManager.InitializeAsync(_resourceConfig, this)
+                ResourceManager.Instance.InitializeAsync(_resourceConfig, this)
             );
-            if (!_resourceManager.IsInitialized)
+            if (!ResourceManager.Instance.IsInitialized)
             {
                 Debug.LogError("[GameRoot] 资源管理器初始化失败，游戏终止");
                 yield break;
             }
             Debug.Log("[GameRoot] [4/9] Assets ... OK");
+            
+            // ── Step 4.5: 向技能编辑器注入资源加载适配器 ────────────────
+            SkillEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.SkillAssetLoaderAdapter());
+            Debug.Log("[GameRoot] [4.5/9] SkillEditor AssetLoader Injected ... OK");
+            
             yield return null;
 
             // ── Step 5: 基础配置加载 ──────────────────
@@ -150,28 +142,24 @@ namespace Game.Framework
             // ── Step 6: Lua 音频等 ───────────────
             Debug.Log("[GameRoot] [6/9] Lua ... (TODO: XLua)");
             
-            // ── Step 7: 保留位置 ───────────────
-            Debug.Log("[GameRoot] [7/9] System Placeholder ... OK");
+            // ── Step 7: 全局音频管理器 ───────────────
+            Game.Audio.AudioManager.Instance.Initialize();
+            Debug.Log("[GameRoot] [7/9] System Audio ... OK");
 
             // ── Step 8: 场景管理器 ────────────────────
-            _sceneManager = new SceneManager();
-            _sceneManager.Initialize(this);
+            SceneManager.Instance.Initialize(this);
             Debug.Log("[GameRoot] [8/10] Scene ... OK");
             
-            
             // ── Step 9: 输入管理器 ────────────────────
-            _inputManager = new Game.Input.InputManager();
-            _inputManager.Initialize();
+            Game.Input.InputManager.Instance.Initialize();
             Debug.Log("[GameRoot] [9/11] Input ... OK");
 
             // ── Step 10: 相机管理器 ───────────────────
-            _cameraManager = new Game.Camera.GameCameraManager(); // Retained assignment to field
-            _cameraManager.Initialize();
+            Game.Camera.GameCameraManager.Instance.Initialize();
 
-            // ── Step 11: 全局动画库 ───────────────────
-            var animConfigManager = new Game.Logic.Player.Config.AnimationConfigManager();
-            animConfigManager.Initialize();
-            Debug.Log("[GameRoot] [11/11] Animation Configs ... OK");
+            // ── Step 11: 玩家连接层管理器 ────────────────
+            Game.Logic.Player.PlayerManager.Instance.Initialize();
+            Debug.Log("[GameRoot] [11/11] Player Manager ... OK");
 
             // 发布初始化完成事件，各系统可以订阅此事件做后置操作
             EventCenter.Publish(new GameInitializedEvent());
@@ -184,16 +172,7 @@ namespace Game.Framework
             yield return new WaitForSeconds(0.5f);
             
             Debug.Log("[GameRoot] 发起基于 TCP 的主服务连接...");
-            _networkManager.ConnectTcp();
-        }
-
-        // ────────────────────────────────────────
-        // 子系统初始化函数
-        // ────────────────────────────────────────
-
-        private void InitPool()
-        {
-            GlobalPoolManager.Initialize();
+            Game.Network.NetworkManager.Instance.ConnectTcp();
         }
 
         // ────────────────────────────────────────
@@ -206,16 +185,17 @@ namespace Game.Framework
             IsInitialized = false;
 
             // 各子系统 Shutdown（顺序与初始化相反）
-            Game.Logic.Player.Config.AnimationConfigManager.Instance?.Shutdown();
-            _inputManager?.Shutdown();
-            _cameraManager?.Shutdown();
-            _sceneManager?.Shutdown();
-            _fsmManager?.Shutdown();
-            
+            Game.Logic.Player.PlayerManager.Instance?.Shutdown();
+            Game.Logic.Skill.SkillManager.Instance?.Shutdown();
+            Game.Input.InputManager.Instance?.Shutdown();
+            Game.Camera.GameCameraManager.Instance?.Shutdown();
+            SceneManager.Instance?.Shutdown();
+            FSMManager.Instance?.Shutdown();
+            // AudioManager 没有提供Shutdown方法并且依靠自身MonoDestory管理释放因此不再调配
             // _luaManager?.Dispose();
-            _uiManager?.Shutdown();
-            _resourceManager?.Shutdown();
-            _networkManager?.Shutdown();
+            UIManager.Instance?.Shutdown();
+            ResourceManager.Instance?.Shutdown();
+            Game.Network.NetworkManager.Instance?.Shutdown();
             EventCenter.ClearAll();
             GlobalPoolManager.DisposeAll();
 

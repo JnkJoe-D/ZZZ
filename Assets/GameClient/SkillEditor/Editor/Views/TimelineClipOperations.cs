@@ -160,7 +160,7 @@ namespace SkillEditor.Editor
             float minStartTime = float.MaxValue;
             foreach (var data in state.copiedClipsData)
             {
-                if (data.clip.startTime < minStartTime) minStartTime = data.clip.startTime;
+                if (data.clip.StartTime < minStartTime) minStartTime = data.clip.StartTime;
             }
 
             float timeOffset = state.pasteTargetTime - minStartTime;
@@ -179,13 +179,13 @@ namespace SkillEditor.Editor
                 newClip.clipId = Guid.NewGuid().ToString();
                 
                 // 批量复制不要做自动融合，清空克隆出的融合时长
-                newClip.blendInDuration = 0;
-                newClip.blendOutDuration = 0;
+                newClip.BlendInDuration = 0;
+                newClip.BlendOutDuration = 0;
 
-                newClip.startTime = Mathf.Max(0, data.clip.startTime + timeOffset);
+                newClip.StartTime = Mathf.Max(0, data.clip.StartTime + timeOffset);
 
                 // 统一调整为不重叠的自适应位置
-                newClip.startTime = coords.FindNextAvailableTime(targetTrack, newClip.startTime, newClip.duration);
+                newClip.StartTime = coords.FindNextAvailableTime(targetTrack, newClip.StartTime, newClip.Duration);
 
                 targetTrack.clips.Add(newClip);
                 pastedClips.Add(newClip);
@@ -226,7 +226,7 @@ namespace SkillEditor.Editor
             newClip.clipId = Guid.NewGuid().ToString();
             
             // 自动位移（对齐到原片段尾部）
-            newClip.startTime = sourceClip.startTime + sourceClip.duration;
+            newClip.StartTime = sourceClip.StartTime + sourceClip.Duration;
             
             track.clips.Add(newClip);
             
@@ -256,8 +256,8 @@ namespace SkillEditor.Editor
                 return;
             }
             
-            newClip.startTime = startTime;
-            newClip.duration = 1.0f;
+            newClip.StartTime = startTime;
+            newClip.Duration = 1.0f;
             newClip.clipName = $"{track.trackName}片段";
             
             track.clips.Add(newClip);

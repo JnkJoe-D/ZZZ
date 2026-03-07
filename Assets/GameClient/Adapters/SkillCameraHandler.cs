@@ -1,3 +1,4 @@
+using Game.Resource;
 using Cinemachine;
 using Game.Camera;
 using SkillEditor;
@@ -41,9 +42,15 @@ namespace Game.Adapters
         }
         public SkillCameraHandler()
         {
-            CameraConfig config = AssetDatabase.LoadAssetAtPath<ScriptableObject>
+            CameraConfig config;
+#if UNITY_EDITOR
+            config = AssetDatabase.LoadAssetAtPath<ScriptableObject>
             ($"Assets/Resources/Serializations/ScriptableObjects/10001.asset") as CameraConfig;
-            if(config!=null)
+#else
+            config = ResourceManager.Instance.LoadAsset<CameraConfig>
+            ($"Assets/Resources/Serializations/ScriptableObjects/10001.asset");
+#endif
+            if (config!=null)
             {
                 if(config.prefab!=null)
                 {

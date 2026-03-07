@@ -76,7 +76,7 @@ namespace SkillEditor.Editor
 
                 // 获取光标相对此 Clip 的时间点参数
                 float timeIndicator = window.GetState() != null ? window.GetState().timeIndicator : 0f;
-                float localTime = timeIndicator - camClip.startTime;
+                float localTime = timeIndicator - camClip.StartTime;
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label($"当前光标局地时间: {localTime:F2}s");
@@ -91,13 +91,13 @@ namespace SkillEditor.Editor
                     EditorPrefs.SetFloat(PREF_KEYFRAME_VALUE, _customKeyframeValue);
                 }
 
-                bool inRange = localTime >= -0.1f && localTime <= camClip.duration + 0.1f;
+                bool inRange = localTime >= -0.1f && localTime <= camClip.Duration + 0.1f;
                 using (new EditorGUI.DisabledScope(!inRange))
                 {
                     if (GUILayout.Button($"在此刻 ({localTime:F2}s) 插入点", GUILayout.Height(30)))
                     {
                         float evalTime = camClip.sampleMode == CurveSampleMode.NormalizedTime
-                                         ? Mathf.Clamp01(localTime / camClip.duration)
+                                         ? Mathf.Clamp01(localTime / camClip.Duration)
                                          : localTime;
 
                         Undo.RecordObject(window.GetCurrentTimeline(), "Insert Custom Curve Key");
@@ -171,7 +171,7 @@ namespace SkillEditor.Editor
             if (resolution > 200) resolution = 200;
 
             Vector3[] points = new Vector3[resolution];
-            float clipDuration = clip.duration;
+            float clipDuration = clip.Duration;
             if (clipDuration <= 0) return;
 
             float curveDisplayHeight = clipRect.height - 4f; 

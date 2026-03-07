@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SkillEditor
 {
@@ -73,22 +74,44 @@ namespace SkillEditor
                         {
                             animClip.clipGuid = GetAssetGuid(animClip.animationClip);
                             animClip.clipAssetName = animClip.animationClip.name;
+                            animClip.clipAssetPath = GetAssetPath(animClip.animationClip);
                         }
                         if(animClip.overrideMask != null)
                         {
                             animClip.maskGuid = GetAssetGuid(animClip.overrideMask);
                             animClip.maskAssetName = animClip.overrideMask.name;
+                            animClip.maskAssetPath = GetAssetPath(animClip.overrideMask);
                         }
                     }
                     else if (clip is VFXClip vfxClip && vfxClip.effectPrefab != null)
                     {
                         vfxClip.prefabGuid = GetAssetGuid(vfxClip.effectPrefab);
                         vfxClip.prefabAssetName = vfxClip.effectPrefab.name;
+                        vfxClip.prefabAssetPath = GetAssetPath(vfxClip.effectPrefab);
                     }
-                    else if (clip is SkillAudioClip audioClip && audioClip.audioClip != null)
+                    else if (clip is SkillAudioClip audioClip)
                     {
-                        audioClip.clipGuid = GetAssetGuid(audioClip.audioClip);
-                        audioClip.clipAssetName = audioClip.audioClip.name;
+                        audioClip.clipGuids.Clear();
+                        audioClip.clipAssetNames.Clear();
+                        audioClip.clipAssetPaths.Clear();
+                        if (audioClip.audioClips != null)
+                        {
+                            foreach (var ac in audioClip.audioClips)
+                            {
+                                if (ac != null)
+                                {
+                                    audioClip.clipGuids.Add(GetAssetGuid(ac));
+                                    audioClip.clipAssetNames.Add(ac.name);
+                                    audioClip.clipAssetPaths.Add(GetAssetPath(ac));
+                                }
+                                else
+                                {
+                                    audioClip.clipGuids.Add("");
+                                    audioClip.clipAssetNames.Add("");
+                                    audioClip.clipAssetPaths.Add("");
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -97,7 +120,7 @@ namespace SkillEditor
         /// <summary>
         /// 根据 GUID 还原所有资源（遍历 groups → tracks → clips）
         /// </summary>
-        public static void ResolveAllAssets(SkillTimeline timeline)
+        public static async Task ResolveAllAssets(SkillTimeline timeline)
         {
             if (timeline == null) return;
 
@@ -109,20 +132,38 @@ namespace SkillEditor
                     {
                         if(!string.IsNullOrEmpty(animClip.clipGuid))
                         {
-                            animClip.animationClip = ResolveAsset<AnimationClip>(animClip.clipGuid, animClip.clipAssetName);
+                            animClip.animationClip = await ResolveAsset<AnimationClip>(animClip.clipGuid, animClip.clipAssetPath, animClip.clipAssetName);
                         }
                         if(!string.IsNullOrEmpty(animClip.maskGuid))
                         {
-                            animClip.overrideMask = ResolveAsset<AvatarMask>(animClip.maskGuid, animClip.maskAssetName);
+                            animClip.overrideMask = await ResolveAsset<AvatarMask>(animClip.maskGuid, animClip.maskAssetPath, animClip.maskAssetName);
                         }
                     }
                     else if (clip is VFXClip vfxClip && !string.IsNullOrEmpty(vfxClip.prefabGuid))
                     {
-                        vfxClip.effectPrefab = ResolveAsset<GameObject>(vfxClip.prefabGuid, vfxClip.prefabAssetName);
+                        vfxClip.effectPrefab = await ResolveAsset<GameObject>(vfxClip.prefabGuid, vfxClip.prefabAssetPath, vfxClip.prefabAssetName);
                     }
-                    else if (clip is SkillAudioClip audioClip && !string.IsNullOrEmpty(audioClip.clipGuid))
+                    else if (clip is SkillAudioClip audioClip)
                     {
-                        audioClip.audioClip = ResolveAsset<AudioClip>(audioClip.clipGuid, audioClip.clipAssetName);
+                        audioClip.audioClips.Clear();
+                        if (audioClip.clipGuids != null)
+                        {
+                            for (int i = 0; i < audioClip.clipGuids.Count; i++)
+                            {
+                                string guid = audioClip.clipGuids[i];
+                                string pth = (audioClip.clipAssetPaths != null && i < audioClip.clipAssetPaths.Count) ? audioClip.clipAssetPaths[i] : "";
+                                string nme = (audioClip.clipAssetNames != null && i < audioClip.clipAssetNames.Count) ? audioClip.clipAssetNames[i] : "";
+                                
+                                if (!string.IsNullOrEmpty(guid) || !string.IsNullOrEmpty(pth) || !string.IsNullOrEmpty(nme))
+                                {
+                                    audioClip.audioClips.Add(await ResolveAsset<AudioClip>(guid, pth, nme));
+                                }
+                                else
+                                {
+                                    audioClip.audioClips.Add(null);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -136,15 +177,42 @@ namespace SkillEditor
             return "";
 #endif
         }
-        private static T ResolveAsset<T>(string guid, string assetName = null) where T:Object
+        private static string GetAssetPath(Object asset)
         {
 #if UNITY_EDITOR
-            string assetPath =  AssetDatabase.GUIDToAssetPath(guid);
-            if (string.IsNullOrEmpty(assetPath)) return null;
+            return AssetDatabase.GetAssetPath(asset);
+#else
+            return "";
+#endif
+        }
+
+        private static async Task<T> ResolveAsset<T>(string guid, string assetPath, string assetName = null) where T:Object
+        {
+#if UNITY_EDITOR
+            // 如果是在 Editor 运行模式下，且已经注入了资源加载器，优先走运行时加载逻辑 (例如 Addressables/YooAsset 模拟)
+            if (Application.isPlaying && Runtime.SkillSystemContext.AssetLoader != null)
+            {
+                // 使用 assetPath 或者回退使用 assetName
+                string address = !string.IsNullOrEmpty(assetPath) ? assetPath : assetName;
+
+                // 如果二者都有，说明很大可能是请求子资产（例如 FBX 内嵌的 AnimationClip / AvatarMask）
+                if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) && typeof(T) != typeof(GameObject))
+                {
+                    T subAsset = await Runtime.SkillSystemContext.AssetLoader.LoadSubAssetAsync<T>(address, assetName);
+                    if (subAsset != null) return subAsset;
+                }
+                
+                // 否则直接加载主资产
+                T runtimeAsset = await Runtime.SkillSystemContext.AssetLoader.LoadAssetAsync<T>(address);
+                if (runtimeAsset != null) return runtimeAsset;
+            }
+
+            string realAssetPath = AssetDatabase.GUIDToAssetPath(guid);
+            if (string.IsNullOrEmpty(realAssetPath)) return null;
 
             if (!string.IsNullOrEmpty(assetName))
             {
-                Object[] allAssets = AssetDatabase.LoadAllAssetsAtPath(assetPath);
+                Object[] allAssets = AssetDatabase.LoadAllAssetsAtPath(realAssetPath);
                 foreach (var obj in allAssets)
                 {
                     // 仅当类型匹配且名称匹配时返回，实现对嵌套 FBX 等多对象的精确抓取
@@ -156,9 +224,22 @@ namespace SkillEditor
             }
 
             // 回退兼容：如果没配置名称或没找到，就直接加载该路径的主返回资产
-            T asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+            T asset = AssetDatabase.LoadAssetAtPath<T>(realAssetPath);
             return asset;
 #else
+            // 非 Editor 的真机运行环境下，全部走适配器注入的业务管线加载
+            if (Runtime.SkillSystemContext.AssetLoader != null)
+            {
+                string address = !string.IsNullOrEmpty(assetPath) ? assetPath : assetName;
+
+                if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) && typeof(T) != typeof(GameObject))
+                {
+                    T subAsset = await Runtime.SkillSystemContext.AssetLoader.LoadSubAssetAsync<T>(address, assetName);
+                    if (subAsset != null) return subAsset;
+                }
+
+                return await Runtime.SkillSystemContext.AssetLoader.LoadAssetAsync<T>(address);
+            }
             return null;
 #endif
         }

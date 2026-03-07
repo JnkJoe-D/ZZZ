@@ -75,7 +75,7 @@ namespace SkillEditor.Editor
 
             // 2. 采样粒子
             // 计算当前 Clip 内部时间
-            float clipTime = currentTime - clip.startTime;
+            float clipTime = currentTime - clip.StartTime;
             EditorVFXManager.Instance.Sample(vfxInstance, clipTime);
         }
 

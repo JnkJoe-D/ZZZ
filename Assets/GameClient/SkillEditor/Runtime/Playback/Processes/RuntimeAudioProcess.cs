@@ -18,19 +18,24 @@ namespace SkillEditor{
 
         public override void OnEnter()
         {
-            if (audioHandler != null && clip.audioClip != null)
+            if (audioHandler != null && clip.audioClips != null && clip.audioClips.Count > 0)
             {
+                var validClips = clip.audioClips.FindAll(c => c != null);
+                if (validClips.Count == 0) return;
+
+                var selectedClip = validClips[Random.Range(0, validClips.Count)];
+                if (selectedClip == null) return;
                 var args = new AudioArgs
                 {
                     volume = clip.volume,
-                    pitch = clip.pitch * context.GlobalPlaySpeed, // 叠加全局变速
+                    pitch = !clip.isAffectSpeed? clip.pitch:clip.pitch * context.GlobalPlaySpeed, // 叠加全局变速
                     loop = clip.loop,
                     spatialBlend = clip.spatialBlend,
                     startTime = 0f, // 总是从头播放，除非实现了 Resume 逻辑
                     position = context.Owner != null ? context.Owner.transform.position : Vector3.zero
                 };
                 
-                playingSoundId = audioHandler.PlaySound(clip.audioClip, args);
+                playingSoundId = audioHandler.PlaySound(selectedClip, args);
             }
         }
 
@@ -38,20 +43,36 @@ namespace SkillEditor{
         {
             // 如果需要支持动态参数（如时间轴内修改音量或音调曲线），可在此调用 UpdateSound
             // 目前仅更新各种变速后的 Pitch
-            if (playingSoundId != -1 && audioHandler != null)
+            if (playingSoundId != -1 && audioHandler != null && clip.isAffectSpeed)
             {
                 float targetPitch = clip.pitch * context.GlobalPlaySpeed;
                 audioHandler.UpdateSound(playingSoundId, clip.volume, targetPitch, -1f); // -1 time 表示不强制同步时间
             }
         }
 
-        public override void OnExit()
+        public override void OnPause()
         {
             if (playingSoundId != -1 && audioHandler != null)
             {
-                audioHandler.StopSound(playingSoundId);
-                playingSoundId = -1;
+                audioHandler.PauseSound(playingSoundId);
             }
+        }
+
+        public override void OnResume()
+        {
+            if (playingSoundId != -1 && audioHandler != null)
+            {
+                audioHandler.ResumeSound(playingSoundId);
+            }
+        }
+
+        public override void OnExit()
+        {
+            // if (playingSoundId != -1 && audioHandler != null)
+            // {
+            //     audioHandler.StopSound(playingSoundId);
+            //     playingSoundId = -1;
+            // }
         }
 
         public override void Reset()

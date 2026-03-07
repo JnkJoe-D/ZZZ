@@ -15,10 +15,8 @@ namespace Game.Scene
     ///   2. 对外提供统一的场景切换接口
     ///   3. 广播场景切换进度回调给 UI 系统
     /// </summary>
-    public class SceneManager
+    public class SceneManager : Game.Framework.Singleton<SceneManager>
     {
-        public static SceneManager Instance { get; private set; }
-
         private MonoBehaviour _coroutineHost;
 
         public string CurrentSceneName { get; private set; } = string.Empty;
@@ -26,7 +24,6 @@ namespace Game.Scene
 
         public void Initialize(MonoBehaviour host)
         {
-            Instance = this;
             _coroutineHost = host;
             Debug.Log("[SceneManager] 初始化完成");
         }
@@ -133,7 +130,7 @@ namespace Game.Scene
                                 LoadingText = $"正在构建世界结构 ({loadedCount}/{totalCount})..." 
                             });
                         }
-                    ));
+                    ,null));
                     loadTasks.Add(task);
                 }
 
@@ -189,7 +186,7 @@ namespace Game.Scene
         /// </summary>
         public void Shutdown()
         {
-            Instance = null;
+            IsLoading = false;
         }
     }
 }

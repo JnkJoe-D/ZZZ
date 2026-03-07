@@ -12,6 +12,7 @@ namespace Game.FSM
         public T Owner { get; private set; }
         
         private IFSMState<T> _currentState;
+        public IFSMState<T> CurrentState => _currentState;
         private readonly Dictionary<System.Type, IFSMState<T>> _stateCache = new Dictionary<System.Type, IFSMState<T>>();
 
         // 内部构造，外部由 FSMManager 创建

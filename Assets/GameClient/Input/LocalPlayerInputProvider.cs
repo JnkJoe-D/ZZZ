@@ -26,8 +26,8 @@ namespace Game.Input
 
             // 订阅瞬发事件
             _input.GamePlay.Dodge.started += _ => OnDodgeStarted?.Invoke();
-            _input.GamePlay.Attack.started += _ => OnBasicAttackStarted?.Invoke();
-            _input.GamePlay.SpecialAttack.started += _ => OnSpecialAttack?.Invoke();
+            _input.GamePlay.LightAttack.started += _ => OnBasicAttackStarted?.Invoke();
+            _input.GamePlay.SpecialSkill.started += _ => OnSpecialAttack?.Invoke();
             _input.GamePlay.Ultimate.started += _ => OnUltimate?.Invoke();
             _input.GamePlay.Interact.started += _ => OnGameplayInteract?.Invoke();
 
