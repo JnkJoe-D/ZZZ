@@ -75,6 +75,12 @@ namespace Game.Logic.Character
             Config = config;
             Debug.Log($"[CharacterEntity] Config Injected: Role={config.RoleName}");
             
+            // 调用预加载
+            if (Game.Logic.Action.ActionManager.Instance != null)
+            {
+                Game.Logic.Action.ActionManager.Instance.PreloadCharacterActions(config);
+            }
+            
             // 如果还需要额外拿武器或者其他的，可以直接在这边拿
         }
 

@@ -3,6 +3,7 @@ using UnityEngine;
 using SkillEditor;
 using Game.Adapters;
 using Game.Logic.Action.Config;
+using Game.Logic.Character.Config;
 
 namespace Game.Logic.Action
 {
@@ -20,6 +21,21 @@ namespace Game.Logic.Action
 
         public void Initialize() { }
 
+        /// <summary>
+        /// 一次性预热加载角色挂载的所有动作资源
+        /// </summary>
+        public void PreloadCharacterActions(CharacterConfigSO config)
+        {
+            if (config == null) return;
+            foreach (var actionConfig in config.GetAllActionConfigs())
+            {
+                if (actionConfig != null)
+                {
+                    GetOrLoadTimeline(actionConfig);
+                }
+            }
+        }
+
         public SkillTimeline GetOrLoadTimeline(ActionConfigSO config)
         {
             if (config == null || config.TimelineAsset == null) return null;
@@ -32,7 +48,6 @@ namespace Game.Logic.Action
             
             return timeline;
         }
-
         public ProcessContext GetContext(Character.CharacterEntity entity)
         {
             int id = entity.GetInstanceID();

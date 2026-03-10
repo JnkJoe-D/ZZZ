@@ -69,5 +69,34 @@ namespace Game.Logic.Character.Config
         public SkillConfigSO assistSkill;
         [Header("终结技")]
         public SkillConfigSO Ultimate;
+
+        /// <summary>
+        /// 提取该角色所配置的所有可能被播放的动作，用于集中管理和启动时预加载
+        /// </summary>
+        public IEnumerable<ActionConfigSO> GetAllActionConfigs()
+        {
+            if (IdleConfig != null) yield return IdleConfig;
+            if (JogStartConfig != null) yield return JogStartConfig;
+            if (JogConfig != null) yield return JogConfig;
+            if (JogStopConfig != null) yield return JogStopConfig;
+            if (DashStartConfig != null) yield return DashStartConfig;
+            if (DashConfig != null) yield return DashConfig;
+            if (DashStopConfig != null) yield return DashStopConfig;
+
+            if (evadeFront != null) foreach (var c in evadeFront) if (c != null) yield return c;
+            if (evadeBack != null) foreach (var c in evadeBack) if (c != null) yield return c;
+            
+            if (lightAttacks != null) foreach (var c in lightAttacks) if (c != null) yield return c;
+            if (heavyAttacks != null) foreach (var c in heavyAttacks) if (c != null) yield return c;
+            
+            if (dashAttack != null) yield return dashAttack;
+            if (dodgeCounter != null) foreach (var c in dodgeCounter) if (c != null) yield return c;
+            
+            if (specialSkill != null) yield return specialSkill;
+            if (enhancedSpecialSkill != null) yield return enhancedSpecialSkill;
+            if (chainSkill != null) yield return chainSkill;
+            if (assistSkill != null) yield return assistSkill;
+            if (Ultimate != null) yield return Ultimate;
+        }
     }
 }

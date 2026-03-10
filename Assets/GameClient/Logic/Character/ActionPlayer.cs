@@ -34,15 +34,18 @@ namespace Game.Logic.Character
             // 清理旧 Runner 监听与状态
             StopAction();
 
-            // 校准面朝向 (技能施放前瞬间转向输入方向)
-            var inputDir = _entity.InputProvider?.GetMovementDirection() ?? Vector2.zero;
-            if (inputDir.sqrMagnitude > 0.01f && _entity.CameraController != null)
+            if(config.TurnMode == ActionTurnMode.InputDirection)
             {
-                Vector3 worldDir = _entity.CameraController.GetForward() * inputDir.y + _entity.CameraController.GetRight() * inputDir.x;
-                worldDir.y = 0;
-                if(worldDir != Vector3.zero)
+                // 校准面朝向 (技能施放前瞬间转向输入方向)
+                var inputDir = _entity.InputProvider?.GetMovementDirection() ?? Vector2.zero;
+                if (inputDir.sqrMagnitude > 0.01f && _entity.CameraController != null)
                 {
-                    _entity.transform.forward = worldDir.normalized;
+                    Vector3 worldDir = _entity.CameraController.GetForward() * inputDir.y + _entity.CameraController.GetRight() * inputDir.x;
+                    worldDir.y = 0;
+                    if (worldDir != Vector3.zero)
+                    {
+                        _entity.transform.forward = worldDir.normalized;
+                    }
                 }
             }
 

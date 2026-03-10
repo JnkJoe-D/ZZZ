@@ -6,7 +6,7 @@ namespace Game.Logic.Character.SubStates
     {
         private float _stateTime;
         private bool _hasPlayedAnim;
-        private const float INPUT_BUFFER_TIME = 0.00f; // 短输入防抖阈值
+        private const float INPUT_BUFFER_TIME = 0.08f; // 短输入防抖阈值
 
         public override void OnEnter()
         {

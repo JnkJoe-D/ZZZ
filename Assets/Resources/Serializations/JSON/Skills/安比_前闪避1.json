@@ -195,10 +195,10 @@
                     "isEnabled": true,
                     "startTime": 0.0,
                     "duration": 1.8666667938232422,
-                    "blendInDuration": 0.0,
+                    "blendInDuration": 0.20000000298023225,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 32866
+                        "instanceID": 35380
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -229,7 +229,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 35396
+                        "instanceID": 34792
                     },
                     "prefabGuid": "83e244af1d719994ab693b7cedf89951",
                     "prefabAssetName": "Slash_fx_01",
@@ -315,7 +315,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35938
+                            "instanceID": 35334
                         }
                     ],
                     "volume": 1.0,
