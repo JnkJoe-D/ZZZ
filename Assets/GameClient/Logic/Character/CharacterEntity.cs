@@ -20,15 +20,41 @@ namespace Game.Logic.Character
         
         // === 状态机引用 ===
         public FSMSystem<CharacterEntity> StateMachine { get; private set; }
+        public FSM.FSMSystem<CharacterEntity> Machine => StateMachine;
+
+        // --- 动作执行器 ---
+        public ActionPlayer ActionPlayer { get; private set; }
 
         // --- 供 State 拿取配置动作 ---
         public Game.Logic.Character.Config.CharacterConfigSO Config { get; private set; }
-        public Game.Logic.Character.Config.AnimSetEntry CurrentAnimSet => Config?.AnimationSet;
 
         // --- 技能连招与事件通讯黑板 ---
         public event System.Action<string> OnSkillTimelineEvent;
-        public Game.Logic.Skill.Config.SkillConfigSO NextSkillToCast { get; set; }
+        public Game.Logic.Action.Config.ActionConfigSO NextActionToCast { get; set; }
         public bool IsComboInputOpen { get; set; } = false;
+        
+        // --- 闪避到移动状态的越级信号黑板 ---
+        public bool ForceDashNextFrame { get; set; } = false;
+
+        // === 闪避充能与冷却 ===
+        public float EvadeTimer { get; set; } = 0f;
+        public int EvadeCount { get; set; } = 0;
+
+        public bool CanEvade()
+        {
+            if (Config == null) return false;
+            // 达到限制次数且还在冷却中，则无法闪避
+            if (EvadeCount >= Config.evadeLimitedTimes && EvadeTimer > 0)
+                return false;
+            return true;
+        }
+
+        public void RecordEvade()
+        {
+            if (Config == null) return;
+            EvadeCount++;
+            EvadeTimer = Config.evadeCoolDown;
+        }
 
         private void Awake()
         {
@@ -52,40 +78,6 @@ namespace Game.Logic.Character
             // 如果还需要额外拿武器或者其他的，可以直接在这边拿
         }
 
-        public void PlayFootSound()
-        {
-            var audioBank = Game.Config.ConfigManager.Instance.GetConfigSO<Game.Audio.Config.CommonActionAudioSO>();
-            if (audioBank != null)
-            {
-                var clip = audioBank.GetRandomClip(audioBank.Footstep);
-                if (clip != null)
-                {
-                    // 这里未来可能变成 AudioManager.PlayAudio 传坐标和 3D 设置
-                    var arg = new AudioArgs
-                    {
-                        parent = this.transform
-                    };
-                    Game.Audio.AudioManager.Instance?.PlayAudio(clip, Game.Audio.AudioChannel.SFX, arg);
-                }
-            }
-        }
-        public void PlayFootBackSound()
-        {
-            var audioBank = Game.Config.ConfigManager.Instance.GetConfigSO<Game.Audio.Config.CommonActionAudioSO>();
-            if (audioBank != null)
-            {
-                var clip = audioBank.GetRandomClip(audioBank.FootstepEnd);
-                if (clip != null)
-                {
-                    var arg = new AudioArgs
-                    {
-                        parent = this.transform
-                    };
-                    Game.Audio.AudioManager.Instance?.PlayAudio(clip, Game.Audio.AudioChannel.SFX, arg);
-                }
-            }
-        }
-
         private void Start()
         {
             // ===== 不再使用全局动画管理器，现在由配置传入 =====
@@ -103,6 +95,12 @@ namespace Game.Logic.Character
                     StateMachine.AddState(new CharacterGroundState());
                     StateMachine.AddState(new CharacterAirborneState());
                     StateMachine.AddState(new CharacterSkillState());
+                    StateMachine.AddState(new CharacterEvadeState());
+
+                    // 动作播放器
+                    ActionPlayer = new ActionPlayer(this);
+
+                    // 初始状态
                     StateMachine.ChangeState<CharacterGroundState>();
                 }
                 else
@@ -120,6 +118,21 @@ namespace Game.Logic.Character
                 InputProvider.OnBasicAttackStarted += OnBasicAttack;
                 InputProvider.OnSpecialAttack += OnSpecialAttack;
                 InputProvider.OnUltimate += OnUltimateAttack;
+                InputProvider.OnEvadeStarted += OnEvade;
+            }
+        }
+        private void OnEvade()
+        {
+            if (!(StateMachine.CurrentState is CharacterEvadeState))
+            {
+                if (!CanEvade()) return;
+
+                if (InputProvider.HasMovementInput())
+                    NextActionToCast = Config.evadeFront[0];
+                else
+                    NextActionToCast = Config.evadeBack[0];
+
+                StateMachine.ChangeState<CharacterEvadeState>();
             }
         }
 
@@ -129,31 +142,12 @@ namespace Game.Logic.Character
         private void OnBasicAttack()
         {
             // 如果不在技能态中，则是起手第一刀
-            if (!(StateMachine.CurrentState is CharacterSkillState))
+            if (StateMachine.CurrentState is CharacterGroundState)
             {
                 if (Config == null) return;
-
-                bool isDashAttack = false;
-                if (StateMachine.CurrentState is CharacterGroundState groundState)
+                if (Config.lightAttacks != null && Config.lightAttacks.Length > 0)
                 {
-                    if (groundState.CurrentSubState == groundState.DashState || 
-                       (groundState.CurrentSubState == groundState.DodgeState && groundState.Blackboard.CurrentDodgeType == DodgeType.Front))
-                    {
-                        if (Config.dashAttack != null) 
-                        {
-                            isDashAttack = true;
-                        }
-                    }
-                }
-
-                if (isDashAttack)
-                {
-                    NextSkillToCast = Config.dashAttack;
-                    StateMachine.ChangeState<CharacterSkillState>();
-                }
-                else if (Config.lightAttacks != null && Config.lightAttacks.Length > 0)
-                {
-                    NextSkillToCast = Config.lightAttacks[0];
+                    NextActionToCast = Config.lightAttacks[0];
                     StateMachine.ChangeState<CharacterSkillState>();
                 }
             }
@@ -165,7 +159,7 @@ namespace Game.Logic.Character
             {
                 if (Config != null && Config.specialSkill != null)
                 {
-                    NextSkillToCast = Config.specialSkill;
+                    NextActionToCast = Config.specialSkill;
                     StateMachine.ChangeState<CharacterSkillState>();
                 }
             }
@@ -177,7 +171,7 @@ namespace Game.Logic.Character
             {
                 if (Config != null && Config.Ultimate != null)
                 {
-                    NextSkillToCast = Config.Ultimate;
+                    NextActionToCast = Config.Ultimate;
                     StateMachine.ChangeState<CharacterSkillState>();
                 }
             }
@@ -189,6 +183,21 @@ namespace Game.Logic.Character
         public void OnSkillEvent(string eventName, System.Collections.Generic.List<SkillEditor.SkillEventParam> parameters)
         {
             OnSkillTimelineEvent?.Invoke(eventName);
+        }
+
+        private void Update()
+        {
+            ActionPlayer?.Tick(Time.deltaTime);
+
+            if (EvadeTimer > 0)
+            {
+                EvadeTimer -= Time.deltaTime;
+                if (EvadeTimer <= 0)
+                {
+                    EvadeCount = 0;
+                    EvadeTimer = 0f;
+                }
+            }
         }
 
         private void OnDestroy()

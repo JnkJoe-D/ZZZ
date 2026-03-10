@@ -183,7 +183,7 @@ namespace SkillEditor
             Transform bindTrans = null;
             if (context != null)
             {
-                var actor = context.GetService<ISkillActor>();
+                var actor = context.GetService<ISkillBoneGetter>();
                 bindTrans = actor.GetBone(clip.bindPoint);
             }
 

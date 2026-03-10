@@ -3,9 +3,10 @@ namespace Game.Logic.Character
     public enum BufferedInputType
     {
         None,
-        BasicAttack,
-        BasicAttackHold,
-        SpecialAttack,
-        Ultimate
+        Evade=10,
+        BasicAttack=20,
+        BasicAttackHold=30,
+        SpecialAttack=40,
+        Ultimate=50
     }
 }

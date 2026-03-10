@@ -1,49 +1,53 @@
+using Game.Logic.Action.Config;
 using UnityEngine;
 
 namespace Game.Logic.Character.SubStates
 {
     public class GroundStopSubState : GroundSubState
     {
+        private SkillEditor.SkillRunner _currentRunner;
+
         public override void OnEnter()
         {
-            AnimationClip playClip = null;
-            float fadeDuration = 0;
+            ActionConfigSO playConfig = null;
             float lockTime = 0f;
 
-            var animSet = _ctx.HostEntity.CurrentAnimSet;
-            if (animSet != null)
+            var config = _ctx.HostEntity.Config;
+            if (config != null)
             {
                 if (_ctx.Blackboard.IsFromDash)
                 {
-                    if (_ctx.Blackboard.IsDashStable && animSet.DashStop.clip != null)
+                    if (config.DashStopConfig != null)
                     {
-                        playClip = animSet.DashStop.clip;
-                        fadeDuration = animSet.DashStop.fadeDuration;
-                        lockTime = animSet.DashStopLockTime;
+                        playConfig = config.DashStopConfig;
+                        lockTime = 0.5f; // 可以将这些转移到 LocomotionConfigSO，暂时写死或从旧配置拿
                     }
-                    else if (animSet.JogStop != null)
+                    else if (config.JogStopConfig != null)
                     {
-                        playClip = animSet.JogStop.clip;
-                        fadeDuration = animSet.JogStop.fadeDuration;
-                        lockTime = animSet.JogStopLockTime;
+                        playConfig = config.JogStopConfig;
+                        lockTime = 0.3f;
                     }
                 }
                 else
                 {
-                    if (animSet.JogStop != null)
+                    if (config.JogStopConfig != null)
                     {
-                        playClip = animSet.JogStop.clip;
-                        fadeDuration = animSet.JogStop.fadeDuration;
-                        lockTime = animSet.JogStopLockTime;
+                        playConfig = config.JogStopConfig;
+                        lockTime = 0.3f;
                     }
                 }
             }
 
-            if (playClip != null)
+            if (playConfig != null)
             {
                 // 设置推摇杆霸体保护（物理硬直）
                 _ctx.SetMoveLock(lockTime);
-                _ctx.HostEntity.AnimController?.PlayAnim(playClip, 0.2f, null, OnStopAnimFinished, forceResetTime: true);
+                _currentRunner = _ctx.HostEntity.ActionPlayer.PlayAction(playConfig);
+                if (_currentRunner != null) 
+                {
+                    _currentRunner.OnComplete -= OnStopAnimFinished;
+                    _currentRunner.OnComplete += OnStopAnimFinished;
+                }
             }
             else
             {
@@ -60,6 +64,12 @@ namespace Game.Logic.Character.SubStates
             // 刹车期间如果物理硬直已过，只要玩家推摇杆便一刀斩断后摇，立刻切去新步态（打断动画）
             if (provider.HasMovementInput() && !_ctx.IsMoveLocked)
             {
+                if (_currentRunner != null)
+                {
+                    _currentRunner.OnComplete -= OnStopAnimFinished;
+                    _currentRunner = null;
+                }
+
                 if (provider.GetActionState(Game.Input.InputActionType.Dash))
                     ChangeState(_ctx.DashState);
                 else
@@ -69,6 +79,12 @@ namespace Game.Logic.Character.SubStates
 
         private void OnStopAnimFinished()
         {
+            if (_currentRunner != null)
+            {
+                _currentRunner.OnComplete -= OnStopAnimFinished;
+                _currentRunner = null;
+            }
+
             // 防抖保障：只有还在刹车态里才会自然过渡（因为如果中途推摇杆打断了退出该状态，回调再跑不应切 Idle）
             if (_ctx.CurrentSubState == this)
             {

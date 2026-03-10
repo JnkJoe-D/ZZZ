@@ -52,7 +52,7 @@ namespace SkillEditor
         /// <summary>
         /// 自然播放完毕或 Stop() 时触发
         /// </summary>
-        public event Action OnEnd;
+        public event Action OnComplete;
 
         /// <summary>
         /// 被新技能打断时触发（在旧技能清理后、新技能开始前）
@@ -174,14 +174,13 @@ namespace SkillEditor
         }
 
         /// <summary>
-        /// 停止播放（正常结束）
+        /// 停止播放
         /// </summary>
         public void Stop()
         {
             if (CurrentState == State.Idle) return;
             FullCleanup();
             CurrentState = State.Idle;
-            OnEnd?.Invoke();
             ClearEvents();
         }
 
@@ -319,7 +318,7 @@ namespace SkillEditor
                 {
                     FullCleanup();
                     CurrentState = State.Idle;
-                    OnEnd?.Invoke();
+                    OnComplete?.Invoke();
                     ClearEvents();
                 }
             }
@@ -429,7 +428,7 @@ namespace SkillEditor
         private void ClearEvents()
         {
             OnStart = null;
-            OnEnd = null;
+            OnComplete = null;
             OnInterrupt = null;
             OnPause = null;
             OnResume = null;

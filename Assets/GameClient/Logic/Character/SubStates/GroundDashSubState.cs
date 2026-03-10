@@ -1,94 +1,55 @@
+using Game.Input;
 using UnityEngine;
 
 namespace Game.Logic.Character.SubStates
 {
     public class GroundDashSubState : GroundSubState
     {
-        private float _stateTime;
         private bool _hasPlayedAnim;
-        private bool _isDashStable = false;
-        private const float INPUT_BUFFER_TIME = 0.08f; // 短输入防抖阈值
-
         public override void OnEnter()
         {
-            _stateTime = 0f;
             _hasPlayedAnim = false;
-            _isDashStable = false; // 每次新切入 Dash，稳定锁防抖重新复位
+            DoDash();
         }
 
         public override void OnUpdate(float deltaTime)
         {
+            var provider = DoDash();
+            if(provider==null)return;
+            // 3. 强力冲刺移动
+            Vector2 inputDir = provider.GetMovementDirection();
+            Vector3 worldDir = _ctx.CalculateWorldDirection(inputDir);
+
+            _ctx.HostEntity.MovementController?.Move(worldDir * _ctx.DashSpeed * deltaTime);
+            _ctx.HostEntity.MovementController?.FaceTo(worldDir);
+            
+            // 实时速率同步（可选，因为已经在 OnEnter 里设置过了，但如果配置热更有改变就更新）
+            _ctx.HostEntity.ActionPlayer.SetPlaySpeed(_ctx.HostEntity.Config.DashMultipier);
+        }
+        IInputProvider DoDash()
+        {
             var provider = _ctx.HostEntity.InputProvider;
-            if (provider == null) return;
+            if (provider == null) return null;
 
             // 1. 松摇杆触发物理急停
             if (!provider.HasMovementInput())
             {
-                // if(_isDashStable)
-                // {
-                //     _ctx.StopState.SetBrakeParams(isFromDash: true, isDashStable: _isDashStable);
-                //     ChangeState(_ctx.StopState);
-                // }
-                // else
-                // {
-                //     ChangeState(_ctx.IdleState);
-                // }
                 _ctx.Blackboard.IsFromDash = true;
-                _ctx.Blackboard.IsDashStable = _isDashStable;
                 ChangeState(_ctx.StopState);
-                return;
+                return null;
             }
-
-            // // 2. 长按 Shift 折断：松手了但还在滑推摇杆，降级落回 Jog
-            // if (!provider.GetActionState(Game.Input.InputActionType.Dash))
-            // {
-            //     ChangeState(_ctx.JogState);
-            //     return;
-            // }
-
-            _stateTime += deltaTime;
+            if(_hasPlayedAnim) return provider;
             
-            // 短输入防抖：避免冲刺点按抽搐
-            if (!_hasPlayedAnim && _stateTime >= INPUT_BUFFER_TIME)
+            // 如果存在起步配置，先播起步（暂时不实现复杂的起步接循环，直接播循环，后续通过Timeline自身控制）
+            // 目前简化为直接播 DashConfig
+            if (_ctx.HostEntity.Config.DashConfig != null)
             {
-                _hasPlayedAnim = true;
-                _isDashStable = true;
-                var startClip = _ctx.HostEntity.CurrentAnimSet?.DashStart.clip;
-                if (startClip != null)
-                {
-                    _ctx.HostEntity.AnimController?.PlayAnim(
-                        startClip,
-                        _ctx.HostEntity.CurrentAnimSet.Dash.fadeDuration,
-                        forceResetTime: true
-                    );
-
-                    _ctx.HostEntity.AnimController?.AddEventToCurrentAnim(
-                        Mathf.Max(0, startClip.length - _ctx.HostEntity.CurrentAnimSet.Dash.fadeDuration), 
-                        () => 
-                        {
-                            _ctx.HostEntity.AnimController?.PlayAnim(
-                                _ctx.HostEntity.CurrentAnimSet.Dash.clip, 
-                                _ctx.HostEntity.CurrentAnimSet.Dash.fadeDuration
-                            );
-                        }
-                    );
-                }
-                else if (_ctx.HostEntity.CurrentAnimSet?.Dash.clip != null)
-                {
-                    _ctx.HostEntity.AnimController?.PlayAnim(
-                        _ctx.HostEntity.CurrentAnimSet.Dash.clip, 
-                        _ctx.HostEntity.CurrentAnimSet.Dash.fadeDuration
-                    );
-                }
+                _ctx.HostEntity.ActionPlayer.PlayAction(_ctx.HostEntity.Config.DashConfig);
+                _ctx.HostEntity.ActionPlayer.SetPlaySpeed(_ctx.HostEntity.Config.DashMultipier);
             }
-
-            // 3. 强力冲刺移动
-            Vector2 inputDir = provider.GetMovementDirection();
-            Vector3 worldDir = _ctx.CalculateWorldDirection(inputDir);
             
-            _ctx.HostEntity.MovementController?.Move(worldDir * _ctx.DashSpeed * deltaTime);
-            _ctx.HostEntity.MovementController?.FaceTo(worldDir);
-            _ctx.HostEntity.AnimController?.SetSpeed(0, _ctx.HostEntity.Config.DashMultipier);
+            _hasPlayedAnim=true;
+            return provider;
         }
     }
 }

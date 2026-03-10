@@ -6,7 +6,7 @@ using Game.Network;
 using UnityEngine.EventSystems;
 using System.IO;
 using Game.Config;
-using Game.Logic.Skill;
+using Game.Logic.Action;
 using Game.FSM;
 using Game.UI;
 using Game.Scene;
@@ -128,7 +128,7 @@ namespace Game.Framework
             Debug.Log("[GameRoot] [4/9] Assets ... OK");
             
             // ── Step 4.5: 向技能编辑器注入资源加载适配器 ────────────────
-            SkillEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.SkillAssetLoaderAdapter());
+            SkillEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.SkillAssetLoader());
             Debug.Log("[GameRoot] [4.5/9] SkillEditor AssetLoader Injected ... OK");
             
             yield return null;
@@ -158,8 +158,7 @@ namespace Game.Framework
             Game.Camera.GameCameraManager.Instance.Initialize();
 
             // ── Step 11: 玩家连接层管理器 ────────────────
-            Game.Logic.Player.PlayerManager.Instance.Initialize();
-            Debug.Log("[GameRoot] [11/11] Player Manager ... OK");
+
 
             // 发布初始化完成事件，各系统可以订阅此事件做后置操作
             EventCenter.Publish(new GameInitializedEvent());
@@ -185,8 +184,8 @@ namespace Game.Framework
             IsInitialized = false;
 
             // 各子系统 Shutdown（顺序与初始化相反）
-            Game.Logic.Player.PlayerManager.Instance?.Shutdown();
-            Game.Logic.Skill.SkillManager.Instance?.Shutdown();
+
+            Game.Logic.Action.ActionManager.Instance?.Shutdown();
             Game.Input.InputManager.Instance?.Shutdown();
             Game.Camera.GameCameraManager.Instance?.Shutdown();
             SceneManager.Instance?.Shutdown();

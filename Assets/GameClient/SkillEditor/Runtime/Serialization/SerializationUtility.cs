@@ -195,8 +195,9 @@ namespace SkillEditor
                 // 使用 assetPath 或者回退使用 assetName
                 string address = !string.IsNullOrEmpty(assetPath) ? assetPath : assetName;
 
-                // 如果二者都有，说明很大可能是请求子资产（例如 FBX 内嵌的 AnimationClip / AvatarMask）
-                if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) && typeof(T) != typeof(GameObject))
+                // 仅针对常见内嵌多资源的类型（如 FBX 里的 AnimationClip / AvatarMask）尝试异步读取 SubAsset
+                if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) && 
+                    (typeof(T) == typeof(AnimationClip) || typeof(T) == typeof(AvatarMask)))
                 {
                     T subAsset = await Runtime.SkillSystemContext.AssetLoader.LoadSubAssetAsync<T>(address, assetName);
                     if (subAsset != null) return subAsset;
@@ -232,7 +233,8 @@ namespace SkillEditor
             {
                 string address = !string.IsNullOrEmpty(assetPath) ? assetPath : assetName;
 
-                if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) && typeof(T) != typeof(GameObject))
+                if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) && 
+                    (typeof(T) == typeof(AnimationClip) || typeof(T) == typeof(AvatarMask)))
                 {
                     T subAsset = await Runtime.SkillSystemContext.AssetLoader.LoadSubAssetAsync<T>(address, assetName);
                     if (subAsset != null) return subAsset;

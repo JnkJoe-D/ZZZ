@@ -11,7 +11,7 @@ namespace Game.Input
     {
         public event Action OnSwitchNext;
         public event Action OnSwitchPre;
-        public event Action OnDodgeStarted;
+        public event Action OnEvadeStarted;
         public event Action OnBasicAttackStarted;
         public event Action OnBasicAttackCanceled;
         public event Action OnBasicAttackHoldStart;
@@ -29,7 +29,7 @@ namespace Game.Input
             _input = new PlayerControl();
 
             // 订阅瞬发事件
-            _input.GamePlay.Dodge.started += _ => OnDodgeStarted?.Invoke();
+            _input.GamePlay.Dodge.started += _ => OnEvadeStarted?.Invoke();
             _input.GamePlay.LightAttack.started += _ => OnBasicAttackStarted?.Invoke();
             _input.GamePlay.LightAttack.canceled += _ => OnBasicAttackCanceled?.Invoke();
             _input.GamePlay.LightAttackHold.started += _ => OnBasicAttackHoldStart?.Invoke();

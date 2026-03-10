@@ -19,7 +19,7 @@ namespace SkillEditor.Editor
             // 1. 获取挂点
             Transform targetTransform = null;
             // 尝试获取 ISkillActor (如果预览模型挂了脚本)
-            var actor = context.GetService<ISkillActor>();
+            var actor = context.GetService<ISkillBoneGetter>();
             if (actor != null)
             {
                 targetTransform = actor.GetBone(clip.bindPoint, clip.customBoneName);
@@ -95,7 +95,7 @@ namespace SkillEditor.Editor
         {
             if (context.Owner == null) return null;
 
-            var actor = context.Owner.GetComponent<ISkillActor>();
+            var actor = context.Owner.GetComponent<ISkillBoneGetter>();
             if (actor != null)
             {
                 return actor.GetBone(clip.bindPoint, clip.customBoneName);

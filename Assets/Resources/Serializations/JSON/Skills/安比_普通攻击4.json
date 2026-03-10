@@ -16,7 +16,7 @@
         {
             "groupId": "9504ede6-68f0-46aa-b60f-9dc7a8fc1a5a",
             "groupName": "分组 2",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -305,7 +305,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.11666667461395264,
                     "animationClip": {
-                        "instanceID": 34532
+                        "instanceID": 35190
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -336,7 +336,7 @@
                     "blendInDuration": 0.11666667461395264,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34534
+                        "instanceID": 35192
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -367,7 +367,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 34738
+                        "instanceID": 35396
                     },
                     "prefabGuid": "83e244af1d719994ab693b7cedf89951",
                     "prefabAssetName": "Slash_fx_01",
@@ -390,7 +390,7 @@
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "destroyOnEnd": true,
+                    "destroyOnEnd": false,
                     "stopEmissionOnEnd": false
                 }
             },
@@ -410,7 +410,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 34738
+                        "instanceID": 35396
                     },
                     "prefabGuid": "83e244af1d719994ab693b7cedf89951",
                     "prefabAssetName": "Slash_fx_01",
@@ -433,7 +433,7 @@
                         "y": 1.0,
                         "z": 1.2000000476837159
                     },
-                    "destroyOnEnd": true,
+                    "destroyOnEnd": false,
                     "stopEmissionOnEnd": false
                 }
             },
@@ -454,7 +454,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35350
+                            "instanceID": 36004
                         }
                     ],
                     "volume": 1.0,
@@ -490,10 +490,10 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34862
+                            "instanceID": 35522
                         },
                         {
-                            "instanceID": 35228
+                            "instanceID": 35882
                         },
                         {
                             "instanceID": 0
@@ -544,7 +544,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34942
+                            "instanceID": 35604
                         },
                         {
                             "instanceID": 0
@@ -586,7 +586,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34854
+                            "instanceID": 35514
                         },
                         {
                             "instanceID": 0
@@ -628,7 +628,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34986
+                            "instanceID": 35648
                         }
                     ],
                     "volume": 1.0,

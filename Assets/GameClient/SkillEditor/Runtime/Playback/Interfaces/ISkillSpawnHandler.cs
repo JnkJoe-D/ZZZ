@@ -13,13 +13,13 @@ namespace SkillEditor
         /// </summary>
         /// <param name="data">包含预制体、坐标、旋转、所有者等在内的完整生成参数包</param>
         /// <returns>生成的投射物逻辑控制接口</returns>
-        ISkillProjectile Spawn(SpawnData data);
+        ISkillProjectileHandler Spawn(SpawnData data);
         
         /// <summary>
         /// 技能提早或意外中断时，请求销毁相关的生成物
         /// </summary>
         /// <param name="projectile">之前生成的实例接口</param>
-        void DestroySpawnedObject(ISkillProjectile projectile);
+        void DestroySpawnedObject(ISkillProjectileHandler projectile);
     }
 
     /// <summary>

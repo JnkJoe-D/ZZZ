@@ -227,7 +227,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1947270631790161,
                     "animationClip": {
-                        "instanceID": 33828
+                        "instanceID": 34486
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -258,7 +258,7 @@
                     "blendInDuration": 0.1947270631790161,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 33826
+                        "instanceID": 34484
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -289,7 +289,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 34738
+                        "instanceID": 35396
                     },
                     "prefabGuid": "83e244af1d719994ab693b7cedf89951",
                     "prefabAssetName": "Slash_fx_01",
@@ -312,7 +312,7 @@
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "destroyOnEnd": true,
+                    "destroyOnEnd": false,
                     "stopEmissionOnEnd": false
                 }
             },
@@ -333,7 +333,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34688
+                            "instanceID": 35346
                         }
                     ],
                     "volume": 1.0,
@@ -369,10 +369,10 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34774
+                            "instanceID": 35432
                         },
                         {
-                            "instanceID": 35160
+                            "instanceID": 35820
                         },
                         {
                             "instanceID": 0
@@ -423,7 +423,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34986
+                            "instanceID": 35648
                         }
                     ],
                     "volume": 1.0,

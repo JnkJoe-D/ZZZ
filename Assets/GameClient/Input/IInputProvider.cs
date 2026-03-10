@@ -50,7 +50,7 @@ namespace Game.Input
         /// <summary>切换上一个指令触发 (如 C 键)</summary>
         event Action OnSwitchPre;
         /// <summary>闪避触发 (如 Shift 键)</summary>
-        event Action OnDodgeStarted;
+        event Action OnEvadeStarted;
 
         /// <summary>基础普攻指令触发 (如 鼠标左键)</summary>
         event Action OnBasicAttackStarted;

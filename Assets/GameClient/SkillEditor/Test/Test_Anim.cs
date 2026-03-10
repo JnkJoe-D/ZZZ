@@ -36,7 +36,7 @@ public class Test_Anim : MonoBehaviour
 
             // 3. 添加服务
             // 3. 添加服务
-            context.AddService<ISkillAnimationHandler>(new AnimComponentAdapter(animComp));
+            context.AddService<ISkillAnimationHandler>(new SkillAnimationHandler(animComp));
 
             // 4.反序列化
             timeline = SU.OpenFromJson(skillAsset);

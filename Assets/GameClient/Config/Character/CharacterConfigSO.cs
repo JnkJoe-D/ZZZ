@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Game.Logic.Skill.Config;
+using Game.Logic.Action.Config;
 
 namespace Game.Logic.Character.Config
 {
@@ -34,8 +34,22 @@ namespace Game.Logic.Character.Config
         [Header("技能速度倍率")][Range(0,5f)]
         public float SkillMultipier = 1f;
 
-        [Header("基础动画")]
-        public AnimSetEntry AnimationSet;
+        // [Header("基础动画 (Legacy)")]
+        // public AnimSetEntry AnimationSet;
+
+        [Header("基础移动配置 (Timeline 驱动)")]
+        public LocomotionConfigSO IdleConfig;
+        public LocomotionConfigSO JogStartConfig;
+        public LocomotionConfigSO JogConfig;
+        public LocomotionConfigSO JogStopConfig;
+        public LocomotionConfigSO DashStartConfig;
+        public LocomotionConfigSO DashConfig;
+        public LocomotionConfigSO DashStopConfig;
+        [Header("闪避")]
+        public SkillConfigSO[] evadeFront;
+        public SkillConfigSO[] evadeBack;
+        public int evadeLimitedTimes = 2;
+        public float evadeCoolDown = 1f;
 
         [Header("普攻")]
         public SkillConfigSO[] lightAttacks;

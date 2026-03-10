@@ -41,7 +41,7 @@ namespace SkillEditor
         [SkillProperty("跟随片段结束")]
         public bool destroyOnEnd = true;
 
-        [SkillProperty("结束时停止发射")]
+        [SkillProperty("结束时停止发射粒子")]
         public bool stopEmissionOnEnd = false;
 
         public VFXClip()

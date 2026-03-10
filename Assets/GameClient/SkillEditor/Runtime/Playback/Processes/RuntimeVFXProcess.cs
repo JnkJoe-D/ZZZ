@@ -13,7 +13,7 @@ namespace SkillEditor
         }
         private ParticleSpeedInfo[] particleInfos;
         private GameObject vfxInstance;
-        private IVFXPoolService vfxPoolService;
+        private ISkillVFXHandler vfxHanlder;
         public override void OnEnable()
         {
             base.OnEnable();
@@ -26,7 +26,7 @@ namespace SkillEditor
             // 1. 获取挂点
             Transform targetTransform = null;
             // 懒加载获取 actor 服务
-            var actor = context.GetService<ISkillActor>();
+            var actor = context.GetService<ISkillBoneGetter>();
             if (actor != null)
             {
                 targetTransform = actor.GetBone(clip.bindPoint, clip.customBoneName);
@@ -49,10 +49,10 @@ namespace SkillEditor
 
             // 2. 实例化
             Transform parent = clip.followTarget ? targetTransform : null;
-            vfxPoolService = context.GetService<IVFXPoolService>();
-            if (vfxPoolService != null)
+            vfxHanlder = context.GetService<ISkillVFXHandler>();
+            if (vfxHanlder != null)
             {
-                vfxInstance = vfxPoolService.Spawn(clip.effectPrefab, spawnPos, spawnRot, parent);
+                vfxInstance = vfxHanlder.Spawn(clip.effectPrefab, spawnPos, spawnRot, parent);
             }
             else
             {
@@ -128,45 +128,23 @@ namespace SkillEditor
             Debug.Log($"[RuntimeVFXProcess] OnExit at time: {UnityEngine.Time.time}");
             if (vfxInstance == null) return;
 
-            if (clip.destroyOnEnd)
+            if (clip.destroyOnEnd) //跟随片段结束
             {
                 //重置速度
                 SyncSpeed(1f);
                 if (clip.stopEmissionOnEnd)
                 {
-                    // 软结束
-                    var particles = vfxInstance.GetComponentsInChildren<ParticleSystem>();
-                    float maxLifetime = 0f;
-                    foreach (var ps in particles)
-                    {
-                        ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-                        if (ps.main.startLifetime.constantMax > maxLifetime)
-                            maxLifetime = ps.main.startLifetime.constantMax;
-                    }
-
-                    // 尝试获取通用协程 Runner (由 Factory 提供)
-                    var runner = context.GetService<MonoBehaviour>();
-
-                    if (runner != null && runner.isActiveAndEnabled)
-                    {
-                        runner.StartCoroutine(DelayReturn(vfxInstance, maxLifetime));
-                    }
-                    else
-                    {
-                        // 无 Runner，强行回收
-                        ReturnVFX(vfxInstance);
-                    }
+                    ReturnVFXDelay(clip.stopEmissionOnEnd);
                 }
                 else
                 {
                     // 硬结束
-                    ReturnVFX(vfxInstance);
+                    ReturnVFX();
                 }
             }
             else
             {
-                // 不销毁 (交由外部或自行销毁)，断开引用
-                vfxInstance = null; 
+                ReturnVFXDelay(false);
             }
         }
         public override void OnDisable() 
@@ -178,29 +156,37 @@ namespace SkillEditor
             base.Reset();
             particleInfos = null;
             vfxInstance = null;
-            vfxPoolService = null;
+            vfxHanlder = null;
         }
 
         /// <summary>
         /// 归还 VFX 实例（优先通过池服务，降级为直接销毁）
         /// </summary>
-        private void ReturnVFX(GameObject inst)
+        private void ReturnVFX()
         {
-            if (vfxPoolService != null)
+            if (vfxHanlder != null)
             {
-                vfxPoolService.Return(inst);
+                vfxHanlder.Return(vfxInstance);
             }
             else
             {
-                Object.Destroy(inst);
+                Object.Destroy(vfxInstance);
             }
         }
             
-        private IEnumerator DelayReturn(GameObject inst, float delay)
+        private void ReturnVFXDelay(bool stopEmissionOnEnd)
         {
-            if (delay > 0)
-                yield return new WaitForSeconds(delay);
-            ReturnVFX(inst);
+            // 软结束
+            var particles = vfxInstance.GetComponentsInChildren<ParticleSystem>();
+            float maxLifetime = 0f;
+            foreach (var ps in particles)
+            {
+                if(stopEmissionOnEnd) ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                if (ps.main.startLifetime.constantMax > maxLifetime)
+                    maxLifetime = ps.main.startLifetime.constantMax;
+            }
+
+            vfxHanlder.ReturnVFXDelay(vfxInstance, maxLifetime);
         }
     }
 }

@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Game.Logic.Character;
 
-namespace Game.Logic.Skill.Combo
+namespace Game.Logic.Action.Combo
 {
     [Serializable]
     public class ComboTransition
@@ -13,8 +14,9 @@ namespace Game.Logic.Skill.Combo
         public BufferedInputType RequiredCommand;
 
         [Header("跳转目标")]
-        [Tooltip("验证通过后，将要播放的下一个技能")]
-        public Config.SkillConfigSO NextSkill;
+        [Tooltip("验证通过后，将要播放的下一个行为")]
+        [FormerlySerializedAs("NextSkill")]
+        public Config.ActionConfigSO NextAction;
 
         [Header("业务前置条件 (选填)")]
         [SerializeReference] 

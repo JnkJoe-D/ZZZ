@@ -6,7 +6,7 @@ namespace SkillEditor
     public class RuntimeSpawnProcess : ProcessBase<SpawnClip>
     {
         private ISkillSpawnHandler spawnHandler;
-        private ISkillProjectile spawnedProjectile;
+        private ISkillProjectileHandler spawnedProjectile;
 
         public override void OnEnable()
         {
@@ -59,7 +59,7 @@ namespace SkillEditor
             parent = null;
             if (context != null)
             {
-                var actor = context.GetService<ISkillActor>();
+                var actor = context.GetService<ISkillBoneGetter>();
                 parent = actor.GetBone(clip.bindPoint);
             }
 

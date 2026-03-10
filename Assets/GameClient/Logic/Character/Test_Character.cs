@@ -85,7 +85,7 @@ namespace Game.Logic.Character
             Debug.Log("[GameRoot] [4/9] Assets ... OK");
 
             // ── Step 4.5: 向技能编辑器注入资源加载适配器 ────────────────
-            SkillEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.SkillAssetLoaderAdapter());
+            SkillEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.SkillAssetLoader());
             Debug.Log("[GameRoot] [4.5/9] SkillEditor AssetLoader Injected ... OK");
 
             yield return null;
@@ -115,8 +115,7 @@ namespace Game.Logic.Character
             Game.Camera.GameCameraManager.Instance.Initialize();
 
             // ── Step 11: 玩家连接层管理器 ────────────────
-            Game.Logic.Player.PlayerManager.Instance.Initialize();
-            Debug.Log("[GameRoot] [11/11] Player Manager ... OK");
+
 
             StartCoroutine(SpawnRoutine());
         }

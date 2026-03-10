@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Resources;
+using System.Threading.Tasks;
+using Cinemachine;
 using UnityEngine;
 
 namespace Game.Camera
@@ -95,6 +100,18 @@ namespace Game.Camera
         {
             MainCamera = UnityEngine.Camera.main;
             // if (MainCamera != null) Brain = MainCamera.GetComponent<Cinemachine.CinemachineBrain>();
+        }
+
+
+        public async Task<GameObject> LoadCameraAsync(string path)
+        {
+            if(String.IsNullOrEmpty(path))return null;
+            GameObject cam = await Game.Resource.ResourceManager.Instance.LoadAssetAsync<GameObject>(path);
+            if(cam!=null)
+            {
+                
+            }
+            return cam;
         }
     }
 }

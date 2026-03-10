@@ -1,6 +1,6 @@
 using Game.Logic.Character;
 
-namespace Game.Logic.Skill.Combo
+namespace Game.Logic.Action.Combo
 {
     public interface ITransitionCondition
     {

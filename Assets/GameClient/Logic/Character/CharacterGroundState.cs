@@ -3,14 +3,10 @@ using UnityEngine;
 
 namespace Game.Logic.Character
 {
-    public enum DodgeType { Front, Back }
 
     public class PlayerLocomotionBlackboard
     {
         public bool IsFromDash;
-        public bool IsDashStable;
-        public DodgeType CurrentDodgeType;
-        public float LastDodgeTime = -999f;
     }
 
     /// <summary>
@@ -30,7 +26,6 @@ namespace Game.Logic.Character
         public SubStates.GroundJogSubState JogState { get; private set; }
         public SubStates.GroundDashSubState DashState { get; private set; }
         public SubStates.GroundStopSubState StopState { get; private set; }
-        public SubStates.GroundDodgeSubState DodgeState { get; private set; }
         
         public SubStates.GroundSubState CurrentSubState { get; private set; }
 
@@ -49,13 +44,11 @@ namespace Game.Logic.Character
             JogState = new SubStates.GroundJogSubState();
             DashState = new SubStates.GroundDashSubState();
             StopState = new SubStates.GroundStopSubState();
-            DodgeState = new SubStates.GroundDodgeSubState();
             
             IdleState.Initialize(this);
             JogState.Initialize(this);
             DashState.Initialize(this);
             StopState.Initialize(this);
-            DodgeState.Initialize(this);
         }
 
         public override void OnEnter()
@@ -69,17 +62,20 @@ namespace Game.Logic.Character
             {
                 if (provider.HasMovementInput())
                 {
-                    if (provider.GetActionState(Game.Input.InputActionType.Dash))
+                    if (Entity.ForceDashNextFrame || provider.GetActionState(Game.Input.InputActionType.Dash))
+                    {
+                        Entity.ForceDashNextFrame = false;
                         ChangeSubState(DashState);
+                    }
                     else
+                    {
                         ChangeSubState(JogState);
+                    }
                 }
                 else
                 {
                     ChangeSubState(IdleState);
                 }
-                
-                provider.OnDodgeStarted += HandleDodge;
             }
             else
             {
@@ -101,10 +97,6 @@ namespace Game.Logic.Character
 
         public override void OnExit()
         {
-            if (Entity.InputProvider != null)
-            {
-                Entity.InputProvider.OnDodgeStarted -= HandleDodge;
-            }
             
             CurrentSubState?.OnExit();
             CurrentSubState = null;
@@ -154,23 +146,5 @@ namespace Game.Logic.Character
             }
         }
 
-        private void HandleDodge()
-        {
-            if (IsMoveLocked) return;
-            
-            // 防连闪与状态打断保护 (0.4秒软冷却或正处于闪避态不重入)
-            if (Time.time - Blackboard.LastDodgeTime < 0.4f || CurrentSubState == DodgeState) 
-                return;
-                
-            var provider = Entity.InputProvider;
-            if (provider == null) return;
-            
-            if (provider.HasMovementInput())
-                Blackboard.CurrentDodgeType = DodgeType.Front;
-            else
-                Blackboard.CurrentDodgeType = DodgeType.Back;
-            
-            ChangeSubState(DodgeState);
-        }
     }
 }

@@ -70,14 +70,6 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
-      - CollectPath: Assets/Resources/Serializations/JSON/Skills
-        CollectorGUID: a7da9ba96ae18ba44ada5456bc68ae60
-        CollectorType: 0
-        AddressRuleName: AddressByFileName
-        PackRuleName: PackDirectory
-        FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
       - CollectPath: "Assets/Resources/Animations/Clips/\u5B89\u6BD4"
         CollectorGUID: f91159fe5e0735846aa74b1f874074ec
         CollectorType: 0
@@ -86,8 +78,8 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
-      - CollectPath: Assets/Resources/Audio/AnBi
-        CollectorGUID: f305b92c2ca444a4fa6df7dbe111e8cb
+      - CollectPath: Assets/Resources/Audio
+        CollectorGUID: e61d02dda1173ad479b306f4be90f7d6
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory

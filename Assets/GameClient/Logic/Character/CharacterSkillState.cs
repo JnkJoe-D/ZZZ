@@ -1,5 +1,5 @@
 using Game.FSM;
-using Game.Logic.Skill.Config;
+using Game.Logic.Action.Config;
 using SkillEditor;
 using UnityEngine;
 
@@ -12,9 +12,6 @@ namespace Game.Logic.Character
     /// </summary>
     public class CharacterSkillState : CharacterStateBase
     {
-        private SkillEditor.SkillRunner _runner;
-        private ProcessContext _context;
-        private bool _isSkillFinished;
         
         // 连招缓冲：当玩家在 InputWindow 开启前提前输入时记录
         private BufferedInputType _bufferedInput = BufferedInputType.None;
@@ -26,13 +23,13 @@ namespace Game.Logic.Character
         private float PRE_INPUT_INTERVAL = 0.5f;
         private SkillConfigSO currentSkill;
         private bool isBasicAttackHold;
+        private SkillRunner _currentRunner;
         public override void OnEnter()
         {
-            _isSkillFinished = false;
             _bufferedInput = BufferedInputType.None;
             Entity.IsComboInputOpen = false;
 
-            // 监听普攻连接和时间轴发出的逻辑事件
+            // 监听普攻连接
             if (Entity.InputProvider != null)
             {
                 Entity.InputProvider.OnBasicAttackStarted += OnBasicAttackRequest;
@@ -43,7 +40,7 @@ namespace Game.Logic.Character
                 Entity.InputProvider.OnSpecialAttack += OnSpecialAttackRequest;
                 Entity.InputProvider.OnUltimate += OnUltimateRequest;
             }
-                
+            // 监听技能时间轴发出的逻辑事件
             Entity.OnSkillTimelineEvent += OnReceiveTimelineEvent;
 
             PlayCurrentSkill();
@@ -51,42 +48,26 @@ namespace Game.Logic.Character
 
         private void PlayCurrentSkill()
         {
-            _isSkillFinished = false;
             _skillStartTime = Time.time;
 
-            var skillConfig = Entity.NextSkillToCast;
-            if (skillConfig == null)
+            var skillConfig = Entity.NextActionToCast;
+            if (skillConfig == null) return;
+
+            Debug.Log($"<color=#0FFFFF>[Combo] PlayCurrentSkill {skillConfig.Name}</color>");
+            _currentRunner = Entity.ActionPlayer.PlayAction(skillConfig);
+            if(_currentRunner != null)
             {
-                _isSkillFinished = true; return;
+                _currentRunner.OnComplete -= OnSkillEnd;
+                _currentRunner.OnComplete += OnSkillEnd;
             }
+            
+            // 在此修改播放倍率，由于 ActionPlayer 已经挂载好Context
+            Entity.ActionPlayer.SetPlaySpeed(
+                (skillConfig is SkillConfigSO s && (s.Category == SkillCategory.LightAttack || s.Category == SkillCategory.DashAttack || s.Category == SkillCategory.HeavyAttack)) 
+                ? Entity.Config.AttackMultipier : Entity.Config.SkillMultipier
+            );
 
-            var timeline = Game.Logic.Skill.SkillManager.Instance.GetOrLoadTimeline(skillConfig);
-            if (timeline == null)
-            {
-                _isSkillFinished = true; return;
-            }
-
-            _runner = Game.Logic.Skill.SkillManager.Instance.GetRunner(Entity);
-            _context = Game.Logic.Skill.SkillManager.Instance.GetContext(Entity);
-
-            _runner.OnEnd -= OnSkillEnd;
-            _runner.OnEnd += OnSkillEnd;
-
-            // 切面刷新面朝向，技能释放前将自己转向摇杆方向
-            var inputDir = Entity.InputProvider?.GetMovementDirection() ?? Vector2.zero;
-            if (inputDir.sqrMagnitude > 0.01f && Entity.CameraController != null)
-            {
-                Vector3 worldDir = Entity.CameraController.GetForward() * inputDir.y + Entity.CameraController.GetRight() * inputDir.x;
-                worldDir.y = 0;
-                if(worldDir != Vector3.zero)
-                {
-                    Entity.transform.forward = worldDir.normalized;
-                }
-            }
-            Debug.Log($"<color=#0FFFFF>[Combo] PlayCurrentSkill {Entity.NextSkillToCast}</color>");
-            Debug.Log($"<color=#0FFFFF>[Combo] PlayCurrentSkill {skillConfig.TimelineAsset.name}</color>");
-            _runner.Play(timeline, _context);
-            currentSkill = skillConfig;
+            currentSkill = skillConfig as SkillConfigSO;
             Debug.Log($"<color=#E2243C>PlaySkill!!!</color>");
         }
 
@@ -218,6 +199,7 @@ namespace Game.Logic.Character
                 _bufferedInputTime = Time.time;
             }
         }
+        
 
         private void TryAdvanceComboFromTransitions(BufferedInputType inputCommand)
         {
@@ -235,17 +217,16 @@ namespace Game.Logic.Character
                 {
                     Debug.Log($"<color=#00FFFF>[Combo] Match Found! Transitioning to {inputCommand}</color>");
                     Debug.Log($"<color=#00FFFF>[Combo] Match Found! Transitioning to {transition.RequiredCommand}</color>");
-                    Debug.Log($"<color=#00FFFF>[Combo] Match Found! Transitioning to {transition.NextSkill?.name ?? "NULL"}</color>");
+                    Debug.Log($"<color=#00FFFF>[Combo] Match Found! Transitioning to {transition.NextAction?.name ?? "NULL"}</color>");
                     // 命中！成功找到符合按键和状态的下一个招式
-                    Entity.NextSkillToCast = transition.NextSkill;
-                    Debug.Log($"<color=#00FFFF>[Combo] Match Found! Transitioning to {Entity.NextSkillToCast}</color>");
+                    Entity.NextActionToCast = transition.NextAction;
+                    Debug.Log($"<color=#00FFFF>[Combo] Match Found! Transitioning to {Entity.NextActionToCast}</color>");
 
                     // 清空本地缓存与输入锁
                     _bufferedInput = BufferedInputType.None;
                     Entity.IsComboInputOpen = false;
                     
                     // 因为复用了状态机，不需要走 FSM 重进，直接播即可
-                    _runner.Stop();
                     PlayCurrentSkill();
                     return;
                 }
@@ -266,7 +247,7 @@ namespace Game.Logic.Character
                     Machine.ChangeState<CharacterAirborneState>();
                 return;
             }
-            if (_isSkillFinished)
+            if (!Entity.ActionPlayer.IsPlaying)
             {
                 if (Entity.MovementController != null && Entity.MovementController.IsGrounded)
                     Machine.ChangeState<CharacterGroundState>();
@@ -274,32 +255,16 @@ namespace Game.Logic.Character
                     Machine.ChangeState<CharacterAirborneState>();
                 return;
             }
-            if (currentSkill!=null &&_context!=null)  //速率同步
-            {
-                if(currentSkill.Category==SkillCategory.LightAttack 
-                || currentSkill.Category == SkillCategory.HeavyAttack
-                || currentSkill.Category == SkillCategory.DashAttack)
-                {
-                    _context.GlobalPlaySpeed=Entity.Config.AttackMultipier;
-                }
-                else
-                {
-                    _context.GlobalPlaySpeed = Entity.Config.SkillMultipier;
-                }
-            }
-            _runner?.Tick(deltaTime);
         }
 
         public override void OnExit()
         {
-            if (_runner != null)
+            if (_currentRunner != null)
             {
-                _runner.OnEnd -= OnSkillEnd;
-                _runner.Stop();
-                _runner = null;
+                _currentRunner.OnComplete -= OnSkillEnd;
+                _currentRunner = null;
             }
-            _context = null;
-            Entity.NextSkillToCast = null;
+            Entity.ActionPlayer.StopAction();
             currentSkill = null;
             // 清理监听
             if (Entity.InputProvider != null)
@@ -320,8 +285,15 @@ namespace Game.Logic.Character
 
         private void OnSkillEnd()
         {
-            _isSkillFinished = true;
             currentSkill = null;
+            if(Entity.MovementController!=null&&Entity.MovementController.IsGrounded)
+            {
+                Entity.Machine.ChangeState<CharacterGroundState>();
+            }
+            else
+            {
+                Entity.Machine.ChangeState<CharacterAirborneState>();
+            }
         }
     }
 }

@@ -11,11 +11,11 @@ namespace Game.Adapters
     /// </summary>
     public class SkillSpawnHandler : ISkillSpawnHandler
     {
-        public ISkillProjectile Spawn(SpawnData data)
+        public ISkillProjectileHandler Spawn(SpawnData data)
         {
             var obj = SpawnObject(data.configPrefab, data.position, data.rotation, data.detach, data.parent);
             if (obj == null) return null;
-            ISkillProjectile sp = obj.GetComponent<SkillProjectile>() ?? obj.AddComponent<SkillProjectile>();
+            ISkillProjectileHandler sp = obj.GetComponent<SkillProjectileHandler>() ?? obj.AddComponent<SkillProjectileHandler>();
             return sp;
         }
 
@@ -41,7 +41,7 @@ namespace Game.Adapters
             return instance;
         }
 
-        public void DestroySpawnedObject(ISkillProjectile projectile)
+        public void DestroySpawnedObject(ISkillProjectileHandler projectile)
         {
             if (projectile is MonoBehaviour mono)
             {

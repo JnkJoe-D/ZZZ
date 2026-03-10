@@ -138,7 +138,7 @@ namespace SkillEditor.Editor
             Transform parent = null;
             if (state != null && state.PreviewContext != null)
             {
-                var actor = state.PreviewContext.GetService<ISkillActor>();
+                var actor = state.PreviewContext.GetService<ISkillBoneGetter>();
                 if (actor != null)
                 {
                     parent = actor.GetBone(clip.bindPoint, clip.customBoneName);
