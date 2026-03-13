@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Game.Audio;
 using Game.FSM;
 using Game.Input;
@@ -9,7 +10,7 @@ namespace Game.Logic.Character
     /// 主角或玩家控制体的核心枢纽
     /// 管理状态机、持有各项解耦接口（Input、移动、动画），并对这些零件起粘合协调作用
     /// </summary>
-    public class CharacterEntity : MonoBehaviour, SkillEditor.ISkillEventHandler
+    public class CharacterEntity : MonoBehaviour, SkillEditor.ISkillEventHandler, SkillEditor.ISkillComboWindowHandler
     {
         // === 对底层组件的松散引用 ===
         public IInputProvider InputProvider { get; private set; }
@@ -31,7 +32,30 @@ namespace Game.Logic.Character
         // --- 技能连招与事件通讯黑板 ---
         public event System.Action<string> OnSkillTimelineEvent;
         public Game.Logic.Action.Config.ActionConfigSO NextActionToCast { get; set; }
-        public bool IsComboInputOpen { get; set; } = false;
+
+        public Game.Logic.Action.Combo.CommandBuffer CommandBuffer { get; private set; }
+        public Game.Logic.Action.Combo.ComboController ComboController { get; private set; }
+
+        public class ComboWindowData
+        {
+            public string Tag;
+            public SkillEditor.ComboWindowType Type;
+        }
+
+        public List<ComboWindowData> ActiveComboWindows { get; private set; } = new List<ComboWindowData>();
+        
+        public bool HasComboTag(string tag)
+        {
+            return ActiveComboWindows.Exists(x => x.Tag == tag);
+        }
+
+        public bool HasWindowType(SkillEditor.ComboWindowType type)
+        {
+            return ActiveComboWindows.Exists(x => x.Type == type);
+        }
+
+        public event System.Action<string, SkillEditor.ComboWindowType> OnComboWindowEnterEvent;
+        public event System.Action<string, SkillEditor.ComboWindowType> OnComboWindowExitEvent;
         
         // --- 闪避到移动状态的越级信号黑板 ---
         public bool ForceDashNextFrame { get; set; } = false;
@@ -105,6 +129,8 @@ namespace Game.Logic.Character
 
                     // 动作播放器
                     ActionPlayer = new ActionPlayer(this);
+                    CommandBuffer = new Game.Logic.Action.Combo.CommandBuffer();
+                    ComboController = new Game.Logic.Action.Combo.ComboController(this);
 
                     // 初始状态
                     StateMachine.ChangeState<CharacterGroundState>();
@@ -129,7 +155,7 @@ namespace Game.Logic.Character
         }
         private void OnEvade()
         {
-            if (!(StateMachine.CurrentState is CharacterEvadeState))
+            if (StateMachine.CurrentState is CharacterGroundState || StateMachine.CurrentState is CharacterAirborneState)
             {
                 if (!CanEvade()) return;
 
@@ -191,9 +217,25 @@ namespace Game.Logic.Character
             OnSkillTimelineEvent?.Invoke(eventName);
         }
 
+        // ISkillComboWindowHandler 接口实现
+        public void OnComboWindowEnter(string comboTag, SkillEditor.ComboWindowType windowType)
+        {
+            ActiveComboWindows.Add(new ComboWindowData { Tag = comboTag, Type = windowType });
+            OnComboWindowEnterEvent?.Invoke(comboTag, windowType);
+            if (ComboController != null) ComboController.OnWindowEnter(comboTag, windowType);
+        }
+
+        public void OnComboWindowExit(string comboTag, SkillEditor.ComboWindowType windowType)
+        {
+            ActiveComboWindows.RemoveAll(x => x.Tag == comboTag && x.Type == windowType);
+            OnComboWindowExitEvent?.Invoke(comboTag, windowType);
+            if (ComboController != null) ComboController.OnWindowExit(comboTag, windowType);
+        }
+
         private void Update()
         {
             ActionPlayer?.Tick(Time.deltaTime);
+            if (ComboController != null) ComboController.Update(Time.deltaTime);
 
             if (EvadeTimer > 0)
             {

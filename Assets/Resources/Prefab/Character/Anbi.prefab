@@ -4581,6 +4581,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _virtualCamera: {fileID: 0}
   virtualCamName: "\u7B2C\u4E09\u4EBA\u79F0\u81EA\u7531\u76F8\u673A"
+  follow: {fileID: 4585821602656454312}
+  lookAt: {fileID: 8159955537151252889}
 --- !u!114 &8712995317113709330
 MonoBehaviour:
   m_ObjectHideFlags: 0

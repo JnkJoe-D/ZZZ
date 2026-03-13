@@ -20,9 +20,28 @@ MonoBehaviour:
   - RequiredCommand: 30
     NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
     ExtraConditions: []
+    RequiredWindowTag: Deploy2
+    TriggerMode: 0
+  - RequiredCommand: 20
+    NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Deploy2
+    TriggerMode: 1
   - RequiredCommand: 20
     NextAction: {fileID: 11400000, guid: 5db824db0cb6cde42a4bb39499f35970, type: 2}
     ExtraConditions: []
+    RequiredWindowTag: Deploy1
+    TriggerMode: 2
+  - RequiredCommand: 10
+    NextAction: {fileID: 0}
+    ExtraConditions: []
+    RequiredWindowTag: Evade
+    TriggerMode: 1
+  - RequiredCommand: 40
+    NextAction: {fileID: 11400000, guid: b923309190cc763409c094ea5934396b, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Deploy2
+    TriggerMode: 0
   Category: 10
   Cooldown: 0.2
   MPCost: 0

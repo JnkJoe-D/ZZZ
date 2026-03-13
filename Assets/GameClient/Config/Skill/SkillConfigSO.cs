@@ -4,6 +4,9 @@ using Game.Logic.Action.Combo;
 
 namespace Game.Logic.Action.Config
 {
+    /// <summary>
+    /// 攻击/技能类型
+    /// </summary>
     public enum SkillCategory
     {
         LightAttack =10, // 普攻
@@ -15,6 +18,7 @@ namespace Game.Logic.Action.Config
         ChainSkill =70, //切人连携技
         AssistSkill= 80, //切人支援技
         Ultimate =100,      //终结技
+        Evade = 110
         // 注：Dash 已经在 GlobalAnimationConfig 中处理，此处不再列出
     }
 

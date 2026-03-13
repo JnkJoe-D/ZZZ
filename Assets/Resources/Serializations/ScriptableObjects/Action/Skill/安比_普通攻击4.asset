@@ -20,6 +20,13 @@ MonoBehaviour:
   - RequiredCommand: 20
     NextAction: {fileID: 11400000, guid: d92d1f694208d2d4683e62dc210fbf35, type: 2}
     ExtraConditions: []
+    RequiredWindowTag: Normal
+    TriggerMode: 0
+  - RequiredCommand: 10
+    NextAction: {fileID: 11400000, guid: 8d11b40273ee32f4c932bde8f7a4f111, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Evade
+    TriggerMode: 1
   Category: 10
   Cooldown: 0.2
   MPCost: 0

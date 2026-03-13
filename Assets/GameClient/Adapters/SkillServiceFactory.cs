@@ -71,6 +71,12 @@ namespace Game.Adapters
                 return GetOrCreateCachedService(serviceType, () => ownerHandler);
             }
 
+            if (serviceType == typeof(ISkillComboWindowHandler))
+            {
+                var ownerHandler = _owner != null ? _owner.GetComponent<ISkillComboWindowHandler>() : null;
+                return GetOrCreateCachedService(serviceType, () => ownerHandler);
+            }
+
             return null;
         }
 

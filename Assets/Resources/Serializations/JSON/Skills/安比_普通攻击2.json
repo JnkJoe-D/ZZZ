@@ -28,7 +28,7 @@
         {
             "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
             "groupName": "分组 3",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -54,6 +54,21 @@
                     "rid": 1005
                 }
             ]
+        },
+        {
+            "groupId": "ed4dded7-b500-4300-811b-40fc16cf6746",
+            "groupName": "分组 5",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1006
+                },
+                {
+                    "rid": 1007
+                }
+            ]
         }
     ],
     "references": {
@@ -77,10 +92,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1006
+                            "rid": 1008
                         },
                         {
-                            "rid": 1007
+                            "rid": 1009
                         }
                     ],
                     "isMasterTrack": true,
@@ -114,7 +129,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1008
+                            "rid": 1010
                         }
                     ]
                 }
@@ -137,7 +152,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1009
+                            "rid": 1011
                         }
                     ]
                 }
@@ -160,7 +175,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1012
                         }
                     ]
                 }
@@ -183,7 +198,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1013
                         }
                     ]
                 }
@@ -206,13 +221,62 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1014
                         }
                     ]
                 }
             },
             {
                 "rid": 1006,
+                "type": {
+                    "class": "ComboWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "9fb57211-831d-472e-b86c-277879dc5561",
+                    "trackType": "ComboWindowTrack",
+                    "trackName": "连击派生窗口",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1015
+                        },
+                        {
+                            "rid": 1016
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1007,
+                "type": {
+                    "class": "ComboWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "2570bdb7-c0fb-41cf-b0ea-bc0a8f5cd7a9",
+                    "trackType": "ComboWindowTrack",
+                    "trackName": "连击派生窗口",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1017
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1008,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -227,7 +291,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.15000003576278687,
                     "animationClip": {
-                        "instanceID": 35182
+                        "instanceID": 19494
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -243,7 +307,7 @@
                 }
             },
             {
-                "rid": 1007,
+                "rid": 1009,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -258,7 +322,7 @@
                     "blendInDuration": 0.15000003576278687,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 35184
+                        "instanceID": 19496
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -274,7 +338,7 @@
                 }
             },
             {
-                "rid": 1008,
+                "rid": 1010,
                 "type": {
                     "class": "VFXClip",
                     "ns": "SkillEditor",
@@ -289,23 +353,23 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 35396
+                        "instanceID": 44504
                     },
-                    "prefabGuid": "83e244af1d719994ab693b7cedf89951",
-                    "prefabAssetName": "Slash_fx_01",
-                    "prefabAssetPath": "Assets/Resources/Particles/Slash_effects/Prefabs/Single_Slash/Slash_fx_01.prefab",
+                    "prefabGuid": "d1aa224abf73af945af8db2d4c0131dd",
+                    "prefabAssetName": "FX_slash_04",
+                    "prefabAssetPath": "Assets/Resources/Prefab/VFX/FX_slash_04.prefab",
                     "bindPoint": 0,
                     "customBoneName": "",
                     "followTarget": false,
                     "positionOffset": {
-                        "x": 0.1553967446088791,
-                        "y": 0.18000000715255738,
-                        "z": -0.026053428649902345
+                        "x": 0.03991831839084625,
+                        "y": 1.059000015258789,
+                        "z": 0.3961057662963867
                     },
                     "rotationOffset": {
-                        "x": 83.78111267089844,
-                        "y": 180.00003051757813,
-                        "z": 90.0000228881836
+                        "x": 35.5537109375,
+                        "y": 164.42510986328126,
+                        "z": 72.76956176757813
                     },
                     "scale": {
                         "x": 1.0,
@@ -317,7 +381,7 @@
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1011,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -333,7 +397,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35610
+                            "instanceID": 20218
                         }
                     ],
                     "volume": 1.0,
@@ -353,7 +417,7 @@
                 }
             },
             {
-                "rid": 1010,
+                "rid": 1012,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -369,7 +433,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34996
+                            "instanceID": 17222
                         },
                         {
                             "instanceID": 0
@@ -395,7 +459,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1013,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -411,7 +475,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35648
+                            "instanceID": 18464
                         }
                     ],
                     "volume": 1.0,
@@ -431,7 +495,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1014,
                 "type": {
                     "class": "EventClip",
                     "ns": "SkillEditor",
@@ -447,6 +511,63 @@
                     "blendOutDuration": 0.0,
                     "eventName": "InputAvailable",
                     "parameters": []
+                }
+            },
+            {
+                "rid": 1015,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "968e5963-2f54-4221-8e9d-1ce84694d2f8",
+                    "clipName": "连击派生窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.30000001192092898,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "windowType": 0,
+                    "comboTag": "Normal"
+                }
+            },
+            {
+                "rid": 1016,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "98d6d0ed-3fe2-4029-81e3-bf043ff23c3d",
+                    "clipName": "连击派生窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.30000001192092898,
+                    "duration": 2.2333335876464845,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "windowType": 2,
+                    "comboTag": ""
+                }
+            },
+            {
+                "rid": 1017,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "18541f3c-a331-4af9-981b-1f195f7c7573",
+                    "clipName": "连击派生窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 2.5333335399627687,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "windowType": 1,
+                    "comboTag": "Evade"
                 }
             }
         ]

@@ -15,25 +15,27 @@ namespace Game.Logic.Character
     public class CharacterEvadeState : CharacterStateBase
     {
         
-        private BufferedInputType _bufferedInput = BufferedInputType.None;
         private SkillEditor.SkillRunner _currentRunner;
-        
         private SkillConfigSO currentSkill;
         private bool isBackswingStarted;
 
         public override void OnEnter()
         {
-            _bufferedInput = BufferedInputType.None;
-            Entity.IsComboInputOpen = false;
             isBackswingStarted = false;
 
             if (Entity.InputProvider != null)
             {
-                // 闪避态只关心最基础的起手攻击（立即派生冲刺普攻）与再次闪避（连闪）
                 Entity.InputProvider.OnBasicAttackStarted += OnBasicAttackRequest;
+                Entity.InputProvider.OnBasicAttackCanceled += OnBasicAttackRequestCancel;
+                Entity.InputProvider.OnBasicAttackHoldStart += OnBasicAttackRequestHoldStart;
+                Entity.InputProvider.OnBasicAttackHold += OnBasicAttackRequestHold;
+                Entity.InputProvider.OnBasicAttackHoldCancel += OnBasicAttackRequestHoldCancel;
+                Entity.InputProvider.OnSpecialAttack += OnSpecialAttackRequest;
+                Entity.InputProvider.OnUltimate += OnUltimateRequest;
                 Entity.InputProvider.OnEvadeStarted += OnEvadeRequest;
             }
-            
+
+            // 即便采用新设计，Evade 的自然结（跑/跑）可能仍需 Timeline Event 退场
             Entity.OnSkillTimelineEvent += OnReceiveTimelineEvent;
 
             PlayCurrentSkill();
@@ -42,10 +44,7 @@ namespace Game.Logic.Character
         private void PlayCurrentSkill()
         {
             Entity.RecordEvade();
-
             isBackswingStarted = false;
-            _bufferedInput = BufferedInputType.None;
-            Entity.IsComboInputOpen = false;
 
             var skillConfig = Entity.NextActionToCast;
             if (skillConfig == null) return;
@@ -63,77 +62,29 @@ namespace Game.Logic.Character
 
         private void OnReceiveTimelineEvent(string eventName)
         {
-            // EditorApplication.isPaused = true;
-            // 对于闪避技能，InputAvailable 事件即代表“进入后摇/可交接时刻”
+            // 对于闪避技能，InputAvailable 事件现在仅用作“如果没有派生，则自然切回Ground的标记点”
+            // 连段逻辑已经完全被 ComboWindow 及 ComboController 接管
             if (eventName == "InputAvailable")
             {
                 isBackswingStarted = true;
-
-                // 检查是否有闪避预输入
-                if (_bufferedInput == BufferedInputType.Evade)
-                {
-                    _bufferedInput = BufferedInputType.None;
-                    
-                    if (Entity.CanEvade())
-                    {
-                        // 尝试匹配连段
-                        if (TryAdvanceComboFromTransitions(BufferedInputType.Evade))
-                        {
-                            return; // 成功连段，不再执行后续自动退出
-                        }
-                    }
-                }
-
-                // 如果没有预输入，或者查表没配置下一段闪避，则直接结束闪避态切回 Ground
-                FinishEvadeAndReturnToGround();
             }
         }
 
-        private void OnBasicAttackRequest()
-        {
-            // 普攻直接强制立即派生（如冲刺攻击），只要查表命中
-            TryAdvanceComboFromTransitions(BufferedInputType.BasicAttack);
-        }
+        private float _skillStartTime;
+        private void OnBasicAttackRequest() { Entity.ComboController.OnInput(BufferedInputType.BasicAttack); }
+        private void OnBasicAttackRequestCancel() {}
+        private void OnBasicAttackRequestHoldStart() {}
+        private void OnBasicAttackRequestHold() { Entity.ComboController.OnInput(BufferedInputType.BasicAttackHold); }
+        private void OnBasicAttackRequestHoldCancel() {}
+        private void OnSpecialAttackRequest() { Entity.ComboController.OnInput(BufferedInputType.SpecialAttack); }
+        private void OnUltimateRequest() { Entity.ComboController.OnInput(BufferedInputType.Ultimate); }
 
         private void OnEvadeRequest()
         {
-            if (isBackswingStarted) return;
-            if (!Entity.CanEvade()) return;
-            // 还没到后摇时按下闪避，只记录预输入
-            _bufferedInput = BufferedInputType.Evade;
-        }
-
-        /// <summary>
-        /// 评估闪避出的树杈分支
-        /// 返回 true 代表成功被接管，发生了状态机转移或重新播放
-        /// </summary>
-        private bool TryAdvanceComboFromTransitions(BufferedInputType inputCommand)
-        {
-            if (currentSkill == null || currentSkill.OutTransitions == null || currentSkill.OutTransitions.Count == 0) 
+            if (Entity.CanEvade())
             {
-                return false;
+                Entity.ComboController.OnInput(BufferedInputType.Evade);
             }
-
-            foreach (var transition in currentSkill.OutTransitions)
-            {
-                if (transition.Evaluate(inputCommand, Entity))
-                {
-                    Entity.NextActionToCast = transition.NextAction;
-                    
-                    if (inputCommand == BufferedInputType.Evade)
-                    {
-                        // 连闪：继续待在 Evade 态重播新段落
-                        PlayCurrentSkill();
-                    }
-                    else
-                    {
-                        // 攻击：跳回主战斗技能态
-                        Machine.ChangeState<CharacterSkillState>();
-                    }
-                    return true;
-                }
-            }
-            return false;
         }
 
         // 自然/提前结束闪避状态的统一流转出口
@@ -180,12 +131,15 @@ namespace Game.Logic.Character
             if (Entity.InputProvider != null)
             {
                 Entity.InputProvider.OnBasicAttackStarted -= OnBasicAttackRequest;
+                Entity.InputProvider.OnBasicAttackCanceled -= OnBasicAttackRequestCancel;
+                Entity.InputProvider.OnBasicAttackHoldStart -= OnBasicAttackRequestHoldStart;
+                Entity.InputProvider.OnBasicAttackHold -= OnBasicAttackRequestHold;
+                Entity.InputProvider.OnBasicAttackHoldCancel -= OnBasicAttackRequestHoldCancel;
+                Entity.InputProvider.OnSpecialAttack -= OnSpecialAttackRequest;
+                Entity.InputProvider.OnUltimate -= OnUltimateRequest;
                 Entity.InputProvider.OnEvadeStarted -= OnEvadeRequest;
             }
             Entity.OnSkillTimelineEvent -= OnReceiveTimelineEvent;
-            
-            Entity.IsComboInputOpen = false;
-            _bufferedInput = BufferedInputType.None;
         }
 
         private void OnSkillEnd()

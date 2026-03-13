@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
+  m_Name: "\u5B89\u6BD4_\u5F3A\u5316\u7279\u6B8A\u6280_\u5FEB\u901F"
+  m_EditorClassIdentifier: 
+  ID: 10009
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 4c2291a71d784954baf15ae402f829fd, type: 3}
+  TurnMode: 1
+  OutTransitions:
+  - RequiredCommand: 20
+    NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Normal
+    TriggerMode: 0
+  - RequiredCommand: 10
+    NextAction: {fileID: 11400000, guid: 8d11b40273ee32f4c932bde8f7a4f111, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Evade
+    TriggerMode: 1
+  Category: 60
+  Cooldown: 2
+  MPCost: 0
+  CastRange: 2
+  CanBeInterrupted: 1
+  CinematicCameraPrefab: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []

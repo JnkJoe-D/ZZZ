@@ -1,0 +1,305 @@
+using Game.FSM;
+using Game.Logic.Character;
+using SkillEditor;
+using UnityEngine;
+
+namespace Game.Logic.Action.Combo
+{
+    public class ComboController
+    {
+        private CharacterEntity _entity;
+        
+        // 临界保护标志：防止在状态切换期间（触发 OnExit/StopAction）二次验算引发死循环和乱跳连段
+        private bool _isTransitioning = false;
+
+        public ComboController(CharacterEntity entity)
+        {
+            _entity = entity;
+        }
+
+        public void Update(float deltaTime)
+        {
+            if (_entity.CommandBuffer != null)
+            {
+                _entity.CommandBuffer.Tick();
+            }
+
+            // Fallback 期间，允许移动随时打断
+            if (_entity.HasWindowType(ComboWindowType.Fallback))
+            {
+                if (_entity.InputProvider != null && _entity.InputProvider.HasMovementInput())
+                {
+                    InterruptToGround();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 统一的接收录入入口。所有状态（特别是技能期）只需调用此方法推入按键。
+        /// </summary>
+        public void OnInput(BufferedInputType inputType)
+        {
+            if (_entity.CommandBuffer == null) return;
+            
+            _entity.CommandBuffer.Push(inputType);
+
+            // 如果当前在放技能或闪避，立刻进行一次评估
+            if (_entity.Machine.CurrentState is CharacterSkillState || _entity.Machine.CurrentState is CharacterEvadeState)
+            {
+                EvaluateCurrentState();
+            }
+        }
+
+        // === 处理技能时间轴上的窗口生命周期 ===
+        public void OnWindowEnter(string comboTag, ComboWindowType windowType)
+        {
+            if (windowType == ComboWindowType.Execute)
+            {
+                EvaluateTransitionsAgainst(comboTag);
+            }
+            else if (windowType == ComboWindowType.Buffer)
+            {
+                // 手感优化：在进入 Buffer预输入窗口的一瞬间，强制清空之前残留的陈旧指令。
+                // 确保只有在这个 Buffer窗口开启【之后】按下的按键，才会被承认作为下一次的预输入。
+                // 彻底杜绝“玩家在很早之前乱按的键，到现在仍未过期并被这扇窗户错误捕获”的极大延迟感。
+                _entity.CommandBuffer.Clear();
+            }
+        }
+
+        public void OnWindowExit(string comboTag, ComboWindowType windowType)
+        {
+            if (windowType == ComboWindowType.Buffer)
+            {
+                // Buffer期结束时，作为一个重要的“结算点”，以该 Buffer 自身的 Tag 作为条件校验一次连段
+                EvaluateTransitionsAgainst(comboTag);
+            }
+        }
+
+        /// <summary>
+        /// 核心规则：根据当前的窗口类型，裁决是否消耗指令池中的指令
+        /// </summary>
+        public void EvaluateCurrentState()
+        {
+            if (_isTransitioning) return;
+            if (_entity.CommandBuffer == null) return;
+            if (_entity.ActiveComboWindows.Count == 0) return;
+
+            bool isFallback = _entity.HasWindowType(ComboWindowType.Fallback);
+
+            if (isFallback)
+            {
+                HandleFallbackWindow();
+                return;
+            }
+
+            var currentSkill = _entity.NextActionToCast as Config.SkillConfigSO;
+            if (currentSkill == null || currentSkill.OutTransitions == null) return;
+
+            // 为了支持【同一时间存在多个并行的窗口轨道】（例如攻击轨道和闪避轨道重叠），
+            // 将遍历层级倒置：优先遍历时间线上最老的【玩家指令】，再去用各并发窗口检测，确保“更早按的键”拥有跨轨道的绝对优先结算权。
+            foreach (var cmd in _entity.CommandBuffer.GetUnconsumedCommands())
+            {
+                // 【长按延期判定】
+                if (cmd.InputType == BufferedInputType.BasicAttack)
+                {
+                    if (_entity.Machine.CurrentState is CharacterSkillState skillState && skillState.IsBasicAttackHold)
+                    {
+                        bool hasHoldTransition = currentSkill.OutTransitions.Exists(t => t.RequiredCommand == BufferedInputType.BasicAttackHold);
+                        if (hasHoldTransition)
+                        {
+                            continue; // 延期这记单击，循环看下一条指令
+                        }
+                    }
+                }
+
+                // 根据指令在池子里存活的时间，准确区分它是此帧立刻按下的即时指令，还是上一帧/更早的预输入指令
+                bool isBuffered = (Time.time - cmd.Timestamp) > 0f;
+
+                foreach (var window in _entity.ActiveComboWindows)
+                {
+                    if (window.Type != ComboWindowType.Execute) continue;
+
+                    foreach (var transition in currentSkill.OutTransitions)
+                    {
+                        // 将真实的 isBuffered 传入，由 Transition 辨别是否允许预输入
+                        if (transition.Evaluate(cmd.InputType, window.Tag, isBuffered)) 
+                        {
+                            // 匹配成功！
+                            _isTransitioning = true;
+                            cmd.IsConsumed = true;
+
+                            // 动态判定 Evade 的动作（解决前闪/后闪无法在连段线里静态配置的问题）
+                            if (cmd.InputType == BufferedInputType.Evade)
+                            {
+                                if (_entity.InputProvider != null && _entity.InputProvider.HasMovementInput())
+                                    _entity.NextActionToCast = _entity.Config.evadeFront[0];
+                                else
+                                    _entity.NextActionToCast = _entity.Config.evadeBack[0];
+                            }
+                            else
+                            {
+                                _entity.NextActionToCast = transition.NextAction;
+                            }
+                            
+                            // 必须全清当前技能留下的窗口！
+                            _entity.ActiveComboWindows.Clear();
+                            _entity.CommandBuffer.Clear();
+
+                            // 通过调用 FSM 的流转，会自动执行旧状态 OnExit(停顿/清理) 和进入新状态 OnEnter(播新技能)
+                            var nextSkill = _entity.NextActionToCast as Config.SkillConfigSO;
+                            if (nextSkill != null && nextSkill.Category == Config.SkillCategory.Evade)
+                                _entity.Machine.ChangeState<CharacterEvadeState>();
+                            else
+                                _entity.Machine.ChangeState<CharacterSkillState>();
+                                
+                            _isTransitioning = false;
+                            return; 
+                        }
+                    }
+                }
+            }
+        }
+
+        private void HandleFallbackWindow()
+        {
+            if (_entity.CommandBuffer == null) return;
+
+            // 在 Fallback 期间，有指令立刻打断
+            foreach (var cmd in _entity.CommandBuffer.GetUnconsumedCommands())
+            {
+                if (cmd.InputType == BufferedInputType.BasicAttack || cmd.InputType == BufferedInputType.BasicAttackHold)
+                {
+                    if (_entity.Config != null && _entity.Config.lightAttacks != null && _entity.Config.lightAttacks.Length > 0)
+                    {
+                        cmd.IsConsumed = true;
+                        _isTransitioning = true;
+                        _entity.NextActionToCast = _entity.Config.lightAttacks[0];
+                        _entity.ActiveComboWindows.Clear(); // 清理残留窗口
+                        _entity.CommandBuffer.Clear();
+                        _entity.Machine.ChangeState<CharacterSkillState>();
+                        _isTransitioning = false;
+                        return;
+                    }
+                }
+                else if (cmd.InputType == BufferedInputType.Evade)
+                {
+                    cmd.IsConsumed = true;
+                    _isTransitioning = true;
+                    
+                    if (_entity.InputProvider.HasMovementInput())
+                        _entity.NextActionToCast = _entity.Config.evadeFront[0];
+                    else
+                        _entity.NextActionToCast = _entity.Config.evadeBack[0];
+
+                    _entity.CommandBuffer.Clear();
+                    _entity.Machine.ChangeState<CharacterEvadeState>();
+                    _isTransitioning = false;
+                    return;
+                }
+                else if (cmd.InputType == BufferedInputType.SpecialAttack)
+                {
+                    if (_entity.Config != null && _entity.Config.specialSkill != null)
+                    {
+                        cmd.IsConsumed = true;
+                        _isTransitioning = true;
+                        _entity.NextActionToCast = _entity.Config.specialSkill;
+                        _entity.ActiveComboWindows.Clear();
+                        _entity.CommandBuffer.Clear();
+                        _entity.Machine.ChangeState<CharacterSkillState>();
+                        _isTransitioning = false;
+                        return;
+                    }
+                }
+                else if (cmd.InputType == BufferedInputType.Ultimate)
+                {
+                    if (_entity.Config != null && _entity.Config.Ultimate != null)
+                    {
+                        cmd.IsConsumed = true;
+                        _isTransitioning = true;
+                        _entity.NextActionToCast = _entity.Config.Ultimate;
+                        _entity.ActiveComboWindows.Clear();
+                        _entity.CommandBuffer.Clear();
+                        _entity.Machine.ChangeState<CharacterSkillState>();
+                        _isTransitioning = false;
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void EvaluateTransitionsAgainst(string tagToTest)
+        {
+            if (_isTransitioning) return;
+            if (_entity.CommandBuffer == null) return;
+
+            var currentSkill = _entity.NextActionToCast as Config.SkillConfigSO;
+            if (currentSkill == null || currentSkill.OutTransitions == null) return;
+
+            foreach (var cmd in _entity.CommandBuffer.GetUnconsumedCommands())
+            {
+                // 【长按延期判定】
+                if (cmd.InputType == BufferedInputType.BasicAttack)
+                {
+                    if (_entity.Machine.CurrentState is CharacterSkillState skillState && skillState.IsBasicAttackHold)
+                    {
+                        bool hasHoldTransition = currentSkill.OutTransitions.Exists(t => t.RequiredCommand == BufferedInputType.BasicAttackHold);
+                        if (hasHoldTransition)
+                        {
+                            continue; // 延期这记单击，循环看下一条指令
+                        }
+                    }
+                }
+
+                // 根据指令在池子里存活的时间，准确区分它是此帧立刻按下的即时指令，还是上一帧/更早的预输入指令
+                bool isBuffered = (Time.time - cmd.Timestamp) > 0f;
+
+                foreach (var transition in currentSkill.OutTransitions)
+                {
+                    // 将真实的 isBuffered 传入，由 Transition 辨别是否允许预输入
+                    if (transition.Evaluate(cmd.InputType, tagToTest, isBuffered)) 
+                    {
+                        // 匹配成功！
+                        _isTransitioning = true;
+                        cmd.IsConsumed = true;
+
+                        // 动态判定 Evade
+                        if (cmd.InputType == BufferedInputType.Evade)
+                        {
+                            if (_entity.InputProvider != null && _entity.InputProvider.HasMovementInput())
+                                _entity.NextActionToCast = _entity.Config.evadeFront[0];
+                            else
+                                _entity.NextActionToCast = _entity.Config.evadeBack[0];
+                        }
+                        else
+                        {
+                            _entity.NextActionToCast = transition.NextAction;
+                        }
+
+                        // 必须全清当前技能留下的窗口！
+                        _entity.ActiveComboWindows.Clear();
+                        _entity.CommandBuffer.Clear();
+
+                        // 通过调用 FSM 的流转，会自动执行旧状态 OnExit(停顿/清理) 和进入新状态 OnEnter(播新技能)
+                        var nextSkill = _entity.NextActionToCast as Config.SkillConfigSO;
+                        _entity.Machine.ChangeState<CharacterSkillState>();
+
+                        _isTransitioning = false;
+                        return; 
+                    }
+                }
+            }
+        }
+
+        public void InterruptToGround()
+        {
+            if (_entity.MovementController != null && _entity.MovementController.IsGrounded)
+            {
+                _entity.Machine.ChangeState<CharacterGroundState>();
+            }
+            else
+            {
+                _entity.Machine.ChangeState<CharacterAirborneState>();
+            }
+        }
+    }
+}

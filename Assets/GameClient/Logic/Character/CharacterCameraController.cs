@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cinemachine;
+using System;
 
 namespace Game.Logic.Character
 {
@@ -14,7 +15,10 @@ namespace Game.Logic.Character
         private CinemachineVirtualCameraBase _virtualCamera;
         [SerializeField]
         private string virtualCamName = "第三人称自由相机";
-
+        [SerializeField]
+        private Transform follow;
+        [SerializeField]
+        private Transform lookAt;
         private Transform _mainCamTransform;
 
         private void Awake()
@@ -35,9 +39,8 @@ namespace Game.Logic.Character
             // 自动绑定跟拍
             if (_virtualCamera != null)
             {
-                _virtualCamera.Follow = this.transform;
-                var aim = this.transform.Find("Aim");
-                _virtualCamera.LookAt = aim?? this.transform;
+                _virtualCamera.Follow = follow??this.transform; 
+                _virtualCamera.LookAt = lookAt??this.transform;
             }
         }
 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
   m_Name: "\u5B89\u6BD4_\u540E\u95EA"
   m_EditorClassIdentifier: 
-  ID: 10011
+  ID: 10012
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 1c779cde76e3df94c8bb497048a6185c, type: 3}
   TurnMode: 1
@@ -20,7 +20,14 @@ MonoBehaviour:
   - RequiredCommand: 20
     NextAction: {fileID: 11400000, guid: 7a51b91027c2ec94ba9740c476a93a5f, type: 2}
     ExtraConditions: []
-  Category: 10
+    RequiredWindowTag: Deploy
+    TriggerMode: 1
+  - RequiredCommand: 20
+    NextAction: {fileID: 11400000, guid: d92d1f694208d2d4683e62dc210fbf35, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Deploy2
+    TriggerMode: 1
+  Category: 110
   Cooldown: 0.5
   MPCost: 0
   CastRange: 2
