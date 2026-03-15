@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 using System;
+using Game.Logic.Character;
 
 namespace Game.Camera
 {
@@ -10,16 +11,19 @@ namespace Game.Camera
     /// </summary>
     public class CharacterCameraController : MonoBehaviour, ICameraController
     {
+        [SerializeField]
+        private GameObject _virtualCameraPrefab;
         [Tooltip("拖拽您预设在玩家组里的跟拍或全向虚拟相机")]
         [SerializeField]
         private CinemachineVirtualCameraBase _virtualCamera;
         [SerializeField]
-        private string virtualCamName = "第三人称自由相机";
+        private string virtualCamName = "主相机";
         [SerializeField]
         private Transform follow;
         [SerializeField]
         private Transform lookAt;
         private Transform _mainCamTransform;
+        private CharacterEntity _entity;
 
         private void Awake()
         {
@@ -28,22 +32,27 @@ namespace Game.Camera
                 _mainCamTransform = UnityEngine.Camera.main.transform;
                 if (_mainCamTransform.GetComponent<CinemachineBrain>() == null)
                 {
-                    Debug.LogError("[CharacterCameraController] 严重配置错误：当前主相机(Tag为MainCamera)上未找到 CinemachineBrain 组件！\nCinemachine 的虚拟相机必须依靠主相机上的 Brain 引擎来驱动，否则画面永远不会动。");
+                    // Debug.LogError("[CharacterCameraController] 严重配置错误：当前主相机(Tag为MainCamera)上未找到 CinemachineBrain 组件！\nCinemachine 的虚拟相机必须依靠主相机上的 Brain 引擎来驱动，否则画面永远不会动。");
                 }
             }
-            _virtualCamera = GameObject.Find(virtualCamName)?.GetComponent<CinemachineVirtualCameraBase>();
         }
 
-        private void Start()
+        public void Init(CharacterEntity entity)
         {
+            _entity=entity;
+            if (_virtualCamera == null && _virtualCameraPrefab != null)
+            {
+                var obj = UnityEngine.Object.Instantiate(_virtualCameraPrefab);
+                obj.name = $"{_entity.name}_{virtualCamName}";
+                _virtualCamera = obj.GetComponent<CinemachineVirtualCameraBase>();
+            }
             // 自动绑定跟拍
             if (_virtualCamera != null)
             {
-                _virtualCamera.Follow = follow??this.transform; 
-                _virtualCamera.LookAt = lookAt??this.transform;
+                _virtualCamera.Follow = follow ?? this.transform;
+                _virtualCamera.LookAt = lookAt ?? this.transform;
             }
         }
-
         /// <summary>
         /// 控制玩家能否通过鼠标转动视角
         /// </summary>

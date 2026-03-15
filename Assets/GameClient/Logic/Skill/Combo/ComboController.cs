@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Game.FSM;
 using Game.Logic.Character;
 using SkillEditor;
@@ -11,7 +12,12 @@ namespace Game.Logic.Action.Combo
         
         // 临界保护标志：防止在状态切换期间（触发 OnExit/StopAction）二次验算引发死循环和乱跳连段
         private bool _isTransitioning = false;
-
+        public class ComboWindowData
+        {
+            public string Tag;
+            public SkillEditor.ComboWindowType Type;
+        }
+                public List<ComboWindowData> ActiveComboWindows { get; private set; } = new List<ComboWindowData>();
         public struct ExecutionRecord
         {
             public BufferedInputType Input;
@@ -63,6 +69,7 @@ namespace Game.Logic.Action.Combo
         // === 处理技能时间轴上的窗口生命周期 ===
         public void OnWindowEnter(string comboTag, ComboWindowType windowType)
         {
+            ActiveComboWindows.Add(new ComboWindowData { Tag = comboTag, Type = windowType });
             if (windowType == ComboWindowType.Execute)
             {
                 EvaluateTransitionsAgainst(comboTag);
@@ -83,6 +90,7 @@ namespace Game.Logic.Action.Combo
 
         public void OnWindowExit(string comboTag, ComboWindowType windowType)
         {
+            ActiveComboWindows.RemoveAll(x => x.Tag == comboTag && x.Type == windowType);
             if (windowType == ComboWindowType.Buffer)
             {
                 // Buffer期结束时，作为一个重要的“结算点”，以该 Buffer 自身的 Tag 作为条件校验一次连段
@@ -108,7 +116,7 @@ namespace Game.Logic.Action.Combo
         {
             if (_isTransitioning) return;
             if (_entity.CommandBuffer == null) return;
-            if (_entity.ActiveComboWindows.Count == 0) return;
+            if (ActiveComboWindows.Count == 0) return;
 
             // 进入后摇期间，打断逻辑由 CharacterActionBackswingState.OnUpdate 处理。
             // 连段跳转逻辑统一通过 EvaluateTransitionsAgainst 遍历处理。
@@ -136,7 +144,7 @@ namespace Game.Logic.Action.Combo
                 // 根据指令在池子里存活的时间，准确区分它是此帧立刻按下的即时指令，还是上一帧/更早的预输入指令
                 bool isBuffered = (Time.time - cmd.Timestamp) > 0f;
 
-                foreach (var window in _entity.ActiveComboWindows)
+                foreach (var window in ActiveComboWindows)
                 {
                     if (window.Type != ComboWindowType.Execute) continue;
 
@@ -166,7 +174,7 @@ namespace Game.Logic.Action.Combo
                             RecordExecution(cmd.InputType, _entity.NextActionToCast);
                             
                             // 必须全清当前技能留下的窗口！
-                            _entity.ActiveComboWindows.Clear();
+                            ActiveComboWindows.Clear();
                             _entity.CommandBuffer.Clear();
 
                             // 通过调用 FSM 的流转，会自动执行旧状态 OnExit(停顿/清理) 和进入新状态 OnEnter(播新技能)
@@ -238,7 +246,7 @@ namespace Game.Logic.Action.Combo
                         RecordExecution(cmd.InputType, _entity.NextActionToCast);
 
                         // 必须全清当前技能留下的窗口！
-                        _entity.ActiveComboWindows.Clear();
+                        ActiveComboWindows.Clear();
                         _entity.CommandBuffer.Clear();
 
                         // 通过调用 FSM 的流转，会自动执行旧状态 OnExit(停顿/清理) 和进入新状态 OnEnter(播新技能)

@@ -268,8 +268,6 @@ namespace Game.AI
 
             AIInputProvider inputProvider = agent.InputProvider;
             Vector2 movementInput = inputProvider != null ? inputProvider.GetMovementDirection() : Vector2.zero;
-            bool dashHeld = inputProvider != null && inputProvider.GetActionState(Game.Input.InputActionType.Dash);
-            builder.AppendLine($"Input Move: ({movementInput.x:0.00}, {movementInput.y:0.00})  Dash: {dashHeld}");
             builder.AppendLine();
         }
 

@@ -23,7 +23,7 @@ namespace Game.Adapters
                 spatialBlend = args.spatialBlend,
                 startTime = args.startTime,
                 position = args.position,
-                parent = args.spatialBlend > 0.01f ? null : transform
+                parent = args.parent
             };
 
             return Game.Audio.AudioManager.Instance.PlayAudio(clip, Game.Audio.AudioChannel.SFX, globalArgs);

@@ -13,10 +13,8 @@ namespace Game.AI
     {
         public const string MoveX = "MoveX";
         public const string MoveY = "MoveY";
-        public const string DashHeld = "DashHeld";
         public const string CurrentMoveX = "CurrentMoveX";
         public const string CurrentMoveY = "CurrentMoveY";
-        public const string CurrentDashHeld = "CurrentDashHeld";
         public const string HasMoveInput = "HasMoveInput";
         public const string CanEvade = "CanEvade";
         public const string IsGrounded = "IsGrounded";
@@ -34,6 +32,7 @@ namespace Game.AI
         public const string TargetName = "TargetName";
         public const string TargetInstanceId = "TargetInstanceId";
         public const string TargetStopDistance = "TargetStopDistance";
+        public const string TargetDashDistance = "TargetDashDistance";
         public const string TargetMinDistance = "TargetMinDistance";
         public const string TargetSearchRadius = "TargetSearchRadius";
         public const string TargetFieldOfView = "TargetFieldOfView";
@@ -52,7 +51,8 @@ namespace Game.AI
         public const string BasicAttack = "character.basic_attack";
         public const string SpecialAttack = "character.special_attack";
         public const string Ultimate = "character.ultimate";
-        public const string Evade = "character.evade";
+        public const string EvadeFront = "character.evade_front";
+        public const string EvadeBack = "character.evade_back";
     }
 
     /// <summary>
@@ -117,7 +117,6 @@ namespace Game.AI
     public interface IBehaviorTreeCharacterFacade
     {
         Vector2 MoveInput { get; }
-        bool IsDashHeld { get; }
         bool HasMoveInput { get; }
         bool CanEvade { get; }
         bool IsGrounded { get; }
@@ -125,15 +124,18 @@ namespace Game.AI
         bool IsAirborneState { get; }
         bool IsSkillState { get; }
         bool IsEvadeState { get; }
+        bool IsDashState { get; }
         string CurrentStateName { get; }
         Vector3 WorldPosition { get; }
         Vector3 Forward { get; }
-        void SetMovement(Vector2 direction, bool dashHeld);
+        void SetMovement(Vector2 direction);
+        void SetWorldMovement(Vector3 worldDirection);
         void ClearMovement();
         bool TriggerBasicAttack();
         bool TriggerSpecialAttack();
         bool TriggerUltimate();
-        bool TriggerEvade();
+        bool TriggerEvadeFront();
+        bool TriggerEvadeBack();
     }
 
     /// <summary>
@@ -205,7 +207,6 @@ namespace Game.AI
         public CharacterEntity Character => character;
         public AIInputProvider InputProvider => inputProvider;
         public Vector2 MoveInput => inputProvider != null ? inputProvider.GetMovementDirection() : Vector2.zero;
-        public bool IsDashHeld => inputProvider != null && inputProvider.GetActionState(InputActionType.Dash);
         public bool HasMoveInput => inputProvider != null && inputProvider.HasMovementInput();
         public bool CanEvade => character != null && character.CanEvade();
         public bool IsGrounded => character?.MovementController != null && character.MovementController.IsGrounded;
@@ -213,37 +214,40 @@ namespace Game.AI
         public bool IsAirborneState => character?.StateMachine?.CurrentState is CharacterAirborneState;
         public bool IsSkillState => character?.StateMachine?.CurrentState is CharacterSkillState;
         public bool IsEvadeState => character?.StateMachine?.CurrentState is CharacterEvadeState;
+
+        public bool IsDashState => character?.StateMachine?.CurrentState is CharacterGroundState groundState &&
+                                   groundState.CurrentSubState == groundState.DashState;
+
         public string CurrentStateName => character?.StateMachine?.CurrentState?.GetType().Name ?? string.Empty;
         public Vector3 WorldPosition => character != null ? character.transform.position : Vector3.zero;
         public Vector3 Forward => character != null ? character.transform.forward : Vector3.forward;
 
         /// <summary>设置移动输入。</summary>
-        public void SetMovement(Vector2 direction, bool dashHeld)
+        public void SetMovement(Vector2 direction)
         {
             if (inputProvider == null)
             {
                 return;
             }
 
-            inputProvider.SetMovement(direction, dashHeld);
+            inputProvider.SetMovementDirection(direction);
         }
 
         /// <summary>
         /// 以世界空间方向设置移动输入，避免 AI 再被相机方向二次换算。
         /// </summary>
         /// <param name="worldDirection">世界空间方向。</param>
-        /// <param name="dashHeld">是否按住 Dash。</param>
-        public void SetWorldMovement(Vector3 worldDirection, bool dashHeld)
+        public void SetWorldMovement(Vector3 worldDirection)
         {
             if (inputProvider == null)
             {
                 return;
             }
 
-            inputProvider.SetWorldMovement(worldDirection, dashHeld);
+            inputProvider.SetWorldMovement(worldDirection);
         }
 
-        /// <summary>清空移动和 Dash 输入。</summary>
+        /// <summary>清空移动输入。</summary>
         public void ClearMovement()
         {
             if (inputProvider == null)
@@ -252,21 +256,12 @@ namespace Game.AI
             }
 
             inputProvider.ClearMovement();
-            inputProvider.SetDashHeld(false);
         }
 
         /// <summary>尝试触发普攻。</summary>
         public bool TriggerBasicAttack()
         {
-            if (inputProvider == null ||
-                character?.Config == null ||
-                character.StateMachine?.CurrentState is not CharacterGroundState ||
-                character.Config.lightAttacks == null ||
-                character.Config.lightAttacks.Length == 0)
-            {
-                return false;
-            }
-
+            if (inputProvider == null )return false;
             inputProvider.TriggerBasicAttack();
             return true;
         }
@@ -274,12 +269,7 @@ namespace Game.AI
         /// <summary>尝试触发特殊技。</summary>
         public bool TriggerSpecialAttack()
         {
-            if (inputProvider == null ||
-                character?.Config?.specialSkill == null ||
-                character.StateMachine?.CurrentState is CharacterSkillState)
-            {
-                return false;
-            }
+            if (inputProvider == null) return false;
 
             inputProvider.TriggerSpecialAttack();
             return true;
@@ -288,29 +278,26 @@ namespace Game.AI
         /// <summary>尝试触发终结技。</summary>
         public bool TriggerUltimate()
         {
-            if (inputProvider == null ||
-                character?.Config?.Ultimate == null ||
-                character.StateMachine?.CurrentState is CharacterSkillState)
-            {
-                return false;
-            }
+            if (inputProvider == null) return false;
 
             inputProvider.TriggerUltimate();
             return true;
         }
 
-        /// <summary>尝试触发闪避。</summary>
-        public bool TriggerEvade()
+        /// <summary>尝试触发前闪避。</summary>
+        public bool TriggerEvadeFront()
         {
-            if (inputProvider == null ||
-                character == null ||
-                character.StateMachine?.CurrentState is not CharacterGroundState and not CharacterAirborneState ||
-                !character.CanEvade())
-            {
-                return false;
-            }
+            if (inputProvider == null) return false;
 
-            inputProvider.TriggerEvade();
+            inputProvider.TriggerEvadeFront();
+            return true;
+        }
+        /// <summary>尝试触发后闪避。</summary>
+        public bool TriggerEvadeBack()
+        {
+            if (inputProvider == null) return false;
+
+            inputProvider.TriggerEvadeBack();
             return true;
         }
     }
@@ -384,10 +371,17 @@ namespace Game.AI
                     target => target.IsSkillState));
 
             bindings.RegisterActionHandler(
-                BehaviorTreeCharacterTaskKeys.Evade,
+                BehaviorTreeCharacterTaskKeys.EvadeBack,
                 new TriggerCharacterCommandActionHandler(
                     facade,
-                    target => target.TriggerEvade(),
+                    target => target.TriggerEvadeBack(),
+                    target => target.IsEvadeState));
+
+            bindings.RegisterActionHandler(
+                BehaviorTreeCharacterTaskKeys.EvadeFront,
+                new TriggerCharacterCommandActionHandler(
+                    facade,
+                    target => target.TriggerEvadeFront(),
                     target => target.IsEvadeState));
 
             return bindings;
@@ -420,7 +414,6 @@ namespace Game.AI
         {
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.CurrentMoveX, facade.MoveInput.x);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.CurrentMoveY, facade.MoveInput.y);
-            context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.CurrentDashHeld, facade.IsDashHeld);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.HasMoveInput, facade.HasMoveInput);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.CanEvade, facade.CanEvade);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.IsGrounded, facade.IsGrounded);
@@ -560,7 +553,6 @@ namespace Game.AI
         {
             float moveX = context.Blackboard.GetValueOrDefault<float>(BehaviorTreeCharacterBlackboardKeys.MoveX, 0f);
             float moveY = context.Blackboard.GetValueOrDefault<float>(BehaviorTreeCharacterBlackboardKeys.MoveY, 0f);
-            bool dashHeld = context.Blackboard.GetValueOrDefault<bool>(BehaviorTreeCharacterBlackboardKeys.DashHeld, false);
             Vector2 direction = Vector2.ClampMagnitude(new Vector2(moveX, moveY), 1f);
 
             if (direction.sqrMagnitude <= 0.0001f)
@@ -569,7 +561,7 @@ namespace Game.AI
                 return BehaviorTreeNodeStatus.Failure;
             }
 
-            facade.SetMovement(direction, dashHeld);
+            facade.SetMovement(direction);
             return BehaviorTreeNodeStatus.Running;
         }
 
@@ -618,25 +610,37 @@ namespace Game.AI
             float stopDistance = context.Blackboard.GetValueOrDefault(
                 BehaviorTreeCharacterBlackboardKeys.TargetStopDistance,
                 0.1f);
-            bool dashHeld = context.Blackboard.GetValueOrDefault(
-                BehaviorTreeCharacterBlackboardKeys.DashHeld,
-                false);
+            float dashDistance = context.Blackboard.GetValueOrDefault(
+                BehaviorTreeCharacterBlackboardKeys.TargetDashDistance,
+                0f);
 
             Vector3 delta = targetData.Position - facade.WorldPosition;
             Vector2 horizontalDelta = new Vector2(delta.x, delta.z);
-            if (horizontalDelta.sqrMagnitude <= stopDistance * stopDistance)
+            float currentDistSq = horizontalDelta.sqrMagnitude;
+
+            if (currentDistSq <= stopDistance * stopDistance)
             {
                 facade.ClearMovement();
                 return BehaviorTreeNodeStatus.Success;
             }
 
+            // 1. 先写入移动方向，确保如果后续触发闪避，闪避能拿到正确的输入方向
             if (facade is BehaviorTreeCharacterFacade characterFacade)
             {
-                characterFacade.SetWorldMovement(new Vector3(horizontalDelta.x, 0f, horizontalDelta.y), dashHeld);
+                characterFacade.SetWorldMovement(new Vector3(horizontalDelta.x, 0f, horizontalDelta.y));
             }
             else
             {
-                facade.SetMovement(horizontalDelta.normalized, dashHeld);
+                facade.SetMovement(horizontalDelta.normalized);
+            }
+
+            // 2. 如果距离大于冲刺阈值，且角色当前不在闪避或冲刺状态，触发 EvadeFront 以进入冲刺
+            if (dashDistance > 0f && currentDistSq > dashDistance * dashDistance)
+            {
+                if (!facade.IsEvadeState && !facade.IsDashState)
+                {
+                    facade.TriggerEvadeFront();
+                }
             }
 
             return BehaviorTreeNodeStatus.Running;

@@ -137,29 +137,5 @@ namespace Game.Logic.Character
         {
             _moveLockTimer = 0f;
         }
-
-        /// <summary>
-        /// 提供给子类：将 2D 的手柄拉动或者 WASD 转换为考虑主相机的绝对世界朝向
-        /// </summary>
-        public Vector3 CalculateWorldDirection(Vector2 inputDir)
-        {
-            if (Entity.InputProvider is AIInputProvider aiInputProvider &&
-                aiInputProvider.TryGetWorldMovementDirection(out Vector3 aiWorldDirection))
-            {
-                return aiWorldDirection.normalized;
-            }
-
-            if (Entity.CameraController != null)
-            {
-                Vector3 camForward = Entity.CameraController.GetForward();
-                Vector3 camRight = Entity.CameraController.GetRight();
-                return (camForward * inputDir.y + camRight * inputDir.x).normalized;
-            }
-            else
-            {
-                return new Vector3(inputDir.x, 0, inputDir.y).normalized;
-            }
-        }
-
     }
 }

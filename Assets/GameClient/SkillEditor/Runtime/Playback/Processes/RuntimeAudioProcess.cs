@@ -30,7 +30,8 @@ namespace SkillEditor{
                     loop = clip.loop,
                     spatialBlend = clip.spatialBlend,
                     startTime = 0f, // 总是从头播放，除非实现了 Resume 逻辑
-                    position = context.Owner != null ? context.Owner.transform.position : Vector3.zero
+                    position = context.Owner != null ? context.Owner.transform.position : Vector3.zero,
+                    parent = context.Owner.transform
                 };
                 
                 playingSoundId = audioHandler.PlaySound(selectedClip, args);

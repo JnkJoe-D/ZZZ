@@ -28,7 +28,7 @@
         {
             "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
             "groupName": "分组 3",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -290,7 +290,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.16666662693023683,
                     "animationClip": {
-                        "instanceID": 34574
+                        "instanceID": 35698
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -321,7 +321,7 @@
                     "blendInDuration": 0.16666662693023683,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34576
+                        "instanceID": 35700
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -353,14 +353,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34986
+                            "instanceID": 34852
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "6aa89f48868b7ce49b0a21e880fcb68a"
                     ],
@@ -389,7 +389,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35182
+                            "instanceID": 36566
                         },
                         {
                             "instanceID": 0
@@ -399,7 +399,7 @@
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "e53c9bdd76fe4544cb78a5b9a781aa20",
                         ""
@@ -425,20 +425,20 @@
                     "clipId": "e24274e3-705a-4bd3-b0e5-bf703ff1e391",
                     "clipName": "音效轨道片段",
                     "isEnabled": true,
-                    "startTime": 1.2999999523162842,
+                    "startTime": 1.3333333730697632,
                     "duration": 0.7666666507720947,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35044
+                            "instanceID": 34936
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "2eb0e25f8b7e9ec40a17a8a8d9f8a069"
                     ],

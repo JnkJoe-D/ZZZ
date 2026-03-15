@@ -8,6 +8,7 @@ namespace Game.Logic.Character
     /// </summary>
     public interface IMovementController
     {
+        void Init(CharacterEntity entity);
         /// <summary>
         /// 驱动角色向指定世界坐标系的方向向量平移
         /// </summary>
@@ -17,8 +18,9 @@ namespace Game.Logic.Character
         /// <summary>
         /// 设置角色朝向
         /// </summary>
-        void FaceTo(Vector3 lookDirection);
-
+        void FaceTo(Vector3 inputDir,float speed = -1f);
+        void FaceToImmediately(Vector3 inputDir);
+        Vector3 CalculateWorldDirection(Vector2 inputDir);
         /// <summary>
         /// 是否在地面上
         /// </summary>

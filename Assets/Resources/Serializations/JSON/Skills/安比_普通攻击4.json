@@ -34,7 +34,7 @@
         {
             "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
             "groupName": "分组 3",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -58,7 +58,7 @@
         {
             "groupId": "5e32243f-fd0e-4a9e-b870-e6e5ef0357fb",
             "groupName": "分组 4",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -395,7 +395,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.11666667461395264,
                     "animationClip": {
-                        "instanceID": 19502
+                        "instanceID": 35710
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -426,7 +426,7 @@
                     "blendInDuration": 0.11666667461395264,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 19504
+                        "instanceID": 35712
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -457,7 +457,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 44504
+                        "instanceID": 36132
                     },
                     "prefabGuid": "d1aa224abf73af945af8db2d4c0131dd",
                     "prefabAssetName": "FX_slash_04",
@@ -500,7 +500,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 44504
+                        "instanceID": 36132
                     },
                     "prefabGuid": "d1aa224abf73af945af8db2d4c0131dd",
                     "prefabAssetName": "FX_slash_04",
@@ -543,7 +543,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 44504
+                        "instanceID": 36132
                     },
                     "prefabGuid": "d1aa224abf73af945af8db2d4c0131dd",
                     "prefabAssetName": "FX_slash_04",
@@ -587,14 +587,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 20800
+                            "instanceID": 36802
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "1b64cc9091420f94e8595fbf90572fb1"
                     ],
@@ -623,10 +623,10 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 18152
+                            "instanceID": 34716
                         },
                         {
-                            "instanceID": 20684
+                            "instanceID": 36704
                         },
                         {
                             "instanceID": 0
@@ -639,7 +639,7 @@
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "99a70b5b0acb3c348b251706dda3ecfa",
                         "2d3571fbcdfd4ca4d8cf6ce5eb402353",
@@ -677,7 +677,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 20210
+                            "instanceID": 36274
                         },
                         {
                             "instanceID": 0
@@ -687,7 +687,7 @@
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "58a8e17b02c497d49ab52daf7d303508",
                         ""
@@ -719,7 +719,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 18144
+                            "instanceID": 34708
                         },
                         {
                             "instanceID": 0
@@ -729,7 +729,7 @@
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "67962eeb9da990d4880a13891fe5c269",
                         ""
@@ -761,14 +761,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 18464
+                            "instanceID": 34936
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "2eb0e25f8b7e9ec40a17a8a8d9f8a069"
                     ],

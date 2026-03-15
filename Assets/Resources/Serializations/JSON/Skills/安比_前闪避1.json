@@ -28,7 +28,7 @@
         {
             "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
             "groupName": "分组 3",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -258,7 +258,7 @@
                     "blendInDuration": 0.20000000298023225,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34398
+                        "instanceID": 35360
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -289,7 +289,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 35020
+                        "instanceID": 35964
                     },
                     "prefabGuid": "83e244af1d719994ab693b7cedf89951",
                     "prefabAssetName": "Slash_fx_01",
@@ -343,7 +343,7 @@
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "",
                         ""
@@ -375,14 +375,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35840
+                            "instanceID": 36776
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "1b292d51434f0624482dfefda493f788"
                     ],

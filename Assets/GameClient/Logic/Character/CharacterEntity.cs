@@ -29,33 +29,12 @@ namespace Game.Logic.Character
         public Game.Logic.Action.Combo.CommandBuffer CommandBuffer { get; private set; }
         public Game.Logic.Action.Combo.ComboController ComboController { get; private set; }
 
-        public class ComboWindowData
-        {
-            public string Tag;
-            public SkillEditor.ComboWindowType Type;
-        }
-
-        public List<ComboWindowData> ActiveComboWindows { get; private set; } = new List<ComboWindowData>();
-
-        public event System.Action<string, SkillEditor.ComboWindowType> OnComboWindowEnterEvent;
-        public event System.Action<string, SkillEditor.ComboWindowType> OnComboWindowExitEvent;
-
         public bool ForceDashNextFrame { get; set; }
         public float EvadeTimer { get; set; }
         public int EvadeCount { get; set; }
 
         private IInputCommandHandler CurrentInputHandler =>
             (StateMachine?.CurrentState as CharacterStateBase)?.InputHandler ?? CharacterStateBase.InputHandlerStatic;
-
-        public bool HasComboTag(string tag)
-        {
-            return ActiveComboWindows.Exists(x => x.Tag == tag);
-        }
-
-        public bool HasWindowType(SkillEditor.ComboWindowType type)
-        {
-            return ActiveComboWindows.Exists(x => x.Type == type);
-        }
 
         public bool CanEvade()
         {
@@ -75,19 +54,16 @@ namespace Game.Logic.Character
         {
             Game.AI.BehaviorTreeCharacterRegistry.Register(this);
             InputProvider = GetComponent<IInputProvider>();
-            MovementController = GetComponent<IMovementController>();
             CameraController = GetComponent<ICameraController>();
-
-            if (InputProvider == null || MovementController == null)
-            {
-                Debug.LogWarning($"[CharacterEntity] {gameObject.name} is missing required control components.");
-            }
+            MovementController = GetComponent<IMovementController>();
         }
 
         public void Init(Game.Logic.Character.Config.CharacterConfigAsset config)
         {
             Config = config;
-            Debug.Log($"[CharacterEntity] Config Injected: Role={config.RoleName}");
+
+            CameraController?.Init(this);
+            MovementController?.Init(this);
         }
 
         private void Start()
@@ -148,16 +124,12 @@ namespace Game.Logic.Character
         }
 
         public void OnComboWindowEnter(string comboTag, SkillEditor.ComboWindowType windowType)
-        {
-            ActiveComboWindows.Add(new ComboWindowData { Tag = comboTag, Type = windowType });
-            OnComboWindowEnterEvent?.Invoke(comboTag, windowType);
+        {   
             ComboController?.OnWindowEnter(comboTag, windowType);
         }
 
         public void OnComboWindowExit(string comboTag, SkillEditor.ComboWindowType windowType)
         {
-            ActiveComboWindows.RemoveAll(x => x.Tag == comboTag && x.Type == windowType);
-            OnComboWindowExitEvent?.Invoke(comboTag, windowType);
             ComboController?.OnWindowExit(comboTag, windowType);
         }
 

@@ -27,10 +27,10 @@ namespace Game.Logic.Character.SubStates
             if(provider==null)return;
             // 3. 强力冲刺移动
             Vector2 inputDir = provider.GetMovementDirection();
-            Vector3 worldDir = _ctx.CalculateWorldDirection(inputDir);
+            // Vector3 worldDir = _ctx.GetWorldDirection(inputDir);
 
-            _ctx.HostEntity.MovementController?.Move(worldDir * _ctx.DashSpeed * deltaTime);
-            _ctx.HostEntity.MovementController?.FaceTo(worldDir);
+            _ctx.HostEntity.MovementController?.Move(inputDir * _ctx.DashSpeed * deltaTime);
+            _ctx.HostEntity.MovementController?.FaceTo(inputDir);
             
             // 实时速率同步（可选，因为已经在 OnEnter 里设置过了，但如果配置热更有改变就更新）
             _ctx.HostEntity.ActionPlayer.SetPlaySpeed(_ctx.HostEntity.Config.DashMultipier);

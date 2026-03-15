@@ -31,7 +31,7 @@
         {
             "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
             "groupName": "分组 3",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -349,7 +349,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.06666672229766846,
                     "animationClip": {
-                        "instanceID": 34758
+                        "instanceID": 35706
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -380,7 +380,7 @@
                     "blendInDuration": 0.06666672229766846,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34760
+                        "instanceID": 35708
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -411,7 +411,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 35188
+                        "instanceID": 36132
                     },
                     "prefabGuid": "d1aa224abf73af945af8db2d4c0131dd",
                     "prefabAssetName": "FX_slash_04",
@@ -454,7 +454,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 35188
+                        "instanceID": 36132
                     },
                     "prefabGuid": "d1aa224abf73af945af8db2d4c0131dd",
                     "prefabAssetName": "FX_slash_04",
@@ -498,14 +498,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 33368
+                            "instanceID": 34354
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "8dd590bb7a3f66e46a3b2c08023b2af1"
                     ],
@@ -534,14 +534,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35338
+                            "instanceID": 36280
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "f6b7d84faf3f2e24590394e6228d3417"
                     ],
@@ -570,7 +570,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 33452
+                            "instanceID": 34426
                         },
                         {
                             "instanceID": 0
@@ -583,7 +583,7 @@
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "4e106c77aaf89954ea2dece7534cbf1a",
                         "",
@@ -618,14 +618,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34964
+                            "instanceID": 35910
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "e6e7f097429cc1b4182fbbc1291182b4"
                     ],

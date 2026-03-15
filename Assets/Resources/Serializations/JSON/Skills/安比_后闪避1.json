@@ -28,15 +28,12 @@
         {
             "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
             "groupName": "分组 3",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
                 {
                     "rid": 1002
-                },
-                {
-                    "rid": 1003
                 }
             ]
         },
@@ -48,7 +45,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1004
+                    "rid": 1003
                 }
             ]
         },
@@ -60,10 +57,10 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1005
+                    "rid": 1004
                 },
                 {
-                    "rid": 1006
+                    "rid": 1005
                 }
             ]
         }
@@ -89,7 +86,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1007
+                            "rid": 1006
                         }
                     ],
                     "isMasterTrack": true,
@@ -123,36 +120,13 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1008
+                            "rid": 1007
                         }
                     ]
                 }
             },
             {
                 "rid": 1002,
-                "type": {
-                    "class": "AudioTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "474789eb-6680-4b49-97d6-7de6e20a7137",
-                    "trackType": "AudioTrack",
-                    "trackName": "语音",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": true,
-                    "clips": [
-                        {
-                            "rid": 1009
-                        }
-                    ]
-                }
-            },
-            {
-                "rid": 1003,
                 "type": {
                     "class": "AudioTrack",
                     "ns": "SkillEditor",
@@ -169,13 +143,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1008
                         }
                     ]
                 }
             },
             {
-                "rid": 1004,
+                "rid": 1003,
                 "type": {
                     "class": "EventTrack",
                     "ns": "SkillEditor",
@@ -192,13 +166,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1009
                         }
                     ]
                 }
             },
             {
-                "rid": 1005,
+                "rid": 1004,
                 "type": {
                     "class": "ComboWindowTrack",
                     "ns": "SkillEditor",
@@ -215,16 +189,16 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1010
                         },
                         {
-                            "rid": 1013
+                            "rid": 1011
                         }
                     ]
                 }
             },
             {
-                "rid": 1006,
+                "rid": 1005,
                 "type": {
                     "class": "ComboWindowTrack",
                     "ns": "SkillEditor",
@@ -243,7 +217,7 @@
                 }
             },
             {
-                "rid": 1007,
+                "rid": 1006,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -258,7 +232,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34396
+                        "instanceID": 35358
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -274,7 +248,7 @@
                 }
             },
             {
-                "rid": 1008,
+                "rid": 1007,
                 "type": {
                     "class": "VFXClip",
                     "ns": "SkillEditor",
@@ -289,7 +263,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 35020
+                        "instanceID": 35964
                     },
                     "prefabGuid": "83e244af1d719994ab693b7cedf89951",
                     "prefabAssetName": "Slash_fx_01",
@@ -317,49 +291,7 @@
                 }
             },
             {
-                "rid": 1009,
-                "type": {
-                    "class": "SkillAudioClip",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "edf063d3-c43c-4257-a0e1-6f3e3caa7385",
-                    "clipName": "音效轨道片段",
-                    "isEnabled": true,
-                    "startTime": 0.3333333432674408,
-                    "duration": 0.6666666269302368,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "audioClips": [
-                        {
-                            "instanceID": 0
-                        },
-                        {
-                            "instanceID": 0
-                        }
-                    ],
-                    "volume": 1.0,
-                    "pitch": 1.0,
-                    "loop": false,
-                    "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
-                    "clipGuids": [
-                        "",
-                        ""
-                    ],
-                    "clipAssetNames": [
-                        "",
-                        ""
-                    ],
-                    "clipAssetPaths": [
-                        "",
-                        ""
-                    ]
-                }
-            },
-            {
-                "rid": 1010,
+                "rid": 1008,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -375,14 +307,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35840
+                            "instanceID": 36776
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "1b292d51434f0624482dfefda493f788"
                     ],
@@ -395,7 +327,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1009,
                 "type": {
                     "class": "EventClip",
                     "ns": "SkillEditor",
@@ -414,7 +346,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1010,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -433,7 +365,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1011,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",

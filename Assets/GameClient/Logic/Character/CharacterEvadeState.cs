@@ -94,6 +94,11 @@ namespace Game.Logic.Character
                     Machine.ChangeState<CharacterAirborneState>();
                 return;
             }
+            //旋转
+            var provider = Entity.InputProvider;
+            if(provider==null)return;
+            Vector2 inputDir = provider.GetMovementDirection();
+            Entity.MovementController?.FaceTo(inputDir,5f);
         }
 
         public override void OnExit()

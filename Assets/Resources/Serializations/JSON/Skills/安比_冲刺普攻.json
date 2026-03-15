@@ -28,7 +28,7 @@
         {
             "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
             "groupName": "分组 3",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -294,7 +294,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.16666662693023683,
                     "animationClip": {
-                        "instanceID": 34770
+                        "instanceID": 35718
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -325,7 +325,7 @@
                     "blendInDuration": 0.16666662693023683,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34772
+                        "instanceID": 35720
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -356,7 +356,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 35188
+                        "instanceID": 36132
                     },
                     "prefabGuid": "d1aa224abf73af945af8db2d4c0131dd",
                     "prefabAssetName": "FX_slash_04",
@@ -400,14 +400,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34796
+                            "instanceID": 35742
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "fa322f0516ec4034b8b7df81a5de4e74"
                     ],
@@ -436,7 +436,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 33252
+                            "instanceID": 34238
                         },
                         {
                             "instanceID": 0
@@ -446,7 +446,7 @@
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "ae6588949fe94dc4a900cd8eb82d650b",
                         ""
@@ -478,14 +478,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34964
+                            "instanceID": 35910
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "e6e7f097429cc1b4182fbbc1291182b4"
                     ],
@@ -514,14 +514,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 33968
+                            "instanceID": 34936
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "2eb0e25f8b7e9ec40a17a8a8d9f8a069"
                     ],

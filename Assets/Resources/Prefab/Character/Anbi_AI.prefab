@@ -4476,7 +4476,7 @@ GameObject:
   - component: {fileID: 8712995317113709330}
   - component: {fileID: -2569771162649719823}
   m_Layer: 7
-  m_Name: Anbi
+  m_Name: Anbi_AI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4578,8 +4578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db5a2a7245d3a84d822ea3b0fb79628, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _virtualCameraPrefab: {fileID: 6600116627084618121, guid: eefc9c6130678ee44a5750a6b7eb4797,
-    type: 3}
+  _virtualCameraPrefab: {fileID: 0}
   _virtualCamera: {fileID: 0}
   virtualCamName: "\u8DDF\u968F\u76F8\u673A"
   follow: {fileID: 4585821602656454312}

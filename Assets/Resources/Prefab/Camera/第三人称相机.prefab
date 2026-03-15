@@ -62,8 +62,8 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_XDamping: 0.1
-  m_YDamping: 0.1
+  m_XDamping: 1
+  m_YDamping: 0.5
   m_ZDamping: 0.1
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 8717186626199199666}
   - component: {fileID: 6056880341719223153}
   m_Layer: 0
-  m_Name: "\u7B2C\u4E09\u4EBA\u79F0\u81EA\u7531\u76F8\u673A"
+  m_Name: "\u7B2C\u4E09\u4EBA\u79F0\u76F8\u673A"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

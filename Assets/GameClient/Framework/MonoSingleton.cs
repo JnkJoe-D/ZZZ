@@ -16,7 +16,6 @@ namespace Game.Framework
             {
                 if (_isQuitting)
                 {
-                    Debug.LogWarning($"[MonoSingleton<{typeof(T).Name}>] Instance \'{typeof(T)}\' already destroyed on application quit. Won\'t create again - returning null.");
                     return null;
                 }
 

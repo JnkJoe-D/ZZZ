@@ -16,9 +16,9 @@ MonoBehaviour:
   Version: 1
   DisplayName: New Graph
   Metadata:
-    ViewPosition: {x: 148, y: -16, z: 0}
-    ViewScale: {x: 0.7561437, y: 0.7561437, z: 1}
-    LastOpenedAtUtc: 2026-03-14T09:07:37.7876566Z
+    ViewPosition: {x: 111, y: -135, z: 0}
+    ViewScale: {x: 0.8695652, y: 0.8695652, z: 1}
+    LastOpenedAtUtc: 2026-03-15T16:01:59.3363643Z
     LastCompiledAtUtc: 
   Nodes:
   - rid: 1000
@@ -34,10 +34,11 @@ MonoBehaviour:
   - rid: 1009
   - rid: 1010
   - rid: 1011
+  - rid: 1006
   Groups: []
   Comments: []
   CompiledDefinition:
-    rid: 1006
+    rid: 1014
   references:
     version: 2
     RefIds:
@@ -80,12 +81,12 @@ MonoBehaviour:
         DisplayName: "\u76EE\u6807\u641C\u7D22\u534A\u5F84"
         SerializedTypeName: Float
         ValueType: 2
-        DefaultValue: 20
+        DefaultValue: 100
         DefaultValueData:
           ValueType: 2
           BoolValue: 0
           IntValue: 0
-          FloatValue: 20
+          FloatValue: 100
           StringValue: 
     - rid: 1004
       type: {class: BehaviorTreeServiceNodeModel, ns: Game.AI, asm: Assembly-CSharp}
@@ -111,6 +112,90 @@ MonoBehaviour:
         Description: 
         TaskKey: character.chase_target
     - rid: 1006
+      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        Key: TargetDashDistance
+        DisplayName: "\u8D85\u8FC7\u591A\u5C11\u8DDD\u79BB\u8FDB\u5165\u51B2\u523A"
+        SerializedTypeName: Float
+        ValueType: 2
+        DefaultValue: 10
+        DefaultValueData:
+          ValueType: 2
+          BoolValue: 0
+          IntValue: 0
+          FloatValue: 10
+          StringValue: 
+    - rid: 1007
+      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        Key: TargetStopDistance
+        DisplayName: TargetStopDistance
+        SerializedTypeName: Float
+        ValueType: 2
+        DefaultValue: 1.5
+        DefaultValueData:
+          ValueType: 2
+          BoolValue: 0
+          IntValue: 0
+          FloatValue: 1.5
+          StringValue: 
+    - rid: 1008
+      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        Key: HasTarget
+        DisplayName: HasTarget
+        SerializedTypeName: Bool
+        ValueType: 0
+        DefaultValue: false
+        DefaultValueData:
+          ValueType: 0
+          BoolValue: 0
+          IntValue: 0
+          FloatValue: 0
+          StringValue: 
+    - rid: 1009
+      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        Key: TargetFieldOfView
+        DisplayName: "\u76EE\u6807\u641C\u7D22\u89D2\u5EA6"
+        SerializedTypeName: Float
+        ValueType: 2
+        DefaultValue: 360
+        DefaultValueData:
+          ValueType: 2
+          BoolValue: 0
+          IntValue: 0
+          FloatValue: 360
+          StringValue: 
+    - rid: 1010
+      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        Key: TargetRetainCurrent
+        DisplayName: "\u662F\u5426\u4F18\u5148\u4FDD\u7559\u5F53\u524D\u76EE\u6807"
+        SerializedTypeName: Bool
+        ValueType: 0
+        DefaultValue: true
+        DefaultValueData:
+          ValueType: 0
+          BoolValue: 1
+          IntValue: 0
+          FloatValue: 0
+          StringValue: 
+    - rid: 1011
+      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        Key: TargetRetainDistanceMultiplier
+        DisplayName: "\u4FDD\u7559\u5F53\u524D\u76EE\u6807\u65F6\u5141\u8BB8\u7684\u989D\u5916\u8DDD\u79BB\u500D\u7387"
+        SerializedTypeName: Float
+        ValueType: 2
+        DefaultValue: 2
+        DefaultValueData:
+          ValueType: 2
+          BoolValue: 0
+          IntValue: 0
+          FloatValue: 2
+          StringValue: 
+    - rid: 1014
       type: {class: BehaviorTreeDefinition, ns: Game.AI, asm: Assembly-CSharp}
       data:
         RootNodeId: 5b513ef876f44a71ac799d8cfba32c73
@@ -213,12 +298,12 @@ MonoBehaviour:
           DisplayName: "\u76EE\u6807\u641C\u7D22\u534A\u5F84"
           SerializedTypeName: Float
           ValueType: 2
-          DefaultValue: 20
+          DefaultValue: 100
           DefaultValueData:
             ValueType: 2
             BoolValue: 0
             IntValue: 0
-            FloatValue: 20
+            FloatValue: 100
             StringValue: 
         - Key: TargetFieldOfView
           DisplayName: "\u76EE\u6807\u641C\u7D22\u89D2\u5EA6"
@@ -253,73 +338,14 @@ MonoBehaviour:
             IntValue: 0
             FloatValue: 2
             StringValue: 
-    - rid: 1007
-      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
-      data:
-        Key: TargetStopDistance
-        DisplayName: TargetStopDistance
-        SerializedTypeName: Float
-        ValueType: 2
-        DefaultValue: 1.5
-        DefaultValueData:
+        - Key: TargetDashDistance
+          DisplayName: "\u8D85\u8FC7\u591A\u5C11\u8DDD\u79BB\u8FDB\u5165\u51B2\u523A"
+          SerializedTypeName: Float
           ValueType: 2
-          BoolValue: 0
-          IntValue: 0
-          FloatValue: 1.5
-          StringValue: 
-    - rid: 1008
-      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
-      data:
-        Key: HasTarget
-        DisplayName: HasTarget
-        SerializedTypeName: Bool
-        ValueType: 0
-        DefaultValue: false
-        DefaultValueData:
-          ValueType: 0
-          BoolValue: 0
-          IntValue: 0
-          FloatValue: 0
-          StringValue: 
-    - rid: 1009
-      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
-      data:
-        Key: TargetFieldOfView
-        DisplayName: "\u76EE\u6807\u641C\u7D22\u89D2\u5EA6"
-        SerializedTypeName: Float
-        ValueType: 2
-        DefaultValue: 360
-        DefaultValueData:
-          ValueType: 2
-          BoolValue: 0
-          IntValue: 0
-          FloatValue: 360
-          StringValue: 
-    - rid: 1010
-      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
-      data:
-        Key: TargetRetainCurrent
-        DisplayName: "\u662F\u5426\u4F18\u5148\u4FDD\u7559\u5F53\u524D\u76EE\u6807"
-        SerializedTypeName: Bool
-        ValueType: 0
-        DefaultValue: true
-        DefaultValueData:
-          ValueType: 0
-          BoolValue: 1
-          IntValue: 0
-          FloatValue: 0
-          StringValue: 
-    - rid: 1011
-      type: {class: BehaviorTreeBlackboardEntry, ns: Game.AI, asm: Assembly-CSharp}
-      data:
-        Key: TargetRetainDistanceMultiplier
-        DisplayName: "\u4FDD\u7559\u5F53\u524D\u76EE\u6807\u65F6\u5141\u8BB8\u7684\u989D\u5916\u8DDD\u79BB\u500D\u7387"
-        SerializedTypeName: Float
-        ValueType: 2
-        DefaultValue: 2
-        DefaultValueData:
-          ValueType: 2
-          BoolValue: 0
-          IntValue: 0
-          FloatValue: 2
-          StringValue: 
+          DefaultValue: 10
+          DefaultValueData:
+            ValueType: 2
+            BoolValue: 0
+            IntValue: 0
+            FloatValue: 10
+            StringValue: 

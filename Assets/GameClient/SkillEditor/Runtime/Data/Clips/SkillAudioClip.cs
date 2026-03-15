@@ -28,7 +28,7 @@ namespace SkillEditor
 
         [SkillProperty("空间混合 (0=2D, 1=3D)")]
         [Range(0f, 1f)]
-        public float spatialBlend = 0.0f;
+        public float spatialBlend = 1f;
 
         [SerializeField][HideInInspector]
         public System.Collections.Generic.List<string> clipGuids = new System.Collections.Generic.List<string>();

@@ -36,13 +36,6 @@ namespace Game.Logic.Character.SubStates
                 return;
             }
 
-            // // 2. 玩家在慢跑时扣紧了 Shift，进入冲刺猛跑
-            // if (provider.GetActionState(Game.Input.InputActionType.Dash))
-            // {
-            //     ChangeState(_ctx.DashState);
-            //     return;
-            // }
-
             _stateTime += deltaTime;
             
             // 短输入防抖：如果按压时间超过了防抖阈值，才真正开始播放起步大动作
@@ -58,10 +51,10 @@ namespace Game.Logic.Character.SubStates
 
             // 3. 执行推移
             Vector2 inputDir = provider.GetMovementDirection();
-            Vector3 worldDir = _ctx.CalculateWorldDirection(inputDir);
+            // Vector3 worldDir = _ctx.GetWorldDirection(inputDir);
             
-            _ctx.HostEntity.MovementController?.Move(worldDir * _ctx.JogSpeed * deltaTime);
-            _ctx.HostEntity.MovementController?.FaceTo(worldDir);
+            _ctx.HostEntity.MovementController?.Move(inputDir * _ctx.JogSpeed * deltaTime);
+            _ctx.HostEntity.MovementController?.FaceTo(inputDir);
             
             _ctx.HostEntity.ActionPlayer.SetPlaySpeed(_ctx.HostEntity.Config.JogMultipier);
         }

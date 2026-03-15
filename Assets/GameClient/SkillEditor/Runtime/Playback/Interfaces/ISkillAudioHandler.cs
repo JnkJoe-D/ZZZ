@@ -53,5 +53,6 @@ namespace SkillEditor
         public float spatialBlend; // 0=2D, 1=3D
         public float startTime;    // 起始播放时间（秒）
         public Vector3 position;   // 3D音效位置
+        public Transform parent;
     }
 }

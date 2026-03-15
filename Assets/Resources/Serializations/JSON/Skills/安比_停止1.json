@@ -167,7 +167,7 @@
                     "blendInDuration": 0.10000000149011612,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 32860
+                        "instanceID": 35370
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -199,14 +199,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35754
+                            "instanceID": 35096
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "1f2148c7b6d65ef489de620385639f7a"
                     ],
@@ -235,14 +235,14 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35854
+                            "instanceID": 36652
                         }
                     ],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
-                    "spatialBlend": 0.0,
+                    "spatialBlend": 1.0,
                     "clipGuids": [
                         "8986bc9f36fbdbb47b601da0eaa7dc34"
                     ],

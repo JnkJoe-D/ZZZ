@@ -13,7 +13,6 @@ namespace Game.AI
         private Vector2 movementInput;
         private Vector3 worldMovementDirection;
         private bool useWorldMovementDirection;
-        private bool dashHeld;
 
         public event Action OnSwitchNext;
         public event Action OnSwitchPre;
@@ -68,13 +67,13 @@ namespace Game.AI
         }
 
         /// <summary>
-        /// 读取指定动作的按住状态；当前只支持 Dash。
+        /// 读取指定动作的按住状态。
         /// </summary>
         /// <param name="type">要查询的动作类型。</param>
         /// <returns>动作是否处于按住状态。</returns>
         public bool GetActionState(InputActionType type)
         {
-            return type == InputActionType.Dash && dashHeld;
+            return false;
         }
 
         /// <summary>
@@ -89,22 +88,32 @@ namespace Game.AI
         }
 
         /// <summary>
-        /// 一次性写入移动方向和 Dash 按住状态。
+        /// 设置移动方向输入。
         /// </summary>
         /// <param name="direction">移动方向。</param>
-        /// <param name="isDashHeld">是否按住 Dash。</param>
+        /// <param name="isDashHeld">弃用参数。</param>
+        [Obsolete("Use SetMovementDirection instead. isDashHeld is no longer driven by BT.")]
         public void SetMovement(Vector2 direction, bool isDashHeld)
         {
             SetMovementDirection(direction);
-            dashHeld = isDashHeld;
+        }
+
+        /// <summary>
+        /// 以世界空间方向设置移动输入。
+        /// </summary>
+        /// <param name="direction">世界空间方向。</param>
+        /// <param name="isDashHeld">弃用参数。</param>
+        [Obsolete("Use SetWorldMovement(Vector3) instead.")]
+        public void SetWorldMovement(Vector3 direction, bool isDashHeld)
+        {
+            SetWorldMovement(direction);
         }
 
         /// <summary>
         /// 以世界空间方向设置移动输入，供 AI 直接朝目标移动。
         /// </summary>
         /// <param name="direction">世界空间方向。</param>
-        /// <param name="isDashHeld">是否按住 Dash。</param>
-        public void SetWorldMovement(Vector3 direction, bool isDashHeld)
+        public void SetWorldMovement(Vector3 direction)
         {
             Vector3 normalizedDirection = direction;
             normalizedDirection.y = 0f;
@@ -115,7 +124,6 @@ namespace Game.AI
             worldMovementDirection = normalizedDirection;
             useWorldMovementDirection = normalizedDirection.sqrMagnitude > 0.0001f;
             movementInput = new Vector2(normalizedDirection.x, normalizedDirection.z);
-            dashHeld = isDashHeld;
         }
 
         /// <summary>
@@ -129,12 +137,11 @@ namespace Game.AI
         }
 
         /// <summary>
-        /// 设置 Dash 按住状态。
+        /// 设置 Dash 按住状态。已弃用，不再由 BT 显式驱动。
         /// </summary>
         /// <param name="isHeld">是否按住 Dash。</param>
         public void SetDashHeld(bool isHeld)
         {
-            dashHeld = isHeld;
         }
 
         /// <summary>
@@ -145,7 +152,6 @@ namespace Game.AI
             movementInput = Vector2.zero;
             worldMovementDirection = Vector3.zero;
             useWorldMovementDirection = false;
-            dashHeld = false;
         }
 
         /// <summary>
@@ -160,8 +166,10 @@ namespace Game.AI
         public void TriggerSwitchNext() => OnSwitchNext?.Invoke();
         /// <summary>触发切换到上一个角色事件。</summary>
         public void TriggerSwitchPre() => OnSwitchPre?.Invoke();
-        /// <summary>触发闪避事件。</summary>
-        public void TriggerEvade() => OnEvadeBackStarted?.Invoke();
+        /// <summary>触发前闪避事件。</summary>
+        public void TriggerEvadeFront() => OnEvadeFrontStarted?.Invoke();
+        /// <summary>触发后闪避事件。</summary>
+        public void TriggerEvadeBack() => OnEvadeBackStarted?.Invoke();
         /// <summary>触发普攻开始事件。</summary>
         public void TriggerBasicAttack() => OnBasicAttackStarted?.Invoke();
         /// <summary>触发普攻取消事件。</summary>
