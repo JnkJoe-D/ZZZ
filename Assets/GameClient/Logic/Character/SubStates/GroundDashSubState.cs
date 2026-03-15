@@ -5,6 +5,15 @@ namespace Game.Logic.Character.SubStates
 {
     public class GroundDashSubState : GroundSubState
     {
+        private IInputCommandHandler _handler;
+        public override IInputCommandHandler InputHandler => _handler;
+
+        public override void Initialize(CharacterGroundState context)
+        {
+            base.Initialize(context);
+            _handler = new DashInputCommandHandler(context.HostEntity);
+        }
+
         private bool _hasPlayedAnim;
         public override void OnEnter()
         {

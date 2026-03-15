@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 namespace SkillEditor
 {
@@ -11,96 +11,78 @@ namespace SkillEditor
             public ParticleSystem ps;
             public float initialSpeed;
         }
+
         private ParticleSpeedInfo[] particleInfos;
         private GameObject vfxInstance;
         private ISkillVFXHandler vfxHanlder;
         private ISkillBoneGetter boneGetter;
+        private bool _returnQueued;
+
         public override void OnEnable()
         {
-            // 懒加载获取服务
             vfxHanlder = context.GetService<ISkillVFXHandler>();
             boneGetter = context.GetService<ISkillBoneGetter>();
         }
+
         public override void OnEnter()
         {
             if (clip.effectPrefab == null) return;
 
-            // 1. 获取挂点
-            Transform targetTransform = null;
+            _returnQueued = false;
 
+            Transform targetTransform = null;
             if (boneGetter != null)
             {
                 targetTransform = boneGetter.GetBone(clip.bindPoint, clip.customBoneName);
             }
-            
-            // 降级处理
-            if (targetTransform == null)
+
+            if (targetTransform == null && context.OwnerTransform != null)
             {
-                if (context.OwnerTransform != null) targetTransform = context.OwnerTransform;
+                targetTransform = context.OwnerTransform;
             }
 
-            Vector3 spawnPos = Vector3.zero;
-            Quaternion spawnRot = Quaternion.identity;
-
-            if (targetTransform != null)
-            {
-                spawnPos = targetTransform.position;
-                spawnRot = targetTransform.rotation;
-            }
-
-            // 2. 实例化
+            Vector3 spawnPos = targetTransform != null ? targetTransform.position : Vector3.zero;
+            Quaternion spawnRot = targetTransform != null ? targetTransform.rotation : Quaternion.identity;
             Transform parent = clip.followTarget ? targetTransform : null;
 
             if (vfxHanlder != null)
             {
                 vfxInstance = vfxHanlder.Spawn(clip.effectPrefab, spawnPos, spawnRot, parent);
             }
+
+            if (vfxInstance == null) return;
+
+            vfxInstance.transform.localScale = clip.scale;
+
+            if (clip.followTarget)
+            {
+                vfxInstance.transform.localPosition += clip.positionOffset;
+                vfxInstance.transform.localRotation *= Quaternion.Euler(clip.rotationOffset);
+            }
+            else if (targetTransform != null)
+            {
+                Vector3 finalPos = targetTransform.position + targetTransform.rotation * clip.positionOffset;
+                Quaternion finalRot = targetTransform.rotation * Quaternion.Euler(clip.rotationOffset);
+                vfxInstance.transform.SetPositionAndRotation(finalPos, finalRot);
+            }
             else
             {
-                // 降级处理：无池服务时直接实例化
-                // vfxInstance = Object.Instantiate(clip.effectPrefab, spawnPos, spawnRot, parent);
+                vfxInstance.transform.position += clip.positionOffset;
+                vfxInstance.transform.rotation *= Quaternion.Euler(clip.rotationOffset);
             }
 
-            if (vfxInstance != null)
+            var systems = vfxInstance.GetComponentsInChildren<ParticleSystem>();
+            particleInfos = new ParticleSpeedInfo[systems.Length];
+            for (int i = 0; i < systems.Length; i++)
             {
-                // 3. 应用变换
-                vfxInstance.transform.localScale = clip.scale;
-
-                if (clip.followTarget)
+                particleInfos[i] = new ParticleSpeedInfo
                 {
-                    vfxInstance.transform.localPosition += clip.positionOffset;
-                    vfxInstance.transform.localRotation *= Quaternion.Euler(clip.rotationOffset);
-                }
-                else
-                {
-                    if (targetTransform != null)
-                    {
-                        Vector3 finalPos = targetTransform.position + targetTransform.rotation * clip.positionOffset;
-                        Quaternion finalRot = targetTransform.rotation * Quaternion.Euler(clip.rotationOffset);
-                        vfxInstance.transform.SetPositionAndRotation(finalPos, finalRot);
-                    }
-                    else
-                    {
-                        vfxInstance.transform.position += clip.positionOffset;
-                        vfxInstance.transform.rotation *= Quaternion.Euler(clip.rotationOffset);
-                    }
-                }
-
-                // 4. 缓存粒子信息用于速度同步
-                var systems = vfxInstance.GetComponentsInChildren<ParticleSystem>();
-                particleInfos = new ParticleSpeedInfo[systems.Length];
-                for (int i = 0; i < systems.Length; i++)
-                {
-                    particleInfos[i] = new ParticleSpeedInfo
-                    {
-                        ps = systems[i],
-                        initialSpeed = systems[i].main.simulationSpeed
-                    };
-                }
-
-                // 立即同步一次速度
-                SyncSpeed(context.GlobalPlaySpeed);
+                    ps = systems[i],
+                    initialSpeed = systems[i].main.simulationSpeed
+                };
             }
+
+            SyncSpeed(context.GlobalPlaySpeed);
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
@@ -110,79 +92,66 @@ namespace SkillEditor
 
         private void SyncSpeed(float speed)
         {
-            if(speed<0)return;
-            if (particleInfos == null) return;
+            if (speed < 0f || particleInfos == null) return;
 
             for (int i = 0; i < particleInfos.Length; i++)
             {
-                var info = particleInfos[i];
-                if (info.ps != null)
-                {
-                    var main = info.ps.main;
-                    main.simulationSpeed = info.initialSpeed * speed;
-                }
+                ParticleSpeedInfo info = particleInfos[i];
+                if (info.ps == null) continue;
+
+                var main = info.ps.main;
+                main.simulationSpeed = info.initialSpeed * speed;
             }
         }
 
         public override void OnExit()
         {
-            if (vfxInstance == null) return;
-
-            if (clip.destroyOnEnd) //跟随片段结束
-            {
-                //重置速度
-                SyncSpeed(1f);
-                if (clip.stopEmissionOnEnd)
-                {
-                    ReturnVFXDelay(clip.stopEmissionOnEnd);
-                }
-                else
-                {
-                    // 硬结束
-                    ReturnVFX();
-                }
-            }
-            else
-            {
-                ReturnVFXDelay(false);
-            }
+            HandleVFXRelease();
         }
-        public override void OnDisable() 
+
+        public override void OnDisable()
         {
-            if (vfxInstance == null) return;
-
-            if (clip.destroyOnEnd) //跟随片段结束
-            {
-                //重置速度
-                SyncSpeed(1f);
-                if (clip.stopEmissionOnEnd)
-                {
-                    ReturnVFXDelay(clip.stopEmissionOnEnd);
-                }
-                else
-                {
-                    // 硬结束
-                    ReturnVFX();
-                }
-            }
-            else
-            {
-                ReturnVFXDelay(false);
-            }
+            HandleVFXRelease();
         }
+
         public override void Reset()
-         {
+        {
             base.Reset();
             particleInfos = null;
             vfxInstance = null;
             vfxHanlder = null;
+            boneGetter = null;
+            _returnQueued = false;
         }
 
-        /// <summary>
-        /// 归还 VFX 实例（优先通过池服务，降级为直接销毁）
-        /// </summary>
+        private void HandleVFXRelease()
+        {
+            if (vfxInstance == null || _returnQueued) return;
+
+            _returnQueued = true;
+            SyncSpeed(1f);
+
+            if (clip.destroyOnEnd)
+            {
+                if (clip.stopEmissionOnEnd)
+                {
+                    ReturnVFXDelay(true);
+                }
+                else
+                {
+                    ReturnVFX();
+                }
+            }
+            else
+            {
+                ReturnVFXDelay(false);
+            }
+        }
+
         private void ReturnVFX()
         {
+            if (vfxInstance == null) return;
+
             if (vfxHanlder != null)
             {
                 vfxHanlder.Return(vfxInstance);
@@ -191,21 +160,38 @@ namespace SkillEditor
             {
                 Object.Destroy(vfxInstance);
             }
+
+            vfxInstance = null;
+            particleInfos = null;
         }
-            
+
         private void ReturnVFXDelay(bool stopEmissionOnEnd)
         {
-            // 软结束
+            if (vfxInstance == null || vfxHanlder == null)
+            {
+                ReturnVFX();
+                return;
+            }
+
             var particles = vfxInstance.GetComponentsInChildren<ParticleSystem>();
             float maxLifetime = 0f;
             foreach (var ps in particles)
             {
-                if(stopEmissionOnEnd) ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                if (stopEmissionOnEnd)
+                {
+                    ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                }
+
                 if (ps.main.startLifetime.constantMax > maxLifetime)
+                {
                     maxLifetime = ps.main.startLifetime.constantMax;
+                }
             }
 
-            vfxHanlder.ReturnVFXDelay(vfxInstance, maxLifetime);
+            GameObject inst = vfxInstance;
+            vfxInstance = null;
+            particleInfos = null;
+            vfxHanlder.ReturnVFXDelay(inst, maxLifetime);
         }
     }
 }

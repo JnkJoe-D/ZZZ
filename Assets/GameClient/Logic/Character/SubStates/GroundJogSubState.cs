@@ -4,6 +4,15 @@ namespace Game.Logic.Character.SubStates
 {
     public class GroundJogSubState : GroundSubState
     {
+        private IInputCommandHandler _handler;
+        public override IInputCommandHandler InputHandler => _handler;
+
+        public override void Initialize(CharacterGroundState context)
+        {
+            base.Initialize(context);
+            _handler = new DefaultInputCommandHandler(context.HostEntity);
+        }
+
         private float _stateTime;
         private bool _hasPlayedAnim;
         private const float INPUT_BUFFER_TIME = 0.08f; // 短输入防抖阈值

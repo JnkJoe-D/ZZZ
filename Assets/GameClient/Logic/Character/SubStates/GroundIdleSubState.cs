@@ -4,6 +4,15 @@ namespace Game.Logic.Character.SubStates
 {
     public class GroundIdleSubState : GroundSubState
     {
+        private IInputCommandHandler _handler;
+        public override IInputCommandHandler InputHandler => _handler;
+
+        public override void Initialize(CharacterGroundState context)
+        {
+            base.Initialize(context);
+            _handler = new DefaultInputCommandHandler(context.HostEntity);
+        }
+
         public override void OnEnter()
         {
             if (_ctx.HostEntity.Config.IdleConfig != null)

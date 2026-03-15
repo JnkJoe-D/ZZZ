@@ -7,29 +7,22 @@ using UnityEngine;
 namespace Game.Logic.Character
 {
     /// <summary>
-    /// 主角或玩家控制体的核心枢纽
-    /// 管理状态机、持有各项解耦接口（Input、移动、动画），并对这些零件起粘合协调作用
+    /// Player-controlled character entity that coordinates input, movement, FSM, and action playback.
     /// </summary>
     public class CharacterEntity : MonoBehaviour, SkillEditor.ISkillEventHandler, SkillEditor.ISkillComboWindowHandler
     {
         private bool _hasStarted;
-        // === 对底层组件的松散引用 ===
+
         public IInputProvider InputProvider { get; private set; }
         public IMovementController MovementController { get; private set; }
-        // 专门处理该实体视角的组件（不依赖全局管理，哪怕是没相机的服务器克隆体也可以模拟前向）
         public ICameraController CameraController { get; private set; }
-        
-        // === 状态机引用 ===
+
         public FSMSystem<CharacterEntity> StateMachine { get; private set; }
-        public FSM.FSMSystem<CharacterEntity> Machine => StateMachine;
+        public FSMSystem<CharacterEntity> Machine => StateMachine;
 
-        // --- 动作执行器 ---
         public ActionPlayer ActionPlayer { get; private set; }
-
-        // --- 供 State 拿取配置动作 ---
         public Game.Logic.Character.Config.CharacterConfigAsset Config { get; private set; }
 
-        // --- 技能连招与事件通讯黑板 ---
         public event System.Action<string> OnSkillTimelineEvent;
         public Game.Logic.Action.Config.ActionConfigAsset NextActionToCast { get; set; }
 
@@ -43,7 +36,17 @@ namespace Game.Logic.Character
         }
 
         public List<ComboWindowData> ActiveComboWindows { get; private set; } = new List<ComboWindowData>();
-        
+
+        public event System.Action<string, SkillEditor.ComboWindowType> OnComboWindowEnterEvent;
+        public event System.Action<string, SkillEditor.ComboWindowType> OnComboWindowExitEvent;
+
+        public bool ForceDashNextFrame { get; set; }
+        public float EvadeTimer { get; set; }
+        public int EvadeCount { get; set; }
+
+        private IInputCommandHandler CurrentInputHandler =>
+            (StateMachine?.CurrentState as CharacterStateBase)?.InputHandler ?? CharacterStateBase.InputHandlerStatic;
+
         public bool HasComboTag(string tag)
         {
             return ActiveComboWindows.Exists(x => x.Tag == tag);
@@ -54,24 +57,10 @@ namespace Game.Logic.Character
             return ActiveComboWindows.Exists(x => x.Type == type);
         }
 
-        public event System.Action<string, SkillEditor.ComboWindowType> OnComboWindowEnterEvent;
-        public event System.Action<string, SkillEditor.ComboWindowType> OnComboWindowExitEvent;
-        
-        // --- 闪避到移动状态的越级信号黑板 ---
-        public bool ForceDashNextFrame { get; set; } = false;
-
-        // === 闪避充能与冷却 ===
-        public float EvadeTimer { get; set; } = 0f;
-        public int EvadeCount { get; set; } = 0;
-        // === 不处于连招窗口的判定条件中 ===
-        public bool IsInComboWindowState =>StateMachine.CurrentState is CharacterSkillState
-            || StateMachine.CurrentState is CharacterEvadeState;
         public bool CanEvade()
         {
             if (Config == null) return false;
-            // 达到限制次数且还在冷却中，则无法闪避
-            if (EvadeCount >= Config.evadeLimitedTimes && EvadeTimer > 0)
-                return false;
+            if (EvadeCount >= Config.evadeLimitedTimes && EvadeTimer > 0f) return false;
             return true;
         }
 
@@ -84,44 +73,35 @@ namespace Game.Logic.Character
 
         private void Awake()
         {
-            // 在实际工业架构中，它们通过依赖注入容器或 Awake GetComponent 汇聚到实体上
             Game.AI.BehaviorTreeCharacterRegistry.Register(this);
             InputProvider = GetComponent<IInputProvider>();
             MovementController = GetComponent<IMovementController>();
-            // 实体视听组件
             CameraController = GetComponent<ICameraController>();
 
             if (InputProvider == null || MovementController == null)
             {
-                Debug.LogWarning($"[CharacterEntity] {gameObject.name} 缺少部分控制组件！");
+                Debug.LogWarning($"[CharacterEntity] {gameObject.name} is missing required control components.");
             }
         }
+
         public void Init(Game.Logic.Character.Config.CharacterConfigAsset config)
         {
             Config = config;
             Debug.Log($"[CharacterEntity] Config Injected: Role={config.RoleName}");
-            
-            // 调用预加载
-            if (Game.Logic.Action.ActionManager.Instance != null)
-            {
-                Game.Logic.Action.ActionManager.Instance.PreloadCharacterActions(config);
-            }
-            
-            // 如果还需要额外拿武器或者其他的，可以直接在这边拿
         }
 
         private void Start()
         {
             _hasStarted = true;
-            // ===== 不再使用全局动画管理器，现在由配置传入 =====
+
             if (Config == null)
             {
-                Debug.LogWarning("[CharacterEntity] 配置未注入，可能是独立测试场景，跳过动画强行检测。");
+                Debug.LogWarning("[CharacterEntity] Config was not injected before Start.");
             }
 
             if (StateMachine == null)
             {
-                var fsmMgr = Game.FSM.FSMManager.Instance;
+                var fsmMgr = FSMManager.Instance;
                 if (fsmMgr != null)
                 {
                     StateMachine = fsmMgr.CreateFSM<CharacterEntity>(this);
@@ -131,139 +111,65 @@ namespace Game.Logic.Character
                     StateMachine.AddState(new CharacterEvadeState());
                     StateMachine.AddState(new CharacterActionBackswingState());
 
-                    // 动作播放器
                     ActionPlayer = new ActionPlayer(this);
                     CommandBuffer = new Game.Logic.Action.Combo.CommandBuffer();
                     ComboController = new Game.Logic.Action.Combo.ComboController(this);
 
-                    // 初始状态
                     StateMachine.ChangeState<CharacterGroundState>();
-                }
-                else
-                {
-                    Debug.LogError("[CharacterEntity] 无法创建状态机，找不到 FSMManager 单例！");
                 }
             }
 
-            // 实体入场时，认领当前全局相机的跟随聚焦
-            Game.Camera.GameCameraManager.Instance?.SetTarget(this.transform);
-
-            // 注册输入监听
+            GameCameraManager.Instance?.SetTarget(transform);
             BindInputProviderEvents(InputProvider);
         }
 
         public void SetInputProvider(IInputProvider provider)
         {
-            if (ReferenceEquals(InputProvider, provider))
-            {
-                return;
-            }
+            if (ReferenceEquals(InputProvider, provider)) return;
 
-            if (_hasStarted)
-            {
-                UnbindInputProviderEvents(InputProvider);
-            }
-
+            if (_hasStarted) UnbindInputProviderEvents(InputProvider);
             InputProvider = provider;
-
-            if (_hasStarted)
-            {
-                BindInputProviderEvents(InputProvider);
-            }
-        }
-        private void OnEvadeFront()
-        {
-            if (!IsInComboWindowState)
-            {
-                if (!CanEvade()) return;
-                NextActionToCast = Config.evadeFront[0];
-                StateMachine.ChangeState<CharacterEvadeState>();
-            }
+            if (_hasStarted) BindInputProviderEvents(InputProvider);
         }
 
-        private void OnEvadeBack()
-        {
-            if (!IsInComboWindowState)
-            {
-                if (!CanEvade()) return;
-                NextActionToCast = Config.evadeBack[0];
-                StateMachine.ChangeState<CharacterEvadeState>();
-            }
-        }
+        private void OnBasicAttackStarted() => CurrentInputHandler.OnBasicAttackStarted();
+        private void OnBasicAttackCanceled() => CurrentInputHandler.OnBasicAttackCanceled();
+        private void OnBasicAttackHoldStart() => CurrentInputHandler.OnBasicAttackHoldStart();
+        private void OnBasicAttackHold() => CurrentInputHandler.OnBasicAttackHold();
+        private void OnBasicAttackHoldCancel() => CurrentInputHandler.OnBasicAttackHoldCancel();
+        private void OnSpecialAttack() => CurrentInputHandler.OnSpecialAttack();
+        private void OnUltimateAttack() => CurrentInputHandler.OnUltimate();
+        private void OnEvadeFront() => CurrentInputHandler.OnEvadeFront();
+        private void OnEvadeBack() => CurrentInputHandler.OnEvadeBack();
 
-        // =====================================
-        // 战斗按键响应输入
-        // =====================================
-        private void OnBasicAttack()
-        {
-            // 如果不在技能/闪避态中，则是起手第一刀
-            if (!IsInComboWindowState)
-            {
-                if (Config == null) return;
-                if (Config.lightAttacks != null && Config.lightAttacks.Length > 0)
-                {
-                    NextActionToCast = Config.lightAttacks[0];
-                    StateMachine.ChangeState<CharacterSkillState>();
-                }
-            }
-        }
-
-        private void OnSpecialAttack()
-        {
-            if (!IsInComboWindowState)
-            {
-                if (Config != null && Config.specialSkill != null)
-                {
-                    NextActionToCast = Config.specialSkill;
-                    StateMachine.ChangeState<CharacterSkillState>();
-                }
-            }
-        }
-
-        private void OnUltimateAttack()
-        {
-            if (!IsInComboWindowState)
-            {
-                if (Config != null && Config.Ultimate != null)
-                {
-                    NextActionToCast = Config.Ultimate;
-                    StateMachine.ChangeState<CharacterSkillState>();
-                }
-            }
-        }
-
-        // =====================================
-        // ISkillEventHandler 接口实现 (来自 Timeline 的事件下发)
-        // =====================================
-        public void OnSkillEvent(string eventName, System.Collections.Generic.List<SkillEditor.SkillEventParam> parameters)
+        public void OnSkillEvent(string eventName, List<SkillEditor.SkillEventParam> parameters)
         {
             OnSkillTimelineEvent?.Invoke(eventName);
         }
 
-        // ISkillComboWindowHandler 接口实现
         public void OnComboWindowEnter(string comboTag, SkillEditor.ComboWindowType windowType)
         {
             ActiveComboWindows.Add(new ComboWindowData { Tag = comboTag, Type = windowType });
             OnComboWindowEnterEvent?.Invoke(comboTag, windowType);
-            if (ComboController != null) ComboController.OnWindowEnter(comboTag, windowType);
+            ComboController?.OnWindowEnter(comboTag, windowType);
         }
 
         public void OnComboWindowExit(string comboTag, SkillEditor.ComboWindowType windowType)
         {
             ActiveComboWindows.RemoveAll(x => x.Tag == comboTag && x.Type == windowType);
             OnComboWindowExitEvent?.Invoke(comboTag, windowType);
-            if (ComboController != null) ComboController.OnWindowExit(comboTag, windowType);
+            ComboController?.OnWindowExit(comboTag, windowType);
         }
 
         private void Update()
         {
             ActionPlayer?.Tick(Time.deltaTime);
-            if (ComboController != null) ComboController.Update(Time.deltaTime);
+            ComboController?.Update(Time.deltaTime);
 
-            if (EvadeTimer > 0)
+            if (EvadeTimer > 0f)
             {
                 EvadeTimer -= Time.deltaTime;
-                if (EvadeTimer <= 0)
+                if (EvadeTimer <= 0f)
                 {
                     EvadeCount = 0;
                     EvadeTimer = 0f;
@@ -275,9 +181,9 @@ namespace Game.Logic.Character
         {
             Game.AI.BehaviorTreeCharacterRegistry.Unregister(this);
             UnbindInputProviderEvents(InputProvider);
+
             if (FSMManager.Instance != null && StateMachine != null)
             {
-                // 回收该角色的所有计算轮组
                 FSMManager.Instance.DestroyFSM(StateMachine);
                 StateMachine = null;
             }
@@ -285,12 +191,12 @@ namespace Game.Logic.Character
 
         private void BindInputProviderEvents(IInputProvider provider)
         {
-            if (provider == null)
-            {
-                return;
-            }
-
-            provider.OnBasicAttackStarted += OnBasicAttack;
+            if (provider == null) return;
+            provider.OnBasicAttackStarted += OnBasicAttackStarted;
+            provider.OnBasicAttackCanceled += OnBasicAttackCanceled;
+            provider.OnBasicAttackHoldStart += OnBasicAttackHoldStart;
+            provider.OnBasicAttackHold += OnBasicAttackHold;
+            provider.OnBasicAttackHoldCancel += OnBasicAttackHoldCancel;
             provider.OnSpecialAttack += OnSpecialAttack;
             provider.OnUltimate += OnUltimateAttack;
             provider.OnEvadeFrontStarted += OnEvadeFront;
@@ -299,12 +205,12 @@ namespace Game.Logic.Character
 
         private void UnbindInputProviderEvents(IInputProvider provider)
         {
-            if (provider == null)
-            {
-                return;
-            }
-
-            provider.OnBasicAttackStarted -= OnBasicAttack;
+            if (provider == null) return;
+            provider.OnBasicAttackStarted -= OnBasicAttackStarted;
+            provider.OnBasicAttackCanceled -= OnBasicAttackCanceled;
+            provider.OnBasicAttackHoldStart -= OnBasicAttackHoldStart;
+            provider.OnBasicAttackHold -= OnBasicAttackHold;
+            provider.OnBasicAttackHoldCancel -= OnBasicAttackHoldCancel;
             provider.OnSpecialAttack -= OnSpecialAttack;
             provider.OnUltimate -= OnUltimateAttack;
             provider.OnEvadeFrontStarted -= OnEvadeFront;

@@ -13,20 +13,17 @@ namespace Game.Logic.Character
     /// </summary>
     public class CharacterActionBackswingState : CharacterStateBase
     {
+        private IInputCommandHandler _inputHandler;
+        public override IInputCommandHandler InputHandler => _inputHandler;
+
+        public override void OnInit(FSMSystem<CharacterEntity> fsm)
+        {
+            base.OnInit(fsm);
+            _inputHandler = new DefaultInputCommandHandler(Entity);
+        }
+
         public override void OnEnter()
         {
-        //     // 订阅所有手感指令，与 Idle/SkillState 逻辑对齐
-        //     if (Entity.InputProvider != null)
-        //     {
-        //         Entity.InputProvider.OnBasicAttackStarted += OnBasicAttackRequest;
-        //         Entity.InputProvider.OnBasicAttackHoldStart += OnBasicAttackHoldStart;
-        //         Entity.InputProvider.OnBasicAttackHold += OnBasicAttackHold;
-        //         Entity.InputProvider.OnBasicAttackHoldCancel += OnBasicAttackHoldCancel;
-        //         Entity.InputProvider.OnSpecialAttack += OnSpecialAttackRequest;
-        //         Entity.InputProvider.OnUltimate += OnUltimateRequest;
-        //         Entity.InputProvider.OnEvadeFrontStarted += OnEvadeFrontRequest;
-        //         Entity.InputProvider.OnEvadeBackStarted += OnEvadeBackRequest;
-        //     }
         }
 
         public override void OnUpdate(float deltaTime)
@@ -54,36 +51,8 @@ namespace Game.Logic.Character
             }
         }
 
-        // private void OnBasicAttackRequest() => Entity.ComboController.OnInput(BufferedInputType.BasicAttack);
-        // private void OnBasicAttackHoldStart() {}
-        // private void OnBasicAttackHold() => Entity.ComboController.OnInput(BufferedInputType.BasicAttackHold);
-        // private void OnBasicAttackHoldCancel() {}
-        // private void OnSpecialAttackRequest() => Entity.ComboController.OnInput(BufferedInputType.SpecialAttack);
-        // private void OnUltimateRequest() => Entity.ComboController.OnInput(BufferedInputType.Ultimate);
-        // private void OnEvadeFrontRequest() => Entity.ComboController.OnInput(BufferedInputType.EvadeFront);
-        // private void OnEvadeBackRequest() => Entity.ComboController.OnInput(BufferedInputType.EvadeBack);
-
         public override void OnExit()
         {
-            // // 如果即将进入的是新的技能/闪避状态，我们不需要在这里 StopAction，
-            // // 因为新的状态会自己根据需要接管播放器。
-            // // 但如果回到了地面（Idle），通常需要保证动作彻底清场。
-            // if (Machine.NextState is CharacterGroundState || Machine.NextState is CharacterAirborneState)
-            // {
-            //     Entity.ActionPlayer.StopAction();
-            // }
-
-            // if (Entity.InputProvider != null)
-            // {
-            //     Entity.InputProvider.OnBasicAttackStarted -= OnBasicAttackRequest;
-            //     Entity.InputProvider.OnBasicAttackHoldStart -= OnBasicAttackHoldStart;
-            //     Entity.InputProvider.OnBasicAttackHold -= OnBasicAttackHold;
-            //     Entity.InputProvider.OnBasicAttackHoldCancel -= OnBasicAttackHoldCancel;
-            //     Entity.InputProvider.OnSpecialAttack -= OnSpecialAttackRequest;
-            //     Entity.InputProvider.OnUltimate -= OnUltimateRequest;
-            //     Entity.InputProvider.OnEvadeFrontStarted -= OnEvadeFrontRequest;
-            //     Entity.InputProvider.OnEvadeBackStarted -= OnEvadeBackRequest;
-            // }
         }
     }
 }

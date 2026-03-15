@@ -10,10 +10,12 @@ namespace Game.Logic.Character.SubStates
     {
         protected CharacterGroundState _ctx;
 
-        public void Initialize(CharacterGroundState context)
+        public virtual void Initialize(CharacterGroundState context)
         {
             _ctx = context;
         }
+
+        public virtual IInputCommandHandler InputHandler => CharacterStateBase.InputHandlerStatic;
 
         public virtual bool CanEnter() { return true; }
         public virtual bool CanExit() { return true; }

@@ -24,15 +24,28 @@ namespace Game.MAnimSystem
 
         public AnimState(AnimationClip clip = null)
         {
-            Clip = clip;
-            UpdateClipMetadata(clip);
+            if (UpdateClipMetadata(clip))
+            {
+                Clip = clip;
+            }
         }
 
         protected override Playable CreatePlayable(PlayableGraph graph)
         {
             if (Clip == null) return Playable.Null;
-            _clipPlayable = AnimationClipPlayable.Create(graph, Clip);
-            return _clipPlayable;
+            try
+            {
+                _clipPlayable = AnimationClipPlayable.Create(graph, Clip);
+                return _clipPlayable;
+            }
+            catch (MissingReferenceException)
+            {
+                Clip = null;
+                _cachedLength = 0f;
+                _cachedIsLooping = false;
+                Debug.LogWarning("[AnimState] Skipped creating playable because the AnimationClip was already destroyed or unloaded.");
+                return Playable.Null;
+            }
         }
 
         /// <summary>
@@ -43,9 +56,14 @@ namespace Game.MAnimSystem
         {
             if (clip == null) return;
 
+            if (!UpdateClipMetadata(clip))
+            {
+                Debug.LogWarning("[AnimState] Skipped binding an AnimationClip because it was already destroyed or unloaded.");
+                return;
+            }
+
             bool clipChanged = Clip != clip;
             Clip = clip;
-            UpdateClipMetadata(clip);
 
             if (!_playableCache.IsValid() || clipChanged)
             {
@@ -60,7 +78,18 @@ namespace Game.MAnimSystem
                     _playableCache.Destroy();
                 }
 
-                _clipPlayable = AnimationClipPlayable.Create(graph, clip);
+                try
+                {
+                    _clipPlayable = AnimationClipPlayable.Create(graph, clip);
+                }
+                catch (MissingReferenceException)
+                {
+                    Clip = null;
+                    _cachedLength = 0f;
+                    _cachedIsLooping = false;
+                    Debug.LogWarning("[AnimState] Skipped rebuilding playable because the AnimationClip was destroyed or unloaded during bind.");
+                    return;
+                }
                 _playableCache = _clipPlayable;
 
                 if (wasConnected)
@@ -72,17 +101,27 @@ namespace Game.MAnimSystem
             RebuildPlayable();
         }
 
-        private void UpdateClipMetadata(AnimationClip clip)
+        private bool UpdateClipMetadata(AnimationClip clip)
         {
             if (clip == null)
             {
                 _cachedLength = 0f;
                 _cachedIsLooping = false;
-                return;
+                return false;
             }
 
-            _cachedLength = clip.length;
-            _cachedIsLooping = clip.isLooping;
+            try
+            {
+                _cachedLength = clip.length;
+                _cachedIsLooping = clip.isLooping;
+                return true;
+            }
+            catch (MissingReferenceException)
+            {
+                _cachedLength = 0f;
+                _cachedIsLooping = false;
+                return false;
+            }
         }
 
         public float Length => _cachedLength;

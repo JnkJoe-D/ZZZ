@@ -39,10 +39,73 @@ namespace SkillEditor
             JsonUtility.FromJsonOverwrite(json, timeline);
 
             // 导入后置处理：根据 GUID 还原资源引用
-            ResolveAllAssets(timeline);
+            ResolveAllAssetsImmediate(timeline);
             timeline.RecalculateDuration();
 
             return timeline;
+        }
+        
+        public static async Task<SkillTimeline> ImportFromJsonPathAsync(string path)
+        {
+            if (!File.Exists(path)) return null;
+
+            string json = File.ReadAllText(path);
+            SkillTimeline timeline = ScriptableObject.CreateInstance<SkillTimeline>();
+            JsonUtility.FromJsonOverwrite(json, timeline);
+            await ResolveAllAssets(timeline);
+            timeline.RecalculateDuration();
+            return timeline;
+        }
+        
+        private static void ResolveAllAssetsImmediate(SkillTimeline timeline)
+        {
+            if (timeline == null) return;
+
+            foreach (var track in timeline.AllTracks)
+            {
+                foreach (var clip in track.clips)
+                {
+                    if (clip is SkillAnimationClip animClip)
+                    {
+                        if(!string.IsNullOrEmpty(animClip.clipGuid))
+                        {
+                            animClip.animationClip = ResolveAssetImmediate<AnimationClip>(animClip.clipGuid, animClip.clipAssetPath, animClip.clipAssetName);
+                        }
+                        if(!string.IsNullOrEmpty(animClip.maskGuid))
+                        {
+                            animClip.overrideMask = ResolveAssetImmediate<AvatarMask>(animClip.maskGuid, animClip.maskAssetPath, animClip.maskAssetName);
+                        }
+                    }
+                    else if (clip is VFXClip vfxClip && !string.IsNullOrEmpty(vfxClip.prefabGuid))
+                    {
+                        vfxClip.effectPrefab = ResolveAssetImmediate<GameObject>(vfxClip.prefabGuid, vfxClip.prefabAssetPath, vfxClip.prefabAssetName);
+                    }
+                    else if (clip is SkillAudioClip audioClip)
+                    {
+                        audioClip.audioClips.Clear();
+                        if (audioClip.clipGuids == null)
+                        {
+                            continue;
+                        }
+
+                        for (int i = 0; i < audioClip.clipGuids.Count; i++)
+                        {
+                            string guid = audioClip.clipGuids[i];
+                            string pth = (audioClip.clipAssetPaths != null && i < audioClip.clipAssetPaths.Count) ? audioClip.clipAssetPaths[i] : "";
+                            string nme = (audioClip.clipAssetNames != null && i < audioClip.clipAssetNames.Count) ? audioClip.clipAssetNames[i] : "";
+
+                            if (!string.IsNullOrEmpty(guid) || !string.IsNullOrEmpty(pth) || !string.IsNullOrEmpty(nme))
+                            {
+                                audioClip.audioClips.Add(ResolveAssetImmediate<AudioClip>(guid, pth, nme));
+                            }
+                            else
+                            {
+                                audioClip.audioClips.Add(null);
+                            }
+                        }
+                    }
+                }
+            }
         }
         /// <summary>
         /// 从 JSON 文件获取技能
@@ -55,7 +118,19 @@ namespace SkillEditor
             JsonUtility.FromJsonOverwrite(json, timeline);
 
             // 导入后置处理：根据 GUID 还原资源引用
-            ResolveAllAssets(timeline);
+            ResolveAllAssetsImmediate(timeline);
+            timeline.RecalculateDuration();
+            return timeline;
+        }
+        
+        public static async Task<SkillTimeline> OpenFromJsonAsync(TextAsset textAsset)
+        {
+            if(textAsset==null)return null;
+
+            string json = textAsset.text;
+            SkillTimeline timeline = ScriptableObject.CreateInstance<SkillTimeline>();
+            JsonUtility.FromJsonOverwrite(json, timeline);
+            await ResolveAllAssets(timeline);
             timeline.RecalculateDuration();
             return timeline;
         }
@@ -241,6 +316,57 @@ namespace SkillEditor
                 }
 
                 return await Runtime.SkillSystemContext.AssetLoader.LoadAssetAsync<T>(address);
+            }
+            return null;
+#endif
+        }
+        private static T ResolveAssetImmediate<T>(string guid, string assetPath, string assetName = null) where T : Object
+        {
+#if UNITY_EDITOR
+            if (Application.isPlaying && Runtime.SkillSystemContext.AssetLoader != null)
+            {
+                string address = !string.IsNullOrEmpty(assetPath) ? assetPath : assetName;
+
+                if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) &&
+                    (typeof(T) == typeof(AnimationClip) || typeof(T) == typeof(AvatarMask)))
+                {
+                    T subAsset = Runtime.SkillSystemContext.AssetLoader.LoadSubAsset<T>(address, assetName);
+                    if (subAsset != null) return subAsset;
+                }
+
+                T runtimeAsset = Runtime.SkillSystemContext.AssetLoader.LoadAsset<T>(guid, address);
+                if (runtimeAsset != null) return runtimeAsset;
+            }
+
+            string realAssetPath = AssetDatabase.GUIDToAssetPath(guid);
+            if (string.IsNullOrEmpty(realAssetPath)) return null;
+
+            if (!string.IsNullOrEmpty(assetName))
+            {
+                Object[] allAssets = AssetDatabase.LoadAllAssetsAtPath(realAssetPath);
+                foreach (var obj in allAssets)
+                {
+                    if (obj is T targetType && obj.name == assetName)
+                    {
+                        return targetType;
+                    }
+                }
+            }
+
+            return AssetDatabase.LoadAssetAtPath<T>(realAssetPath);
+#else
+            if (Runtime.SkillSystemContext.AssetLoader != null)
+            {
+                string address = !string.IsNullOrEmpty(assetPath) ? assetPath : assetName;
+
+                if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) &&
+                    (typeof(T) == typeof(AnimationClip) || typeof(T) == typeof(AvatarMask)))
+                {
+                    T subAsset = Runtime.SkillSystemContext.AssetLoader.LoadSubAsset<T>(address, assetName);
+                    if (subAsset != null) return subAsset;
+                }
+
+                return Runtime.SkillSystemContext.AssetLoader.LoadAsset<T>(guid, address);
             }
             return null;
 #endif

@@ -30,6 +30,9 @@ namespace Game.Logic.Character
         
         public SubStates.GroundSubState CurrentSubState { get; private set; }
 
+        private IInputCommandHandler _defaultInputHandler;
+        public override IInputCommandHandler InputHandler => CurrentSubState?.InputHandler ?? _defaultInputHandler;
+
         // --- 全局地表物理硬直锁 ---
         private float _moveLockTimer = 0f;
         public bool IsMoveLocked => _moveLockTimer > 0;
@@ -44,8 +47,13 @@ namespace Game.Logic.Character
             IdleState = new SubStates.GroundIdleSubState();
             JogState = new SubStates.GroundJogSubState();
             DashState = new SubStates.GroundDashSubState();
-            StopState = new SubStates.GroundStopSubState();
-            
+            StopState = new SubStates.GroundStopSubState();        
+        }
+
+        public override void OnInit(FSMSystem<CharacterEntity> fsm)
+        {
+            base.OnInit(fsm);
+            _defaultInputHandler = new DefaultInputCommandHandler(Entity);
             IdleState.Initialize(this);
             JogState.Initialize(this);
             DashState.Initialize(this);

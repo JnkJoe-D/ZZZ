@@ -1,7 +1,6 @@
 using Game.FSM;
 using Game.Logic.Action.Config;
 using SkillEditor;
-using UnityEditor;
 using UnityEngine;
 
 namespace Game.Logic.Character
@@ -19,23 +18,18 @@ namespace Game.Logic.Character
         private SkillConfigAsset currentSkill;
         private bool isBackswingStarted;
 
+        private IInputCommandHandler _inputHandler;
+        public override IInputCommandHandler InputHandler => _inputHandler;
+
+        public override void OnInit(FSMSystem<CharacterEntity> fsm)
+        {
+            base.OnInit(fsm);
+            _inputHandler = new ComboInputCommandHandler(Entity);
+        }
+
         public override void OnEnter()
         {
             isBackswingStarted = false;
-
-            if (Entity.InputProvider != null)
-            {
-                Entity.InputProvider.OnBasicAttackStarted += OnBasicAttackRequest;
-                Entity.InputProvider.OnBasicAttackCanceled += OnBasicAttackRequestCancel;
-                Entity.InputProvider.OnBasicAttackHoldStart += OnBasicAttackRequestHoldStart;
-                Entity.InputProvider.OnBasicAttackHold += OnBasicAttackRequestHold;
-                Entity.InputProvider.OnBasicAttackHoldCancel += OnBasicAttackRequestHoldCancel;
-                Entity.InputProvider.OnSpecialAttack += OnSpecialAttackRequest;
-                Entity.InputProvider.OnUltimate += OnUltimateRequest;
-                Entity.InputProvider.OnEvadeFrontStarted += OnEvadeFrontRequest;
-                Entity.InputProvider.OnEvadeBackStarted += OnEvadeBackRequest;
-            }
-
             PlayCurrentSkill();
         }
 
@@ -68,31 +62,6 @@ namespace Game.Logic.Character
             Entity.ActionPlayer.SetPlaySpeed(Entity.Config.DodgeMultipier);
 
             currentSkill = skillConfig as SkillConfigAsset;
-        }
-
-        private float _skillStartTime;
-        private void OnBasicAttackRequest() { Entity.ComboController.OnInput(BufferedInputType.BasicAttack); }
-        private void OnBasicAttackRequestCancel() {}
-        private void OnBasicAttackRequestHoldStart() {}
-        private void OnBasicAttackRequestHold() { Entity.ComboController.OnInput(BufferedInputType.BasicAttackHold); }
-        private void OnBasicAttackRequestHoldCancel() {}
-        private void OnSpecialAttackRequest() { Entity.ComboController.OnInput(BufferedInputType.SpecialAttack); }
-        private void OnUltimateRequest() { Entity.ComboController.OnInput(BufferedInputType.Ultimate); }
-
-        private void OnEvadeFrontRequest()
-        {
-            if (Entity.CanEvade())
-            {
-                Entity.ComboController.OnInput(BufferedInputType.EvadeFront);
-            }
-        }
-
-        private void OnEvadeBackRequest()
-        {
-            if (Entity.CanEvade())
-            {
-                Entity.ComboController.OnInput(BufferedInputType.EvadeBack);
-            }
         }
 
         // 自然/提前结束闪避状态的统一流转出口
@@ -143,19 +112,6 @@ namespace Game.Logic.Character
                 Entity.ActionPlayer.StopAction();
             }
             currentSkill = null;
-            
-            if (Entity.InputProvider != null)
-            {
-                Entity.InputProvider.OnBasicAttackStarted -= OnBasicAttackRequest;
-                Entity.InputProvider.OnBasicAttackCanceled -= OnBasicAttackRequestCancel;
-                Entity.InputProvider.OnBasicAttackHoldStart -= OnBasicAttackRequestHoldStart;
-                Entity.InputProvider.OnBasicAttackHold -= OnBasicAttackRequestHold;
-                Entity.InputProvider.OnBasicAttackHoldCancel -= OnBasicAttackRequestHoldCancel;
-                Entity.InputProvider.OnSpecialAttack -= OnSpecialAttackRequest;
-                Entity.InputProvider.OnUltimate -= OnUltimateRequest;
-                Entity.InputProvider.OnEvadeFrontStarted -= OnEvadeFrontRequest;
-                Entity.InputProvider.OnEvadeBackStarted -= OnEvadeBackRequest;
-            }
         }
 
         private void OnSkillEnd()

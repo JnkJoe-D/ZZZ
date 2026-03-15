@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using SkillEditor;
 using Game.Adapters;
@@ -14,6 +15,7 @@ namespace Game.Logic.Action
     {
         // 缓存解析过的 JSON 数据 -> 成为 Timeline
         private Dictionary<int, SkillTimeline> _timelineCache = new Dictionary<int, SkillTimeline>();
+        private readonly Dictionary<int, Task<SkillTimeline>> _timelineLoadTasks = new Dictionary<int, Task<SkillTimeline>>();
         // 缓存各角色的 Context
         private Dictionary<int, ProcessContext> _contextCache = new Dictionary<int, ProcessContext>();
         // 缓存各角色的 Runner
@@ -31,8 +33,30 @@ namespace Game.Logic.Action
             {
                 if (actionConfig != null)
                 {
-                    GetOrLoadTimeline(actionConfig);
+                    if (!_timelineCache.ContainsKey(actionConfig.ID))
+                    {
+                        Debug.LogWarning($"[ActionManager] Timeline for action '{actionConfig.name}' was requested through synchronous preload. Use PreloadCharacterActionsAsync for runtime initialization.");
+                    }
                 }
+            }
+        }
+
+        public async Task PreloadCharacterActionsAsync(CharacterConfigAsset config)
+        {
+            if (config == null) return;
+
+            var loadTasks = new List<Task>(8);
+            foreach (var actionConfig in config.GetAllActionConfigs())
+            {
+                if (actionConfig != null)
+                {
+                    loadTasks.Add(GetOrLoadTimelineAsync(actionConfig));
+                }
+            }
+
+            if (loadTasks.Count > 0)
+            {
+                await Task.WhenAll(loadTasks);
             }
         }
 
@@ -43,10 +67,54 @@ namespace Game.Logic.Action
             if (_timelineCache.TryGetValue(config.ID, out var timeline))
                 return timeline;
 
-            timeline = SerializationUtility.OpenFromJson(config.TimelineAsset);
-            if (timeline != null) _timelineCache[config.ID] = timeline;
-            
-            return timeline;
+            if (_timelineLoadTasks.ContainsKey(config.ID))
+            {
+                Debug.LogWarning($"[ActionManager] Timeline '{config.name}' is still loading asynchronously. Playback expects it to be preloaded before use.");
+            }
+            else
+            {
+                Debug.LogWarning($"[ActionManager] Timeline '{config.name}' is not cached. Call PreloadCharacterActionsAsync/GetOrLoadTimelineAsync before playback.");
+            }
+
+            return null;
+        }
+        
+        public async Task<SkillTimeline> GetOrLoadTimelineAsync(ActionConfigAsset config)
+        {
+            if (config == null || config.TimelineAsset == null) return null;
+
+            if (_timelineCache.TryGetValue(config.ID, out var cachedTimeline))
+            {
+                return cachedTimeline;
+            }
+
+            if (_timelineLoadTasks.TryGetValue(config.ID, out var inFlightTask))
+            {
+                return await inFlightTask;
+            }
+
+            Task<SkillTimeline> loadTask = LoadTimelineInternalAsync(config);
+            _timelineLoadTasks[config.ID] = loadTask;
+
+            try
+            {
+                SkillTimeline timeline = await loadTask;
+                if (timeline != null)
+                {
+                    _timelineCache[config.ID] = timeline;
+                }
+
+                return timeline;
+            }
+            finally
+            {
+                _timelineLoadTasks.Remove(config.ID);
+            }
+        }
+        
+        private static async Task<SkillTimeline> LoadTimelineInternalAsync(ActionConfigAsset config)
+        {
+            return await SerializationUtility.OpenFromJsonAsync(config.TimelineAsset);
         }
         public ProcessContext GetContext(Character.CharacterEntity entity)
         {
@@ -94,6 +162,7 @@ namespace Game.Logic.Action
             _runnerCache.Clear();
             _contextCache.Clear();
             _timelineCache.Clear();
+            _timelineLoadTasks.Clear();
         }
     }
 }

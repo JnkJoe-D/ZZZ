@@ -11,6 +11,11 @@ namespace Game.Logic.Character
         protected FSMSystem<CharacterEntity> Machine;
         protected CharacterEntity Entity => Machine.Owner;
 
+        // --- 指令路由 ---
+        public static readonly IInputCommandHandler NullInputHandler = new NullInputCommandHandler();
+        public static IInputCommandHandler InputHandlerStatic => NullInputHandler;
+        public virtual IInputCommandHandler InputHandler => NullInputHandler;
+
         public virtual void OnInit(FSMSystem<CharacterEntity> fsm)
         {
             Machine = fsm;

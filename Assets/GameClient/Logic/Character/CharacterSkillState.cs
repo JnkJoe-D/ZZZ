@@ -16,23 +16,19 @@ namespace Game.Logic.Character
         private float _skillStartTime;
         public bool IsBasicAttackHold { get; private set; }
         private SkillRunner _currentRunner;
+
+        private IInputCommandHandler _inputHandler;
+        public override IInputCommandHandler InputHandler => _inputHandler;
+
+        public override void OnInit(FSMSystem<CharacterEntity> fsm)
+        {
+            base.OnInit(fsm);
+            _inputHandler = new ComboInputCommandHandler(Entity);
+        }
+
         public override void OnEnter()
         {
             IsBasicAttackHold = false;
-            // 监听普攻连接
-            if (Entity.InputProvider != null)
-            {
-                Entity.InputProvider.OnBasicAttackStarted += OnBasicAttackRequest;
-                Entity.InputProvider.OnBasicAttackCanceled += OnBasicAttackRequestCancel;
-                Entity.InputProvider.OnBasicAttackHoldStart += OnBasicAttackRequestHoldStart;
-                Entity.InputProvider.OnBasicAttackHold += OnBasicAttackRequestHold;
-                Entity.InputProvider.OnBasicAttackHoldCancel += OnBasicAttackRequestHoldCancel;
-                Entity.InputProvider.OnSpecialAttack += OnSpecialAttackRequest;
-                Entity.InputProvider.OnUltimate += OnUltimateRequest;
-                Entity.InputProvider.OnEvadeFrontStarted += OnEvadeFrontRequest;
-                Entity.InputProvider.OnEvadeBackStarted += OnEvadeBackRequest;
-            }
-
             PlayCurrentSkill();
         }
 
@@ -63,63 +59,6 @@ namespace Game.Logic.Character
             Debug.Log($"<color=#E2243C>PlaySkill: {skillConfig.Name}</color>");
         }
 
-
-        private void OnBasicAttackRequest()
-        {
-            if (Time.time - _skillStartTime < 0.1f) return;
-            Entity.ComboController.OnInput(BufferedInputType.BasicAttack);
-        }
-
-        private void OnBasicAttackRequestCancel()
-        {
-        }
-
-        private void OnBasicAttackRequestHoldStart()
-        {
-            if (Time.time - _skillStartTime < 0.1f) return;
-            IsBasicAttackHold = true;
-        }
-
-        private void OnBasicAttackRequestHold()
-        {
-            if (Time.time - _skillStartTime < 0.1f) return;
-            Entity.ComboController.OnInput(BufferedInputType.BasicAttackHold);
-        }
-
-        private void OnBasicAttackRequestHoldCancel()
-        {
-            IsBasicAttackHold = false;
-        }
-
-        private void OnSpecialAttackRequest()
-        {
-            if (Time.time - _skillStartTime < 0.1f) return;
-            Entity.ComboController.OnInput(BufferedInputType.SpecialAttack);
-        }
-
-        private void OnUltimateRequest()
-        {
-            if (Time.time - _skillStartTime < 0.1f) return;
-            Entity.ComboController.OnInput(BufferedInputType.Ultimate);
-        }
-
-        private void OnEvadeFrontRequest()
-        {
-            if (Entity.CanEvade())
-            {
-                Entity.ComboController.OnInput(BufferedInputType.EvadeFront);
-            }
-        }
-
-        private void OnEvadeBackRequest()
-        {
-            if (Entity.CanEvade())
-            {
-                Entity.ComboController.OnInput(BufferedInputType.EvadeBack);
-            }
-        }
-        
-
         public override void OnUpdate(float deltaTime)
         {
             // Fallback 打断由 ComboController 直接处理，这里不再需要
@@ -139,19 +78,6 @@ namespace Game.Logic.Character
             else
             {
                 Entity.ActionPlayer.StopAction();
-            }
-
-            if (Entity.InputProvider != null)
-            {
-                Entity.InputProvider.OnBasicAttackStarted -= OnBasicAttackRequest;
-                Entity.InputProvider.OnBasicAttackCanceled -= OnBasicAttackRequestCancel;
-                Entity.InputProvider.OnBasicAttackHoldStart -= OnBasicAttackRequestHoldStart;
-                Entity.InputProvider.OnBasicAttackHold -= OnBasicAttackRequestHold;
-                Entity.InputProvider.OnBasicAttackHoldCancel -= OnBasicAttackRequestHoldCancel;
-                Entity.InputProvider.OnSpecialAttack -= OnSpecialAttackRequest;
-                Entity.InputProvider.OnUltimate -= OnUltimateRequest;
-                Entity.InputProvider.OnEvadeFrontStarted -= OnEvadeFrontRequest;
-                Entity.InputProvider.OnEvadeBackStarted -= OnEvadeBackRequest;
             }
         }
 

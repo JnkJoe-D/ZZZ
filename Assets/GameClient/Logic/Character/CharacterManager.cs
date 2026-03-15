@@ -56,6 +56,11 @@ namespace Game.Logic.Character
             }
 
             // 2. 实例化躯壳
+            if (Game.Logic.Action.ActionManager.Instance != null)
+            {
+                await Game.Logic.Action.ActionManager.Instance.PreloadCharacterActionsAsync(config);
+            }
+
             GameObject characterGo = UnityEngine.Object.Instantiate(characterPrefab, spawnPos, spawnRot);
             CharacterEntity characterEntity = characterGo.GetComponent<CharacterEntity>();
             if (characterEntity == null)

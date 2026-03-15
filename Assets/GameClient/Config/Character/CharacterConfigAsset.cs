@@ -62,8 +62,12 @@ namespace Game.Logic.Character.Config
         public SkillConfigAsset[] dodgeCounter;
         [Header("特殊技")]
         public SkillConfigAsset specialSkill;
+        [Header("特殊技_快速")]
+        public SkillConfigAsset specialSkillPerfect;
         [Header("强化特殊技")]
         public SkillConfigAsset enhancedSpecialSkill;
+        [Header("强化特殊技_快速")]
+        public SkillConfigAsset enhancedSpecialSkillPerfect;
         [Header("切人连携")]
         public SkillConfigAsset chainSkill;
         [Header("切人支援")]
@@ -95,6 +99,8 @@ namespace Game.Logic.Character.Config
             if (dodgeCounter != null) foreach (var c in dodgeCounter) if (c != null) yield return c;
             
             if (specialSkill != null) yield return specialSkill;
+            if (specialSkillPerfect != null) yield return specialSkillPerfect;
+            if (enhancedSpecialSkillPerfect != null) yield return enhancedSpecialSkillPerfect;
             if (enhancedSpecialSkill != null) yield return enhancedSpecialSkill;
             if (chainSkill != null) yield return chainSkill;
             if (assistSkill != null) yield return assistSkill;

@@ -5,6 +5,15 @@ namespace Game.Logic.Character.SubStates
 {
     public class GroundStopSubState : GroundSubState
     {
+        private IInputCommandHandler _handler;
+        public override IInputCommandHandler InputHandler => _handler;
+
+        public override void Initialize(CharacterGroundState context)
+        {
+            base.Initialize(context);
+            _handler = new DefaultInputCommandHandler(context.HostEntity);
+        }
+
         private SkillEditor.SkillRunner _currentRunner;
 
         public override void OnEnter()

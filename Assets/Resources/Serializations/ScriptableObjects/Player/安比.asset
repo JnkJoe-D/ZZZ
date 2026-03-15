@@ -50,7 +50,11 @@ MonoBehaviour:
   dashAttack: {fileID: 11400000, guid: 7a51b91027c2ec94ba9740c476a93a5f, type: 2}
   dodgeCounter: []
   specialSkill: {fileID: 11400000, guid: 867432dae13f2b8488c6584a0b64f77e, type: 2}
+  specialSkillPerfect: {fileID: 11400000, guid: 0a5c69b4575922a40a0e2cb46959c12d,
+    type: 2}
   enhancedSpecialSkill: {fileID: 11400000, guid: 6017e166fa64ec340bb7502e6335ef91,
+    type: 2}
+  enhancedSpecialSkillPerfect: {fileID: 11400000, guid: b923309190cc763409c094ea5934396b,
     type: 2}
   chainSkill: {fileID: 0}
   assistSkill: {fileID: 0}

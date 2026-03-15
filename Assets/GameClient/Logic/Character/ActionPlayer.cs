@@ -68,6 +68,7 @@ namespace Game.Logic.Character
             }
             else
             {
+                Debug.LogWarning($"[ActionPlayer] Timeline cache miss for action '{config.name}'. Ensure preload completed before playback.");
                 IsPlaying = false;
             }
             return _runner;
