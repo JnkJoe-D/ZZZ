@@ -4473,6 +4473,7 @@ GameObject:
   - component: {fileID: 8712995317113709330}
   - component: {fileID: -2569771162649719823}
   - component: {fileID: 1480080357286700949}
+  - component: {fileID: 6939921734203074441}
   m_Layer: 7
   m_Name: Anbi
   m_TagString: Untagged
@@ -4585,6 +4586,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fadf7f137634994597fc2563180dd68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6939921734203074441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7318168888982567421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7548dffa873bfa44eba9cf68c5a5eb0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  config:
+    SearchRadius: 20
+    SearchLayerMask:
+      serializedVersion: 2
+      m_Bits: 128
+    PriorityTags:
+    - Enemy
 --- !u!1 &7412486912497016464
 GameObject:
   m_ObjectHideFlags: 0

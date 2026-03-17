@@ -23,5 +23,6 @@ namespace SkillEditor
         public AudioClip hitAudioClip;
         public float hitStunDuration;
         public Vector3 hitVFXScale;
+        public bool followTarget;
     }
 }

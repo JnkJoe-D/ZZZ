@@ -41,14 +41,7 @@ namespace Game.Logic.Character
 
         private void ReturnToGround()
         {
-            if (Entity.MovementController != null && Entity.MovementController.IsGrounded)
-            {
-                Machine.ChangeState<CharacterGroundState>();
-            }
-            else
-            {
-                Machine.ChangeState<CharacterAirborneState>();
-            }
+            Machine.ChangeState<CharacterGroundState>();
         }
 
         public override void OnExit()

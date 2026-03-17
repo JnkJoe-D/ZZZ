@@ -91,14 +91,40 @@ namespace Game.Logic.Character
 
         protected virtual void FaceTo(ActionConfigAsset config)
         {
-            //if(config==null)return;
+            if (config == null || _entity.MovementController == null) return;
+
             if (config.TurnMode == ActionTurnMode.InputDirection)
             {
                 // 校准面朝向 (技能施放前瞬间转向输入方向)
                 var inputDir = _entity.InputProvider?.GetMovementDirection() ?? Vector2.zero;
-                if (inputDir.sqrMagnitude > 0.01f && _entity.MovementController != null)
+                if (inputDir.sqrMagnitude > 0.01f)
                 {
                     _entity.MovementController.FaceToImmediately(inputDir);
+                }
+            }
+            else if (config.TurnMode == ActionTurnMode.EnemyPriorityThenInput)
+            {
+                bool targetFound = false;
+                
+                if (_entity.TargetFinder != null)
+                {
+                    var enemy = _entity.TargetFinder.GetEnemy();
+                    if (enemy != null)
+                    {
+                        // 发现敌人，立刻朝向敌人
+                        _entity.MovementController.FaceToTargetImmediately(enemy);
+                        targetFound = true;
+                    }
+                }
+
+                // 没找到敌人时退回输入方向策略
+                if (!targetFound)
+                {
+                    var inputDir = _entity.InputProvider?.GetMovementDirection() ?? Vector2.zero;
+                    if (inputDir.sqrMagnitude > 0.01f)
+                    {
+                        _entity.MovementController.FaceToImmediately(inputDir);
+                    }
                 }
             }
         }

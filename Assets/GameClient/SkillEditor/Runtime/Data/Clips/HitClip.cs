@@ -72,6 +72,9 @@ namespace SkillEditor
         [SkillProperty("受击特效缩放")]
         public Vector3 hitVFXScale = Vector3.one;
 
+        [SkillProperty("受击特效是否跟随目标")]
+        public bool followTarget = true;
+
         [SkillProperty("受击音效")]
         public AudioClip hitAudioClip;
 
@@ -123,6 +126,7 @@ namespace SkillEditor
                 hitVFXHeight = this.hitVFXHeight,
                 hitVFXPreviewOffsetXZ = this.hitVFXPreviewOffsetXZ,
                 hitVFXScale = this.hitVFXScale,
+                followTarget = this.followTarget,
                 hitAudioClip = this.hitAudioClip,
                 hitAudioRef = new SkillAssetReference(this.hitAudioRef.guid, this.hitAudioRef.assetName, this.hitAudioRef.assetPath),
                 hitStunDuration = this.hitStunDuration,

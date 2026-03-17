@@ -15,8 +15,8 @@ TagManager:
   - 
   - Water
   - UI
-  - Char
-  - Player
+  - CharHit
+  - Character
   - Ground
   - 
   - 

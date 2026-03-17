@@ -100,32 +100,50 @@ namespace SkillEditor
                 // 圆柱体相关的过滤逻辑 (高度剔除、平面剔除)
                 if (shape.shapeType == HitBoxType.Sector || shape.shapeType == HitBoxType.Ring)
                 {
-                    // 转到检测框自身的局部坐标系进行计算
-                    Vector3 localPos = Quaternion.Inverse(rotation) * (hit.transform.position - center);
-
-                    // 1. 高度过滤 (带一点误差容忍)
-                    if (Mathf.Abs(localPos.y) > (shape.height / 2f) + 0.01f)
+                    // 使用碰撞体的包围盒作为基准
+                    Bounds bounds = hit.bounds;
+                    
+                    // 转到检测框自身的局部坐标系来判断（以 center 为原点，rotation 为方向）
+                    Vector3 localCenter = Quaternion.Inverse(rotation) * (bounds.center - center);
+                    
+                    // 估算碰撞体在 XZ 平面上的最大投影半径（粗略但安全的包围圆）
+                    float targetRadius = Mathf.Max(bounds.extents.x, bounds.extents.z);
+                    
+                    // 1. 高度过滤 (Y轴方向)
+                    // 圆柱的上下边界是 height/2, -height/2
+                    float boundMinY = localCenter.y - bounds.extents.y;
+                    float boundMaxY = localCenter.y + bounds.extents.y;
+                    float shapeHalfHeight = shape.height / 2f;
+                    
+                    if (boundMinY > shapeHalfHeight || boundMaxY < -shapeHalfHeight)
                         continue;
 
                     // 2. 局部 2D 平面 (XZ平面) 的距离判断
-                    Vector2 localPos2D = new Vector2(localPos.x, localPos.z);
+                    Vector2 localPos2D = new Vector2(localCenter.x, localCenter.z);
                     float dist2D = localPos2D.magnitude;
 
-                    // broad-phase 的 Box 会包含圆柱外的四个角，需二次过滤半径
-                    if (dist2D > shape.radius)
+                    // 扇形与环形共有的外圈剔除：最靠近的目标点超过了外圈半径
+                    if (dist2D - targetRadius > shape.radius)
                         continue;
 
                     if (shape.shapeType == HitBoxType.Sector)
                     {
-                        // 局部 Z 轴是正前方，计算点在平面上与 Z 轴的夹角
-                        // Vector2.up 是 (0, 1)，即对应局部的 Z 轴
-                        float angle2D = Vector2.Angle(Vector2.up, localPos2D); 
-                        if (angle2D > shape.angle / 2f)
-                            continue;
+                        // 扇形角度判断
+                        // 目标包围圈包含了原点，则必然与扇形相交
+                        if (dist2D > targetRadius)
+                        {
+                            float angle2D = Vector2.Angle(Vector2.up, localPos2D);
+                            float angleTolerance = Mathf.Asin(Mathf.Clamp01(targetRadius / dist2D)) * Mathf.Rad2Deg;
+                            
+                            // 最边缘点角度仍大于扇形一半，说明在扇形外
+                            if (angle2D - angleTolerance > shape.angle / 2f)
+                                continue;
+                        }
                     }
                     else if (shape.shapeType == HitBoxType.Ring)
                     {
-                        if (dist2D < shape.innerRadius)
+                        // 环形内孔剔除：最远离的目标点都不及内圈半径，说明完全在孔洞中
+                        if (dist2D + targetRadius < shape.innerRadius)
                             continue;
                     }
                 }
@@ -177,7 +195,8 @@ namespace SkillEditor
                     hitVFXHeight = clip.hitVFXHeight,
                     hitVFXScale = clip.hitVFXScale,
                     hitAudioClip = clip.hitAudioClip,
-                    hitStunDuration = clip.hitStunDuration
+                    hitStunDuration = clip.hitStunDuration,
+                    followTarget = clip.followTarget
                 };
                 damageHandler.OnHitDetect(hitData);
             }

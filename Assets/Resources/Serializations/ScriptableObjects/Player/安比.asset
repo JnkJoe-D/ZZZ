@@ -49,7 +49,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
   dashAttack: {fileID: 11400000, guid: 7a51b91027c2ec94ba9740c476a93a5f, type: 2}
   dodgeCounter: []
-  specialSkill: {fileID: 11400000, guid: 867432dae13f2b8488c6584a0b64f77e, type: 2}
+  specialSkill: {fileID: 11400000, guid: 7a51b91027c2ec94ba9740c476a93a5f, type: 2}
   specialSkillPerfect: {fileID: 11400000, guid: 0a5c69b4575922a40a0e2cb46959c12d,
     type: 2}
   enhancedSpecialSkill: {fileID: 11400000, guid: 6017e166fa64ec340bb7502e6335ef91,
@@ -60,3 +60,4 @@ MonoBehaviour:
   assistSkill: {fileID: 0}
   Ultimate: {fileID: 0}
   BehaviorTreeGraph: {fileID: 0}
+  hitReactionConfig: {fileID: 11400000, guid: 482c0f22a8a668540bb93f6822cb1e21, type: 2}

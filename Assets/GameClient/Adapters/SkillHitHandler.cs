@@ -22,7 +22,7 @@ namespace Game.Adapters
             {
                 if (collider == null) continue;
 
-                var victim = collider.GetComponent<CharacterEntity>();
+                var victim = collider.GetComponentInParent<CharacterEntity>();
                 if (victim == null) continue;
 
                 // 计算碰撞点和攻击方向
@@ -41,6 +41,7 @@ namespace Game.Adapters
                     hitVFXPrefab = hitData.hitVFXPrefab,
                     hitVFXHeight = hitData.hitVFXHeight,
                     hitVFXScale = hitData.hitVFXScale,
+                    hitVFXFollowTarget = hitData.followTarget,
                     hitAudioClip = hitData.hitAudioClip,
                     hitStunDuration = hitData.hitStunDuration,
                     hitPoint = hitPoint,

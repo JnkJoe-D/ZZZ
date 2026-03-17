@@ -16,8 +16,10 @@ namespace Game.Logic.Character
 
             MovementController = GetComponent<MovementController>();
             if (MovementController == null) MovementController = gameObject.AddComponent<MovementController>();
-            
+
             // AI 通常不需要 CharacterCameraController，保持基类属性为 null 即可
+            HitReactionModule = GetComponent<HitReactionModule>();
+            if (HitReactionModule == null) HitReactionModule = gameObject.AddComponent<HitReactionModule>();
         }
     }
 }

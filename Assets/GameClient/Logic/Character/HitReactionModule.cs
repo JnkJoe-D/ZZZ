@@ -13,15 +13,6 @@ namespace Game.Logic.Character
     /// </summary>
     public class HitReactionModule : MonoBehaviour
     {
-        [Header("受击配置")]
-        [Tooltip("角色级别的受击配置（动画变体/击退等）")]
-        public HitReactionConfig reactionConfig;
-
-        [Header("特效挂点覆盖")]
-        [Tooltip("启用则使用固定挂点，否则使用动态碰撞点")]
-        public bool useFixedHitPoint = false;
-        public BindPoint fixedBindPoint = BindPoint.Body;
-
         [Header("受击保护")]
         [Tooltip("两次受击硬直之间的最小间隔")]
         public float hitProtectionInterval = 0.1f;
@@ -92,6 +83,10 @@ namespace Game.Logic.Character
             if (vfx != null)
             {
                 vfx.transform.localScale = ctx.hitVFXScale;
+                if (ctx.hitVFXFollowTarget)
+                {
+                    vfx.transform.SetParent(transform);
+                }
             }
             VFXManager.Instance.ReturnWhenDone(vfx);
         }

@@ -31,6 +31,7 @@ namespace Game.Logic.Character
             StartCoroutine(InitializeSequence());
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+            HitImpactRegistry.RegisterDefaults();
         }
 
         private IEnumerator SpawnRoutine()

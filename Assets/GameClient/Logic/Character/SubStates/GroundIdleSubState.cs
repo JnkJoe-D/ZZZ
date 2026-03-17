@@ -20,9 +20,6 @@ namespace Game.Logic.Character.SubStates
                 _ctx.HostEntity.ActionPlayer.PlayAction(_ctx.HostEntity.Config.IdleConfig);
                 _ctx.HostEntity.ActionPlayer.SetPlaySpeed(1.0f);
             }
-            
-            // 确保玩家松手进入 Idle 瞬间是没有硬直的
-            _ctx.ClearMoveLock();
         }
 
         public override void OnUpdate(float deltaTime)

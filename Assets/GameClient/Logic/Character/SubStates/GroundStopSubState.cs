@@ -49,8 +49,6 @@ namespace Game.Logic.Character.SubStates
 
             if (playConfig != null)
             {
-                // 设置推摇杆霸体保护（物理硬直）
-                _ctx.SetMoveLock(lockTime);
                 _currentRunner = _ctx.HostEntity.ActionPlayer.PlayAction(playConfig);
                 if (_currentRunner != null) 
                 {
@@ -60,7 +58,6 @@ namespace Game.Logic.Character.SubStates
             }
             else
             {
-                _ctx.ClearMoveLock();
                 OnStopAnimFinished();
             }
         }
@@ -71,7 +68,7 @@ namespace Game.Logic.Character.SubStates
             if (provider == null) return;
 
             // 刹车期间如果物理硬直已过，只要玩家推摇杆便一刀斩断后摇，立刻切去新步态（打断动画）
-            if (provider.HasMovementInput() && !_ctx.IsMoveLocked)
+            if (provider.HasMovementInput())
             {
                 if (_currentRunner != null)
                 {

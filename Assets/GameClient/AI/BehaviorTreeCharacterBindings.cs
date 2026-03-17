@@ -119,7 +119,6 @@ namespace Game.AI
         bool HasMoveInput { get; }
         bool IsGrounded { get; }
         bool IsGroundState { get; }
-        bool IsAirborneState { get; }
         bool IsSkillState { get; }
         bool IsEvadeState { get; }
         bool IsDashState { get; }
@@ -209,7 +208,6 @@ namespace Game.AI
         public bool CanEvade => character != null && character.RuntimeData != null && character.RuntimeData.CanEvade(character.Config);
         public bool IsGrounded => character?.MovementController != null && character.MovementController.IsGrounded;
         public bool IsGroundState => character?.StateMachine?.CurrentState is CharacterGroundState;
-        public bool IsAirborneState => character?.StateMachine?.CurrentState is CharacterAirborneState;
         public bool IsSkillState => character?.StateMachine?.CurrentState is CharacterSkillState;
         public bool IsEvadeState => character?.StateMachine?.CurrentState is CharacterEvadeState;
 
@@ -416,7 +414,6 @@ namespace Game.AI
 
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.IsGrounded, facade.IsGrounded);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.IsGroundState, facade.IsGroundState);
-            context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.IsAirborneState, facade.IsAirborneState);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.IsSkillState, facade.IsSkillState);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.IsEvadeState, facade.IsEvadeState);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.CurrentState, facade.CurrentStateName);

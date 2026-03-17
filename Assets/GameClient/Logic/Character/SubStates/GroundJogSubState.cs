@@ -49,11 +49,9 @@ namespace Game.Logic.Character.SubStates
                 _hasPlayedAnim = true;
             }
 
-            // 3. 执行推移
+            // 3. 执行转向
             Vector2 inputDir = provider.GetMovementDirection();
-            // Vector3 worldDir = _ctx.GetWorldDirection(inputDir);
             
-            _ctx.HostEntity.MovementController?.Move(inputDir * _ctx.JogSpeed * deltaTime);
             _ctx.HostEntity.MovementController?.FaceTo(inputDir);
             
             _ctx.HostEntity.ActionPlayer.SetPlaySpeed(_ctx.HostEntity.Config.JogMultipier);

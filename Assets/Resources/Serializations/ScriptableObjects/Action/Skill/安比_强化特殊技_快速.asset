@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: 10009
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 4c2291a71d784954baf15ae402f829fd, type: 3}
-  TurnMode: 1
+  TurnMode: 2
   OutTransitions:
   - RequiredCommand: 20
     NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}

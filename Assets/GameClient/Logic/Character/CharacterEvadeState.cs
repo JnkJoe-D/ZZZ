@@ -74,11 +74,7 @@ namespace Game.Logic.Character
         {
             if (Entity.InputProvider != null && Entity.InputProvider.HasMovementInput())
             {
-                // Entity.ForceDashNextFrame = true; // 此处不再暴力设为 true，改由 PlayCurrentSkill 识别
-                if (Entity.MovementController != null && Entity.MovementController.IsGrounded)
-                    Machine.ChangeState<CharacterGroundState>();
-                else
-                    Machine.ChangeState<CharacterAirborneState>();
+                Machine.ChangeState<CharacterGroundState>();
             }
         }
 
@@ -93,10 +89,7 @@ namespace Game.Logic.Character
             //兜底，播放完强转
             if (!Entity.ActionPlayer.IsPlaying)
             {
-                if (Entity.MovementController != null && Entity.MovementController.IsGrounded)
-                    Machine.ChangeState<CharacterGroundState>();
-                else
-                    Machine.ChangeState<CharacterAirborneState>();
+                Machine.ChangeState<CharacterGroundState>();
                 return;
             }
             //旋转
@@ -126,14 +119,7 @@ namespace Game.Logic.Character
         private void OnSkillEnd()
         {
             currentSkill = null;
-            if (Entity.MovementController != null && Entity.MovementController.IsGrounded)
-            {
-                Entity.Machine.ChangeState<CharacterGroundState>();
-            }
-            else
-            {
-                Entity.Machine.ChangeState<CharacterAirborneState>();
-            }
+            Entity.Machine.ChangeState<CharacterGroundState>();
         }
     }
 }

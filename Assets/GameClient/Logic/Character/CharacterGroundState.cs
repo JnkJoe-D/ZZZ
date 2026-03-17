@@ -33,10 +33,6 @@ namespace Game.Logic.Character
         private IInputCommandHandler _defaultInputHandler;
         public override IInputCommandHandler InputHandler => CurrentSubState?.InputHandler ?? _defaultInputHandler;
 
-        // --- 全局地表物理硬直锁 ---
-        private float _moveLockTimer = 0f;
-        public bool IsMoveLocked => _moveLockTimer > 0;
-
         // --- 暴露给 SubState 专用的只读基类成员上下文 ---
         public CharacterEntity HostEntity => Entity;
         public FSMSystem<CharacterEntity> HostMachine => Machine;
@@ -61,9 +57,7 @@ namespace Game.Logic.Character
         }
 
         public override void OnEnter()
-        {
-            _moveLockTimer = 0f;
-            
+        {       
             var provider = Entity.InputProvider;
             
             // 进场时根据当前输入动态决定初始子状态，而不是死板地进入 Idle
@@ -94,12 +88,6 @@ namespace Game.Logic.Character
 
         public override void OnUpdate(float deltaTime)
         {
-            // 刷新本地全局硬直
-            if (_moveLockTimer > 0)
-            {
-                _moveLockTimer -= deltaTime;
-            }
-
             // 更新当前的子业务微状态
             CurrentSubState?.OnUpdate(deltaTime);
         }
@@ -126,16 +114,6 @@ namespace Game.Logic.Character
             CurrentSubState?.OnEnter();
 
             return true;
-        }
-
-        public void SetMoveLock(float duration)
-        {
-            _moveLockTimer = duration;
-        }
-
-        public void ClearMoveLock()
-        {
-            _moveLockTimer = 0f;
         }
     }
 }

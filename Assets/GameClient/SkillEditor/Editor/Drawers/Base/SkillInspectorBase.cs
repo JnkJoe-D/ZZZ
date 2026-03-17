@@ -103,6 +103,18 @@ namespace SkillEditor.Editor
         {
             if (field.IsDefined(typeof(HideInInspector), true)) return false;
             
+            var showIf = field.GetCustomAttribute<ShowIfAttribute>();
+            if (showIf != null)
+            {
+                var sourceField = obj.GetType().GetField(showIf.conditionalSourceField, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (sourceField != null)
+                {
+                    var sourceValue = sourceField.GetValue(obj);
+                    if (!object.Equals(sourceValue, showIf.expectedValue))
+                        return false;
+                }
+            }
+            
             // 硬编码的 Blending 逻辑 
             if (field.Name == "blendInDuration" || field.Name == "blendOutDuration")
             {

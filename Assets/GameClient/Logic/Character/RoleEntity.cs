@@ -20,6 +20,13 @@ namespace Game.Logic.Character
 
             CameraController = GetComponent<CharacterCameraController>();
             if (CameraController == null) CameraController = gameObject.AddComponent<CharacterCameraController>();
+
+            HitReactionModule = GetComponent<HitReactionModule>();
+            if(HitReactionModule == null)HitReactionModule = gameObject.AddComponent<HitReactionModule>();
+
+            // 索敌组件
+            TargetFinder = GetComponent<TargetFinder>();
+            if(TargetFinder == null) TargetFinder = gameObject.AddComponent<TargetFinder>();
         }
     }
 }

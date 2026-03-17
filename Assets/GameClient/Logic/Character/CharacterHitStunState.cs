@@ -19,11 +19,10 @@ namespace Game.Logic.Character
             _stunTimer = 0f;
 
             // 通过 ActionPlayer 播放受击动画
-            var hitModule = Entity.GetComponent<HitReactionModule>();
-            if (hitModule != null && hitModule.reactionConfig != null)
+            if (Entity!=null && Entity.Config != null && Entity.Config.hitReactionConfig != null)
             {
                 // TODO: 根据 hitDirection 选择前/后/左/右受击动画变体
-                var hitAnim = hitModule.reactionConfig.hitAnimFront;
+                var hitAnim = Entity.Config.hitReactionConfig.hitAnimLight;
                 if (hitAnim != null)
                 {
                     Entity.ActionPlayer?.PlayAction(hitAnim);

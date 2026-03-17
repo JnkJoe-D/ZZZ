@@ -102,10 +102,7 @@ namespace Game.Logic.Action.Combo
                 // 后摇窗口自然结束，回归待机
                 if (_entity.Machine.CurrentState is CharacterActionBackswingState)
                 {
-                    if (_entity.MovementController != null && _entity.MovementController.IsGrounded)
-                        _entity.Machine.ChangeState<CharacterGroundState>();
-                    else
-                        _entity.Machine.ChangeState<CharacterAirborneState>();
+                    _entity.Machine.ChangeState<CharacterGroundState>();
                 }
             }
         }
@@ -266,14 +263,7 @@ namespace Game.Logic.Action.Combo
 
         private void InterruptToGround()
         {
-            if (_entity.MovementController != null && _entity.MovementController.IsGrounded)
-            {
-                _entity.Machine.ChangeState<CharacterGroundState>();
-            }
-            else
-            {
-                _entity.Machine.ChangeState<CharacterAirborneState>();
-            }
+            _entity.Machine.ChangeState<CharacterGroundState>();
         }
         public void OnComboWindowEnter(string comboTag, SkillEditor.ComboWindowType windowType)
         {

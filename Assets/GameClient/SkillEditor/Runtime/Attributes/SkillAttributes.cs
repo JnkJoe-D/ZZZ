@@ -61,4 +61,16 @@ namespace SkillEditor
             TargetFieldName = targetFieldName;
         }
     }
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    public class ShowIfAttribute : Attribute
+    {
+        public string conditionalSourceField;
+        public object expectedValue;
+
+        public ShowIfAttribute(string conditionalSourceField, object expectedValue)
+        {
+            this.conditionalSourceField = conditionalSourceField;
+            this.expectedValue = expectedValue;
+        }
+    }
 }

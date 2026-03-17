@@ -21,6 +21,7 @@ namespace Game.Logic.Character
         public GameObject hitVFXPrefab;
         public float hitVFXHeight;
         public Vector3 hitVFXScale;
+        public bool hitVFXFollowTarget;
         public AudioClip hitAudioClip;
         public float hitStunDuration;
 

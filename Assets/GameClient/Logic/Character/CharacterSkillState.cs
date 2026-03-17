@@ -83,14 +83,7 @@ namespace Game.Logic.Character
 
         private void OnSkillEnd()
         {
-            if(Entity.MovementController!=null&&Entity.MovementController.IsGrounded)
-            {
-                Entity.Machine.ChangeState<CharacterGroundState>();
-            }
-            else
-            {
-                Entity.Machine.ChangeState<CharacterAirborneState>();
-            }
+            Entity.Machine.ChangeState<CharacterGroundState>();
         }
     }
 }

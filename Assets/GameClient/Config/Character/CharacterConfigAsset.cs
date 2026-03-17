@@ -76,6 +76,9 @@ namespace Game.Logic.Character.Config
         public SkillConfigAsset Ultimate;
         [Header("AI")]
         public BehaviorTreeGraphAsset BehaviorTreeGraph;
+
+        [Header("受击表现")]
+        public HitReactionConfig hitReactionConfig;
         /// <summary>
         /// 提取该角色所配置的所有可能被播放的动作，用于集中管理和启动时预加载
         /// </summary>
@@ -105,6 +108,13 @@ namespace Game.Logic.Character.Config
             if (chainSkill != null) yield return chainSkill;
             if (assistSkill != null) yield return assistSkill;
             if (Ultimate != null) yield return Ultimate;
+            if (hitReactionConfig != null)
+            {
+                foreach(var hitActionConfig in hitReactionConfig.GetAllActionConfigs())
+                {
+                    yield return hitActionConfig;
+                }
+            }
         }
     }
 }

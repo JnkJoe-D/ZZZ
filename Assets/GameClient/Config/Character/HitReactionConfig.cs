@@ -1,5 +1,6 @@
 using UnityEngine;
 using Game.Logic.Action.Config;
+using System.Collections.Generic;
 
 namespace Game.Logic.Character.Config
 {
@@ -11,14 +12,12 @@ namespace Game.Logic.Character.Config
     public class HitReactionConfig : ScriptableObject
     {
         [Header("受击动画")]
-        [Tooltip("前方受击")]
-        public ActionConfigAsset hitAnimFront;
-        [Tooltip("后方受击")]
-        public ActionConfigAsset hitAnimBack;
-        [Tooltip("左侧受击")]
-        public ActionConfigAsset hitAnimLeft;
-        [Tooltip("右侧受击")]
-        public ActionConfigAsset hitAnimRight;
+        [Tooltip("击退轻")]
+        public ActionConfigAsset hitAnimLight;
+        [Tooltip("击退重")]
+        public ActionConfigAsset hitAnimHeavy;
+        [Tooltip("击飞")]
+        public ActionConfigAsset hitAnimKnowAway;
 
         [Header("击退（接口占位）")]
         public float knockbackForce = 0f;
@@ -28,5 +27,11 @@ namespace Game.Logic.Character.Config
 
         [Header("霸体阈值（接口占位）")]
         public float superArmorThreshold = 0f;
+        public IEnumerable<ActionConfigAsset> GetAllActionConfigs()
+        {
+            if(hitAnimLight != null)yield return hitAnimLight;
+            if (hitAnimHeavy != null) yield return hitAnimHeavy;
+            if (hitAnimKnowAway != null) yield return hitAnimKnowAway;
+        }
     }
 }

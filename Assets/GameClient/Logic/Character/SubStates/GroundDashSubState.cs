@@ -25,11 +25,10 @@ namespace Game.Logic.Character.SubStates
         {
             var provider = DoDash();
             if(provider==null)return;
-            // 3. 强力冲刺移动
+            // 3. 执行转向
             Vector2 inputDir = provider.GetMovementDirection();
             // Vector3 worldDir = _ctx.GetWorldDirection(inputDir);
 
-            _ctx.HostEntity.MovementController?.Move(inputDir * _ctx.DashSpeed * deltaTime);
             _ctx.HostEntity.MovementController?.FaceTo(inputDir);
             
             // 实时速率同步（可选，因为已经在 OnEnter 里设置过了，但如果配置热更有改变就更新）

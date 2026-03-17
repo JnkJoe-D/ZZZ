@@ -20,6 +20,8 @@ namespace Game.Logic.Character
         /// </summary>
         void FaceTo(Vector3 inputDir,float speed = -1f);
         void FaceToImmediately(Vector3 inputDir);
+        void FaceToTarget(Transform target, float speed = -1f);
+        void FaceToTargetImmediately(Transform target);
         Vector3 CalculateWorldDirection(Vector2 inputDir);
         /// <summary>
         /// 是否在地面上

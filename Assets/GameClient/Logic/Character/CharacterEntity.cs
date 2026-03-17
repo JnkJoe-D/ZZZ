@@ -20,6 +20,8 @@ namespace Game.Logic.Character
         public IInputProvider InputProvider { get; protected set; } // 输入
         public IMovementController MovementController { get; protected set; } // 移动转向
         public ICameraController CameraController { get; protected set; } // 相机
+        public HitReactionModule HitReactionModule { get; protected set;}
+        public TargetFinder TargetFinder { get; protected set; } // 运行时索敌模块
         /// <summary>
         ///  --- 状态机 ---
         /// </summary>
@@ -59,6 +61,7 @@ namespace Game.Logic.Character
 
             CameraController?.Init(this);
             MovementController?.Init(this);
+            HitReactionModule?.Init(this);
         }
 
         private void Start()
@@ -72,7 +75,6 @@ namespace Game.Logic.Character
                 {
                     StateMachine = fsmMgr.CreateFSM<CharacterEntity>(this);
                     StateMachine.AddState(new CharacterGroundState());
-                    StateMachine.AddState(new CharacterAirborneState());
                     StateMachine.AddState(new CharacterSkillState());
                     StateMachine.AddState(new CharacterEvadeState());
                     StateMachine.AddState(new CharacterActionBackswingState());
