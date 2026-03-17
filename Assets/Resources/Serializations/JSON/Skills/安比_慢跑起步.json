@@ -125,6 +125,12 @@
                     "clips": [
                         {
                             "rid": 1005
+                        },
+                        {
+                            "rid": 1006
+                        },
+                        {
+                            "rid": 1007
                         }
                     ]
                 }
@@ -164,19 +170,23 @@
                     "blendInDuration": 0.10000000149011612,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34042
+                        "instanceID": 34720
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "eaa7a1da500fc7d468b990ed3e487be3",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Walk_Start",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比WalkStart.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
+                    "clipRef": {
+                        "guid": "eaa7a1da500fc7d468b990ed3e487be3",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Walk_Start",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比WalkStart.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
                 }
             },
             {
@@ -196,7 +206,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35432
+                            "instanceID": 36108
                         }
                     ],
                     "volume": 1.0,
@@ -204,14 +214,80 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "a7d39bb78dd35ed438aa29d107294902"
+                    "audioRefs": [
+                        {
+                            "guid": "a7d39bb78dd35ed438aa29d107294902",
+                            "assetName": "脚步声",
+                            "assetPath": "Assets/Resources/Audio/FOOT/脚步声.wav"
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1006,
+                "type": {
+                    "class": "SkillAudioClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "51c90815-e015-41fb-9057-aa237af4b0a4",
+                    "clipName": "音效轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.7000000476837158,
+                    "duration": 0.14010247588157655,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 36108
+                        }
                     ],
-                    "clipAssetNames": [
-                        "脚步声"
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 1.0,
+                    "audioRefs": [
+                        {
+                            "guid": "a7d39bb78dd35ed438aa29d107294902",
+                            "assetName": "脚步声",
+                            "assetPath": "Assets/Resources/Audio/FOOT/脚步声.wav"
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1007,
+                "type": {
+                    "class": "SkillAudioClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "09e5f8c0-4a0f-4595-a411-79aa46d60236",
+                    "clipName": "音效轨道片段",
+                    "isEnabled": true,
+                    "startTime": 1.0,
+                    "duration": 0.10000000149011612,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 36108
+                        }
                     ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/FOOT/脚步声.wav"
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 1.0,
+                    "audioRefs": [
+                        {
+                            "guid": "a7d39bb78dd35ed438aa29d107294902",
+                            "assetName": "脚步声",
+                            "assetPath": "Assets/Resources/Audio/FOOT/脚步声.wav"
+                        }
                     ]
                 }
             }

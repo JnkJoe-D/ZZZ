@@ -167,19 +167,23 @@
                     "blendInDuration": 0.14293831586837769,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 35368
+                        "instanceID": 36032
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "88147f5881834894285e9387fb160241",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Run",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
+                    "clipRef": {
+                        "guid": "88147f5881834894285e9387fb160241",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Run",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
                 }
             },
             {
@@ -199,7 +203,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35432
+                            "instanceID": 37214
                         }
                     ],
                     "volume": 1.0,
@@ -207,14 +211,12 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "a7d39bb78dd35ed438aa29d107294902"
-                    ],
-                    "clipAssetNames": [
-                        "脚步声"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/FOOT/脚步声.wav"
+                    "audioRefs": [
+                        {
+                            "guid": "2e3cdcff2932f5845bbf2354c0b92df9",
+                            "assetName": "脚步声1",
+                            "assetPath": "Assets/Resources/Audio/FOOT/脚步声1.wav"
+                        }
                     ]
                 }
             },
@@ -235,7 +237,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35432
+                            "instanceID": 37214
                         }
                     ],
                     "volume": 1.0,
@@ -243,14 +245,12 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "a7d39bb78dd35ed438aa29d107294902"
-                    ],
-                    "clipAssetNames": [
-                        "脚步声"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/FOOT/脚步声.wav"
+                    "audioRefs": [
+                        {
+                            "guid": "2e3cdcff2932f5845bbf2354c0b92df9",
+                            "assetName": "脚步声1",
+                            "assetPath": "Assets/Resources/Audio/FOOT/脚步声1.wav"
+                        }
                     ]
                 }
             }

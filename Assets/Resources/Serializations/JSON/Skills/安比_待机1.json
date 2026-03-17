@@ -160,19 +160,23 @@
                     "blendInDuration": 0.4000000059604645,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 32854
+                        "instanceID": 36026
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "88147f5881834894285e9387fb160241",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Idle",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
+                    "clipRef": {
+                        "guid": "88147f5881834894285e9387fb160241",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Idle",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
                 }
             }
         ]

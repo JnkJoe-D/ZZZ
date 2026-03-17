@@ -53,7 +53,7 @@ namespace SkillEditor
         
         // 单层字典，Key 为服务接口类型
         private Dictionary<Type, object> _services = new Dictionary<Type, object>();
-        private IServiceFactory _serviceFactory; // 服务工厂（懒加载）
+        private Func<Type, GameObject, object> _serviceProvider; // 服务提供者（懒加载委托）
         // 组件缓存
         private Dictionary<Type, Component> _componentCache = new Dictionary<Type, Component>();
         // Mask托管栈
@@ -65,12 +65,12 @@ namespace SkillEditor
         private Dictionary<string, Action<float, float>> _tickActions = new Dictionary<string, Action<float, float>>();
         private bool _startActionsExecuted;
 
-        public ProcessContext(GameObject owner, PlayMode playMode, IServiceFactory factory = null)
+        public ProcessContext(GameObject owner, PlayMode playMode, Func<Type, GameObject, object> serviceProvider = null)
         {
             Owner = owner;
             OwnerTransform = owner != null ? owner.transform : null;
             PlayMode = playMode;
-            _serviceFactory = factory;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -160,9 +160,9 @@ namespace SkillEditor
             }
 
             // 2. 尝试懒加载
-            if (_serviceFactory != null)
+            if (_serviceProvider != null)
             {
-                var newService = _serviceFactory.ProvideService(type);
+                var newService = _serviceProvider(type, Owner);
                 if (newService != null && newService is T typedService)
                 {
                     // 注册到缓存，下次直接获取

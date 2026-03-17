@@ -2,61 +2,56 @@ using System.Collections.Generic;
 using Game.Camera;
 using Game.FSM;
 using Game.Input;
+using SkillEditor;
 using UnityEngine;
 
 namespace Game.Logic.Character
 {
     /// <summary>
-    /// Player-controlled character entity that coordinates input, movement, FSM, and action playback.
+    /// 角色实体，组件管理，事件转发，上下文
     /// </summary>
-    public class CharacterEntity : MonoBehaviour, SkillEditor.ISkillEventHandler, SkillEditor.ISkillComboWindowHandler
+    public abstract class CharacterEntity : MonoBehaviour, SkillEditor.ISkillEventHandler
     {
-        private bool _hasStarted;
-
-        public IInputProvider InputProvider { get; private set; }
-        public IMovementController MovementController { get; private set; }
-        public ICameraController CameraController { get; private set; }
-
+        /// <summary>
+        ///  --- 配置资产 ---
+        /// </summary>
+        public Config.CharacterConfigAsset Config { get; private set; }
+        // --- MonoBehaviour组件 ---
+        public IInputProvider InputProvider { get; protected set; } // 输入
+        public IMovementController MovementController { get; protected set; } // 移动转向
+        public ICameraController CameraController { get; protected set; } // 相机
+        /// <summary>
+        ///  --- 状态机 ---
+        /// </summary>
         public FSMSystem<CharacterEntity> StateMachine { get; private set; }
         public FSMSystem<CharacterEntity> Machine => StateMachine;
-
-        public ActionPlayer ActionPlayer { get; private set; }
-        public Game.Logic.Character.Config.CharacterConfigAsset Config { get; private set; }
-
+        /// --- C#类 ---
+        public ActionPlayer ActionPlayer { get; private set; } // 时间轴播放
+        public Action.Combo.CommandBuffer CommandBuffer { get; private set; } // 指令缓存
+        public Action.Combo.ComboController ComboController { get; private set; } // 指令校验
+        public CharacterRuntimeData RuntimeData { get; private set; } // 角色运行时数据
+        // --- 时间轴事件 ---
         public event System.Action<string> OnSkillTimelineEvent;
-        public Game.Logic.Action.Config.ActionConfigAsset NextActionToCast { get; set; }
-
-        public Game.Logic.Action.Combo.CommandBuffer CommandBuffer { get; private set; }
-        public Game.Logic.Action.Combo.ComboController ComboController { get; private set; }
-
-        public bool ForceDashNextFrame { get; set; }
-        public float EvadeTimer { get; set; }
-        public int EvadeCount { get; set; }
-
+        // 转发时间轴输入窗口处理
+        public ISkillComboWindowHandler SkillComboWindowHandler => ComboController;
+        // --- 当前状态的输入处理器 ---
         private IInputCommandHandler CurrentInputHandler =>
             (StateMachine?.CurrentState as CharacterStateBase)?.InputHandler ?? CharacterStateBase.InputHandlerStatic;
 
-        public bool CanEvade()
-        {
-            if (Config == null) return false;
-            if (EvadeCount >= Config.evadeLimitedTimes && EvadeTimer > 0f) return false;
-            return true;
-        }
-
-        public void RecordEvade()
-        {
-            if (Config == null) return;
-            EvadeCount++;
-            EvadeTimer = Config.evadeCoolDown;
-        }
-
-        private void Awake()
+        protected virtual void Awake()
         {
             Game.AI.BehaviorTreeCharacterRegistry.Register(this);
-            InputProvider = GetComponent<IInputProvider>();
-            CameraController = GetComponent<ICameraController>();
-            MovementController = GetComponent<IMovementController>();
+            InitRequiredComponents();
+            ActionPlayer = new ActionPlayer(this);
+            CommandBuffer = new Game.Logic.Action.Combo.CommandBuffer();
+            ComboController = new Game.Logic.Action.Combo.ComboController(this);
+            RuntimeData = new CharacterRuntimeData();
         }
+
+        /// <summary>
+        /// 初始化必要的组件。子类通过 AddComponent 或其他逻辑在此处注入具体实现。
+        /// </summary>
+        protected abstract void InitRequiredComponents();
 
         public void Init(Game.Logic.Character.Config.CharacterConfigAsset config)
         {
@@ -68,12 +63,7 @@ namespace Game.Logic.Character
 
         private void Start()
         {
-            _hasStarted = true;
-
-            if (Config == null)
-            {
-                Debug.LogWarning("[CharacterEntity] Config was not injected before Start.");
-            }
+            if (Config == null) return;
 
             if (StateMachine == null)
             {
@@ -86,10 +76,7 @@ namespace Game.Logic.Character
                     StateMachine.AddState(new CharacterSkillState());
                     StateMachine.AddState(new CharacterEvadeState());
                     StateMachine.AddState(new CharacterActionBackswingState());
-
-                    ActionPlayer = new ActionPlayer(this);
-                    CommandBuffer = new Game.Logic.Action.Combo.CommandBuffer();
-                    ComboController = new Game.Logic.Action.Combo.ComboController(this);
+                    StateMachine.AddState(new CharacterHitStunState());
 
                     StateMachine.ChangeState<CharacterGroundState>();
                 }
@@ -98,16 +85,7 @@ namespace Game.Logic.Character
             GameCameraManager.Instance?.SetTarget(transform);
             BindInputProviderEvents(InputProvider);
         }
-
-        public void SetInputProvider(IInputProvider provider)
-        {
-            if (ReferenceEquals(InputProvider, provider)) return;
-
-            if (_hasStarted) UnbindInputProviderEvents(InputProvider);
-            InputProvider = provider;
-            if (_hasStarted) BindInputProviderEvents(InputProvider);
-        }
-
+        // 输入指令转发
         private void OnBasicAttackStarted() => CurrentInputHandler.OnBasicAttackStarted();
         private void OnBasicAttackCanceled() => CurrentInputHandler.OnBasicAttackCanceled();
         private void OnBasicAttackHoldStart() => CurrentInputHandler.OnBasicAttackHoldStart();
@@ -122,31 +100,11 @@ namespace Game.Logic.Character
         {
             OnSkillTimelineEvent?.Invoke(eventName);
         }
-
-        public void OnComboWindowEnter(string comboTag, SkillEditor.ComboWindowType windowType)
-        {   
-            ComboController?.OnWindowEnter(comboTag, windowType);
-        }
-
-        public void OnComboWindowExit(string comboTag, SkillEditor.ComboWindowType windowType)
-        {
-            ComboController?.OnWindowExit(comboTag, windowType);
-        }
-
         private void Update()
         {
             ActionPlayer?.Tick(Time.deltaTime);
             ComboController?.Update(Time.deltaTime);
-
-            if (EvadeTimer > 0f)
-            {
-                EvadeTimer -= Time.deltaTime;
-                if (EvadeTimer <= 0f)
-                {
-                    EvadeCount = 0;
-                    EvadeTimer = 0f;
-                }
-            }
+            RuntimeData?.Update(Time.deltaTime);
         }
 
         private void OnDestroy()

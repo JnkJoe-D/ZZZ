@@ -21,6 +21,11 @@ namespace Game.Logic.Character
         private IInputCommandHandler _inputHandler;
         public override IInputCommandHandler InputHandler => _inputHandler;
 
+        public override bool CanEnter()
+        {
+            return Entity != null && Entity.RuntimeData != null && Entity.RuntimeData.CanEvade(Entity.Config);
+        }
+
         public override void OnInit(FSMSystem<CharacterEntity> fsm)
         {
             base.OnInit(fsm);
@@ -35,10 +40,10 @@ namespace Game.Logic.Character
 
         private void PlayCurrentSkill()
         {
-            Entity.RecordEvade();
+            Entity.RuntimeData.RecordEvade(Entity.Config);
             isBackswingStarted = false;
 
-            var skillConfig = Entity.NextActionToCast;
+            var skillConfig = Entity.RuntimeData.NextActionToCast;
             if (skillConfig == null) return;
 
             _currentRunner = Entity.ActionPlayer.PlayAction(skillConfig);
@@ -57,7 +62,7 @@ namespace Game.Logic.Character
                     if (ev == skillConfig) { isFrontEvade = true; break; }
                 }
             }
-            Entity.ForceDashNextFrame = isFrontEvade;
+            Entity.RuntimeData.ForceDashNextFrame = isFrontEvade;
 
             Entity.ActionPlayer.SetPlaySpeed(Entity.Config.DodgeMultipier);
 
@@ -118,7 +123,6 @@ namespace Game.Logic.Character
             }
             currentSkill = null;
         }
-
         private void OnSkillEnd()
         {
             currentSkill = null;

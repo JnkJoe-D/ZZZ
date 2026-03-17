@@ -10,12 +10,8 @@ namespace SkillEditor
         [SkillProperty("特效预制体")]
         public GameObject effectPrefab;
         
-        [SerializeField][HideInInspector]
-        public string prefabGuid;
-        [SerializeField][HideInInspector]
-        public string prefabAssetName;
-        [SerializeField][HideInInspector]
-        public string prefabAssetPath;
+        [SkillAssetReference("effectPrefab")]
+        public SkillAssetReference vfxRef = new SkillAssetReference();
 
         [Header("挂点设置")]
         [SkillProperty("挂载位置")]
@@ -44,6 +40,12 @@ namespace SkillEditor
         [SkillProperty("结束时停止发射粒子")]
         public bool stopEmissionOnEnd = false;
 
+        // --- 编辑器辅助 ---
+        public enum VFXHandleType { None, Position, Rotation, Scale }
+        [NonSerialized]
+        [HideInInspector]
+        public VFXHandleType activeHandleType = VFXHandleType.None;
+
         public VFXClip()
         {
             clipName = "VFX Clip";
@@ -64,9 +66,7 @@ namespace SkillEditor
                 duration = this.duration,
                 isEnabled = this.isEnabled,
                 effectPrefab = this.effectPrefab,
-                prefabGuid = this.prefabGuid,
-                prefabAssetName = this.prefabAssetName,
-                prefabAssetPath = this.prefabAssetPath,
+                vfxRef = new SkillAssetReference(this.vfxRef.guid, this.vfxRef.assetName, this.vfxRef.assetPath),
                 bindPoint = this.bindPoint,
                 customBoneName = this.customBoneName,
                 followTarget = this.followTarget,
@@ -74,7 +74,8 @@ namespace SkillEditor
                 rotationOffset = this.rotationOffset,
                 scale = this.scale,
                 destroyOnEnd = this.destroyOnEnd,
-                stopEmissionOnEnd = this.stopEmissionOnEnd
+                stopEmissionOnEnd = this.stopEmissionOnEnd,
+                activeHandleType = this.activeHandleType
             };
         }
     }

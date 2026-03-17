@@ -71,8 +71,8 @@ namespace SkillEditor.Editor
                 state.previewRunner = previewRunner;
                 if (state.previewTarget != null)
                 {
-                    var factory = SkillEditorGlobalSettings.DefaultServiceFactoryCreator?.Invoke(state.previewTarget);
-                    var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview, factory);
+                    var provider = SkillEditorGlobalSettings.DefaultServiceFactoryCreator?.Invoke(state.previewTarget);
+                    var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview, provider);
                     previewRunner.PrewarmContext(ctx);
                 }
             }
@@ -105,8 +105,8 @@ namespace SkillEditor.Editor
             EditorAnimationUtils.SetSamplingMode(state.previewTarget, false);
             EditorAnimationUtils.ApplyTrackBasePose(state.previewTarget);
 
-            var factory = SkillEditorGlobalSettings.DefaultServiceFactoryCreator?.Invoke(state.previewTarget);
-            var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview, factory);
+            var provider = SkillEditorGlobalSettings.DefaultServiceFactoryCreator?.Invoke(state.previewTarget);
+            var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview, provider);
 
             lastPreviewTime = EditorApplication.timeSinceStartup;
             previewRunner.Play(state.currentTimeline, ctx, progress);

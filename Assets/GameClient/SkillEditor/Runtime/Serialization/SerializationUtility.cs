@@ -67,40 +67,37 @@ namespace SkillEditor
                 {
                     if (clip is SkillAnimationClip animClip)
                     {
-                        if(!string.IsNullOrEmpty(animClip.clipGuid))
-                        {
-                            animClip.animationClip = ResolveAssetImmediate<AnimationClip>(animClip.clipGuid, animClip.clipAssetPath, animClip.clipAssetName);
-                        }
-                        if(!string.IsNullOrEmpty(animClip.maskGuid))
-                        {
-                            animClip.overrideMask = ResolveAssetImmediate<AvatarMask>(animClip.maskGuid, animClip.maskAssetPath, animClip.maskAssetName);
-                        }
+                        if (animClip.clipRef.IsValid())
+                            animClip.animationClip = ResolveAssetImmediate<AnimationClip>(animClip.clipRef.guid, animClip.clipRef.assetPath, animClip.clipRef.assetName);
+                        if (animClip.maskRef.IsValid())
+                            animClip.overrideMask = ResolveAssetImmediate<AvatarMask>(animClip.maskRef.guid, animClip.maskRef.assetPath, animClip.maskRef.assetName);
                     }
-                    else if (clip is VFXClip vfxClip && !string.IsNullOrEmpty(vfxClip.prefabGuid))
+                    else if (clip is VFXClip vfxClip && vfxClip.vfxRef.IsValid())
                     {
-                        vfxClip.effectPrefab = ResolveAssetImmediate<GameObject>(vfxClip.prefabGuid, vfxClip.prefabAssetPath, vfxClip.prefabAssetName);
+                        vfxClip.effectPrefab = ResolveAssetImmediate<GameObject>(vfxClip.vfxRef.guid, vfxClip.vfxRef.assetPath, vfxClip.vfxRef.assetName);
+                    }
+                    else if (clip is SpawnClip spawnClip && spawnClip.prefabRef.IsValid())
+                    {
+                        spawnClip.prefab = ResolveAssetImmediate<GameObject>(spawnClip.prefabRef.guid, spawnClip.prefabRef.assetPath, spawnClip.prefabRef.assetName);
+                    }
+                    else if (clip is HitClip hitClip)
+                    {
+                        if (hitClip.hitVFXRef.IsValid())
+                            hitClip.hitVFXPrefab = ResolveAssetImmediate<GameObject>(hitClip.hitVFXRef.guid, hitClip.hitVFXRef.assetPath, hitClip.hitVFXRef.assetName);
+                        if (hitClip.hitAudioRef.IsValid())
+                            hitClip.hitAudioClip = ResolveAssetImmediate<AudioClip>(hitClip.hitAudioRef.guid, hitClip.hitAudioRef.assetPath, hitClip.hitAudioRef.assetName);
                     }
                     else if (clip is SkillAudioClip audioClip)
                     {
                         audioClip.audioClips.Clear();
-                        if (audioClip.clipGuids == null)
+                        if (audioClip.audioRefs != null)
                         {
-                            continue;
-                        }
-
-                        for (int i = 0; i < audioClip.clipGuids.Count; i++)
-                        {
-                            string guid = audioClip.clipGuids[i];
-                            string pth = (audioClip.clipAssetPaths != null && i < audioClip.clipAssetPaths.Count) ? audioClip.clipAssetPaths[i] : "";
-                            string nme = (audioClip.clipAssetNames != null && i < audioClip.clipAssetNames.Count) ? audioClip.clipAssetNames[i] : "";
-
-                            if (!string.IsNullOrEmpty(guid) || !string.IsNullOrEmpty(pth) || !string.IsNullOrEmpty(nme))
+                            foreach (var r in audioClip.audioRefs)
                             {
-                                audioClip.audioClips.Add(ResolveAssetImmediate<AudioClip>(guid, pth, nme));
-                            }
-                            else
-                            {
-                                audioClip.audioClips.Add(null);
+                                if (r.IsValid())
+                                    audioClip.audioClips.Add(ResolveAssetImmediate<AudioClip>(r.guid, r.assetPath, r.assetName));
+                                else
+                                    audioClip.audioClips.Add(null);
                             }
                         }
                     }
@@ -136,6 +133,7 @@ namespace SkillEditor
         }
         /// <summary>
         /// 刷新所有片段的 GUID（遍历 groups → tracks → clips）
+        /// 已通过 Inspector 自动同步，此处作为导出前的双重校验。
         /// </summary>
         private static void RefreshAllGuids(SkillTimeline timeline)
         {
@@ -145,51 +143,47 @@ namespace SkillEditor
                 {
                     if (clip is SkillAnimationClip animClip)
                     {
-                        if(animClip.animationClip != null)
-                        {
-                            animClip.clipGuid = GetAssetGuid(animClip.animationClip);
-                            animClip.clipAssetName = animClip.animationClip.name;
-                            animClip.clipAssetPath = GetAssetPath(animClip.animationClip);
-                        }
-                        if(animClip.overrideMask != null)
-                        {
-                            animClip.maskGuid = GetAssetGuid(animClip.overrideMask);
-                            animClip.maskAssetName = animClip.overrideMask.name;
-                            animClip.maskAssetPath = GetAssetPath(animClip.overrideMask);
-                        }
+                        SyncAssetReference(animClip.clipRef, animClip.animationClip);
+                        SyncAssetReference(animClip.maskRef, animClip.overrideMask);
                     }
-                    else if (clip is VFXClip vfxClip && vfxClip.effectPrefab != null)
+                    else if (clip is VFXClip vfxClip)
                     {
-                        vfxClip.prefabGuid = GetAssetGuid(vfxClip.effectPrefab);
-                        vfxClip.prefabAssetName = vfxClip.effectPrefab.name;
-                        vfxClip.prefabAssetPath = GetAssetPath(vfxClip.effectPrefab);
+                        SyncAssetReference(vfxClip.vfxRef, vfxClip.effectPrefab);
+                    }
+                    else if (clip is SpawnClip spawnClip)
+                    {
+                        SyncAssetReference(spawnClip.prefabRef, spawnClip.prefab);
+                    }
+                    else if (clip is HitClip hitClip)
+                    {
+                        SyncAssetReference(hitClip.hitVFXRef, hitClip.hitVFXPrefab);
+                        SyncAssetReference(hitClip.hitAudioRef, hitClip.hitAudioClip);
                     }
                     else if (clip is SkillAudioClip audioClip)
                     {
-                        audioClip.clipGuids.Clear();
-                        audioClip.clipAssetNames.Clear();
-                        audioClip.clipAssetPaths.Clear();
-                        if (audioClip.audioClips != null)
+                        if (audioClip.audioRefs == null) audioClip.audioRefs = new List<SkillAssetReference>();
+                        while (audioClip.audioRefs.Count < audioClip.audioClips.Count) audioClip.audioRefs.Add(new SkillAssetReference());
+                        while (audioClip.audioRefs.Count > audioClip.audioClips.Count) audioClip.audioRefs.RemoveAt(audioClip.audioRefs.Count - 1);
+
+                        for (int i = 0; i < audioClip.audioClips.Count; i++)
                         {
-                            foreach (var ac in audioClip.audioClips)
-                            {
-                                if (ac != null)
-                                {
-                                    audioClip.clipGuids.Add(GetAssetGuid(ac));
-                                    audioClip.clipAssetNames.Add(ac.name);
-                                    audioClip.clipAssetPaths.Add(GetAssetPath(ac));
-                                }
-                                else
-                                {
-                                    audioClip.clipGuids.Add("");
-                                    audioClip.clipAssetNames.Add("");
-                                    audioClip.clipAssetPaths.Add("");
-                                }
-                            }
+                            SyncAssetReference(audioClip.audioRefs[i], audioClip.audioClips[i]);
                         }
                     }
                 }
             }
+        }
+
+        private static void SyncAssetReference(SkillAssetReference r, Object asset)
+        {
+            if (asset == null)
+            {
+                r.Clear();
+                return;
+            }
+            r.guid = GetAssetGuid(asset);
+            r.assetName = asset.name;
+            r.assetPath = GetAssetPath(asset);
         }
 
         /// <summary>
@@ -205,38 +199,37 @@ namespace SkillEditor
                 {
                     if (clip is SkillAnimationClip animClip)
                     {
-                        if(!string.IsNullOrEmpty(animClip.clipGuid))
-                        {
-                            animClip.animationClip = await ResolveAsset<AnimationClip>(animClip.clipGuid, animClip.clipAssetPath, animClip.clipAssetName);
-                        }
-                        if(!string.IsNullOrEmpty(animClip.maskGuid))
-                        {
-                            animClip.overrideMask = await ResolveAsset<AvatarMask>(animClip.maskGuid, animClip.maskAssetPath, animClip.maskAssetName);
-                        }
+                        if (animClip.clipRef.IsValid())
+                            animClip.animationClip = await ResolveAsset<AnimationClip>(animClip.clipRef.guid, animClip.clipRef.assetPath, animClip.clipRef.assetName);
+                        if (animClip.maskRef.IsValid())
+                            animClip.overrideMask = await ResolveAsset<AvatarMask>(animClip.maskRef.guid, animClip.maskRef.assetPath, animClip.maskRef.assetName);
                     }
-                    else if (clip is VFXClip vfxClip && !string.IsNullOrEmpty(vfxClip.prefabGuid))
+                    else if (clip is VFXClip vfxClip && vfxClip.vfxRef.IsValid())
                     {
-                        vfxClip.effectPrefab = await ResolveAsset<GameObject>(vfxClip.prefabGuid, vfxClip.prefabAssetPath, vfxClip.prefabAssetName);
+                        vfxClip.effectPrefab = await ResolveAsset<GameObject>(vfxClip.vfxRef.guid, vfxClip.vfxRef.assetPath, vfxClip.vfxRef.assetName);
+                    }
+                    else if (clip is SpawnClip spawnClip && spawnClip.prefabRef.IsValid())
+                    {
+                        spawnClip.prefab = await ResolveAsset<GameObject>(spawnClip.prefabRef.guid, spawnClip.prefabRef.assetPath, spawnClip.prefabRef.assetName);
+                    }
+                    else if (clip is HitClip hitClip)
+                    {
+                        if (hitClip.hitVFXRef.IsValid())
+                            hitClip.hitVFXPrefab = await ResolveAsset<GameObject>(hitClip.hitVFXRef.guid, hitClip.hitVFXRef.assetPath, hitClip.hitVFXRef.assetName);
+                        if (hitClip.hitAudioRef.IsValid())
+                            hitClip.hitAudioClip = await ResolveAsset<AudioClip>(hitClip.hitAudioRef.guid, hitClip.hitAudioRef.assetPath, hitClip.hitAudioRef.assetName);
                     }
                     else if (clip is SkillAudioClip audioClip)
                     {
                         audioClip.audioClips.Clear();
-                        if (audioClip.clipGuids != null)
+                        if (audioClip.audioRefs != null)
                         {
-                            for (int i = 0; i < audioClip.clipGuids.Count; i++)
+                            foreach (var r in audioClip.audioRefs)
                             {
-                                string guid = audioClip.clipGuids[i];
-                                string pth = (audioClip.clipAssetPaths != null && i < audioClip.clipAssetPaths.Count) ? audioClip.clipAssetPaths[i] : "";
-                                string nme = (audioClip.clipAssetNames != null && i < audioClip.clipAssetNames.Count) ? audioClip.clipAssetNames[i] : "";
-                                
-                                if (!string.IsNullOrEmpty(guid) || !string.IsNullOrEmpty(pth) || !string.IsNullOrEmpty(nme))
-                                {
-                                    audioClip.audioClips.Add(await ResolveAsset<AudioClip>(guid, pth, nme));
-                                }
+                                if (r.IsValid())
+                                    audioClip.audioClips.Add(await ResolveAsset<AudioClip>(r.guid, r.assetPath, r.assetName));
                                 else
-                                {
                                     audioClip.audioClips.Add(null);
-                                }
                             }
                         }
                     }

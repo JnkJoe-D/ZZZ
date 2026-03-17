@@ -9,7 +9,79 @@ namespace SkillEditor.Editor
     {
         public override void DrawInspector(ClipBase clip)
         {
+            var hitClip = clip as HitClip;
+            if (hitClip == null) return;
+            
+            // --- 引擎原生属性绘制 ---
+
+            EditorGUI.BeginChangeCheck();
             base.DrawInspector(clip);
+            bool propertiesChanged = EditorGUI.EndChangeCheck();
+
+            if (propertiesChanged && hitClip.hitVFXPrefab != null)
+            {
+                if (EditorWindow.HasOpenInstances<SkillEditorWindow>())
+                {
+                    var window = EditorWindow.GetWindow<SkillEditorWindow>(false, "技能编辑器", false);
+                    if (window != null && window.PreviewRunner != null)
+                    {
+                        foreach (var p in window.PreviewRunner.ActiveProcesses)
+                        {
+                            if (p.clip == hitClip && p.isActive && p.process is Editor.EditorHitProcess hitProcess)
+                            {
+                                hitProcess.ForceUpdateTransform();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 绘制控制是否显示场景句柄的按钮（单选工具栏）
+            if (hitClip.hitVFXPrefab != null)
+            {
+                GUILayout.Space(10);
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+
+                string[] handleNames = { "无", "位置", "缩放" };
+                HitClip.HitVFXHandleType[] handleValues = { 
+                    HitClip.HitVFXHandleType.None, 
+                    HitClip.HitVFXHandleType.Position, 
+                    HitClip.HitVFXHandleType.Scale 
+                };
+
+                // 找到当前选中项的 index
+                int currentIndex = 0;
+                for (int i = 0; i < handleValues.Length; i++)
+                {
+                    if (hitClip.activeVFXHandleType == handleValues[i])
+                    {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+
+                // 使用 Toolbar 绘制并排的排他按钮组
+                int newIndex = GUILayout.Toolbar(currentIndex, handleNames, GUILayout.Height(30), GUILayout.Width(200));
+
+                if (newIndex != currentIndex)
+                {
+                    hitClip.activeVFXHandleType = handleValues[newIndex];
+                    if (hitClip.activeVFXHandleType != HitClip.HitVFXHandleType.None)
+                    {
+                        // 强制切换到移动工具以避免 Unity 自身的句柄干扰
+                        if (Tools.current == Tool.None || Tools.current == Tool.View)
+                        {
+                            Tools.current = Tool.Move;
+                        }
+                    }
+                    SceneView.RepaintAll();
+                }
+
+                GUILayout.FlexibleSpace();
+                EditorGUILayout.EndHorizontal();
+            }
         }
 
         public override void DrawSceneGUI(ClipBase clip, SkillEditorState state)
@@ -20,12 +92,90 @@ namespace SkillEditor.Editor
             // 判断是否在时间范围内，只有在非停止状态下（预览或播放）才允许激活
             bool isActive = !state.isStopped && state.timeIndicator >= clip.StartTime && state.timeIndicator <= clip.StartTime + clip.Duration;
 
-            // 获取 Matrix (传入 state 以供获取 Context)
-            GetMatrix(damageClip, state, out Vector3 pos, out Quaternion rot);
+            // --- 实时同步特效位置逻辑 ---
+            if (isActive && damageClip.hitVFXPrefab != null && damageClip.activeVFXHandleType != HitClip.HitVFXHandleType.None)
+            {
+                Editor.EditorHitProcess activeProcess = null;
+                SkillEditorWindow window = null;
+                if (EditorWindow.HasOpenInstances<SkillEditorWindow>())
+                {
+                    window = EditorWindow.GetWindow<SkillEditorWindow>(false, "技能编辑器", false);
+                    if (window != null && window.PreviewRunner != null)
+                    {
+                        foreach (var p in window.PreviewRunner.ActiveProcesses)
+                        {
+                            if (p.clip == damageClip && p.isActive && p.process is Editor.EditorHitProcess hitProcess)
+                            {
+                                activeProcess = hitProcess;
+                                break;
+                            }
+                        }
+                    }
+                }
 
-            // 绘制
-            Color wireColor = isActive ? new Color(0, 1, 0, 0.8f) : new Color(0.5f, 0.5f, 0.5f, 0.5f);
-            Color solidColor = isActive ? new Color(0, 1, 0, 0.2f) : new Color(0.5f, 0.5f, 0.5f, 0.1f);
+                if (activeProcess != null && activeProcess.Instance != null && window != null)
+                {
+                    Vector3 currentPos = activeProcess.Instance.transform.position;
+                    Quaternion currentRot = activeProcess.Instance.transform.rotation;
+                    Vector3 currentScale = activeProcess.Instance.transform.localScale;
+                    
+                    EditorGUI.BeginChangeCheck();
+
+                    Vector3 newPos = currentPos;
+                    Vector3 newScale = currentScale;
+
+                    if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Position)
+                    {
+                        Quaternion pHandleRot = (Tools.pivotRotation == PivotRotation.Global) ? Quaternion.identity : currentRot;
+                        newPos = Handles.PositionHandle(currentPos, pHandleRot);
+                        Handles.Label(newPos + Vector3.up * 0.2f, "受击特效预览位置", new GUIStyle() { normal = new GUIStyleState() { textColor = Color.yellow } });
+                    }
+                    else if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Scale)
+                    {
+                        newScale = Handles.ScaleHandle(currentScale, currentPos, currentRot, HandleUtility.GetHandleSize(currentPos));
+                        Handles.Label(currentPos + Vector3.up * 0.2f, "受击特效预览缩放", new GUIStyle() { normal = new GUIStyleState() { textColor = Color.yellow } });
+                    }
+
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        var timeline = window.GetCurrentTimeline();
+                        if (timeline != null)
+                        {
+                            Undo.RecordObject(timeline, "Sync Hit VFX Transform");
+
+                            // 将把手拖动的新变动立即赋给临时的 Instance
+                            if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Position) activeProcess.Instance.transform.position = newPos;
+                            else if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Scale) activeProcess.Instance.transform.localScale = newScale;
+
+                            activeProcess.GetCurrentRelativeOffset(out float pHeight, out Vector2 pOffsetXZ);
+
+                            if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Position)
+                            {
+                                damageClip.hitVFXHeight = pHeight;
+                                damageClip.hitVFXPreviewOffsetXZ = pOffsetXZ;
+                            }
+                            else if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Scale)
+                            {
+                                damageClip.hitVFXScale = newScale;
+                            }
+                            
+                            EditorUtility.SetDirty(timeline);
+                            activeProcess.ForceUpdateTransform();
+                            window.Repaint();
+                        }
+                    }
+                }
+            }
+            // --- 结束同步逻辑 ---
+
+            if (damageClip.showHitBoxGizmos)
+            {
+                // 获取 Matrix (传入 state 以供获取 Context)
+                GetMatrix(damageClip, state, out Vector3 pos, out Quaternion rot);
+
+                // 绘制
+                Color wireColor = isActive ? new Color(0, 1, 0, 0.8f) : new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                Color solidColor = isActive ? new Color(0, 1, 0, 0.2f) : new Color(0.5f, 0.5f, 0.5f, 0.1f);
             
             var shape = damageClip.shape;
 
@@ -131,6 +281,7 @@ namespace SkillEditor.Editor
             }
 
             Handles.matrix = Matrix4x4.identity;
+            }
         }
 
         private void GetMatrix(HitClip clip, SkillEditorState state, out Vector3 pos, out Quaternion rot)

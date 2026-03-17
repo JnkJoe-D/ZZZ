@@ -1,35 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using SkillEditor;
-using Game.Pool;
+using Game.VFX;
+using Game.Framework;
+
 namespace Game.Adapters
 {
-public class SkillVFXHandler : ISkillVFXHandler
-{
-    private MonoBehaviour _mono;
-    public SkillVFXHandler(MonoBehaviour mono)
+    /// <summary>
+    /// 运行时 VFX 适配器。
+    /// 实现 ISkillVFXHandler 接口，将请求转发给 VFXManager 单例。
+    /// </summary>
+    public class SkillVFXHandler : Singleton<SkillVFXHandler>,ISkillVFXHandler
     {
-        _mono = mono;
-    }
-    public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
-    {
-        return GlobalPoolManager.Spawn(prefab, position, rotation, parent);
-    }
+        public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
+        {
+            if (VFXManager.Instance == null) return null;
+            return VFXManager.Instance.Spawn(prefab, position, rotation, parent);
+        }
 
-    public void Return(GameObject instance)
-    {
-        GlobalPoolManager.Return(instance);
+        public void Return(GameObject instance)
+        {
+            VFXManager.Instance?.Return(instance);
+        }
+
+        public void ReturnVFXDelay(GameObject inst, float delay)
+        {
+            VFXManager.Instance?.ReturnDelay(inst, delay);
+        }
     }
-    public void ReturnVFXDelay(GameObject inst, float delay)
-    {
-        _mono.StartCoroutine(DelayReturn(inst, delay));
-    }
-    private IEnumerator DelayReturn(GameObject inst, float delay)
-    {
-        if (delay > 0)
-            yield return new WaitForSeconds(delay);
-        Return(inst);
-    }
-}
 }

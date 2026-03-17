@@ -167,19 +167,23 @@
                     "blendInDuration": 0.10000000149011612,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 35370
+                        "instanceID": 36034
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "88147f5881834894285e9387fb160241",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Run_End",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
+                    "clipRef": {
+                        "guid": "88147f5881834894285e9387fb160241",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Run_End",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
                 }
             },
             {
@@ -199,7 +203,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35096
+                            "instanceID": 35760
                         }
                     ],
                     "volume": 1.0,
@@ -207,14 +211,12 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "1f2148c7b6d65ef489de620385639f7a"
-                    ],
-                    "clipAssetNames": [
-                        "收脚音1"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/FOOT/收脚音1.wav"
+                    "audioRefs": [
+                        {
+                            "guid": "1f2148c7b6d65ef489de620385639f7a",
+                            "assetName": "收脚音1",
+                            "assetPath": "Assets/Resources/Audio/FOOT/收脚音1.wav"
+                        }
                     ]
                 }
             },
@@ -235,7 +237,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 36652
+                            "instanceID": 37316
                         }
                     ],
                     "volume": 1.0,
@@ -243,14 +245,12 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "8986bc9f36fbdbb47b601da0eaa7dc34"
-                    ],
-                    "clipAssetNames": [
-                        "收脚音2"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/FOOT/收脚音2.wav"
+                    "audioRefs": [
+                        {
+                            "guid": "8986bc9f36fbdbb47b601da0eaa7dc34",
+                            "assetName": "收脚音2",
+                            "assetPath": "Assets/Resources/Audio/FOOT/收脚音2.wav"
+                        }
                     ]
                 }
             }

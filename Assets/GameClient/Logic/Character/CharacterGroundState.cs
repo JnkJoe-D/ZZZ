@@ -71,9 +71,9 @@ namespace Game.Logic.Character
             {
                 if (provider.HasMovementInput())
                 {
-                    if (Entity.ForceDashNextFrame || provider.GetActionState(Game.Input.InputActionType.Dash))
+                    if (Entity.RuntimeData.ForceDashNextFrame || provider.GetActionState(Game.Input.InputActionType.Dash))
                     {
-                        Entity.ForceDashNextFrame = false;
+                        Entity.RuntimeData.ForceDashNextFrame = false;
                         ChangeSubState(DashState);
                     }
                     else

@@ -19,7 +19,7 @@ public class Test_Audio : MonoBehaviour
         {
             // 2. 准备上下文
             context = new ProcessContext(gameObject, SkillEditor.PlayMode.Runtime,
-                new SkillServiceFactory(this.gameObject));
+                SkillServiceFactory.ProvideService);
             runner = new SkillRunner(SkillEditor.PlayMode.Runtime);
 
             // 4.反序列化

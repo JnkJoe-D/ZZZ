@@ -121,11 +121,7 @@
                     "isHidden": false,
                     "isCollapsed": false,
                     "isEnabled": false,
-                    "clips": [
-                        {
-                            "rid": 1008
-                        }
-                    ]
+                    "clips": []
                 }
             },
             {
@@ -146,7 +142,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1009
+                            "rid": 1008
                         }
                     ]
                 }
@@ -169,7 +165,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1009
                         }
                     ]
                 }
@@ -192,7 +188,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1010
                         }
                     ]
                 }
@@ -215,10 +211,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1011
                         },
                         {
-                            "rid": 1013
+                            "rid": 1012
                         }
                     ]
                 }
@@ -258,66 +254,27 @@
                     "blendInDuration": 0.20000000298023225,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 35360
+                        "instanceID": 36024
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "88147f5881834894285e9387fb160241",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Evade_Front",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
+                    "clipRef": {
+                        "guid": "88147f5881834894285e9387fb160241",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Evade_Front",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
                 }
             },
             {
                 "rid": 1008,
-                "type": {
-                    "class": "VFXClip",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "f793007b-7c46-4206-80d0-442e854f5685",
-                    "clipName": "特效轨道片段",
-                    "isEnabled": true,
-                    "startTime": 0.1666666716337204,
-                    "duration": 1.0,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "effectPrefab": {
-                        "instanceID": 35964
-                    },
-                    "prefabGuid": "83e244af1d719994ab693b7cedf89951",
-                    "prefabAssetName": "Slash_fx_01",
-                    "prefabAssetPath": "Assets/Resources/Particles/Slash_effects/Prefabs/Single_Slash/Slash_fx_01.prefab",
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "followTarget": false,
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 0.49000000953674319,
-                        "z": 0.9399999976158142
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "destroyOnEnd": true,
-                    "stopEmissionOnEnd": false
-                }
-            },
-            {
-                "rid": 1009,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -331,35 +288,17 @@
                     "duration": 0.6666666269302368,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "audioClips": [
-                        {
-                            "instanceID": 0
-                        },
-                        {
-                            "instanceID": 0
-                        }
-                    ],
+                    "audioClips": [],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "",
-                        ""
-                    ],
-                    "clipAssetNames": [
-                        "",
-                        ""
-                    ],
-                    "clipAssetPaths": [
-                        "",
-                        ""
-                    ]
+                    "audioRefs": []
                 }
             },
             {
-                "rid": 1010,
+                "rid": 1009,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -375,7 +314,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 36776
+                            "instanceID": 37440
                         }
                     ],
                     "volume": 1.0,
@@ -383,19 +322,17 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "1b292d51434f0624482dfefda493f788"
-                    ],
-                    "clipAssetNames": [
-                        "闪避声1"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/Wind/闪避声1.wav"
+                    "audioRefs": [
+                        {
+                            "guid": "1b292d51434f0624482dfefda493f788",
+                            "assetName": "闪避声1",
+                            "assetPath": "Assets/Resources/Audio/Wind/闪避声1.wav"
+                        }
                     ]
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1010,
                 "type": {
                     "class": "EventClip",
                     "ns": "SkillEditor",
@@ -414,7 +351,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1011,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -433,7 +370,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1012,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",

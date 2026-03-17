@@ -121,7 +121,7 @@ namespace Game.Logic.Action
             int id = entity.GetInstanceID();
             if (!_contextCache.TryGetValue(id, out var ctx))
             {
-                ctx = new ProcessContext(entity.gameObject, SkillEditor.PlayMode.Runtime, new SkillServiceFactory(entity.gameObject));
+                ctx = new ProcessContext(entity.gameObject, SkillEditor.PlayMode.Runtime, SkillServiceFactory.ProvideService);
                 _contextCache[id] = ctx;
             }
             return ctx;

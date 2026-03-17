@@ -37,7 +37,13 @@ namespace Game.AI
                 StartCoroutine(SpawnRoutine());
             }
         }
-
+        void Update()
+        {
+            if(UnityEngine.Input.GetKeyDown(KeyCode.F1))
+            {
+                SpawnNow();
+            }
+        }
         [ContextMenu("Spawn Playtest Enemy")]
         /// <summary>
         /// 手动立即生成测试敌人；若旧敌人存在则先销毁。

@@ -11,14 +11,46 @@ namespace SkillEditor.Editor
     public class EditorHitProcess : ProcessBase<HitClip>
     {
         private float lastCheckTime;
+        private GameObject vfxInstance;
+        public GameObject Instance => vfxInstance;
+
+        private Vector3 spawnTargetPosition;
+        private Quaternion spawnTargetRotation;
+
+        public override void OnEnable()
+        {
+            base.OnEnable();
+        }
 
         public override void OnEnter()
         {
             if (clip.hitFrequency == HitFrequency.Once)
             {
-                Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered!</color> EventTag: {clip.eventTag}, Time: OnEner");
+                Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered!</color> HitEffects: {clip.hitEffects?.Length ?? 0}, Time: OnEnter");
             }
             lastCheckTime = clip.StartTime;
+
+            if (context.OwnerTransform != null)
+            {
+                spawnTargetPosition = context.OwnerTransform.position;
+                spawnTargetRotation = context.OwnerTransform.rotation;
+            }
+            else
+            {
+                spawnTargetPosition = Vector3.zero;
+                spawnTargetRotation = Quaternion.identity;
+            }
+
+            if (clip.hitVFXPrefab != null)
+            {
+                Vector3 spawnPos = GetPreviewPosition();
+                Quaternion spawnRot = GetPreviewRotation();
+                vfxInstance = EditorVFXManager.Instance.Spawn(clip.hitVFXPrefab, spawnPos, spawnRot);
+                if (vfxInstance != null)
+                {
+                    vfxInstance.transform.localScale = clip.hitVFXScale;
+                }
+            }
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
@@ -27,14 +59,76 @@ namespace SkillEditor.Editor
             {
                 if (currentTime - lastCheckTime >= clip.checkInterval)
                 {
-                    Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered (Interval)!</color> EventTag: {clip.eventTag}, Time: {currentTime:F2}");
+                    Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered (Interval)!</color> HitEffects: {clip.hitEffects?.Length ?? 0}, Time: {currentTime:F2}");
                     lastCheckTime = currentTime;
                 }
             }
             else if (clip.hitFrequency == HitFrequency.Always)
             {
-                // 可选打印，但频率太高容易刷屏，通常不提示或采用聚合提示
+                // 可选打印
             }
+
+            if (vfxInstance != null)
+            {
+                float clipTime = currentTime - clip.StartTime;
+                EditorVFXManager.Instance.Sample(vfxInstance, clipTime);
+            }
+        }
+
+        public override void OnExit()
+        {
+            if (vfxInstance != null)
+            {
+                EditorVFXManager.Instance.Return(vfxInstance);
+                vfxInstance = null;
+            }
+        }
+
+        public override void OnDisable()
+        {
+            if (vfxInstance != null)
+            {
+                EditorVFXManager.Instance.Return(vfxInstance);
+                vfxInstance = null;
+            }
+        }
+
+        private Vector3 GetPreviewPosition()
+        {
+            Vector3 localOffset = new Vector3(clip.hitVFXPreviewOffsetXZ.x, clip.hitVFXHeight, clip.hitVFXPreviewOffsetXZ.y);
+            return spawnTargetPosition + spawnTargetRotation * localOffset;
+        }
+
+        private Quaternion GetPreviewRotation()
+        {
+            return spawnTargetRotation;
+        }
+
+        public void ForceUpdateTransform()
+        {
+            if (vfxInstance != null)
+            {
+                UpdateTransform();
+            }
+        }
+
+        private void UpdateTransform()
+        {
+            if (vfxInstance == null) return;
+            vfxInstance.transform.localScale = clip.hitVFXScale;
+            vfxInstance.transform.SetPositionAndRotation(GetPreviewPosition(), GetPreviewRotation());
+        }
+
+        public void GetCurrentRelativeOffset(out float height, out Vector2 offsetXZ)
+        {
+            height = clip.hitVFXHeight;
+            offsetXZ = clip.hitVFXPreviewOffsetXZ;
+
+            if (vfxInstance == null) return;
+
+            Vector3 localPos = Quaternion.Inverse(spawnTargetRotation) * (vfxInstance.transform.position - spawnTargetPosition);
+            height = localPos.y;
+            offsetXZ = new Vector2(localPos.x, localPos.z);
         }
     }
 }

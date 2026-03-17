@@ -10,6 +10,9 @@ namespace SkillEditor
         [SkillProperty("预制体")]
         public GameObject prefab;
 
+        [SkillAssetReference("prefab")]
+        public SkillAssetReference prefabRef = new SkillAssetReference();
+
         [SkillProperty("中断时销毁 (被动打断)")]
         public bool destroyOnInterrupt = false;
 
@@ -52,6 +55,7 @@ namespace SkillEditor
                 isEnabled = this.isEnabled,
 
                 prefab = this.prefab,
+                prefabRef = new SkillAssetReference(this.prefabRef.guid, this.prefabRef.assetName, this.prefabRef.assetPath),
                 destroyOnInterrupt = this.destroyOnInterrupt,
                 eventTag = this.eventTag,
                 targetTags = (this.targetTags != null) ? (string[])this.targetTags.Clone() : new string[0],

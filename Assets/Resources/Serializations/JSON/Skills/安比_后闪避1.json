@@ -118,11 +118,7 @@
                     "isHidden": false,
                     "isCollapsed": false,
                     "isEnabled": false,
-                    "clips": [
-                        {
-                            "rid": 1007
-                        }
-                    ]
+                    "clips": []
                 }
             },
             {
@@ -143,7 +139,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1008
+                            "rid": 1007
                         }
                     ]
                 }
@@ -166,7 +162,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1009
+                            "rid": 1008
                         }
                     ]
                 }
@@ -189,10 +185,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1009
                         },
                         {
-                            "rid": 1011
+                            "rid": 1010
                         }
                     ]
                 }
@@ -232,66 +228,27 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 35358
+                        "instanceID": 36022
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "88147f5881834894285e9387fb160241",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Evade_Back",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
+                    "clipRef": {
+                        "guid": "88147f5881834894285e9387fb160241",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Evade_Back",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
                 }
             },
             {
                 "rid": 1007,
-                "type": {
-                    "class": "VFXClip",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "f793007b-7c46-4206-80d0-442e854f5685",
-                    "clipName": "特效轨道片段",
-                    "isEnabled": true,
-                    "startTime": 0.1666666716337204,
-                    "duration": 1.0,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "effectPrefab": {
-                        "instanceID": 35964
-                    },
-                    "prefabGuid": "83e244af1d719994ab693b7cedf89951",
-                    "prefabAssetName": "Slash_fx_01",
-                    "prefabAssetPath": "Assets/Resources/Particles/Slash_effects/Prefabs/Single_Slash/Slash_fx_01.prefab",
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "followTarget": false,
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 0.49000000953674319,
-                        "z": 0.9399999976158142
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "destroyOnEnd": true,
-                    "stopEmissionOnEnd": false
-                }
-            },
-            {
-                "rid": 1008,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -307,7 +264,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 36776
+                            "instanceID": 35356
                         }
                     ],
                     "volume": 1.0,
@@ -315,19 +272,17 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "1b292d51434f0624482dfefda493f788"
-                    ],
-                    "clipAssetNames": [
-                        "闪避声1"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/Wind/闪避声1.wav"
+                    "audioRefs": [
+                        {
+                            "guid": "4fe7ab52a66467542b7c634975304f46",
+                            "assetName": "闪避声2",
+                            "assetPath": "Assets/Resources/Audio/Wind/闪避声2.wav"
+                        }
                     ]
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1008,
                 "type": {
                     "class": "EventClip",
                     "ns": "SkillEditor",
@@ -346,7 +301,7 @@
                 }
             },
             {
-                "rid": 1010,
+                "rid": 1009,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -365,7 +320,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1010,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",

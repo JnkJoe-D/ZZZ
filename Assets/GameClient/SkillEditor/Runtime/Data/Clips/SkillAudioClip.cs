@@ -30,12 +30,8 @@ namespace SkillEditor
         [Range(0f, 1f)]
         public float spatialBlend = 1f;
 
-        [SerializeField][HideInInspector]
-        public System.Collections.Generic.List<string> clipGuids = new System.Collections.Generic.List<string>();
-        [SerializeField][HideInInspector]
-        public System.Collections.Generic.List<string> clipAssetNames = new System.Collections.Generic.List<string>();
-        [SerializeField][HideInInspector]
-        public System.Collections.Generic.List<string> clipAssetPaths = new System.Collections.Generic.List<string>();
+        [SkillAssetReference("audioClips")]
+        public System.Collections.Generic.List<SkillAssetReference> audioRefs = new System.Collections.Generic.List<SkillAssetReference>();
         
         public override bool SupportsBlending => true;
 
@@ -67,9 +63,7 @@ namespace SkillEditor
             };
 
             foreach (var clip in this.audioClips) clone.audioClips.Add(clip);
-            foreach (var guid in this.clipGuids) clone.clipGuids.Add(guid);
-            foreach (var name in this.clipAssetNames) clone.clipAssetNames.Add(name);
-            foreach (var path in this.clipAssetPaths) clone.clipAssetPaths.Add(path);
+            foreach (var r in this.audioRefs) clone.audioRefs.Add(new SkillAssetReference(r.guid, r.assetName, r.assetPath));
 
             return clone;
         }

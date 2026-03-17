@@ -294,19 +294,23 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.16666662693023683,
                     "animationClip": {
-                        "instanceID": 35718
+                        "instanceID": 36382
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Rush",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比攻击.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
+                    "clipRef": {
+                        "guid": "98daa5f85ba9dc146824d7488da418e9",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Rush",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比攻击.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
                 }
             },
             {
@@ -325,19 +329,23 @@
                     "blendInDuration": 0.16666662693023683,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 35720
+                        "instanceID": 36384
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Rush_End",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比攻击.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
+                    "clipRef": {
+                        "guid": "98daa5f85ba9dc146824d7488da418e9",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Rush_End",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比攻击.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
                 }
             },
             {
@@ -356,11 +364,13 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 36132
+                        "instanceID": 36796
                     },
-                    "prefabGuid": "d1aa224abf73af945af8db2d4c0131dd",
-                    "prefabAssetName": "FX_slash_04",
-                    "prefabAssetPath": "Assets/Resources/Prefab/VFX/FX_slash_04.prefab",
+                    "vfxRef": {
+                        "guid": "d1aa224abf73af945af8db2d4c0131dd",
+                        "assetName": "FX_slash_04",
+                        "assetPath": "Assets/Resources/Prefab/VFX/FX_slash_04.prefab"
+                    },
                     "bindPoint": 0,
                     "customBoneName": "",
                     "followTarget": false,
@@ -400,7 +410,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35742
+                            "instanceID": 36406
                         }
                     ],
                     "volume": 1.0,
@@ -408,14 +418,12 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "fa322f0516ec4034b8b7df81a5de4e74"
-                    ],
-                    "clipAssetNames": [
-                        "安比闪A音效"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/AnBi/安比闪A音效.wav"
+                    "audioRefs": [
+                        {
+                            "guid": "fa322f0516ec4034b8b7df81a5de4e74",
+                            "assetName": "安比闪A音效",
+                            "assetPath": "Assets/Resources/Audio/AnBi/安比闪A音效.wav"
+                        }
                     ]
                 }
             },
@@ -436,7 +444,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34238
+                            "instanceID": 34904
                         },
                         {
                             "instanceID": 0
@@ -447,17 +455,17 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "ae6588949fe94dc4a900cd8eb82d650b",
-                        ""
-                    ],
-                    "clipAssetNames": [
-                        "安比：走开",
-                        ""
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/AnBi/安比：走开.wav",
-                        ""
+                    "audioRefs": [
+                        {
+                            "guid": "ae6588949fe94dc4a900cd8eb82d650b",
+                            "assetName": "安比：走开",
+                            "assetPath": "Assets/Resources/Audio/AnBi/安比：走开.wav"
+                        },
+                        {
+                            "guid": "",
+                            "assetName": "",
+                            "assetPath": ""
+                        }
                     ]
                 }
             },
@@ -478,7 +486,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35910
+                            "instanceID": 36574
                         }
                     ],
                     "volume": 1.0,
@@ -486,14 +494,12 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "e6e7f097429cc1b4182fbbc1291182b4"
-                    ],
-                    "clipAssetNames": [
-                        "安比收刀"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/AnBi/安比收刀.wav"
+                    "audioRefs": [
+                        {
+                            "guid": "e6e7f097429cc1b4182fbbc1291182b4",
+                            "assetName": "安比收刀",
+                            "assetPath": "Assets/Resources/Audio/AnBi/安比收刀.wav"
+                        }
                     ]
                 }
             },
@@ -514,7 +520,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 34936
+                            "instanceID": 35602
                         }
                     ],
                     "volume": 1.0,
@@ -522,14 +528,12 @@
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "2eb0e25f8b7e9ec40a17a8a8d9f8a069"
-                    ],
-                    "clipAssetNames": [
-                        "安比入鞘"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/AnBi/安比入鞘.wav"
+                    "audioRefs": [
+                        {
+                            "guid": "2eb0e25f8b7e9ec40a17a8a8d9f8a069",
+                            "assetName": "安比入鞘",
+                            "assetPath": "Assets/Resources/Audio/AnBi/安比入鞘.wav"
+                        }
                     ]
                 }
             },

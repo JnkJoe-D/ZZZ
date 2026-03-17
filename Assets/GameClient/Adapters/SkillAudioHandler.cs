@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using SkillEditor;
-using UnityEngine;
-using Game.Pool;
+using Game.Framework;
 
 namespace Game.Adapters
 {
@@ -9,7 +7,7 @@ namespace Game.Adapters
     /// 运行时音频适配器
     /// 实现 ISkillAudioHandler 接口，将请求转发给全局 AudioManager
     /// </summary>
-    public class SkillAudioHandler : MonoBehaviour, ISkillAudioHandler
+    public class SkillAudioHandler :  Singleton<SkillAudioHandler>,ISkillAudioHandler
     {
         public int PlaySound(UnityEngine.AudioClip clip, AudioArgs args)
         {
@@ -51,9 +49,7 @@ namespace Game.Adapters
 
         public void StopAll()
         {
-            // Note: StopAll on adapter could mean stop all SFX, or we rely on the specific IDs.
-            // If we need to stop all SFX, we should ask AudioManager, or just let AudioManager handle it.
-            // For now, adapter leaves global StopAll to the Manager, or we can use a local tracking list if needed.
+
         }
     }
 }

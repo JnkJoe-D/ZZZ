@@ -15,7 +15,7 @@ namespace Game.Adapters.Editor
         private static void RegisterToSkillEditor()
         {
             // 将业务层的 Service Factory 委托给核心编辑器
-            SkillEditorGlobalSettings.DefaultServiceFactoryCreator = owner => new SkillServiceFactory(owner);
+            SkillEditorGlobalSettings.DefaultServiceFactoryCreator = owner => SkillServiceFactory.ProvideService;
             
             // 注册编辑器窗口关停后置清理动作（防丢去重）
             SkillEditorGlobalSettings.OnEditorDispose -= SkillServiceFactory.ClearAllStaticCaches;

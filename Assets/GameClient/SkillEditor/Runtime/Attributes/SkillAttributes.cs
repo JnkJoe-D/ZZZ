@@ -46,4 +46,19 @@ namespace SkillEditor
             Order = order;
         }
     }
+
+    /// <summary>
+    /// 用于自动同步资源引用的元数据（GUID, Name, Path）
+    /// 绑定到对应的资源字段名称。
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field)]
+    public class SkillAssetReferenceAttribute : Attribute
+    {
+        public string TargetFieldName { get; private set; }
+
+        public SkillAssetReferenceAttribute(string targetFieldName)
+        {
+            TargetFieldName = targetFieldName;
+        }
+    }
 }

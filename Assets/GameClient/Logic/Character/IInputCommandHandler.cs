@@ -47,7 +47,7 @@ namespace Game.Logic.Character
             if (_entity.Config == null) return;
             if (_entity.Config.dashAttack != null)
             {
-                _entity.NextActionToCast = _entity.Config.dashAttack;
+                _entity.RuntimeData.NextActionToCast = _entity.Config.dashAttack;
                 _entity.StateMachine.ChangeState<CharacterSkillState>();
             }
         }
@@ -61,7 +61,7 @@ namespace Game.Logic.Character
         {
             if (_entity.Config != null && _entity.Config.specialSkill != null)
             {
-                _entity.NextActionToCast = _entity.Config.specialSkill;
+                _entity.RuntimeData.NextActionToCast = _entity.Config.specialSkill;
                 _entity.StateMachine.ChangeState<CharacterSkillState>();
             }
         }
@@ -70,22 +70,20 @@ namespace Game.Logic.Character
         {
             if (_entity.Config != null && _entity.Config.Ultimate != null)
             {
-                _entity.NextActionToCast = _entity.Config.Ultimate;
+                _entity.RuntimeData.NextActionToCast = _entity.Config.Ultimate;
                 _entity.StateMachine.ChangeState<CharacterSkillState>();
             }
         }
 
         public void OnEvadeFront()
         {
-            if (!_entity.CanEvade()) return;
-            _entity.NextActionToCast = _entity.Config.evadeFront[0];
+            _entity.RuntimeData.NextActionToCast = _entity.Config.evadeFront[0];
             _entity.StateMachine.ChangeState<CharacterEvadeState>();
         }
 
         public void OnEvadeBack()
         {
-            if (!_entity.CanEvade()) return;
-            _entity.NextActionToCast = _entity.Config.evadeBack[0];
+            _entity.RuntimeData.NextActionToCast = _entity.Config.evadeBack[0];
             _entity.StateMachine.ChangeState<CharacterEvadeState>();
         }
     }
@@ -118,7 +116,7 @@ namespace Game.Logic.Character
             if (_entity.Config == null) return;
             if (_entity.Config.lightAttacks != null && _entity.Config.lightAttacks.Length > 0)
             {
-                _entity.NextActionToCast = _entity.Config.lightAttacks[0];
+                _entity.RuntimeData.NextActionToCast = _entity.Config.lightAttacks[0];
                 _entity.StateMachine.ChangeState<CharacterSkillState>();
             }
         }
@@ -132,7 +130,7 @@ namespace Game.Logic.Character
         {
             if (_entity.Config != null && _entity.Config.specialSkill != null)
             {
-                _entity.NextActionToCast = _entity.Config.specialSkill;
+                _entity.RuntimeData.NextActionToCast = _entity.Config.specialSkill;
                 _entity.StateMachine.ChangeState<CharacterSkillState>();
             }
         }
@@ -141,22 +139,20 @@ namespace Game.Logic.Character
         {
             if (_entity.Config != null && _entity.Config.Ultimate != null)
             {
-                _entity.NextActionToCast = _entity.Config.Ultimate;
+                _entity.RuntimeData.NextActionToCast = _entity.Config.Ultimate;
                 _entity.StateMachine.ChangeState<CharacterSkillState>();
             }
         }
 
         public void OnEvadeFront()
         {
-            if (!_entity.CanEvade()) return;
-            _entity.NextActionToCast = _entity.Config.evadeFront[0];
+            _entity.RuntimeData.NextActionToCast = _entity.Config.evadeFront[0];
             _entity.StateMachine.ChangeState<CharacterEvadeState>();
         }
 
         public void OnEvadeBack()
         {
-            if (!_entity.CanEvade()) return;
-            _entity.NextActionToCast = _entity.Config.evadeBack[0];
+            _entity.RuntimeData.NextActionToCast = _entity.Config.evadeBack[0];
             _entity.StateMachine.ChangeState<CharacterEvadeState>();
         }
     }

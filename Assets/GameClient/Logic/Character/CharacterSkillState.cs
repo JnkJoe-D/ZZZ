@@ -36,13 +36,13 @@ namespace Game.Logic.Character
         {
             _skillStartTime = Time.time;
 
-            var skillConfig = Entity.NextActionToCast;
+            var skillConfig = Entity.RuntimeData.NextActionToCast;
             if (skillConfig == null) return;
 
             Debug.Log($"<color=#0FFFFF>[Combo] PlayCurrentSkill {skillConfig.Name}</color>");
             _currentRunner = Entity.ActionPlayer.PlayAction(skillConfig);
             // 技能态启动，清除之前的闪避冲刺信号
-            Entity.ForceDashNextFrame = false;
+            Entity.RuntimeData.ForceDashNextFrame = false;
 
             if(_currentRunner != null)
             {

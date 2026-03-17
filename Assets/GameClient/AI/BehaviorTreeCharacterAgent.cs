@@ -6,8 +6,7 @@ namespace Game.AI
     /// <summary>
     /// 挂在角色上的行为树运行时代理，负责初始化、每帧驱动和目标元数据注册。
     /// </summary>
-    [DisallowMultipleComponent]
-    [RequireComponent(typeof(CharacterEntity))]
+    [RequireComponent(typeof(AIEntity))]
     public sealed class BehaviorTreeCharacterAgent : MonoBehaviour
     {
         private enum DefaultTargetMode
@@ -31,12 +30,12 @@ namespace Game.AI
         [SerializeField] private bool retainCurrentTarget = true;
         [SerializeField] private float targetRetainDistanceMultiplier = 1.25f;
 
-        private CharacterEntity character;
+        private AIEntity character;
         private AIInputProvider aiInputProvider;
         private BehaviorTreeInstance instance;
 
         /// <summary>当前绑定的角色实体。</summary>
-        public CharacterEntity Character => character;
+        public AIEntity Character => character;
         /// <summary>当前使用的 AI 输入代理。</summary>
         public AIInputProvider InputProvider => aiInputProvider;
         /// <summary>当前运行中的行为树实例。</summary>
@@ -53,18 +52,8 @@ namespace Game.AI
         /// </summary>
         private void Awake()
         {
-            character = GetComponent<CharacterEntity>();
+            character = GetComponent<AIEntity>();
             aiInputProvider = GetComponent<AIInputProvider>();
-
-            if (aiInputProvider == null && autoCreateAIInputProvider)
-            {
-                aiInputProvider = gameObject.AddComponent<AIInputProvider>();
-            }
-
-            if (character != null && aiInputProvider != null)
-            {
-                character.SetInputProvider(aiInputProvider);
-            }
 
             RegisterTargetMetadata();
         }
@@ -118,7 +107,6 @@ namespace Game.AI
 
             behaviorTree = resolvedGraph;
             aiInputProvider.ResetInputState();
-            character.SetInputProvider(aiInputProvider);
 
             BehaviorTreeCharacterFacade facade = new BehaviorTreeCharacterFacade(character, aiInputProvider);
             IBehaviorTreeTargetProvider resolvedTargetProvider = targetProvider;

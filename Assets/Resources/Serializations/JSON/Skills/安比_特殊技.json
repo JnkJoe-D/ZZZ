@@ -28,7 +28,7 @@
         {
             "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
             "groupName": "分组 3",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -93,9 +93,6 @@
                     "clips": [
                         {
                             "rid": 1008
-                        },
-                        {
-                            "rid": 1009
                         }
                     ],
                     "isMasterTrack": true,
@@ -148,7 +145,7 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1009
                         }
                     ]
                 }
@@ -171,7 +168,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1010
                         }
                     ]
                 }
@@ -194,7 +191,7 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1011
                         }
                     ]
                 }
@@ -217,7 +214,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1012
                         }
                     ]
                 }
@@ -240,10 +237,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1014
+                            "rid": 1013
                         },
                         {
-                            "rid": 1015
+                            "rid": 1014
                         }
                     ]
                 }
@@ -266,10 +263,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1015
                         },
                         {
-                            "rid": 1017
+                            "rid": 1016
                         }
                     ]
                 }
@@ -286,58 +283,31 @@
                     "clipName": "动画轨道片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.683333396911621,
+                    "duration": 2.6000001430511476,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.1833333969116211,
+                    "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 35694
+                        "instanceID": 34352
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
                     "overrideMask": {
                         "instanceID": 0
                     },
-                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Branch_04",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比攻击.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
+                    "clipRef": {
+                        "guid": "98daa5f85ba9dc146824d7488da418e9",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Branch_01",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比攻击.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
                 }
             },
             {
                 "rid": 1009,
-                "type": {
-                    "class": "SkillAnimationClip",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "e035b54f-760c-496d-b789-7c580d381ed4",
-                    "clipName": "动画轨道片段",
-                    "isEnabled": true,
-                    "startTime": 1.5,
-                    "duration": 1.9833334684371949,
-                    "blendInDuration": 0.1833333969116211,
-                    "blendOutDuration": 0.0,
-                    "animationClip": {
-                        "instanceID": 35696
-                    },
-                    "playbackSpeed": 1.0,
-                    "layer": 0,
-                    "overrideMask": {
-                        "instanceID": 0
-                    },
-                    "clipGuid": "98daa5f85ba9dc146824d7488da418e9",
-                    "clipAssetName": "Avatar_Female_Size02_Anbi_Ani_Attack_Branch_04_End",
-                    "clipAssetPath": "Assets/Resources/Animations/Clips/安比/安比攻击.fbx",
-                    "maskGuid": "",
-                    "maskAssetName": "",
-                    "maskAssetPath": ""
-                }
-            },
-            {
-                "rid": 1010,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -351,29 +321,17 @@
                     "duration": 0.7666666507720947,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "audioClips": [
-                        {
-                            "instanceID": 34852
-                        }
-                    ],
+                    "audioClips": [],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "6aa89f48868b7ce49b0a21e880fcb68a"
-                    ],
-                    "clipAssetNames": [
-                        "安比攻击5"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/AnBi/安比攻击5.wav"
-                    ]
+                    "audioRefs": []
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1010,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -387,35 +345,17 @@
                     "duration": 0.7666666507720947,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "audioClips": [
-                        {
-                            "instanceID": 36566
-                        },
-                        {
-                            "instanceID": 0
-                        }
-                    ],
+                    "audioClips": [],
                     "volume": 0.5,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "e53c9bdd76fe4544cb78a5b9a781aa20",
-                        ""
-                    ],
-                    "clipAssetNames": [
-                        "安比：消失吧",
-                        ""
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/AnBi/安比：消失吧.wav",
-                        ""
-                    ]
+                    "audioRefs": []
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1011,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -429,29 +369,17 @@
                     "duration": 0.7666666507720947,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "audioClips": [
-                        {
-                            "instanceID": 34936
-                        }
-                    ],
+                    "audioClips": [],
                     "volume": 1.0,
                     "pitch": 1.0,
                     "loop": false,
                     "isAffectSpeed": false,
                     "spatialBlend": 1.0,
-                    "clipGuids": [
-                        "2eb0e25f8b7e9ec40a17a8a8d9f8a069"
-                    ],
-                    "clipAssetNames": [
-                        "安比入鞘"
-                    ],
-                    "clipAssetPaths": [
-                        "Assets/Resources/Audio/AnBi/安比入鞘.wav"
-                    ]
+                    "audioRefs": []
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1012,
                 "type": {
                     "class": "EventClip",
                     "ns": "SkillEditor",
@@ -470,7 +398,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1013,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -489,7 +417,7 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1014,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -500,7 +428,7 @@
                     "clipName": "连击派生窗口片段",
                     "isEnabled": true,
                     "startTime": 1.3000000715255738,
-                    "duration": 2.183333396911621,
+                    "duration": 1.3000000715255738,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 2,
@@ -508,7 +436,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1015,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -527,7 +455,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1016,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -538,7 +466,7 @@
                     "clipName": "连击派生窗口片段",
                     "isEnabled": true,
                     "startTime": 1.3000000715255738,
-                    "duration": 2.1833336353302,
+                    "duration": 1.3000000715255738,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 1,

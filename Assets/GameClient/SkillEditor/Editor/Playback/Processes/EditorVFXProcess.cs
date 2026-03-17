@@ -8,6 +8,11 @@ namespace SkillEditor.Editor
     {
         private GameObject vfxInstance;
         public GameObject Instance => vfxInstance;
+        
+        // 缓存第一帧的挂点世界坐标和旋转
+        private Vector3 spawnTargetPosition;
+        private Quaternion spawnTargetRotation;
+
         public override void OnEnable()
         {
             base.OnEnable();
@@ -55,6 +60,18 @@ namespace SkillEditor.Editor
 
             if (vfxInstance != null)
             {
+                // 缓存生成时的挂点位置
+                if (targetTransform != null)
+                {
+                    spawnTargetPosition = targetTransform.position;
+                    spawnTargetRotation = targetTransform.rotation;
+                }
+                else
+                {
+                    spawnTargetPosition = spawnPos;
+                    spawnTargetRotation = spawnRot;
+                }
+                
                 UpdateTransform(targetTransform);
             }
         }
@@ -64,13 +81,10 @@ namespace SkillEditor.Editor
             if (vfxInstance == null) return;
 
             // 1. 更新位置 (因为是 World Space 生成，需手动跟随)
-            if (clip.followTarget)
+            Transform targetTransform = GetTargetTransform();
+            if (targetTransform != null)
             {
-                Transform targetTransform = GetTargetTransform();
-                if (targetTransform != null)
-                {
-                    UpdateTransform(targetTransform);
-                }
+                UpdateTransform(targetTransform);
             }
 
             // 2. 采样粒子
@@ -95,6 +109,11 @@ namespace SkillEditor.Editor
                 vfxInstance = null;
             }
         }
+        public Transform GetBindTransform()
+        {
+            return GetTargetTransform();
+        }
+
         private Transform GetTargetTransform()
         {
             if (context.Owner == null) return null;
@@ -143,20 +162,19 @@ namespace SkillEditor.Editor
         {
             if (vfxInstance == null || target == null) return;
 
-            // 应用 Transform (类似 Runtime，但每帧计算)
             vfxInstance.transform.localScale = clip.scale;
 
             if (clip.followTarget)
             {
-                // World = Target * Offset
                 Vector3 finalPos = target.position + target.rotation * clip.positionOffset;
                 Quaternion finalRot = target.rotation * Quaternion.Euler(clip.rotationOffset);
                 vfxInstance.transform.SetPositionAndRotation(finalPos, finalRot);
             }
             else
             {
-                 Vector3 finalPos = target.position + target.rotation * clip.positionOffset;
-                 Quaternion finalRot = target.rotation * Quaternion.Euler(clip.rotationOffset);
+                 // 不跟随目标：使用进入时第一帧保存的挂点基准计算
+                 Vector3 finalPos = spawnTargetPosition + spawnTargetRotation * clip.positionOffset;
+                 Quaternion finalRot = spawnTargetRotation * Quaternion.Euler(clip.rotationOffset);
                  vfxInstance.transform.SetPositionAndRotation(finalPos, finalRot);
             }
         }
@@ -175,20 +193,15 @@ namespace SkillEditor.Editor
             Transform target = GetTargetTransform();
             if (target == null) return;
 
-            // 逆向计算 Offset
-            // WorldPos = TargetPos + TargetRot * OffsetPos
-            // => TargetRot * OffsetPos = WorldPos - TargetPos
-            // => OffsetPos = TargetRot^-1 * (WorldPos - TargetPos)
-            // 即 Target.InverseTransformPoint(WorldPos)
+            // 选择用于反推的基准坐标系：
+            // 如果跟随，则用实时的挂载点位置反算
+            // 如果不跟随，则用第一帧生成时的挂载点位置（即不会随着人物后续移动改变的地方）反算
+            Vector3 refPos = clip.followTarget ? target.position : spawnTargetPosition;
+            Quaternion refRot = clip.followTarget ? target.rotation : spawnTargetRotation;
+
+            posOffset = Quaternion.Inverse(refRot) * (vfxInstance.transform.position - refPos);
             
-            // 如果 followTarget = false，我们在 OnUpdate 里也是按这个公式算的（只是一次性）。
-            // 所以公式通用。
-            
-            posOffset = target.InverseTransformPoint(vfxInstance.transform.position);
-            
-            // WorldRot = TargetRot * OffsetRot
-            // => OffsetRot = TargetRot^-1 * WorldRot
-            Quaternion localRot = Quaternion.Inverse(target.rotation) * vfxInstance.transform.rotation;
+            Quaternion localRot = Quaternion.Inverse(refRot) * vfxInstance.transform.rotation;
             rotOffset = localRot.eulerAngles;
 
             scale = vfxInstance.transform.localScale;

@@ -15,7 +15,7 @@ namespace SkillEditor.Editor
         /// 业务层可通过 [UnityEditor.InitializeOnLoadMethod] 注册本委托，
         /// 供 SkillEditorWindow 在构建预览 ProcessContext 时获取对应业务的服务层。
         /// </summary>
-        public static Func<GameObject, IServiceFactory> DefaultServiceFactoryCreator { get; set; }
+        public static Func<GameObject, Func<Type, GameObject, object>> DefaultServiceFactoryCreator { get; set; }
 
         /// <summary>
         /// 编辑器销毁的回调通知。

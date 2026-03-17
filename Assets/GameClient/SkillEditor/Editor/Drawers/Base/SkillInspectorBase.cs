@@ -356,14 +356,14 @@ namespace SkillEditor.Editor
                 if (stringArray == null) stringArray = new string[0];
 
                 // 尝试搜寻本地配置
-                string[] availableTagsArray = null;
+                string[] availableTargetTagsArray = null;
                 var guids = AssetDatabase.FindAssets("t:SkillTagConfig");
                 if (guids.Length > 0)
                 {
                     var config = AssetDatabase.LoadAssetAtPath<global::SkillEditor.SkillTagConfig>(AssetDatabase.GUIDToAssetPath(guids[0]));
-                    if (config != null && config.availableTags != null)
+                    if (config != null && config.availableTargetTags != null)
                     {
-                        availableTagsArray = config.availableTags.ToArray();
+                        availableTargetTagsArray = config.availableTargetTags.ToArray();
                     }
                 }
 
@@ -372,7 +372,7 @@ namespace SkillEditor.Editor
                 EditorGUILayout.LabelField(name, EditorStyles.boldLabel);
                 
                 // 没找到配置库警告
-                if (availableTagsArray == null || availableTagsArray.Length == 0)
+                if (availableTargetTagsArray == null || availableTargetTagsArray.Length == 0)
                 {
                     EditorGUILayout.HelpBox("未找到 SkillTagConfig 资产！", MessageType.Warning);
                 }
@@ -380,7 +380,7 @@ namespace SkillEditor.Editor
                 if (GUILayout.Button("+", GUILayout.Width(20)))
                 {
                     Array.Resize(ref stringArray, stringArray.Length + 1);
-                    stringArray[stringArray.Length - 1] = (availableTagsArray != null && availableTagsArray.Length > 0) ? availableTagsArray[0] : "";
+                    stringArray[stringArray.Length - 1] = (availableTargetTagsArray != null && availableTargetTagsArray.Length > 0) ? availableTargetTagsArray[0] : "";
                     GUI.FocusControl(null);
                 }
                 EditorGUILayout.EndHorizontal();
@@ -391,9 +391,9 @@ namespace SkillEditor.Editor
 
                     string currentVal = stringArray[i];
 
-                    if (availableTagsArray != null && availableTagsArray.Length > 0)
+                    if (availableTargetTagsArray != null && availableTargetTagsArray.Length > 0)
                     {
-                        int currentIndex = Array.IndexOf(availableTagsArray, currentVal);
+                        int currentIndex = Array.IndexOf(availableTargetTagsArray, currentVal);
 
                         if (currentIndex == -1) // 词库丢失或非法值
                         {
@@ -404,8 +404,8 @@ namespace SkillEditor.Editor
                         }
                         else
                         {
-                            int newIndex = EditorGUILayout.Popup(currentIndex, availableTagsArray);
-                            stringArray[i] = availableTagsArray[newIndex];
+                            int newIndex = EditorGUILayout.Popup(currentIndex, availableTargetTagsArray);
+                            stringArray[i] = availableTargetTagsArray[newIndex];
                         }
                     }
                     else
@@ -428,6 +428,183 @@ namespace SkillEditor.Editor
                 EditorGUILayout.EndVertical();
                 newValue = stringArray;
             }
+            else if (value is HitEffectEntry[] hitEffectsArray)
+            {
+                // --- HitEffectEntry[] 渲染 ---
+                // 加载 SkillTagConfig
+                string[] eventTagOptions = null;
+                string[] targetTagOptions = null;
+                var tagGuids = AssetDatabase.FindAssets("t:SkillTagConfig");
+                if (tagGuids.Length > 0)
+                {
+                    var tagConfig = AssetDatabase.LoadAssetAtPath<global::SkillEditor.SkillTagConfig>(AssetDatabase.GUIDToAssetPath(tagGuids[0]));
+                    if (tagConfig != null)
+                    {
+                        eventTagOptions = tagConfig.availableEventTags?.ToArray();
+                        targetTagOptions = tagConfig.availableTargetTags?.ToArray();
+                    }
+                }
+
+                EditorGUILayout.BeginVertical("box");
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(name, EditorStyles.boldLabel);
+                if (GUILayout.Button("+", GUILayout.Width(20)))
+                {
+                    Array.Resize(ref hitEffectsArray, hitEffectsArray.Length + 1);
+                    hitEffectsArray[hitEffectsArray.Length - 1] = new HitEffectEntry();
+                    GUI.FocusControl(null);
+                }
+                EditorGUILayout.EndHorizontal();
+
+                for (int i = 0; i < hitEffectsArray.Length; i++)
+                {
+                    var entry = hitEffectsArray[i];
+                    if (entry == null) { entry = new HitEffectEntry(); hitEffectsArray[i] = entry; }
+
+                    EditorGUILayout.BeginVertical("helpbox");
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField($"效果 [{i}]", EditorStyles.miniLabel);
+                    if (GUILayout.Button("X", GUILayout.Width(20)))
+                    {
+                        var list = new List<HitEffectEntry>(hitEffectsArray);
+                        list.RemoveAt(i);
+                        hitEffectsArray = list.ToArray();
+                        GUI.FocusControl(null);
+                        EditorGUILayout.EndHorizontal();
+                        EditorGUILayout.EndVertical();
+                        break;
+                    }
+                    EditorGUILayout.EndHorizontal();
+
+                    // eventTag 下拉
+                    if (eventTagOptions != null && eventTagOptions.Length > 0)
+                    {
+                        int idx = Array.IndexOf(eventTagOptions, entry.eventTag);
+                        if (idx == -1)
+                        {
+                            var oldC = GUI.color; GUI.color = Color.yellow;
+                            entry.eventTag = EditorGUILayout.TextField("效果标签 [未知]", entry.eventTag);
+                            GUI.color = oldC;
+                        }
+                        else
+                        {
+                            int newIdx = EditorGUILayout.Popup("效果标签", idx, eventTagOptions);
+                            entry.eventTag = eventTagOptions[newIdx];
+                        }
+                    }
+                    else
+                    {
+                        entry.eventTag = EditorGUILayout.TextField("效果标签", entry.eventTag);
+                    }
+
+                    // targetTags 下拉列表
+                    EditorGUILayout.BeginVertical();
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("目标标签", EditorStyles.miniLabel);
+                    if (GUILayout.Button("+", GUILayout.Width(20)))
+                    {
+                        var tags = entry.targetTags ?? new string[0];
+                        Array.Resize(ref tags, tags.Length + 1);
+                        tags[tags.Length - 1] = (targetTagOptions != null && targetTagOptions.Length > 0) ? targetTagOptions[0] : "";
+                        entry.targetTags = tags;
+                        GUI.FocusControl(null);
+                    }
+                    EditorGUILayout.EndHorizontal();
+
+                    if (entry.targetTags != null)
+                    {
+                        for (int j = 0; j < entry.targetTags.Length; j++)
+                        {
+                            EditorGUILayout.BeginHorizontal();
+                            if (targetTagOptions != null && targetTagOptions.Length > 0)
+                            {
+                                int tIdx = Array.IndexOf(targetTagOptions, entry.targetTags[j]);
+                                if (tIdx == -1)
+                                {
+                                    var oldC2 = GUI.color; GUI.color = Color.red;
+                                    entry.targetTags[j] = EditorGUILayout.TextField($"[已丢失] {entry.targetTags[j]}");
+                                    GUI.color = oldC2;
+                                }
+                                else
+                                {
+                                    int newTIdx = EditorGUILayout.Popup(tIdx, targetTagOptions);
+                                    entry.targetTags[j] = targetTagOptions[newTIdx];
+                                }
+                            }
+                            else
+                            {
+                                entry.targetTags[j] = EditorGUILayout.TextField(entry.targetTags[j]);
+                            }
+                            if (GUILayout.Button("X", GUILayout.Width(20)))
+                            {
+                                var tList = new List<string>(entry.targetTags);
+                                tList.RemoveAt(j);
+                                entry.targetTags = tList.ToArray();
+                                GUI.FocusControl(null);
+                                EditorGUILayout.EndHorizontal();
+                                break;
+                            }
+                            EditorGUILayout.EndHorizontal();
+                        }
+                    }
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.EndVertical();
+                }
+                EditorGUILayout.EndVertical();
+                newValue = hitEffectsArray;
+            }
+            else if (value is SkillAssetReference assetRef)
+            {
+                var attr = field.GetCustomAttribute<SkillAssetReferenceAttribute>();
+                if (attr != null)
+                {
+                    var targetField = obj.GetType().GetField(attr.TargetFieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (targetField != null)
+                    {
+                        var targetObj = targetField.GetValue(obj) as Object;
+                        UpdateAssetReference(assetRef, targetObj);
+                    }
+                }
+                
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.LabelField(name);
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.TextField("GUID", assetRef.guid);
+                    EditorGUILayout.TextField("Name", assetRef.assetName);
+                    EditorGUILayout.TextField("Path", assetRef.assetPath);
+                    EditorGUI.indentLevel--;
+                }
+                newValue = assetRef;
+            }
+            else if (value is List<SkillAssetReference> assetRefList)
+            {
+                var attr = field.GetCustomAttribute<SkillAssetReferenceAttribute>();
+                if (attr != null)
+                {
+                    var targetField = obj.GetType().GetField(attr.TargetFieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (targetField != null)
+                    {
+                        var targetList = targetField.GetValue(obj) as IList;
+                        if (targetList != null)
+                        {
+                            while (assetRefList.Count < targetList.Count) assetRefList.Add(new SkillAssetReference());
+                            while (assetRefList.Count > targetList.Count) assetRefList.RemoveAt(assetRefList.Count - 1);
+
+                            for (int i = 0; i < targetList.Count; i++)
+                            {
+                                UpdateAssetReference(assetRefList[i], targetList[i] as Object);
+                            }
+                        }
+                    }
+                }
+                
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.LabelField(name, $"已同步资源数: {assetRefList.Count}");
+                }
+                newValue = assetRefList;
+            }
             else if (typeof(IList).IsAssignableFrom(fieldType))
             {
                 EditorGUILayout.LabelField(name, "List (Not Implemented in Base)");
@@ -445,6 +622,28 @@ namespace SkillEditor.Editor
                 }
                 field.SetValue(obj, newValue);
                 OnInspectorChanged?.Invoke();
+            }
+        }
+
+        private void UpdateAssetReference(SkillAssetReference assetRef, Object target)
+        {
+            if (target == null)
+            {
+                if (assetRef.guid != string.Empty)
+                {
+                    assetRef.Clear();
+                }
+                return;
+            }
+
+            string path = AssetDatabase.GetAssetPath(target);
+            string guid = AssetDatabase.AssetPathToGUID(path);
+
+            if (assetRef.guid != guid || assetRef.assetName != target.name || assetRef.assetPath != path)
+            {
+                assetRef.guid = guid;
+                assetRef.assetName = target.name;
+                assetRef.assetPath = path;
             }
         }
     }

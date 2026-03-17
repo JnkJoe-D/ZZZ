@@ -7,11 +7,8 @@ namespace SkillEditor
     public class HitClip : ClipBase, ISerializationCallbackReceiver
     {
         [Header("Detection Strategy")]
-        [SkillProperty("事件标签 (EventTag)")]
-        public string eventTag = "Hit_Default";
-
-        [SkillProperty("目标标签")]
-        public string[] targetTags = new string[0]; 
+        [SkillProperty("命中效果列表")]
+        public HitEffectEntry[] hitEffects = new HitEffectEntry[0];
 
         [SkillProperty("命中频率")]
         public HitFrequency hitFrequency = HitFrequency.Once;
@@ -33,12 +30,15 @@ namespace SkillEditor
         private int serializedHitLayerMask = -1;
         [SkillProperty("是否影响自身")]
         public bool isSelfImpacted = false;
+        // --- 编辑器辅助 ---
+        [NonSerialized]
+        [SkillProperty("检测盒Gizmos")]
+        public bool showHitBoxGizmos = false;
 
-        [Header("Shape Config")]
+        [Header("检测盒")]
         public HitBoxShape shape = new HitBoxShape();
 
-        [Header("Transform Config")]
-        [SkillProperty("绑定点")]
+        [SkillProperty("检测盒绑定点")]
         public BindPoint bindPoint = BindPoint.Root;
 
         [SkillProperty("自定义骨骼名称")]
@@ -49,6 +49,43 @@ namespace SkillEditor
 
         [SkillProperty("旋转偏移")]
         public Vector3 rotationOffset = Vector3.zero;
+
+        [Header("打击反馈")]
+        [SkillProperty("启用顿帧")]
+        public bool enableHitStop = false;
+
+        [SkillProperty("顿帧时长(秒)")]
+        public float hitStopDuration = 0.05f;
+
+        [SkillProperty("受击特效")]
+        public GameObject hitVFXPrefab;
+
+        [SkillAssetReference("hitVFXPrefab")][HideInInspector]
+        public SkillAssetReference hitVFXRef = new SkillAssetReference();
+
+        [SkillProperty("受击特效高度 (Y)")]
+        public float hitVFXHeight = 1.0f;
+
+        [SkillProperty("受击特效预览偏移 (XZ)")]
+        public Vector2 hitVFXPreviewOffsetXZ = Vector2.zero;
+
+        [SkillProperty("受击特效缩放")]
+        public Vector3 hitVFXScale = Vector3.one;
+
+        [SkillProperty("受击音效")]
+        public AudioClip hitAudioClip;
+
+        [SkillAssetReference("hitAudioClip")][HideInInspector]
+        public SkillAssetReference hitAudioRef = new SkillAssetReference();
+
+        [SkillProperty("受击硬直时长(秒)")]
+        public float hitStunDuration = 0.3f;
+
+        // --- 编辑器辅助 ---
+        public enum HitVFXHandleType { None, Position, Scale }
+        
+        [NonSerialized][HideInInspector]
+        public HitVFXHandleType activeVFXHandleType = HitVFXHandleType.None;
 
         public HitClip()
         {
@@ -66,8 +103,7 @@ namespace SkillEditor
                 duration = this.duration,
                 isEnabled = this.isEnabled,
                 
-                eventTag = this.eventTag,
-                targetTags = (this.targetTags != null) ? (string[])this.targetTags.Clone() : new string[0],
+                hitEffects = CloneHitEffects(this.hitEffects),
                 hitFrequency = this.hitFrequency,
                 checkInterval = this.checkInterval,
                 maxHitTargets = this.maxHitTargets,
@@ -79,8 +115,31 @@ namespace SkillEditor
                 bindPoint = this.bindPoint,
                 customBoneName = this.customBoneName,
                 positionOffset = this.positionOffset,
-                rotationOffset = this.rotationOffset
+                rotationOffset = this.rotationOffset,
+                enableHitStop = this.enableHitStop,
+                hitStopDuration = this.hitStopDuration,
+                hitVFXPrefab = this.hitVFXPrefab,
+                hitVFXRef = new SkillAssetReference(this.hitVFXRef.guid, this.hitVFXRef.assetName, this.hitVFXRef.assetPath),
+                hitVFXHeight = this.hitVFXHeight,
+                hitVFXPreviewOffsetXZ = this.hitVFXPreviewOffsetXZ,
+                hitVFXScale = this.hitVFXScale,
+                hitAudioClip = this.hitAudioClip,
+                hitAudioRef = new SkillAssetReference(this.hitAudioRef.guid, this.hitAudioRef.assetName, this.hitAudioRef.assetPath),
+                hitStunDuration = this.hitStunDuration,
+                activeVFXHandleType = this.activeVFXHandleType,
+                showHitBoxGizmos = this.showHitBoxGizmos
             };
+        }
+
+        private static HitEffectEntry[] CloneHitEffects(HitEffectEntry[] source)
+        {
+            if (source == null || source.Length == 0) return new HitEffectEntry[0];
+            var result = new HitEffectEntry[source.Length];
+            for (int i = 0; i < source.Length; i++)
+            {
+                result[i] = source[i]?.Clone() ?? new HitEffectEntry();
+            }
+            return result;
         }
 
         public void OnBeforeSerialize()

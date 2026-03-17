@@ -169,10 +169,15 @@ namespace SkillEditor
                 HitData hitData = new HitData()
                 {
                     deployer = context.Owner,
-                    targets = validHits.ToArray(),
-                    eventTag = clip.eventTag,
-                    actionTags = clip.targetTags
-
+                    targetsCollilders = validHits.ToArray(),
+                    hitEffects = clip.hitEffects,
+                    enableHitStop = clip.enableHitStop,
+                    hitStopDuration = clip.hitStopDuration,
+                    hitVFXPrefab = clip.hitVFXPrefab,
+                    hitVFXHeight = clip.hitVFXHeight,
+                    hitVFXScale = clip.hitVFXScale,
+                    hitAudioClip = clip.hitAudioClip,
+                    hitStunDuration = clip.hitStunDuration
                 };
                 damageHandler.OnHitDetect(hitData);
             }

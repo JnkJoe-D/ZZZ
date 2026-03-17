@@ -16,7 +16,6 @@ namespace Game.AI
         public const string CurrentMoveX = "CurrentMoveX";
         public const string CurrentMoveY = "CurrentMoveY";
         public const string HasMoveInput = "HasMoveInput";
-        public const string CanEvade = "CanEvade";
         public const string IsGrounded = "IsGrounded";
         public const string IsGroundState = "IsGroundState";
         public const string IsAirborneState = "IsAirborneState";
@@ -118,7 +117,6 @@ namespace Game.AI
     {
         Vector2 MoveInput { get; }
         bool HasMoveInput { get; }
-        bool CanEvade { get; }
         bool IsGrounded { get; }
         bool IsGroundState { get; }
         bool IsAirborneState { get; }
@@ -143,13 +141,13 @@ namespace Game.AI
     /// </summary>
     public sealed class BehaviorTreePlayerTargetProvider : IBehaviorTreeTargetProvider
     {
-        private readonly CharacterEntity owner;
+        private readonly AIEntity owner;
 
         /// <summary>
         /// 构造玩家目标提供器。
         /// </summary>
         /// <param name="owner">发起索敌的 owner。</param>
-        public BehaviorTreePlayerTargetProvider(CharacterEntity owner)
+        public BehaviorTreePlayerTargetProvider(AIEntity owner)
         {
             this.owner = owner;
         }
@@ -190,7 +188,7 @@ namespace Game.AI
     /// </summary>
     public sealed class BehaviorTreeCharacterFacade : IBehaviorTreeCharacterFacade
     {
-        private readonly CharacterEntity character;
+        private readonly AIEntity character;
         private readonly AIInputProvider inputProvider;
 
         /// <summary>
@@ -198,17 +196,17 @@ namespace Game.AI
         /// </summary>
         /// <param name="character">目标角色。</param>
         /// <param name="inputProvider">AI 输入代理。</param>
-        public BehaviorTreeCharacterFacade(CharacterEntity character, AIInputProvider inputProvider)
+        public BehaviorTreeCharacterFacade(AIEntity character, AIInputProvider inputProvider)
         {
             this.character = character;
             this.inputProvider = inputProvider;
         }
 
-        public CharacterEntity Character => character;
+        public AIEntity Character => character;
         public AIInputProvider InputProvider => inputProvider;
         public Vector2 MoveInput => inputProvider != null ? inputProvider.GetMovementDirection() : Vector2.zero;
         public bool HasMoveInput => inputProvider != null && inputProvider.HasMovementInput();
-        public bool CanEvade => character != null && character.CanEvade();
+        public bool CanEvade => character != null && character.RuntimeData != null && character.RuntimeData.CanEvade(character.Config);
         public bool IsGrounded => character?.MovementController != null && character.MovementController.IsGrounded;
         public bool IsGroundState => character?.StateMachine?.CurrentState is CharacterGroundState;
         public bool IsAirborneState => character?.StateMachine?.CurrentState is CharacterAirborneState;
@@ -415,7 +413,7 @@ namespace Game.AI
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.CurrentMoveX, facade.MoveInput.x);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.CurrentMoveY, facade.MoveInput.y);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.HasMoveInput, facade.HasMoveInput);
-            context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.CanEvade, facade.CanEvade);
+
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.IsGrounded, facade.IsGrounded);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.IsGroundState, facade.IsGroundState);
             context.SetBlackboardValue(BehaviorTreeCharacterBlackboardKeys.IsAirborneState, facade.IsAirborneState);

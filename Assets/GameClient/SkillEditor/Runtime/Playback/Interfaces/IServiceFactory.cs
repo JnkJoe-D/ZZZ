@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace SkillEditor
 {
@@ -11,7 +12,8 @@ namespace SkillEditor
         /// 提供指定类型的服务实例
         /// </summary>
         /// <param name="serviceType">服务类型</param>
+        /// /// <param name="owner"></param>
         /// <returns>服务实例，若无法提供则返回 null</returns>
-        object ProvideService(Type serviceType);
+        object ProvideService(Type serviceType,GameObject owner);
     }
 }

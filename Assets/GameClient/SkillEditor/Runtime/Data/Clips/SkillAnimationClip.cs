@@ -20,19 +20,11 @@ namespace SkillEditor
         public EAnimLayer layer = EAnimLayer.Locomotion;
         [SkillProperty("目标动画遮罩")]
         public AvatarMask overrideMask;
-        [SerializeField][HideInInspector]
-        public string clipGuid;
-        [SerializeField][HideInInspector]
-        public string clipAssetName;
-        [SerializeField][HideInInspector]
-        public string clipAssetPath;
+        [SkillAssetReference("animationClip")]
+        public SkillAssetReference clipRef = new SkillAssetReference();
 
-        [SerializeField][HideInInspector]
-        public string maskGuid;
-        [SerializeField][HideInInspector]
-        public string maskAssetName;
-        [SerializeField][HideInInspector]
-        public string maskAssetPath;
+        [SkillAssetReference("overrideMask")]
+        public SkillAssetReference maskRef = new SkillAssetReference();
         public override bool SupportsBlending => true;
 
         public SkillAnimationClip()
@@ -52,12 +44,8 @@ namespace SkillEditor
                 isEnabled = this.isEnabled,
                 animationClip = this.animationClip,
                 playbackSpeed = this.playbackSpeed,
-                clipGuid = this.clipGuid,
-                clipAssetName = this.clipAssetName,
-                clipAssetPath = this.clipAssetPath,
-                maskGuid = this.maskGuid,
-                maskAssetName = this.maskAssetName,
-                maskAssetPath = this.maskAssetPath,
+                clipRef = new SkillAssetReference(this.clipRef.guid, this.clipRef.assetName, this.clipRef.assetPath),
+                maskRef = new SkillAssetReference(this.maskRef.guid, this.maskRef.assetName, this.maskRef.assetPath),
                 layer = this.layer,
                 overrideMask = this.overrideMask,
                 blendInDuration = this.blendInDuration,
