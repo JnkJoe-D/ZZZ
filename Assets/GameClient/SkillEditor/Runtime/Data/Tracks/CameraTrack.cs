@@ -3,7 +3,7 @@ using System;
 namespace SkillEditor
 {
     [Serializable]
-    [TrackDefinition("摄像机轨道",typeof(CameraClip), "#994CB2", "Camera Icon", 5)]
+    [TrackDefinition("摄像机轨道",typeof(CameraDollyClip), "#994CB2", "Camera Icon", 5)]
     public class CameraTrack : TrackBase
     {
         public CameraTrack()

@@ -245,11 +245,11 @@ namespace SkillEditor.Editor
         /// <summary>
         /// 添加片段到轨道
         /// </summary>
-        public void OnAddClip(TrackBase track, float startTime)
+        public void OnAddClip(TrackBase track, float startTime, Type clipType = null)
         {
             window.RecordUndo("添加片段");
 
-            ClipBase newClip = CreateClipForTrack(track);
+            ClipBase newClip = CreateClipForTrack(track, clipType);
             if (newClip == null)
             {
                 Debug.LogError($"[技能编辑器] 无法为轨道类型 {track.trackType} 创建片段");
@@ -258,7 +258,9 @@ namespace SkillEditor.Editor
             
             newClip.StartTime = startTime;
             newClip.Duration = 1.0f;
-            newClip.clipName = $"{track.trackName}片段";
+            
+            string clipDisplayName = TrackRegistry.GetClipDisplayName(newClip.GetType());
+            newClip.clipName = $"{clipDisplayName}片段";
             
             track.clips.Add(newClip);
             
@@ -269,14 +271,15 @@ namespace SkillEditor.Editor
         /// <summary>
         /// 根据轨道类型创建片段
         /// </summary>
-        /// <summary>
-        /// 根据轨道类型创建片段
-        /// </summary>
-        public ClipBase CreateClipForTrack(TrackBase track)
+        public ClipBase CreateClipForTrack(TrackBase track, Type clipType = null)
         {
             if (track == null) return null;
             
-            Type clipType = TrackRegistry.GetClipType(track.GetType());
+            if (clipType == null)
+            {
+                clipType = TrackRegistry.GetClipType(track.GetType());
+            }
+
             if (clipType != null)
             {
                 try
@@ -291,6 +294,8 @@ namespace SkillEditor.Editor
             
             return null;
         }
+    
+
 
         #endregion
 

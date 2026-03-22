@@ -4,14 +4,14 @@ using SkillEditor;
 
 namespace SkillEditor.Editor
 {
-    [CustomDrawer(typeof(CameraClip))]
+    [CustomDrawer(typeof(CameraDollyClip))]
     public class CameraClipDrawer : ClipDrawer
     {
         private const string PREF_KEYFRAME_VALUE = "CameraClipDrawer_CustomKeyframeValue";
 
         public override void DrawInspector(ClipBase clip)
         {
-            var camClip = clip as CameraClip;
+            var camClip = clip as CameraDollyClip;
             if (camClip == null) return;
             
             EditorGUILayout.LabelField("相机运镜设置", EditorStyles.boldLabel);
@@ -147,7 +147,7 @@ namespace SkillEditor.Editor
             base.DrawTimelineGUI(clip, clipRect, state, clipColor, displayName);
 
             // 2. 准备绘制相机曲线
-            var camClip = clip as CameraClip;
+            var camClip = clip as CameraDollyClip;
             if (camClip == null || camClip.pathCurve == null || clipRect.width < 5f) return;
 
             // 计算曲线在此 clip 中的高度映射极值

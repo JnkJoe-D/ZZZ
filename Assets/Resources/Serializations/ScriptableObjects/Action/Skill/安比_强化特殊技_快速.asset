@@ -16,19 +16,14 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 4c2291a71d784954baf15ae402f829fd, type: 3}
   TurnMode: 2
-  OutTransitions:
-  - RequiredCommand: 20
+  LocalRoutes:
+  - RequiredType: 20
     NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
     ExtraConditions: []
     RequiredWindowTag: Normal
     TriggerMode: 0
-  - RequiredCommand: 10
-    NextAction: {fileID: 11400000, guid: 8d11b40273ee32f4c932bde8f7a4f111, type: 2}
-    ExtraConditions: []
-    RequiredWindowTag: Evade
-    TriggerMode: 1
-  - RequiredCommand: 11
-    NextAction: {fileID: 11400000, guid: fc3b60a4b2622b4439f3f722ea4683ac, type: 2}
+  - RequiredType: 50
+    NextAction: {fileID: 0}
     ExtraConditions: []
     RequiredWindowTag: Evade
     TriggerMode: 1

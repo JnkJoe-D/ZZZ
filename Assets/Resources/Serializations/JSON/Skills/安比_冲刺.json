@@ -163,11 +163,11 @@
                     "clipName": "动画轨道片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.4333333671092987,
-                    "blendInDuration": 0.14293831586837769,
+                    "duration": 0.40000003576278689,
+                    "blendInDuration": 0.15000000596046449,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 36032
+                        "instanceID": 38206
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -203,7 +203,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 37214
+                            "instanceID": 39266
                         }
                     ],
                     "volume": 1.0,
@@ -237,7 +237,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 37214
+                            "instanceID": 39266
                         }
                     ],
                     "volume": 1.0,

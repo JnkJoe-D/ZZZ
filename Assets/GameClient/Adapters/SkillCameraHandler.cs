@@ -4,6 +4,9 @@ using Game.Camera;
 using Game.Resource;
 using SkillEditor;
 using UnityEngine;
+using Game.Logic.Character;
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -26,6 +29,11 @@ namespace Game.Adapters
         bool _ownsManualSkillCameraState;
         bool _defaultCameraInitialized;
 
+        private CharacterEntity _entity;
+        public SkillCameraHandler(CharacterEntity entity)
+        {
+            _entity = entity;
+        }
         public void Dispose()
         {
             ReleaseOwnedSkillCameraStates();
@@ -232,6 +240,16 @@ namespace Game.Adapters
             }
 
             RefreshSkillDrivenCamera(camera);
+        }
+
+        public void GenerateImpulse()
+        {
+            _entity?.CameraController?.GenerateImpulse();
+        }
+
+        public void GenerateImpulseWithVelocity(Vector3 velocity, float force, float duration)
+        {
+            _entity?.CameraController?.GenerateImpulseWithVelocity(velocity, force ,duration);
         }
     }
 }

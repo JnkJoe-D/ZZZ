@@ -4,6 +4,7 @@ using UnityEngine;
 namespace SkillEditor
 {
     [Serializable]
+    [ClipDefinition(typeof(SpawnTrack), "生成")]
     public class SpawnClip : ClipBase
     {
         [Header("Spawn Settings")]

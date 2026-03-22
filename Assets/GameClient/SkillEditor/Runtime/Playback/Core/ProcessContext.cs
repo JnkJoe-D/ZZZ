@@ -63,6 +63,7 @@ namespace SkillEditor
         private Dictionary<string, Action> _cleanupActions = new Dictionary<string, Action>();
         private Dictionary<string, Action> _startActions = new Dictionary<string, Action>();
         private Dictionary<string, Action<float, float>> _tickActions = new Dictionary<string, Action<float, float>>();
+        private Dictionary<string, Action<float, float>> _lateTickActions = new Dictionary<string, Action<float, float>>();
         private bool _startActionsExecuted;
 
         public ProcessContext(GameObject owner, PlayMode playMode, Func<Type, GameObject, object> serviceProvider = null)
@@ -212,6 +213,18 @@ namespace SkillEditor
             _tickActions.Remove(key);
         }
 
+        public void RegisterLateTickAction(string key, Action<float, float> action)
+        {
+            if (string.IsNullOrEmpty(key) || action == null) return;
+            _lateTickActions[key] = action;
+        }
+
+        public void UnregisterLateTickAction(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return;
+            _lateTickActions.Remove(key);
+        }
+
         /// <summary>
         /// 执行所有注册的系统级清理（Runner 结束时调用）
         /// </summary>
@@ -224,6 +237,7 @@ namespace SkillEditor
             _cleanupActions.Clear();
             _startActions.Clear();
             _tickActions.Clear();
+            _lateTickActions.Clear();
             _startActionsExecuted = false;
         }
 
@@ -240,6 +254,14 @@ namespace SkillEditor
         internal void ExecuteTickActions(float currentTime, float deltaTime)
         {
             foreach (var action in _tickActions.Values)
+            {
+                action?.Invoke(currentTime, deltaTime);
+            }
+        }
+
+        internal void ExecuteLateTickActions(float currentTime, float deltaTime)
+        {
+            foreach (var action in _lateTickActions.Values)
             {
                 action?.Invoke(currentTime, deltaTime);
             }

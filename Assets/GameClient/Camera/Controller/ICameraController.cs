@@ -27,9 +27,7 @@ namespace Game.Camera
         /// 提供目标当前的视觉主右向向量（只取水平 XZ 分量并正规化）
         /// </summary>
         Vector3 GetRight();
-
-        // 未来可以按需扩展：
-        // void SetFOV(float fov, float duration);
-        // void LockOn(Transform target);
+        void GenerateImpulse();
+        void GenerateImpulseWithVelocity(Vector3 velocity, float force, float duration);
     }
 }

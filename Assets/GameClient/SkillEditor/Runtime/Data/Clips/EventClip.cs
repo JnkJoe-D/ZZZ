@@ -32,6 +32,7 @@ namespace SkillEditor
     }
 
     [Serializable]
+    [ClipDefinition(typeof(EventTrack), "事件")]
     public class EventClip : ClipBase
     {
         [Header("Event Settings")]

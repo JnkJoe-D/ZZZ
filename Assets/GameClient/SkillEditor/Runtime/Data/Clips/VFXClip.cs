@@ -4,6 +4,7 @@ using UnityEngine;
 namespace SkillEditor
 {
     [Serializable]
+    [ClipDefinition(typeof(VFXTrack), "特效")]
     public class VFXClip : ClipBase
     {
         [Header("资源")]

@@ -17,6 +17,28 @@ namespace SkillEditor
     }
 
     /// <summary>
+    /// 用于定义片段的元数据（显示名称等）
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    public class ClipDefinitionAttribute : Attribute
+    {
+        public string DisplayName { get; private set; }
+        public Type[] TargetTrackTypes { get; private set; }
+
+        public ClipDefinitionAttribute(Type targetTrackType, string displayName)
+        {
+            TargetTrackTypes = new Type[] { targetTrackType };
+            DisplayName = displayName;
+        }
+
+        public ClipDefinitionAttribute(Type[] targetTrackTypes, string displayName)
+        {
+            TargetTrackTypes = targetTrackTypes;
+            DisplayName = displayName;
+        }
+    }
+
+    /// <summary>
     /// 用于定义轨道的元数据（显示名称、菜单路径、图标等）
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
@@ -25,22 +47,28 @@ namespace SkillEditor
         public string DisplayName { get; private set; }
         public string Icon { get; private set; }
         public int Order { get; private set; }
-        public Type ClipType { get; private set; }
+        public Type[] ClipTypes { get; private set; }
         public string ColorHex { get; private set; }
 
         /// <summary>
-        /// 定义轨道元数据
+        /// 定义轨道元数据 (兼容单个片段类型)
         /// </summary>
-        /// <param name="displayName">显示名称</param>
-        /// <param name="menuPath">菜单路径</param>
-        /// <param name="clipType">关联的片段类型</param>
-        /// <param name="colorHex">轨道颜色 (Hex #RRGGBB)</param>
-        /// <param name="icon">图标名称</param>
-        /// <param name="order">菜单排序</param>
         public TrackDefinitionAttribute(string displayName, Type clipType, string colorHex, string icon = "", int order = 0)
         {
             DisplayName = displayName;
-            ClipType = clipType;
+            ClipTypes = new Type[] { clipType };
+            ColorHex = colorHex;
+            Icon = icon;
+            Order = order;
+        }
+
+        /// <summary>
+        /// 定义轨道元数据 (支持多个片段类型)
+        /// </summary>
+        public TrackDefinitionAttribute(string displayName, Type[] clipTypes, string colorHex, string icon = "", int order = 0)
+        {
+            DisplayName = displayName;
+            ClipTypes = clipTypes;
             ColorHex = colorHex;
             Icon = icon;
             Order = order;

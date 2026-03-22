@@ -16,7 +16,7 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 2739735606b4c594096c3f66ab808dc8, type: 3}
   TurnMode: 0
-  OutTransitions: []
+  LocalRoutes: []
   Category: 0
   Cooldown: 0
   MPCost: 0

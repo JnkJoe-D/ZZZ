@@ -1,4 +1,5 @@
 using System;
+using cfg;
 using Game.Input;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace Game.AI
     public sealed class AIInputProvider : MonoBehaviour, IInputProvider
     {
         private Vector2 movementInput;
+        private Vector2 lastInput;
         private Vector3 worldMovementDirection;
         private bool useWorldMovementDirection;
 
@@ -82,6 +84,7 @@ namespace Game.AI
         /// <param name="direction">新的移动方向。</param>
         public void SetMovementDirection(Vector2 direction)
         {
+            lastInput = movementInput;
             movementInput = Vector2.ClampMagnitude(direction, 1f);
             worldMovementDirection = Vector3.zero;
             useWorldMovementDirection = false;
@@ -123,6 +126,8 @@ namespace Game.AI
 
             worldMovementDirection = normalizedDirection;
             useWorldMovementDirection = normalizedDirection.sqrMagnitude > 0.0001f;
+
+            lastInput = movementInput;
             movementInput = new Vector2(normalizedDirection.x, normalizedDirection.z);
         }
 
@@ -131,17 +136,10 @@ namespace Game.AI
         /// </summary>
         public void ClearMovement()
         {
+            lastInput = Vector2.zero;
             movementInput = Vector2.zero;
             worldMovementDirection = Vector3.zero;
             useWorldMovementDirection = false;
-        }
-
-        /// <summary>
-        /// 设置 Dash 按住状态。已弃用，不再由 BT 显式驱动。
-        /// </summary>
-        /// <param name="isHeld">是否按住 Dash。</param>
-        public void SetDashHeld(bool isHeld)
-        {
         }
 
         /// <summary>
@@ -186,5 +184,11 @@ namespace Game.AI
         public void TriggerUltimate() => OnUltimate?.Invoke();
         /// <summary>触发交互事件。</summary>
         public void TriggerGameplayInteract() => OnGameplayInteract?.Invoke();
+
+        public Vector2 GetLastMovementDirection()
+        {
+            return lastInput;
+        }
+
     }
 }

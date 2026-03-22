@@ -16,10 +16,12 @@ namespace SkillEditor.Editor
         public class TrackInfo
         {
             public Type TrackType;
+            public Type[] ClipTypes;
             public TrackDefinitionAttribute Attribute;
         }
 
         private static List<TrackInfo> registeredTracks;
+        private static Dictionary<Type, List<Type>> trackToClipTypesMap;
 
         /// <summary>
         /// 获取所有已注册的轨道信息
@@ -36,39 +38,84 @@ namespace SkillEditor.Editor
         private static void Initialize()
         {
             registeredTracks = new List<TrackInfo>();
+            trackToClipTypesMap = new Dictionary<Type, List<Type>>();
 
-            // 扫描所有程序集
+            // 第一阶段：扫描所有轨道
+            List<Type> allTypes = new List<Type>();
             foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
             {
-                // 简单的过滤，提升性能
                 var asmName = asm.GetName().Name;
                 if (asmName.StartsWith("System") || asmName.StartsWith("Unity") || 
                     asmName.StartsWith("mscorlib") || asmName.StartsWith("Mono"))
                     continue;
 
-                Type[] types;
                 try
                 {
-                    types = asm.GetTypes();
+                    allTypes.AddRange(asm.GetTypes());
                 }
-                catch (ReflectionTypeLoadException e)
-                {
-                    types = e.Types;
-                }
+                catch { }
+            }
 
-                foreach (var type in types)
-                {
-                    if (type == null || type.IsAbstract || !type.IsSubclassOf(typeof(TrackBase)))
-                        continue;
+            foreach (var type in allTypes)
+            {
+                if (type == null || type.IsAbstract) continue;
 
+                // 注册轨道
+                if (type.IsSubclassOf(typeof(TrackBase)))
+                {
                     var attr = type.GetCustomAttribute<TrackDefinitionAttribute>();
                     if (attr != null)
                     {
                         registeredTracks.Add(new TrackInfo
                         {
                             TrackType = type,
+                            ClipTypes = attr.ClipTypes, // 初始保留轨道定义的片段
                             Attribute = attr
                         });
+                    }
+                }
+            }
+
+            // 第二阶段：扫描所有片段并进行反向注册
+            foreach (var type in allTypes)
+            {
+                if (type == null || type.IsAbstract || !type.IsSubclassOf(typeof(ClipBase)))
+                    continue;
+
+                var clipAttr = type.GetCustomAttribute<ClipDefinitionAttribute>();
+                if (clipAttr != null && clipAttr.TargetTrackTypes != null)
+                {
+                    foreach (var targetTrackType in clipAttr.TargetTrackTypes)
+                    {
+                        if (!trackToClipTypesMap.ContainsKey(targetTrackType))
+                        {
+                            trackToClipTypesMap[targetTrackType] = new List<Type>();
+                        }
+                        
+                        if (!trackToClipTypesMap[targetTrackType].Contains(type))
+                        {
+                            trackToClipTypesMap[targetTrackType].Add(type);
+                        }
+                    }
+                }
+            }
+
+            // 第三阶段：合并轨道定义的片段（如果有）到映射表中
+            foreach (var info in registeredTracks)
+            {
+                if (info.ClipTypes != null)
+                {
+                    if (!trackToClipTypesMap.ContainsKey(info.TrackType))
+                    {
+                        trackToClipTypesMap[info.TrackType] = new List<Type>();
+                    }
+
+                    foreach (var ct in info.ClipTypes)
+                    {
+                        if (!trackToClipTypesMap[info.TrackType].Contains(ct))
+                        {
+                            trackToClipTypesMap[info.TrackType].Add(ct);
+                        }
                     }
                 }
             }
@@ -105,20 +152,45 @@ namespace SkillEditor.Editor
             return "ScriptableObject Icon"; // 默认图标
         }
         /// <summary>
-        /// 根据轨道类型获取关联的片段类型
+        /// 根据轨道类型获取关联的所有片段类型
+        /// </summary>
+        public static Type[] GetClipTypes(Type trackType)
+        {
+            if (trackToClipTypesMap == null) Initialize();
+
+            if (trackToClipTypesMap.TryGetValue(trackType, out var list))
+            {
+                return list.ToArray();
+            }
+            return Array.Empty<Type>();
+        }
+
+        /// <summary>
+        /// 根据轨道类型获取关联的第一个片段类型 (兼容旧逻辑)
         /// </summary>
         public static Type GetClipType(Type trackType)
         {
-            if (registeredTracks == null) Initialize();
+            var types = GetClipTypes(trackType);
+            return types.Length > 0 ? types[0] : null;
+        }
 
-            foreach (var info in registeredTracks)
+        /// <summary>
+        /// 获取片段类型的显示名称
+        /// </summary>
+        public static string GetClipDisplayName(Type clipType)
+        {
+            if (clipType == null) return "未知";
+
+            var attr = clipType.GetCustomAttribute<ClipDefinitionAttribute>();
+            if (attr != null && !string.IsNullOrEmpty(attr.DisplayName))
             {
-                if (info.TrackType == trackType)
-                {
-                    return info.Attribute.ClipType;
-                }
+                return attr.DisplayName;
             }
-            return null;
+
+            // 备选方案：清理类名，去掉 "Clip" 后缀并按驼峰拆分（可选，暂简单处理）
+            string name = clipType.Name;
+            if (name.EndsWith("Clip")) name = name.Substring(0, name.Length - 4);
+            return name;
         }
 
         /// <summary>
@@ -147,13 +219,13 @@ namespace SkillEditor.Editor
         /// </summary>
         public static string GetTrackTypeByClipType(Type clipType)
         {
-            if (registeredTracks == null) Initialize();
+            if (trackToClipTypesMap == null) Initialize();
 
-            foreach (var info in registeredTracks)
+            foreach (var kvp in trackToClipTypesMap)
             {
-                if (info.Attribute.ClipType == clipType)
+                if (kvp.Value.Contains(clipType))
                 {
-                    return info.TrackType.Name;
+                    return kvp.Key.Name;
                 }
             }
             return null;

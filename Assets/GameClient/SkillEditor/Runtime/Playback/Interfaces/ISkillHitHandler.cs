@@ -13,6 +13,7 @@ namespace SkillEditor
     public struct HitData
     {
         public GameObject deployer;
+        public Vector3 hitBoxCenter;
         public Collider[] targetsCollilders;
         public HitEffectEntry[] hitEffects;
         // 打击反馈参数（来自 HitClip）

@@ -27,6 +27,7 @@ namespace Game.Input
 
         private PlayerControl _input;
         private Vector2 _currentMoveInput;
+        private Vector2 _lastMoveInput;
 
         private void Awake()
         {
@@ -64,6 +65,7 @@ namespace Game.Input
         private void Update()
         {
             // 每帧获取摇杆/WASD数据
+            _lastMoveInput = _currentMoveInput;
             _currentMoveInput = _input.GamePlay.Move.ReadValue<Vector2>();
         }
 
@@ -74,6 +76,11 @@ namespace Game.Input
         public Vector2 GetMovementDirection()
         {
             return _currentMoveInput;
+        }
+
+        public Vector2 GetLastMovementDirection()
+        {
+            return _lastMoveInput;
         }
 
         public bool HasMovementInput()

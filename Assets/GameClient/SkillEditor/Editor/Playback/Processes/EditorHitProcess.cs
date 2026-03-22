@@ -11,8 +11,12 @@ namespace SkillEditor.Editor
     public class EditorHitProcess : ProcessBase<HitClip>
     {
         private float lastCheckTime;
+        private int timesChecked = 0;
         private GameObject vfxInstance;
         public GameObject Instance => vfxInstance;
+        
+        public Vector3 fixedHitBoxPosition;
+        public Quaternion fixedHitBoxRotation;
 
         private Vector3 spawnTargetPosition;
         private Quaternion spawnTargetRotation;
@@ -28,7 +32,13 @@ namespace SkillEditor.Editor
             {
                 Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered!</color> HitEffects: {clip.hitEffects?.Length ?? 0}, Time: OnEnter");
             }
-            lastCheckTime = clip.StartTime;
+            lastCheckTime = -1f;
+            timesChecked = 0;
+
+            if (!clip.isHitBoxFollowBindPoint)
+            {
+                GetMatrix(out fixedHitBoxPosition, out fixedHitBoxRotation);
+            }
 
             if (context.OwnerTransform != null)
             {
@@ -55,17 +65,18 @@ namespace SkillEditor.Editor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            if (clip.hitFrequency == HitFrequency.Interval)
+            if (clip.hitFrequency == HitFrequency.Times)
             {
-                if (currentTime - lastCheckTime >= clip.checkInterval)
+                if (clip.times <= 0 || timesChecked >= clip.times) return;
+                
+                float dynamicInterval = clip.times > 1 ? clip.Duration / clip.times : clip.Duration; 
+
+                if (lastCheckTime < 0 || currentTime - lastCheckTime >= dynamicInterval)
                 {
-                    Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered (Interval)!</color> HitEffects: {clip.hitEffects?.Length ?? 0}, Time: {currentTime:F2}");
+                    Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered (Times)!</color> HitEffects: {clip.hitEffects?.Length ?? 0}, Time: {currentTime:F2}, Checks: {timesChecked + 1}/{clip.times}");
                     lastCheckTime = currentTime;
+                    timesChecked++;
                 }
-            }
-            else if (clip.hitFrequency == HitFrequency.Always)
-            {
-                // 可选打印
             }
 
             if (vfxInstance != null)
@@ -129,6 +140,35 @@ namespace SkillEditor.Editor
             Vector3 localPos = Quaternion.Inverse(spawnTargetRotation) * (vfxInstance.transform.position - spawnTargetPosition);
             height = localPos.y;
             offsetXZ = new Vector2(localPos.x, localPos.z);
+        }
+
+        public void GetMatrix(out Vector3 pos, out Quaternion rot)
+        {
+            Transform bindTrans = null;
+            if (context != null)
+            {
+                var actor = context.GetService<ISkillBoneGetter>();
+                if (actor != null)
+                {
+                    bindTrans = actor.GetBone(clip.bindPoint, clip.customBoneName);
+                }
+            }
+
+            if (bindTrans != null)
+            {
+                pos = bindTrans.position + bindTrans.rotation * clip.positionOffset;
+                rot = bindTrans.rotation * Quaternion.Euler(clip.rotationOffset);
+            }
+            else if (context != null && context.OwnerTransform != null)
+            {
+                pos = context.OwnerTransform.position + context.OwnerTransform.rotation * clip.positionOffset;
+                rot = context.OwnerTransform.rotation * Quaternion.Euler(clip.rotationOffset);
+            }
+            else
+            {
+                pos = clip.positionOffset;
+                rot = Quaternion.Euler(clip.rotationOffset);
+            }
         }
     }
 }

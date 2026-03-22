@@ -63,8 +63,8 @@
         },
         {
             "groupId": "d6083488-e3c1-4480-b6af-fb7790cb8a9c",
-            "groupName": "分组 5",
-            "isCollapsed": true,
+            "groupName": "派生",
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -78,7 +78,7 @@
         },
         {
             "groupId": "6d02f1f1-fc42-47fd-bd02-3cf6ee8c7600",
-            "groupName": "分组 6",
+            "groupName": "命中",
             "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
@@ -90,7 +90,7 @@
         },
         {
             "groupId": "c3638afe-99bf-4ff0-9358-1e1116b6950a",
-            "groupName": "分组 7",
+            "groupName": "移动",
             "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
@@ -425,7 +425,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.06666672229766846,
                     "animationClip": {
-                        "instanceID": 36382
+                        "instanceID": 36578
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -460,7 +460,7 @@
                     "blendInDuration": 0.06666672229766846,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 36384
+                        "instanceID": 36580
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -495,7 +495,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 36808
+                        "instanceID": 37014
                     },
                     "vfxRef": {
                         "guid": "d1aa224abf73af945af8db2d4c0131dd",
@@ -540,7 +540,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 36808
+                        "instanceID": 37014
                     },
                     "vfxRef": {
                         "guid": "d1aa224abf73af945af8db2d4c0131dd",
@@ -586,7 +586,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 36956
+                            "instanceID": 37164
                         }
                     ],
                     "volume": 1.0,
@@ -620,7 +620,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 36956
+                            "instanceID": 37164
                         }
                     ],
                     "volume": 1.0,
@@ -654,7 +654,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35104
+                            "instanceID": 35284
                         },
                         {
                             "instanceID": 0
@@ -696,7 +696,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35614
+                            "instanceID": 35796
                         }
                     ],
                     "volume": 1.0,
@@ -763,7 +763,7 @@
                     "clipName": "普通",
                     "isEnabled": true,
                     "startTime": 0.6666666865348816,
-                    "duration": 0.1499999761581421,
+                    "duration": 0.10000002384185791,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 1,
@@ -800,8 +800,8 @@
                     "clipId": "f3d134a9-2683-432d-8f6d-99c6cdb775a2",
                     "clipName": "落雷",
                     "isEnabled": true,
-                    "startTime": 0.8166666626930237,
-                    "duration": 0.15000000596046449,
+                    "startTime": 0.7666667103767395,
+                    "duration": 0.19999995827674867,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 1,
@@ -885,9 +885,9 @@
                         "z": 0.0
                     },
                     "enableHitStop": true,
-                    "hitStopDuration": 0.10000000149011612,
+                    "hitStopDuration": 0.05000000074505806,
                     "hitVFXPrefab": {
-                        "instanceID": 44080
+                        "instanceID": 35998
                     },
                     "hitVFXRef": {
                         "guid": "bdab0b73f63ac294ab3682a9926f1e1c",
@@ -906,7 +906,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 35802
+                        "instanceID": 35986
                     },
                     "hitAudioRef": {
                         "guid": "4b9c1d6918c16cf4ab07098aa01ef840",
@@ -974,9 +974,9 @@
                         "z": 0.0
                     },
                     "enableHitStop": true,
-                    "hitStopDuration": 0.10000000149011612,
+                    "hitStopDuration": 0.05000000074505806,
                     "hitVFXPrefab": {
-                        "instanceID": 44080
+                        "instanceID": 35998
                     },
                     "hitVFXRef": {
                         "guid": "bdab0b73f63ac294ab3682a9926f1e1c",
@@ -995,7 +995,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 35802
+                        "instanceID": 35986
                     },
                     "hitAudioRef": {
                         "guid": "4b9c1d6918c16cf4ab07098aa01ef840",

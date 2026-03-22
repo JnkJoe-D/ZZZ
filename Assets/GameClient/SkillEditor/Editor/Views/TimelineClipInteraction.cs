@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System;
 
 namespace SkillEditor.Editor
 {
@@ -649,7 +650,20 @@ namespace SkillEditor.Editor
             state.pasteTargetTime = clickTime;
 
             GenericMenu menu = new GenericMenu();
-            menu.AddItem(new GUIContent("添加片段"), false, () => clipOps.OnAddClip(track, clickTime));
+            
+            Type[] clipTypes = TrackRegistry.GetClipTypes(track.GetType());
+            if (clipTypes != null && clipTypes.Length > 0)
+            {
+                foreach (var clipType in clipTypes)
+                {
+                    string clipDisplayName = TrackRegistry.GetClipDisplayName(clipType);
+                    menu.AddItem(new GUIContent($"添加{clipDisplayName}片段"), false, () => clipOps.OnAddClip(track, clickTime, clipType));
+                }
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent("该轨道不支持添加片段"));
+            }
 
             menu.AddSeparator("");
 

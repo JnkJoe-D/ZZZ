@@ -235,6 +235,7 @@ namespace SkillEditor
             }
 
             context?.ExecuteTickActions(CurrentTime, deltaTime);
+            context?.ExecuteLateTickActions(CurrentTime, deltaTime);
         }
 
         // ─── 每帧驱动 ───
@@ -301,6 +302,7 @@ namespace SkillEditor
             }
 
             context?.ExecuteTickActions(CurrentTime, deltaTime);
+            context?.ExecuteLateTickActions(CurrentTime, deltaTime);
 
             OnTick?.Invoke(CurrentTime);
 

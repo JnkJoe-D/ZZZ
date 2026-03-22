@@ -9,6 +9,7 @@ namespace SkillEditor
     // 不过为了保持兼容性，先保留原名，但在使用时需全名引用 UnityEngine.AnimationClip
     
     [Serializable]
+    [ClipDefinition(typeof(AnimationTrack), "动画")]
     public class SkillAnimationClip : ClipBase
     {
         [SkillProperty("动画资源")]

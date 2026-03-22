@@ -16,8 +16,7 @@ namespace SkillEditor
     public enum HitFrequency 
     { 
         Once, 
-        Always, 
-        Interval 
+        Times 
     }
 
     public enum TargetSortMode 

@@ -10,6 +10,9 @@ namespace SkillEditor
         private Dictionary<Collider, float> hitRecords = new Dictionary<Collider, float>();
         private float lastCheckTime = -1f;
         private int currentHitCount = 0;
+        private int timesChecked = 0;
+        private Vector3 fixedHitBoxPosition;
+        private Quaternion fixedHitBoxRotation;
 
         public override void OnEnable()
         {
@@ -21,6 +24,12 @@ namespace SkillEditor
             hitRecords.Clear();
             lastCheckTime = -1f;
             currentHitCount = 0;
+            timesChecked = 0;
+
+            if (!clip.isHitBoxFollowBindPoint)
+            {
+                GetMatrix(out fixedHitBoxPosition, out fixedHitBoxRotation);
+            }
 
             if (clip.hitFrequency == HitFrequency.Once)
             {
@@ -30,16 +39,17 @@ namespace SkillEditor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            if (clip.hitFrequency == HitFrequency.Always)
+            if (clip.hitFrequency == HitFrequency.Times)
             {
-                DoHitCheck();
-            }
-            else if (clip.hitFrequency == HitFrequency.Interval)
-            {
-                if (lastCheckTime < 0 || currentTime - lastCheckTime >= clip.checkInterval)
+                if (clip.times <= 0 || timesChecked >= clip.times) return;
+                
+                float dynamicInterval = clip.times > 1 ? clip.Duration / clip.times : clip.Duration; 
+
+                if (lastCheckTime < 0 || currentTime - lastCheckTime >= dynamicInterval)
                 {
                     DoHitCheck();
                     lastCheckTime = currentTime;
+                    timesChecked++;
                 }
             }
         }
@@ -51,7 +61,15 @@ namespace SkillEditor
 
             Vector3 center;
             Quaternion rotation;
-            GetMatrix(out center, out rotation);
+            if (clip.isHitBoxFollowBindPoint)
+            {
+                GetMatrix(out center, out rotation);
+            }
+            else
+            {
+                center = fixedHitBoxPosition;
+                rotation = fixedHitBoxRotation;
+            }
 
             var shape = clip.shape;
             
@@ -93,7 +111,7 @@ namespace SkillEditor
                 if (hitRecords.TryGetValue(hit, out float lastHitTime))
                 {
                     if (clip.hitFrequency == HitFrequency.Once) continue;
-                    // 如果是 Interval，依靠自身的计时器，这里允许命中，但是如果一个对象还在上一轮的冷却中？
+                    // 如果是 Times，依靠自身的计时器，这里允许命中，但是如果一个对象还在上一轮的冷却中？
                     // 由于 DoDamageCheck 本身是按频率调用的，只要被调到了就可以生效。此处可做更精细的每目标 CD，这里从简。
                 }
 
@@ -187,6 +205,7 @@ namespace SkillEditor
                 HitData hitData = new HitData()
                 {
                     deployer = context.Owner,
+                    hitBoxCenter = center,
                     targetsCollilders = validHits.ToArray(),
                     hitEffects = clip.hitEffects,
                     enableHitStop = clip.enableHitStop,
@@ -208,7 +227,10 @@ namespace SkillEditor
             if (context != null)
             {
                 var actor = context.GetService<ISkillBoneGetter>();
-                bindTrans = actor.GetBone(clip.bindPoint);
+                if (actor != null)
+                {
+                    bindTrans = actor.GetBone(clip.bindPoint, clip.customBoneName);
+                }
             }
 
             if (bindTrans != null)

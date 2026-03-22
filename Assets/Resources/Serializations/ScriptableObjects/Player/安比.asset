@@ -31,7 +31,8 @@ MonoBehaviour:
   JogStartConfig: {fileID: 11400000, guid: a3bf143cf1b382c46ad31fce7b5e3a4e, type: 2}
   JogConfig: {fileID: 11400000, guid: 5a0a7e15a4109634c9be9ec8bf9c8677, type: 2}
   JogStopConfig: {fileID: 11400000, guid: b935649465b5fd248a095ed0fd1ecfbe, type: 2}
-  DashStartConfig: {fileID: 11400000, guid: ec3614d10a5dcb740b7b3f1743486f85, type: 2}
+  DashStartConfig: {fileID: 0}
+  DashTurnBackConfig: {fileID: 11400000, guid: ecc5fa26a09c7924d91612502688f637, type: 2}
   DashConfig: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
   DashStopConfig: {fileID: 11400000, guid: b935649465b5fd248a095ed0fd1ecfbe, type: 2}
   evadeFront:
@@ -60,4 +61,5 @@ MonoBehaviour:
   assistSkill: {fileID: 0}
   Ultimate: {fileID: 0}
   BehaviorTreeGraph: {fileID: 0}
+  CommandContextConfig: {fileID: 11400000, guid: 5d7d6d1c13054c9bab1a0b8de3d7c6f1, type: 2}
   hitReactionConfig: {fileID: 11400000, guid: 482c0f22a8a668540bb93f6822cb1e21, type: 2}

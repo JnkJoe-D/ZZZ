@@ -7,17 +7,21 @@ using Game.VFX;
 namespace Game.Logic.Character
 {
     /// <summary>
-    /// 受击反应模块（视觉层）。可选挂载在任何 CharacterEntity 派生体上。
-    /// 仅负责视觉反馈：受击特效、顿帧、状态机切换。
-    /// 逻辑分发（扣血/加血/击退/Buff）由 IHitImpact 体系负责。
+    /// Visual hit-reaction module for a character entity.
+    /// Combat resolution is handled by IHitImpact; this module focuses on
+    /// reaction presentation such as VFX, audio, hit-stop, and state changes.
     /// </summary>
     public class HitReactionModule : MonoBehaviour
     {
-        [Header("受击保护")]
-        [Tooltip("两次受击硬直之间的最小间隔")]
+        [Header("Hit Protection")]
+        [Tooltip("Minimum interval between two hit-stun reactions.")]
         public float hitProtectionInterval = 0.1f;
 
-        [Header("霸体状态")]
+        [Header("Hit Facing")]
+        [Tooltip("Rotate the victim to face the attacker before playing the hurt animation.")]
+        public bool faceAttackerBeforeHitAnimation = true;
+
+        [Header("Super Armor")]
         public bool isSuperArmor = false;
 
         private CharacterEntity _entity;
@@ -29,49 +33,73 @@ namespace Game.Logic.Character
         }
 
         /// <summary>
-        /// 应用视觉反馈。由 IHitImpact 的具体实现调用。
-        /// 职责：特效 → 顿帧 → 状态机切换。
+        /// Apply presentation feedback for a resolved hit.
+        /// Flow: VFX -> audio -> hit-stop -> write stun data -> switch state.
         /// </summary>
         public void ApplyVisualFeedback(HitContext ctx)
         {
-            if (_entity == null) return;
+            if (_entity == null)
+            {
+                return;
+            }
 
-            // 受击保护检查
-            if (Time.time - _lastHitTime < hitProtectionInterval) return;
+            if (Time.time - _lastHitTime < hitProtectionInterval)
+            {
+                return;
+            }
+
             _lastHitTime = Time.time;
 
-            // 1. 生成受击特效
             SpawnHitVFX(ctx);
-
-            // 2. 播放受击音效
             PlayHitAudio(ctx);
 
-            // 3. 顿帧
             if (ctx.enableHitStop)
             {
                 ApplyHitStop(ctx);
             }
 
-            // 4. 写入受击参数到 RuntimeData
             _entity.RuntimeData.CurrentHitStunDuration = ctx.hitStunDuration;
 
-            // 5. 切换状态机（霸体状态下不进入硬直）
             if (!isSuperArmor)
             {
+                FaceAttackerBeforeHitAnimation(ctx);
                 _entity.StateMachine?.ChangeState<CharacterHitStunState>();
             }
         }
 
+        private void FaceAttackerBeforeHitAnimation(HitContext ctx)
+        {
+            if (!faceAttackerBeforeHitAnimation || _entity == null)
+            {
+                return;
+            }
+
+            if (ctx.attacker != null)
+            {
+                _entity.MovementController?.FaceToTargetImmediately(ctx.attacker.transform);
+                return;
+            }
+
+            Vector3 directionToAttacker = -ctx.hitDirection;
+            directionToAttacker.y = 0f;
+            if (directionToAttacker.sqrMagnitude <= 0.0001f)
+            {
+                return;
+            }
+
+            transform.forward = directionToAttacker.normalized;
+        }
+
         private void SpawnHitVFX(HitContext ctx)
         {
-            if (ctx.hitVFXPrefab == null) return;
+            if (ctx.hitVFXPrefab == null)
+            {
+                return;
+            }
 
             Vector3 spawnPos = ctx.hitPoint;
-            
-            // XZ使用碰撞点，Y使用角色根坐标高度 + 偏移高度
             spawnPos.y = _entity.transform.position.y + ctx.hitVFXHeight;
 
-            // 默认面向主相机（Billboard）
             Quaternion spawnRot = Quaternion.identity;
             if (UnityEngine.Camera.main != null)
             {
@@ -79,7 +107,7 @@ namespace Game.Logic.Character
                 spawnRot = Quaternion.LookRotation(-camForward);
             }
 
-            var vfx = VFXManager.Instance.Spawn(ctx.hitVFXPrefab, spawnPos, spawnRot);
+            GameObject vfx = VFXManager.Instance.Spawn(ctx.hitVFXPrefab, spawnPos, spawnRot);
             if (vfx != null)
             {
                 vfx.transform.localScale = ctx.hitVFXScale;
@@ -88,12 +116,16 @@ namespace Game.Logic.Character
                     vfx.transform.SetParent(transform);
                 }
             }
+
             VFXManager.Instance.ReturnWhenDone(vfx);
         }
 
         private void PlayHitAudio(HitContext ctx)
         {
-            if (ctx.hitAudioClip == null) return;
+            if (ctx.hitAudioClip == null)
+            {
+                return;
+            }
 
             if (Game.Audio.AudioManager.Instance != null)
             {
@@ -107,15 +139,17 @@ namespace Game.Logic.Character
                     volume = 1f,
                     pitch = 1f
                 };
-                Game.Audio.AudioManager.Instance.PlayAudio(ctx.hitAudioClip, Game.Audio.AudioChannel.SFX, args);
+
+                Game.Audio.AudioManager.Instance.PlayAudio(
+                    ctx.hitAudioClip,
+                    Game.Audio.AudioChannel.SFX,
+                    args);
             }
         }
 
         private void ApplyHitStop(HitContext ctx)
         {
-            // 冻结攻击者
             ctx.attacker?.ActionPlayer?.SetPlaySpeed(0f);
-            // 冻结受击者
             _entity.ActionPlayer?.SetPlaySpeed(0f);
 
             StartCoroutine(RestoreAfterHitStop(ctx));

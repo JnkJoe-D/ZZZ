@@ -123,8 +123,8 @@ namespace SkillEditor.Editor
                         Handles.Label(newPos + Vector3.up * 0.2f, "  特效预览位置", new GUIStyle() { normal = new GUIStyleState() { textColor = Color.yellow } });
                         break;
                     case VFXClip.VFXHandleType.Rotation:
-                        Quaternion rHandleRot = (Tools.pivotRotation == PivotRotation.Global) ? Quaternion.identity : currentRot;
-                        newRot = Handles.RotationHandle(rHandleRot, currentPos); 
+                        // Keep editing from the instance's latest world rotation so multi-axis drags accumulate correctly.
+                        newRot = Handles.RotationHandle(currentRot, currentPos); 
                         Handles.Label(currentPos + Vector3.up * 0.2f, "  特效预览旋转", new GUIStyle() { normal = new GUIStyleState() { textColor = Color.yellow } });
                         break;
                     case VFXClip.VFXHandleType.Scale:

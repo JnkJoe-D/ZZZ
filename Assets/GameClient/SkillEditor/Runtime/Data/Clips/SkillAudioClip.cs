@@ -4,6 +4,7 @@ using UnityEngine;
 namespace SkillEditor
 {
     [Serializable]
+    [ClipDefinition(typeof(AudioTrack), "音频")]
     public class SkillAudioClip : ClipBase
     {
         [Header("Audio Settings")]

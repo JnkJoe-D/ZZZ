@@ -86,8 +86,14 @@ namespace SkillEditor.Editor
             StopPreview();
             EditorAnimationUtils.DisposeAll();
             previewRunner = null;
-            EditorAudioManager.Instance.Dispose();
             EditorVFXManager.Instance.Dispose();
+            
+            // 删除打开时记录的初始预览目标
+            if (state != null && state.initialAutoPreviewTarget != null)
+            {
+                Object.DestroyImmediate(state.initialAutoPreviewTarget);
+                state.initialAutoPreviewTarget = null;
+            }
 
             // 向外部层抛出主动销毁指令，清理那些跨程序集缓存的重对象
             SkillEditorGlobalSettings.OnEditorDispose?.Invoke();

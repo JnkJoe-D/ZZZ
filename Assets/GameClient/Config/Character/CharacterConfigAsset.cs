@@ -1,87 +1,100 @@
 using System.Collections.Generic;
-using UnityEngine;
-using Game.Logic.Action.Config;
 using Game.AI;
+using Game.Logic.Action.Config;
+using UnityEngine;
 
 namespace Game.Logic.Character.Config
 {
-    /// <summary>
-    /// 角色基础配置
-    /// 作为单个角色的数据字典，独立存放角色的各个属性与技能引用
-    /// </summary>
     [CreateAssetMenu(fileName = "CharacterConfigAsset", menuName = "Config/Role/Character Config")]
     public class CharacterConfigAsset : ScriptableObject
     {
-        [Header("基础信息")]
+        [Header("Base Info")]
         public int RoleID;
         public string RoleName;
         public GameObject CharacterPrefab;
 
-        [Header("地面检测")]
-        public float GroundRadius = 0.3f; 
-        public float GroundHeight = 1.8f; 
-        public float GroundOffset = 0.1f; 
-        public LayerMask GroundLayer;     
+        [Header("Ground Check")]
+        public float GroundRadius = 0.3f;
+        public float GroundHeight = 1.8f;
+        public float GroundOffset = 0.1f;
+        public LayerMask GroundLayer;
 
-        [Header("基础速度倍率")]
-        [Range(0,5f)]
+        [Header("Movement Speed Multipliers")]
+        [Range(0, 5f)]
         public float JogMultipier = 1f;
+
         [Range(0, 5f)]
         public float DashMultipier = 1f;
+
         [Range(0, 5f)]
         public float DodgeMultipier = 1f;
-        [Header("攻击速度倍率")][Range(0,5f)]
+
+        [Header("Attack Speed Multiplier")]
+        [Range(0, 5f)]
         public float AttackMultipier = 1f;
-        [Header("技能速度倍率")][Range(0,5f)]
+
+        [Header("Skill Speed Multiplier")]
+        [Range(0, 5f)]
         public float SkillMultipier = 1f;
 
-        // [Header("基础动画 (Legacy)")]
-        // public AnimSetEntry AnimationSet;
-
-        [Header("基础移动配置 (Timeline 驱动)")]
+        [Header("Base Locomotion Actions")]
         public LocomotionConfigAsset IdleConfig;
         public LocomotionConfigAsset JogStartConfig;
         public LocomotionConfigAsset JogConfig;
         public LocomotionConfigAsset JogStopConfig;
         public LocomotionConfigAsset DashStartConfig;
+        public LocomotionConfigAsset DashTurnBackConfig;
         public LocomotionConfigAsset DashConfig;
         public LocomotionConfigAsset DashStopConfig;
-        [Header("闪避")]
+
+        [Header("Evade")]
         public SkillConfigAsset[] evadeFront;
         public SkillConfigAsset[] evadeBack;
         public int evadeLimitedTimes = 2;
         public float evadeCoolDown = 1f;
 
-        [Header("普攻")]
+        [Header("Light Attacks")]
         public SkillConfigAsset[] lightAttacks;
-        [Header("重攻击")]
+
+        [Header("Heavy Attacks")]
         public SkillConfigAsset[] heavyAttacks;
-        [Header("冲刺普攻")]
+
+        [Header("Dash Attack")]
         public SkillConfigAsset dashAttack;
-        [Header("闪避反击")]
+
+        [Header("Dodge Counter")]
         public SkillConfigAsset[] dodgeCounter;
-        [Header("特殊技")]
+
+        [Header("Special Skill")]
         public SkillConfigAsset specialSkill;
-        [Header("特殊技_快速")]
+
+        [Header("Perfect Special Skill")]
         public SkillConfigAsset specialSkillPerfect;
-        [Header("强化特殊技")]
+
+        [Header("Enhanced Special Skill")]
         public SkillConfigAsset enhancedSpecialSkill;
-        [Header("强化特殊技_快速")]
+
+        [Header("Perfect Enhanced Special Skill")]
         public SkillConfigAsset enhancedSpecialSkillPerfect;
-        [Header("切人连携")]
+
+        [Header("Chain Skill")]
         public SkillConfigAsset chainSkill;
-        [Header("切人支援")]
+
+        [Header("Assist Skill")]
         public SkillConfigAsset assistSkill;
-        [Header("终结技")]
+
+        [Header("Ultimate")]
         public SkillConfigAsset Ultimate;
+
         [Header("AI")]
         public BehaviorTreeGraphAsset BehaviorTreeGraph;
 
-        [Header("受击表现")]
+        [Header("Command Context Routes")]
+        public CommandContextConfig CommandContextConfig;
+
+        [Header("Hit Reaction")]
         public HitReactionConfig hitReactionConfig;
-        /// <summary>
-        /// 提取该角色所配置的所有可能被播放的动作，用于集中管理和启动时预加载
-        /// </summary>
+
         public IEnumerable<ActionConfigAsset> GetAllActionConfigs()
         {
             if (IdleConfig != null) yield return IdleConfig;
@@ -89,28 +102,74 @@ namespace Game.Logic.Character.Config
             if (JogConfig != null) yield return JogConfig;
             if (JogStopConfig != null) yield return JogStopConfig;
             if (DashStartConfig != null) yield return DashStartConfig;
+            if (DashTurnBackConfig != null) yield return DashTurnBackConfig;
             if (DashConfig != null) yield return DashConfig;
             if (DashStopConfig != null) yield return DashStopConfig;
 
-            if (evadeFront != null) foreach (var c in evadeFront) if (c != null) yield return c;
-            if (evadeBack != null) foreach (var c in evadeBack) if (c != null) yield return c;
-            
-            if (lightAttacks != null) foreach (var c in lightAttacks) if (c != null) yield return c;
-            if (heavyAttacks != null) foreach (var c in heavyAttacks) if (c != null) yield return c;
-            
+            if (evadeFront != null)
+            {
+                foreach (SkillConfigAsset action in evadeFront)
+                {
+                    if (action != null) yield return action;
+                }
+            }
+
+            if (evadeBack != null)
+            {
+                foreach (SkillConfigAsset action in evadeBack)
+                {
+                    if (action != null) yield return action;
+                }
+            }
+
+            if (lightAttacks != null)
+            {
+                foreach (SkillConfigAsset action in lightAttacks)
+                {
+                    if (action != null) yield return action;
+                }
+            }
+
+            if (heavyAttacks != null)
+            {
+                foreach (SkillConfigAsset action in heavyAttacks)
+                {
+                    if (action != null) yield return action;
+                }
+            }
+
             if (dashAttack != null) yield return dashAttack;
-            if (dodgeCounter != null) foreach (var c in dodgeCounter) if (c != null) yield return c;
-            
+
+            if (dodgeCounter != null)
+            {
+                foreach (SkillConfigAsset action in dodgeCounter)
+                {
+                    if (action != null) yield return action;
+                }
+            }
+
             if (specialSkill != null) yield return specialSkill;
             if (specialSkillPerfect != null) yield return specialSkillPerfect;
-            if (enhancedSpecialSkillPerfect != null) yield return enhancedSpecialSkillPerfect;
             if (enhancedSpecialSkill != null) yield return enhancedSpecialSkill;
+            if (enhancedSpecialSkillPerfect != null) yield return enhancedSpecialSkillPerfect;
             if (chainSkill != null) yield return chainSkill;
             if (assistSkill != null) yield return assistSkill;
             if (Ultimate != null) yield return Ultimate;
+
+            if (CommandContextConfig != null)
+            {
+                foreach (ActionConfigAsset action in CommandContextConfig.GetAllActions())
+                {
+                    if (action != null)
+                    {
+                        yield return action;
+                    }
+                }
+            }
+
             if (hitReactionConfig != null)
             {
-                foreach(var hitActionConfig in hitReactionConfig.GetAllActionConfigs())
+                foreach (ActionConfigAsset hitActionConfig in hitReactionConfig.GetAllActionConfigs())
                 {
                     yield return hitActionConfig;
                 }

@@ -25,6 +25,7 @@ namespace Game.Camera
         private Transform _mainCamTransform;
         private CharacterEntity _entity;
 
+        private CinemachineImpulseSource _impluseSource;
         private void Awake()
         {
             if (UnityEngine.Camera.main != null)
@@ -45,6 +46,7 @@ namespace Game.Camera
                 var obj = UnityEngine.Object.Instantiate(_virtualCameraPrefab);
                 obj.name = $"{_entity.name}_{virtualCamName}";
                 _virtualCamera = obj.GetComponent<CinemachineVirtualCameraBase>();
+                _impluseSource = obj.GetComponent<CinemachineImpulseSource>();
             }
             // 自动绑定跟拍
             if (_virtualCamera != null)
@@ -97,6 +99,27 @@ namespace Game.Camera
                 return right.normalized;
             }
             return transform.right;
+        }
+        public void GenerateImpulse()
+        {
+            _impluseSource?.GenerateImpulse();
+        }
+
+        public void GenerateImpulseWithVelocity(Vector3 velocity, float force,float duration)
+        {
+            if (_impluseSource == null) return;
+            
+            var envelope = _impluseSource.m_ImpulseDefinition.m_TimeEnvelope;
+            // 确保总时长匹配：Sustain = Total - Attack - Decay
+            float attack = envelope.m_AttackTime;
+            float decay = envelope.m_DecayTime;
+            envelope.m_SustainTime = Mathf.Max(0, duration - attack - decay);
+            
+            // 如果 EnvelopeDefinition 是结构体，需要写回
+            _impluseSource.m_ImpulseDefinition.m_TimeEnvelope = envelope;
+
+            // 触发带速度偏移的脉冲
+            _impluseSource.GenerateImpulseWithVelocity(velocity* force);
         }
     }
 }

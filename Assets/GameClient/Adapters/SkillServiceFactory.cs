@@ -60,7 +60,7 @@ namespace Game.Adapters
             }
             if (serviceType == typeof(ISkillCameraHandler))
             {
-                return GetOrCreateCachedService(serviceType, owner, () => new SkillCameraHandler());
+                return GetOrCreateCachedService(serviceType, owner, () => new SkillCameraHandler(owner.GetComponent<CharacterEntity>()));
             }
             if (serviceType == typeof(ISkillMovementHandler))
             {
@@ -78,6 +78,11 @@ namespace Game.Adapters
             if (serviceType == typeof(ISkillComboWindowHandler))
             {
                 return GetOrCreateCachedService(serviceType, owner ,() => owner.GetComponent<CharacterEntity>().SkillComboWindowHandler);
+            }
+
+            if (serviceType == typeof(ISkillMotionWindowHandler))
+            {
+                return GetOrCreateCachedService(serviceType, owner, () => owner.GetComponent<CharacterEntity>().SkillMotionWindowHandler);
             }
 
             return null;

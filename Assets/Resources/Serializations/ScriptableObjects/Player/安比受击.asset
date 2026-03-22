@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc907aef54d1b934298be1107be47939, type: 3}
   m_Name: "\u5B89\u6BD4\u53D7\u51FB"
   m_EditorClassIdentifier: 
-  hitAnimLight: {fileID: 11400000, guid: 18e84538401590849943ceac83c41f04, type: 2}
+  hitAnimLight: {fileID: 11400000, guid: 06cc0451d76cb7d44a14e8f2b2fe3f08, type: 2}
   hitAnimHeavy: {fileID: 0}
   hitAnimKnowAway: {fileID: 0}
   knockbackForce: 0

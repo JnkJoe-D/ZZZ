@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fea195c5df4beb40af2dc8bd2e75843, type: 3}
+  m_Name: "\u5B89\u6BD4_\u6307\u4EE4\u4E0A\u4E0B\u6587"
+  m_EditorClassIdentifier: 
+  ContextRouteGroups:
+  - ContextType: 10
+    Routes:
+    - RequiredType: 20
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: d92d1f694208d2d4683e62dc210fbf35, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 30
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6017e166fa64ec340bb7502e6335ef91, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 50
+      RequiredPhase: 0
+      NextAction: {fileID: 0}
+      ExtraConditions: []
+      TriggerMode: 0
+  - ContextType: 20
+    Routes:
+    - RequiredType: 20
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: d92d1f694208d2d4683e62dc210fbf35, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 30
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6017e166fa64ec340bb7502e6335ef91, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 50
+      RequiredPhase: 0
+      NextAction: {fileID: 0}
+      ExtraConditions: []
+      TriggerMode: 0
+  - ContextType: 30
+    Routes:
+    - RequiredType: 20
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 7a51b91027c2ec94ba9740c476a93a5f, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 30
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6017e166fa64ec340bb7502e6335ef91, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 50
+      RequiredPhase: 0
+      NextAction: {fileID: 0}
+      ExtraConditions: []
+      TriggerMode: 0
+  - ContextType: 40
+    Routes:
+    - RequiredType: 20
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: d92d1f694208d2d4683e62dc210fbf35, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 30
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6017e166fa64ec340bb7502e6335ef91, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 50
+      RequiredPhase: 0
+      NextAction: {fileID: 0}
+      ExtraConditions: []
+      TriggerMode: 0
+  - ContextType: 70
+    Routes:
+    - RequiredType: 20
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: d92d1f694208d2d4683e62dc210fbf35, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 30
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6017e166fa64ec340bb7502e6335ef91, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 50
+      RequiredPhase: 0
+      NextAction: {fileID: 0}
+      ExtraConditions: []
+      TriggerMode: 0
+  references:
+    version: 2
+    RefIds: []

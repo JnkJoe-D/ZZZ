@@ -228,7 +228,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 36022
+                        "instanceID": 36210
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -264,7 +264,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35356
+                            "instanceID": 35534
                         }
                     ],
                     "volume": 1.0,
@@ -292,7 +292,7 @@
                     "clipId": "88627e71-9330-46a7-be12-cc2c00ba9ceb",
                     "clipName": "事件轨道片段",
                     "isEnabled": true,
-                    "startTime": 0.5333333611488342,
+                    "startTime": 0.36666667461395266,
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -312,7 +312,7 @@
                     "clipName": "连击派生窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.5333333611488342,
+                    "duration": 0.3666667938232422,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 1,
@@ -330,8 +330,8 @@
                     "clipId": "a8ab36d0-4200-4b0a-b932-712e7e578432",
                     "clipName": "连击派生窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.5333333611488342,
-                    "duration": 1.9000000953674317,
+                    "startTime": 0.3666667938232422,
+                    "duration": 2.066666603088379,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 2,

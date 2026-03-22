@@ -143,6 +143,7 @@ namespace SkillEditor.Editor
 
         // 预览角色
         public GameObject previewTarget;
+        public GameObject initialAutoPreviewTarget; // 记录打开时自动创建或寻找的默认目标
         public bool hasPreviewOriginPose;
         public GameObject previewOriginTarget;
         public Vector3 previewOriginPos;

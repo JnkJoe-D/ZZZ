@@ -248,6 +248,7 @@ namespace SkillEditor.Editor
             if(target!=null)
             {
                 state.previewTarget = target;
+                state.initialAutoPreviewTarget = target; // 记录为初始寻找到的目标
                 return;
             }
             target = AssetDatabase.LoadAssetAtPath<GameObject>(
@@ -256,6 +257,8 @@ namespace SkillEditor.Editor
             {
                 state.previewTarget = Object.Instantiate(target);
                 state.previewTarget.name = "DefaultPreviewCharacter";
+                // 记录为初始自动创建的目标
+                state.initialAutoPreviewTarget = state.previewTarget;
             }
             else
             {

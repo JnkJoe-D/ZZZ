@@ -1,0 +1,22 @@
+using System;
+
+namespace SkillEditor
+{
+    [Serializable]
+    [TrackDefinition("位移窗口轨道", typeof(MotionWindowClip), "#36A9E1", "MoveTool", 5)]
+    public class MotionWindowTrack : TrackBase
+    {
+        public MotionWindowTrack()
+        {
+            trackName = "位移窗口轨道";
+            trackType = "MotionWindowTrack";
+        }
+
+        public override TrackBase Clone()
+        {
+            MotionWindowTrack clone = new MotionWindowTrack();
+            CloneBaseProperties(clone);
+            return clone;
+        }
+    }
+}

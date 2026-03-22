@@ -15,5 +15,8 @@ namespace SkillEditor
         void ReleaseSkillCameraState(int token);
         void SetSkillCameraState(string stateName);
         void ClearSkillCameraState();
+
+        void GenerateImpulse();
+        void GenerateImpulseWithVelocity(Vector3 velocity, float force, float duration);
     }
 }

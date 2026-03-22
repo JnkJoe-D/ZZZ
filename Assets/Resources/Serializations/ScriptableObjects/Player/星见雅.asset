@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc06e0520cbb132459d8e63f748b257e, type: 3}
+  m_Name: "\u661F\u89C1\u96C5"
+  m_EditorClassIdentifier: 
+  RoleID: 1002
+  RoleName: 
+  CharacterPrefab: {fileID: 2733460660471334076, guid: 1e1583ff6f2508d45ae6203b9784d3e8,
+    type: 3}
+  GroundRadius: 0.3
+  GroundHeight: 1.8
+  GroundOffset: 0.1
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  JogMultipier: 1
+  DashMultipier: 1
+  DodgeMultipier: 1
+  AttackMultipier: 1
+  SkillMultipier: 1
+  IdleConfig: {fileID: 11400000, guid: e3a9c03227a8fa74c80985a0510beec8, type: 2}
+  JogStartConfig: {fileID: 11400000, guid: 5f72c8b10ad188f41a1161aab0a6ff50, type: 2}
+  JogConfig: {fileID: 11400000, guid: 6e6e2628833cf0848a218fc8d4787b5b, type: 2}
+  JogStopConfig: {fileID: 11400000, guid: 555b2cb19f0b1dc44bf82bb94f9df0e6, type: 2}
+  DashStartConfig: {fileID: 0}
+  DashTurnBackConfig: {fileID: 0}
+  DashConfig: {fileID: 11400000, guid: 5c52cf2bfd17daa4bab9cf8615e0a250, type: 2}
+  DashStopConfig: {fileID: 11400000, guid: 555b2cb19f0b1dc44bf82bb94f9df0e6, type: 2}
+  evadeFront:
+  - {fileID: 11400000, guid: cb10ad5354ac95f48b29dad0c6963d94, type: 2}
+  evadeBack:
+  - {fileID: 11400000, guid: 1c65d601484b6314a90bf8659c618e8e, type: 2}
+  evadeLimitedTimes: 2
+  evadeCoolDown: 1
+  lightAttacks:
+  - {fileID: 11400000, guid: b160746897ca318418d8374d92e49685, type: 2}
+  - {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
+  - {fileID: 11400000, guid: af671d476d00b744584ec34b607e8996, type: 2}
+  - {fileID: 11400000, guid: f8b3c8e77fea81e49b0dfba7fb2c5e0b, type: 2}
+  - {fileID: 11400000, guid: 2492d79775931b94694c00ff1e438c7e, type: 2}
+  heavyAttacks: []
+  dashAttack: {fileID: 11400000, guid: 0ef169032c701f0498cec9a6a5f8fb17, type: 2}
+  dodgeCounter: []
+  specialSkill: {fileID: 11400000, guid: 094a68538db7d9241a2bfe1e506ac2b7, type: 2}
+  specialSkillPerfect: {fileID: 11400000, guid: 2492d79775931b94694c00ff1e438c7e,
+    type: 2}
+  enhancedSpecialSkill: {fileID: 0}
+  enhancedSpecialSkillPerfect: {fileID: 0}
+  chainSkill: {fileID: 0}
+  assistSkill: {fileID: 0}
+  Ultimate: {fileID: 0}
+  BehaviorTreeGraph: {fileID: 0}
+  CommandContextConfig: {fileID: 11400000, guid: ece6fb6c480b8b248a0481b86b3dd031,
+    type: 2}
+  hitReactionConfig: {fileID: 11400000, guid: b3a414a6b52d4bd4cbe50c2ed82f0ad3, type: 2}

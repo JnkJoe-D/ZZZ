@@ -22,6 +22,7 @@ namespace SkillEditor
     }
 
     [Serializable]
+    [ClipDefinition(typeof(MovementTrack), "位移")]
     public class MovementClip : ClipBase
     {
         [SkillProperty("行为类型")]

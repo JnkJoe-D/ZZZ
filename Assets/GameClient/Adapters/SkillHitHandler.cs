@@ -27,8 +27,9 @@ namespace Game.Adapters
 
                 // 计算碰撞点和攻击方向
                 Vector3 attackerPos = hitData.deployer != null ? hitData.deployer.transform.position : Vector3.zero;
-                Vector3 hitPoint = collider.ClosestPoint(attackerPos);
-                Vector3 hitDirection = (victim.transform.position - attackerPos).normalized;
+                Vector3 hitBoxPos = hitData.hitBoxCenter;
+                Vector3 hitPoint = collider.ClosestPoint(hitBoxPos);
+                Vector3 hitDirection = (victim.transform.position - hitBoxPos).normalized;
 
                 // 构建 HitContext
                 var ctx = new HitContext

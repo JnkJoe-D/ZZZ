@@ -27,6 +27,11 @@ namespace Game.Input
         /// 支持手柄摇杆与 WASD 的通用读取。
         /// </summary>
         Vector2 GetMovementDirection();
+        
+        /// <summary>
+        /// 获取上一次移动方向（用于检测瞬间大幅度掉头）
+        /// </summary>
+        Vector2 GetLastMovementDirection();
 
         /// <summary>
         /// 是否有移动意图

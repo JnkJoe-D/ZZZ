@@ -170,8 +170,39 @@ namespace SkillEditor.Editor
 
             if (damageClip.showHitBoxGizmos)
             {
-                // 获取 Matrix (传入 state 以供获取 Context)
-                GetMatrix(damageClip, state, out Vector3 pos, out Quaternion rot);
+                Editor.EditorHitProcess activeProcess = null;
+                if (isActive)
+                {
+                    SkillEditorWindow window = null;
+                    if (EditorWindow.HasOpenInstances<SkillEditorWindow>())
+                    {
+                        window = EditorWindow.GetWindow<SkillEditorWindow>(false, "技能编辑器", false);
+                        if (window != null && window.PreviewRunner != null)
+                        {
+                            foreach (var p in window.PreviewRunner.ActiveProcesses)
+                            {
+                                if (p.clip == damageClip && p.isActive && p.process is Editor.EditorHitProcess hitProcess)
+                                {
+                                    activeProcess = hitProcess;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Vector3 pos;
+                Quaternion rot;
+                if (!damageClip.isHitBoxFollowBindPoint && activeProcess != null)
+                {
+                    pos = activeProcess.fixedHitBoxPosition;
+                    rot = activeProcess.fixedHitBoxRotation;
+                }
+                else
+                {
+                    // 获取 Matrix (传入 state 以供获取 Context)
+                    GetMatrix(damageClip, state, out pos, out rot);
+                }
 
                 // 绘制
                 Color wireColor = isActive ? new Color(0, 1, 0, 0.8f) : new Color(0.5f, 0.5f, 0.5f, 0.5f);

@@ -4,6 +4,7 @@ using UnityEngine;
 namespace SkillEditor
 {
     [Serializable]
+    [ClipDefinition(typeof(HitTrack), "打击")]
     public class HitClip : ClipBase, ISerializationCallbackReceiver
     {
         [Header("Detection Strategy")]
@@ -13,9 +14,8 @@ namespace SkillEditor
         [SkillProperty("命中频率")]
         public HitFrequency hitFrequency = HitFrequency.Once;
 
-        [SkillProperty("检测间隔(秒)")]
-        public float checkInterval = 0.5f;
-
+        [SkillProperty("检测次数")][ShowIf("hitFrequency", HitFrequency.Times)]
+        public int times = 1;
         [SkillProperty("最大命中数 (0为不限)")]
         public int maxHitTargets = 0;
 
@@ -37,6 +37,9 @@ namespace SkillEditor
 
         [Header("检测盒")]
         public HitBoxShape shape = new HitBoxShape();
+
+        [SkillProperty("检测盒是否跟随绑定点")]
+        public bool isHitBoxFollowBindPoint = true;
 
         [SkillProperty("检测盒绑定点")]
         public BindPoint bindPoint = BindPoint.Root;
@@ -108,13 +111,14 @@ namespace SkillEditor
                 
                 hitEffects = CloneHitEffects(this.hitEffects),
                 hitFrequency = this.hitFrequency,
-                checkInterval = this.checkInterval,
+                times = this.times,
                 maxHitTargets = this.maxHitTargets,
                 targetSortMode = this.targetSortMode,
                 hitLayerMask = this.hitLayerMask,
 
                 shape = this.shape.Clone(),
 
+                isHitBoxFollowBindPoint = this.isHitBoxFollowBindPoint,
                 bindPoint = this.bindPoint,
                 customBoneName = this.customBoneName,
                 positionOffset = this.positionOffset,

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Serialization;
+using Game.Logic.Action.Config;
 using Game.Logic.Character;
+using Game.Logic.Character.Config;
+using UnityEngine;
 
 namespace Game.Logic.Action.Combo
 {
@@ -12,67 +13,190 @@ namespace Game.Logic.Action.Combo
         InstantOnly,
         BufferedAndInstant
     }
-    [Serializable]
-    public class ComboTransition
+
+    internal static class CommandRouteEvaluator
     {
-        [Header("触发指令")]
-        [Tooltip("触发该派生所必须缓存的输入指令")]
-        public BufferedInputType RequiredCommand;
-        [Header("跳转目标")]
-        [Tooltip("验证通过后，将要播放的下一个行为")]
-        [FormerlySerializedAs("NextSkill")]
-        public Config.ActionConfigAsset NextAction;
-
-        [Header("业务前置条件 (选填)")]
-        [SerializeReference] 
-        public List<ITransitionCondition> ExtraConditions = new List<ITransitionCondition>();
-
-        [Header("触发区间标签")]
-        [Tooltip("触发必须处于该 Timeline 标签窗口内 (配合 ComboWindowTrack 使用)")]
-        public string RequiredWindowTag = "Normal";
-
-        [Tooltip("触发模式：\n1. BufferedAndInstant：吃预输入（默认）\n2. InstantOnly：不吃预输入，必须在窗口内部现按")]
-        public ComboTriggerMode TriggerMode = ComboTriggerMode.Buffered;
-
-        /// <summary>
-        /// 评估连段条件是否成立
-        /// </summary>
-        public bool Evaluate(BufferedInputType currentInput, string tag, bool isBuffered = false)
+        public static bool MatchesCommand(
+            CommandType requiredType,
+            CommandPhase requiredPhase,
+            CharacterCommand command)
         {
-            // 第一层：校验指令指纹是否对得上
-            if (currentInput == BufferedInputType.None || currentInput != RequiredCommand)
+            return command != null &&
+                   command.Type != CommandType.None &&
+                   command.Type == requiredType &&
+                   command.Phase == requiredPhase;
+        }
+
+        public static bool MatchesTriggerMode(ComboTriggerMode triggerMode, bool isBuffered)
+        {
+            return !(isBuffered && triggerMode == ComboTriggerMode.InstantOnly);
+        }
+
+        public static bool MatchesConditions(List<ITransitionCondition> extraConditions, CharacterEntity actor)
+        {
+            if (extraConditions == null)
             {
-                return false;
+                return true;
             }
 
-            // 拦截预输入
-            if (isBuffered && TriggerMode == ComboTriggerMode.InstantOnly)
+            foreach (ITransitionCondition condition in extraConditions)
             {
-                return false;
-            }
-
-            // 第二层：校验区间标签限制（若配置了专属区间的话）
-            if (!string.IsNullOrEmpty(RequiredWindowTag))
-            {
-                if (tag!=RequiredWindowTag)
+                if (condition != null && !condition.Check(actor))
                 {
-                    return false; // 当前没有处于对应的连段窗口内
-                }
-            }
-
-            // 第三层：校验业务特异化条件 (如大招是否充满、能量是否够砍强化重击)
-            if (ExtraConditions != null)
-            {
-                foreach (var condition in ExtraConditions)
-                {
-                    // if (condition != null && !condition.Check(actor)) 
-                    // {
-                    //     return false;
-                    // }
+                    return false;
                 }
             }
 
             return true;
+        }
+    }
+
+    [Serializable]
+    public class LocalActionRoute
+    {
+        [Header("Trigger Command")]
+        public CommandType RequiredType;
+        public CommandPhase RequiredPhase = CommandPhase.Started;
+
+        [Header("Next Action")]
+        [Tooltip("Leave empty to let the command resolver choose a context-sensitive action variant.")]
+        public ActionConfigAsset NextAction;
+
+        [Header("Extra Conditions")]
+        [SerializeReference]
+        public List<ITransitionCondition> ExtraConditions = new();
+
+        [Header("Window Tag")]
+        [Tooltip("Only routes matching the active ComboWindow tag can fire.")]
+        public string RequiredWindowTag = "Normal";
+
+        [Tooltip("InstantOnly rejects buffered input. Other modes currently accept both live and buffered input.")]
+        public ComboTriggerMode TriggerMode = ComboTriggerMode.Buffered;
+
+        public bool Evaluate(CharacterCommand command, string tag, bool isBuffered, CharacterEntity actor)
+        {
+            if (!CommandRouteEvaluator.MatchesCommand(RequiredType, RequiredPhase, command))
+            {
+                return false;
+            }
+
+            if (!CommandRouteEvaluator.MatchesTriggerMode(TriggerMode, isBuffered))
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(RequiredWindowTag) && tag != RequiredWindowTag)
+            {
+                return false;
+            }
+
+            return CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
+        }
+
+        public bool MatchesCommand(CommandType commandType, CommandPhase commandPhase)
+        {
+            return RequiredType == commandType && RequiredPhase == commandPhase;
+        }
+    }
+
+    [Serializable]
+    public class ContextRoute
+    {
+        [Header("Trigger Command")]
+        public CommandType RequiredType;
+        public CommandPhase RequiredPhase = CommandPhase.Started;
+
+        [Header("Next Action")]
+        [Tooltip("Leave empty to let the command resolver choose a context-sensitive action variant.")]
+        public ActionConfigAsset NextAction;
+
+        [Header("Extra Conditions")]
+        [SerializeReference]
+        public List<ITransitionCondition> ExtraConditions = new();
+
+        [Tooltip("InstantOnly rejects buffered input. Other modes currently accept both live and buffered input.")]
+        public ComboTriggerMode TriggerMode = ComboTriggerMode.Buffered;
+
+        public bool Evaluate(CharacterCommand command, bool isBuffered, CharacterEntity actor)
+        {
+            if (!CommandRouteEvaluator.MatchesCommand(RequiredType, RequiredPhase, command))
+            {
+                return false;
+            }
+
+            if (!CommandRouteEvaluator.MatchesTriggerMode(TriggerMode, isBuffered))
+            {
+                return false;
+            }
+
+            return CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
+        }
+    }
+
+    public interface ICommandActionResolver
+    {
+        ActionConfigAsset Resolve(CharacterEntity entity, CharacterCommand command, ActionConfigAsset configuredAction);
+    }
+
+    public static class CommandActionResolverRegistry
+    {
+        private static readonly Dictionary<CommandType, ICommandActionResolver> Resolvers = new()
+        {
+            { CommandType.Evade, new EvadeCommandActionResolver() }
+        };
+
+        public static ActionConfigAsset Resolve(
+            CharacterEntity entity,
+            CharacterCommand command,
+            ActionConfigAsset configuredAction)
+        {
+            if (command == null)
+            {
+                return configuredAction;
+            }
+
+            if (Resolvers.TryGetValue(command.Type, out ICommandActionResolver resolver) && resolver != null)
+            {
+                return resolver.Resolve(entity, command, configuredAction);
+            }
+
+            return configuredAction;
+        }
+    }
+
+    public sealed class EvadeCommandActionResolver : ICommandActionResolver
+    {
+        public ActionConfigAsset Resolve(
+            CharacterEntity entity,
+            CharacterCommand command,
+            ActionConfigAsset configuredAction)
+        {
+            if (configuredAction != null)
+            {
+                return configuredAction;
+            }
+
+            CharacterConfigAsset config = entity?.Config;
+            CharacterRuntimeData runtimeData = entity?.RuntimeData;
+            if (config == null || runtimeData == null || !runtimeData.CanEvade(config))
+            {
+                return null;
+            }
+
+            bool preferFront = command.Payload.HasMovementInput &&
+                               command.Payload.DirectionSnapshot.sqrMagnitude > 0.01f;
+
+            if (preferFront)
+            {
+                return ResolveFirst(config.evadeFront) ?? ResolveFirst(config.evadeBack);
+            }
+
+            return ResolveFirst(config.evadeBack) ?? ResolveFirst(config.evadeFront);
+        }
+
+        private static ActionConfigAsset ResolveFirst(SkillConfigAsset[] actions)
+        {
+            return actions != null && actions.Length > 0 ? actions[0] : null;
         }
     }
 }

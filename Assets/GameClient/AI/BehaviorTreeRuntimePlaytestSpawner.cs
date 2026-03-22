@@ -88,6 +88,15 @@ namespace Game.AI
                 ? enemySpawnPoint.rotation
                 : Quaternion.identity;
 
+            if (Game.Logic.Action.ActionManager.Instance != null)
+            {
+                var preloadTask = Game.Logic.Action.ActionManager.Instance.PreloadCharacterActionsAsync(enemyConfig);
+                while (!preloadTask.IsCompleted)
+                {
+                    yield return null;
+                }
+            }
+
             GameObject enemyObject = Instantiate(enemyPrefab, spawnPosition, spawnRotation);
             enemyObject.name = enemyObject.name.Replace("(Clone)", string.Empty) + "_BTEnemy";
 

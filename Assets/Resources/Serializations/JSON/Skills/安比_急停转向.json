@@ -1,0 +1,371 @@
+{
+    "isLoop": true,
+    "groups": [
+        {
+            "groupId": "82fd8c6b-20fa-424d-8515-a02cb07d12dd",
+            "groupName": "动画",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1000
+                }
+            ]
+        },
+        {
+            "groupId": "9504ede6-68f0-46aa-b60f-9dc7a8fc1a5a",
+            "groupName": "VFX",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1001
+                }
+            ]
+        },
+        {
+            "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
+            "groupName": "SFX",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1002
+                }
+            ]
+        },
+        {
+            "groupId": "5e32243f-fd0e-4a9e-b870-e6e5ef0357fb",
+            "groupName": "事件",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1003
+                }
+            ]
+        }
+    ],
+    "references": {
+        "version": 2,
+        "RefIds": [
+            {
+                "rid": 1000,
+                "type": {
+                    "class": "AnimationTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "937f1449-7fce-437c-9747-bf5cc3852148",
+                    "trackType": "AnimationTrack",
+                    "trackName": "动画轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1004
+                        },
+                        {
+                            "rid": 1005
+                        }
+                    ],
+                    "isMasterTrack": true,
+                    "offsetPos": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "offsetRot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            },
+            {
+                "rid": 1001,
+                "type": {
+                    "class": "VFXTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "11435b9f-b7d5-474b-a217-a332b82693e0",
+                    "trackType": "VFXTrack",
+                    "trackName": "特效轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": []
+                }
+            },
+            {
+                "rid": 1002,
+                "type": {
+                    "class": "AudioTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "474789eb-6680-4b49-97d6-7de6e20a7137",
+                    "trackType": "AudioTrack",
+                    "trackName": "音效",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1006
+                        },
+                        {
+                            "rid": 1007
+                        },
+                        {
+                            "rid": 1008
+                        },
+                        {
+                            "rid": 1009
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1003,
+                "type": {
+                    "class": "EventTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "9c692c41-f19e-48d3-9b23-cdaabbe34bec",
+                    "trackType": "EventTrack",
+                    "trackName": "事件轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": []
+                }
+            },
+            {
+                "rid": 1004,
+                "type": {
+                    "class": "SkillAnimationClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "9569b5a1-c2f6-4e2b-8a20-f66f687cf7bc",
+                    "clipName": "动画轨道片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.1500000953674317,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.15000009536743165,
+                    "animationClip": {
+                        "instanceID": 36228
+                    },
+                    "playbackSpeed": 1.0,
+                    "layer": 0,
+                    "overrideMask": {
+                        "instanceID": 0
+                    },
+                    "clipRef": {
+                        "guid": "88147f5881834894285e9387fb160241",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_TurnBack",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
+                }
+            },
+            {
+                "rid": 1005,
+                "type": {
+                    "class": "SkillAnimationClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "0fe1409d-ec01-4bef-b8f8-547af9e5fc48",
+                    "clipName": "动画轨道片段",
+                    "isEnabled": true,
+                    "startTime": 1.0,
+                    "duration": 0.4333333671092987,
+                    "blendInDuration": 0.15000009536743165,
+                    "blendOutDuration": 0.0,
+                    "animationClip": {
+                        "instanceID": 36220
+                    },
+                    "playbackSpeed": 1.0,
+                    "layer": 0,
+                    "overrideMask": {
+                        "instanceID": 0
+                    },
+                    "clipRef": {
+                        "guid": "88147f5881834894285e9387fb160241",
+                        "assetName": "Avatar_Female_Size02_Anbi_Ani_Run",
+                        "assetPath": "Assets/Resources/Animations/Clips/安比/安比移动.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
+                }
+            },
+            {
+                "rid": 1006,
+                "type": {
+                    "class": "SkillAudioClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "911eed5f-760a-4280-a32b-9c277441de8d",
+                    "clipName": "音效片段",
+                    "isEnabled": true,
+                    "startTime": 1.100000262260437,
+                    "duration": 0.10000000149011612,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 37422
+                        }
+                    ],
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 1.0,
+                    "audioRefs": [
+                        {
+                            "guid": "2e3cdcff2932f5845bbf2354c0b92df9",
+                            "assetName": "脚步声1",
+                            "assetPath": "Assets/Resources/Audio/FOOT/脚步声1.wav"
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1007,
+                "type": {
+                    "class": "SkillAudioClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "f878beda-2b7f-497b-9ec1-eda9778abb69",
+                    "clipName": "音效片段",
+                    "isEnabled": true,
+                    "startTime": 0.933333694934845,
+                    "duration": 0.10000000149011612,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 37422
+                        }
+                    ],
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 1.0,
+                    "audioRefs": [
+                        {
+                            "guid": "2e3cdcff2932f5845bbf2354c0b92df9",
+                            "assetName": "脚步声1",
+                            "assetPath": "Assets/Resources/Audio/FOOT/脚步声1.wav"
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1008,
+                "type": {
+                    "class": "SkillAudioClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "6d3a97bc-6642-44f4-b206-809564568c86",
+                    "clipName": "音效片段",
+                    "isEnabled": true,
+                    "startTime": 0.6666666865348816,
+                    "duration": 0.10000000149011612,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 37422
+                        }
+                    ],
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 1.0,
+                    "audioRefs": [
+                        {
+                            "guid": "2e3cdcff2932f5845bbf2354c0b92df9",
+                            "assetName": "脚步声1",
+                            "assetPath": "Assets/Resources/Audio/FOOT/脚步声1.wav"
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1009,
+                "type": {
+                    "class": "SkillAudioClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "7d2d6ae0-523c-4cad-8952-8f1006c2f6b7",
+                    "clipName": "音效片段",
+                    "isEnabled": true,
+                    "startTime": 1.3333333730697632,
+                    "duration": 0.10000000149011612,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 37422
+                        }
+                    ],
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 1.0,
+                    "audioRefs": [
+                        {
+                            "guid": "2e3cdcff2932f5845bbf2354c0b92df9",
+                            "assetName": "脚步声1",
+                            "assetPath": "Assets/Resources/Audio/FOOT/脚步声1.wav"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

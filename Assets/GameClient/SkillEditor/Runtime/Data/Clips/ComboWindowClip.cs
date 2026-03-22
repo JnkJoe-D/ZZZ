@@ -12,6 +12,7 @@ namespace SkillEditor
     }
 
     [Serializable]
+    [ClipDefinition(typeof(ComboWindowTrack), "连招窗口")]
     public class ComboWindowClip : ClipBase
     {
         [Header("Combo Window Settings")]
