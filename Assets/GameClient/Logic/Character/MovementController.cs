@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using cfg;
 using Game.AI;
 using SkillEditor;
 using UnityEngine;
@@ -8,23 +8,23 @@ namespace Game.Logic.Character
     [RequireComponent(typeof(CharacterEntity))]
     public class MovementController : MonoBehaviour, IMovementController
     {
-        [Header("阻挡检测")]
-        [SerializeField] private float _blockCheckRadius = 0.3f;
-        [SerializeField] private float _blockCheckHeight = 1.8f;
-        [SerializeField] private LayerMask _blockCheckLayers;
-        [SerializeField] private Color _gizmoColor = new Color(1f, 0f, 0f, 0.35f);
         [SerializeField] private Color _constraintBoxGizmoColor = new Color(0.2f, 0.8f, 1f, 0.2f);
-
-        [Header("根运动")]
+        [SerializeField] private Color _constraintBoxBoundaryPointColor = new Color(1f, 0.85f, 0.2f, 0.95f);
+        [SerializeField] private Color _constraintBoxFrontFaceColor = new Color(1f, 0.35f, 0.25f, 0.95f);
+        [SerializeField] private Color _constraintBoxNearestBoundaryColor = new Color(0.2f, 1f, 0.3f, 0.95f);
+        [SerializeField] private Color _constraintBoxFarthestBoundaryColor = new Color(0.9f, 0.2f, 1f, 0.95f);
         [SerializeField] private float _verticalRootMotionThreshold = 0.0001f;
+        [SerializeField] private bool _debugConstraintBox;
 
         private CharacterController _cc;
         private CharacterEntity _entity;
         private Animator _animator;
         private ISkillMotionWindowHandler _motionWindowHandler;
         private float _verticalVelocity;
+        private LayerMask _defaultExcludeLayers;
+        private string _lastLoggedSnapClipId;
+        private MotionWindowRuntimeData _stickyMotionWindowRuntimeData;
 
-        [Header("基础移动")]
         public float TurnSpeed = 15f;
         public float Gravity => -9.81f;
 
@@ -51,10 +51,21 @@ namespace Game.Logic.Character
                 _animator.applyRootMotion = true;
             }
 
-            if (_blockCheckLayers.value == 0)
+            if (_cc != null)
             {
-                _blockCheckLayers = LayerMask.GetMask("Default", "Ground", "CharHit", "Charcter", "Character");
+                _defaultExcludeLayers = _cc.excludeLayers;
             }
+        }
+
+        private void Update()
+        {
+            RefreshMotionWindowCollisionOverride();
+        }
+
+        private void OnDisable()
+        {
+            RestoreDefaultExcludeLayers();
+            _stickyMotionWindowRuntimeData = null;
         }
 
         public void Init(CharacterEntity entity)
@@ -89,14 +100,14 @@ namespace Game.Logic.Character
                 deltaRotation = _animator.deltaRotation;
             }
 
-            /* 如果动画自己提供了明显的 Y 位移，就优先信任动画；否则继续叠加重力。 */ bool hasVerticalRootMotion = Mathf.Abs(deltaPosition.y) > _verticalRootMotionThreshold;
+            bool hasVerticalRootMotion = Mathf.Abs(deltaPosition.y) > _verticalRootMotionThreshold;
             if (_cc != null && _cc.isGrounded && _verticalVelocity < 0f)
             {
-                _verticalVelocity = -2f;
+                _verticalVelocity = 0;
             }
             else if (!hasVerticalRootMotion)
             {
-                _verticalVelocity += Gravity * Time.deltaTime;
+                _verticalVelocity += 0;
             }
             else
             {
@@ -124,6 +135,7 @@ namespace Game.Logic.Character
         private void ApplyRootMotion(Vector3 deltaPosition)
         {
             Vector3 horizontalDelta = Vector3.ProjectOnPlane(deltaPosition, Vector3.up);
+            horizontalDelta = ApplyHitReactionAxisConstraint(horizontalDelta);
             Vector3 verticalDelta = Vector3.up * deltaPosition.y;
 
             if (TryApplyMotionWindow(horizontalDelta, verticalDelta))
@@ -131,536 +143,300 @@ namespace Game.Logic.Character
                 return;
             }
 
-            /* 没有窗口生效时，按默认 root motion 直接落地。 */ if (_cc != null && _cc.enabled)
+            if (_cc != null && _cc.enabled)
             {
                 _cc.Move(horizontalDelta + verticalDelta);
             }
             else
             {
+                Debug.Log($"ApplyRootMotion1:{horizontalDelta.x}");
+
                 transform.position += horizontalDelta + verticalDelta;
             }
         }
 
         private bool TryApplyMotionWindow(Vector3 horizontalDelta, Vector3 verticalDelta)
         {
-            /* 只有动作播放期间才允许窗口接管根运动，避免异常残留状态影响 locomotion。 */ if (_entity?.ActionPlayer != null && !_entity.ActionPlayer.IsPlaying)
+            if (!TryResolveMotionWindowRuntimeData(out MotionWindowRuntimeData runtimeData))
             {
                 return false;
             }
 
-            if (_motionWindowHandler == null ||
-                !_motionWindowHandler.TryGetActiveWindow(out MotionWindowRuntimeData runtimeData) ||
-                runtimeData?.Clip == null)
-            {
-                return false;
-            }
-
+            LogConstraintBoxWindowActive(runtimeData);
             Vector3 filteredHorizontalDelta = ApplyMotionWindowConstraintBox(runtimeData, horizontalDelta);
             if (_cc != null && _cc.enabled)
             {
                 Vector3 currentRootPosition = transform.position;
                 Vector3 resolvedRootPosition = currentRootPosition + filteredHorizontalDelta;
+                transform.position = new Vector3(
+                    resolvedRootPosition.x,
+                    currentRootPosition.y,
+                    resolvedRootPosition.z);
+
+                if (verticalDelta.sqrMagnitude > 0.0000001f)
                 {
-                    /* MotionWindow 生效时，水平位移以我们自己的解算结果为准，避免 CharacterController 把角色沿碰撞切线挤偏。 */
+                    _cc.Move(verticalDelta);
                     transform.position = new Vector3(
                         resolvedRootPosition.x,
-                        currentRootPosition.y,
+                        transform.position.y,
                         resolvedRootPosition.z);
-
-                    if (verticalDelta.sqrMagnitude > 0.0000001f)
-                    {
-                        _cc.Move(verticalDelta);
-                        transform.position = new Vector3(
-                            resolvedRootPosition.x,
-                            transform.position.y,
-                            resolvedRootPosition.z);
-                    }
                 }
             }
             else
             {
+                Debug.Log($"ApplyRootMotion2:{filteredHorizontalDelta.x}");
+
                 transform.position += filteredHorizontalDelta + verticalDelta;
             }
 
+            ApplyMotionWindowResolvedPositionGuard(runtimeData);
             return true;
         }
 
-        private Vector3 BuildMotionWindowHorizontalDelta(MotionWindowRuntimeData runtimeData, Vector3 horizontalDelta)
+        private bool TryResolveMotionWindowRuntimeData(out MotionWindowRuntimeData runtimeData)
         {
-            MotionWindowClip clip = runtimeData.Clip;
-            if (clip == null)
+            runtimeData = null;
+            if (_motionWindowHandler != null &&
+                _motionWindowHandler.TryGetActiveWindow(out MotionWindowRuntimeData activeRuntimeData) &&
+                activeRuntimeData?.Clip != null &&
+                activeRuntimeData.Clip.constraintMode == MotionWindowConstraintMode.ConstraintBox)
             {
-                return horizontalDelta;
+                _stickyMotionWindowRuntimeData = activeRuntimeData;
+                runtimeData = activeRuntimeData;
+                return true;
             }
 
-            if (clip.trajectoryMode == MotionTrajectoryMode.Authored)
+            if (CanReuseStickyMotionWindow())
             {
-                /* 完整保留作者轨迹，只在策略要求时再做碰撞过滤。 */ Vector3 authoredDelta = ApplyMotionWindowCharacterCollision(runtimeData, horizontalDelta);
-                return ApplyMotionWindowWorldCollision(runtimeData, authoredDelta);
+                runtimeData = _stickyMotionWindowRuntimeData;
+                return runtimeData?.Clip != null;
             }
 
-            Vector3 referenceForward = ResolveMotionWindowForward(runtimeData);
-            if (referenceForward.sqrMagnitude <= 0.0001f)
-            {
-                return horizontalDelta;
-            }
-
-            referenceForward.Normalize();
-            Vector3 referenceRight = Vector3.Cross(Vector3.up, referenceForward);
-            if (referenceRight.sqrMagnitude <= 0.0001f)
-            {
-                referenceRight = transform.right;
-                referenceRight.y = 0f;
-            }
-
-            if (referenceRight.sqrMagnitude > 0.0001f)
-            {
-                referenceRight.Normalize();
-            }
-
-            /* 把动画位移拆成“前向推进”和“横向表演”两部分。 */ float authoredForwardDistance = Vector3.Dot(horizontalDelta, referenceForward) * clip.forwardScale;
-            float authoredLateralDistance = 0f;
-            if (clip.trajectoryMode == MotionTrajectoryMode.ForwardKeepLateral)
-            {
-                authoredLateralDistance = Vector3.Dot(horizontalDelta, referenceRight) * clip.lateralScale;
-            }
-
-            /* 这类技能只收前向距离，横向保留交给策略决定。 */ float filteredForwardDistance = ClampMotionWindowForwardDistance(runtimeData, referenceForward, authoredForwardDistance);
-            Vector3 candidateDelta = referenceForward * filteredForwardDistance + referenceRight * authoredLateralDistance;
-            return ApplyMotionWindowWorldCollision(runtimeData, candidateDelta);
+            _stickyMotionWindowRuntimeData = null;
+            _lastLoggedSnapClipId = null;
+            return false;
         }
 
-        private Vector3 ResolveMotionWindowForward(MotionWindowRuntimeData runtimeData)
+        private bool CanReuseStickyMotionWindow()
         {
-            if (runtimeData != null)
+            if (_stickyMotionWindowRuntimeData?.Clip == null || _entity?.RuntimeData == null)
             {
-                Vector3 forward = runtimeData.ReferenceForward;
-                forward.y = 0f;
-                if (forward.sqrMagnitude > 0.0001f)
-                {
-                    return forward.normalized;
-                }
+                return false;
             }
 
-            Vector3 fallback = transform.forward;
-            fallback.y = 0f;
-            return fallback.sqrMagnitude > 0.0001f ? fallback.normalized : Vector3.forward;
+            // MotionWindow 的 enter/exit 与 OnAnimatorMove 不是同一时机。
+            // 动作首尾有时会出现 1 帧左右的窗口空档，这里在技能/后摇阶段复用最近一次有效窗口，避免漏过滤。
+            CommandContextType contextType = _entity.RuntimeData.CurrentCommandContext;
+            return contextType == CommandContextType.Skill ||
+                   contextType == CommandContextType.Backswing;
         }
 
-        private float ClampMotionWindowForwardDistance(MotionWindowRuntimeData runtimeData, Vector3 referenceForward, float desiredDistance)
-        {
-            MotionWindowClip clip = runtimeData?.Clip;
-            if (clip == null || clip.characterCollisionMode == MotionCharacterCollisionMode.IgnoreAllCharacters)
-            {
-                return desiredDistance;
-            }
-
-            float moveDistance = Mathf.Abs(desiredDistance);
-            if (moveDistance <= 0.0001f)
-            {
-                return desiredDistance;
-            }
-
-            LayerMask layers = ResolveMotionWindowLayerMask(clip.characterBlockLayers, true);
-            if (layers.value == 0)
-            {
-                return desiredDistance;
-            }
-
-            Transform ignoredRoot = null;
-            if (clip.characterCollisionMode == MotionCharacterCollisionMode.IgnorePrimaryTarget)
-            {
-                ignoredRoot = runtimeData.PrimaryTarget != null ? runtimeData.PrimaryTarget.root : null;
-            }
-
-            Vector3 moveDirection = desiredDistance >= 0f ? referenceForward : -referenceForward;
-            if (!TryFindBlockingHit(moveDirection, moveDistance, layers, ignoredRoot, out RaycastHit hit))
-            {
-                return desiredDistance;
-            }
-
-            float stopOffset = clip.characterCollisionMode == MotionCharacterCollisionMode.BlockAll
-                ? Mathf.Max(clip.stopDistance, 0f)
-                : 0f;
-            float allowedDistance = Mathf.Max(0f, hit.distance - Mathf.Max(GetSkinWidth(), 0.01f) - stopOffset);
-            return Mathf.Sign(desiredDistance) * Mathf.Min(moveDistance, allowedDistance);
-        }
-
-        private Vector3 ApplyMotionWindowCharacterCollision(MotionWindowRuntimeData runtimeData, Vector3 candidateDelta)
-        {
-            MotionWindowClip clip = runtimeData?.Clip;
-            if (clip == null || clip.characterCollisionMode == MotionCharacterCollisionMode.IgnoreAllCharacters)
-            {
-                return candidateDelta;
-            }
-
-            float moveDistance = candidateDelta.magnitude;
-            if (moveDistance <= 0.0001f)
-            {
-                return candidateDelta;
-            }
-
-            LayerMask layers = ResolveMotionWindowLayerMask(clip.characterBlockLayers, true);
-            if (layers.value == 0)
-            {
-                return candidateDelta;
-            }
-
-            Transform ignoredRoot = null;
-            if (clip.characterCollisionMode == MotionCharacterCollisionMode.IgnorePrimaryTarget)
-            {
-                ignoredRoot = runtimeData.PrimaryTarget != null ? runtimeData.PrimaryTarget.root : null;
-            }
-
-            Vector3 moveDirection = candidateDelta / moveDistance;
-            if (!TryFindBlockingHit(moveDirection, moveDistance, layers, ignoredRoot, out RaycastHit hit))
-            {
-                return candidateDelta;
-            }
-
-            float stopOffset = clip.characterCollisionMode == MotionCharacterCollisionMode.BlockAll
-                ? Mathf.Max(clip.stopDistance, 0f)
-                : 0f;
-            float allowedDistance = Mathf.Max(0f, hit.distance - Mathf.Max(GetSkinWidth(), 0.01f) - stopOffset);
-            return moveDirection * Mathf.Min(moveDistance, allowedDistance);
-        }
-
-        private Vector3 ApplyMotionWindowWorldCollision(MotionWindowRuntimeData runtimeData, Vector3 candidateDelta)
-        {
-            MotionWindowClip clip = runtimeData?.Clip;
-            if (clip == null || clip.worldCollisionMode == MotionWorldCollisionMode.Ignore)
-            {
-                return candidateDelta;
-            }
-
-            float moveDistance = candidateDelta.magnitude;
-            if (moveDistance <= 0.0001f)
-            {
-                return candidateDelta;
-            }
-
-            LayerMask layers = ResolveMotionWindowLayerMask(clip.worldBlockLayers, false);
-            if (layers.value == 0)
-            {
-                return candidateDelta;
-            }
-
-            Vector3 moveDirection = candidateDelta / moveDistance;
-            if (!TryFindBlockingHit(moveDirection, moveDistance, layers, null, out RaycastHit hit))
-            {
-                return candidateDelta;
-            }
-
-            float allowedDistance = Mathf.Max(0f, hit.distance - Mathf.Max(GetSkinWidth(), 0.01f));
-            float traveledDistance = Mathf.Min(moveDistance, allowedDistance);
-            Vector3 traveledDelta = moveDirection * traveledDistance;
-            if (clip.worldCollisionMode == MotionWorldCollisionMode.Block || traveledDistance >= moveDistance - 0.0001f)
-            {
-                return traveledDelta;
-            }
-
-            /* Slide 模式先走到撞击点，再把剩余位移投影到障碍切线上。 */ Vector3 remainingDelta = candidateDelta - traveledDelta;
-            Vector3 slideDelta = Vector3.ProjectOnPlane(remainingDelta, hit.normal);
-            slideDelta.y = 0f;
-            float slideDistance = slideDelta.magnitude;
-            if (slideDistance <= 0.0001f)
-            {
-                return traveledDelta;
-            }
-
-            Vector3 slideDirection = slideDelta / slideDistance;
-            if (TryFindBlockingHit(slideDirection, slideDistance, layers, null, out RaycastHit slideHit))
-            {
-                float slideAllowedDistance = Mathf.Max(0f, slideHit.distance - Mathf.Max(GetSkinWidth(), 0.01f));
-                slideDelta = slideDirection * Mathf.Min(slideDistance, slideAllowedDistance);
-            }
-
-            return traveledDelta + slideDelta;
-        }
-
-        private Vector3 ApplyMotionWindowConstraintBox(MotionWindowRuntimeData runtimeData, Vector3 candidateDelta)
+        private Vector3 ApplyMotionWindowConstraintBox(MotionWindowRuntimeData runtimeData, Vector3 horizontalDelta)
         {
             if (!MotionConstraintBoxUtility.TryGetConstraintBox(runtimeData, transform, out MotionConstraintBoxData boxData))
             {
-                return candidateDelta;
+                return horizontalDelta;
             }
 
-            MotionWindowClip clip = runtimeData?.Clip;
+            Vector3 filteredHorizontalDelta = ApplyMotionWindowLocalDeltaFilter(runtimeData.Clip, boxData, horizontalDelta);
             Vector3 currentRootPosition = transform.position;
-            Vector3 candidateRootPosition = currentRootPosition + candidateDelta;
+            Vector3 candidateRootPosition = currentRootPosition + filteredHorizontalDelta;
             Vector3 centerOffsetWorld = GetCapsuleCenterOffsetWorld();
             float horizontalRadius = GetCapsuleRadius();
-            if (clip != null && clip.constraintBoxMode == MotionConstraintBoxMode.Block)
+            Vector3 clampedRootPosition = candidateRootPosition;
+            if (runtimeData.Clip.constraintBoxMode == MotionConstraintBoxMode.Block)
             {
-                if (MotionConstraintBoxUtility.TryRestrictRootPositionToBox(
-                    boxData,
-                    currentRootPosition,
-                    candidateRootPosition,
-                    centerOffsetWorld,
-                    horizontalRadius,
-                    out Vector3 restrictedRootPosition))
-                {
-                    Vector3 restrictedDelta = restrictedRootPosition - currentRootPosition;
-                    restrictedDelta.y = 0f;
-                    return restrictedDelta;
-                }
-
-                if (!MotionConstraintBoxUtility.IsRootPositionInsideBox(
+                if (!MotionConstraintBoxUtility.TryRestrictRootPositionToBox(
                         boxData,
                         currentRootPosition,
+                        candidateRootPosition,
                         centerOffsetWorld,
-                        horizontalRadius))
+                        horizontalRadius,
+                        out clampedRootPosition))
                 {
-                    return candidateDelta;
+                    return ApplyMotionWindowResolvedDeltaGuard(runtimeData.Clip, filteredHorizontalDelta);
                 }
             }
+            else
+            {
+                if (!runtimeData.HasAppliedEnterSnap)
+                {
+                    clampedRootPosition = MotionConstraintBoxUtility.SnapRootPositionToBoxBoundary(
+                        boxData,
+                        currentRootPosition,
+                        currentRootPosition,
+                        centerOffsetWorld,
+                        horizontalRadius);
+                    runtimeData.HasAppliedEnterSnap = true;
+                    LogConstraintBoxSnap(runtimeData, boxData, currentRootPosition, clampedRootPosition, centerOffsetWorld, horizontalRadius);
+                }
+                else
+                {
+                    return ApplyMotionWindowResolvedDeltaGuard(runtimeData.Clip, filteredHorizontalDelta);
+                }
 
-            Vector3 clampedRootPosition = MotionConstraintBoxUtility.ClampRootPositionToBox(
-                boxData,
-                candidateRootPosition,
-                centerOffsetWorld,
-                horizontalRadius);
+            }
 
             Vector3 clampedDelta = clampedRootPosition - currentRootPosition;
             clampedDelta.y = 0f;
-            return clampedDelta;
+            return ApplyMotionWindowResolvedDeltaGuard(runtimeData.Clip, clampedDelta);
         }
 
-        private List<Collider> BeginMotionWindowCollisionBypass(MotionWindowRuntimeData runtimeData, Vector3 horizontalDelta)
+        private Vector3 ApplyMotionWindowLocalDeltaFilter(
+            MotionWindowClip clip,
+            MotionConstraintBoxData boxData,
+            Vector3 horizontalDelta)
         {
-            MotionWindowClip clip = runtimeData?.Clip;
-            if (clip == null || _cc == null || !_cc.enabled)
+            if (clip == null ||
+                clip.localDeltaFilterMode == MotionWindowLocalDeltaFilterMode.None ||
+                horizontalDelta.sqrMagnitude <= 0.0000001f)
             {
-                return null;
+                return horizontalDelta;
             }
 
-            if (clip.characterCollisionMode == MotionCharacterCollisionMode.BlockAll)
+            // 先转到 MotionWindow 的本地坐标里过滤，再回到世界坐标。
+            Quaternion inverseRotation = Quaternion.Inverse(boxData.Rotation);
+            Vector3 localDelta = inverseRotation * horizontalDelta;
+            switch (clip.localDeltaFilterMode)
             {
-                return null;
+                case MotionWindowLocalDeltaFilterMode.ZeroLocalX:
+                    localDelta.x = 0f;
+                    break;
+
+                case MotionWindowLocalDeltaFilterMode.ZeroLocalZ:
+                    localDelta.z = 0f;
+                    break;
+
+                case MotionWindowLocalDeltaFilterMode.ZeroLocalXZ:
+                    localDelta.x = 0f;
+                    localDelta.z = 0f;
+                    break;
             }
 
-            HashSet<Collider> collidersToIgnore = new HashSet<Collider>();
-            if (clip.characterCollisionMode == MotionCharacterCollisionMode.IgnorePrimaryTarget)
-            {
-                CollectTargetRootColliders(runtimeData.PrimaryTarget, collidersToIgnore);
-            }
-            else if (clip.characterCollisionMode == MotionCharacterCollisionMode.IgnoreAllCharacters)
-            {
-                LayerMask layers = ResolveMotionWindowLayerMask(clip.characterBlockLayers, true);
-                CollectCharacterCollidersAlongDelta(horizontalDelta, layers, collidersToIgnore);
-            }
-
-            if (collidersToIgnore.Count == 0)
-            {
-                return null;
-            }
-
-            List<Collider> ignoredColliders = new List<Collider>(collidersToIgnore.Count);
-            foreach (Collider collider in collidersToIgnore)
-            {
-                if (collider == null || !collider.enabled || collider.isTrigger)
-                {
-                    continue;
-                }
-
-                if (collider.transform.root == transform.root)
-                {
-                    continue;
-                }
-
-                Physics.IgnoreCollision(_cc, collider, true);
-                ignoredColliders.Add(collider);
-            }
-
-            return ignoredColliders;
+            Vector3 filteredHorizontalDelta = boxData.Rotation * localDelta;
+            filteredHorizontalDelta.y = 0f;
+            return filteredHorizontalDelta;
         }
 
-        private void EndMotionWindowCollisionBypass(List<Collider> ignoredColliders)
+        private Vector3 ApplyMotionWindowResolvedDeltaGuard(MotionWindowClip clip, Vector3 resolvedHorizontalDelta)
         {
-            if (_cc == null || ignoredColliders == null)
-            {
-                return;
-            }
-
-            for (int i = 0; i < ignoredColliders.Count; i++)
-            {
-                Collider collider = ignoredColliders[i];
-                if (collider == null)
-                {
-                    continue;
-                }
-
-                Physics.IgnoreCollision(_cc, collider, false);
-            }
-        }
-
-        private void CollectTargetRootColliders(Transform target, HashSet<Collider> results)
-        {
-            if (target == null || results == null)
-            {
-                return;
-            }
-
-            Transform root = target.root != null ? target.root : target;
-            Collider[] colliders = root.GetComponentsInChildren<Collider>();
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                Collider collider = colliders[i];
-                if (collider == null || !collider.enabled || collider.isTrigger)
-                {
-                    continue;
-                }
-
-                results.Add(collider);
-            }
-        }
-
-        private void CollectCharacterCollidersAlongDelta(Vector3 horizontalDelta, LayerMask layers, HashSet<Collider> results)
-        {
-            if (results == null || layers.value == 0 || _cc == null)
-            {
-                return;
-            }
-
-            GetCapsuleWorldPoints(out Vector3 top, out Vector3 bottom);
-            float radius = Mathf.Max(_blockCheckRadius, 0.01f);
-            Collider[] overlaps = Physics.OverlapCapsule(top, bottom, radius, layers, QueryTriggerInteraction.Ignore);
-            for (int i = 0; i < overlaps.Length; i++)
-            {
-                Collider collider = overlaps[i];
-                if (collider == null || collider.transform.root == transform.root)
-                {
-                    continue;
-                }
-
-                results.Add(collider);
-            }
-
-            float moveDistance = horizontalDelta.magnitude;
-            if (moveDistance <= 0.0001f)
-            {
-                return;
-            }
-
-            Vector3 moveDirection = horizontalDelta / moveDistance;
-            float castDistance = moveDistance + Mathf.Max(GetSkinWidth(), 0.01f);
-            RaycastHit[] hits = Physics.CapsuleCastAll(
-                top,
-                bottom,
-                radius,
-                moveDirection,
-                castDistance,
-                layers,
-                QueryTriggerInteraction.Ignore);
-
-            for (int i = 0; i < hits.Length; i++)
-            {
-                Collider collider = hits[i].collider;
-                if (collider == null || collider.transform.root == transform.root)
-                {
-                    continue;
-                }
-
-                results.Add(collider);
-            }
-        }
-
-        private LayerMask ResolveMotionWindowLayerMask(LayerMask clipLayers, bool isCharacterMask)
-        {
-            if (clipLayers.value != 0)
-            {
-                return clipLayers;
-            }
-
-            return isCharacterMask
-                ? LayerMask.GetMask("CharHit", "Charcter", "Character")
-                : LayerMask.GetMask("Default", "Ground");
-        }
-
-        public void ApplyMotionWindowEndPlacement(MotionWindowRuntimeData runtimeData)
-        {
-            MotionWindowClip clip = runtimeData?.Clip;
             if (clip == null)
             {
+                return resolvedHorizontalDelta;
+            }
+
+            // 最终兜底：做最小验证时，允许直接把世界 X 增量清零。
+            if (clip.localDeltaFilterMode == MotionWindowLocalDeltaFilterMode.ZeroLocalX ||
+                clip.localDeltaFilterMode == MotionWindowLocalDeltaFilterMode.ZeroLocalXZ)
+            {
+                if (_debugConstraintBox && Mathf.Abs(resolvedHorizontalDelta.x) > 0.00001f)
+                {
+                    Debug.LogWarning(
+                        "[ConstraintBoxDebug] Final World X Drift\n" +
+                        $"clipId={clip.clipId}\n" +
+                        $"worldDeltaBeforeGuard={resolvedHorizontalDelta}");
+                }
+
+                resolvedHorizontalDelta.x = 0f;
+            }
+
+            return resolvedHorizontalDelta;
+        }
+
+        private void ApplyMotionWindowResolvedPositionGuard(MotionWindowRuntimeData runtimeData)
+        {
+            if (runtimeData?.Clip == null)
+            {
                 return;
             }
 
-            if (clip.enableConstraintBox)
+            MotionWindowClip clip = runtimeData.Clip;
+            if (clip.localDeltaFilterMode == MotionWindowLocalDeltaFilterMode.None)
             {
                 return;
             }
 
-            bool shouldSnapToTarget =
-                clip.endPlacementMode == MotionEndPlacementMode.SnapFrontOfTarget ||
-                clip.endPlacementMode == MotionEndPlacementMode.SnapBehindTarget;
-            if (!clip.projectEndPositionToReferenceLine && !shouldSnapToTarget)
+            Quaternion referenceRotation = GetMotionWindowReferenceRotation(runtimeData);
+            Vector3 currentPosition = transform.position;
+            Vector3 localOffset = Quaternion.Inverse(referenceRotation) * (currentPosition - runtimeData.StartPosition);
+            Vector3 guardedLocalOffset = localOffset;
+
+            switch (clip.localDeltaFilterMode)
+            {
+                case MotionWindowLocalDeltaFilterMode.ZeroLocalX:
+                    guardedLocalOffset.x = 0f;
+                    break;
+
+                case MotionWindowLocalDeltaFilterMode.ZeroLocalZ:
+                    guardedLocalOffset.z = 0f;
+                    break;
+
+                case MotionWindowLocalDeltaFilterMode.ZeroLocalXZ:
+                    guardedLocalOffset.x = 0f;
+                    guardedLocalOffset.z = 0f;
+                    break;
+            }
+
+            if ((guardedLocalOffset - localOffset).sqrMagnitude <= 0.0000001f)
             {
                 return;
             }
 
-            Vector3 referenceForward = ResolveMotionWindowForward(runtimeData);
-            Vector3 currentHorizontalPosition = Vector3.ProjectOnPlane(transform.position, Vector3.up);
-            Vector3 desiredHorizontalPosition = currentHorizontalPosition;
-            if (shouldSnapToTarget)
+            if (_debugConstraintBox)
             {
-                if (runtimeData.PrimaryTarget == null)
-                {
-                    return;
-                }
-
-                Vector3 targetPosition = Vector3.ProjectOnPlane(runtimeData.PrimaryTarget.position, Vector3.up);
-                float offset = clip.endPlacementMode == MotionEndPlacementMode.SnapBehindTarget
-                    ? Mathf.Max(clip.passThroughOffset, 0f)
-                    : -Mathf.Max(clip.stopDistance, 0f);
-                desiredHorizontalPosition = targetPosition + referenceForward * offset;
+                Debug.LogWarning(
+                    "[ConstraintBoxDebug] Final Position Guard\n" +
+                    $"clipId={clip.clipId}\n" +
+                    $"localOffsetBeforeGuard={localOffset}\n" +
+                    $"localOffsetAfterGuard={guardedLocalOffset}");
             }
 
-            if (clip.projectEndPositionToReferenceLine)
-            {
-                Vector3 lineOrigin = Vector3.ProjectOnPlane(runtimeData.StartPosition, Vector3.up);
-                float projectedDistance = Mathf.Max(0f, Vector3.Dot(desiredHorizontalPosition - lineOrigin, referenceForward));
-                if (runtimeData.PrimaryTarget != null)
-                {
-                    float targetDistance = Mathf.Max(0f, Vector3.Dot(
-                        Vector3.ProjectOnPlane(runtimeData.PrimaryTarget.position, Vector3.up) - lineOrigin,
-                        referenceForward));
-                    projectedDistance = Mathf.Min(projectedDistance, targetDistance);
-                }
+            Vector3 guardedPosition = runtimeData.StartPosition + referenceRotation * guardedLocalOffset;
+            transform.position = new Vector3(guardedPosition.x, currentPosition.y, guardedPosition.z);
+        }
 
-                desiredHorizontalPosition = lineOrigin + referenceForward * projectedDistance;
+        private Quaternion GetMotionWindowReferenceRotation(MotionWindowRuntimeData runtimeData)
+        {
+            if (runtimeData == null)
+            {
+                return Quaternion.identity;
             }
 
-            Vector3 desiredDelta = desiredHorizontalPosition - currentHorizontalPosition;
-            Vector3 filteredDelta = ApplyMotionWindowWorldCollision(runtimeData, desiredDelta);
-            Vector3 finalHorizontalPosition = currentHorizontalPosition + filteredDelta;
-            if (clip.projectEndPositionToReferenceLine)
+            Vector3 referenceForward = runtimeData.ReferenceForward;
+            referenceForward.y = 0f;
+            if (referenceForward.sqrMagnitude > 0.0001f)
             {
-                Vector3 lineOrigin = Vector3.ProjectOnPlane(runtimeData.StartPosition, Vector3.up);
-                float projectedDistance = Mathf.Max(0f, Vector3.Dot(finalHorizontalPosition - lineOrigin, referenceForward));
-                if (runtimeData.PrimaryTarget != null)
-                {
-                    float targetDistance = Mathf.Max(0f, Vector3.Dot(
-                        Vector3.ProjectOnPlane(runtimeData.PrimaryTarget.position, Vector3.up) - lineOrigin,
-                        referenceForward));
-                    projectedDistance = Mathf.Min(projectedDistance, targetDistance);
-                }
-
-                finalHorizontalPosition = lineOrigin + referenceForward * projectedDistance;
+                return Quaternion.LookRotation(referenceForward.normalized, Vector3.up);
             }
 
-            if (clip.enableConstraintBox &&
-                MotionConstraintBoxUtility.TryBuildRuntimeConstraintBox(runtimeData, transform, out MotionConstraintBoxData boxData))
+            Vector3 startForward = runtimeData.StartRotation * Vector3.forward;
+            startForward.y = 0f;
+            if (startForward.sqrMagnitude > 0.0001f)
             {
-                Vector3 rootPosition = new Vector3(finalHorizontalPosition.x, transform.position.y, finalHorizontalPosition.z);
-                Vector3 clampedRootPosition = MotionConstraintBoxUtility.ClampRootPositionToBox(
-                    boxData,
-                    rootPosition,
-                    GetCapsuleCenterOffsetWorld(),
-                    GetCapsuleRadius());
-                finalHorizontalPosition = Vector3.ProjectOnPlane(clampedRootPosition, Vector3.up);
+                return Quaternion.LookRotation(startForward.normalized, Vector3.up);
             }
 
-            transform.position = new Vector3(finalHorizontalPosition.x, transform.position.y, finalHorizontalPosition.z);
+            return Quaternion.identity;
+        }
+
+        private Vector3 ApplyHitReactionAxisConstraint(Vector3 horizontalDelta)
+        {
+            if (_entity?.RuntimeData == null ||
+                _entity.RuntimeData.CurrentCommandContext != CommandContextType.HitStun ||
+                !_entity.RuntimeData.HasHitReactionAxis)
+            {
+                return horizontalDelta;
+            }
+
+            Vector3 hitAxis = _entity.RuntimeData.CurrentHitReactionAxis;
+            hitAxis.y = 0f;
+            if (hitAxis.sqrMagnitude <= 0.0001f || horizontalDelta.sqrMagnitude <= 0.0000001f)
+            {
+                return horizontalDelta;
+            }
+
+            // 受击期间把动画水平位移投影到稳定受击轴上，吃掉左右漂移。
+            return Vector3.Project(horizontalDelta, hitAxis.normalized);
         }
 
         private void ApplyRootRotation(Quaternion deltaRotation)
@@ -671,64 +447,6 @@ namespace Game.Logic.Character
             }
 
             transform.rotation *= deltaRotation;
-        }
-
-        private bool TryFindBlockingHit(Vector3 moveDirection, float moveDistance, LayerMask layers, Transform ignoredRoot, out RaycastHit bestHit)
-        {
-            bestHit = default;
-            if (_cc == null || moveDistance <= 0f || layers.value == 0)
-            {
-                return false;
-            }
-
-            GetCapsuleWorldPoints(out Vector3 top, out Vector3 bottom);
-            float castDistance = moveDistance + Mathf.Max(GetSkinWidth(), 0.01f);
-            RaycastHit[] hits = Physics.CapsuleCastAll(
-                top,
-                bottom,
-                Mathf.Max(_blockCheckRadius, 0.01f),
-                moveDirection,
-                castDistance,
-                layers,
-                QueryTriggerInteraction.Ignore);
-
-            float bestDistance = float.MaxValue;
-            for (int i = 0; i < hits.Length; i++)
-            {
-                RaycastHit hit = hits[i];
-                if (hit.collider == null)
-                {
-                    continue;
-                }
-
-                if (hit.collider.transform.root == transform.root)
-                {
-                    continue;
-                }
-
-                if (ignoredRoot != null && hit.collider.transform.root == ignoredRoot)
-                {
-                    continue;
-                }
-
-                if (hit.distance < bestDistance)
-                {
-                    bestDistance = hit.distance;
-                    bestHit = hit;
-                }
-            }
-
-            return bestDistance < float.MaxValue;
-        }
-
-        private void GetCapsuleWorldPoints(out Vector3 top, out Vector3 bottom)
-        {
-            const float liftOffset = 0.1f;
-            Vector3 center = transform.TransformPoint(_cc != null ? _cc.center : new Vector3(0f, _blockCheckHeight * 0.5f, 0f));
-            float halfHeight = Mathf.Max(_blockCheckHeight * 0.5f - _blockCheckRadius, 0f);
-
-            top = center + Vector3.up * halfHeight;
-            bottom = center - Vector3.up * (halfHeight - liftOffset);
         }
 
         private Vector3 GetCapsuleCenterOffsetWorld()
@@ -743,12 +461,39 @@ namespace Game.Logic.Character
 
         private float GetCapsuleRadius()
         {
-            return _cc != null ? Mathf.Max(_cc.radius, 0.01f) : 0.3f;
+            return _cc != null
+                ? Mathf.Max(_cc.radius + _cc.skinWidth, 0.01f)
+                : 0.3f;
         }
 
-        private float GetSkinWidth()
+        private void RefreshMotionWindowCollisionOverride()
         {
-            return _cc != null ? _cc.skinWidth : 0.01f;
+            if (_cc == null)
+            {
+                return;
+            }
+
+            LayerMask targetExcludeLayers = _defaultExcludeLayers;
+            if (_motionWindowHandler != null &&
+                _motionWindowHandler.TryGetActiveWindow(out MotionWindowRuntimeData runtimeData) &&
+                runtimeData?.Clip != null &&
+                runtimeData.Clip.constraintMode == MotionWindowConstraintMode.IgnoreCollision)
+            {
+                targetExcludeLayers |= runtimeData.Clip.ignoreCollisionLayers;
+            }
+
+            if (_cc.excludeLayers != targetExcludeLayers)
+            {
+                _cc.excludeLayers = targetExcludeLayers;
+            }
+        }
+
+        private void RestoreDefaultExcludeLayers()
+        {
+            if (_cc != null && _cc.excludeLayers != _defaultExcludeLayers)
+            {
+                _cc.excludeLayers = _defaultExcludeLayers;
+            }
         }
 
         private void OnDrawGizmosSelected()
@@ -758,30 +503,14 @@ namespace Game.Logic.Character
                 return;
             }
 
-            if (_cc != null)
-            {
-                Gizmos.color = _gizmoColor;
-                GetCapsuleWorldPoints(out Vector3 top, out Vector3 bottom);
-                DrawCapsule(top, bottom, _blockCheckRadius);
-            }
-
             if (_motionWindowHandler != null &&
                 _motionWindowHandler.TryGetActiveWindow(out MotionWindowRuntimeData runtimeData) &&
                 runtimeData?.Clip != null &&
+                runtimeData.Clip.constraintMode == MotionWindowConstraintMode.ConstraintBox &&
                 MotionConstraintBoxUtility.TryGetConstraintBox(runtimeData, transform, out MotionConstraintBoxData boxData))
             {
                 DrawConstraintBox(boxData, runtimeData.Clip.debugColor.a > 0f ? runtimeData.Clip.debugColor : _constraintBoxGizmoColor);
             }
-        }
-
-        private void DrawCapsule(Vector3 top, Vector3 bottom, float radius)
-        {
-            Gizmos.DrawWireSphere(top, radius);
-            Gizmos.DrawWireSphere(bottom, radius);
-            Gizmos.DrawLine(top + Vector3.left * radius, bottom + Vector3.left * radius);
-            Gizmos.DrawLine(top + Vector3.right * radius, bottom + Vector3.right * radius);
-            Gizmos.DrawLine(top + Vector3.forward * radius, bottom + Vector3.forward * radius);
-            Gizmos.DrawLine(top + Vector3.back * radius, bottom + Vector3.back * radius);
         }
 
         private void DrawConstraintBox(MotionConstraintBoxData boxData, Color color)
@@ -797,6 +526,116 @@ namespace Game.Logic.Character
             Gizmos.DrawCube(Vector3.zero, boxData.Size);
             Gizmos.matrix = previousMatrix;
             Gizmos.color = previousColor;
+
+            DrawConstraintBoundaryDebug(boxData);
+        }
+
+        private void DrawConstraintBoundaryDebug(MotionConstraintBoxData boxData)
+        {
+            Vector3 left = boxData.Rotation * Vector3.left;
+            Vector3 right = boxData.Rotation * Vector3.right;
+            float halfWidth = boxData.Size.x * 0.5f;
+
+            Color previousColor = Gizmos.color;
+            Gizmos.color = _constraintBoxFrontFaceColor;
+            Gizmos.DrawLine(
+                boxData.FrontFaceCenter + left * halfWidth,
+                boxData.FrontFaceCenter + right * halfWidth);
+            Gizmos.DrawSphere(boxData.FrontFaceCenter, 0.035f);
+
+            if (boxData.HasDebugBoundary)
+            {
+                Gizmos.color = _constraintBoxNearestBoundaryColor;
+                Gizmos.DrawSphere(boxData.SourceNearestBoundaryPoint, 0.035f);
+
+                Gizmos.color = _constraintBoxFarthestBoundaryColor;
+                Gizmos.DrawSphere(boxData.SourceFarthestBoundaryPoint, 0.035f);
+
+                Gizmos.color = _constraintBoxBoundaryPointColor;
+                Gizmos.DrawSphere(boxData.SourceFrontBoundaryPoint, 0.045f);
+                Gizmos.DrawLine(boxData.SourceFrontBoundaryPoint, boxData.FrontFaceCenter);
+            }
+
+            Gizmos.color = previousColor;
+        }
+
+        private void LogConstraintBoxSnap(
+            MotionWindowRuntimeData runtimeData,
+            MotionConstraintBoxData boxData,
+            Vector3 currentRootPosition,
+            Vector3 snappedRootPosition,
+            Vector3 centerOffsetWorld,
+            float horizontalRadius)
+        {
+            if (!_debugConstraintBox || runtimeData?.Clip == null)
+            {
+                return;
+            }
+
+            Vector3 targetCenter = Vector3.zero;
+            float targetRadius = -1f;
+            if (runtimeData.PrimaryTargetCollider is CharacterController targetController)
+            {
+                targetCenter = targetController.transform.TransformPoint(targetController.center);
+                targetRadius = Mathf.Max(targetController.radius + targetController.skinWidth, 0.01f);
+            }
+            else if (runtimeData.PrimaryTargetCollider != null)
+            {
+                targetCenter = runtimeData.PrimaryTargetCollider.bounds.center;
+            }
+            else if (runtimeData.PrimaryTarget != null)
+            {
+                targetCenter = runtimeData.PrimaryTarget.position;
+            }
+
+            Debug.LogWarning(
+                "[ConstraintBoxDebug] SnapToInside\n" +
+                $"clipId={runtimeData.Clip.clipId}\n" +
+                $"frontSource={runtimeData.Clip.ResolveFrontBoundarySource()}\n" +
+                $"currentRoot={currentRootPosition}\n" +
+                $"snappedRoot={snappedRootPosition}\n" +
+                $"ownerCenter={currentRootPosition + centerOffsetWorld}\n" +
+                $"ownerRadius={horizontalRadius}\n" +
+                $"referenceForward={runtimeData.ReferenceForward}\n" +
+                $"target={runtimeData.PrimaryTarget}\n" +
+                $"targetCollider={runtimeData.PrimaryTargetCollider}\n" +
+                $"targetCenter={targetCenter}\n" +
+                $"targetRadius={targetRadius}\n" +
+                $"sourceFrontBoundary={boxData.SourceFrontBoundaryPoint}\n" +
+                $"frontFaceCenter={boxData.FrontFaceCenter}\n" +
+                $"rearFaceCenter={boxData.RearFaceCenter}\n" +
+                $"boxCenter={boxData.Center}\n" +
+                $"boxSize={boxData.Size}",
+                this);
+        }
+
+        private void LogConstraintBoxWindowActive(MotionWindowRuntimeData runtimeData)
+        {
+            if (!_debugConstraintBox || runtimeData?.Clip == null)
+            {
+                return;
+            }
+
+            if (runtimeData.Clip.constraintBoxMode != MotionConstraintBoxMode.SnapToInside)
+            {
+                return;
+            }
+
+            if (_lastLoggedSnapClipId == runtimeData.Clip.clipId)
+            {
+                return;
+            }
+
+            _lastLoggedSnapClipId = runtimeData.Clip.clipId;
+            Debug.LogWarning(
+                "[ConstraintBoxDebug] Active Snap Window\n" +
+                $"clipId={runtimeData.Clip.clipId}\n" +
+                $"frontSource={runtimeData.Clip.ResolveFrontBoundarySource()}\n" +
+                $"target={runtimeData.PrimaryTarget}\n" +
+                $"targetCollider={runtimeData.PrimaryTargetCollider}\n" +
+                $"referenceForward={runtimeData.ReferenceForward}\n" +
+                $"hasAppliedEnterSnap={runtimeData.HasAppliedEnterSnap}",
+                this);
         }
 
         public void FaceTo(Vector3 inputDir, float speed = -1f)

@@ -44,6 +44,7 @@ namespace Game.Logic.Character
         {
             // 确保受击结束后恢复 ActionPlayer 速度
             Entity.ActionPlayer?.SetPlaySpeed(1f);
+            Entity.RuntimeData.ClearHitReactionAxis();
         }
     }
 }

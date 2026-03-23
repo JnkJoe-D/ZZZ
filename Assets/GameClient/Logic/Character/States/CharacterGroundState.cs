@@ -6,6 +6,7 @@ namespace Game.Logic.Character
     public class PlayerLocomotionBlackboard
     {
         public bool IsFromDash;
+        public bool IsShortJog;
     }
 
     public class CharacterGroundState : CharacterStateBase

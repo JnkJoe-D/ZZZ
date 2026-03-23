@@ -127,6 +127,10 @@ namespace Game.Logic.Character.SubStates
         {
             CleanupRunner();
             _stage = JogStage.Stopped;
+            if (_ctx.HostEntity.Config != null)
+            {
+                _ctx.Blackboard.IsShortJog = _stateTime <= _ctx.HostEntity.Config.JogShortInputThreshold;
+            }
         }
     }
 }

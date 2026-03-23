@@ -30,6 +30,14 @@ namespace Game.Logic.Character
         /// </summary>
         public float CurrentHitStunDuration { get; set; }
 
+        /// <summary>
+        /// 当前受击保障轴。受击动画的水平 root motion 会投影到这条世界轴上。
+        /// </summary>
+        public UnityEngine.Vector3 CurrentHitReactionAxis { get; private set; }
+
+        public bool HasHitReactionAxis { get; private set; }
+
+
         public void Update(float deltaTime)
         {
             if (EvadeTimer > 0f)
@@ -41,6 +49,25 @@ namespace Game.Logic.Character
                     EvadeTimer = 0f;
                 }
             }
+        }
+
+        public void SetHitReactionAxis(UnityEngine.Vector3 axis)
+        {
+            axis.y = 0f;
+            if (axis.sqrMagnitude <= 0.0001f)
+            {
+                ClearHitReactionAxis();
+                return;
+            }
+
+            CurrentHitReactionAxis = axis.normalized;
+            HasHitReactionAxis = true;
+        }
+
+        public void ClearHitReactionAxis()
+        {
+            CurrentHitReactionAxis = UnityEngine.Vector3.zero;
+            HasHitReactionAxis = false;
         }
 
         public bool CanEvade(CharacterConfigAsset config)
@@ -112,6 +139,7 @@ namespace Game.Logic.Character
             EvadeCount = 0;
             EvadeTimer = 0f;
             CurrentHitStunDuration = 0f;
+            ClearHitReactionAxis();
             CurrentCommandContext = CommandContextType.None;
             LastRouteSource = CommandRouteSource.None;
             LastRouteContext = CommandContextType.None;

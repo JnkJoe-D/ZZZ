@@ -59,6 +59,7 @@ namespace Game.Logic.Character
             }
 
             _entity.RuntimeData.CurrentHitStunDuration = ctx.hitStunDuration;
+            _entity.RuntimeData.SetHitReactionAxis(ctx.reactionAxis);
 
             if (!isSuperArmor)
             {
@@ -80,7 +81,7 @@ namespace Game.Logic.Character
                 return;
             }
 
-            Vector3 directionToAttacker = -ctx.hitDirection;
+            Vector3 directionToAttacker = -ctx.reactionAxis;
             directionToAttacker.y = 0f;
             if (directionToAttacker.sqrMagnitude <= 0.0001f)
             {
@@ -144,6 +145,24 @@ namespace Game.Logic.Character
                     ctx.hitAudioClip,
                     Game.Audio.AudioChannel.SFX,
                     args);
+            }
+        }
+
+        public void ApplyMultiHit(float duration, int times, System.Action hitAction)
+        {
+            StartCoroutine(MultiHitCoroutine(duration, times, hitAction));
+        }
+
+        private IEnumerator MultiHitCoroutine(float duration, int times, System.Action hitAction)
+        {
+            if (times <= 0 || duration <= 0) yield break;
+
+            float interval = duration / times;
+            for (int i = 0; i < times; i++)
+            {
+                if (_entity == null) yield break;
+                hitAction?.Invoke();
+                yield return new WaitForSeconds(interval);
             }
         }
 

@@ -18,9 +18,16 @@ namespace Game.Logic.Character.SubStates
         public override void OnEnter()
         {
             _ctx.HostEntity.RuntimeData.CurrentCommandContext = CommandContextType.GroundStop;
-            StateActionType actionType = _ctx.Blackboard.IsFromDash
-                ? StateActionType.GroundDashStop
-                : StateActionType.GroundJogStop;
+            
+            StateActionType actionType = StateActionType.GroundJogStop;
+            if (_ctx.Blackboard.IsFromDash)
+            {
+                actionType = StateActionType.GroundDashStop;
+            }
+            else if (_ctx.Blackboard.IsShortJog)
+            {
+                actionType = StateActionType.GroundJogStartEnd;
+            }
 
             if (_ctx.HostEntity.Config != null)
             {
