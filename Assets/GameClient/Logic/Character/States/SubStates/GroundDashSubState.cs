@@ -87,7 +87,7 @@ namespace Game.Logic.Character.SubStates
             if (config != null && config.DashStartConfig != null)
             {
                 _stage = DashStage.Starting;
-                _currentRunner = _ctx.HostEntity.ComboController.PlayStateAction(StateActionType.GroundDashStart);
+                _currentRunner = _ctx.HostEntity.ActionController.PlayStateAction(StateActionType.GroundDashStart);
                 HookOnComplete(HandleStartComplete);
             }
             else
@@ -103,7 +103,7 @@ namespace Game.Logic.Character.SubStates
             {
                 _stage = DashStage.Turning180;
                 CleanupRunner();
-                _currentRunner = _ctx.HostEntity.ComboController.PlayStateAction(StateActionType.GroundDashTurnBack);
+                _currentRunner = _ctx.HostEntity.ActionController.PlayStateAction(StateActionType.GroundDashTurnBack);
                 HookOnComplete(HandleTurn180Complete);
             }
         }
@@ -129,7 +129,7 @@ namespace Game.Logic.Character.SubStates
             _stage = DashStage.Looping;
             if (_ctx.HostEntity.Config?.DashConfig != null)
             {
-                _ctx.HostEntity.ComboController.PlayStateAction(StateActionType.GroundDashLoop);
+                _ctx.HostEntity.ActionController.PlayStateAction(StateActionType.GroundDashLoop);
             }
         }
 

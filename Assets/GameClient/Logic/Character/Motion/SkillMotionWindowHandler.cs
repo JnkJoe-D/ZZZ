@@ -28,10 +28,10 @@ namespace Game.Logic.Character.Motion
                 return;
             }
 
-            Transform target = clip.constraintMode == MotionWindowConstraintMode.ConstraintBox
+            Transform target = clip.UsesMotionReference()
                 ? ResolvePrimaryTarget(clip)
                 : null;
-            if (clip.constraintMode == MotionWindowConstraintMode.ConstraintBox &&
+            if (clip.UsesConstraintBox() &&
                 clip.targetMode == MotionTargetMode.RequireTarget &&
                 target == null)
             {
@@ -52,10 +52,10 @@ namespace Game.Logic.Character.Motion
                 EnterOrder = ++_enterSequence
             };
 
-            runtimeData.ReferenceForward = clip.constraintMode == MotionWindowConstraintMode.ConstraintBox
+            runtimeData.ReferenceForward = clip.UsesMotionReference()
                 ? ResolveReferenceForward(clip, target)
-                : Vector3.forward;
-            if (clip.constraintMode == MotionWindowConstraintMode.ConstraintBox &&
+                : (_entity != null ? _entity.transform.forward : Vector3.forward);
+            if (clip.UsesConstraintBox() &&
                 clip.constraintBoxUpdateMode == MotionConstraintBoxUpdateMode.FreezeOnEnter &&
                 MotionConstraintBoxUtility.TryBuildRuntimeConstraintBox(
                     runtimeData,
@@ -75,6 +75,15 @@ namespace Game.Logic.Character.Motion
         }
 
         public void OnMotionWindowCancel(MotionWindowClip clip)
+        {
+            RemoveWindow(clip);
+        }
+
+        public void OnMotionWindowUpdate(MotionWindowClip clip, float currentTime, float deltaTime)
+        {
+        }
+
+        public void OnMotionWindowExit(MotionWindowClip clip)
         {
             RemoveWindow(clip);
         }

@@ -333,6 +333,15 @@ namespace SkillEditor.Editor
                 state.verticalScrollOffset = 0;
             }
 
+            // 1.1 监听全局常规鼠标滚轮(垂直滚动)
+            if (needsScroll && Event.current.type == EventType.ScrollWheel && !Event.current.control && !Event.current.command && !Event.current.shift)
+            {
+                float scrollSensitivity = 20f; // 调节滚动速度
+                state.verticalScrollOffset += Event.current.delta.y * scrollSensitivity;
+                state.verticalScrollOffset = Mathf.Clamp(state.verticalScrollOffset, 0, totalHeight - contentHeight);
+                Event.current.Use();
+            }
+
             // 2. 轨道列表区域 (固定宽度)
             Rect trackListRect = new Rect(0, yOffset, TRACK_LIST_WIDTH, contentHeight);
             GUILayout.BeginArea(trackListRect);

@@ -7,6 +7,14 @@ namespace SkillEditor
         public Vector3 Center;
         public Quaternion Rotation;
         public Vector3 Size;
+        public MotionConstraintBoxLimitMode LimitMode;
+        public bool RecoverWhenOutside;
+        public bool HasDebugBoundary;
+        public Vector3 SourceFrontBoundaryPoint;
+        public Vector3 SourceNearestBoundaryPoint;
+        public Vector3 SourceFarthestBoundaryPoint;
+        public Vector3 FrontFaceCenter;
+        public Vector3 RearFaceCenter;
     }
 
     public static class MotionConstraintBoxUtility
@@ -32,14 +40,15 @@ namespace SkillEditor
         {
             boxData = default;
             MotionWindowClip clip = runtimeData?.Clip;
-            if (clip == null || !clip.enableConstraintBox || owner == null)
+            if (clip == null || !clip.UsesConstraintBox() || owner == null)
             {
                 return false;
             }
 
-            // 运行时如果约束盒依赖目标前边界，但当前没有目标，就不启用约束。
-            // 这样无目标时会退回到原本的动画表现，而不是被本地盒意外限制。
-            if (clip.alignConstraintBoxFrontToTarget && runtimeData.PrimaryTarget == null)
+            // 运行时如果前边界依赖目标，但当前没有目标，就不启用约束。
+            // 这样无目标时会退回到原本的动画表现，而不是被目标语义的盒子意外限制。
+            if (clip.ResolveFrontBoundarySource() != MotionConstraintBoxFrontBoundarySource.LocalConfigured &&
+                runtimeData.PrimaryTarget == null)
             {
                 return false;
             }
@@ -63,33 +72,60 @@ namespace SkillEditor
             Vector3 currentCapsuleCenter = ResolveCapsuleCenter(owner.gameObject, owner.position);
 
             Vector3 anchorCenter;
-            if (clip.alignConstraintBoxFrontToTarget && (runtimeData.PrimaryTargetCollider != null || runtimeData.PrimaryTarget != null))
+            Vector3 sourceNearestBoundary = currentCapsuleCenter + forward * (size.z * 0.5f);
+            Vector3 sourceFarthestBoundary = sourceNearestBoundary;
+            Vector3 sourceFrontBoundary = sourceNearestBoundary;
+
+            if (clip.ResolveFrontBoundarySource() != MotionConstraintBoxFrontBoundarySource.LocalConfigured &&
+                (runtimeData.PrimaryTargetCollider != null || runtimeData.PrimaryTarget != null))
             {
                 Vector3 referencePoint = runtimeData.EnterCapsuleCenter.sqrMagnitude > 0.0001f
                     ? runtimeData.EnterCapsuleCenter
                     : owner.position;
-                Vector3 frontBoundary = ResolveForwardBoundaryPoint(runtimeData, referencePoint, forward);
+                ResolveForwardBoundaryPoints(runtimeData, referencePoint, forward, out sourceNearestBoundary, out sourceFarthestBoundary);
+                sourceFrontBoundary = ResolveConfiguredFrontBoundary(
+                    clip,
+                    sourceNearestBoundary,
+                    sourceFarthestBoundary,
+                    currentCapsuleCenter,
+                    forward,
+                    ResolveOwnerRadius(owner.gameObject));
+                sourceFrontBoundary += forward * clip.constraintBoxFrontBoundaryOffset;
+
                 if (clip.autoFitConstraintBoxDepthToTarget)
                 {
-                    float frontDistance = Mathf.Max(0f, Vector3.Dot(frontBoundary - currentCapsuleCenter, forward));
-                    size.z = Mathf.Max(0.01f, frontDistance + Mathf.Max(clip.constraintBoxBackPadding, 0f));
+                    float ownerRadius = ResolveOwnerRadius(owner.gameObject);
+                    float rearDistance = ownerRadius + Mathf.Max(clip.constraintBoxBackPadding, 0f);
+                    float frontDistance = Mathf.Max(0f, Vector3.Dot(sourceFrontBoundary - currentCapsuleCenter, forward));
+                    size.z = Mathf.Max(clip.minConstraintBoxDepth, frontDistance + rearDistance);
                 }
 
-                anchorCenter = frontBoundary - forward * (size.z * 0.5f);
+                anchorCenter = sourceFrontBoundary - forward * (size.z * 0.5f);
             }
             else
             {
                 anchorCenter = runtimeData.EnterCapsuleCenter.sqrMagnitude > 0.0001f
                     ? runtimeData.EnterCapsuleCenter
                     : runtimeData.StartPosition;
+                Vector3 extentsForward = rotation * Vector3.forward * (size.z * 0.5f);
+                sourceFrontBoundary = anchorCenter + extentsForward;
+                sourceNearestBoundary = sourceFrontBoundary;
+                sourceFarthestBoundary = sourceFrontBoundary;
             }
 
             boxData = new MotionConstraintBoxData
             {
                 Center = anchorCenter + rotation * clip.constraintBoxCenterOffset,
                 Rotation = rotation,
-                Size = size
+                Size = size,
+                LimitMode = clip.constraintBoxLimitMode,
+                RecoverWhenOutside = clip.recoverWhenOutside,
+                HasDebugBoundary = true,
+                SourceFrontBoundaryPoint = sourceFrontBoundary,
+                SourceNearestBoundaryPoint = sourceNearestBoundary,
+                SourceFarthestBoundaryPoint = sourceFarthestBoundary
             };
+            FillBoxDebugFaces(ref boxData);
             return true;
         }
 
@@ -106,7 +142,7 @@ namespace SkillEditor
             rotation = Quaternion.LookRotation(forward.normalized, Vector3.up);
             Vector3 size = SanitizeSize(clip.constraintBoxSize);
             Vector3 anchorCenter = anchorPosition;
-            if (clip.alignConstraintBoxFrontToTarget)
+            if (clip.ResolveFrontBoundarySource() != MotionConstraintBoxFrontBoundarySource.LocalConfigured)
             {
                 anchorCenter += rotation * (Vector3.forward * (size.z * 0.5f));
             }
@@ -115,8 +151,24 @@ namespace SkillEditor
             {
                 Center = anchorCenter + rotation * clip.constraintBoxCenterOffset,
                 Rotation = rotation,
-                Size = size
+                Size = size,
+                LimitMode = clip.constraintBoxLimitMode,
+                RecoverWhenOutside = clip.recoverWhenOutside,
+                HasDebugBoundary = true,
+                SourceFrontBoundaryPoint = anchorCenter + rotation * (Vector3.forward * (size.z * 0.5f)),
+                SourceNearestBoundaryPoint = anchorCenter + rotation * (Vector3.forward * (size.z * 0.5f)),
+                SourceFarthestBoundaryPoint = anchorCenter + rotation * (Vector3.forward * (size.z * 0.5f))
             };
+        }
+
+        public static Vector3 SnapRootPositionToBoxBoundary(
+            MotionConstraintBoxData boxData,
+            Vector3 currentRootPosition,
+            Vector3 candidateRootPosition,
+            Vector3 centerOffsetWorld,
+            float horizontalRadius)
+        {
+            return ClampRootPositionToBox(boxData, candidateRootPosition, centerOffsetWorld, horizontalRadius);
         }
 
         public static Vector3 ClampRootPositionToBox(MotionConstraintBoxData boxData, Vector3 candidateRootPosition, Vector3 centerOffsetWorld, float horizontalRadius)
@@ -128,8 +180,19 @@ namespace SkillEditor
             float clampedHalfWidth = Mathf.Max(0f, extents.x - horizontalRadius);
             float clampedHalfDepth = Mathf.Max(0f, extents.z - horizontalRadius);
 
-            localCenter.x = Mathf.Clamp(localCenter.x, -clampedHalfWidth, clampedHalfWidth);
-            localCenter.z = Mathf.Clamp(localCenter.z, -clampedHalfDepth, clampedHalfDepth);
+            switch (boxData.LimitMode)
+            {
+                case MotionConstraintBoxLimitMode.ForwardOnly:
+                    localCenter.z = Mathf.Clamp(localCenter.z, -clampedHalfDepth, clampedHalfDepth);
+                    break;
+                case MotionConstraintBoxLimitMode.LateralOnly:
+                    localCenter.x = Mathf.Clamp(localCenter.x, -clampedHalfWidth, clampedHalfWidth);
+                    break;
+                default:
+                    localCenter.x = Mathf.Clamp(localCenter.x, -clampedHalfWidth, clampedHalfWidth);
+                    localCenter.z = Mathf.Clamp(localCenter.z, -clampedHalfDepth, clampedHalfDepth);
+                    break;
+            }
 
             Vector3 clampedCenter = boxData.Center + boxData.Rotation * localCenter;
             return clampedCenter - centerOffsetWorld;
@@ -184,6 +247,11 @@ namespace SkillEditor
 
             if (!TryIntersectSegmentWithBoxXZ(currentLocal, candidateLocal, allowedHalfWidth, allowedHalfDepth, out float enterT, out float exitT))
             {
+                if (boxData.RecoverWhenOutside)
+                {
+                    restrictedRootPosition = ClampRootPositionToBox(boxData, candidateRootPosition, centerOffsetWorld, horizontalRadius);
+                    return (restrictedRootPosition - candidateRootPosition).sqrMagnitude > 0.0000001f;
+                }
                 return false;
             }
 
@@ -266,62 +334,93 @@ namespace SkillEditor
 
         private static Vector3 ResolveForwardBoundaryPoint(MotionWindowRuntimeData runtimeData, Vector3 referencePoint, Vector3 forward)
         {
+            ResolveForwardBoundaryPoints(runtimeData, referencePoint, forward, out Vector3 nearest, out _);
+            return nearest;
+        }
+
+        private static void ResolveForwardBoundaryPoints(
+            MotionWindowRuntimeData runtimeData,
+            Vector3 referencePoint,
+            Vector3 forward,
+            out Vector3 nearestBoundary,
+            out Vector3 farthestBoundary)
+        {
+            nearestBoundary = referencePoint;
+            farthestBoundary = referencePoint;
             Collider targetCollider = runtimeData.PrimaryTargetCollider;
-            Transform targetRoot = runtimeData.PrimaryTarget != null ? runtimeData.PrimaryTarget.root : null;
-            if (targetRoot != null)
-            {
-                Collider[] colliders = targetRoot.GetComponentsInChildren<Collider>();
-                Collider bestCollider = null;
-                RaycastHit bestHit = default;
-                bool hasHit = false;
-
-                for (int i = 0; i < colliders.Length; i++)
-                {
-                    Collider collider = colliders[i];
-                    if (collider == null || !collider.enabled || collider.isTrigger)
-                    {
-                        continue;
-                    }
-
-                    Bounds colliderBounds = collider.bounds;
-                    float collidercastDistance = colliderBounds.extents.magnitude * 4f + 10f;
-                    Vector3 colliderOrigin = referencePoint - forward * collidercastDistance;
-                    Ray colliderRay = new Ray(colliderOrigin, forward);
-                    if (collider.Raycast(colliderRay, out RaycastHit colliderHit, collidercastDistance * 2f))
-                    {
-                        if (!hasHit || colliderHit.distance < bestHit.distance)
-                        {
-                            hasHit = true;
-                            bestHit = colliderHit;
-                            bestCollider = collider;
-                        }
-                    }
-                }
-
-                if (hasHit)
-                {
-                    runtimeData.PrimaryTargetCollider = bestCollider;
-                    return bestHit.point;
-                }
-
-                targetCollider = FindNearestCollider(colliders, referencePoint);
-            }
-
             if (targetCollider == null)
             {
-                return referencePoint;
+                return;
             }
 
-            Bounds targetBounds = targetCollider.bounds;
-            float targetCastDistance = targetBounds.extents.magnitude * 4f + 10f;
-            Vector3 origin = referencePoint - forward * targetCastDistance;
-            Ray targetRay = new Ray(origin, forward);
-            if (targetCollider.Raycast(targetRay, out RaycastHit targethit, targetCastDistance * 2f))
+            if (targetCollider is CharacterController controller)
             {
-                return targethit.point;
+                Vector3 center = controller.transform.TransformPoint(controller.center);
+                float radius = Mathf.Max(controller.radius + controller.skinWidth, 0.01f);
+                nearestBoundary = center - forward * radius;
+                farthestBoundary = center + forward * radius;
+                return;
             }
 
-            return targetCollider.ClosestPoint(referencePoint);
+            Bounds bounds = targetCollider.bounds;
+            float distance = bounds.extents.magnitude * 4f + 10f;
+            Vector3 origin = referencePoint - forward * distance;
+            Ray ray = new Ray(origin, forward);
+            if (targetCollider.Raycast(ray, out RaycastHit hit, distance * 2f))
+            {
+                nearestBoundary = hit.point;
+            }
+            else
+            {
+                nearestBoundary = targetCollider.ClosestPoint(referencePoint);
+            }
+
+            farthestBoundary = bounds.center + forward.normalized * bounds.extents.magnitude;
+        }
+
+        private static Vector3 ResolveConfiguredFrontBoundary(
+            MotionWindowClip clip,
+            Vector3 nearestBoundary,
+            Vector3 farthestBoundary,
+            Vector3 ownerCenter,
+            Vector3 forward,
+            float ownerRadius)
+        {
+            switch (clip.ResolveFrontBoundarySource())
+            {
+                case MotionConstraintBoxFrontBoundarySource.TargetFarthestSurface:
+                    return farthestBoundary;
+                case MotionConstraintBoxFrontBoundarySource.TargetBackPlusOwnerDiameter:
+                    return farthestBoundary + forward * (ownerRadius * 2f);
+                case MotionConstraintBoxFrontBoundarySource.LocalConfigured:
+                    return ownerCenter + forward * Mathf.Max(clip.constraintBoxSize.z * 0.5f, ownerRadius);
+                default:
+                    return nearestBoundary;
+            }
+        }
+
+        private static float ResolveOwnerRadius(GameObject owner)
+        {
+            if (owner == null)
+            {
+                return 0.3f;
+            }
+
+            CharacterController controller = owner.GetComponent<CharacterController>();
+            if (controller == null)
+            {
+                return 0.3f;
+            }
+
+            return Mathf.Max(controller.radius + controller.skinWidth, 0.01f);
+        }
+
+        private static void FillBoxDebugFaces(ref MotionConstraintBoxData boxData)
+        {
+            Vector3 forward = boxData.Rotation * Vector3.forward;
+            float halfDepth = boxData.Size.z * 0.5f;
+            boxData.FrontFaceCenter = boxData.Center + forward * halfDepth;
+            boxData.RearFaceCenter = boxData.Center - forward * halfDepth;
         }
 
         private static Collider FindNearestCollider(Collider[] colliders, Vector3 referencePoint)

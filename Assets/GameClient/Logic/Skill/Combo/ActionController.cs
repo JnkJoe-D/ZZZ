@@ -13,6 +13,7 @@ namespace Game.Logic.Action.Combo
         None = 0,
         GroundIdle = 10,
         GroundJogStart = 20,
+        GroundJogStartEnd = 25,
         GroundJogLoop = 30,
         GroundJogStop = 40,
         GroundDashStart = 50,
@@ -406,6 +407,7 @@ namespace Game.Logic.Action.Combo
             {
                 StateActionType.GroundIdle => config.IdleConfig,
                 StateActionType.GroundJogStart => config.JogStartConfig ?? config.JogConfig,
+                StateActionType.GroundJogStartEnd => config.JogStartEndConfig ?? config.JogStopConfig,
                 StateActionType.GroundJogLoop => config.JogConfig,
                 StateActionType.GroundJogStop => config.JogStopConfig,
                 StateActionType.GroundDashStart => config.DashStartConfig ?? config.DashConfig,

@@ -39,7 +39,7 @@ namespace Game.Logic.Character
             }
 
             Debug.Log($"<color=#0FFFFF>[Combo] PlayCurrentSkill {skillConfig.Name}</color>");
-            _currentRunner = Entity.ComboController.PlayPendingAction();
+            _currentRunner = Entity.ActionController.PlayPendingAction();
 
             if (_currentRunner != null)
             {

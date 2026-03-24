@@ -72,7 +72,7 @@ namespace Game.Logic.Character.SubStates
             if (config != null && config.JogStartConfig != null)
             {
                 _stage = JogStage.Starting;
-                _currentRunner = _ctx.HostEntity.ComboController.PlayStateAction(StateActionType.GroundJogStart);
+                _currentRunner = _ctx.HostEntity.ActionController.PlayStateAction(StateActionType.GroundJogStart);
                 if (_currentRunner != null)
                 {
                     _currentRunner.OnComplete -= HandleStartComplete;
@@ -109,7 +109,7 @@ namespace Game.Logic.Character.SubStates
             var config = _ctx.HostEntity.Config;
             if (config != null && config.JogConfig != null)
             {
-                _ctx.HostEntity.ComboController.PlayStateAction(StateActionType.GroundJogLoop);
+                _ctx.HostEntity.ActionController.PlayStateAction(StateActionType.GroundJogLoop);
                 _ctx.HostEntity.ActionPlayer.SetPlaySpeed(config.JogMultipier);
             }
         }

@@ -23,7 +23,7 @@ namespace Game.Logic.Character
 
         protected virtual void Forward(CharacterCommand command)
         {
-            Entity?.ComboController?.OnInput(command);
+            Entity?.ActionController?.OnInput(command);
         }
 
         public virtual void Handle(CharacterCommand command)

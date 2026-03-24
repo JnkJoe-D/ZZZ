@@ -757,6 +757,18 @@ namespace SkillEditor.Editor
                 e.Use();
                 events.OnRepaintRequest?.Invoke();
             }
+
+            // 鼠标滚轮水平平移 (Shift)
+            if (e.type == EventType.ScrollWheel && e.shift)
+            {
+                // 有些鼠标系统会自动将 Shift+Scroll 映射为 delta.x，这里兼容处理
+                float delta = Mathf.Abs(e.delta.x) > 0.01f ? e.delta.x : e.delta.y;
+                float scrollSensitivity = 20f;
+                state.scrollOffset += delta * scrollSensitivity;
+                state.scrollOffset = Mathf.Max(0, state.scrollOffset);
+                e.Use();
+                events.OnRepaintRequest?.Invoke();
+            }
         }
 
         #endregion

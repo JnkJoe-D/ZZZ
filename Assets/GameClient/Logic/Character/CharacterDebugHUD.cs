@@ -124,9 +124,9 @@ namespace Game.Logic.DebugTools
 
                 GUILayout.Space(15);
                 GUILayout.Label("EXECUTION HISTORY (Latest 10)", titleStyle);
-                if (targetEntity.ComboController != null)
+                if (targetEntity.ActionController != null)
                 {
-                    var history = targetEntity.ComboController.ExecutionHistory;
+                    var history = targetEntity.ActionController.ExecutionHistory;
                     if (history.Count == 0)
                     {
                         GUILayout.Label("  (No records)", historyStyle);

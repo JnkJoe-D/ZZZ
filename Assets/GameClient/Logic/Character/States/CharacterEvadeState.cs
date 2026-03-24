@@ -44,7 +44,7 @@ namespace Game.Logic.Character
                 return;
             }
 
-            _currentRunner = Entity.ComboController.PlayPendingAction();
+            _currentRunner = Entity.ActionController.PlayPendingAction();
             if (_currentRunner != null)
             {
                 _currentRunner.OnComplete -= OnSkillEnd;

@@ -23,12 +23,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   JogMultipier: 1
+  JogShortInputThreshold: 0.2
   DashMultipier: 1
   DodgeMultipier: 1
   AttackMultipier: 1
   SkillMultipier: 1
   IdleConfig: {fileID: 11400000, guid: e3a9c03227a8fa74c80985a0510beec8, type: 2}
   JogStartConfig: {fileID: 11400000, guid: 5f72c8b10ad188f41a1161aab0a6ff50, type: 2}
+  JogStartEndConfig: {fileID: 11400000, guid: 1be93822a50adcf41963af0230f4ab29, type: 2}
   JogConfig: {fileID: 11400000, guid: 6e6e2628833cf0848a218fc8d4787b5b, type: 2}
   JogStopConfig: {fileID: 11400000, guid: 555b2cb19f0b1dc44bf82bb94f9df0e6, type: 2}
   DashStartConfig: {fileID: 0}

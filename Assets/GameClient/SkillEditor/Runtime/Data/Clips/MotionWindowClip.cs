@@ -11,27 +11,6 @@ namespace SkillEditor
         TargetLineContinuous
     }
 
-    public enum MotionTrajectoryMode
-    {
-        Authored,
-        ForwardOnly,
-        ForwardKeepLateral
-    }
-
-    public enum MotionCharacterCollisionMode
-    {
-        BlockAll,
-        IgnorePrimaryTarget,
-        IgnoreAllCharacters
-    }
-
-    public enum MotionWorldCollisionMode
-    {
-        Block,
-        Slide,
-        Ignore
-    }
-
     public enum MotionTargetMode
     {
         None,
@@ -40,18 +19,46 @@ namespace SkillEditor
         ContinuousTrack
     }
 
-    public enum MotionEndPlacementMode
-    {
-        None,
-        StayCurrent,
-        SnapFrontOfTarget,
-        SnapBehindTarget
-    }
-
     public enum MotionConstraintBoxMode
     {
         Block,
         SnapToInside
+    }
+
+    public enum MotionWindowConstraintMode
+    {
+        None,
+        IgnoreCollision,
+        ConstraintBox
+    }
+
+    public enum MotionConstraintBoxUpdateMode
+    {
+        Dynamic,
+        FreezeOnEnter
+    }
+
+    public enum MotionConstraintBoxLimitMode
+    {
+        ForwardOnly,
+        LateralOnly,
+        ForwardAndLateral
+    }
+
+    public enum MotionWindowLocalDeltaFilterMode
+    {
+        None,
+        ZeroLocalX,
+        ZeroLocalZ,
+        ZeroLocalXZ
+    }
+
+    public enum MotionConstraintBoxFrontBoundarySource
+    {
+        LocalConfigured,
+        TargetNearestSurface,
+        TargetFarthestSurface,
+        TargetBackPlusOwnerDiameter
     }
 
     [Serializable]
@@ -68,10 +75,10 @@ namespace SkillEditor
         [NonSerialized] public int EnterOrder;
         [NonSerialized] public bool HasFrozenConstraintBox;
         [NonSerialized] public MotionConstraintBoxData FrozenConstraintBox;
+        [NonSerialized] public bool HasAppliedEnterSnap;
 
         public bool HasTarget => PrimaryTarget != null;
     }
-
     [Serializable]
     [ClipDefinition(typeof(MotionWindowTrack), "位移窗口")]
     public class MotionWindowClip : ClipBase
@@ -83,75 +90,69 @@ namespace SkillEditor
         [SkillProperty("参考方向")]
         public MotionReferenceMode referenceMode = MotionReferenceMode.TargetLineAtEnter;
 
-        [SkillProperty("轨迹模式")]
-        public MotionTrajectoryMode trajectoryMode = MotionTrajectoryMode.ForwardOnly;
-
-        [SkillProperty("角色碰撞")]
-        public MotionCharacterCollisionMode characterCollisionMode = MotionCharacterCollisionMode.BlockAll;
-
-        [SkillProperty("世界碰撞")]
-        public MotionWorldCollisionMode worldCollisionMode = MotionWorldCollisionMode.Block;
-
-        [SkillProperty("结束落点")]
-        public MotionEndPlacementMode endPlacementMode = MotionEndPlacementMode.None;
-
-        [SkillProperty("前向缩放")]
-        public float forwardScale = 1f;
-
-        [SkillProperty("横向缩放")]
-        public float lateralScale = 1f;
-
-        [SkillProperty("停靠距离")]
-        public float stopDistance = 0.15f;
-
-        [SkillProperty("穿越偏移")]
-        public float passThroughOffset = 1f;
-
-        [SkillProperty("持续跟随转向")]
-        [ShowIf("referenceMode", MotionReferenceMode.TargetLineContinuous)]
-        public float continuousTurnRate = 30f;
-
-        [SkillProperty("角色阻挡层")]
-        public LayerMask characterBlockLayers;
-
-        [SkillProperty("世界阻挡层")]
-        public LayerMask worldBlockLayers;
-
         [SkillProperty("调试颜色")]
         public Color debugColor = new Color(0.22f, 0.78f, 1f, 0.75f);
 
-        [SkillProperty("启用约束盒")]
-        public bool enableConstraintBox;
+        [SkillProperty("约束模式")]
+        public MotionWindowConstraintMode constraintMode = MotionWindowConstraintMode.ConstraintBox;
 
-        [ShowIf("enableConstraintBox", true)]
+        [SkillProperty("本地轴过滤")]
+        public MotionWindowLocalDeltaFilterMode localDeltaFilterMode = MotionWindowLocalDeltaFilterMode.None;
+
+        [Header("约束盒")]
+        [Tooltip("约束盒更新方式。")]
+        public MotionConstraintBoxUpdateMode constraintBoxUpdateMode = MotionConstraintBoxUpdateMode.Dynamic;
+
+        [Tooltip("约束盒限制轴向。")]
+        public MotionConstraintBoxLimitMode constraintBoxLimitMode = MotionConstraintBoxLimitMode.ForwardAndLateral;
+
+        [Tooltip("忽略碰撞层，仅在 IgnoreCollision 模式下使用。")]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.IgnoreCollision)]
+        public LayerMask ignoreCollisionLayers;
+
+        [Tooltip("约束盒障碍层。")]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
+        public LayerMask constraintBoxObstacleLayers;
+
+        [Tooltip("前边界来源。")]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
+        public MotionConstraintBoxFrontBoundarySource constraintBoxFrontBoundarySource =
+            MotionConstraintBoxFrontBoundarySource.TargetNearestSurface;
+
+        [Tooltip("前边界额外偏移。")]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
+        public float constraintBoxFrontBoundaryOffset = 0f;
+
+        [Tooltip("约束盒最小深度。")]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
+        public float minConstraintBoxDepth = 0.6f;
+
+        [Tooltip("角色掉到盒外时是否回收到合法边界。")]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
+        public bool recoverWhenOutside = true;
+
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
         public bool showConstraintBoxInScene = true;
 
-        [SkillProperty("前边界贴目标碰撞体")]
-        [ShowIf("enableConstraintBox", true)]
-        public bool alignConstraintBoxFrontToTarget = true;
-
         [SkillProperty("约束盒类型")]
-        [ShowIf("enableConstraintBox", true)]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
         public MotionConstraintBoxMode constraintBoxMode = MotionConstraintBoxMode.Block;
 
         [SkillProperty("约束盒尺寸")]
-        [ShowIf("enableConstraintBox", true)]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
         public Vector3 constraintBoxSize = new Vector3(3f, 2f, 3f);
 
         [SkillProperty("约束盒偏移")]
-        [ShowIf("enableConstraintBox", true)]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
         public Vector3 constraintBoxCenterOffset = Vector3.zero;
 
         [SkillProperty("动态适配前后深度")]
-        [ShowIf("enableConstraintBox", true)]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
         public bool autoFitConstraintBoxDepthToTarget = true;
 
         [SkillProperty("后侧额外留量")]
-        [ShowIf("enableConstraintBox", true)]
+        [ShowIf("constraintMode", MotionWindowConstraintMode.ConstraintBox)]
         public float constraintBoxBackPadding = 0f;
-
-        [SkillProperty("沿目标方向的落点重置")]
-        public bool projectEndPositionToReferenceLine;
 
         public MotionWindowClip()
         {
@@ -170,28 +171,54 @@ namespace SkillEditor
                 isEnabled = isEnabled,
                 targetMode = targetMode,
                 referenceMode = referenceMode,
-                trajectoryMode = trajectoryMode,
-                characterCollisionMode = characterCollisionMode,
-                worldCollisionMode = worldCollisionMode,
-                endPlacementMode = endPlacementMode,
-                forwardScale = forwardScale,
-                lateralScale = lateralScale,
-                stopDistance = stopDistance,
-                passThroughOffset = passThroughOffset,
-                continuousTurnRate = continuousTurnRate,
-                characterBlockLayers = characterBlockLayers,
-                worldBlockLayers = worldBlockLayers,
                 debugColor = debugColor,
-                enableConstraintBox = enableConstraintBox,
+                constraintMode = constraintMode,
+                constraintBoxUpdateMode = constraintBoxUpdateMode,
+                constraintBoxLimitMode = constraintBoxLimitMode,
+                localDeltaFilterMode = localDeltaFilterMode,
+                ignoreCollisionLayers = ignoreCollisionLayers,
+                constraintBoxObstacleLayers = constraintBoxObstacleLayers,
+                constraintBoxFrontBoundarySource = constraintBoxFrontBoundarySource,
+                constraintBoxFrontBoundaryOffset = constraintBoxFrontBoundaryOffset,
+                minConstraintBoxDepth = minConstraintBoxDepth,
+                recoverWhenOutside = recoverWhenOutside,
                 showConstraintBoxInScene = showConstraintBoxInScene,
-                alignConstraintBoxFrontToTarget = alignConstraintBoxFrontToTarget,
                 constraintBoxMode = constraintBoxMode,
                 constraintBoxSize = constraintBoxSize,
                 constraintBoxCenterOffset = constraintBoxCenterOffset,
                 autoFitConstraintBoxDepthToTarget = autoFitConstraintBoxDepthToTarget,
-                constraintBoxBackPadding = constraintBoxBackPadding,
-                projectEndPositionToReferenceLine = projectEndPositionToReferenceLine
+                constraintBoxBackPadding = constraintBoxBackPadding
             };
+        }
+
+        public bool UsesMotionReference()
+        {
+            return UsesAxisFilter() || UsesConstraintBox();
+        }
+
+        public bool UsesAxisFilter()
+        {
+            return localDeltaFilterMode != MotionWindowLocalDeltaFilterMode.None;
+        }
+
+        public bool UsesConstraintBox()
+        {
+            return constraintMode == MotionWindowConstraintMode.ConstraintBox;
+        }
+
+        public bool UsesIgnoreCollision()
+        {
+            return constraintMode == MotionWindowConstraintMode.IgnoreCollision;
+        }
+
+        public bool HasRuntimeConstraint()
+        {
+            return UsesAxisFilter() || UsesConstraintBox();
+        }
+
+        public MotionConstraintBoxFrontBoundarySource ResolveFrontBoundarySource()
+        {
+            return constraintBoxFrontBoundarySource;
         }
     }
 }

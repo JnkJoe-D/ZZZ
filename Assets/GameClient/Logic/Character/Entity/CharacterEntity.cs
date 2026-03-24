@@ -25,13 +25,13 @@ namespace Game.Logic.Character
 
         public ActionPlayer ActionPlayer { get; private set; }
         public Action.Combo.CommandBuffer CommandBuffer { get; private set; }
-        public Action.Combo.ActionController ComboController { get; private set; }
+        public Action.Combo.ActionController ActionController { get; private set; }
         public SkillMotionWindowHandler MotionWindowHandler { get; private set; }
         public CharacterRuntimeData RuntimeData { get; private set; }
 
         public event System.Action<string> OnSkillTimelineEvent;
 
-        public ISkillComboWindowHandler SkillComboWindowHandler => ComboController;
+        public ISkillComboWindowHandler SkillComboWindowHandler => ActionController;
         public ISkillMotionWindowHandler SkillMotionWindowHandler => MotionWindowHandler;
 
         private IInputCommandHandler CurrentInputHandler =>
@@ -47,7 +47,7 @@ namespace Game.Logic.Character
 
             ActionPlayer = new ActionPlayer(this);
             CommandBuffer = new Game.Logic.Action.Combo.CommandBuffer();
-            ComboController = new Game.Logic.Action.Combo.ActionController(this);
+            ActionController = new Game.Logic.Action.Combo.ActionController(this);
             MotionWindowHandler = new SkillMotionWindowHandler(this);
             RuntimeData = new CharacterRuntimeData();
             _inputEventAdapter = new CharacterInputEventAdapter(() => CurrentInputHandler);
@@ -98,7 +98,7 @@ namespace Game.Logic.Character
         private void Update()
         {
             ActionPlayer?.Tick(Time.deltaTime);
-            ComboController?.Update(Time.deltaTime);
+            ActionController?.Update(Time.deltaTime);
             RuntimeData?.Update(Time.deltaTime);
         }
 

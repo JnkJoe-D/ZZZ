@@ -31,7 +31,7 @@ namespace Game.Logic.Character.SubStates
 
             if (_ctx.HostEntity.Config != null)
             {
-                _currentRunner = _ctx.HostEntity.ComboController.PlayStateAction(actionType);
+                _currentRunner = _ctx.HostEntity.ActionController.PlayStateAction(actionType);
                 if (_currentRunner != null)
                 {
                     _currentRunner.OnComplete -= OnStopAnimFinished;

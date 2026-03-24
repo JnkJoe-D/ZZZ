@@ -163,7 +163,9 @@ namespace Game.Logic.Character
             }
 
             LogConstraintBoxWindowActive(runtimeData);
-            Vector3 filteredHorizontalDelta = ApplyMotionWindowConstraintBox(runtimeData, horizontalDelta);
+            Vector3 filteredHorizontalDelta = runtimeData.Clip.UsesConstraintBox()
+                ? ApplyMotionWindowConstraintBox(runtimeData, horizontalDelta)
+                : ApplyMotionWindowAxisFilterOnly(runtimeData, horizontalDelta);
             if (_cc != null && _cc.enabled)
             {
                 Vector3 currentRootPosition = transform.position;
@@ -199,7 +201,7 @@ namespace Game.Logic.Character
             if (_motionWindowHandler != null &&
                 _motionWindowHandler.TryGetActiveWindow(out MotionWindowRuntimeData activeRuntimeData) &&
                 activeRuntimeData?.Clip != null &&
-                activeRuntimeData.Clip.constraintMode == MotionWindowConstraintMode.ConstraintBox)
+                activeRuntimeData.Clip.HasRuntimeConstraint())
             {
                 _stickyMotionWindowRuntimeData = activeRuntimeData;
                 runtimeData = activeRuntimeData;
@@ -235,7 +237,7 @@ namespace Game.Logic.Character
         {
             if (!MotionConstraintBoxUtility.TryGetConstraintBox(runtimeData, transform, out MotionConstraintBoxData boxData))
             {
-                return horizontalDelta;
+                return ApplyMotionWindowAxisFilterOnly(runtimeData, horizontalDelta);
             }
 
             Vector3 filteredHorizontalDelta = ApplyMotionWindowLocalDeltaFilter(runtimeData.Clip, boxData, horizontalDelta);
@@ -282,9 +284,27 @@ namespace Game.Logic.Character
             return ApplyMotionWindowResolvedDeltaGuard(runtimeData.Clip, clampedDelta);
         }
 
+        private Vector3 ApplyMotionWindowAxisFilterOnly(MotionWindowRuntimeData runtimeData, Vector3 horizontalDelta)
+        {
+            return ApplyMotionWindowResolvedDeltaGuard(
+                runtimeData?.Clip,
+                ApplyMotionWindowLocalDeltaFilter(
+                    runtimeData?.Clip,
+                    GetMotionWindowReferenceRotation(runtimeData),
+                    horizontalDelta));
+        }
+
         private Vector3 ApplyMotionWindowLocalDeltaFilter(
             MotionWindowClip clip,
             MotionConstraintBoxData boxData,
+            Vector3 horizontalDelta)
+        {
+            return ApplyMotionWindowLocalDeltaFilter(clip, boxData.Rotation, horizontalDelta);
+        }
+
+        private Vector3 ApplyMotionWindowLocalDeltaFilter(
+            MotionWindowClip clip,
+            Quaternion referenceRotation,
             Vector3 horizontalDelta)
         {
             if (clip == null ||
@@ -295,7 +315,7 @@ namespace Game.Logic.Character
             }
 
             // 先转到 MotionWindow 的本地坐标里过滤，再回到世界坐标。
-            Quaternion inverseRotation = Quaternion.Inverse(boxData.Rotation);
+            Quaternion inverseRotation = Quaternion.Inverse(referenceRotation);
             Vector3 localDelta = inverseRotation * horizontalDelta;
             switch (clip.localDeltaFilterMode)
             {
@@ -313,7 +333,7 @@ namespace Game.Logic.Character
                     break;
             }
 
-            Vector3 filteredHorizontalDelta = boxData.Rotation * localDelta;
+            Vector3 filteredHorizontalDelta = referenceRotation * localDelta;
             filteredHorizontalDelta.y = 0f;
             return filteredHorizontalDelta;
         }
@@ -506,7 +526,7 @@ namespace Game.Logic.Character
             if (_motionWindowHandler != null &&
                 _motionWindowHandler.TryGetActiveWindow(out MotionWindowRuntimeData runtimeData) &&
                 runtimeData?.Clip != null &&
-                runtimeData.Clip.constraintMode == MotionWindowConstraintMode.ConstraintBox &&
+                runtimeData.Clip.UsesConstraintBox() &&
                 MotionConstraintBoxUtility.TryGetConstraintBox(runtimeData, transform, out MotionConstraintBoxData boxData))
             {
                 DrawConstraintBox(boxData, runtimeData.Clip.debugColor.a > 0f ? runtimeData.Clip.debugColor : _constraintBoxGizmoColor);

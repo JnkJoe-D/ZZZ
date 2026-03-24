@@ -23,6 +23,10 @@ namespace Game.Logic.Character.Config
         [Range(0, 5f)]
         public float JogMultipier = 1f;
 
+        [Header("Ground Jog")]
+        [Tooltip("短按移动时，Jog 状态被视为短跑的时间阈值。")]
+        public float JogShortInputThreshold = 0.2f;
+
         [Range(0, 5f)]
         public float DashMultipier = 1f;
 
@@ -40,6 +44,7 @@ namespace Game.Logic.Character.Config
         [Header("Base Locomotion Actions")]
         public LocomotionConfigAsset IdleConfig;
         public LocomotionConfigAsset JogStartConfig;
+        public LocomotionConfigAsset JogStartEndConfig;
         public LocomotionConfigAsset JogConfig;
         public LocomotionConfigAsset JogStopConfig;
         public LocomotionConfigAsset DashStartConfig;
@@ -99,6 +104,7 @@ namespace Game.Logic.Character.Config
         {
             if (IdleConfig != null) yield return IdleConfig;
             if (JogStartConfig != null) yield return JogStartConfig;
+            if (JogStartEndConfig != null) yield return JogStartEndConfig;
             if (JogConfig != null) yield return JogConfig;
             if (JogStopConfig != null) yield return JogStopConfig;
             if (DashStartConfig != null) yield return DashStartConfig;

@@ -18,7 +18,7 @@ namespace Game.Logic.Character.SubStates
             _ctx.HostEntity.RuntimeData.CurrentCommandContext = CommandContextType.GroundIdle;
             if (_ctx.HostEntity.Config.IdleConfig != null)
             {
-                _ctx.HostEntity.ComboController.PlayStateAction(StateActionType.GroundIdle);
+                _ctx.HostEntity.ActionController.PlayStateAction(StateActionType.GroundIdle);
                 _ctx.HostEntity.ActionPlayer.SetPlaySpeed(1.0f);
             }
         }

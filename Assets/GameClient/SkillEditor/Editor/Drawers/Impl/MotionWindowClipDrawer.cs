@@ -19,15 +19,15 @@ namespace SkillEditor.Editor
 
             base.DrawInspector(clip);
 
-            if (!motionClip.enableConstraintBox)
+            EditorGUILayout.Space(6f);
+            EditorGUILayout.HelpBox(
+                "MotionWindow 现在支持两类常用能力：本地轴过滤与约束盒。前者可直接清除 local X/Z 位移，后者用于限制角色活动范围。",
+                MessageType.Info);
+
+            if (!motionClip.UsesConstraintBox())
             {
                 return;
             }
-
-            EditorGUILayout.Space(6f);
-            EditorGUILayout.HelpBox(
-                "约束盒会限制角色碰撞体不能离开指定范围。运行时可让前边界贴目标碰撞体，编辑器预览则按本地盒直接模拟。",
-                MessageType.Info);
 
             EditorGUI.BeginChangeCheck();
             bool showInScene = GUILayout.Toggle(motionClip.showConstraintBoxInScene, "在场景中编辑约束盒", "Button", GUILayout.Height(26f));
@@ -43,7 +43,7 @@ namespace SkillEditor.Editor
         public override void DrawSceneGUI(ClipBase clip, SkillEditorState state)
         {
             MotionWindowClip motionClip = clip as MotionWindowClip;
-            if (motionClip == null || !motionClip.enableConstraintBox || !motionClip.showConstraintBoxInScene)
+            if (motionClip == null || !motionClip.UsesConstraintBox() || !motionClip.showConstraintBoxInScene)
             {
                 return;
             }
@@ -95,8 +95,11 @@ namespace SkillEditor.Editor
         {
             if (clip is MotionWindowClip motionClip)
             {
-                string constraintSuffix = motionClip.enableConstraintBox ? " / Box" : string.Empty;
-                displayName = $"{motionClip.trajectoryMode} / {motionClip.characterCollisionMode} / {motionClip.worldCollisionMode}{constraintSuffix}";
+                string filterName = motionClip.localDeltaFilterMode != MotionWindowLocalDeltaFilterMode.None
+                    ? motionClip.localDeltaFilterMode.ToString()
+                    : "NoFilter";
+                string modeName = motionClip.constraintMode.ToString();
+                displayName = $"{modeName} / {filterName}";
             }
 
             base.DrawTimelineGUI(clip, clipRect, state, clipColor, displayName);
