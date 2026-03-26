@@ -58,7 +58,7 @@
         {
             "groupId": "befe8c1b-dcd2-44d5-b34a-6098d3aa661a",
             "groupName": "输入",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -103,6 +103,12 @@
             "tracks": [
                 {
                     "rid": 1010
+                },
+                {
+                    "rid": 1011
+                },
+                {
+                    "rid": 1012
                 }
             ]
         }
@@ -128,10 +134,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1013
                         },
                         {
-                            "rid": 1012
+                            "rid": 1014
                         }
                     ],
                     "isMasterTrack": true,
@@ -260,10 +266,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1015
                         },
                         {
-                            "rid": 1014
+                            "rid": 1016
                         }
                     ]
                 }
@@ -286,7 +292,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1017
                         }
                     ]
                 }
@@ -309,7 +315,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1018
                         }
                     ]
                 }
@@ -332,7 +338,7 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1019
                         }
                     ]
                 }
@@ -355,13 +361,59 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1018
+                            "rid": 1020
                         }
                     ]
                 }
             },
             {
                 "rid": 1011,
+                "type": {
+                    "class": "MotionWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "75c84027-647b-4b4a-9daf-8a9e8a1d8ac9",
+                    "trackType": "MotionWindowTrack",
+                    "trackName": "位移窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1021
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1012,
+                "type": {
+                    "class": "MotionWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "ffb43c76-ca31-499a-ac1f-47cb1669b954",
+                    "trackType": "MotionWindowTrack",
+                    "trackName": "位移窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1022
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1013,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -376,7 +428,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.16666662693023683,
                     "animationClip": {
-                        "instanceID": 42454
+                        "instanceID": 100232
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -396,7 +448,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1014,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -411,7 +463,7 @@
                     "blendInDuration": 0.16666662693023683,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 42804
+                        "instanceID": 101208
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -431,7 +483,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1015,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -450,7 +502,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1016,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -469,7 +521,7 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1017,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -488,7 +540,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1018,
                 "type": {
                     "class": "HitClip",
                     "ns": "SkillEditor",
@@ -567,7 +619,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 37966
+                        "instanceID": 35052
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -578,7 +630,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1019,
                 "type": {
                     "class": "MovementClip",
                     "ns": "SkillEditor",
@@ -605,7 +657,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1020,
                 "type": {
                     "class": "MotionWindowClip",
                     "ns": "SkillEditor",
@@ -619,48 +671,43 @@
                     "duration": 3.8333334922790529,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "targetMode": 1,
-                    "referenceMode": 2,
-                    "trajectoryMode": 2,
-                    "characterCollisionMode": 0,
-                    "worldCollisionMode": 0,
-                    "endPlacementMode": 1,
-                    "forwardScale": 1.0,
-                    "lateralScale": 1.0,
-                    "stopDistance": 0.15000000596046449,
-                    "passThroughOffset": 1.0,
-                    "continuousTurnRate": 30.0,
-                    "characterBlockLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 64
-                    },
-                    "worldBlockLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 0
-                    },
-                    "debugColor": {
-                        "r": 0.2199999988079071,
-                        "g": 0.7799999713897705,
-                        "b": 1.0,
-                        "a": 0.75
-                    },
-                    "enableConstraintBox": true,
-                    "showConstraintBoxInScene": true,
-                    "alignConstraintBoxFrontToTarget": true,
-                    "constraintBoxMode": 0,
-                    "constraintBoxSize": {
-                        "x": 6.0,
-                        "y": 2.0,
-                        "z": 2.0
-                    },
-                    "constraintBoxCenterOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "autoFitConstraintBoxDepthToTarget": true,
-                    "constraintBoxBackPadding": 0.0,
-                    "projectEndPositionToReferenceLine": true
+                    "localDeltaFilterMode": 1
+                }
+            },
+            {
+                "rid": 1021,
+                "type": {
+                    "class": "VisualOffsetClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "00358f98-2e17-46ca-ac16-e728f3a5eda7",
+                    "clipName": "视觉偏移片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.6000000238418579,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "visualOffsetMode": 1
+                }
+            },
+            {
+                "rid": 1022,
+                "type": {
+                    "class": "VisualOffsetRecoverClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "d62f17dc-ea52-470c-8f6e-6b017011959f",
+                    "clipName": "视觉偏移回正片段",
+                    "isEnabled": true,
+                    "startTime": 0.46666669845581057,
+                    "duration": 0.13333338499069215,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "recoverySpeed": 2.0
                 }
             }
         ]

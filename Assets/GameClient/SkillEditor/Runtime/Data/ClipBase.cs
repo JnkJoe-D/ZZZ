@@ -41,7 +41,7 @@ namespace SkillEditor
             {
                 if(!Application.isPlaying)
                 {
-                    duration=Mathf.Max(value,0.1f);
+                    duration=Mathf.Max(value,0.01f);
                 }
             }
         }

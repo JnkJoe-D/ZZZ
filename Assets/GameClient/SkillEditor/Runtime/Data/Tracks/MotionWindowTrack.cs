@@ -6,6 +6,8 @@ namespace SkillEditor
     [TrackDefinition("位移窗口轨道", typeof(MotionWindowClip), "#36A9E1", "MoveTool", 5)]
     public class MotionWindowTrack : TrackBase
     {
+        public override bool CanOverlap => false;
+
         public MotionWindowTrack()
         {
             trackName = "位移窗口轨道";

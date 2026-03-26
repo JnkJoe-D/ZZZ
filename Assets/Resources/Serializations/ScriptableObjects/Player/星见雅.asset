@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RoleID: 1002
   RoleName: 
-  CharacterPrefab: {fileID: 2733460660471334076, guid: 1e1583ff6f2508d45ae6203b9784d3e8,
+  CharacterPrefab: {fileID: 5207641375562360989, guid: 1e1583ff6f2508d45ae6203b9784d3e8,
     type: 3}
   GroundRadius: 0.3
   GroundHeight: 1.8

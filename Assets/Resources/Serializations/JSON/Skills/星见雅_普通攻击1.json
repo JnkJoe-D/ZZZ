@@ -376,7 +376,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1499999761581421,
                     "animationClip": {
-                        "instanceID": 41954
+                        "instanceID": 112742
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -411,7 +411,7 @@
                     "blendInDuration": 0.1499999761581421,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 42004
+                        "instanceID": 114686
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -567,7 +567,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 37966
+                        "instanceID": 35052
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -619,48 +619,8 @@
                     "duration": 3.816666603088379,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "targetMode": 1,
-                    "referenceMode": 2,
-                    "trajectoryMode": 1,
-                    "characterCollisionMode": 0,
-                    "worldCollisionMode": 0,
-                    "endPlacementMode": 1,
-                    "forwardScale": 1.0,
-                    "lateralScale": 1.0,
-                    "stopDistance": 0.15000000596046449,
-                    "passThroughOffset": 1.0,
-                    "continuousTurnRate": 30.0,
-                    "characterBlockLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 64
-                    },
-                    "worldBlockLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 0
-                    },
-                    "debugColor": {
-                        "r": 0.2199999988079071,
-                        "g": 0.7799999713897705,
-                        "b": 1.0,
-                        "a": 0.75
-                    },
-                    "enableConstraintBox": true,
-                    "showConstraintBoxInScene": true,
-                    "alignConstraintBoxFrontToTarget": true,
-                    "constraintBoxMode": 0,
-                    "constraintBoxSize": {
-                        "x": 3.0,
-                        "y": 2.0,
-                        "z": 3.0
-                    },
-                    "constraintBoxCenterOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "autoFitConstraintBoxDepthToTarget": true,
-                    "constraintBoxBackPadding": 0.0,
-                    "projectEndPositionToReferenceLine": false
+                    "localDeltaFilterMode": 1,
+                    "visualOffsetMode": 0
                 }
             }
         ]

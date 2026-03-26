@@ -28,7 +28,7 @@
         {
             "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
             "groupName": "分组 3",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -69,6 +69,18 @@
                     "rid": 1007
                 }
             ]
+        },
+        {
+            "groupId": "c16c365b-656a-47b6-887f-8293f728e83d",
+            "groupName": "分组 5",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1008
+                }
+            ]
         }
     ],
     "references": {
@@ -92,10 +104,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1008
+                            "rid": 1009
                         },
                         {
-                            "rid": 1009
+                            "rid": 1010
                         }
                     ],
                     "isMasterTrack": true,
@@ -148,7 +160,7 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1011
                         }
                     ]
                 }
@@ -171,7 +183,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ]
                 }
@@ -194,7 +206,7 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1013
                         }
                     ]
                 }
@@ -217,7 +229,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1014
                         }
                     ]
                 }
@@ -240,10 +252,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1014
+                            "rid": 1015
                         },
                         {
-                            "rid": 1015
+                            "rid": 1016
                         }
                     ]
                 }
@@ -266,16 +278,39 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1017
                         },
                         {
-                            "rid": 1017
+                            "rid": 1018
                         }
                     ]
                 }
             },
             {
                 "rid": 1008,
+                "type": {
+                    "class": "MotionWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "6f3b517d-55b1-4c97-9c65-117a6948fb44",
+                    "trackType": "MotionWindowTrack",
+                    "trackName": "位移窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1019
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1009,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -290,7 +325,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.16666662693023683,
                     "animationClip": {
-                        "instanceID": 36362
+                        "instanceID": 36692
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -310,7 +345,7 @@
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1010,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -325,7 +360,7 @@
                     "blendInDuration": 0.16666662693023683,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 36364
+                        "instanceID": 36694
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -345,7 +380,7 @@
                 }
             },
             {
-                "rid": 1010,
+                "rid": 1011,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -369,7 +404,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1012,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -385,7 +420,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 36216
+                            "instanceID": 36542
                         }
                     ],
                     "volume": 0.5,
@@ -403,7 +438,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1013,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -427,7 +462,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1014,
                 "type": {
                     "class": "EventClip",
                     "ns": "SkillEditor",
@@ -446,7 +481,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1015,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -465,7 +500,7 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1016,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -484,7 +519,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1017,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -503,7 +538,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1018,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -519,6 +554,24 @@
                     "blendOutDuration": 0.0,
                     "windowType": 1,
                     "comboTag": "Evade"
+                }
+            },
+            {
+                "rid": 1019,
+                "type": {
+                    "class": "MotionWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "3d629a4f-f596-4f6b-a421-ee35bd298321",
+                    "clipName": "位移窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 3.1500000953674318,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "localDeltaFilterMode": 1
                 }
             }
         ]

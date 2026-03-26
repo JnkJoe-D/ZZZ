@@ -93,6 +93,18 @@
                     "rid": 1009
                 }
             ]
+        },
+        {
+            "groupId": "fb3e5945-423a-48c1-a587-815411732a4e",
+            "groupName": "分组 8",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1010
+                }
+            ]
         }
     ],
     "references": {
@@ -116,7 +128,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1011
                         }
                     ],
                     "isMasterTrack": true,
@@ -302,13 +314,36 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ]
                 }
             },
             {
                 "rid": 1010,
+                "type": {
+                    "class": "MotionWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "0f015156-76e7-4b70-8485-79d92ef586b0",
+                    "trackType": "MotionWindowTrack",
+                    "trackName": "位移窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1013
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1011,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -323,7 +358,7 @@
                     "blendInDuration": 0.6000000238418579,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 79098
+                        "instanceID": 70454
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -343,7 +378,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1012,
                 "type": {
                     "class": "MovementClip",
                     "ns": "SkillEditor",
@@ -367,6 +402,25 @@
                     "rotationTargetMode": 1,
                     "rotationExecuteMode": 1,
                     "turnSpeed": -1.0
+                }
+            },
+            {
+                "rid": 1013,
+                "type": {
+                    "class": "MotionWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "45ce7d47-cbe9-4cc5-bd9f-d8f47ab8da92",
+                    "clipName": "位移窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.6000000238418579,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "localDeltaFilterMode": 1,
+                    "visualOffsetMode": 0
                 }
             }
         ]

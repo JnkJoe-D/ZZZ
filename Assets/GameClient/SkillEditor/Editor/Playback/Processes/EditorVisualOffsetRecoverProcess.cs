@@ -1,14 +1,12 @@
 namespace SkillEditor.Editor
 {
-    [ProcessBinding(typeof(MotionWindowClip), PlayMode.EditorPreview)]
-    public class EditorMotionWindowProcess : ProcessBase<MotionWindowClip>
+    [ProcessBinding(typeof(VisualOffsetRecoverClip), PlayMode.EditorPreview)]
+    public class EditorVisualOffsetRecoverProcess : ProcessBase<VisualOffsetRecoverClip>
     {
         private ISkillMotionWindowHandler _motionWindowHandler;
-
-
         public override void OnEnable()
         {
-
+            _motionWindowHandler = context.GetService<ISkillMotionWindowHandler>();
         }
 
         public override void OnEnter()
@@ -23,13 +21,12 @@ namespace SkillEditor.Editor
 
         public override void OnExit()
         {
- 
+
         }
 
         public override void OnDisable()
         {
 
         }
-
     }
 }

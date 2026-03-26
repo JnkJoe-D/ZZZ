@@ -1,3 +1,4 @@
+using SkillEditor;
 using UnityEngine;
 
 namespace Game.Logic.Character
@@ -15,6 +16,10 @@ namespace Game.Logic.Character
         /// <param name="velocity">每秒移动的法向速度量</param>
         void Move(Vector3 velocity);
 
+        void ResetVisualOffset();
+        void SetVisualRecover(bool active, float speed = 0f);
+        void SetFilterMode(MotionWindowLocalDeltaFilterMode filterMode);
+        void SetVisualOffsetMode(MotionWindowVisualOffsetMode visualOffsetMode);
         /// <summary>
         /// 设置角色朝向
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using cfg;
+using System.Diagnostics;
+using cfg;
 using Game.AI;
 using SkillEditor;
 using UnityEngine;
@@ -8,28 +9,19 @@ namespace Game.Logic.Character
     [RequireComponent(typeof(CharacterEntity))]
     public class MovementController : MonoBehaviour, IMovementController
     {
-        [SerializeField] private Color _constraintBoxGizmoColor = new Color(0.2f, 0.8f, 1f, 0.2f);
-        [SerializeField] private Color _constraintBoxBoundaryPointColor = new Color(1f, 0.85f, 0.2f, 0.95f);
-        [SerializeField] private Color _constraintBoxFrontFaceColor = new Color(1f, 0.35f, 0.25f, 0.95f);
-        [SerializeField] private Color _constraintBoxNearestBoundaryColor = new Color(0.2f, 1f, 0.3f, 0.95f);
-        [SerializeField] private Color _constraintBoxFarthestBoundaryColor = new Color(0.9f, 0.2f, 1f, 0.95f);
-        [SerializeField] private float _verticalRootMotionThreshold = 0.0001f;
-        [SerializeField] private bool _debugConstraintBox;
-
         private CharacterController _cc;
         private CharacterEntity _entity;
         private Animator _animator;
-        private ISkillMotionWindowHandler _motionWindowHandler;
-        private float _verticalVelocity;
-        private LayerMask _defaultExcludeLayers;
-        private string _lastLoggedSnapClipId;
-        private MotionWindowRuntimeData _stickyMotionWindowRuntimeData;
+        private Transform _visualRoot;
 
         public float TurnSpeed = 15f;
         public float Gravity => -9.81f;
 
+        MotionWindowLocalDeltaFilterMode filterMode = MotionWindowLocalDeltaFilterMode.None;
+        private MotionWindowVisualOffsetMode visualOffsetMode = MotionWindowVisualOffsetMode.None;
         private void Awake()
         {
+            _visualRoot = transform.Find("Visual");
             _cc = gameObject.GetComponent<CharacterController>();
             if (_cc == null)
             {
@@ -50,28 +42,24 @@ namespace Game.Logic.Character
             {
                 _animator.applyRootMotion = true;
             }
-
-            if (_cc != null)
-            {
-                _defaultExcludeLayers = _cc.excludeLayers;
-            }
-        }
-
-        private void Update()
-        {
-            RefreshMotionWindowCollisionOverride();
         }
 
         private void OnDisable()
         {
-            RestoreDefaultExcludeLayers();
-            _stickyMotionWindowRuntimeData = null;
+            ResetVisualOffset();
+        }
+
+        public void ResetVisualOffset()
+        {
+            if (_visualRoot != null)
+            {
+                _visualRoot.localPosition = Vector3.zero;
+            }
         }
 
         public void Init(CharacterEntity entity)
         {
             _entity = entity;
-            _motionWindowHandler = entity?.SkillMotionWindowHandler;
         }
 
         public void Move(Vector3 moveDelta)
@@ -100,564 +88,142 @@ namespace Game.Logic.Character
                 deltaRotation = _animator.deltaRotation;
             }
 
-            bool hasVerticalRootMotion = Mathf.Abs(deltaPosition.y) > _verticalRootMotionThreshold;
-            if (_cc != null && _cc.isGrounded && _verticalVelocity < 0f)
+            if (_cc != null && !_cc.isGrounded)
             {
-                _verticalVelocity = 0;
-            }
-            else if (!hasVerticalRootMotion)
-            {
-                _verticalVelocity += 0;
-            }
-            else
-            {
-                _verticalVelocity = 0f;
+                deltaPosition += Vector3.up * Gravity * Time.deltaTime * Time.deltaTime;
             }
 
-            Vector3 gravityDelta = hasVerticalRootMotion
-                ? Vector3.zero
-                : Vector3.up * _verticalVelocity * Time.deltaTime;
+            ApplyRootMotion(deltaPosition);
 
-            bool hasAnimatorMotion = deltaPosition.sqrMagnitude > 0.000001f || deltaRotation != Quaternion.identity;
-            if (!hasAnimatorMotion && gravityDelta.sqrMagnitude <= 0f)
+            if (_animator.applyRootMotion && deltaRotation != Quaternion.identity)
             {
-                return;
-            }
-
-            ApplyRootMotion(deltaPosition + gravityDelta);
-
-            if (_animator.applyRootMotion)
-            {
-                ApplyRootRotation(deltaRotation);
+                transform.rotation *= deltaRotation;
             }
         }
 
         private void ApplyRootMotion(Vector3 deltaPosition)
         {
+            //XZ变化分量
             Vector3 horizontalDelta = Vector3.ProjectOnPlane(deltaPosition, Vector3.up);
-            horizontalDelta = ApplyHitReactionAxisConstraint(horizontalDelta);
+            //Y变化分量
             Vector3 verticalDelta = Vector3.up * deltaPosition.y;
-
-            if (TryApplyMotionWindow(horizontalDelta, verticalDelta))
+            //XZ转局部变化分量
+            Vector3 rawLocalDelta = transform.InverseTransformDirection(horizontalDelta);
+            //尝试过滤XZ局部变化分量
+            Vector3 filteredLocalDelta = ApplyMotionWindowFilter(rawLocalDelta);
+            
+            //转回世界变化分量
+            Vector3 finalDelta = transform.TransformDirection(filteredLocalDelta) + verticalDelta;
+            if (finalDelta.sqrMagnitude <= 0.000001f)
             {
                 return;
             }
-
+            //应用有效变化
             if (_cc != null && _cc.enabled)
             {
-                _cc.Move(horizontalDelta + verticalDelta);
+                _cc.Move(finalDelta);
             }
             else
             {
-                Debug.Log($"ApplyRootMotion1:{horizontalDelta.x}");
-
-                transform.position += horizontalDelta + verticalDelta;
+                transform.position += finalDelta;
             }
+            //尝试应用视觉模型偏移
+            ApplyVisualOffset(rawLocalDelta);
         }
 
-        private bool TryApplyMotionWindow(Vector3 horizontalDelta, Vector3 verticalDelta)
+        private Vector3 ApplyMotionWindowFilter(Vector3 localDelta)
         {
-            if (!TryResolveMotionWindowRuntimeData(out MotionWindowRuntimeData runtimeData))
+            if (filterMode == MotionWindowLocalDeltaFilterMode.None)
             {
-                return false;
+                return localDelta;
             }
 
-            LogConstraintBoxWindowActive(runtimeData);
-            Vector3 filteredHorizontalDelta = runtimeData.Clip.UsesConstraintBox()
-                ? ApplyMotionWindowConstraintBox(runtimeData, horizontalDelta)
-                : ApplyMotionWindowAxisFilterOnly(runtimeData, horizontalDelta);
-            if (_cc != null && _cc.enabled)
-            {
-                Vector3 currentRootPosition = transform.position;
-                Vector3 resolvedRootPosition = currentRootPosition + filteredHorizontalDelta;
-                transform.position = new Vector3(
-                    resolvedRootPosition.x,
-                    currentRootPosition.y,
-                    resolvedRootPosition.z);
-
-                if (verticalDelta.sqrMagnitude > 0.0000001f)
-                {
-                    _cc.Move(verticalDelta);
-                    transform.position = new Vector3(
-                        resolvedRootPosition.x,
-                        transform.position.y,
-                        resolvedRootPosition.z);
-                }
-            }
-            else
-            {
-                Debug.Log($"ApplyRootMotion2:{filteredHorizontalDelta.x}");
-
-                transform.position += filteredHorizontalDelta + verticalDelta;
-            }
-
-            ApplyMotionWindowResolvedPositionGuard(runtimeData);
-            return true;
-        }
-
-        private bool TryResolveMotionWindowRuntimeData(out MotionWindowRuntimeData runtimeData)
-        {
-            runtimeData = null;
-            if (_motionWindowHandler != null &&
-                _motionWindowHandler.TryGetActiveWindow(out MotionWindowRuntimeData activeRuntimeData) &&
-                activeRuntimeData?.Clip != null &&
-                activeRuntimeData.Clip.HasRuntimeConstraint())
-            {
-                _stickyMotionWindowRuntimeData = activeRuntimeData;
-                runtimeData = activeRuntimeData;
-                return true;
-            }
-
-            if (CanReuseStickyMotionWindow())
-            {
-                runtimeData = _stickyMotionWindowRuntimeData;
-                return runtimeData?.Clip != null;
-            }
-
-            _stickyMotionWindowRuntimeData = null;
-            _lastLoggedSnapClipId = null;
-            return false;
-        }
-
-        private bool CanReuseStickyMotionWindow()
-        {
-            if (_stickyMotionWindowRuntimeData?.Clip == null || _entity?.RuntimeData == null)
-            {
-                return false;
-            }
-
-            // MotionWindow 的 enter/exit 与 OnAnimatorMove 不是同一时机。
-            // 动作首尾有时会出现 1 帧左右的窗口空档，这里在技能/后摇阶段复用最近一次有效窗口，避免漏过滤。
-            CommandContextType contextType = _entity.RuntimeData.CurrentCommandContext;
-            return contextType == CommandContextType.Skill ||
-                   contextType == CommandContextType.Backswing;
-        }
-
-        private Vector3 ApplyMotionWindowConstraintBox(MotionWindowRuntimeData runtimeData, Vector3 horizontalDelta)
-        {
-            if (!MotionConstraintBoxUtility.TryGetConstraintBox(runtimeData, transform, out MotionConstraintBoxData boxData))
-            {
-                return ApplyMotionWindowAxisFilterOnly(runtimeData, horizontalDelta);
-            }
-
-            Vector3 filteredHorizontalDelta = ApplyMotionWindowLocalDeltaFilter(runtimeData.Clip, boxData, horizontalDelta);
-            Vector3 currentRootPosition = transform.position;
-            Vector3 candidateRootPosition = currentRootPosition + filteredHorizontalDelta;
-            Vector3 centerOffsetWorld = GetCapsuleCenterOffsetWorld();
-            float horizontalRadius = GetCapsuleRadius();
-            Vector3 clampedRootPosition = candidateRootPosition;
-            if (runtimeData.Clip.constraintBoxMode == MotionConstraintBoxMode.Block)
-            {
-                if (!MotionConstraintBoxUtility.TryRestrictRootPositionToBox(
-                        boxData,
-                        currentRootPosition,
-                        candidateRootPosition,
-                        centerOffsetWorld,
-                        horizontalRadius,
-                        out clampedRootPosition))
-                {
-                    return ApplyMotionWindowResolvedDeltaGuard(runtimeData.Clip, filteredHorizontalDelta);
-                }
-            }
-            else
-            {
-                if (!runtimeData.HasAppliedEnterSnap)
-                {
-                    clampedRootPosition = MotionConstraintBoxUtility.SnapRootPositionToBoxBoundary(
-                        boxData,
-                        currentRootPosition,
-                        currentRootPosition,
-                        centerOffsetWorld,
-                        horizontalRadius);
-                    runtimeData.HasAppliedEnterSnap = true;
-                    LogConstraintBoxSnap(runtimeData, boxData, currentRootPosition, clampedRootPosition, centerOffsetWorld, horizontalRadius);
-                }
-                else
-                {
-                    return ApplyMotionWindowResolvedDeltaGuard(runtimeData.Clip, filteredHorizontalDelta);
-                }
-
-            }
-
-            Vector3 clampedDelta = clampedRootPosition - currentRootPosition;
-            clampedDelta.y = 0f;
-            return ApplyMotionWindowResolvedDeltaGuard(runtimeData.Clip, clampedDelta);
-        }
-
-        private Vector3 ApplyMotionWindowAxisFilterOnly(MotionWindowRuntimeData runtimeData, Vector3 horizontalDelta)
-        {
-            return ApplyMotionWindowResolvedDeltaGuard(
-                runtimeData?.Clip,
-                ApplyMotionWindowLocalDeltaFilter(
-                    runtimeData?.Clip,
-                    GetMotionWindowReferenceRotation(runtimeData),
-                    horizontalDelta));
-        }
-
-        private Vector3 ApplyMotionWindowLocalDeltaFilter(
-            MotionWindowClip clip,
-            MotionConstraintBoxData boxData,
-            Vector3 horizontalDelta)
-        {
-            return ApplyMotionWindowLocalDeltaFilter(clip, boxData.Rotation, horizontalDelta);
-        }
-
-        private Vector3 ApplyMotionWindowLocalDeltaFilter(
-            MotionWindowClip clip,
-            Quaternion referenceRotation,
-            Vector3 horizontalDelta)
-        {
-            if (clip == null ||
-                clip.localDeltaFilterMode == MotionWindowLocalDeltaFilterMode.None ||
-                horizontalDelta.sqrMagnitude <= 0.0000001f)
-            {
-                return horizontalDelta;
-            }
-
-            // 先转到 MotionWindow 的本地坐标里过滤，再回到世界坐标。
-            Quaternion inverseRotation = Quaternion.Inverse(referenceRotation);
-            Vector3 localDelta = inverseRotation * horizontalDelta;
-            switch (clip.localDeltaFilterMode)
+            switch (filterMode)
             {
                 case MotionWindowLocalDeltaFilterMode.ZeroLocalX:
                     localDelta.x = 0f;
                     break;
-
                 case MotionWindowLocalDeltaFilterMode.ZeroLocalZ:
                     localDelta.z = 0f;
                     break;
-
                 case MotionWindowLocalDeltaFilterMode.ZeroLocalXZ:
                     localDelta.x = 0f;
                     localDelta.z = 0f;
                     break;
             }
 
-            Vector3 filteredHorizontalDelta = referenceRotation * localDelta;
-            filteredHorizontalDelta.y = 0f;
-            return filteredHorizontalDelta;
+            return localDelta;
         }
 
-        private Vector3 ApplyMotionWindowResolvedDeltaGuard(MotionWindowClip clip, Vector3 resolvedHorizontalDelta)
-        {
-            if (clip == null)
-            {
-                return resolvedHorizontalDelta;
-            }
+        private float _visualRecoverSpeed;
+        private bool _isVisualRecoverActive;
 
-            // 最终兜底：做最小验证时，允许直接把世界 X 增量清零。
-            if (clip.localDeltaFilterMode == MotionWindowLocalDeltaFilterMode.ZeroLocalX ||
-                clip.localDeltaFilterMode == MotionWindowLocalDeltaFilterMode.ZeroLocalXZ)
+        private void ApplyVisualOffset(Vector3 rawLocalDelta)
+        {
+            if (_visualRoot == null) return;
+
+            Vector3 currentVisualPos = _visualRoot.localPosition;
+
+            // 1. 矫正模式 (Recover Mode)
+            if (_isVisualRecoverActive && currentVisualPos.sqrMagnitude > 0.000001f)
             {
-                if (_debugConstraintBox && Mathf.Abs(resolvedHorizontalDelta.x) > 0.00001f)
+                // 计算回正方向向量
+                Vector3 dirToOrigin = -currentVisualPos.normalized;
+
+                // 计算原始位移在回正方向上的投能量
+                float p = Vector3.Dot(rawLocalDelta, dirToOrigin);
+
+                // 算法逻辑：
+                // 如果 p > 0 (朝向原点)，保留该分量；如果 p <= 0 (背离原点)，设为 0（拒绝远离）。
+                Vector3 filteredDelta = Mathf.Max(0, p) * dirToOrigin;
+
+                // 附加基础回收速度，确保逻辑最终必归原点
+                filteredDelta += dirToOrigin * (_visualRecoverSpeed * Time.deltaTime);
+
+                // 应用最终位移，并防止超调（Overshoot）
+                Vector3 nextPos = currentVisualPos + filteredDelta;
+                if (Vector3.Dot(-nextPos, dirToOrigin) < 0) // 说明跨过了原点
                 {
-                    Debug.LogWarning(
-                        "[ConstraintBoxDebug] Final World X Drift\n" +
-                        $"clipId={clip.clipId}\n" +
-                        $"worldDeltaBeforeGuard={resolvedHorizontalDelta}");
+                    nextPos = Vector3.zero;
                 }
-
-                resolvedHorizontalDelta.x = 0f;
-            }
-
-            return resolvedHorizontalDelta;
-        }
-
-        private void ApplyMotionWindowResolvedPositionGuard(MotionWindowRuntimeData runtimeData)
-        {
-            if (runtimeData?.Clip == null)
-            {
+                
+                _visualRoot.localPosition = nextPos;
                 return;
             }
 
-            MotionWindowClip clip = runtimeData.Clip;
-            if (clip.localDeltaFilterMode == MotionWindowLocalDeltaFilterMode.None)
+            // 2. 标准模式 (Standard Offset Mode)
+            if (visualOffsetMode == MotionWindowVisualOffsetMode.None) return;
+
+            Vector3 visualHorizentalOffsetDalta = Vector3.zero;
+            switch(visualOffsetMode)
             {
-                return;
-            }
-
-            Quaternion referenceRotation = GetMotionWindowReferenceRotation(runtimeData);
-            Vector3 currentPosition = transform.position;
-            Vector3 localOffset = Quaternion.Inverse(referenceRotation) * (currentPosition - runtimeData.StartPosition);
-            Vector3 guardedLocalOffset = localOffset;
-
-            switch (clip.localDeltaFilterMode)
-            {
-                case MotionWindowLocalDeltaFilterMode.ZeroLocalX:
-                    guardedLocalOffset.x = 0f;
+                case MotionWindowVisualOffsetMode.X:
+                    visualHorizentalOffsetDalta.x = rawLocalDelta.x;
                     break;
-
-                case MotionWindowLocalDeltaFilterMode.ZeroLocalZ:
-                    guardedLocalOffset.z = 0f;
+                case MotionWindowVisualOffsetMode.Z:
+                    visualHorizentalOffsetDalta.z = rawLocalDelta.z;
                     break;
-
-                case MotionWindowLocalDeltaFilterMode.ZeroLocalXZ:
-                    guardedLocalOffset.x = 0f;
-                    guardedLocalOffset.z = 0f;
+                case MotionWindowVisualOffsetMode.XZ:
+                    visualHorizentalOffsetDalta.x = rawLocalDelta.x;
+                    visualHorizentalOffsetDalta.z = rawLocalDelta.z;
                     break;
             }
-
-            if ((guardedLocalOffset - localOffset).sqrMagnitude <= 0.0000001f)
-            {
-                return;
-            }
-
-            if (_debugConstraintBox)
-            {
-                Debug.LogWarning(
-                    "[ConstraintBoxDebug] Final Position Guard\n" +
-                    $"clipId={clip.clipId}\n" +
-                    $"localOffsetBeforeGuard={localOffset}\n" +
-                    $"localOffsetAfterGuard={guardedLocalOffset}");
-            }
-
-            Vector3 guardedPosition = runtimeData.StartPosition + referenceRotation * guardedLocalOffset;
-            transform.position = new Vector3(guardedPosition.x, currentPosition.y, guardedPosition.z);
+            _visualRoot.localPosition += visualHorizentalOffsetDalta;
         }
 
-        private Quaternion GetMotionWindowReferenceRotation(MotionWindowRuntimeData runtimeData)
+        public void SetVisualRecover(bool active, float speed = 0f)
         {
-            if (runtimeData == null)
-            {
-                return Quaternion.identity;
-            }
-
-            Vector3 referenceForward = runtimeData.ReferenceForward;
-            referenceForward.y = 0f;
-            if (referenceForward.sqrMagnitude > 0.0001f)
-            {
-                return Quaternion.LookRotation(referenceForward.normalized, Vector3.up);
-            }
-
-            Vector3 startForward = runtimeData.StartRotation * Vector3.forward;
-            startForward.y = 0f;
-            if (startForward.sqrMagnitude > 0.0001f)
-            {
-                return Quaternion.LookRotation(startForward.normalized, Vector3.up);
-            }
-
-            return Quaternion.identity;
+            _isVisualRecoverActive = active;
+            _visualRecoverSpeed = speed;
         }
-
-        private Vector3 ApplyHitReactionAxisConstraint(Vector3 horizontalDelta)
+        public void SetFilterMode(MotionWindowLocalDeltaFilterMode filterMode)
         {
-            if (_entity?.RuntimeData == null ||
-                _entity.RuntimeData.CurrentCommandContext != CommandContextType.HitStun ||
-                !_entity.RuntimeData.HasHitReactionAxis)
-            {
-                return horizontalDelta;
-            }
-
-            Vector3 hitAxis = _entity.RuntimeData.CurrentHitReactionAxis;
-            hitAxis.y = 0f;
-            if (hitAxis.sqrMagnitude <= 0.0001f || horizontalDelta.sqrMagnitude <= 0.0000001f)
-            {
-                return horizontalDelta;
-            }
-
-            // 受击期间把动画水平位移投影到稳定受击轴上，吃掉左右漂移。
-            return Vector3.Project(horizontalDelta, hitAxis.normalized);
+            this.filterMode = filterMode; 
         }
-
-        private void ApplyRootRotation(Quaternion deltaRotation)
+        public void SetVisualOffsetMode(MotionWindowVisualOffsetMode visualOffsetMode)
         {
-            if (deltaRotation == Quaternion.identity)
-            {
-                return;
-            }
-
-            transform.rotation *= deltaRotation;
+            this.visualOffsetMode = visualOffsetMode;
         }
-
-        private Vector3 GetCapsuleCenterOffsetWorld()
-        {
-            if (_cc == null)
-            {
-                return Vector3.zero;
-            }
-
-            return transform.TransformVector(_cc.center);
-        }
-
-        private float GetCapsuleRadius()
-        {
-            return _cc != null
-                ? Mathf.Max(_cc.radius + _cc.skinWidth, 0.01f)
-                : 0.3f;
-        }
-
-        private void RefreshMotionWindowCollisionOverride()
-        {
-            if (_cc == null)
-            {
-                return;
-            }
-
-            LayerMask targetExcludeLayers = _defaultExcludeLayers;
-            if (_motionWindowHandler != null &&
-                _motionWindowHandler.TryGetActiveWindow(out MotionWindowRuntimeData runtimeData) &&
-                runtimeData?.Clip != null &&
-                runtimeData.Clip.constraintMode == MotionWindowConstraintMode.IgnoreCollision)
-            {
-                targetExcludeLayers |= runtimeData.Clip.ignoreCollisionLayers;
-            }
-
-            if (_cc.excludeLayers != targetExcludeLayers)
-            {
-                _cc.excludeLayers = targetExcludeLayers;
-            }
-        }
-
-        private void RestoreDefaultExcludeLayers()
-        {
-            if (_cc != null && _cc.excludeLayers != _defaultExcludeLayers)
-            {
-                _cc.excludeLayers = _defaultExcludeLayers;
-            }
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            if (!Application.isPlaying)
-            {
-                return;
-            }
-
-            if (_motionWindowHandler != null &&
-                _motionWindowHandler.TryGetActiveWindow(out MotionWindowRuntimeData runtimeData) &&
-                runtimeData?.Clip != null &&
-                runtimeData.Clip.UsesConstraintBox() &&
-                MotionConstraintBoxUtility.TryGetConstraintBox(runtimeData, transform, out MotionConstraintBoxData boxData))
-            {
-                DrawConstraintBox(boxData, runtimeData.Clip.debugColor.a > 0f ? runtimeData.Clip.debugColor : _constraintBoxGizmoColor);
-            }
-        }
-
-        private void DrawConstraintBox(MotionConstraintBoxData boxData, Color color)
-        {
-            Matrix4x4 previousMatrix = Gizmos.matrix;
-            Color previousColor = Gizmos.color;
-            Gizmos.matrix = Matrix4x4.TRS(boxData.Center, boxData.Rotation, Vector3.one);
-            Gizmos.color = color;
-            Gizmos.DrawWireCube(Vector3.zero, boxData.Size);
-            Color solidColor = color;
-            solidColor.a = Mathf.Min(color.a * 0.35f, 0.2f);
-            Gizmos.color = solidColor;
-            Gizmos.DrawCube(Vector3.zero, boxData.Size);
-            Gizmos.matrix = previousMatrix;
-            Gizmos.color = previousColor;
-
-            DrawConstraintBoundaryDebug(boxData);
-        }
-
-        private void DrawConstraintBoundaryDebug(MotionConstraintBoxData boxData)
-        {
-            Vector3 left = boxData.Rotation * Vector3.left;
-            Vector3 right = boxData.Rotation * Vector3.right;
-            float halfWidth = boxData.Size.x * 0.5f;
-
-            Color previousColor = Gizmos.color;
-            Gizmos.color = _constraintBoxFrontFaceColor;
-            Gizmos.DrawLine(
-                boxData.FrontFaceCenter + left * halfWidth,
-                boxData.FrontFaceCenter + right * halfWidth);
-            Gizmos.DrawSphere(boxData.FrontFaceCenter, 0.035f);
-
-            if (boxData.HasDebugBoundary)
-            {
-                Gizmos.color = _constraintBoxNearestBoundaryColor;
-                Gizmos.DrawSphere(boxData.SourceNearestBoundaryPoint, 0.035f);
-
-                Gizmos.color = _constraintBoxFarthestBoundaryColor;
-                Gizmos.DrawSphere(boxData.SourceFarthestBoundaryPoint, 0.035f);
-
-                Gizmos.color = _constraintBoxBoundaryPointColor;
-                Gizmos.DrawSphere(boxData.SourceFrontBoundaryPoint, 0.045f);
-                Gizmos.DrawLine(boxData.SourceFrontBoundaryPoint, boxData.FrontFaceCenter);
-            }
-
-            Gizmos.color = previousColor;
-        }
-
-        private void LogConstraintBoxSnap(
-            MotionWindowRuntimeData runtimeData,
-            MotionConstraintBoxData boxData,
-            Vector3 currentRootPosition,
-            Vector3 snappedRootPosition,
-            Vector3 centerOffsetWorld,
-            float horizontalRadius)
-        {
-            if (!_debugConstraintBox || runtimeData?.Clip == null)
-            {
-                return;
-            }
-
-            Vector3 targetCenter = Vector3.zero;
-            float targetRadius = -1f;
-            if (runtimeData.PrimaryTargetCollider is CharacterController targetController)
-            {
-                targetCenter = targetController.transform.TransformPoint(targetController.center);
-                targetRadius = Mathf.Max(targetController.radius + targetController.skinWidth, 0.01f);
-            }
-            else if (runtimeData.PrimaryTargetCollider != null)
-            {
-                targetCenter = runtimeData.PrimaryTargetCollider.bounds.center;
-            }
-            else if (runtimeData.PrimaryTarget != null)
-            {
-                targetCenter = runtimeData.PrimaryTarget.position;
-            }
-
-            Debug.LogWarning(
-                "[ConstraintBoxDebug] SnapToInside\n" +
-                $"clipId={runtimeData.Clip.clipId}\n" +
-                $"frontSource={runtimeData.Clip.ResolveFrontBoundarySource()}\n" +
-                $"currentRoot={currentRootPosition}\n" +
-                $"snappedRoot={snappedRootPosition}\n" +
-                $"ownerCenter={currentRootPosition + centerOffsetWorld}\n" +
-                $"ownerRadius={horizontalRadius}\n" +
-                $"referenceForward={runtimeData.ReferenceForward}\n" +
-                $"target={runtimeData.PrimaryTarget}\n" +
-                $"targetCollider={runtimeData.PrimaryTargetCollider}\n" +
-                $"targetCenter={targetCenter}\n" +
-                $"targetRadius={targetRadius}\n" +
-                $"sourceFrontBoundary={boxData.SourceFrontBoundaryPoint}\n" +
-                $"frontFaceCenter={boxData.FrontFaceCenter}\n" +
-                $"rearFaceCenter={boxData.RearFaceCenter}\n" +
-                $"boxCenter={boxData.Center}\n" +
-                $"boxSize={boxData.Size}",
-                this);
-        }
-
-        private void LogConstraintBoxWindowActive(MotionWindowRuntimeData runtimeData)
-        {
-            if (!_debugConstraintBox || runtimeData?.Clip == null)
-            {
-                return;
-            }
-
-            if (runtimeData.Clip.constraintBoxMode != MotionConstraintBoxMode.SnapToInside)
-            {
-                return;
-            }
-
-            if (_lastLoggedSnapClipId == runtimeData.Clip.clipId)
-            {
-                return;
-            }
-
-            _lastLoggedSnapClipId = runtimeData.Clip.clipId;
-            Debug.LogWarning(
-                "[ConstraintBoxDebug] Active Snap Window\n" +
-                $"clipId={runtimeData.Clip.clipId}\n" +
-                $"frontSource={runtimeData.Clip.ResolveFrontBoundarySource()}\n" +
-                $"target={runtimeData.PrimaryTarget}\n" +
-                $"targetCollider={runtimeData.PrimaryTargetCollider}\n" +
-                $"referenceForward={runtimeData.ReferenceForward}\n" +
-                $"hasAppliedEnterSnap={runtimeData.HasAppliedEnterSnap}",
-                this);
-        }
-
         public void FaceTo(Vector3 inputDir, float speed = -1f)
         {
             Vector3 lookDirection = CalculateWorldDirection(inputDir);

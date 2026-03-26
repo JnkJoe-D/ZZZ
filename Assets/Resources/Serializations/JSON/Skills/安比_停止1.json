@@ -48,6 +48,18 @@
                     "rid": 1003
                 }
             ]
+        },
+        {
+            "groupId": "8d455d9a-b7bc-4c19-ace8-11dc57c12af4",
+            "groupName": "分组 5",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1004
+                }
+            ]
         }
     ],
     "references": {
@@ -71,7 +83,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1004
+                            "rid": 1005
                         }
                     ],
                     "isMasterTrack": true,
@@ -124,10 +136,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1005
+                            "rid": 1006
                         },
                         {
-                            "rid": 1006
+                            "rid": 1007
                         }
                     ]
                 }
@@ -154,6 +166,29 @@
             {
                 "rid": 1004,
                 "type": {
+                    "class": "MotionWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "87cce32b-602e-49e2-8e18-e6b841ffe9e1",
+                    "trackType": "MotionWindowTrack",
+                    "trackName": "位移窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1008
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1005,
+                "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
                     "asm": "Assembly-CSharp"
@@ -167,7 +202,7 @@
                     "blendInDuration": 0.10000000149011612,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 36034
+                        "instanceID": 36354
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -187,7 +222,7 @@
                 }
             },
             {
-                "rid": 1005,
+                "rid": 1006,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -203,7 +238,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 35760
+                            "instanceID": 36066
                         }
                     ],
                     "volume": 1.0,
@@ -221,7 +256,7 @@
                 }
             },
             {
-                "rid": 1006,
+                "rid": 1007,
                 "type": {
                     "class": "SkillAudioClip",
                     "ns": "SkillEditor",
@@ -237,7 +272,7 @@
                     "blendOutDuration": 0.0,
                     "audioClips": [
                         {
-                            "instanceID": 37316
+                            "instanceID": 37572
                         }
                     ],
                     "volume": 1.0,
@@ -252,6 +287,24 @@
                             "assetPath": "Assets/Resources/Audio/FOOT/收脚音2.wav"
                         }
                     ]
+                }
+            },
+            {
+                "rid": 1008,
+                "type": {
+                    "class": "MotionWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "60c0fba7-a3db-476a-9b57-1e8064b34c10",
+                    "clipName": "位移窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.6666669845581055,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "localDeltaFilterMode": 1
                 }
             }
         ]

@@ -7,7 +7,7 @@ namespace SkillEditor
     /// 技能播放器核心：驱动 Process 生命周期的状态机
     /// 纯 C# 类（不继承 MonoBehaviour），支持区间扫描、事件订阅、Seek、三层清理
     /// </summary>
-    public class SkillRunner
+    public sealed class SkillRunner
     {
         /// <summary>
         /// 播放状态
@@ -141,6 +141,8 @@ namespace SkillEditor
             this.context.ExecuteStartActionsOnce();
 
             OnStart?.Invoke();
+
+            Tick(0f); //保证开始时间为0的片段能第一时间进入
         }
 
         /// <summary>
@@ -315,6 +317,8 @@ namespace SkillEditor
                     ResetActiveProcesses();
                     CurrentTime = !isReversing ? 0f : Timeline.Duration;
                     OnLoopComplete?.Invoke();
+
+                    Tick(0f); //结束时间作为下轮循环的开始时间，需保证开始时间为0的片段能第一时间进入
                 }
                 else
                 {

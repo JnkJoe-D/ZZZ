@@ -16,6 +16,7 @@ namespace Game.Logic.Character
         
         public ActionConfigAsset CurrentAction { get; private set; }
         public bool IsPlaying { get; private set; }
+        public float CurrentTime=>_runner.CurrentTime;
 
         public ActionPlayer(CharacterEntity entity)
         {

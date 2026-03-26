@@ -73,7 +73,7 @@
         {
             "groupId": "287696ea-4b66-4489-8a07-0a838fd83595",
             "groupName": "命中",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -457,7 +457,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.16666662693023683,
                     "animationClip": {
-                        "instanceID": 56438
+                        "instanceID": 109030
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -492,7 +492,7 @@
                     "blendInDuration": 0.16666662693023683,
                     "blendOutDuration": 0.09999990463256836,
                     "animationClip": {
-                        "instanceID": 63298
+                        "instanceID": 110006
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -527,7 +527,7 @@
                     "blendInDuration": 0.09999990463256836,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 64278
+                        "instanceID": 110982
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -626,10 +626,10 @@
                             ]
                         }
                     ],
-                    "detectFrequency": 0,
+                    "hitFrequency": 0,
                     "times": 4,
-                    "targetSortMode": 1,
                     "maxHitTargets": 0,
+                    "targetSortMode": 1,
                     "hitLayerMask": {
                         "serializedVersion": "2",
                         "m_Bits": 64
@@ -661,10 +661,6 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "hitReactionFrequency": 0,
-                    "hitReactionTime": 0.5,
-                    "hitReactionTimes": 3,
-                    "hitDirectionType": 0,
                     "enableHitStop": true,
                     "hitStopDuration": 0.05000000074505806,
                     "hitVFXPrefab": {
@@ -687,7 +683,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 37050
+                        "instanceID": 35052
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -720,10 +716,10 @@
                             ]
                         }
                     ],
-                    "detectFrequency": 0,
+                    "hitFrequency": 0,
                     "times": 4,
-                    "targetSortMode": 1,
                     "maxHitTargets": 0,
+                    "targetSortMode": 1,
                     "hitLayerMask": {
                         "serializedVersion": "2",
                         "m_Bits": 64
@@ -755,10 +751,6 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "hitReactionFrequency": 0,
-                    "hitReactionTime": 0.5,
-                    "hitReactionTimes": 3,
-                    "hitDirectionType": 0,
                     "enableHitStop": true,
                     "hitStopDuration": 0.05000000074505806,
                     "hitVFXPrefab": {
@@ -781,7 +773,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 37050
+                        "instanceID": 35052
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -814,10 +806,10 @@
                             ]
                         }
                     ],
-                    "detectFrequency": 0,
+                    "hitFrequency": 0,
                     "times": 4,
-                    "targetSortMode": 1,
                     "maxHitTargets": 0,
+                    "targetSortMode": 1,
                     "hitLayerMask": {
                         "serializedVersion": "2",
                         "m_Bits": 64
@@ -849,10 +841,6 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "hitReactionFrequency": 0,
-                    "hitReactionTime": 0.5,
-                    "hitReactionTimes": 3,
-                    "hitDirectionType": 0,
                     "enableHitStop": true,
                     "hitStopDuration": 0.05000000074505806,
                     "hitVFXPrefab": {
@@ -875,7 +863,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 37050
+                        "instanceID": 35052
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -908,10 +896,10 @@
                             ]
                         }
                     ],
-                    "detectFrequency": 0,
+                    "hitFrequency": 0,
                     "times": 5,
-                    "targetSortMode": 1,
                     "maxHitTargets": 0,
+                    "targetSortMode": 1,
                     "hitLayerMask": {
                         "serializedVersion": "2",
                         "m_Bits": 64
@@ -943,10 +931,6 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "hitReactionFrequency": 1,
-                    "hitReactionTime": 0.20000000298023225,
-                    "hitReactionTimes": 5,
-                    "hitDirectionType": 0,
                     "enableHitStop": false,
                     "hitStopDuration": 0.05000000074505806,
                     "hitVFXPrefab": {
@@ -969,7 +953,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 37050
+                        "instanceID": 35052
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -1021,43 +1005,8 @@
                     "duration": 6.633333206176758,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "constraintMode": 1,
-                    "targetMode": 1,
-                    "referenceMode": 3,
-                    "debugColor": {
-                        "r": 0.2199999988079071,
-                        "g": 0.7799999713897705,
-                        "b": 1.0,
-                        "a": 0.75
-                    },
-                    "ignoreCollisionLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 192
-                    },
-                    "showConstraintBoxInScene": true,
-                    "constraintBoxUpdateMode": 0,
-                    "constraintBoxLimitMode": 0,
-                    "alignConstraintBoxFrontToTarget": true,
-                    "constraintBoxFrontBoundaryMode": 0,
-                    "constraintBoxMode": 0,
-                    "constraintBoxObstacleLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 0
-                    },
-                    "constraintBoxSize": {
-                        "x": 8.550000190734864,
-                        "y": 2.0,
-                        "z": 10.229999542236329
-                    },
-                    "constraintBoxCenterOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "constraintBoxBackPadding": 0.0,
-                    "minConstraintBoxDepth": 0.6000000238418579,
-                    "constraintBoxFrontBoundaryOffset": 0.0,
-                    "recoverWhenOutside": true
+                    "localDeltaFilterMode": 3,
+                    "visualOffsetMode": 3
                 }
             }
         ]

@@ -93,6 +93,18 @@
                     "rid": 1009
                 }
             ]
+        },
+        {
+            "groupId": "c99d9d43-74da-4a02-abf5-61afd0f13184",
+            "groupName": "分组 8",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1010
+                }
+            ]
         }
     ],
     "references": {
@@ -116,10 +128,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1011
                         },
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ],
                     "isMasterTrack": true,
@@ -305,13 +317,36 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1013
                         }
                     ]
                 }
             },
             {
                 "rid": 1010,
+                "type": {
+                    "class": "MotionWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "a3f357b0-13f9-4e33-8aa8-23aa82615dda",
+                    "trackType": "MotionWindowTrack",
+                    "trackName": "位移窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1014
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1011,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -326,7 +361,7 @@
                     "blendInDuration": 0.13333334028720857,
                     "blendOutDuration": 0.03333330154418945,
                     "animationClip": {
-                        "instanceID": 40748
+                        "instanceID": 70594
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -346,7 +381,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1012,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -361,7 +396,7 @@
                     "blendInDuration": 0.03333330154418945,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 79098
+                        "instanceID": 70454
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -381,7 +416,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1013,
                 "type": {
                     "class": "MovementClip",
                     "ns": "SkillEditor",
@@ -405,6 +440,24 @@
                     "rotationTargetMode": 1,
                     "rotationExecuteMode": 1,
                     "turnSpeed": -1.0
+                }
+            },
+            {
+                "rid": 1014,
+                "type": {
+                    "class": "MotionWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "608e548b-adb1-4689-bcd5-43964191e6ac",
+                    "clipName": "位移窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.633333444595337,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "localDeltaFilterMode": 1
                 }
             }
         ]
