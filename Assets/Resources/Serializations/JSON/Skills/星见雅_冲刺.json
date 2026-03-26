@@ -1,8 +1,8 @@
 {
-    "isLoop": true,
+    "isLoop": false,
     "groups": [
         {
-            "groupId": "82fd8c6b-20fa-424d-8515-a02cb07d12dd",
+            "groupId": "4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28",
             "groupName": "动画",
             "isCollapsed": false,
             "isEnabled": true,
@@ -14,9 +14,9 @@
             ]
         },
         {
-            "groupId": "9504ede6-68f0-46aa-b60f-9dc7a8fc1a5a",
+            "groupId": "bf2dd4c3-588d-41e2-8451-7a4ba3258032",
             "groupName": "特效",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -26,7 +26,7 @@
             ]
         },
         {
-            "groupId": "8f4b6a00-5597-48b2-ab0d-3047e9057604",
+            "groupId": "87517105-7af1-4746-a8ba-834e1987bc67",
             "groupName": "音效",
             "isCollapsed": true,
             "isEnabled": true,
@@ -37,15 +37,24 @@
                 },
                 {
                     "rid": 1003
-                },
+                }
+            ]
+        },
+        {
+            "groupId": "e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b",
+            "groupName": "输入",
+            "isCollapsed": true,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
                 {
                     "rid": 1004
                 }
             ]
         },
         {
-            "groupId": "5e32243f-fd0e-4a9e-b870-e6e5ef0357fb",
-            "groupName": "事件",
+            "groupId": "c049ddd2-da2f-47c7-939b-5c2ab38fc517",
+            "groupName": "命中",
             "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
@@ -56,53 +65,26 @@
             ]
         },
         {
-            "groupId": "befe8c1b-dcd2-44d5-b34a-6098d3aa661a",
-            "groupName": "输入",
-            "isCollapsed": true,
-            "isEnabled": true,
-            "isLocked": false,
-            "tracks": [
-                {
-                    "rid": 1006
-                },
-                {
-                    "rid": 1007
-                }
-            ]
-        },
-        {
-            "groupId": "287696ea-4b66-4489-8a07-0a838fd83595",
-            "groupName": "命中",
+            "groupId": "2618bfdd-54e5-4e01-b001-9112a202093c",
+            "groupName": "动画位移",
             "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1008
+                    "rid": 1006
                 }
             ]
         },
         {
-            "groupId": "f2b0cab0-ea25-43b6-92a2-b7eb6b5e59b8",
+            "groupId": "fe97c978-da0d-4d70-b973-9218b609c4bc",
             "groupName": "变换",
             "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1009
-                }
-            ]
-        },
-        {
-            "groupId": "608c58eb-3c78-4a53-a9dd-cf16c942d93f",
-            "groupName": "分组 8",
-            "isCollapsed": false,
-            "isEnabled": true,
-            "isLocked": false,
-            "tracks": [
-                {
-                    "rid": 1010
+                    "rid": 1007
                 }
             ]
         }
@@ -118,7 +100,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "937f1449-7fce-437c-9747-bf5cc3852148",
+                    "trackId": "573ab7eb-5a8a-4dce-ad1d-d70ff0357aa4",
                     "trackType": "AnimationTrack",
                     "trackName": "动画轨道",
                     "isMuted": false,
@@ -128,7 +110,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1008
                         }
                     ],
                     "isMasterTrack": true,
@@ -152,7 +134,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "11435b9f-b7d5-474b-a217-a332b82693e0",
+                    "trackId": "d43568e5-6a7f-4b1c-afb9-46a10ad689c7",
                     "trackType": "VFXTrack",
                     "trackName": "特效轨道",
                     "isMuted": false,
@@ -171,9 +153,9 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "2dcc2480-bc30-484a-b6af-acc9c364d829",
+                    "trackId": "a05efcc5-b659-4a72-b03f-4719b6d446e4",
                     "trackType": "AudioTrack",
-                    "trackName": "挥刀",
+                    "trackName": "音效",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -190,7 +172,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "474789eb-6680-4b49-97d6-7de6e20a7137",
+                    "trackId": "c14034a8-c841-4dc3-b007-b107d1d294d1",
                     "trackType": "AudioTrack",
                     "trackName": "语音",
                     "isMuted": false,
@@ -204,14 +186,14 @@
             {
                 "rid": 1004,
                 "type": {
-                    "class": "AudioTrack",
+                    "class": "ComboWindowTrack",
                     "ns": "SkillEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "188688e2-74b4-4304-9098-67d811e1cf54",
-                    "trackType": "AudioTrack",
-                    "trackName": "收刀",
+                    "trackId": "95a1ff0c-6f52-49d9-ae8b-c8814ebeee5b",
+                    "trackType": "ComboWindowTrack",
+                    "trackName": "输入派生窗口",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -223,69 +205,12 @@
             {
                 "rid": 1005,
                 "type": {
-                    "class": "EventTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "9c692c41-f19e-48d3-9b23-cdaabbe34bec",
-                    "trackType": "EventTrack",
-                    "trackName": "事件轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": true,
-                    "clips": []
-                }
-            },
-            {
-                "rid": 1006,
-                "type": {
-                    "class": "ComboWindowTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "f1b5c71e-008f-4f57-9daf-2914aa5b3c26",
-                    "trackType": "ComboWindowTrack",
-                    "trackName": "连击派生窗口",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": false,
-                    "clips": []
-                }
-            },
-            {
-                "rid": 1007,
-                "type": {
-                    "class": "ComboWindowTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "f4db5a8a-3839-4bd5-a087-686b67420d72",
-                    "trackType": "ComboWindowTrack",
-                    "trackName": "连击派生窗口",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": false,
-                    "clips": []
-                }
-            },
-            {
-                "rid": 1008,
-                "type": {
                     "class": "HitTrack",
                     "ns": "SkillEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "098b0101-309d-446b-a5d1-973b90c5815a",
+                    "trackId": "6c372d50-4b7d-4af7-992f-9aff4e5fa659",
                     "trackType": "DamageTrack",
                     "trackName": "命中判定轨道",
                     "isMuted": false,
@@ -297,37 +222,14 @@
                 }
             },
             {
-                "rid": 1009,
-                "type": {
-                    "class": "MovementTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "987477db-c0f1-4ca5-a3c7-9778771e1ab6",
-                    "trackType": "MovementTrack",
-                    "trackName": "移动轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": false,
-                    "clips": [
-                        {
-                            "rid": 1012
-                        }
-                    ]
-                }
-            },
-            {
-                "rid": 1010,
+                "rid": 1006,
                 "type": {
                     "class": "MotionWindowTrack",
                     "ns": "SkillEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "352b5bc1-e17f-4227-beb8-56d36fb00bed",
+                    "trackId": "15e2bdc7-968f-4cfa-a5f8-f20e16b3ce0c",
                     "trackType": "MotionWindowTrack",
                     "trackName": "位移窗口轨道",
                     "isMuted": false,
@@ -337,24 +239,43 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1009
                         }
                     ]
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1007,
+                "type": {
+                    "class": "MovementTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "a6edf5f1-f34a-46ac-a162-9bddb56397d3",
+                    "trackType": "MovementTrack",
+                    "trackName": "变换轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": []
+                }
+            },
+            {
+                "rid": 1008,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "9569b5a1-c2f6-4e2b-8a20-f66f687cf7bc",
-                    "clipName": "动画轨道片段",
+                    "clipId": "03ebda7d-e157-4182-aed0-b82ea6d183b4",
+                    "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.5333333611488342,
+                    "duration": 0.5,
                     "blendInDuration": 0.13333334028720857,
                     "blendOutDuration": 0.0,
                     "animationClip": {
@@ -378,49 +299,21 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1009,
                 "type": {
-                    "class": "MovementClip",
+                    "class": "MotionFilterClip",
                     "ns": "SkillEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "c52d27d5-dac8-469d-a2f9-c5d1475a7ea8",
-                    "clipName": "移动轨道片段",
-                    "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 0.1666666716337204,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "movementType": 1,
-                    "targetPosition": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "speed": 5.0,
-                    "rotationTargetMode": 1,
-                    "rotationExecuteMode": 1,
-                    "turnSpeed": -1.0
-                }
-            },
-            {
-                "rid": 1013,
-                "type": {
-                    "class": "MotionWindowClip",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "0dcae2f6-fffe-464f-8f83-58da3490e89a",
+                    "clipId": "fc099760-ca41-458f-81e1-9b417c164307",
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.533333420753479,
+                    "duration": 0.5,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "localDeltaFilterMode": 1,
-                    "visualOffsetMode": 0
+                    "localDeltaFilterMode": 1
                 }
             }
         ]

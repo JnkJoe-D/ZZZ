@@ -3,7 +3,7 @@ using System;
 namespace SkillEditor
 {
     [Serializable]
-    [TrackDefinition("音效轨道", typeof(SkillAudioClip), "#CCB233", "AudioSource Icon", 2)]
+    [TrackDefinition("音效轨道", "#CCB233", "AudioSource Icon", 2)]
     public class AudioTrack : TrackBase
     {
         public AudioTrack()

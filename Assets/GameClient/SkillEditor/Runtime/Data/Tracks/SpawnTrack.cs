@@ -3,7 +3,7 @@ using System;
 namespace SkillEditor
 {
     [Serializable]
-    [TrackDefinition("生成轨道(Spawn)", typeof(SpawnClip), "#4CAF50", "d_GameObject Icon", 4)]
+    [TrackDefinition("生成轨道(Spawn)", "#4CAF50", "d_GameObject Icon", 4)]
     public class SpawnTrack : TrackBase
     {
         public SpawnTrack()

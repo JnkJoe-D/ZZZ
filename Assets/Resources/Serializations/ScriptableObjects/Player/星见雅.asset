@@ -59,7 +59,7 @@ MonoBehaviour:
   enhancedSpecialSkillPerfect: {fileID: 0}
   chainSkill: {fileID: 0}
   assistSkill: {fileID: 0}
-  Ultimate: {fileID: 0}
+  Ultimate: {fileID: 11400000, guid: 6a5978762a3863543a136e37cc50978a, type: 2}
   BehaviorTreeGraph: {fileID: 0}
   CommandContextConfig: {fileID: 11400000, guid: ece6fb6c480b8b248a0481b86b3dd031,
     type: 2}

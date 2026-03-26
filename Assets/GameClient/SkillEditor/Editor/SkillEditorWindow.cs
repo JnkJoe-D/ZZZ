@@ -321,8 +321,9 @@ namespace SkillEditor.Editor
             // 1. 垂直滚动同步管理 (统一驱动左右视图)
             float totalHeight = state.CalculateTotalHeight();
             bool needsScroll = totalHeight > contentHeight;
-            float scrollbarWidth = needsScroll ? 15f : 0f;
+            float scrollbarWidth = 0f; // 隐藏滚动轴视觉
             
+            /*
             if (needsScroll)
             {
                 Rect scrollRect = new Rect(position.width - scrollbarWidth, yOffset, scrollbarWidth, contentHeight);
@@ -332,6 +333,9 @@ namespace SkillEditor.Editor
             {
                 state.verticalScrollOffset = 0;
             }
+            */
+            if (!needsScroll) state.verticalScrollOffset = 0;
+
 
             // 1.1 监听全局常规鼠标滚轮(垂直滚动)
             if (needsScroll && Event.current.type == EventType.ScrollWheel && !Event.current.control && !Event.current.command && !Event.current.shift)

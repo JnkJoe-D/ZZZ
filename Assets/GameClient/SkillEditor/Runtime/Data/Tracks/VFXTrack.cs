@@ -3,7 +3,7 @@ using System;
 namespace SkillEditor
 {
     [Serializable]
-    [TrackDefinition("特效轨道",  typeof(VFXClip), "#CC4C4C", "Particle Effect", 1)]
+    [TrackDefinition("特效轨道", "#CC4C4C", "Particle Effect", 1)]
     public class VFXTrack : TrackBase
     {
         public VFXTrack()

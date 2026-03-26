@@ -30,6 +30,11 @@ MonoBehaviour:
       NextAction: {fileID: 0}
       ExtraConditions: []
       TriggerMode: 0
+    - RequiredType: 40
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6a5978762a3863543a136e37cc50978a, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
   - ContextType: 20
     Routes:
     - RequiredType: 20
@@ -45,6 +50,11 @@ MonoBehaviour:
     - RequiredType: 50
       RequiredPhase: 0
       NextAction: {fileID: 0}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 40
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6a5978762a3863543a136e37cc50978a, type: 2}
       ExtraConditions: []
       TriggerMode: 0
   - ContextType: 30
@@ -64,6 +74,11 @@ MonoBehaviour:
       NextAction: {fileID: 0}
       ExtraConditions: []
       TriggerMode: 0
+    - RequiredType: 40
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6a5978762a3863543a136e37cc50978a, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
   - ContextType: 40
     Routes:
     - RequiredType: 20
@@ -81,6 +96,11 @@ MonoBehaviour:
       NextAction: {fileID: 0}
       ExtraConditions: []
       TriggerMode: 0
+    - RequiredType: 40
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6a5978762a3863543a136e37cc50978a, type: 2}
+      ExtraConditions: []
+      TriggerMode: 0
   - ContextType: 70
     Routes:
     - RequiredType: 20
@@ -96,6 +116,11 @@ MonoBehaviour:
     - RequiredType: 50
       RequiredPhase: 0
       NextAction: {fileID: 0}
+      ExtraConditions: []
+      TriggerMode: 0
+    - RequiredType: 40
+      RequiredPhase: 0
+      NextAction: {fileID: 11400000, guid: 6a5978762a3863543a136e37cc50978a, type: 2}
       ExtraConditions: []
       TriggerMode: 0
   references:

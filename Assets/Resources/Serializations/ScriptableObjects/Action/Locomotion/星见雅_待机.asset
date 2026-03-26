@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 1100
   Name: 
-  TimelineAsset: {fileID: 4900000, guid: 2e203f24e5e631e4a873459b8bcad72a, type: 3}
+  TimelineAsset: {fileID: 4900000, guid: d37e318056deaeb4299dbfa0e8dd5061, type: 3}
   TurnMode: 0
   LocalRoutes: []
   MoveSpeedMultiplier: 1

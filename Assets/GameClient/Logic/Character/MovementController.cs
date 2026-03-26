@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using cfg;
 using Game.AI;
+
 using SkillEditor;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ namespace Game.Logic.Character
         private CharacterEntity _entity;
         private Animator _animator;
         private Transform _visualRoot;
+
+
 
         public float TurnSpeed = 15f;
         public float Gravity => -9.81f;
@@ -57,7 +60,9 @@ namespace Game.Logic.Character
             }
         }
 
+
         public void Init(CharacterEntity entity)
+
         {
             _entity = entity;
         }
@@ -114,19 +119,21 @@ namespace Game.Logic.Character
             
             //转回世界变化分量
             Vector3 finalDelta = transform.TransformDirection(filteredLocalDelta) + verticalDelta;
-            if (finalDelta.sqrMagnitude <= 0.000001f)
+            if (finalDelta.sqrMagnitude > 0.000001f)
             {
-                return;
+
+
+                //应用有效变化
+                if (_cc != null && _cc.enabled)
+                {
+                    _cc.Move(finalDelta);
+                }
+                else
+                {
+                    transform.position += finalDelta;
+                }
             }
-            //应用有效变化
-            if (_cc != null && _cc.enabled)
-            {
-                _cc.Move(finalDelta);
-            }
-            else
-            {
-                transform.position += finalDelta;
-            }
+    
             //尝试应用视觉模型偏移
             ApplyVisualOffset(rawLocalDelta);
         }
@@ -208,6 +215,9 @@ namespace Game.Logic.Character
                     visualHorizentalOffsetDalta.z = rawLocalDelta.z;
                     break;
             }
+
+
+
             _visualRoot.localPosition += visualHorizentalOffsetDalta;
         }
 

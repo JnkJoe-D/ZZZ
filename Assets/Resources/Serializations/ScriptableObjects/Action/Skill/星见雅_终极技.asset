@@ -21,7 +21,7 @@ MonoBehaviour:
     RequiredPhase: 0
     NextAction: {fileID: 11400000, guid: b160746897ca318418d8374d92e49685, type: 2}
     ExtraConditions: []
-    RequiredWindowTag: pre1
+    RequiredWindowTag: Buffer
     TriggerMode: 0
   - RequiredType: 50
     RequiredPhase: 0

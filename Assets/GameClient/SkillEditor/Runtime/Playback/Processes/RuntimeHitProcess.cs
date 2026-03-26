@@ -31,7 +31,7 @@ namespace SkillEditor
                 GetMatrix(out fixedHitBoxPosition, out fixedHitBoxRotation);
             }
 
-            if (clip.hitFrequency == HitFrequency.Once)
+            if (clip.detectFrequency == Frequency.Once)
             {
                 DoHitCheck();
             }
@@ -39,7 +39,7 @@ namespace SkillEditor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            if (clip.hitFrequency == HitFrequency.Times)
+            if (clip.detectFrequency == Frequency.Times)
             {
                 if (clip.times <= 0 || timesChecked >= clip.times) return;
                 
@@ -110,7 +110,7 @@ namespace SkillEditor
                 // 冷却过滤
                 if (hitRecords.TryGetValue(hit, out float lastHitTime))
                 {
-                    if (clip.hitFrequency == HitFrequency.Once) continue;
+                    if (clip.detectFrequency == Frequency.Once) continue;
                     // 如果是 Times，依靠自身的计时器，这里允许命中，但是如果一个对象还在上一轮的冷却中？
                     // 由于 DoDamageCheck 本身是按频率调用的，只要被调到了就可以生效。此处可做更精细的每目标 CD，这里从简。
                 }
@@ -208,6 +208,9 @@ namespace SkillEditor
                     hitBoxCenter = center,
                     targetsCollilders = validHits.ToArray(),
                     hitEffects = clip.hitEffects,
+                    hitMode = clip.hitMode,
+                    multiHitCount = clip.multiHitCount,
+                    multiHitDuration = clip.multiHitDuration,
                     enableHitStop = clip.enableHitStop,
                     hitStopDuration = clip.hitStopDuration,
                     hitVFXPrefab = clip.hitVFXPrefab,

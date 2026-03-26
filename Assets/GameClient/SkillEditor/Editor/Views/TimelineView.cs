@@ -52,7 +52,7 @@ namespace SkillEditor.Editor
         {
             float maxTime = 30f;
             float contentWidth = Mathf.Max(rect.width, coords.TimeToPixel(maxTime));
-            float scrollbarHeight = (contentWidth > rect.width) ? 15f : 0f;
+            float scrollbarHeight = 0f; // 隐藏滚动轴视觉
             float viewHeight = rect.height - scrollbarHeight;
 
             // 1. 优先处理视口平移导航
@@ -71,12 +71,16 @@ namespace SkillEditor.Editor
             DrawTimeIndicator(new Rect(0, 0, rect.width, viewHeight));
             DrawSnapLine(rect);
 
-            // 4. 绘制横向滚动条
+            // 4. 隐藏横向滚动条绘制
+            /*
             if (scrollbarHeight > 0)
             {
                 Rect scrollbarRect = new Rect(0, viewHeight, rect.width, scrollbarHeight);
                 state.scrollOffset = GUI.HorizontalScrollbar(scrollbarRect, state.scrollOffset, rect.width, 0, contentWidth);
             }
+            */
+
+
 
             // 处理键盘快捷键与常规鼠标事件
             clipInteraction.HandleShortcuts();

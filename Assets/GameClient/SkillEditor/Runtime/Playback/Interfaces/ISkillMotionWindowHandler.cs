@@ -1,3 +1,6 @@
+using SkillEditor;
+using UnityEngine;
+
 namespace SkillEditor
 {
     public interface ISkillMotionWindowHandler

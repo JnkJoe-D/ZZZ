@@ -25,7 +25,7 @@ namespace SkillEditor
 
         [Header("Transform Config")]
         [SkillProperty("生成绑定点")]
-        public BindPoint bindPoint = BindPoint.Root;
+        public BindPoint bindPoint = BindPoint.LogicRoot;
 
         [SkillProperty("自定义骨骼名称")]
         public string customBoneName = "";

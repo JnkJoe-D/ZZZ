@@ -1,4 +1,6 @@
-﻿namespace SkillEditor.Editor
+﻿using System.Diagnostics;
+
+namespace SkillEditor.Editor
 {
     /// <summary>
     /// Editor preview animation process.
@@ -44,18 +46,22 @@
                 EditorAnimationUtils.RegisterClip(context.Owner, clip);
                 clipRegistered = true;
             }
+            UnityEngine.Debug.Log("Animation process OnEnable");
         }
 
         public override void OnEnter()
         {
+            UnityEngine.Debug.Log("Animation process OnEnter");
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
+            UnityEngine.Debug.Log("Animation process OnUpdate");
         }
 
         public override void OnExit()
         {
+            UnityEngine.Debug.Log("Animation process OnExit");
         }
 
         public override void OnDisable()

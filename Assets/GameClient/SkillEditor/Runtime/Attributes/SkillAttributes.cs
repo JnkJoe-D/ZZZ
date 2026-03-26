@@ -47,28 +47,11 @@ namespace SkillEditor
         public string DisplayName { get; private set; }
         public string Icon { get; private set; }
         public int Order { get; private set; }
-        public Type[] ClipTypes { get; private set; }
         public string ColorHex { get; private set; }
 
-        /// <summary>
-        /// 定义轨道元数据 (兼容单个片段类型)
-        /// </summary>
-        public TrackDefinitionAttribute(string displayName, Type clipType, string colorHex, string icon = "", int order = 0)
+        public TrackDefinitionAttribute(string displayName, string colorHex, string icon = "", int order = 0)
         {
             DisplayName = displayName;
-            ClipTypes = new Type[] { clipType };
-            ColorHex = colorHex;
-            Icon = icon;
-            Order = order;
-        }
-
-        /// <summary>
-        /// 定义轨道元数据 (支持多个片段类型)
-        /// </summary>
-        public TrackDefinitionAttribute(string displayName, Type[] clipTypes, string colorHex, string icon = "", int order = 0)
-        {
-            DisplayName = displayName;
-            ClipTypes = clipTypes;
             ColorHex = colorHex;
             Icon = icon;
             Order = order;
@@ -94,11 +77,12 @@ namespace SkillEditor
     {
         public string conditionalSourceField;
         public object expectedValue;
-
-        public ShowIfAttribute(string conditionalSourceField, object expectedValue)
+        public bool isEqual;
+        public ShowIfAttribute(string conditionalSourceField, object expectedValue,bool isEqual = true)
         {
             this.conditionalSourceField = conditionalSourceField;
             this.expectedValue = expectedValue;
+            this.isEqual = isEqual;
         }
     }
 }

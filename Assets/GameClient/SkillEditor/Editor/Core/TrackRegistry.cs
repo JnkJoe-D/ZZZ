@@ -16,7 +16,6 @@ namespace SkillEditor.Editor
         public class TrackInfo
         {
             public Type TrackType;
-            public Type[] ClipTypes;
             public TrackDefinitionAttribute Attribute;
         }
 
@@ -69,7 +68,6 @@ namespace SkillEditor.Editor
                         registeredTracks.Add(new TrackInfo
                         {
                             TrackType = type,
-                            ClipTypes = attr.ClipTypes, // 初始保留轨道定义的片段
                             Attribute = attr
                         });
                     }
@@ -100,25 +98,8 @@ namespace SkillEditor.Editor
                 }
             }
 
-            // 第三阶段：合并轨道定义的片段（如果有）到映射表中
-            foreach (var info in registeredTracks)
-            {
-                if (info.ClipTypes != null)
-                {
-                    if (!trackToClipTypesMap.ContainsKey(info.TrackType))
-                    {
-                        trackToClipTypesMap[info.TrackType] = new List<Type>();
-                    }
+            // 第二阶段：扫描所有片段并进行反向注册 (结束)
 
-                    foreach (var ct in info.ClipTypes)
-                    {
-                        if (!trackToClipTypesMap[info.TrackType].Contains(ct))
-                        {
-                            trackToClipTypesMap[info.TrackType].Add(ct);
-                        }
-                    }
-                }
-            }
 
             // 根据 Order 排序
             registeredTracks.Sort((a, b) => a.Attribute.Order.CompareTo(b.Attribute.Order));
@@ -165,14 +146,8 @@ namespace SkillEditor.Editor
             return Array.Empty<Type>();
         }
 
-        /// <summary>
-        /// 根据轨道类型获取关联的第一个片段类型 (兼容旧逻辑)
-        /// </summary>
-        public static Type GetClipType(Type trackType)
-        {
-            var types = GetClipTypes(trackType);
-            return types.Length > 0 ? types[0] : null;
-        }
+
+
 
         /// <summary>
         /// 获取片段类型的显示名称

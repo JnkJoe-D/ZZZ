@@ -277,7 +277,11 @@ namespace SkillEditor.Editor
             
             if (clipType == null)
             {
-                clipType = TrackRegistry.GetClipType(track.GetType());
+                var types = TrackRegistry.GetClipTypes(track.GetType());
+                if (types != null && types.Length > 0)
+                {
+                    clipType = types[0];
+                }
             }
 
             if (clipType != null)

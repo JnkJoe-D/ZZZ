@@ -17,7 +17,7 @@ public class SkillBoneGetter : ISkillBoneGetter
         // 例如：
         switch (point)
         {
-            case BindPoint.Root:
+            case BindPoint.LogicRoot:
                 return owner.transform;
             case BindPoint.Body:
                 return animator != null ? animator.GetBoneTransform(HumanBodyBones.Spine) : owner.transform; // 优先获取 Spine 作为身体中心

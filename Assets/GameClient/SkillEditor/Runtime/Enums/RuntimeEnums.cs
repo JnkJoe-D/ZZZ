@@ -45,7 +45,7 @@ namespace SkillEditor
     /// </summary>
     public enum BindPoint
     {
-        Root,           // 根节点
+        LogicRoot,           // 根节点
         Body,           // 身体中心 (胸口/骨盆)
         Head,           // 头部
         LeftHand,       // 左手

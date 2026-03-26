@@ -4,7 +4,7 @@ using cfg;
 namespace SkillEditor
 {
     [Serializable]
-    [TrackDefinition("动画轨道", typeof(SkillAnimationClip), "#33B24C", "Animation.Record", 0)]
+    [TrackDefinition("动画轨道", "#33B24C", "Animation.Record", 0)]
     public class AnimationTrack : TrackBase
     {
         public AnimationTrack()

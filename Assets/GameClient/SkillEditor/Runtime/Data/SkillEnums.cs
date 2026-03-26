@@ -13,7 +13,7 @@ namespace SkillEditor
 
 
 
-    public enum HitFrequency 
+    public enum Frequency 
     { 
         Once, 
         Times 

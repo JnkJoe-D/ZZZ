@@ -4571,6 +4571,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9125984478041002557}
+  - {fileID: 8886724965460227449}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &8073107432286957427
@@ -4622,7 +4623,7 @@ MonoBehaviour:
     type: 3}
   _virtualCamera: {fileID: 0}
   virtualCamName: "\u4E3B\u76F8\u673A"
-  follow: {fileID: 7886592835731695961}
+  follow: {fileID: 8886724965460227449}
   lookAt: {fileID: 8886724965460227449}
 --- !u!114 &2798183846835276748
 MonoBehaviour:
@@ -4794,7 +4795,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 9125984478041002557}
+  m_Father: {fileID: 6110729072193539247}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5401134591589808032
 GameObject:
@@ -6105,7 +6106,6 @@ Transform:
   - {fileID: 1236103065035391792}
   - {fileID: 4822257208282319826}
   - {fileID: 488008939097345580}
-  - {fileID: 8886724965460227449}
   m_Father: {fileID: 6110729072193539247}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7007932495915566033

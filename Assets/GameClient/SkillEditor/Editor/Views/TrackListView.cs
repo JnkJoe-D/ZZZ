@@ -474,7 +474,26 @@ namespace SkillEditor.Editor
         {
             try 
             {
-                return (TrackBase)Activator.CreateInstance(trackType);
+                TrackBase newTrack = (TrackBase)Activator.CreateInstance(trackType);
+                if (newTrack is AnimationTrack newAnimationTrack && state?.currentTimeline != null)
+                {
+                    bool hasExistingAnimationTrack = false;
+                    foreach (TrackBase existingTrack in state.currentTimeline.AllTracks)
+                    {
+                        if (existingTrack is AnimationTrack)
+                        {
+                            hasExistingAnimationTrack = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasExistingAnimationTrack)
+                    {
+                        newAnimationTrack.isMasterTrack = true;
+                    }
+                }
+
+                return newTrack;
             }
             catch (Exception e)
             {

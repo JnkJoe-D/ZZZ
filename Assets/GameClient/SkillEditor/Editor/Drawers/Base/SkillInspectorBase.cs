@@ -110,7 +110,9 @@ namespace SkillEditor.Editor
                 if (sourceField != null)
                 {
                     var sourceValue = sourceField.GetValue(obj);
-                    if (!object.Equals(sourceValue, showIf.expectedValue))
+                    if (!object.Equals(sourceValue, showIf.expectedValue)&& showIf.isEqual)
+                        return false;
+                    else if(object.Equals(sourceValue, showIf.expectedValue) && !showIf.isEqual)
                         return false;
                 }
             }

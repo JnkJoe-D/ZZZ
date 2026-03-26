@@ -28,7 +28,7 @@ namespace SkillEditor.Editor
 
         public override void OnEnter()
         {
-            if (clip.hitFrequency == HitFrequency.Once)
+            if (clip.detectFrequency == Frequency.Once)
             {
                 Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered!</color> HitEffects: {clip.hitEffects?.Length ?? 0}, Time: OnEnter");
             }
@@ -65,7 +65,7 @@ namespace SkillEditor.Editor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            if (clip.hitFrequency == HitFrequency.Times)
+            if (clip.detectFrequency == Frequency.Times)
             {
                 if (clip.times <= 0 || timesChecked >= clip.times) return;
                 

@@ -3,7 +3,7 @@ using System;
 namespace SkillEditor
 {
     [Serializable]
-    [TrackDefinition("派生窗口(Combo)", typeof(ComboWindowClip), "#4CAF50", "d_FilterByLabel", 6)]
+    [TrackDefinition("派生窗口(Combo)", "#4CAF50", "d_FilterByLabel", 6)]
     public class ComboWindowTrack : TrackBase
     {
         public ComboWindowTrack()
