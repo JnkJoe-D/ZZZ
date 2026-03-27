@@ -6,6 +6,7 @@ namespace SkillEditor
     public enum ComboWindowType
     {
         None = 100,
+        RecoveryExecute = 3,
         Buffer= 0,    // 只能预输入，不即时执行
         Execute=1,   // 既能即时执行，也可接收预定的预输入
         Fallback=2   // 后摇垃圾时间，打断重置起手

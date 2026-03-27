@@ -62,11 +62,11 @@ namespace Game.Adapters
             {
                 return GetOrCreateCachedService(serviceType, owner, () => new SkillCameraHandler(owner.GetComponent<CharacterEntity>()));
             }
-            if (serviceType == typeof(ISkillMovementHandler))
+            if (serviceType == typeof(ISkillTransformHandler))
             {
                 return GetOrCreateCachedService(serviceType, owner, () => {
                     var entity = owner.GetComponent<CharacterEntity>();
-                    return entity != null ? new SkillMovementHandler(entity) : null;
+                    return entity != null ? new SkillTransformHandler(entity) : null;
                 });
             }
             if (serviceType == typeof(ISkillEventHandler))

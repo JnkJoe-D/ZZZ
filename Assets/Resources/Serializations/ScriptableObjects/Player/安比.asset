@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RoleID: 1001
   RoleName: 
-  CharacterPrefab: {fileID: 7318168888982567421, guid: ae5497ae1dd48134ba0434944f49b33b,
+  CharacterPrefab: {fileID: 6866138656870126649, guid: 58a89a85b7ed98e4885d1ebbcd76228d,
     type: 3}
   GroundRadius: 0.3
   GroundHeight: 1.8
@@ -23,12 +23,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   JogMultipier: 1
+  JogShortInputThreshold: 0.2
   DashMultipier: 1
   DodgeMultipier: 1
   AttackMultipier: 1
   SkillMultipier: 1
   IdleConfig: {fileID: 11400000, guid: 490fb4141147cbd489e6c3464b901b0b, type: 2}
   JogStartConfig: {fileID: 11400000, guid: a3bf143cf1b382c46ad31fce7b5e3a4e, type: 2}
+  JogStartEndConfig: {fileID: 0}
   JogConfig: {fileID: 11400000, guid: 5a0a7e15a4109634c9be9ec8bf9c8677, type: 2}
   JogStopConfig: {fileID: 11400000, guid: b935649465b5fd248a095ed0fd1ecfbe, type: 2}
   DashStartConfig: {fileID: 0}
@@ -61,5 +63,6 @@ MonoBehaviour:
   assistSkill: {fileID: 0}
   Ultimate: {fileID: 0}
   BehaviorTreeGraph: {fileID: 0}
-  CommandContextConfig: {fileID: 11400000, guid: 5d7d6d1c13054c9bab1a0b8de3d7c6f1, type: 2}
+  CommandContextConfig: {fileID: 11400000, guid: 5d7d6d1c13054c9bab1a0b8de3d7c6f1,
+    type: 2}
   hitReactionConfig: {fileID: 11400000, guid: 482c0f22a8a668540bb93f6822cb1e21, type: 2}

@@ -13,15 +13,13 @@ namespace Game.Logic.Character
     /// </summary>
     public class HitReactionModule : MonoBehaviour
     {
-        [Header("Hit Protection")]
-        [Tooltip("Minimum interval between two hit-stun reactions.")]
+        [Header("受击保护")]
         public float hitProtectionInterval = 0.1f;
 
-        [Header("Hit Facing")]
-        [Tooltip("Rotate the victim to face the attacker before playing the hurt animation.")]
+        [Header("受击转向")]
         public bool faceAttackerBeforeHitAnimation = true;
 
-        [Header("Super Armor")]
+        [Header("霸体")]
         public bool isSuperArmor = false;
 
         private CharacterEntity _entity;
@@ -32,10 +30,6 @@ namespace Game.Logic.Character
             _entity = entity;
         }
 
-        /// <summary>
-        /// Apply presentation feedback for a resolved hit.
-        /// Flow: VFX -> audio -> hit-stop -> write stun data -> switch state.
-        /// </summary>
         public void ApplyVisualFeedback(HitContext ctx)
         {
             if (_entity == null)

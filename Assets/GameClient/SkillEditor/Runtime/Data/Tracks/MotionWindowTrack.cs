@@ -3,14 +3,14 @@ using System;
 namespace SkillEditor
 {
     [Serializable]
-    [TrackDefinition("位移窗口轨道", "#36A9E1", "MoveTool", 5)]
+    [TrackDefinition("动画位移窗口轨道", "#36A9E1", "MoveTool", 5)]
     public class MotionWindowTrack : TrackBase
     {
         public override bool CanOverlap => false;
 
         public MotionWindowTrack()
         {
-            trackName = "位移窗口轨道";
+            trackName = "动画位移窗口轨道";
             trackType = "MotionWindowTrack";
         }
 

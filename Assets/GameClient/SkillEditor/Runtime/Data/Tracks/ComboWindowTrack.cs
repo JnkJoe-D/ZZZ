@@ -3,12 +3,12 @@ using System;
 namespace SkillEditor
 {
     [Serializable]
-    [TrackDefinition("派生窗口(Combo)", "#4CAF50", "d_FilterByLabel", 6)]
+    [TrackDefinition("输入派生窗口轨道", "#4CAF50", "d_FilterByLabel", 6)]
     public class ComboWindowTrack : TrackBase
     {
         public ComboWindowTrack()
         {
-            trackName = "连击派生窗口";
+            trackName = "输入派生窗口轨道";
             trackType = "ComboWindowTrack";
         }
 

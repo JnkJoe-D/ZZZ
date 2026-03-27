@@ -79,14 +79,10 @@
         {
             "groupId": "fe97c978-da0d-4d70-b973-9218b609c4bc",
             "groupName": "变换",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
-            "tracks": [
-                {
-                    "rid": 1007
-                }
-            ]
+            "tracks": []
         }
     ],
     "references": {
@@ -228,25 +224,6 @@
                     "trackId": "15e2bdc7-968f-4cfa-a5f8-f20e16b3ce0c",
                     "trackType": "MotionWindowTrack",
                     "trackName": "位移窗口轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": true,
-                    "clips": []
-                }
-            },
-            {
-                "rid": 1007,
-                "type": {
-                    "class": "MovementTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "a6edf5f1-f34a-46ac-a162-9bddb56397d3",
-                    "trackType": "MovementTrack",
-                    "trackName": "变换轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,

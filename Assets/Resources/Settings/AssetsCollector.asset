@@ -94,8 +94,8 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
-      - CollectPath: Assets/Dependencies/Animation/Unagi
-        CollectorGUID: f28b7a24049ada44aa4e926a23d19bea
+      - CollectPath: Assets/Dependencies/Animation
+        CollectorGUID: a493714e50889b1489d117296fde53ce
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory

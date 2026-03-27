@@ -3,57 +3,73 @@ using UnityEngine;
 
 namespace SkillEditor
 {
-    public enum MovementType
+    public enum ReferenceDestination
     {
-        Translation, // 纯位移
-        Rotation     // 仅旋转(如朝向目标/输入)
+        Fixed,          // 固定
+        Target         // 有目标
     }
 
-    public enum RotationTargetMode
+    public enum CoordinateSystem
     {
-        InputDirection,  // 输入方向
-        EnemyPriority    // 敌人优先
+        Local,          // 局部
+        World           // 世界
     }
 
-    public enum RotationExecuteMode
+    public enum TargetPositionType
     {
-        Once,       // 进入时单次执行
-        Continuous  // Update 中持续执行
+        EnemyFront,     // 敌人前侧
+        EnemyBack       // 敌人后侧
+    }
+
+    public enum DisplacementType
+    {
+        Instant,        // 瞬时：直接赋值完成位移
+        Continuous     // 连续：根据位移曲线用 cc.move 累积完成
+    }
+
+    public enum MovementCurve
+    {
+        Linear,
+        EaseIn,
+        EaseOut,
+        EaseInOut
     }
 
     [Serializable]
-    [ClipDefinition(typeof(MovementTrack), "位移")]
+    [ClipDefinition(typeof(TransformTrack), "移动片段")]
     public class MovementClip : ClipBase
     {
-        [SkillProperty("行为类型")]
-        public MovementType movementType = MovementType.Translation;
+        [SkillProperty("参考目标")]
+        public ReferenceDestination referenceDestination = ReferenceDestination.Fixed;
 
-        // --- Translation Fields ---
+        // referenceDestination == Fixed
+        [SkillProperty("参考坐标系")]
+        [ShowIf("referenceDestination", ReferenceDestination.Fixed)]
+        public CoordinateSystem referenceCoordinate = CoordinateSystem.Local;
+
         [SkillProperty("目标位置")]
-        [ShowIf("movementType", MovementType.Translation)]
         public Vector3 targetPosition;
-        
-        [SkillProperty("移动速度")]
-        [ShowIf("movementType", MovementType.Translation)]
-        public float speed = 5f;
 
-        // --- Rotation Fields ---
-        [SkillProperty("转向目标")]
-        [ShowIf("movementType", MovementType.Rotation)]
-        public RotationTargetMode rotationTargetMode = RotationTargetMode.EnemyPriority;
+        // referenceDestination == ReferenceTarget
+        [SkillProperty("目标位置枚举")]
+        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        public TargetPositionType targetPositionEnum = TargetPositionType.EnemyFront;
 
-        [SkillProperty("执行方式")]
-        [ShowIf("movementType", MovementType.Rotation)]
-        public RotationExecuteMode rotationExecuteMode = RotationExecuteMode.Continuous;
+        [Header("通用设置")]
+        [SkillProperty("位移方式")]
+        public DisplacementType displacementType = DisplacementType.Continuous;
 
-        [SkillProperty("转向速度(-1使用默认)")]
-        [ShowIf("movementType", MovementType.Rotation)]
-        public float turnSpeed = -1f;
+        [SkillProperty("移动曲线")]
+        public MovementCurve movementCurve = MovementCurve.Linear;
+
+        [SkillProperty("忽略的碰撞层级")]
+        [ShowIf("displacementType", DisplacementType.Continuous)]
+        public LayerMask ignoreLayerMask;
 
         public MovementClip()
         {
             clipName = "Movement Clip";
-            duration = 1.0f;
+            duration = 0.5f;
         }
 
         public override ClipBase Clone()
@@ -65,12 +81,13 @@ namespace SkillEditor
                 startTime = this.startTime,
                 duration = this.duration,
                 isEnabled = this.isEnabled,
-                movementType = this.movementType,
+                referenceDestination = this.referenceDestination,
+                referenceCoordinate = this.referenceCoordinate,
                 targetPosition = this.targetPosition,
-                speed = this.speed,
-                rotationTargetMode = this.rotationTargetMode,
-                rotationExecuteMode = this.rotationExecuteMode,
-                turnSpeed = this.turnSpeed
+                targetPositionEnum = this.targetPositionEnum,
+                displacementType = this.displacementType,
+                movementCurve = this.movementCurve,
+                ignoreLayerMask = this.ignoreLayerMask
             };
         }
     }

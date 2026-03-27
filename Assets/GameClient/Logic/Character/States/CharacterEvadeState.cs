@@ -77,6 +77,15 @@ namespace Game.Logic.Character
                 return;
             }
 
+            if (Entity?.ActionController != null &&
+                Entity.ActionController.HasMovementCancelableWindow() &&
+                Entity.InputProvider != null &&
+                Entity.InputProvider.HasMovementInput())
+            {
+                Machine.ChangeState<CharacterGroundState>();
+                return;
+            }
+
             if (!Entity.ActionPlayer.IsPlaying)
             {
                 Machine.ChangeState<CharacterGroundState>();

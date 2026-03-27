@@ -23,6 +23,8 @@ MonoBehaviour:
     ExtraConditions: []
     RequiredWindowTag: Execute1
     TriggerMode: 1
+  LocalRouteSets:
+  - {fileID: 11400000, guid: b4b7c4d842ece1141b2822f10fc10f03, type: 2}
   Category: 110
   Cooldown: 0.5
   MPCost: 0

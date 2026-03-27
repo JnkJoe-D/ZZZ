@@ -14,6 +14,73 @@ namespace Game.Logic.Action.Config
 
         [Header("Routes")]
         public List<ContextRoute> Routes = new();
+
+        [Header("Route Sets")]
+        public List<ContextRouteSetAsset> ContextRouteSets = new();
+
+        public void AppendEffectiveRoutes(List<ContextRoute> results)
+        {
+            if (results == null)
+            {
+                return;
+            }
+
+            if (Routes != null)
+            {
+                foreach (ContextRoute route in Routes)
+                {
+                    if (route != null)
+                    {
+                        results.Add(route);
+                    }
+                }
+            }
+
+            if (ContextRouteSets == null)
+            {
+                return;
+            }
+
+            foreach (ContextRouteSetAsset routeSet in ContextRouteSets)
+            {
+                routeSet?.AppendRoutes(results);
+            }
+        }
+
+        public IEnumerable<ActionConfigAsset> GetAllActions()
+        {
+            if (Routes != null)
+            {
+                foreach (ContextRoute route in Routes)
+                {
+                    if (route?.NextAction != null)
+                    {
+                        yield return route.NextAction;
+                    }
+                }
+            }
+
+            if (ContextRouteSets == null)
+            {
+                yield break;
+            }
+
+            foreach (ContextRouteSetAsset routeSet in ContextRouteSets)
+            {
+                if (routeSet == null)
+                {
+                    continue;
+                }
+
+                foreach (ActionConfigAsset action in routeSet.GetAllActions())
+                {
+                    if (action != null)
+                    {
+                        yield return action;
+                    }
+                }
+            }
+        }
     }
 
     [CreateAssetMenu(fileName = "CommandContextConfig", menuName = "Config/Action/Command Context Config")]
@@ -22,43 +89,44 @@ namespace Game.Logic.Action.Config
         [Header("Context Route Groups")]
         public List<CommandContextRouteGroup> ContextRouteGroups = new();
 
-        public List<ContextRoute> GetRoutes(CommandContextType contextType)
+        public void CollectEffectiveRoutes(CommandContextType contextType, List<ContextRoute> results)
         {
-            if (ContextRouteGroups == null)
+            if (results == null)
             {
-                return null;
+                return;
             }
 
-            foreach (CommandContextRouteGroup group in ContextRouteGroups)
+            results.Clear();
+
+            if (ContextRouteGroups != null)
             {
-                if (group != null && group.ContextType == contextType)
+                foreach (CommandContextRouteGroup group in ContextRouteGroups)
                 {
-                    return group.Routes;
+                    if (group != null && group.ContextType == contextType)
+                    {
+                        group.AppendEffectiveRoutes(results);
+                    }
                 }
             }
-
-            return null;
         }
 
         public IEnumerable<ActionConfigAsset> GetAllActions()
         {
-            if (ContextRouteGroups == null)
+            if (ContextRouteGroups != null)
             {
-                yield break;
-            }
-
-            foreach (CommandContextRouteGroup group in ContextRouteGroups)
-            {
-                if (group?.Routes == null)
+                foreach (CommandContextRouteGroup group in ContextRouteGroups)
                 {
-                    continue;
-                }
-
-                foreach (ContextRoute route in group.Routes)
-                {
-                    if (route?.NextAction != null)
+                    if (group == null)
                     {
-                        yield return route.NextAction;
+                        continue;
+                    }
+
+                    foreach (ActionConfigAsset action in group.GetAllActions())
+                    {
+                        if (action != null)
+                        {
+                            yield return action;
+                        }
                     }
                 }
             }

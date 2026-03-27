@@ -3,7 +3,7 @@ using System;
 namespace SkillEditor
 {
     [Serializable]
-    [TrackDefinition("事件轨道(Event)", "#9C27B0", "d_EventSystem Icon", 5)]
+    [TrackDefinition("事件轨道", "#9C27B0", "d_EventSystem Icon", 5)]
     public class EventTrack : TrackBase
     {
         public EventTrack()

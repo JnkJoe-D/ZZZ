@@ -58,12 +58,24 @@
         {
             "groupId": "c049ddd2-da2f-47c7-939b-5c2ab38fc517",
             "groupName": "命中",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
                 {
                     "rid": 1006
+                },
+                {
+                    "rid": 1007
+                },
+                {
+                    "rid": 1008
+                },
+                {
+                    "rid": 1009
+                },
+                {
+                    "rid": 1010
                 }
             ]
         },
@@ -75,27 +87,23 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1007
+                    "rid": 1011
                 },
                 {
-                    "rid": 1008
+                    "rid": 1012
                 },
                 {
-                    "rid": 1009
+                    "rid": 1013
                 }
             ]
         },
         {
             "groupId": "fe97c978-da0d-4d70-b973-9218b609c4bc",
             "groupName": "变换",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
-            "tracks": [
-                {
-                    "rid": 1010
-                }
-            ]
+            "tracks": []
         }
     ],
     "references": {
@@ -119,10 +127,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1014
                         },
                         {
-                            "rid": 1012
+                            "rid": 1015
                         }
                     ],
                     "isMasterTrack": true,
@@ -213,10 +221,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1016
                         },
                         {
-                            "rid": 1014
+                            "rid": 1017
+                        },
+                        {
+                            "rid": 1018
                         }
                     ]
                 }
@@ -239,7 +250,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1019
                         }
                     ]
                 }
@@ -252,7 +263,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "6c372d50-4b7d-4af7-992f-9aff4e5fa659",
+                    "trackId": "0655e9a0-4c69-4169-afbf-44ccd45480dd",
                     "trackType": "DamageTrack",
                     "trackName": "命中判定轨道",
                     "isMuted": false,
@@ -260,11 +271,107 @@
                     "isHidden": false,
                     "isCollapsed": false,
                     "isEnabled": true,
-                    "clips": []
+                    "clips": [
+                        {
+                            "rid": 1020
+                        }
+                    ]
                 }
             },
             {
                 "rid": 1007,
+                "type": {
+                    "class": "HitTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "e63026d2-c4b0-4d4e-8d91-7ba55c8a8373",
+                    "trackType": "DamageTrack",
+                    "trackName": "命中判定轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1021
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1008,
+                "type": {
+                    "class": "HitTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "0d70851c-1428-4d92-83d2-c410a85f312e",
+                    "trackType": "DamageTrack",
+                    "trackName": "命中判定轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1022
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1009,
+                "type": {
+                    "class": "HitTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "c8dd5402-0710-46a7-8b0d-6ebfcce18d73",
+                    "trackType": "DamageTrack",
+                    "trackName": "命中判定轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1023
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1010,
+                "type": {
+                    "class": "HitTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "e1c9c8da-357d-422e-9132-d365b2edc55f",
+                    "trackType": "DamageTrack",
+                    "trackName": "命中判定轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1024
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1011,
                 "type": {
                     "class": "MotionWindowTrack",
                     "ns": "SkillEditor",
@@ -281,13 +388,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1025
                         }
                     ]
                 }
             },
             {
-                "rid": 1008,
+                "rid": 1012,
                 "type": {
                     "class": "MotionWindowTrack",
                     "ns": "SkillEditor",
@@ -304,13 +411,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1026
                         }
                     ]
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1013,
                 "type": {
                     "class": "MotionWindowTrack",
                     "ns": "SkillEditor",
@@ -327,32 +434,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1018
+                            "rid": 1027
                         }
                     ]
                 }
             },
             {
-                "rid": 1010,
-                "type": {
-                    "class": "MovementTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "a6edf5f1-f34a-46ac-a162-9bddb56397d3",
-                    "trackType": "MovementTrack",
-                    "trackName": "变换轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": true,
-                    "clips": []
-                }
-            },
-            {
-                "rid": 1011,
+                "rid": 1014,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -367,7 +455,7 @@
                     "blendInDuration": 0.13333334028720857,
                     "blendOutDuration": 0.083687424659729,
                     "animationClip": {
-                        "instanceID": 100232
+                        "instanceID": 48582
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -387,7 +475,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1015,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -402,7 +490,7 @@
                     "blendInDuration": 0.083687424659729,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 101208
+                        "instanceID": 57402
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -422,7 +510,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1016,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -441,7 +529,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1017,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -451,8 +539,8 @@
                     "clipId": "d7747720-abd9-4337-bc78-0c2fb77c5f5f",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.9000000357627869,
-                    "duration": 3.016312599182129,
+                    "startTime": 1.2496459484100342,
+                    "duration": 2.6666667461395265,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 2,
@@ -460,7 +548,26 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1018,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "526a97c1-6201-4045-a639-39dba0ee9eec",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.9000000357627869,
+                    "duration": 0.3496459126472473,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "windowType": 3,
+                    "comboTag": "Recovery"
+                }
+            },
+            {
+                "rid": 1019,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -479,7 +586,472 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1020,
+                "type": {
+                    "class": "HitClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "0400ce68-b449-4b47-872a-77d347267a34",
+                    "clipName": "打击片段",
+                    "isEnabled": true,
+                    "startTime": 0.1666666716337204,
+                    "duration": 0.10000000894069672,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "hitEffects": [
+                        {
+                            "eventTag": "Hit_Default",
+                            "targetTags": [
+                                "Enemy"
+                            ]
+                        }
+                    ],
+                    "detectFrequency": 0,
+                    "times": 1,
+                    "maxHitTargets": 0,
+                    "targetSortMode": 1,
+                    "hitLayerMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 64
+                    },
+                    "serializedHitLayerMask": 64,
+                    "isSelfImpacted": false,
+                    "shape": {
+                        "shapeType": 3,
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "radius": 3.0,
+                        "height": 1.600000023841858,
+                        "angle": 180.0,
+                        "innerRadius": 1.0
+                    },
+                    "isHitBoxFollowBindPoint": true,
+                    "bindPoint": 0,
+                    "customBoneName": "",
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.800000011920929,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "hitMode": 0,
+                    "multiHitCount": 5,
+                    "multiHitDuration": 0.20000000298023225,
+                    "enableHitStop": true,
+                    "hitStopDuration": 0.05000000074505806,
+                    "hitVFXPrefab": {
+                        "instanceID": 0
+                    },
+                    "hitVFXRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    },
+                    "hitVFXHeight": 1.0,
+                    "hitVFXPreviewOffsetXZ": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "hitVFXScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "followTarget": true,
+                    "hitAudioClip": {
+                        "instanceID": 36042
+                    },
+                    "hitAudioRef": {
+                        "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
+                        "assetName": "安比攻击受击音7",
+                        "assetPath": "Assets/Resources/Audio/AnBi/安比攻击受击音7.wav"
+                    },
+                    "hitStunDuration": 0.30000001192092898
+                }
+            },
+            {
+                "rid": 1021,
+                "type": {
+                    "class": "HitClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "396b711c-58e6-4517-97c9-5eafcdff22a4",
+                    "clipName": "打击片段",
+                    "isEnabled": true,
+                    "startTime": 0.30000001192092898,
+                    "duration": 0.10000000894069672,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "hitEffects": [
+                        {
+                            "eventTag": "Hit_Default",
+                            "targetTags": [
+                                "Enemy"
+                            ]
+                        }
+                    ],
+                    "detectFrequency": 0,
+                    "times": 1,
+                    "maxHitTargets": 0,
+                    "targetSortMode": 1,
+                    "hitLayerMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 64
+                    },
+                    "serializedHitLayerMask": 64,
+                    "isSelfImpacted": false,
+                    "shape": {
+                        "shapeType": 3,
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "radius": 3.0,
+                        "height": 1.600000023841858,
+                        "angle": 180.0,
+                        "innerRadius": 1.0
+                    },
+                    "isHitBoxFollowBindPoint": true,
+                    "bindPoint": 0,
+                    "customBoneName": "",
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.800000011920929,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "hitMode": 0,
+                    "multiHitCount": 5,
+                    "multiHitDuration": 0.20000000298023225,
+                    "enableHitStop": true,
+                    "hitStopDuration": 0.05000000074505806,
+                    "hitVFXPrefab": {
+                        "instanceID": 0
+                    },
+                    "hitVFXRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    },
+                    "hitVFXHeight": 1.0,
+                    "hitVFXPreviewOffsetXZ": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "hitVFXScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "followTarget": true,
+                    "hitAudioClip": {
+                        "instanceID": 36042
+                    },
+                    "hitAudioRef": {
+                        "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
+                        "assetName": "安比攻击受击音7",
+                        "assetPath": "Assets/Resources/Audio/AnBi/安比攻击受击音7.wav"
+                    },
+                    "hitStunDuration": 0.30000001192092898
+                }
+            },
+            {
+                "rid": 1022,
+                "type": {
+                    "class": "HitClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "bdd996ca-b607-4c85-be2b-6b24abbd6bb3",
+                    "clipName": "打击片段",
+                    "isEnabled": true,
+                    "startTime": 0.36666667461395266,
+                    "duration": 0.10000000894069672,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "hitEffects": [
+                        {
+                            "eventTag": "Hit_Default",
+                            "targetTags": [
+                                "Enemy"
+                            ]
+                        }
+                    ],
+                    "detectFrequency": 0,
+                    "times": 1,
+                    "maxHitTargets": 0,
+                    "targetSortMode": 1,
+                    "hitLayerMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 64
+                    },
+                    "serializedHitLayerMask": 64,
+                    "isSelfImpacted": false,
+                    "shape": {
+                        "shapeType": 3,
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "radius": 3.0,
+                        "height": 1.600000023841858,
+                        "angle": 180.0,
+                        "innerRadius": 1.0
+                    },
+                    "isHitBoxFollowBindPoint": true,
+                    "bindPoint": 0,
+                    "customBoneName": "",
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.800000011920929,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "hitMode": 0,
+                    "multiHitCount": 5,
+                    "multiHitDuration": 0.20000000298023225,
+                    "enableHitStop": true,
+                    "hitStopDuration": 0.05000000074505806,
+                    "hitVFXPrefab": {
+                        "instanceID": 0
+                    },
+                    "hitVFXRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    },
+                    "hitVFXHeight": 1.0,
+                    "hitVFXPreviewOffsetXZ": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "hitVFXScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "followTarget": true,
+                    "hitAudioClip": {
+                        "instanceID": 36042
+                    },
+                    "hitAudioRef": {
+                        "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
+                        "assetName": "安比攻击受击音7",
+                        "assetPath": "Assets/Resources/Audio/AnBi/安比攻击受击音7.wav"
+                    },
+                    "hitStunDuration": 0.30000001192092898
+                }
+            },
+            {
+                "rid": 1023,
+                "type": {
+                    "class": "HitClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "89c134c0-d662-4cde-9200-ca680d4aa222",
+                    "clipName": "打击片段",
+                    "isEnabled": true,
+                    "startTime": 0.46666666865348818,
+                    "duration": 0.10000000149011612,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "hitEffects": [
+                        {
+                            "eventTag": "Hit_Default",
+                            "targetTags": [
+                                "Enemy"
+                            ]
+                        }
+                    ],
+                    "detectFrequency": 0,
+                    "times": 1,
+                    "maxHitTargets": 0,
+                    "targetSortMode": 1,
+                    "hitLayerMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 64
+                    },
+                    "serializedHitLayerMask": 64,
+                    "isSelfImpacted": false,
+                    "shape": {
+                        "shapeType": 3,
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "radius": 3.0,
+                        "height": 1.600000023841858,
+                        "angle": 180.0,
+                        "innerRadius": 1.0
+                    },
+                    "isHitBoxFollowBindPoint": true,
+                    "bindPoint": 0,
+                    "customBoneName": "",
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.800000011920929,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "hitMode": 0,
+                    "multiHitCount": 5,
+                    "multiHitDuration": 0.20000000298023225,
+                    "enableHitStop": true,
+                    "hitStopDuration": 0.05000000074505806,
+                    "hitVFXPrefab": {
+                        "instanceID": 0
+                    },
+                    "hitVFXRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    },
+                    "hitVFXHeight": 1.0,
+                    "hitVFXPreviewOffsetXZ": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "hitVFXScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "followTarget": true,
+                    "hitAudioClip": {
+                        "instanceID": 36042
+                    },
+                    "hitAudioRef": {
+                        "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
+                        "assetName": "安比攻击受击音7",
+                        "assetPath": "Assets/Resources/Audio/AnBi/安比攻击受击音7.wav"
+                    },
+                    "hitStunDuration": 0.30000001192092898
+                }
+            },
+            {
+                "rid": 1024,
+                "type": {
+                    "class": "HitClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "fd91e78b-8c9e-40ac-9ce9-61d596302c63",
+                    "clipName": "打击片段",
+                    "isEnabled": true,
+                    "startTime": 0.5333333611488342,
+                    "duration": 0.10000000149011612,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "hitEffects": [
+                        {
+                            "eventTag": "Hit_Default",
+                            "targetTags": [
+                                "Enemy"
+                            ]
+                        }
+                    ],
+                    "detectFrequency": 0,
+                    "times": 1,
+                    "maxHitTargets": 0,
+                    "targetSortMode": 1,
+                    "hitLayerMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 64
+                    },
+                    "serializedHitLayerMask": 64,
+                    "isSelfImpacted": false,
+                    "shape": {
+                        "shapeType": 3,
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "radius": 3.0,
+                        "height": 1.600000023841858,
+                        "angle": 180.0,
+                        "innerRadius": 1.0
+                    },
+                    "isHitBoxFollowBindPoint": true,
+                    "bindPoint": 0,
+                    "customBoneName": "",
+                    "positionOffset": {
+                        "x": 0.0,
+                        "y": 0.800000011920929,
+                        "z": 0.0
+                    },
+                    "rotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "hitMode": 1,
+                    "multiHitCount": 3,
+                    "multiHitDuration": 0.20000000298023225,
+                    "enableHitStop": true,
+                    "hitStopDuration": 0.05000000074505806,
+                    "hitVFXPrefab": {
+                        "instanceID": 0
+                    },
+                    "hitVFXRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    },
+                    "hitVFXHeight": 1.0,
+                    "hitVFXPreviewOffsetXZ": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "hitVFXScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "followTarget": true,
+                    "hitAudioClip": {
+                        "instanceID": 36042
+                    },
+                    "hitAudioRef": {
+                        "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
+                        "assetName": "安比攻击受击音7",
+                        "assetPath": "Assets/Resources/Audio/AnBi/安比攻击受击音7.wav"
+                    },
+                    "hitStunDuration": 0.30000001192092898
+                }
+            },
+            {
+                "rid": 1025,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "SkillEditor",
@@ -497,7 +1069,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1026,
                 "type": {
                     "class": "VisualOffsetClip",
                     "ns": "SkillEditor",
@@ -515,7 +1087,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1027,
                 "type": {
                     "class": "VisualOffsetRecoverClip",
                     "ns": "SkillEditor",

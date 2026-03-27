@@ -79,14 +79,10 @@
         {
             "groupId": "fe97c978-da0d-4d70-b973-9218b609c4bc",
             "groupName": "变换",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
-            "tracks": [
-                {
-                    "rid": 1007
-                }
-            ]
+            "tracks": []
         }
     ],
     "references": {
@@ -110,7 +106,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1008
+                            "rid": 1007
                         }
                     ],
                     "isMasterTrack": true,
@@ -239,32 +235,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1009
+                            "rid": 1008
                         }
                     ]
                 }
             },
             {
                 "rid": 1007,
-                "type": {
-                    "class": "MovementTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "a6edf5f1-f34a-46ac-a162-9bddb56397d3",
-                    "trackType": "MovementTrack",
-                    "trackName": "变换轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": true,
-                    "clips": []
-                }
-            },
-            {
-                "rid": 1008,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -279,7 +256,7 @@
                     "blendInDuration": 0.13333334028720857,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 102186
+                        "instanceID": 40742
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -299,7 +276,7 @@
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1008,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "SkillEditor",

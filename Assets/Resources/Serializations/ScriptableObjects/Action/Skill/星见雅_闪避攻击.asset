@@ -23,12 +23,14 @@ MonoBehaviour:
     ExtraConditions: []
     RequiredWindowTag: Buffer
     TriggerMode: 0
-  - RequiredType: 50
+  - RequiredType: 20
     RequiredPhase: 0
-    NextAction: {fileID: 0}
+    NextAction: {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
     ExtraConditions: []
-    RequiredWindowTag: Evade
+    RequiredWindowTag: Recovery
     TriggerMode: 1
+  LocalRouteSets:
+  - {fileID: 11400000, guid: 154e6788341662f43a93246864c55e02, type: 2}
   Category: 30
   Cooldown: 0.5
   MPCost: 0

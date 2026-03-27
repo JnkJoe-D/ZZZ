@@ -43,6 +43,8 @@ namespace Game.Logic.Action.Combo
 
         private readonly CharacterEntity _entity;
         private readonly List<ComboWindowData> _activeComboWindows = new();
+        private readonly List<LocalActionRoute> _effectiveLocalRoutes = new();
+        private readonly List<ContextRoute> _effectiveContextRoutes = new();
         private bool _isTransitioning;
 
         public List<ExecutionRecord> ExecutionHistory { get; } = new();
@@ -101,19 +103,19 @@ namespace Game.Logic.Action.Combo
         {
             _activeComboWindows.Add(new ComboWindowData { Tag = comboTag, Type = windowType });
 
-            if (windowType == ComboWindowType.Execute)
+            if (SupportsImmediateLocalRoutes(windowType))
             {
                 EvaluateTransitionsAgainst(comboTag);
                 return;
             }
 
-            if (windowType == ComboWindowType.Buffer)
+            if (ClearsBufferOnEnter(windowType))
             {
                 _entity.CommandBuffer?.Clear();
                 return;
             }
 
-            if (windowType == ComboWindowType.Fallback)
+            if (EntersBackswingState(windowType))
             {
                 _entity.Machine.ChangeState<CharacterActionBackswingState>();
             }
@@ -123,17 +125,30 @@ namespace Game.Logic.Action.Combo
         {
             _activeComboWindows.RemoveAll(x => x.Tag == comboTag && x.Type == windowType);
 
-            if (windowType == ComboWindowType.Buffer)
+            if (FlushesBufferedInputOnExit(windowType))
             {
                 EvaluateTransitionsAgainst(comboTag);
                 return;
             }
 
-            if (windowType == ComboWindowType.Fallback &&
+            if (EntersBackswingState(windowType) &&
                 _entity.Machine.CurrentState is CharacterActionBackswingState)
             {
                 _entity.Machine.ChangeState<CharacterGroundState>();
             }
+        }
+
+        public bool HasMovementCancelableWindow()
+        {
+            foreach (ComboWindowData window in _activeComboWindows)
+            {
+                if (AllowsMovementCancel(window.Type))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private SkillRunner PlayActionDirect(ActionConfigAsset action)
@@ -161,15 +176,16 @@ namespace Game.Logic.Action.Combo
             }
 
             ActionConfigAsset currentAction = GetCurrentAction();
-            List<LocalActionRoute> localRoutes = currentAction?.LocalRoutes;
-            if (localRoutes == null || localRoutes.Count == 0)
+            _effectiveLocalRoutes.Clear();
+            currentAction?.CollectEffectiveLocalRoutes(_effectiveLocalRoutes);
+            if (_effectiveLocalRoutes.Count == 0)
             {
                 return;
             }
 
             foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
             {
-                if (ShouldDelayBasicAttackForHold(command, localRoutes))
+                if (ShouldDelayBasicAttackForHold(command, _effectiveLocalRoutes))
                 {
                     continue;
                 }
@@ -178,12 +194,12 @@ namespace Game.Logic.Action.Combo
 
                 foreach (ComboWindowData window in _activeComboWindows)
                 {
-                    if (window.Type != ComboWindowType.Execute)
+                    if (!SupportsImmediateLocalRoutes(window.Type))
                     {
                         continue;
                     }
 
-                    if (TryConsumeLocalRoute(command, localRoutes, window.Tag, isBuffered))
+                    if (TryConsumeLocalRoute(command, _effectiveLocalRoutes, window.Tag, isBuffered))
                     {
                         return;
                     }
@@ -199,21 +215,22 @@ namespace Game.Logic.Action.Combo
             }
 
             ActionConfigAsset currentAction = GetCurrentAction();
-            List<LocalActionRoute> localRoutes = currentAction?.LocalRoutes;
-            if (localRoutes == null || localRoutes.Count == 0)
+            _effectiveLocalRoutes.Clear();
+            currentAction?.CollectEffectiveLocalRoutes(_effectiveLocalRoutes);
+            if (_effectiveLocalRoutes.Count == 0)
             {
                 return;
             }
 
             foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
             {
-                if (ShouldDelayBasicAttackForHold(command, localRoutes))
+                if (ShouldDelayBasicAttackForHold(command, _effectiveLocalRoutes))
                 {
                     continue;
                 }
 
                 bool isBuffered = (Time.time - command.Timestamp) > 0f;
-                if (TryConsumeLocalRoute(command, localRoutes, tagToTest, isBuffered))
+                if (TryConsumeLocalRoute(command, _effectiveLocalRoutes, tagToTest, isBuffered))
                 {
                     return;
                 }
@@ -248,6 +265,11 @@ namespace Game.Logic.Action.Combo
         private void EvaluateContextRoutes()
         {
             if (_isTransitioning || _entity.CommandBuffer == null)
+            {
+                return;
+            }
+
+            if (ShouldBlockContextRoutes())
             {
                 return;
             }
@@ -303,8 +325,54 @@ namespace Game.Logic.Action.Combo
             }
 
             return currentAction != null &&
-                   currentAction.LocalRoutes != null &&
-                   currentAction.LocalRoutes.Exists(t => t.MatchesCommand(command.Type, command.Phase));
+                   OwnsCommandViaLocalRoutes(currentAction, command);
+        }
+
+        private static bool SupportsImmediateLocalRoutes(ComboWindowType windowType)
+        {
+            return windowType == ComboWindowType.Execute ||
+                   windowType == ComboWindowType.RecoveryExecute;
+        }
+
+        private static bool ClearsBufferOnEnter(ComboWindowType windowType)
+        {
+            return windowType == ComboWindowType.Buffer;
+        }
+
+        private static bool FlushesBufferedInputOnExit(ComboWindowType windowType)
+        {
+            return windowType == ComboWindowType.Buffer;
+        }
+
+        private static bool EntersBackswingState(ComboWindowType windowType)
+        {
+            return windowType == ComboWindowType.Fallback;
+        }
+
+        private static bool AllowsMovementCancel(ComboWindowType windowType)
+        {
+            return windowType == ComboWindowType.RecoveryExecute;
+        }
+
+        private bool ShouldBlockContextRoutes()
+        {
+            if (_activeComboWindows.Count == 0)
+            {
+                return false;
+            }
+
+            bool hasFallbackWindow = false;
+
+            foreach (ComboWindowData window in _activeComboWindows)
+            {
+                if (window.Type == ComboWindowType.Fallback)
+                {
+                    hasFallbackWindow = true;
+                    break;
+                }
+            }
+
+            return !hasFallbackWindow;
         }
 
         private ActionConfigAsset ResolveConfiguredContextAction(CharacterCommand command, bool isBuffered)
@@ -316,13 +384,13 @@ namespace Game.Logic.Action.Combo
                 return null;
             }
 
-            List<ContextRoute> routes = contextConfig.GetRoutes(_entity.RuntimeData.CurrentCommandContext);
-            if (routes == null || routes.Count == 0)
+            contextConfig.CollectEffectiveRoutes(_entity.RuntimeData.CurrentCommandContext, _effectiveContextRoutes);
+            if (_effectiveContextRoutes.Count == 0)
             {
                 return null;
             }
 
-            foreach (ContextRoute route in routes)
+            foreach (ContextRoute route in _effectiveContextRoutes)
             {
                 if (route == null || !route.Evaluate(command, isBuffered, _entity))
                 {
@@ -337,6 +405,13 @@ namespace Game.Logic.Action.Combo
             }
 
             return null;
+        }
+
+        private bool OwnsCommandViaLocalRoutes(ActionConfigAsset currentAction, CharacterCommand command)
+        {
+            _effectiveLocalRoutes.Clear();
+            currentAction?.CollectEffectiveLocalRoutes(_effectiveLocalRoutes);
+            return _effectiveLocalRoutes.Exists(t => t.MatchesCommand(command.Type, command.Phase));
         }
 
         private ActionConfigAsset ResolveNextAction(CharacterCommand command, ActionConfigAsset explicitAction)
