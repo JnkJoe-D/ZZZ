@@ -234,56 +234,63 @@ namespace Game.Logic.Character
         {
             this.visualOffsetMode = visualOffsetMode;
         }
-        public void FaceTo(Vector3 inputDir, float speed = -1f)
+
+        public void RotateTo(Vector3 worldDirection, float speed = -1f, Vector3 localOffset = default)
         {
-            Vector3 lookDirection = CalculateWorldDirection(inputDir);
-            if (lookDirection.sqrMagnitude > 0.001f)
+            if (worldDirection.sqrMagnitude > 0.001f)
             {
                 speed = speed == -1f ? TurnSpeed : (speed > 0 ? speed : TurnSpeed);
-                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+                Quaternion targetRotation = Quaternion.LookRotation(worldDirection) * Quaternion.Euler(localOffset);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
             }
         }
 
-        public void FaceToImmediately(Vector3 inputDir)
+        public void RotateToImmediately(Vector3 worldDirection, Vector3 localOffset = default)
+        {
+            if (worldDirection.sqrMagnitude > 0.001f)
+            {
+                transform.rotation = Quaternion.LookRotation(worldDirection) * Quaternion.Euler(localOffset);
+            }
+        }
+
+        public void FaceTo(Vector2 inputDir, float speed = -1f, Vector3 localOffset = default)
         {
             Vector3 lookDirection = CalculateWorldDirection(inputDir);
-            if (lookDirection.sqrMagnitude > 0.001f)
-            {
-                transform.forward = lookDirection.normalized;
-            }
+            RotateTo(lookDirection, speed, localOffset);
         }
 
-        public void FaceToTarget(Transform target, float speed = -1f)
+        public void FaceTo(Vector3 worldDir, float speed = -1f, Vector3 localOffset = default)
         {
-            if (target == null)
-            {
-                return;
-            }
+            RotateTo(worldDir, speed, localOffset);
+        }
+
+        public void FaceToImmediately(Vector2 inputDir, Vector3 localOffset = default)
+        {
+            Vector3 lookDirection = CalculateWorldDirection(inputDir);
+            RotateToImmediately(lookDirection, localOffset);
+        }
+
+        public void FaceToImmediately(Vector3 worldDir, Vector3 localOffset = default)
+        {
+            RotateToImmediately(worldDir, localOffset);
+        }
+
+        public void FaceToTarget(Transform target, float speed = -1f, Vector3 localOffset = default)
+        {
+            if (target == null) return;
 
             Vector3 direction = target.position - transform.position;
             direction.y = 0f;
-            if (direction.sqrMagnitude > 0.001f)
-            {
-                speed = speed == -1f ? TurnSpeed : (speed > 0 ? speed : TurnSpeed);
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
-            }
+            RotateTo(direction, speed, localOffset);
         }
 
-        public void FaceToTargetImmediately(Transform target)
+        public void FaceToTargetImmediately(Transform target, Vector3 localOffset = default)
         {
-            if (target == null)
-            {
-                return;
-            }
+            if (target == null) return;
 
             Vector3 direction = target.position - transform.position;
             direction.y = 0f;
-            if (direction.sqrMagnitude > 0.001f)
-            {
-                transform.forward = direction.normalized;
-            }
+            RotateToImmediately(direction, localOffset);
         }
 
         public Vector3 CalculateWorldDirection(Vector2 inputDir)

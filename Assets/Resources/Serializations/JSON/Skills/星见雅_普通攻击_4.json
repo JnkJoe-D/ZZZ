@@ -455,7 +455,7 @@
                     "blendInDuration": 0.13333334028720857,
                     "blendOutDuration": 0.083687424659729,
                     "animationClip": {
-                        "instanceID": 48582
+                        "instanceID": 48620
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -490,7 +490,7 @@
                     "blendInDuration": 0.083687424659729,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 57402
+                        "instanceID": 57438
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -521,7 +521,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.9000000357627869,
+                    "duration": 0.6666666865348816,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 0,
@@ -558,8 +558,8 @@
                     "clipId": "526a97c1-6201-4045-a639-39dba0ee9eec",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.9000000357627869,
-                    "duration": 0.3496459126472473,
+                    "startTime": 0.6666667461395264,
+                    "duration": 0.5829792022705078,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 3,
@@ -668,7 +668,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36040
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -761,7 +761,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36040
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -854,7 +854,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36040
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -947,7 +947,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36040
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -1040,7 +1040,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36040
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",

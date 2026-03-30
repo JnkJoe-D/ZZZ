@@ -23,11 +23,19 @@ namespace Game.Logic.Character
         /// <summary>
         /// 设置角色朝向
         /// </summary>
-        void FaceTo(Vector3 inputDir,float speed = -1f);
-        void FaceToImmediately(Vector3 inputDir);
-        void FaceToTarget(Transform target, float speed = -1f);
-        void FaceToTargetImmediately(Transform target);
+        void RotateTo(Vector3 worldDirection, float speed = -1f, Vector3 localOffset = default);
+        void RotateToImmediately(Vector3 worldDirection, Vector3 localOffset = default);
+
+        void FaceTo(Vector2 inputDir, float speed = -1f, Vector3 localOffset = default);
+        void FaceTo(Vector3 worldDir, float speed = -1f, Vector3 localOffset = default);
+
+        void FaceToImmediately(Vector2 inputDir, Vector3 localOffset = default);
+        void FaceToImmediately(Vector3 worldDir, Vector3 localOffset = default);
+
+        void FaceToTarget(Transform target, float speed = -1f, Vector3 localOffset = default);
+        void FaceToTargetImmediately(Transform target, Vector3 localOffset = default);
         Vector3 CalculateWorldDirection(Vector2 inputDir);
+
         /// <summary>
         /// 是否在地面上
         /// </summary>

@@ -10,8 +10,7 @@ namespace Game.Logic.Character
     /// </summary>
     public class CharacterRuntimeData
     {
-        public bool ForceDashNextFrame { get; private set; }
-        public bool DashContinuationCandidate { get; private set; }
+        public bool DashOnNextGroundEnter { get; private set; }
         public ActionConfigAsset NextActionToCast { get; set; }
         public CommandContextType CurrentCommandContext { get; set; }
 
@@ -96,27 +95,21 @@ namespace Game.Logic.Character
             EvadeTimer = config.evadeCoolDown;
         }
 
-        public void SetDashContinuationCandidate(bool canContinue)
+        public void SetDashOnNextGroundEnter(bool shouldDash)
         {
-            DashContinuationCandidate = canContinue;
-            ForceDashNextFrame = false;
+            DashOnNextGroundEnter = shouldDash;
         }
 
-        public void ResolveDashContinuation(bool hasMovementInput)
+        public bool ConsumeDashOnGroundEnter(bool hasMovementInput)
         {
-            ForceDashNextFrame = DashContinuationCandidate && hasMovementInput;
-            DashContinuationCandidate = false;
-        }
-
-        public void ConsumeDashContinuation()
-        {
-            ForceDashNextFrame = false;
+            bool shouldEnterDash = DashOnNextGroundEnter && hasMovementInput;
+            DashOnNextGroundEnter = false;
+            return shouldEnterDash;
         }
 
         public void ClearDashContinuation()
         {
-            ForceDashNextFrame = false;
-            DashContinuationCandidate = false;
+            DashOnNextGroundEnter = false;
         }
 
         public void RecordResolvedRoute(

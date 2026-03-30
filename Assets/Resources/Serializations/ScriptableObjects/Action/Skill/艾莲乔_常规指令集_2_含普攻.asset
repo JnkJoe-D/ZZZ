@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0c39ecef4dd4724a4f7ff305fbd984f, type: 3}
+  m_Name: "\u827E\u83B2\u4E54_\u5E38\u89C4\u6307\u4EE4\u96C6_2_\u542B\u666E\u653B"
+  m_EditorClassIdentifier: 
+  Routes:
+  - RequiredType: 50
+    RequiredPhase: 0
+    NextAction: {fileID: 0}
+    ExtraConditions: []
+    RequiredWindowTag: Evade
+    TriggerMode: 1
+    Priority: 1
+  - RequiredType: 30
+    RequiredPhase: 0
+    NextAction: {fileID: 0}
+    ExtraConditions: []
+    RequiredWindowTag: Buffer
+    TriggerMode: 0
+    Priority: 1
+  - RequiredType: 30
+    RequiredPhase: 0
+    NextAction: {fileID: 0}
+    ExtraConditions: []
+    RequiredWindowTag: Recovery
+    TriggerMode: 1
+    Priority: 1
+  - RequiredType: 40
+    RequiredPhase: 0
+    NextAction: {fileID: 0}
+    ExtraConditions: []
+    RequiredWindowTag: Buffer
+    TriggerMode: 0
+    Priority: 1
+  - RequiredType: 40
+    RequiredPhase: 0
+    NextAction: {fileID: 0}
+    ExtraConditions: []
+    RequiredWindowTag: Recovery
+    TriggerMode: 1
+    Priority: 1
+  - RequiredType: 20
+    RequiredPhase: 0
+    NextAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Buffer
+    TriggerMode: 0
+    Priority: 0
+  - RequiredType: 20
+    RequiredPhase: 0
+    NextAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Recovery
+    TriggerMode: 1
+    Priority: 0
+  references:
+    version: 2
+    RefIds: []

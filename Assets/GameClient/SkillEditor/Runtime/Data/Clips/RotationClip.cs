@@ -9,7 +9,7 @@ namespace SkillEditor
         InputWithCamera,            // 和当前移动状态里的转向方式一样
         Target,                     // 没目标则不转
         TargetThenInput,           
-        TargetThenInputWithCamera
+        TargetThenInputWithCamera,
     }
 
     public enum RotationMode
@@ -20,8 +20,9 @@ namespace SkillEditor
 
     public enum UpdateFrequency
     {
-        OnceAtEnter,                // 进入时执行一次
-        Continuous                 // 连续更新
+        OnceAtEnter,                
+        OnceAtExit,
+        Continuous                 
     }
 
     [Serializable]
@@ -36,6 +37,9 @@ namespace SkillEditor
 
         [SkillProperty("更新频率")]
         public UpdateFrequency updateFrequency = UpdateFrequency.Continuous;
+
+        [SkillProperty("本地旋转偏移")]
+        public Vector3 localRotationOffset;
 
         public RotationClip()
         {
@@ -54,7 +58,8 @@ namespace SkillEditor
                 isEnabled = this.isEnabled,
                 referenceDirection = this.referenceDirection,
                 rotationMode = this.rotationMode,
-                updateFrequency = this.updateFrequency
+                updateFrequency = this.updateFrequency,
+                localRotationOffset = this.localRotationOffset
             };
         }
     }

@@ -22,16 +22,7 @@ namespace Game.Logic.Character
         {
             Entity.RuntimeData.CurrentCommandContext = CommandContextType.Backswing;
 
-            bool shouldResolveDashContinuation =
-                Machine.PreviousState is CharacterEvadeState &&
-                Entity.RuntimeData.DashContinuationCandidate;
-
-            if (shouldResolveDashContinuation)
-            {
-                bool hasMovementInput = Entity.InputProvider != null && Entity.InputProvider.HasMovementInput();
-                Entity.RuntimeData.ResolveDashContinuation(hasMovementInput);
-            }
-            else
+            if (Machine.PreviousState is not CharacterEvadeState)
             {
                 Entity.RuntimeData.ClearDashContinuation();
             }

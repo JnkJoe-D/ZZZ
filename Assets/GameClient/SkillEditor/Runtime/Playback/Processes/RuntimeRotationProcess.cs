@@ -5,16 +5,16 @@ namespace SkillEditor
     [ProcessBinding(typeof(RotationClip), PlayMode.Runtime)]
     public class RuntimeRotationProcess : ProcessBase<RotationClip>
     {
-        private ISkillTransformHandler transformHandler;
+        private ISkillTransformHandler _transformHandler;
 
         public override void OnEnable()
         {
-            transformHandler = context.GetService<ISkillTransformHandler>();
+            _transformHandler = context.GetService<ISkillTransformHandler>();
         }
 
         public override void OnEnter()
         {
-            if (transformHandler == null) return;
+            if (_transformHandler == null) return;
 
             if (clip.updateFrequency == UpdateFrequency.OnceAtEnter)
             {
@@ -24,67 +24,76 @@ namespace SkillEditor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            if (transformHandler == null || clip.updateFrequency == UpdateFrequency.OnceAtEnter) return;
+            if (_transformHandler == null || clip.updateFrequency == UpdateFrequency.OnceAtEnter) return;
 
             ApplyRotation(deltaTime);
         }
 
         private void ApplyRotation(float deltaTime)
         {
-            Quaternion targetRot = CalculateTargetRotation();
-            if (targetRot == Quaternion.identity && clip.referenceDirection == RotationReference.Target) return;
-
-            if (clip.rotationMode == RotationMode.Immediate)
-            {
-                transformHandler.SetRotation(targetRot);
-            }
-            else
-            {
-                // 这里假设 RotateTowards 内部会处理平滑旋转，或者我们在这里传一个速度
-                // 如果片段有旋转速度字段更好，目前没有，可以暂时用一个默认高初值
-                transformHandler.RotateTowards(targetRot, 15f); 
-            }
-        }
-
-        private Quaternion CalculateTargetRotation()
-        {
-            Vector3 lookDir = Vector3.zero;
-            Transform target = transformHandler.GetTarget();
+            Transform target = _transformHandler.GetTarget();
+            Vector3 offset = clip.localRotationOffset;
+            bool immediate = clip.rotationMode == RotationMode.Immediate;
+            float speed = -1f; // 使用 MovementController 的默认转向速度
 
             switch (clip.referenceDirection)
             {
                 case RotationReference.Input:
-                    lookDir = transformHandler.GetInputDirection(false);
+                    RotateToDirection(_transformHandler.GetInputDirection(false), immediate, offset, speed);
                     break;
                 case RotationReference.InputWithCamera:
-                    lookDir = transformHandler.GetInputDirection(true);
+                    RotateToDirection(_transformHandler.GetInputDirection(true), immediate, offset, speed);
                     break;
                 case RotationReference.Target:
-                    if (target != null) lookDir = target.position - transformHandler.GetPosition();
+                    if (target != null)
+                    {
+                        if (immediate) _transformHandler.FaceToTargetImmediately(target, offset);
+                        else _transformHandler.FaceToTarget(target, speed, offset);
+                    }
                     break;
                 case RotationReference.TargetThenInput:
-                    if (target != null) lookDir = target.position - transformHandler.GetPosition();
-                    else lookDir = transformHandler.GetInputDirection(false);
+                    if (target != null)
+                    {
+                        if (immediate) _transformHandler.FaceToTargetImmediately(target, offset);
+                        else _transformHandler.FaceToTarget(target, speed, offset);
+                    }
+                    else
+                    {
+                        RotateToDirection(_transformHandler.GetInputDirection(false), immediate, offset, speed);
+                    }
                     break;
                 case RotationReference.TargetThenInputWithCamera:
-                    if (target != null) lookDir = target.position - transformHandler.GetPosition();
-                    else lookDir = transformHandler.GetInputDirection(true);
+                    if (target != null)
+                    {
+                        if (immediate) _transformHandler.FaceToTargetImmediately(target, offset);
+                        else _transformHandler.FaceToTarget(target, speed, offset);
+                    }
+                    else
+                    {
+                        RotateToDirection(_transformHandler.GetInputDirection(true), immediate, offset, speed);
+                    }
                     break;
             }
+        }
 
-            lookDir.y = 0;
-            if (lookDir.sqrMagnitude > 0.0001f)
+        private void RotateToDirection(Vector3 direction, bool immediate, Vector3 offset, float speed)
+        {
+            if (direction.sqrMagnitude < 0.0001f) return;
+
+            if (immediate)
             {
-                return Quaternion.LookRotation(lookDir);
+                _transformHandler.RotateToImmediately(direction, offset);
             }
-
-            return transformHandler.GetRotation();
+            else
+            {
+                _transformHandler.RotateTo(direction, speed, offset);
+            }
         }
 
         public override void Reset()
         {
             base.Reset();
-            transformHandler = null;
+            _transformHandler = null;
         }
     }
 }

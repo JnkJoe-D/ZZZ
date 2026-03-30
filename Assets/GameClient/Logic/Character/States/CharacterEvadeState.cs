@@ -64,7 +64,7 @@ namespace Game.Logic.Character
                 }
             }
 
-            Entity.RuntimeData.SetDashContinuationCandidate(isFrontEvade);
+            Entity.RuntimeData.SetDashOnNextGroundEnter(isFrontEvade);
             Entity.ActionPlayer.SetPlaySpeed(Entity.Config.DodgeMultipier);
 
             currentSkill = skillConfig as SkillConfigAsset;
@@ -115,15 +115,13 @@ namespace Game.Logic.Character
                 _currentRunner = null;
             }
 
-            if (Machine.NextState is not CharacterActionBackswingState)
+            if (Machine.NextState is not CharacterGroundState &&
+                Machine.NextState is not CharacterActionBackswingState)
             {
                 Entity.RuntimeData.ClearDashContinuation();
             }
 
-            if (Machine.NextState is CharacterActionBackswingState)
-            {
-            }
-            else
+            if (Machine.NextState is not CharacterActionBackswingState)
             {
                 Entity.ActionPlayer.StopAction();
             }
@@ -134,7 +132,6 @@ namespace Game.Logic.Character
         private void OnSkillEnd()
         {
             currentSkill = null;
-            Entity.RuntimeData.ClearDashContinuation();
             Entity.Machine.ChangeState<CharacterGroundState>();
         }
     }

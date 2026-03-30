@@ -19,6 +19,14 @@ namespace SkillEditor
         void RotateTowards(Quaternion targetRotation, float speed);
         Quaternion GetRotation();
 
+        void RotateTo(Vector3 worldDirection, float speed = -1f, Vector3 localOffset = default);
+        void RotateToImmediately(Vector3 worldDirection, Vector3 localOffset = default);
+
+        void FaceTo(Vector3 direction, float speed = -1f, Vector3 localOffset = default);
+        void FaceToImmediately(Vector3 direction, Vector3 localOffset = default);
+        void FaceToTarget(Transform target, float speed = -1f, Vector3 localOffset = default);
+        void FaceToTargetImmediately(Transform target, Vector3 localOffset = default);
+
         Vector3 GetInputDirection(bool withCamera);
     }
 }

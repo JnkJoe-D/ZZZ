@@ -23,12 +23,28 @@ MonoBehaviour:
     ExtraConditions: []
     RequiredWindowTag: Buffer
     TriggerMode: 0
+    Priority: 0
   - RequiredType: 20
     RequiredPhase: 0
     NextAction: {fileID: 11400000, guid: b160746897ca318418d8374d92e49685, type: 2}
     ExtraConditions: []
     RequiredWindowTag: Recovery
     TriggerMode: 1
+    Priority: 0
+  - RequiredType: 30
+    RequiredPhase: 0
+    NextAction: {fileID: 11400000, guid: 2549c7b4c86ad954b8ef76fc994d7ebb, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Recovery
+    TriggerMode: 1
+    Priority: 2
+  - RequiredType: 30
+    RequiredPhase: 0
+    NextAction: {fileID: 11400000, guid: 2549c7b4c86ad954b8ef76fc994d7ebb, type: 2}
+    ExtraConditions: []
+    RequiredWindowTag: Buffer
+    TriggerMode: 0
+    Priority: 2
   LocalRouteSets:
   - {fileID: 11400000, guid: 154e6788341662f43a93246864c55e02, type: 2}
   Category: 20

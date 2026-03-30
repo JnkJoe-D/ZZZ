@@ -44,7 +44,7 @@ namespace Game.Camera
             if (_virtualCamera == null && _virtualCameraPrefab != null)
             {
                 var obj = UnityEngine.Object.Instantiate(_virtualCameraPrefab);
-                obj.name = $"{_entity.name}_{virtualCamName}";
+                // obj.name = $"{_entity.name}_{virtualCamName}";
                 _virtualCamera = obj.GetComponent<CinemachineVirtualCameraBase>();
                 _impluseSource = obj.GetComponent<CinemachineImpulseSource>();
             }
@@ -120,6 +120,112 @@ namespace Game.Camera
 
             // 触发带速度偏移的脉冲
             _impluseSource.GenerateImpulseWithVelocity(velocity* force);
+        }
+
+        public GameObject CreateCamera(GameObject prefab)
+        {
+            if (prefab == null) return null;
+            var instance = UnityEngine.Object.Instantiate(prefab, this.transform);
+
+            return instance;
+        }
+
+        public void DestroyCamera(GameObject cameraInstance)
+        {
+            if (cameraInstance != null)
+            {
+                UnityEngine.Object.Destroy(cameraInstance);
+            }
+        }
+
+        public void PlayCameraTimeline(GameObject cameraInstance, SkillEditor.CameraControlParams paramsObj)
+        {
+            if (cameraInstance == null || paramsObj == null || paramsObj.timelineAsset == null) return;
+
+            var director = cameraInstance.GetComponent<UnityEngine.Playables.PlayableDirector>();
+            if (director == null) director = cameraInstance.AddComponent<UnityEngine.Playables.PlayableDirector>();
+
+            director.playableAsset = paramsObj.timelineAsset;
+
+            // 处理相机设置覆盖
+            UnityEngine.Camera mainCam = UnityEngine.Camera.main;
+            CameraClearFlags originalClearFlags = 0;
+            Color originalBgColor = Color.black;
+            int originalMask = -1;
+            bool didOverride = false;
+
+            if (paramsObj.overrideSettings && mainCam != null)
+            {
+                originalClearFlags = mainCam.clearFlags;
+                originalBgColor = mainCam.backgroundColor;
+                originalMask = mainCam.cullingMask;
+                
+                mainCam.clearFlags = CameraClearFlags.SolidColor;
+                mainCam.backgroundColor = paramsObj.backgroundColor;
+                mainCam.cullingMask = paramsObj.cullingMask;
+                didOverride = true;
+            }
+
+            // 获取虚拟相机以便动态绑定 Follow/LookAt
+            var virtualCam = cameraInstance.GetComponentInChildren<CinemachineVirtualCameraBase>();
+            var animator = cameraInstance.GetComponentInChildren<Animator>();
+            
+            if (virtualCam != null)
+            {
+                if (!string.IsNullOrEmpty(paramsObj.followBoneName))
+                {
+                    virtualCam.Follow = FindChildRecursive(this.transform, paramsObj.followBoneName);
+                }
+                if (!string.IsNullOrEmpty(paramsObj.lookAtBoneName))
+                {
+                    virtualCam.LookAt = FindChildRecursive(this.transform, paramsObj.lookAtBoneName);
+                }
+            }
+
+            // 自动绑定
+            if (paramsObj.timelineAsset is UnityEngine.Timeline.TimelineAsset timeline)
+            {
+                foreach (var output in timeline.outputs)
+                {
+                    if (output.sourceObject is UnityEngine.Timeline.AnimationTrack && animator != null)
+                    {
+                        director.SetGenericBinding(output.sourceObject, animator);
+                    }
+                    else if (output.sourceObject is UnityEngine.Timeline.ControlTrack && virtualCam != null)
+                    {
+                        director.SetGenericBinding(output.sourceObject, virtualCam.gameObject);
+                    }
+                }
+            }
+
+            // 订阅播放结束回调，自动销毁实例并重置相机设置
+            director.stopped += (d) =>
+            {
+                if (didOverride && mainCam != null)
+                {
+                    mainCam.clearFlags = originalClearFlags;
+                    mainCam.backgroundColor = originalBgColor;
+                    mainCam.cullingMask = originalMask;
+                }
+
+                if (cameraInstance != null)
+                {
+                    DestroyCamera(cameraInstance);
+                }
+            };
+
+            director.Play();
+        }
+
+        private Transform FindChildRecursive(Transform parent, string name)
+        {
+            if (parent.name == name) return parent;
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                Transform found = FindChildRecursive(parent.GetChild(i), name);
+                if (found != null) return found;
+            }
+            return null;
         }
     }
 }

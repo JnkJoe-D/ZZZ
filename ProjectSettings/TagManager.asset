@@ -18,9 +18,9 @@ TagManager:
   - CharHit
   - Character
   - Ground
-  - 
-  - 
-  - 
+  - LocalPlayer
+  - Wall
+  - Camera
   - 
   - 
   - 

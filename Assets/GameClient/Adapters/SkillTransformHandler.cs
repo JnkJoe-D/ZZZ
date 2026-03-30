@@ -79,6 +79,36 @@ namespace Game.Adapters
             return _entity.transform.rotation;
         }
 
+        public void RotateTo(Vector3 worldDirection, float speed = -1f, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.RotateTo(worldDirection, speed, localOffset);
+        }
+
+        public void RotateToImmediately(Vector3 worldDirection, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.RotateToImmediately(worldDirection, localOffset);
+        }
+
+        public void FaceTo(Vector3 direction, float speed = -1f, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.FaceTo(direction, speed, localOffset);
+        }
+
+        public void FaceToImmediately(Vector3 direction, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.FaceToImmediately(direction, localOffset);
+        }
+
+        public void FaceToTarget(Transform target, float speed = -1f, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.FaceToTarget(target, speed, localOffset);
+        }
+
+        public void FaceToTargetImmediately(Transform target, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.FaceToTargetImmediately(target, localOffset);
+        }
+
         public Vector3 GetInputDirection(bool withCamera)
         {
             if (_entity.InputProvider == null) return Vector3.zero;

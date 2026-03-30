@@ -51,9 +51,7 @@ namespace Game.Logic.Character
         {
             var provider = Entity.InputProvider;
             bool hasMovementInput = provider != null && provider.HasMovementInput();
-            bool shouldEnterDash = hasMovementInput && Entity.RuntimeData.ForceDashNextFrame;
-
-            Entity.RuntimeData.ConsumeDashContinuation();
+            bool shouldEnterDash = Entity.RuntimeData.ConsumeDashOnGroundEnter(hasMovementInput);
 
             if (provider == null)
             {

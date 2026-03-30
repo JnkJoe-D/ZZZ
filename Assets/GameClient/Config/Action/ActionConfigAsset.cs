@@ -21,12 +21,10 @@ namespace Game.Logic.Action.Config
         [Header("Turn Priority")]
         public ActionTurnMode TurnMode = ActionTurnMode.InputDirection;
 
-        [Header("Local Routes")]
-        [Tooltip("当前动作自己的局部派生路由，例如普攻连段、冲刺普攻、闪避取消。")]
+        [Header("派生指令")]
         public List<LocalActionRoute> LocalRoutes = new();
 
-        [Header("Local Route Sets")]
-        [Tooltip("Reusable local route presets. Direct LocalRoutes on this asset are evaluated first.")]
+        [Header("派生指令集")]
         public List<LocalRouteSetAsset> LocalRouteSets = new();
 
         public void CollectEffectiveLocalRoutes(List<LocalActionRoute> results)

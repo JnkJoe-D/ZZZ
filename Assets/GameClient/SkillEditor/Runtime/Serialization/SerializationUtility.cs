@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Threading.Tasks;
+using UnityEngine.Timeline;
 
 namespace SkillEditor
 {
@@ -231,6 +232,17 @@ namespace SkillEditor
                                 else
                                     audioClip.audioClips.Add(null);
                             }
+                        }
+                    }
+                    else if(clip is CameraControlClip cameraControlClip)
+                    {
+                        if(cameraControlClip.cameraRef.IsValid())
+                        {
+                            cameraControlClip.cameraPrefab = await ResolveAsset<GameObject>(cameraControlClip.cameraRef.guid, cameraControlClip.cameraRef.assetPath, cameraControlClip.cameraRef.assetName);
+                        }
+                        if (cameraControlClip.timelineRef.IsValid())
+                        {
+                            cameraControlClip.timelineAsset = await ResolveAsset<TimelineAsset>(cameraControlClip.timelineRef.guid, cameraControlClip.timelineRef.assetPath, cameraControlClip.timelineRef.assetName);
                         }
                     }
                 }

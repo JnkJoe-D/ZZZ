@@ -299,7 +299,7 @@
                     "blendInDuration": 0.13333334028720857,
                     "blendOutDuration": 0.13333338499069215,
                     "animationClip": {
-                        "instanceID": 49562
+                        "instanceID": 49600
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -334,7 +334,7 @@
                     "blendInDuration": 0.13333338499069215,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 58382
+                        "instanceID": 58418
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -365,7 +365,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.6333334445953369,
+                    "duration": 0.5,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 0,
@@ -402,8 +402,8 @@
                     "clipId": "417e5d94-c1e5-4278-91c4-06e8cdd30b6e",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.6333334445953369,
-                    "duration": 0.1333332657814026,
+                    "startTime": 0.5,
+                    "duration": 0.2666667103767395,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 3,
@@ -512,7 +512,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36040
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",

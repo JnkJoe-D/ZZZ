@@ -29,5 +29,9 @@ namespace Game.Camera
         Vector3 GetRight();
         void GenerateImpulse();
         void GenerateImpulseWithVelocity(Vector3 velocity, float force, float duration);
+
+        GameObject CreateCamera(GameObject prefab);
+        void DestroyCamera(GameObject cameraInstance);
+        void PlayCameraTimeline(GameObject cameraInstance, SkillEditor.CameraControlParams paramsObj);
     }
 }

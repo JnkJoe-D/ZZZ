@@ -24,6 +24,14 @@ namespace Game.Logic.Action.Combo
 
     public class ActionController : ISkillComboWindowHandler
     {
+        private struct RouteCandidate
+        {
+            public CharacterCommand Command;
+            public ActionConfigAsset NextAction;
+            public int Priority;
+            public string RouteTag;
+        }
+
         public struct ExecutionRecord
         {
             public CommandType Type;
@@ -183,27 +191,10 @@ namespace Game.Logic.Action.Combo
                 return;
             }
 
-            foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
+            if (TryFindBestImmediateLocalCandidate(_effectiveLocalRoutes, out RouteCandidate candidate) &&
+                CommitResolvedAction(candidate.Command, candidate.NextAction, CommandRouteSource.LocalRoute, candidate.RouteTag))
             {
-                if (ShouldDelayBasicAttackForHold(command, _effectiveLocalRoutes))
-                {
-                    continue;
-                }
-
-                bool isBuffered = (Time.time - command.Timestamp) > 0f;
-
-                foreach (ComboWindowData window in _activeComboWindows)
-                {
-                    if (!SupportsImmediateLocalRoutes(window.Type))
-                    {
-                        continue;
-                    }
-
-                    if (TryConsumeLocalRoute(command, _effectiveLocalRoutes, window.Tag, isBuffered))
-                    {
-                        return;
-                    }
-                }
+                return;
             }
         }
 
@@ -222,44 +213,11 @@ namespace Game.Logic.Action.Combo
                 return;
             }
 
-            foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
+            if (TryFindBestLocalCandidateForTag(_effectiveLocalRoutes, tagToTest, out RouteCandidate candidate) &&
+                CommitResolvedAction(candidate.Command, candidate.NextAction, CommandRouteSource.LocalRoute, candidate.RouteTag))
             {
-                if (ShouldDelayBasicAttackForHold(command, _effectiveLocalRoutes))
-                {
-                    continue;
-                }
-
-                bool isBuffered = (Time.time - command.Timestamp) > 0f;
-                if (TryConsumeLocalRoute(command, _effectiveLocalRoutes, tagToTest, isBuffered))
-                {
-                    return;
-                }
+                return;
             }
-        }
-
-        private bool TryConsumeLocalRoute(
-            CharacterCommand command,
-            List<LocalActionRoute> routes,
-            string tagToTest,
-            bool isBuffered)
-        {
-            foreach (LocalActionRoute route in routes)
-            {
-                if (route == null || !route.Evaluate(command, tagToTest, isBuffered, _entity))
-                {
-                    continue;
-                }
-
-                ActionConfigAsset nextAction = ResolveNextAction(command, route.NextAction);
-                if (nextAction == null)
-                {
-                    return false;
-                }
-
-                return CommitResolvedAction(command, nextAction, CommandRouteSource.LocalRoute, tagToTest);
-            }
-
-            return false;
         }
 
         private void EvaluateContextRoutes()
@@ -275,25 +233,10 @@ namespace Game.Logic.Action.Combo
             }
 
             ActionConfigAsset currentAction = GetCurrentAction();
-
-            foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
+            if (TryFindBestContextCandidate(currentAction, out RouteCandidate candidate) &&
+                CommitResolvedAction(candidate.Command, candidate.NextAction, CommandRouteSource.ContextRoute))
             {
-                if (CurrentActionOwnsCommand(currentAction, command))
-                {
-                    continue;
-                }
-
-                bool isBuffered = (Time.time - command.Timestamp) > 0f;
-                ActionConfigAsset nextAction = ResolveConfiguredContextAction(command, isBuffered);
-                if (nextAction == null)
-                {
-                    continue;
-                }
-
-                if (CommitResolvedAction(command, nextAction, CommandRouteSource.ContextRoute))
-                {
-                    return;
-                }
+                return;
             }
         }
 
@@ -375,22 +318,158 @@ namespace Game.Logic.Action.Combo
             return !hasFallbackWindow;
         }
 
-        private ActionConfigAsset ResolveConfiguredContextAction(CharacterCommand command, bool isBuffered)
+        private bool TryFindBestImmediateLocalCandidate(List<LocalActionRoute> routes, out RouteCandidate bestCandidate)
         {
+            bestCandidate = default;
+            bool hasCandidate = false;
+
+            foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
+            {
+                if (ShouldDelayBasicAttackForHold(command, routes))
+                {
+                    continue;
+                }
+
+                bool isBuffered = (Time.time - command.Timestamp) > 0f;
+                foreach (ComboWindowData window in _activeComboWindows)
+                {
+                    if (!SupportsImmediateLocalRoutes(window.Type))
+                    {
+                        continue;
+                    }
+
+                    if (!TryResolveLocalCandidate(command, routes, window.Tag, isBuffered, out RouteCandidate candidate))
+                    {
+                        continue;
+                    }
+
+                    if (!hasCandidate || IsHigherPriorityCandidate(candidate, bestCandidate))
+                    {
+                        bestCandidate = candidate;
+                        hasCandidate = true;
+                    }
+                }
+            }
+
+            return hasCandidate;
+        }
+
+        private bool TryFindBestLocalCandidateForTag(
+            List<LocalActionRoute> routes,
+            string tagToTest,
+            out RouteCandidate bestCandidate)
+        {
+            bestCandidate = default;
+            bool hasCandidate = false;
+
+            foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
+            {
+                if (ShouldDelayBasicAttackForHold(command, routes))
+                {
+                    continue;
+                }
+
+                bool isBuffered = (Time.time - command.Timestamp) > 0f;
+                if (!TryResolveLocalCandidate(command, routes, tagToTest, isBuffered, out RouteCandidate candidate))
+                {
+                    continue;
+                }
+
+                if (!hasCandidate || IsHigherPriorityCandidate(candidate, bestCandidate))
+                {
+                    bestCandidate = candidate;
+                    hasCandidate = true;
+                }
+            }
+
+            return hasCandidate;
+        }
+
+        private bool TryResolveLocalCandidate(
+            CharacterCommand command,
+            List<LocalActionRoute> routes,
+            string tagToTest,
+            bool isBuffered,
+            out RouteCandidate candidate)
+        {
+            candidate = default;
+
+            foreach (LocalActionRoute route in routes)
+            {
+                if (route == null || !route.Evaluate(command, tagToTest, isBuffered, _entity))
+                {
+                    continue;
+                }
+
+                ActionConfigAsset nextAction = ResolveNextAction(command, route.NextAction);
+                if (nextAction == null)
+                {
+                    return false;
+                }
+
+                candidate = new RouteCandidate
+                {
+                    Command = command,
+                    NextAction = nextAction,
+                    Priority = route.Priority,
+                    RouteTag = tagToTest
+                };
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TryFindBestContextCandidate(ActionConfigAsset currentAction, out RouteCandidate bestCandidate)
+        {
+            bestCandidate = default;
+
             CharacterConfigAsset config = _entity.Config;
             CommandContextConfig contextConfig = config?.CommandContextConfig;
             if (contextConfig == null || _entity.RuntimeData == null)
             {
-                return null;
+                return false;
             }
 
             contextConfig.CollectEffectiveRoutes(_entity.RuntimeData.CurrentCommandContext, _effectiveContextRoutes);
             if (_effectiveContextRoutes.Count == 0)
             {
-                return null;
+                return false;
             }
 
-            foreach (ContextRoute route in _effectiveContextRoutes)
+            bool hasCandidate = false;
+            foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
+            {
+                if (CurrentActionOwnsCommand(currentAction, command))
+                {
+                    continue;
+                }
+
+                bool isBuffered = (Time.time - command.Timestamp) > 0f;
+                if (!TryResolveContextCandidate(command, _effectiveContextRoutes, isBuffered, out RouteCandidate candidate))
+                {
+                    continue;
+                }
+
+                if (!hasCandidate || IsHigherPriorityCandidate(candidate, bestCandidate))
+                {
+                    bestCandidate = candidate;
+                    hasCandidate = true;
+                }
+            }
+
+            return hasCandidate;
+        }
+
+        private bool TryResolveContextCandidate(
+            CharacterCommand command,
+            List<ContextRoute> routes,
+            bool isBuffered,
+            out RouteCandidate candidate)
+        {
+            candidate = default;
+
+            foreach (ContextRoute route in routes)
             {
                 if (route == null || !route.Evaluate(command, isBuffered, _entity))
                 {
@@ -398,13 +477,21 @@ namespace Game.Logic.Action.Combo
                 }
 
                 ActionConfigAsset nextAction = ResolveNextAction(command, route.NextAction);
-                if (nextAction != null)
+                if (nextAction == null)
                 {
-                    return nextAction;
+                    return false;
                 }
+
+                candidate = new RouteCandidate
+                {
+                    Command = command,
+                    NextAction = nextAction,
+                    Priority = route.Priority
+                };
+                return true;
             }
 
-            return null;
+            return false;
         }
 
         private bool OwnsCommandViaLocalRoutes(ActionConfigAsset currentAction, CharacterCommand command)
@@ -412,6 +499,16 @@ namespace Game.Logic.Action.Combo
             _effectiveLocalRoutes.Clear();
             currentAction?.CollectEffectiveLocalRoutes(_effectiveLocalRoutes);
             return _effectiveLocalRoutes.Exists(t => t.MatchesCommand(command.Type, command.Phase));
+        }
+
+        private static bool IsHigherPriorityCandidate(RouteCandidate candidate, RouteCandidate currentBest)
+        {
+            if (candidate.Priority != currentBest.Priority)
+            {
+                return candidate.Priority > currentBest.Priority;
+            }
+
+            return candidate.Command.BufferOrder > currentBest.Command.BufferOrder;
         }
 
         private ActionConfigAsset ResolveNextAction(CharacterCommand command, ActionConfigAsset explicitAction)

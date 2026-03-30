@@ -16,6 +16,7 @@ namespace Game.Logic.Character
         public override void OnEnter()
         {
             Entity.RuntimeData.CurrentCommandContext = CommandContextType.HitStun;
+            Entity.RuntimeData.ClearDashContinuation();
             _stunDuration = Entity.RuntimeData.CurrentHitStunDuration;
             _stunTimer = 0f;
 

@@ -7,16 +7,22 @@ namespace SkillEditor
     /// </summary>
     public interface ISkillCameraHandler
     {
-        void SetCamera(int cameraId, GameObject target);
-        void SetPathPosition(float position);
-        void ReleaseCamera();
-
-        int AcquireSkillCameraState(string stateName, int priority = 0);
-        void ReleaseSkillCameraState(int token);
-        void SetSkillCameraState(string stateName);
-        void ClearSkillCameraState();
 
         void GenerateImpulse();
         void GenerateImpulseWithVelocity(Vector3 velocity, float force, float duration);
+
+        GameObject CreateCamera(GameObject prefab);
+        void DestroyCamera(GameObject cameraInstance);
+        void PlayCameraTimeline(GameObject cameraInstance, CameraControlParams paramsObj);
+    }
+
+    public class CameraControlParams
+    {
+        public UnityEngine.Playables.PlayableAsset timelineAsset;
+        public string followBoneName;
+        public string lookAtBoneName;
+        public bool overrideSettings;
+        public Color backgroundColor;
+        public LayerMask cullingMask;
     }
 }

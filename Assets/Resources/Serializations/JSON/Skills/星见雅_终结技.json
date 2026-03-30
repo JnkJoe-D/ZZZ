@@ -55,7 +55,7 @@
         {
             "groupId": "c049ddd2-da2f-47c7-939b-5c2ab38fc517",
             "groupName": "命中",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -79,7 +79,7 @@
         {
             "groupId": "2618bfdd-54e5-4e01-b001-9112a202093c",
             "groupName": "动画位移",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -101,6 +101,18 @@
             "isEnabled": true,
             "isLocked": false,
             "tracks": []
+        },
+        {
+            "groupId": "348cb6f6-ec8a-484f-bb09-222409ab68af",
+            "groupName": "相机控制",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1013
+                }
+            ]
         }
     ],
     "references": {
@@ -124,13 +136,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
-                        },
-                        {
                             "rid": 1014
                         },
                         {
                             "rid": 1015
+                        },
+                        {
+                            "rid": 1016
                         }
                     ],
                     "isMasterTrack": true,
@@ -221,13 +233,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
-                        },
-                        {
                             "rid": 1017
                         },
                         {
                             "rid": 1018
+                        },
+                        {
+                            "rid": 1019
                         }
                     ]
                 }
@@ -250,7 +262,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1019
+                            "rid": 1020
                         }
                     ]
                 }
@@ -273,7 +285,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1020
+                            "rid": 1021
                         }
                     ]
                 }
@@ -296,7 +308,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1021
+                            "rid": 1022
                         }
                     ]
                 }
@@ -319,7 +331,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1022
+                            "rid": 1023
                         }
                     ]
                 }
@@ -342,7 +354,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1023
+                            "rid": 1024
                         }
                     ]
                 }
@@ -365,7 +377,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1024
+                            "rid": 1025
                         }
                     ]
                 }
@@ -388,7 +400,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1025
+                            "rid": 1026
                         }
                     ]
                 }
@@ -411,13 +423,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1026
+                            "rid": 1027
                         }
                     ]
                 }
             },
             {
                 "rid": 1013,
+                "type": {
+                    "class": "CameraTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "cf9309d3-912f-4c37-8959-fec73c943d3f",
+                    "trackType": "CameraTrack",
+                    "trackName": "摄像机轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1028
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1014,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -432,7 +467,7 @@
                     "blendInDuration": 0.10000002384185791,
                     "blendOutDuration": 0.1333332061767578,
                     "animationClip": {
-                        "instanceID": 52502
+                        "instanceID": 35626
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -452,7 +487,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1015,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -467,7 +502,7 @@
                     "blendInDuration": 0.1333332061767578,
                     "blendOutDuration": 0.1333332061767578,
                     "animationClip": {
-                        "instanceID": 61322
+                        "instanceID": 35622
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -487,7 +522,7 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1016,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -502,7 +537,7 @@
                     "blendInDuration": 0.1333332061767578,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 63282
+                        "instanceID": 35624
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -522,7 +557,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1017,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -541,7 +576,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1018,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -560,7 +595,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1019,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -579,7 +614,7 @@
                 }
             },
             {
-                "rid": 1019,
+                "rid": 1020,
                 "type": {
                     "class": "HitClip",
                     "ns": "SkillEditor",
@@ -661,7 +696,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36048
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -672,7 +707,7 @@
                 }
             },
             {
-                "rid": 1020,
+                "rid": 1021,
                 "type": {
                     "class": "HitClip",
                     "ns": "SkillEditor",
@@ -754,7 +789,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36048
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -765,7 +800,7 @@
                 }
             },
             {
-                "rid": 1021,
+                "rid": 1022,
                 "type": {
                     "class": "HitClip",
                     "ns": "SkillEditor",
@@ -847,7 +882,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36048
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -858,7 +893,7 @@
                 }
             },
             {
-                "rid": 1022,
+                "rid": 1023,
                 "type": {
                     "class": "HitClip",
                     "ns": "SkillEditor",
@@ -940,7 +975,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36048
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -951,7 +986,7 @@
                 }
             },
             {
-                "rid": 1023,
+                "rid": 1024,
                 "type": {
                     "class": "HitClip",
                     "ns": "SkillEditor",
@@ -1033,7 +1068,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 36048
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -1044,7 +1079,7 @@
                 }
             },
             {
-                "rid": 1024,
+                "rid": 1025,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "SkillEditor",
@@ -1062,7 +1097,7 @@
                 }
             },
             {
-                "rid": 1025,
+                "rid": 1026,
                 "type": {
                     "class": "VisualOffsetClip",
                     "ns": "SkillEditor",
@@ -1080,7 +1115,7 @@
                 }
             },
             {
-                "rid": 1026,
+                "rid": 1027,
                 "type": {
                     "class": "VisualOffsetRecoverClip",
                     "ns": "SkillEditor",
@@ -1095,6 +1130,52 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "recoverySpeed": 2.0
+                }
+            },
+            {
+                "rid": 1028,
+                "type": {
+                    "class": "CameraControlClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "dcfe32c9-956f-4426-8309-1e07de246a63",
+                    "clipName": "相机控制片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.0,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "cameraPrefab": {
+                        "instanceID": 36656
+                    },
+                    "cameraRef": {
+                        "guid": "ae2fdc0964a7dbb4d96da3944a1f9c5b",
+                        "assetName": "星见雅_终结技_镜头",
+                        "assetPath": "Assets/Resources/Prefab/Camera/星见雅_终结技_镜头.prefab"
+                    },
+                    "timelineAsset": {
+                        "instanceID": 32692
+                    },
+                    "timelineRef": {
+                        "guid": "8caa28cdb231224428b4fb9c3ed5391a",
+                        "assetName": "星见雅_终结技_相机运镜",
+                        "assetPath": "Assets/Resources/Timelines/星见雅_终结技_相机运镜.playable"
+                    },
+                    "followBoneName": "CameraBasePoint",
+                    "lookAtBoneName": "Bip001 Head",
+                    "overrideSettings": true,
+                    "backgroundColor": {
+                        "r": 0.34100213646888735,
+                        "g": 0.4864487946033478,
+                        "b": 0.9150943160057068,
+                        "a": 1.0
+                    },
+                    "cullingMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 2560
+                    }
                 }
             }
         ]

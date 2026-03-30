@@ -73,6 +73,9 @@ namespace Game.Logic.Action.Combo
         [Tooltip("InstantOnly rejects buffered input. Other modes currently accept both live and buffered input.")]
         public ComboTriggerMode TriggerMode = ComboTriggerMode.Buffered;
 
+        [Tooltip("Higher values win when multiple valid commands compete. Same priority prefers the latest input.")]
+        public int Priority = 0;
+
         public bool Evaluate(CharacterCommand command, string tag, bool isBuffered, CharacterEntity actor)
         {
             if (!CommandRouteEvaluator.MatchesCommand(RequiredType, RequiredPhase, command))
@@ -114,8 +117,11 @@ namespace Game.Logic.Action.Combo
         [SerializeReference]
         public List<ITransitionCondition> ExtraConditions = new();
 
-        [Tooltip("InstantOnly rejects buffered input. Other modes currently accept both live and buffered input.")]
+        [Tooltip("Buffer只在Buffer结束触发,Instantly只在Execute/RecoveryExecute期间触发")]
         public ComboTriggerMode TriggerMode = ComboTriggerMode.Buffered;
+
+        [Tooltip("Higher values win when multiple valid commands compete. Same priority prefers the latest input.")]
+        public int Priority = 0;
 
         public bool Evaluate(CharacterCommand command, bool isBuffered, CharacterEntity actor)
         {

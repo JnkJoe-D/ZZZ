@@ -71,7 +71,7 @@ namespace Game.Logic.Character.Config
         public SkillConfigAsset[] dodgeCounter;
 
         [Header("Special Skill")]
-        public SkillConfigAsset specialSkill;
+        public SkillConfigAsset[] specialSkills;
 
         [Header("Perfect Special Skill")]
         public SkillConfigAsset specialSkillPerfect;
@@ -154,7 +154,13 @@ namespace Game.Logic.Character.Config
                 }
             }
 
-            if (specialSkill != null) yield return specialSkill;
+            if (specialSkills != null)
+            {
+                foreach (SkillConfigAsset action in specialSkills)
+                {
+                    if (action != null) yield return action;
+                }
+            }
             if (specialSkillPerfect != null) yield return specialSkillPerfect;
             if (enhancedSpecialSkill != null) yield return enhancedSpecialSkill;
             if (enhancedSpecialSkillPerfect != null) yield return enhancedSpecialSkillPerfect;

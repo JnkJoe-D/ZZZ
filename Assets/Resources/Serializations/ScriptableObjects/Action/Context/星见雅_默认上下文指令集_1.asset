@@ -18,26 +18,25 @@ MonoBehaviour:
     NextAction: {fileID: 11400000, guid: b160746897ca318418d8374d92e49685, type: 2}
     ExtraConditions: []
     TriggerMode: 1
+    Priority: 0
   - RequiredType: 30
     RequiredPhase: 0
     NextAction: {fileID: 11400000, guid: 094a68538db7d9241a2bfe1e506ac2b7, type: 2}
     ExtraConditions: []
     TriggerMode: 1
+    Priority: 0
   - RequiredType: 40
     RequiredPhase: 0
     NextAction: {fileID: 11400000, guid: 6a5978762a3863543a136e37cc50978a, type: 2}
     ExtraConditions: []
     TriggerMode: 1
+    Priority: 0
   - RequiredType: 50
     RequiredPhase: 0
     NextAction: {fileID: 0}
     ExtraConditions: []
     TriggerMode: 1
-  - RequiredType: 50
-    RequiredPhase: 0
-    NextAction: {fileID: 0}
-    ExtraConditions: []
-    TriggerMode: 1
+    Priority: 0
   references:
     version: 2
     RefIds: []

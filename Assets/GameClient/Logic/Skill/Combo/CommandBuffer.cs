@@ -18,12 +18,14 @@ namespace Game.Logic.Action.Combo
         public CommandPhase Phase;
         public CommandPayload Payload;
         public float Timestamp;
+        public long BufferOrder;
         public bool IsConsumed;
     }
 
     public class CommandBuffer
     {
         private readonly List<CharacterCommand> _commands = new();
+        private long _nextBufferOrder;
         private const float ExpirationTime = 0.3f;
 
         public void Push(CharacterCommand command)
@@ -38,6 +40,7 @@ namespace Game.Logic.Action.Combo
                 command.Timestamp = Time.time;
             }
 
+            command.BufferOrder = ++_nextBufferOrder;
             _commands.Add(command);
         }
 
