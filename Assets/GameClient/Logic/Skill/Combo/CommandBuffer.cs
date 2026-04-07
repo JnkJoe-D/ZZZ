@@ -7,14 +7,13 @@ namespace Game.Logic.Action.Combo
     public enum CommandRouteSource
     {
         None = 0,
-        LocalRoute = 10,
-        ContextRoute = 20,
-        StateAction = 30
+        ActionRoute = 10,
+        ContextRoute = 20
     }
 
     public class CharacterCommand
     {
-        public CommandType Type;
+        public InputCommand Type;
         public CommandPhase Phase;
         public CommandPayload Payload;
         public float Timestamp;

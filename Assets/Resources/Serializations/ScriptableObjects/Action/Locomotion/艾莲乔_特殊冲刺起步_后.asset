@@ -10,18 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f30efc83f55cddf4e95a3a907679c0b3, type: 3}
-  m_Name: "\u827E\u83B2\u4E54_\u5F85\u673A"
+  m_Name: "\u827E\u83B2\u4E54_\u7279\u6B8A\u51B2\u523A\u8D77\u6B65_\u540E"
   m_EditorClassIdentifier: 
-  ID: 1200
+  ID: 1225
   Name: 
-  TimelineAsset: {fileID: 4900000, guid: 3055c39a0a6911b41b4a91a7a8ab34c8, type: 3}
+  TimelineAsset: {fileID: 4900000, guid: 239c568bdd111ed40b058eb8fe0c0444, type: 3}
   TurnMode: 0
-  EnterState: 0
+  EnterState: 20
   CompleteMode: 0
   CompleteAction: {fileID: 0}
   Routes: []
-  RouteSets:
-  - {fileID: 11400000, guid: 8fc575d345c31e3499f108659b7b0778, type: 2}
+  RouteSets: []
   FollowInputDirection: 0
   FaceToSpeed: 10
   SpeedMultiplier: 0

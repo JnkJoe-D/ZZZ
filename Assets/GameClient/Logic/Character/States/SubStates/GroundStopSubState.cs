@@ -7,8 +7,6 @@ namespace Game.Logic.Character.SubStates
         private IInputCommandHandler _handler;
         public override IInputCommandHandler InputHandler => _handler;
 
-        private SkillEditor.SkillRunner _currentRunner;
-
         public override void Initialize(CharacterGroundState context)
         {
             base.Initialize(context);
@@ -19,33 +17,25 @@ namespace Game.Logic.Character.SubStates
         {
             _ctx.HostEntity.RuntimeData.CurrentCommandContext = CommandContextType.GroundStop;
             
-            StateActionType actionType = StateActionType.GroundJogStop;
-            if (_ctx.Blackboard.IsFromDash)
-            {
-                actionType = StateActionType.GroundDashStop;
-            }
-            else if (_ctx.Blackboard.IsShortJog)
-            {
-                actionType = StateActionType.GroundJogStartEnd;
-            }
+            // if (_ctx.HostEntity.Config != null)
+            // {
+            //     var config = _ctx.HostEntity.Config;
+            //     var action = config.JogStopConfig;
 
-            if (_ctx.HostEntity.Config != null)
-            {
-                _currentRunner = _ctx.HostEntity.ActionController.PlayStateAction(actionType);
-                if (_currentRunner != null)
-                {
-                    _currentRunner.OnComplete -= OnStopAnimFinished;
-                    _currentRunner.OnComplete += OnStopAnimFinished;
-                }
-                else
-                {
-                    OnStopAnimFinished();
-                }
-            }
-            else
-            {
-                OnStopAnimFinished();
-            }
+            //     if (_ctx.Blackboard.IsFromDash)
+            //     {
+            //         action = config.DashStopConfig ?? config.JogStopConfig;
+            //     }
+            //     else if (_ctx.Blackboard.IsShortJog)
+            //     {
+            //         action = config.JogStartEndConfig ?? config.JogStopConfig;
+            //     }
+
+            //     if (action != null)
+            //     {
+            //         _ctx.HostEntity.ActionController.PlayAction(action);
+            //     }
+            // }
         }
 
         public override void OnUpdate(float deltaTime)
@@ -56,30 +46,10 @@ namespace Game.Logic.Character.SubStates
                 return;
             }
 
-            if (provider.HasMovementInput())
-            {
-                if (_currentRunner != null)
-                {
-                    _currentRunner.OnComplete -= OnStopAnimFinished;
-                    _currentRunner = null;
-                }
-
-                ChangeState(_ctx.JogState);
-            }
-        }
-
-        private void OnStopAnimFinished()
-        {
-            if (_currentRunner != null)
-            {
-                _currentRunner.OnComplete -= OnStopAnimFinished;
-                _currentRunner = null;
-            }
-
-            if (_ctx.CurrentSubState == this)
-            {
-                ChangeState(_ctx.IdleState);
-            }
+            // if (provider.HasMovementInput())
+            // {
+            //     ChangeState(_ctx.JogState);
+            // }
         }
     }
 }

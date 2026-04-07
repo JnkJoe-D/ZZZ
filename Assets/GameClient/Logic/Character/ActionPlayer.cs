@@ -16,6 +16,12 @@ namespace Game.Logic.Character
         
         public ActionConfigAsset CurrentAction { get; private set; }
         public bool IsPlaying { get; private set; }
+
+        /// <summary>
+        /// 当前动作开始播放的 Time.time 时间戳。
+        /// 用于 TimeSinceActionStartCondition 等计算动作已播放时长。
+        /// </summary>
+        public float ActionStartTime { get; private set; }
         public float CurrentTime=>_runner.CurrentTime;
 
         public ActionPlayer(CharacterEntity entity)
@@ -53,6 +59,7 @@ namespace Game.Logic.Character
                 _runner.Play(timeline, _context);
                 CurrentAction = config;
                 IsPlaying = true;
+                ActionStartTime = Time.time;
             }
             else
             {
@@ -80,6 +87,7 @@ namespace Game.Logic.Character
             }
             IsPlaying = false;
             CurrentAction = null;
+            ActionStartTime = 0f;
         }
 
         public void SetPlaySpeed(float speed)

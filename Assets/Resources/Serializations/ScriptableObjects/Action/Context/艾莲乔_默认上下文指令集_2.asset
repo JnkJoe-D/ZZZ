@@ -15,7 +15,7 @@ MonoBehaviour:
   Routes:
   - RequiredType: 20
     RequiredPhase: 0
-    NextAction: {fileID: 11400000, guid: 39597b3808f14ba4e9d617ad4e2bdeb1, type: 2}
+    NextAction: {fileID: 0}
     ExtraConditions: []
     TriggerMode: 1
     Priority: 0

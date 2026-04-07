@@ -29,6 +29,7 @@ namespace Game.Logic.Character
         public SkillMotionWindowHandler MotionWindowHandler { get; private set; }
         public CharacterRuntimeData RuntimeData { get; private set; }
 
+
         public event System.Action<string> OnSkillTimelineEvent;
 
         public ISkillComboWindowHandler SkillComboWindowHandler => ActionController;
@@ -82,7 +83,17 @@ namespace Game.Logic.Character
                     StateMachine.AddState(new CharacterEvadeState());
                     StateMachine.AddState(new CharacterActionBackswingState());
                     StateMachine.AddState(new CharacterHitStunState());
-                    StateMachine.ChangeState<CharacterGroundState>();
+
+                    // 初始化动作根节点。如果配置了 ActionRoot，则播放它（它会自动带动状态机进入 EnterState）。
+                    // 如果未配置，则回退到原有的硬编码进入 GroundState。
+                    if (Config.ActionRoot != null)
+                    {
+                        ActionController.PlayAction(Config.ActionRoot);
+                    }
+                    else
+                    {
+                        StateMachine.ChangeState<CharacterGroundState>();
+                    }
                 }
             }
 

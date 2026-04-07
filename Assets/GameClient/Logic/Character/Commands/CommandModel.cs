@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.Logic.Character
 {
-    public enum CommandType
+    public enum InputCommand
     {
         None = 0,
         Move = 10,
@@ -10,6 +10,14 @@ namespace Game.Logic.Character
         SpecialAttack = 30,
         Ultimate = 40,
         Evade = 50
+    }
+
+    public enum ConditionCommand
+    {
+        None = 0,
+        Move = 10,
+        LostMove = 20,
+        ShortMove = 30
     }
 
     public enum CommandPhase

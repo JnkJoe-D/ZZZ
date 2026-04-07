@@ -5,22 +5,49 @@ using Game.Logic.Character.Config;
 namespace Game.Logic.Character
 {
     /// <summary>
-    /// 角色运行时临时数据。
-    /// 负责管理闪避计数、冷却、当前指令上下文，以及最近一次路由命中信息。
+    /// 【角色运行时数据中枢】
+    /// 承载了当前指令上下文、各系统资源状态（闪避/受击）、以及 v3 架构特有的动作回流提示。
     /// </summary>
     public class CharacterRuntimeData
     {
-        public bool DashOnNextGroundEnter { get; private set; }
+        /// <summary>
+        /// <summary>
+        /// 当从 ActionController 切入 GroundState 时，携带的子状态目标。
+        /// 读取后应消费并重置为 Idle。
+        /// </summary>
+        public ActionState TargetGroundSubState { get; set; } = ActionState.Idle;
+
+        /// <summary>
+        /// 基础攻击是否处于按住蓄力状态。
+        /// </summary>
+        public bool IsBasicAttackHold { get; set; }
+
+        /// <summary>
+        /// 当前正在执行或即将执行的动作资产。
+        /// </summary>
         public ActionConfigAsset NextActionToCast { get; set; }
+
+        /// <summary>
+        /// 当前指令查表上下文 (决定了 CommandContextConfig 搜索哪个 Group)。
+        /// </summary>
         public CommandContextType CurrentCommandContext { get; set; }
 
+        /// <summary>
+        /// 移动输入是否处于“短输入”判定范围内（由 JogState 维护）。
+        /// </summary>
+        public bool IsShortMoveInput { get; set; }
+
+        // ── 全链路追踪字段 (用于调试与回溯) ──
         public CommandRouteSource LastRouteSource { get; private set; }
         public CommandContextType LastRouteContext { get; private set; }
         public string LastRouteTag { get; private set; }
-        public CommandType LastResolvedCommandType { get; private set; }
+        public InputCommand LastResolvedCommandType { get; private set; }
         public CommandPhase LastResolvedCommandPhase { get; private set; }
         public int LastResolvedActionId { get; private set; } = -1;
 
+        /// <summary>
+        /// 闪避计数与冷却计时。
+        /// </summary>
         public int EvadeCount { get; private set; }
         public float EvadeTimer { get; private set; }
 
@@ -95,27 +122,14 @@ namespace Game.Logic.Character
             EvadeTimer = config.evadeCoolDown;
         }
 
-        public void SetDashOnNextGroundEnter(bool shouldDash)
-        {
-            DashOnNextGroundEnter = shouldDash;
-        }
 
-        public bool ConsumeDashOnGroundEnter(bool hasMovementInput)
-        {
-            bool shouldEnterDash = DashOnNextGroundEnter && hasMovementInput;
-            DashOnNextGroundEnter = false;
-            return shouldEnterDash;
-        }
-
-        public void ClearDashContinuation()
-        {
-            DashOnNextGroundEnter = false;
-        }
-
+        /// <summary>
+        /// 记录一次成功的路由解析结果。
+        /// </summary>
         public void RecordResolvedRoute(
             CommandRouteSource routeSource,
             string routeTag,
-            CommandType commandType,
+            InputCommand commandType,
             CommandPhase commandPhase,
             ActionConfigAsset action)
         {
@@ -137,10 +151,12 @@ namespace Game.Logic.Character
             LastRouteSource = CommandRouteSource.None;
             LastRouteContext = CommandContextType.None;
             LastRouteTag = null;
-            LastResolvedCommandType = CommandType.None;
+            LastResolvedCommandType = InputCommand.None;
             LastResolvedCommandPhase = CommandPhase.Started;
             LastResolvedActionId = -1;
-            ClearDashContinuation();
+            TargetGroundSubState = ActionState.Idle;
+            IsBasicAttackHold = false;
+            IsShortMoveInput = false;
         }
     }
 }

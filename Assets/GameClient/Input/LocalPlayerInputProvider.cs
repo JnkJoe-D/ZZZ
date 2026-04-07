@@ -11,8 +11,13 @@ namespace Game.Input
     {
         public event Action OnSwitchNext;
         public event Action OnSwitchPre;
+        public event Action OnMoveStarted;
+        public event Action OnMovePerformed;
+        public event Action OnMoveCanceled;
         public event Action OnEvadeFrontStarted;
         public event Action OnEvadeBackStarted;
+        public event Action OnEvadeHold;
+        public event Action OnEvadeHoldCancel;
         public event Action OnBasicAttackStarted;
         public event Action OnBasicAttackCanceled;
         public event Action OnBasicAttackHoldStart;
@@ -34,8 +39,14 @@ namespace Game.Input
             _input = new PlayerControl();
 
             // 订阅瞬发事件
+            _input.GamePlay.Move.started += _ => OnMoveStarted?.Invoke();
+            _input.GamePlay.Move.performed += _ => OnMovePerformed?.Invoke();
+            _input.GamePlay.Move.canceled += _ => OnMoveCanceled?.Invoke();
+
             _input.GamePlay.EvadeFront.started += _ => OnEvadeFrontStarted?.Invoke();
             _input.GamePlay.EvadeBack.started += _ => OnEvadeBackStarted?.Invoke();
+            _input.GamePlay.EvadeBackHold.performed += _ => OnEvadeHold?.Invoke();
+            _input.GamePlay.EvadeBackHold.canceled += _ => OnEvadeHoldCancel?.Invoke();
             _input.GamePlay.LightAttack.started += _ => OnBasicAttackStarted?.Invoke();
             _input.GamePlay.LightAttack.canceled += _ => OnBasicAttackCanceled?.Invoke();
             _input.GamePlay.LightAttackHold.started += _ => OnBasicAttackHoldStart?.Invoke();
@@ -86,17 +97,6 @@ namespace Game.Input
         public bool HasMovementInput()
         {
             return _currentMoveInput.sqrMagnitude > 0.01f;
-        }
-
-        public bool GetActionState(InputActionType type)
-        {
-            // 用 IsPressed 支持长按检测
-            if (type == InputActionType.Dash)
-            {
-                // 注意这里查的是您在 InputMap 里命名的 Dodge
-                return _input.GamePlay.EvadeBack.IsPressed();
-            }
-            return false;
         }
     }
 }

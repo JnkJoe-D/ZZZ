@@ -16,16 +16,23 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 2f6ac224a97058f489eb1b1cd776dcbc, type: 3}
   TurnMode: 1
-  LocalRoutes:
-  - RequiredType: 20
+  EnterState: 0
+  CompleteMode: 0
+  CompleteAction: {fileID: 0}
+  Routes:
+  - Category: 0
+    RequiredType: 0
     RequiredPhase: 0
-    NextAction: {fileID: 11400000, guid: 0ef169032c701f0498cec9a6a5f8fb17, type: 2}
+    RequiredWindowTag: 
+    TriggerMode: 0
+    ExecutionMode: 0
+    NextAction: {fileID: 0}
     ExtraConditions: []
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
     Priority: 0
-  LocalRouteSets:
-  - {fileID: 11400000, guid: b4b7c4d842ece1141b2822f10fc10f03, type: 2}
+  RouteSets: []
+  FollowInputDirection: 0
+  FaceToSpeed: 10
+  SpeedMultiplier: 0
   Category: 110
   Cooldown: 0.5
   MPCost: 0

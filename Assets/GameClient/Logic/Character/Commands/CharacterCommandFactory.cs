@@ -6,7 +6,7 @@ namespace Game.Logic.Character
 {
     public static class CharacterCommandFactory
     {
-        public static CharacterCommand Create(CommandType commandType, CommandPhase phase, IInputProvider provider)
+        public static CharacterCommand Create(InputCommand commandType, CommandPhase phase, IInputProvider provider)
         {
             Vector2 direction = provider?.GetMovementDirection() ?? Vector2.zero;
 

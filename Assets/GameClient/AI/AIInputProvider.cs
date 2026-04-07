@@ -18,7 +18,12 @@ namespace Game.AI
 
         public event Action OnSwitchNext;
         public event Action OnSwitchPre;
+        public event Action OnMoveStarted;
+        public event Action OnMovePerformed;
+        public event Action OnMoveCanceled;
         public event Action OnEvadeBackStarted;
+        public event Action OnEvadeHold;
+        public event Action OnEvadeHoldCancel;
         public event Action OnBasicAttackStarted;
         public event Action OnBasicAttackCanceled;
         public event Action OnBasicAttackHoldStart;
@@ -66,16 +71,6 @@ namespace Game.AI
         public bool HasMovementInput()
         {
             return movementInput.sqrMagnitude > 0.0001f || (useWorldMovementDirection && worldMovementDirection.sqrMagnitude > 0.0001f);
-        }
-
-        /// <summary>
-        /// 读取指定动作的按住状态。
-        /// </summary>
-        /// <param name="type">要查询的动作类型。</param>
-        /// <returns>动作是否处于按住状态。</returns>
-        public bool GetActionState(InputActionType type)
-        {
-            return false;
         }
 
         /// <summary>
@@ -164,10 +159,15 @@ namespace Game.AI
         public void TriggerSwitchNext() => OnSwitchNext?.Invoke();
         /// <summary>触发切换到上一个角色事件。</summary>
         public void TriggerSwitchPre() => OnSwitchPre?.Invoke();
+        public void TriggerMoveStarted() => OnMoveStarted?.Invoke();
+        public void TriggerMovePerformed() => OnMovePerformed?.Invoke();
+        public void TriggerMoveCanceled() => OnMoveCanceled?.Invoke();
         /// <summary>触发前闪避事件。</summary>
         public void TriggerEvadeFront() => OnEvadeFrontStarted?.Invoke();
         /// <summary>触发后闪避事件。</summary>
         public void TriggerEvadeBack() => OnEvadeBackStarted?.Invoke();
+        public void TriggerEvadeHold() => OnEvadeHold?.Invoke();
+        public void TriggerEvadeHoldCancel() => OnEvadeHoldCancel?.Invoke();
         /// <summary>触发普攻开始事件。</summary>
         public void TriggerBasicAttack() => OnBasicAttackStarted?.Invoke();
         /// <summary>触发普攻取消事件。</summary>

@@ -21,11 +21,6 @@ namespace Game.Logic.Character
         public override void OnEnter()
         {
             Entity.RuntimeData.CurrentCommandContext = CommandContextType.Backswing;
-
-            if (Machine.PreviousState is not CharacterEvadeState)
-            {
-                Entity.RuntimeData.ClearDashContinuation();
-            }
         }
 
         public override void OnUpdate(float deltaTime)

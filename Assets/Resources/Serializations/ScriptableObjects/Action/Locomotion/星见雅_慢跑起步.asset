@@ -16,7 +16,14 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: b22189592e96b314199e27199d3a268b, type: 3}
   TurnMode: 0
-  LocalRoutes: []
+  EnterState: 10
+  CompleteMode: 0
+  CompleteAction: {fileID: 0}
+  Routes: []
+  RouteSets: []
+  FollowInputDirection: 0
+  FaceToSpeed: 10
+  SpeedMultiplier: 0
   MoveSpeedMultiplier: 1
   BlendParamRule: 
   references:

@@ -1,5 +1,5 @@
 {
-    "isLoop": true,
+    "isLoop": false,
     "groups": [
         {
             "groupId": "4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28",
@@ -256,11 +256,11 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.4333333671092987,
+                    "duration": 0.46666669845581057,
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 42048
+                        "instanceID": 41082
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -268,9 +268,9 @@
                         "instanceID": 0
                     },
                     "clipRef": {
-                        "guid": "7cc5498865cca4d42b36f9366bb5d4f9",
-                        "assetName": "Avatar_Female_Size02_Ellen_Ani_Walk",
-                        "assetPath": "Assets/Dependencies/Animation/Ellen/Avatar_Female_Size02_Ellen_Ani_Walk.fbx"
+                        "guid": "0158e1c13e97e8d41a869f3cf01cd64a",
+                        "assetName": "Avatar_Female_Size02_Ellen_Ani_Attack_Dash_Start_01",
+                        "assetPath": "Assets/Dependencies/Animation/Ellen/Avatar_Female_Size02_Ellen_Ani_Attack_Dash_Start_01.fbx"
                     },
                     "maskRef": {
                         "guid": "",
@@ -287,11 +287,11 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "71e6fd13-2c0b-4694-b83d-1958eab0a4c8",
+                    "clipId": "4f37fa8b-bd62-42d6-a9b7-c868bf9478f4",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.4333333671092987,
+                    "duration": 0.46666669845581057,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 1,
@@ -310,7 +310,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.4333333671092987,
+                    "duration": 0.46666669845581057,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1

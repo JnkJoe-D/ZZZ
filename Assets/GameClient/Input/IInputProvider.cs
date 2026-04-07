@@ -3,14 +3,6 @@ using UnityEngine;
 
 namespace Game.Input
 {
-    public enum InputActionType
-    {
-        None = 0,
-        Dash = 1,
-        Block = 2,
-        // ... 未来有需要都可以往这加
-    }
-
     /// <summary>
     /// 标准化玩家输入接口
     /// 遵循依赖倒置原则（DIP），将具体的输入实现设备（键盘鼠标/行为树AI/网络帧）与具体的业务解耦。
@@ -38,12 +30,6 @@ namespace Game.Input
         /// </summary>
         bool HasMovementInput();
 
-        /// <summary>
-        /// 查询某种指定的逻辑动作在其生命周期里是否处于“保持触发(Hold)”状态
-        /// 适合那些不能单纯依靠按下瞬间判定（如：按住冲刺、长按防御）的玩法
-        /// </summary>
-        bool GetActionState(InputActionType type);
-
         // ==========================================
         // 瞬间触发事件 (适合按键按下/抬起等一次性行为)
         // 这些事件未来可被 Unity New Input System 改键
@@ -54,9 +40,17 @@ namespace Game.Input
 
         /// <summary>切换上一个指令触发 (如 C 键)</summary>
         event Action OnSwitchPre;
+
+        /// <summary>移动方向输入触发</summary>
+        event Action OnMoveStarted;
+        event Action OnMovePerformed;
+        event Action OnMoveCanceled;
+
         /// <summary>闪避触发 (如 Shift 键)</summary>
         event Action OnEvadeFrontStarted;
         event Action OnEvadeBackStarted;
+        event Action OnEvadeHold;
+        event Action OnEvadeHoldCancel;
 
         /// <summary>基础普攻指令触发 (如 鼠标左键)</summary>
         event Action OnBasicAttackStarted;

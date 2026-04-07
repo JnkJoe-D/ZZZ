@@ -16,11 +16,10 @@ namespace Game.Logic.Character.SubStates
         public override void OnEnter()
         {
             _ctx.HostEntity.RuntimeData.CurrentCommandContext = CommandContextType.GroundIdle;
-            if (_ctx.HostEntity.Config.IdleConfig != null)
-            {
-                _ctx.HostEntity.ActionController.PlayStateAction(StateActionType.GroundIdle);
-                _ctx.HostEntity.ActionPlayer.SetPlaySpeed(1.0f);
-            }
+            // if (_ctx.HostEntity.Config.IdleConfig != null)
+            // {
+            //     _ctx.HostEntity.ActionController.PlayAction(_ctx.HostEntity.Config.IdleConfig);
+            // }
         }
 
         public override void OnUpdate(float deltaTime)
@@ -31,10 +30,10 @@ namespace Game.Logic.Character.SubStates
                 return;
             }
 
-            if (provider.HasMovementInput())
-            {
-                ChangeState(_ctx.JogState);
-            }
+            // if (provider.HasMovementInput())
+            // {
+            //     ChangeState(_ctx.JogState);
+            // }
         }
     }
 }

@@ -42,6 +42,7 @@ namespace Game.Logic.Character.Config
         public float SkillMultipier = 1f;
 
         [Header("Base Locomotion Actions")]
+        public ActionConfigAsset ActionRoot;
         public LocomotionConfigAsset IdleConfig;
         public LocomotionConfigAsset JogStartConfig;
         public LocomotionConfigAsset JogStartEndConfig;
@@ -53,8 +54,6 @@ namespace Game.Logic.Character.Config
         public LocomotionConfigAsset DashStopConfig;
 
         [Header("Evade")]
-        public SkillConfigAsset[] evadeFront;
-        public SkillConfigAsset[] evadeBack;
         public int evadeLimitedTimes = 2;
         public float evadeCoolDown = 1f;
 
@@ -102,6 +101,7 @@ namespace Game.Logic.Character.Config
 
         public IEnumerable<ActionConfigAsset> GetAllActionConfigs()
         {
+            if (ActionRoot != null) yield return ActionRoot;
             if (IdleConfig != null) yield return IdleConfig;
             if (JogStartConfig != null) yield return JogStartConfig;
             if (JogStartEndConfig != null) yield return JogStartEndConfig;
@@ -111,22 +111,6 @@ namespace Game.Logic.Character.Config
             if (DashTurnBackConfig != null) yield return DashTurnBackConfig;
             if (DashConfig != null) yield return DashConfig;
             if (DashStopConfig != null) yield return DashStopConfig;
-
-            if (evadeFront != null)
-            {
-                foreach (SkillConfigAsset action in evadeFront)
-                {
-                    if (action != null) yield return action;
-                }
-            }
-
-            if (evadeBack != null)
-            {
-                foreach (SkillConfigAsset action in evadeBack)
-                {
-                    if (action != null) yield return action;
-                }
-            }
 
             if (lightAttacks != null)
             {

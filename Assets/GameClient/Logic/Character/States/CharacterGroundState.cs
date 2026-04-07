@@ -1,5 +1,6 @@
 using Game.AI;
 using Game.FSM;
+using Game.Logic.Action.Config;
 
 namespace Game.Logic.Character
 {
@@ -51,28 +52,39 @@ namespace Game.Logic.Character
         {
             var provider = Entity.InputProvider;
             bool hasMovementInput = provider != null && provider.HasMovementInput();
-            bool shouldEnterDash = Entity.RuntimeData.ConsumeDashOnGroundEnter(hasMovementInput);
 
-            if (provider == null)
+            ActionState targetState = ActionState.Idle;
+            if (Entity.RuntimeData != null)
             {
-                ChangeSubState(IdleState);
-                return;
+                targetState = Entity.RuntimeData.TargetGroundSubState;
+                Entity.RuntimeData.TargetGroundSubState = ActionState.Idle; // 消费请求
             }
 
-            if (shouldEnterDash)
+            if (targetState == ActionState.Dash)
             {
                 ChangeSubState(DashState);
                 return;
             }
 
-            if (hasMovementInput)
+            if (targetState == ActionState.Jog && hasMovementInput)
             {
                 ChangeSubState(JogState);
+                return;
             }
-            else
+
+            if (targetState == ActionState.Stop)
+            {
+                ChangeSubState(StopState);
+                return;
+            }
+
+            if (provider == null || !hasMovementInput)
             {
                 ChangeSubState(IdleState);
+                return;
             }
+
+            ChangeSubState(JogState);
         }
 
         public override void OnUpdate(float deltaTime)
