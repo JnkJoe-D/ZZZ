@@ -24,22 +24,11 @@ namespace Game.Logic.Character
 
         public override void OnEnter()
         {
-            Entity.RuntimeData.CurrentCommandContext = CommandContextType.Evade;
             Entity.RuntimeData.RecordEvade(Entity.Config);
         }
 
         public override void OnUpdate(float deltaTime)
         {
-            var provider = Entity.InputProvider;
-
-            if (Entity?.ActionController != null &&
-                Entity.ActionController.HasMovementCancelableWindow() &&
-                provider != null &&
-                provider.HasMovementInput())
-            {
-                Machine.ChangeState<CharacterGroundState>();
-                return;
-            }
         }
 
         public override void OnExit()

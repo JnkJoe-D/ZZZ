@@ -81,7 +81,6 @@ namespace Game.Logic.Character
                     StateMachine.AddState(new CharacterGroundState());
                     StateMachine.AddState(new CharacterSkillState());
                     StateMachine.AddState(new CharacterEvadeState());
-                    StateMachine.AddState(new CharacterActionBackswingState());
                     StateMachine.AddState(new CharacterHitStunState());
 
                     // 初始化动作根节点。如果配置了 ActionRoot，则播放它（它会自动带动状态机进入 EnterState）。

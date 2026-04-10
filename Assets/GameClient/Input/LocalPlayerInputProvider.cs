@@ -14,14 +14,16 @@ namespace Game.Input
         public event Action OnMoveStarted;
         public event Action OnMovePerformed;
         public event Action OnMoveCanceled;
-        public event Action OnEvadeFrontStarted;
-        public event Action OnEvadeBackStarted;
-        public event Action OnEvadeHold;
-        public event Action OnEvadeHoldCancel;
+        public event Action OnMoveHeld;
+        // public event Action OnEvadeFrontStarted;
+        public event Action OnEvadeStarted;
+        public event Action OnEvadePerformed;
+        public event Action OnEvadeCanceled;
+        public event Action OnEvadeHeld;
         public event Action OnBasicAttackStarted;
         public event Action OnBasicAttackCanceled;
         public event Action OnBasicAttackHoldStart;
-        public event Action OnBasicAttackHold;
+        public event Action OnBasicAttackHeld;
         public event Action OnBasicAttackHoldCancel;
         public event Action OnSpecialAttack;
         public event Action OnSpecialAttackHoldStart;
@@ -42,20 +44,22 @@ namespace Game.Input
             _input.GamePlay.Move.started += _ => OnMoveStarted?.Invoke();
             _input.GamePlay.Move.performed += _ => OnMovePerformed?.Invoke();
             _input.GamePlay.Move.canceled += _ => OnMoveCanceled?.Invoke();
+            _input.GamePlay.MoveHeld.performed += _ => OnMoveHeld?.Invoke();
 
-            _input.GamePlay.EvadeFront.started += _ => OnEvadeFrontStarted?.Invoke();
-            _input.GamePlay.EvadeBack.started += _ => OnEvadeBackStarted?.Invoke();
-            _input.GamePlay.EvadeBackHold.performed += _ => OnEvadeHold?.Invoke();
-            _input.GamePlay.EvadeBackHold.canceled += _ => OnEvadeHoldCancel?.Invoke();
+            // _input.GamePlay.EvadeFront.started += _ => OnEvadeFrontStarted?.Invoke();
+            _input.GamePlay.Evade.started += _ => OnEvadeStarted?.Invoke();
+            _input.GamePlay.Evade.performed += _ => OnEvadePerformed?.Invoke();
+            _input.GamePlay.Evade.canceled += _ => OnEvadeCanceled?.Invoke();
+            _input.GamePlay.EvadeHeld.performed += _ => OnEvadeHeld?.Invoke();
             _input.GamePlay.LightAttack.started += _ => OnBasicAttackStarted?.Invoke();
             _input.GamePlay.LightAttack.canceled += _ => OnBasicAttackCanceled?.Invoke();
-            _input.GamePlay.LightAttackHold.started += _ => OnBasicAttackHoldStart?.Invoke();
-            _input.GamePlay.LightAttackHold.performed += _ => OnBasicAttackHold?.Invoke();
-            _input.GamePlay.LightAttackHold.canceled += _ => OnBasicAttackHoldCancel?.Invoke();
+            _input.GamePlay.LightAttackHeld.started += _ => OnBasicAttackHoldStart?.Invoke();
+            _input.GamePlay.LightAttackHeld.performed += _ => OnBasicAttackHeld?.Invoke();
+            _input.GamePlay.LightAttackHeld.canceled += _ => OnBasicAttackHoldCancel?.Invoke();
             _input.GamePlay.SpecialSkill.started += _ => OnSpecialAttack?.Invoke();
-            _input.GamePlay.SpecialSkillHold.started += _ => OnSpecialAttackHold?.Invoke();
-            _input.GamePlay.SpecialSkillHold.performed += _ => OnSpecialAttackHoldStart?.Invoke();
-            _input.GamePlay.SpecialSkillHold.canceled += _ => OnSpecialAttackHoldCancel?.Invoke();
+            _input.GamePlay.SpecialSkillHeld.started += _ => OnSpecialAttackHold?.Invoke();
+            _input.GamePlay.SpecialSkillHeld.performed += _ => OnSpecialAttackHoldStart?.Invoke();
+            _input.GamePlay.SpecialSkillHeld.canceled += _ => OnSpecialAttackHoldCancel?.Invoke();
             _input.GamePlay.Ultimate.started += _ => OnUltimate?.Invoke();
             _input.GamePlay.Interact.started += _ => OnGameplayInteract?.Invoke();
             _input.GamePlay.SwitchNext.started += _ => OnSwitchNext?.Invoke();
@@ -86,7 +90,7 @@ namespace Game.Input
         
         public Vector2 GetMovementDirection()
         {
-            return _currentMoveInput;
+            return _input?.GamePlay.Move.ReadValue<Vector2>() ?? Vector2.zero;
         }
 
         public Vector2 GetLastMovementDirection()
@@ -96,7 +100,7 @@ namespace Game.Input
 
         public bool HasMovementInput()
         {
-            return _currentMoveInput.sqrMagnitude > 0.01f;
+            return GetMovementDirection().sqrMagnitude > 0.01f;
         }
     }
 }

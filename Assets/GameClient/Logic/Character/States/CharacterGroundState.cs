@@ -66,7 +66,7 @@ namespace Game.Logic.Character
                 return;
             }
 
-            if (targetState == ActionState.Jog && hasMovementInput)
+            if (targetState == ActionState.Jog)
             {
                 ChangeSubState(JogState);
                 return;

@@ -40,126 +40,26 @@ namespace Game.Logic.Character.Config
         [Header("Skill Speed Multiplier")]
         [Range(0, 5f)]
         public float SkillMultipier = 1f;
-
-        [Header("Base Locomotion Actions")]
-        public ActionConfigAsset ActionRoot;
-        public LocomotionConfigAsset IdleConfig;
-        public LocomotionConfigAsset JogStartConfig;
-        public LocomotionConfigAsset JogStartEndConfig;
-        public LocomotionConfigAsset JogConfig;
-        public LocomotionConfigAsset JogStopConfig;
-        public LocomotionConfigAsset DashStartConfig;
-        public LocomotionConfigAsset DashTurnBackConfig;
-        public LocomotionConfigAsset DashConfig;
-        public LocomotionConfigAsset DashStopConfig;
-
         [Header("Evade")]
         public int evadeLimitedTimes = 2;
         public float evadeCoolDown = 1f;
 
-        [Header("Light Attacks")]
-        public SkillConfigAsset[] lightAttacks;
-
-        [Header("Heavy Attacks")]
-        public SkillConfigAsset[] heavyAttacks;
-
-        [Header("Dash Attack")]
-        public SkillConfigAsset dashAttack;
-
-        [Header("Dodge Counter")]
-        public SkillConfigAsset[] dodgeCounter;
-
-        [Header("Special Skill")]
-        public SkillConfigAsset[] specialSkills;
-
-        [Header("Perfect Special Skill")]
-        public SkillConfigAsset specialSkillPerfect;
-
-        [Header("Enhanced Special Skill")]
-        public SkillConfigAsset enhancedSpecialSkill;
-
-        [Header("Perfect Enhanced Special Skill")]
-        public SkillConfigAsset enhancedSpecialSkillPerfect;
-
-        [Header("Chain Skill")]
-        public SkillConfigAsset chainSkill;
-
-        [Header("Assist Skill")]
-        public SkillConfigAsset assistSkill;
-
-        [Header("Ultimate")]
-        public SkillConfigAsset Ultimate;
-
+        [Header("根动作")]
+        public ActionConfigAsset ActionRoot;
+        [Header("动作加载列表")]
+        public List<ActionConfigAsset> ActionProLoadList = new List<ActionConfigAsset>();
         [Header("AI")]
         public BehaviorTreeGraphAsset BehaviorTreeGraph;
-
-        [Header("Command Context Routes")]
-        public CommandContextConfig CommandContextConfig;
-
         [Header("Hit Reaction")]
         public HitReactionConfig hitReactionConfig;
 
         public IEnumerable<ActionConfigAsset> GetAllActionConfigs()
         {
-            if (ActionRoot != null) yield return ActionRoot;
-            if (IdleConfig != null) yield return IdleConfig;
-            if (JogStartConfig != null) yield return JogStartConfig;
-            if (JogStartEndConfig != null) yield return JogStartEndConfig;
-            if (JogConfig != null) yield return JogConfig;
-            if (JogStopConfig != null) yield return JogStopConfig;
-            if (DashStartConfig != null) yield return DashStartConfig;
-            if (DashTurnBackConfig != null) yield return DashTurnBackConfig;
-            if (DashConfig != null) yield return DashConfig;
-            if (DashStopConfig != null) yield return DashStopConfig;
-
-            if (lightAttacks != null)
+            if (ActionProLoadList != null)
             {
-                foreach (SkillConfigAsset action in lightAttacks)
+                foreach (ActionConfigAsset action in ActionProLoadList)
                 {
                     if (action != null) yield return action;
-                }
-            }
-
-            if (heavyAttacks != null)
-            {
-                foreach (SkillConfigAsset action in heavyAttacks)
-                {
-                    if (action != null) yield return action;
-                }
-            }
-
-            if (dashAttack != null) yield return dashAttack;
-
-            if (dodgeCounter != null)
-            {
-                foreach (SkillConfigAsset action in dodgeCounter)
-                {
-                    if (action != null) yield return action;
-                }
-            }
-
-            if (specialSkills != null)
-            {
-                foreach (SkillConfigAsset action in specialSkills)
-                {
-                    if (action != null) yield return action;
-                }
-            }
-            if (specialSkillPerfect != null) yield return specialSkillPerfect;
-            if (enhancedSpecialSkill != null) yield return enhancedSpecialSkill;
-            if (enhancedSpecialSkillPerfect != null) yield return enhancedSpecialSkillPerfect;
-            if (chainSkill != null) yield return chainSkill;
-            if (assistSkill != null) yield return assistSkill;
-            if (Ultimate != null) yield return Ultimate;
-
-            if (CommandContextConfig != null)
-            {
-                foreach (ActionConfigAsset action in CommandContextConfig.GetAllActions())
-                {
-                    if (action != null)
-                    {
-                        yield return action;
-                    }
                 }
             }
 

@@ -18,7 +18,7 @@ namespace Game.Logic.Character.SubStates
 
         public override void OnEnter()
         {
-            _ctx.HostEntity.RuntimeData.CurrentCommandContext = CommandContextType.GroundJog;
+
             _ctx.HostEntity.RuntimeData.IsShortMoveInput = true;
             _stateTime = 0f;
 

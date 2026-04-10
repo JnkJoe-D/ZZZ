@@ -21,11 +21,15 @@ MonoBehaviour:
   CompleteAction: {fileID: 0}
   Routes:
   - Category: 0
-    RequiredType: 0
+    RequiredType: 10
     RequiredPhase: 0
     RequiredWindowTag: 
     TriggerMode: 0
-    ExecutionMode: 0
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
     NextAction: {fileID: 0}
     ExtraConditions: []
     Priority: 0

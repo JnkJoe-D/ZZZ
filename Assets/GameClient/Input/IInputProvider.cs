@@ -45,12 +45,13 @@ namespace Game.Input
         event Action OnMoveStarted;
         event Action OnMovePerformed;
         event Action OnMoveCanceled;
+        event Action OnMoveHeld;
 
         /// <summary>闪避触发 (如 Shift 键)</summary>
-        event Action OnEvadeFrontStarted;
-        event Action OnEvadeBackStarted;
-        event Action OnEvadeHold;
-        event Action OnEvadeHoldCancel;
+        event Action OnEvadeStarted;
+        event Action OnEvadePerformed;
+        event Action OnEvadeCanceled;
+        event Action OnEvadeHeld;
 
         /// <summary>基础普攻指令触发 (如 鼠标左键)</summary>
         event Action OnBasicAttackStarted;
@@ -58,7 +59,7 @@ namespace Game.Input
         event Action OnBasicAttackCanceled;
         /// <summary>基础普攻指令长按触发 (如 鼠标左键)</summary>
         event Action OnBasicAttackHoldStart;
-        event Action OnBasicAttackHold;
+        event Action OnBasicAttackHeld;
         event Action OnBasicAttackHoldCancel;
 
         /// <summary>特殊攻击触发 (如 E)</summary>

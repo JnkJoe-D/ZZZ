@@ -20,7 +20,8 @@ MonoBehaviour:
   CompleteMode: 0
   CompleteAction: {fileID: 0}
   Routes: []
-  RouteSets: []
+  RouteSets:
+  - {fileID: 11400000, guid: 69f87d310ac1ce240a313d249023a50a, type: 2}
   FollowInputDirection: 0
   FaceToSpeed: 10
   SpeedMultiplier: 0

@@ -17,7 +17,7 @@ namespace Game.Logic.Character.SubStates
 
         public override void OnEnter()
         {
-            _ctx.HostEntity.RuntimeData.CurrentCommandContext = CommandContextType.GroundDash;
+
         }
 
         public override void OnUpdate(float deltaTime)

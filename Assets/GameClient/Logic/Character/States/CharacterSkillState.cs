@@ -18,7 +18,6 @@ namespace Game.Logic.Character
 
         public override void OnEnter()
         {
-            Entity.RuntimeData.CurrentCommandContext = CommandContextType.Skill;
             if (Entity.RuntimeData != null)
             {
                 Entity.RuntimeData.IsBasicAttackHold = false;
@@ -27,13 +26,6 @@ namespace Game.Logic.Character
 
         public override void OnUpdate(float deltaTime)
         {
-            if (Entity?.ActionController != null &&
-                Entity.ActionController.HasMovementCancelableWindow() &&
-                Entity.InputProvider != null &&
-                Entity.InputProvider.HasMovementInput())
-            {
-                Machine.ChangeState<CharacterGroundState>();
-            }
         }
 
         public override void OnExit()

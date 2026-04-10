@@ -17,10 +17,12 @@ MonoBehaviour:
   TimelineAsset: {fileID: 4900000, guid: 00789897802621d4ab5d077ccd6085c8, type: 3}
   TurnMode: 1
   EnterState: 50
-  CompleteMode: 0
-  CompleteAction: {fileID: 0}
+  CompleteMode: 20
+  CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   Routes: []
-  RouteSets: []
+  RouteSets:
+  - {fileID: 11400000, guid: 8db2c3e8d1e9f054583fb1496a8633a5, type: 2}
+  - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   FollowInputDirection: 0
   FaceToSpeed: 10
   SpeedMultiplier: 0

@@ -10,27 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
-  m_Name: "\u661F\u89C1\u96C5_\u95EA\u907F\u653B\u51FB"
+  m_Name: "\u661F\u89C1\u96C5_\u51B2\u523A\u653B\u51FB"
   m_EditorClassIdentifier: 
   ID: 10113
   Name: 
   TimelineAsset: {fileID: 4900000, guid: cd1c582eff689a94fb14868829a3a316, type: 3}
   TurnMode: 2
-  LocalRoutes:
-  - RequiredType: 20
-    RequiredPhase: 0
-    NextAction: {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
-    ExtraConditions: []
-    RequiredWindowTag: Buffer
-    TriggerMode: 0
-  - RequiredType: 20
-    RequiredPhase: 0
-    NextAction: {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
-    ExtraConditions: []
-    RequiredWindowTag: Recovery
-    TriggerMode: 1
-  LocalRouteSets:
-  - {fileID: 11400000, guid: 154e6788341662f43a93246864c55e02, type: 2}
+  EnterState: 40
+  CompleteMode: 20
+  CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
+  FollowInputDirection: 0
+  FaceToSpeed: 10
+  SpeedMultiplier: 0
   Category: 30
   Cooldown: 0.5
   MPCost: 0

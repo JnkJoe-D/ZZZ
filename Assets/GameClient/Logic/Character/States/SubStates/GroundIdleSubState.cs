@@ -15,7 +15,7 @@ namespace Game.Logic.Character.SubStates
 
         public override void OnEnter()
         {
-            _ctx.HostEntity.RuntimeData.CurrentCommandContext = CommandContextType.GroundIdle;
+
             // if (_ctx.HostEntity.Config.IdleConfig != null)
             // {
             //     _ctx.HostEntity.ActionController.PlayAction(_ctx.HostEntity.Config.IdleConfig);

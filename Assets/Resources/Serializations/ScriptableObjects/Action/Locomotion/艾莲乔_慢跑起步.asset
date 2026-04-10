@@ -19,20 +19,11 @@ MonoBehaviour:
   EnterState: 10
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: fbe770b9c2765e84580e3708a1b559dc, type: 2}
-  Routes:
-  - Category: 0
-    RequiredType: 10
-    RequiredPhase: 20
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
-    ModifierConditions: 140000001e000000
-    NextAction: {fileID: 11400000, guid: 12437ad71e4d52042a4286a7f47408e7, type: 2}
-    ExtraConditions: []
-    Priority: 0
-  RouteSets: []
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: ed339a88afce4a94a8dea6db55b49420, type: 2}
+  - {fileID: 11400000, guid: 178ace161613f33488aa56a080c0d50d, type: 2}
+  - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   FollowInputDirection: 0
   FaceToSpeed: 10
   SpeedMultiplier: 0

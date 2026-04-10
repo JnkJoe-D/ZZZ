@@ -292,7 +292,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.13333332538604737,
                     "animationClip": {
-                        "instanceID": 69616
+                        "instanceID": 54492
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -327,7 +327,7 @@
                     "blendInDuration": 0.13333332538604737,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 70144
+                        "instanceID": 65652
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -380,8 +380,8 @@
                     "duration": 3.566666841506958,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 2,
-                    "comboTag": ""
+                    "windowType": 1,
+                    "comboTag": "BackSwing"
                 }
             },
             {

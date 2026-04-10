@@ -7,8 +7,7 @@ namespace Game.Logic.Action.Combo
     public enum CommandRouteSource
     {
         None = 0,
-        ActionRoute = 10,
-        ContextRoute = 20
+        ActionRoute = 10
     }
 
     public class CharacterCommand
@@ -19,11 +18,13 @@ namespace Game.Logic.Action.Combo
         public float Timestamp;
         public long BufferOrder;
         public bool IsConsumed;
+        public bool IsSynthetic; // 是否为被动注入的合成指令（如窗口切入时检测到的持续按键）
     }
 
     public class CommandBuffer
     {
         private readonly List<CharacterCommand> _commands = new();
+        private readonly Dictionary<InputCommand, CommandPayload> _heldInputs = new();
         private long _nextBufferOrder;
         private const float ExpirationTime = 0.3f;
 
@@ -41,6 +42,19 @@ namespace Game.Logic.Action.Combo
 
             command.BufferOrder = ++_nextBufferOrder;
             _commands.Add(command);
+
+            // 被动更新物理按键的持有状态（不受 Clear 影响）
+            if (!command.IsSynthetic)
+            {
+                if (command.Phase == CommandPhase.Held)
+                {
+                    _heldInputs[command.Type] = command.Payload;
+                }
+                else if (command.Phase == CommandPhase.Canceled)
+                {
+                    _heldInputs.Remove(command.Type);
+                }
+            }
         }
 
         public void Tick()
@@ -76,6 +90,29 @@ namespace Game.Logic.Action.Combo
             }
 
             return false;
+        }
+
+        public void InjectHeldStateSnapshot()
+        {
+            foreach (var kvp in _heldInputs)
+            {
+                var cmd = new CharacterCommand
+                {
+                    Type = kvp.Key,
+                    Phase = CommandPhase.Held,
+                    Payload = kvp.Value,
+                    Timestamp = Time.time,
+                    IsConsumed = false,
+                    IsSynthetic = true,
+                    BufferOrder = ++_nextBufferOrder
+                };
+                _commands.Add(cmd);
+            }
+        }
+
+        public void ClearSyntheticCommands()
+        {
+            _commands.RemoveAll(cmd => cmd.IsSynthetic);
         }
     }
 }

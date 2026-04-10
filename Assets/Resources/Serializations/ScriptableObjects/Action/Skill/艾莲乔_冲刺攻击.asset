@@ -10,24 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
-  m_Name: "\u827E\u83B2\u4E54_\u95EA\u907F_\u524D_1"
+  m_Name: "\u827E\u83B2\u4E54_\u51B2\u523A\u653B\u51FB"
   m_EditorClassIdentifier: 
-  ID: 10211
+  ID: 10220
   Name: 
-  TimelineAsset: {fileID: 4900000, guid: 75dec296ecd91d341b83b15a29173092, type: 3}
-  TurnMode: 1
-  EnterState: 50
+  TimelineAsset: {fileID: 4900000, guid: 5aaecc68250c9e24cb5af1c2a7d532ef, type: 3}
+  TurnMode: 2
+  EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   Routes: []
   RouteSets:
-  - {fileID: 11400000, guid: 8db2c3e8d1e9f054583fb1496a8633a5, type: 2}
-  - {fileID: 11400000, guid: 88af4c9d2a2b9f54e896f88493c95379, type: 2}
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
+  - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
+  - {fileID: 11400000, guid: 8db2c3e8d1e9f054583fb1496a8633a5, type: 2}
+  - {fileID: 11400000, guid: 5e4cd4063c908d0458afbdced951fe56, type: 2}
   FollowInputDirection: 0
   FaceToSpeed: 10
   SpeedMultiplier: 0
-  Category: 110
+  Category: 30
   Cooldown: 0.5
   MPCost: 0
   CastRange: 2

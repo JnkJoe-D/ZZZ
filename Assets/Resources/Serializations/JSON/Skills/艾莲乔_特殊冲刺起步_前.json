@@ -49,6 +49,9 @@
             "tracks": [
                 {
                     "rid": 1004
+                },
+                {
+                    "rid": 1005
                 }
             ]
         },
@@ -60,7 +63,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1005
+                    "rid": 1006
                 }
             ]
         },
@@ -72,7 +75,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1006
+                    "rid": 1007
                 }
             ]
         },
@@ -106,7 +109,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1007
+                            "rid": 1008
                         }
                     ],
                     "isMasterTrack": true,
@@ -197,13 +200,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1008
+                            "rid": 1009
                         }
                     ]
                 }
             },
             {
                 "rid": 1005,
+                "type": {
+                    "class": "ComboWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "99f2dcc3-07fe-40d4-a20e-99b5cf67bc8c",
+                    "trackType": "ComboWindowTrack",
+                    "trackName": "输入派生窗口",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1010
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1006,
                 "type": {
                     "class": "HitTrack",
                     "ns": "SkillEditor",
@@ -222,7 +248,7 @@
                 }
             },
             {
-                "rid": 1006,
+                "rid": 1007,
                 "type": {
                     "class": "MotionWindowTrack",
                     "ns": "SkillEditor",
@@ -239,13 +265,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1009
+                            "rid": 1011
                         }
                     ]
                 }
             },
             {
-                "rid": 1007,
+                "rid": 1008,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -260,7 +286,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 41082
+                        "instanceID": 74112
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -280,7 +306,7 @@
                 }
             },
             {
-                "rid": 1008,
+                "rid": 1009,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -299,7 +325,26 @@
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1010,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "447b8cea-7e66-436c-b167-78c458ff3402",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.46666669845581057,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "windowType": 1,
+                    "comboTag": "Evade"
+                }
+            },
+            {
+                "rid": 1011,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "SkillEditor",

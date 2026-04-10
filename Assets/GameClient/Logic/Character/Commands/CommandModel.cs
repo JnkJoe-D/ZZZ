@@ -24,7 +24,8 @@ namespace Game.Logic.Character
     {
         Started = 0,
         Performed = 10,
-        Canceled = 20
+        Canceled = 20,
+        Held = 30,
     }
 
     public struct CommandPayload

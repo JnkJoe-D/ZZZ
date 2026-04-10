@@ -27,10 +27,6 @@ namespace Game.Logic.Character
         /// </summary>
         public ActionConfigAsset NextActionToCast { get; set; }
 
-        /// <summary>
-        /// 当前指令查表上下文 (决定了 CommandContextConfig 搜索哪个 Group)。
-        /// </summary>
-        public CommandContextType CurrentCommandContext { get; set; }
 
         /// <summary>
         /// 移动输入是否处于“短输入”判定范围内（由 JogState 维护）。
@@ -39,7 +35,6 @@ namespace Game.Logic.Character
 
         // ── 全链路追踪字段 (用于调试与回溯) ──
         public CommandRouteSource LastRouteSource { get; private set; }
-        public CommandContextType LastRouteContext { get; private set; }
         public string LastRouteTag { get; private set; }
         public InputCommand LastResolvedCommandType { get; private set; }
         public CommandPhase LastResolvedCommandPhase { get; private set; }
@@ -134,7 +129,6 @@ namespace Game.Logic.Character
             ActionConfigAsset action)
         {
             LastRouteSource = routeSource;
-            LastRouteContext = CurrentCommandContext;
             LastRouteTag = routeTag;
             LastResolvedCommandType = commandType;
             LastResolvedCommandPhase = commandPhase;
@@ -147,9 +141,7 @@ namespace Game.Logic.Character
             EvadeTimer = 0f;
             CurrentHitStunDuration = 0f;
             ClearHitReactionAxis();
-            CurrentCommandContext = CommandContextType.None;
             LastRouteSource = CommandRouteSource.None;
-            LastRouteContext = CommandContextType.None;
             LastRouteTag = null;
             LastResolvedCommandType = InputCommand.None;
             LastResolvedCommandPhase = CommandPhase.Started;

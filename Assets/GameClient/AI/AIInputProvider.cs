@@ -21,13 +21,15 @@ namespace Game.AI
         public event Action OnMoveStarted;
         public event Action OnMovePerformed;
         public event Action OnMoveCanceled;
-        public event Action OnEvadeBackStarted;
-        public event Action OnEvadeHold;
-        public event Action OnEvadeHoldCancel;
+        public event Action OnMoveHeld;
+        public event Action OnEvadeStarted;
+        public event Action OnEvadePerformed;
+        public event Action OnEvadeCanceled;
+        public event Action OnEvadeHeld;
         public event Action OnBasicAttackStarted;
         public event Action OnBasicAttackCanceled;
         public event Action OnBasicAttackHoldStart;
-        public event Action OnBasicAttackHold;
+        public event Action OnBasicAttackHeld;
         public event Action OnBasicAttackHoldCancel;
         public event Action OnSpecialAttack;
         public event Action OnUltimate;
@@ -165,9 +167,9 @@ namespace Game.AI
         /// <summary>触发前闪避事件。</summary>
         public void TriggerEvadeFront() => OnEvadeFrontStarted?.Invoke();
         /// <summary>触发后闪避事件。</summary>
-        public void TriggerEvadeBack() => OnEvadeBackStarted?.Invoke();
-        public void TriggerEvadeHold() => OnEvadeHold?.Invoke();
-        public void TriggerEvadeHoldCancel() => OnEvadeHoldCancel?.Invoke();
+        public void TriggerEvadeBack() => OnEvadeStarted?.Invoke();
+        public void TriggerEvadeHold() => OnEvadePerformed?.Invoke();
+        public void TriggerEvadeHoldCancel() => OnEvadeCanceled?.Invoke();
         /// <summary>触发普攻开始事件。</summary>
         public void TriggerBasicAttack() => OnBasicAttackStarted?.Invoke();
         /// <summary>触发普攻取消事件。</summary>
@@ -175,7 +177,7 @@ namespace Game.AI
         /// <summary>触发普攻蓄力开始事件。</summary>
         public void TriggerBasicAttackHoldStart() => OnBasicAttackHoldStart?.Invoke();
         /// <summary>触发普攻蓄力持续事件。</summary>
-        public void TriggerBasicAttackHold() => OnBasicAttackHold?.Invoke();
+        public void TriggerBasicAttackHold() => OnBasicAttackHeld?.Invoke();
         /// <summary>触发普攻蓄力取消事件。</summary>
         public void TriggerBasicAttackHoldCancel() => OnBasicAttackHoldCancel?.Invoke();
         /// <summary>触发特殊技事件。</summary>

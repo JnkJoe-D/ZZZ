@@ -10,45 +10,48 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
-  m_Name: "\u827E\u83B2\u4E54_#\u6307\u4EE4\u96C6_1"
+  m_Name: "\u827E\u83B2\u4E54_\u6307\u4EE4\u96C6_2_1_\u51B2\u523A\u8854\u63A5"
   m_EditorClassIdentifier: 
   Routes:
   - Category: 0
-    RequiredType: 50
-    RequiredPhase: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
-    ModifierConditions: 
-    NextAction: {fileID: 11400000, guid: 4bebc32c4f9b7c2419e905e133e0bc41, type: 2}
-    ExtraConditions: []
-    Priority: 0
-  - Category: 0
-    RequiredType: 50
-    RequiredPhase: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
-    ModifierConditions: 
-    NextAction: {fileID: 11400000, guid: 89af5f7eac66f3545a53d59980bfa8ad, type: 2}
-    ExtraConditions: []
-    Priority: 0
-  - Category: 0
     RequiredType: 10
     RequiredPhase: 0
-    RequiredWindowTag: Execute1
+    RequiredWindowTag: EvadeToDash
     TriggerMode: 1
     Modifier: 0
     ModifierRequiredType: 0
     ModifierRequiredPhase: 0
     ModifierConditions: 
-    NextAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 01314b8f7c89159429ee37b5f4564176, type: 2}
     ExtraConditions: []
-    Priority: 0
+    Priority: 1
+  - Category: 0
+    RequiredType: 10
+    RequiredPhase: 10
+    RequiredWindowTag: EvadeToDash
+    TriggerMode: 1
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 01314b8f7c89159429ee37b5f4564176, type: 2}
+    ExtraConditions: []
+    Priority: 1
+  - Category: 0
+    RequiredType: 10
+    RequiredPhase: 30
+    RequiredWindowTag: EvadeToDash
+    TriggerMode: 1
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 01314b8f7c89159429ee37b5f4564176, type: 2}
+    ExtraConditions: []
+    Priority: 1
   references:
     version: 2
     RefIds: []

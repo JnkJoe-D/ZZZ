@@ -90,7 +90,7 @@ namespace Game.Logic.DebugTools
                     DrawInfo("Previous State", machine.PreviousState?.GetType().Name ?? "None", new Color(0.7f, 0.7f, 0.7f));
                 }
 
-                DrawInfo("Command Context", targetEntity.RuntimeData?.CurrentCommandContext.ToString() ?? "None", new Color(0.55f, 0.95f, 0.75f));
+
                 DrawInfo(
                     "Last Route",
                     targetEntity.RuntimeData == null
@@ -101,7 +101,7 @@ namespace Game.Logic.DebugTools
                     "Route Detail",
                     targetEntity.RuntimeData == null
                         ? "None"
-                        : $"{targetEntity.RuntimeData.LastRouteContext} / {targetEntity.RuntimeData.LastRouteTag ?? "-"} / {targetEntity.RuntimeData.LastResolvedActionId}",
+                        : $"{targetEntity.RuntimeData.LastRouteTag ?? "-"} / {targetEntity.RuntimeData.LastResolvedActionId}",
                     new Color(0.85f, 0.85f, 0.85f));
 
                 GUILayout.Space(15);
@@ -138,7 +138,7 @@ namespace Game.Logic.DebugTools
                             var record = history[i];
                             string timeStr = record.Timestamp.ToString("F1");
                             GUILayout.Label(
-                                $"<color=#aaaaaa>[{timeStr}]</color> {record.Type}/{record.Phase} {record.Source} {record.Context}/{record.RouteTag ?? "-"} <color=#66ccff>-></color> {record.ActionId}",
+                                $"<color=#aaaaaa>[{timeStr}]</color> {record.Type}/{record.Phase} {record.Source} {record.RouteTag ?? "-"} <color=#66ccff>-></color> {record.ActionId}",
                                 historyStyle);
                         }
                     }

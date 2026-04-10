@@ -15,7 +15,7 @@ namespace Game.Logic.Character.SubStates
 
         public override void OnEnter()
         {
-            _ctx.HostEntity.RuntimeData.CurrentCommandContext = CommandContextType.GroundStop;
+
             
             // if (_ctx.HostEntity.Config != null)
             // {

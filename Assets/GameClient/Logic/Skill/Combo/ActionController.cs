@@ -41,8 +41,7 @@ namespace Game.Logic.Action.Combo
         {
             public InputCommand Type;           // 指令类型
             public CommandPhase Phase;         // 指令相位
-            public CommandRouteSource Source;  // 路由来源 (Local/Context/StateAction)
-            public CommandContextType Context; // 执行时的上下文
+            public CommandRouteSource Source;  // 路由来源
             public string RouteTag;            // 路由标识
             public int ActionId;               // 动作资产 ID
             public float Timestamp;            // 执行时间戳
@@ -61,7 +60,7 @@ namespace Game.Logic.Action.Combo
         
         // ── 基建 ──
         private readonly List<ComboWindowData> _activeComboWindows = new(); // 当前激活的 Timeline 窗口集
-        private readonly List<ContextRoute> _effectiveContextRoutes = new(); // 上下文路由 (用于 BackSwing)
+
         private bool _isTransitioning; // 防止重入的转换标志
 
         // ── 统一路由评估管线 ──
@@ -182,8 +181,6 @@ namespace Game.Logic.Action.Combo
                 EvaluateCurrentActionRoutes();
             }
 
-            // 3. 无论是否在窗口内，都会评估上下文路由 (如: Idle状态下按攻击)
-            EvaluateContextRoutes();
         }
 
         /// <summary>
@@ -193,25 +190,22 @@ namespace Game.Logic.Action.Combo
         {
             _activeComboWindows.Add(new ComboWindowData { Tag = comboTag, Type = windowType });
 
-            // 如果是立即执行窗口 (Execute / RecoveryExecute)，立即扫描缓冲区尝试派生下一动作
-            if (SupportsImmediateRoutes(windowType))
+            // 如果是立即执行窗口 (Execute)，立即扫描缓冲区尝试派生下一动作
+            if (windowType == ComboWindowType.Execute)
             {
+                _entity.CommandBuffer?.InjectHeldStateSnapshot();
                 EvaluateTransitionsAgainst(comboTag);
+                _entity.CommandBuffer?.ClearSyntheticCommands();
                 return;
             }
 
             // 如果是 Buffer 窗口起始点，通常清空以往指令以保证指令的新鲜度
-            if (ClearsBufferOnEnter(windowType))
+            if (windowType == ComboWindowType.Buffer)
             {
                 _entity.CommandBuffer?.Clear();
                 return;
             }
 
-            // 如果是 Fallback 窗口 (即 Backswing 后摇期)，切换到后摇状态以允许上下文路由介入
-            if (EntersBackswingState(windowType))
-            {
-                _entity.Machine.ChangeState<CharacterActionBackswingState>();
-            }
         }
 
         /// <summary>
@@ -228,31 +222,12 @@ namespace Game.Logic.Action.Combo
             }
 
             // 如果是 Buffer 窗口退出，此时冲刷一次缓冲区进行最后的评估
-            if (FlushesBufferedInputOnExit(windowType))
+            if (windowType == ComboWindowType.Buffer)
             {
                 EvaluateTransitionsAgainst(comboTag);
                 return;
             }
 
-            // 如果 Fallback 窗口结束且尚未切走状态，说明没有指令派生，则执行默认收招逻辑
-            if (EntersBackswingState(windowType) &&
-                _entity.Machine.CurrentState is CharacterActionBackswingState)
-            {
-                SwitchState(ActionState.Idle);
-            }
-        }
-
-        public bool HasMovementCancelableWindow()
-        {
-            foreach (ComboWindowData window in _activeComboWindows)
-            {
-                if (AllowsMovementCancel(window.Type))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
 
@@ -327,32 +302,6 @@ namespace Game.Logic.Action.Combo
             }
         }
 
-        /// <summary>
-        /// 评估上下文路由 (由 OnInput 触发)
-        /// 用于处理“通用的、不依赖当前动作具体 Tag”的指令项 (如: 任何时候按闪避)
-        /// </summary>
-        private void EvaluateContextRoutes()
-        {
-            if (_isTransitioning || _entity.CommandBuffer == null)
-            {
-                return;
-            }
-
-            // 如果当前处于特定的“非拦截”窗口之外，通常会阻断上下文路由，优先由局部路由处理
-            if (ShouldBlockContextRoutes())
-            {
-                return;
-            }
-
-            ActionConfigAsset currentAction = GetCurrentAction();
-            // 在 CommandContextConfig 中查找匹配当前状态 (CurrentCommandContext) 的路由
-            if (TryFindBestContextCandidate(currentAction, out RouteCandidate candidate) &&
-                CommitResolvedAction(candidate.Command, candidate.NextAction, CommandRouteSource.ContextRoute))
-            {
-                return;
-            }
-        }
-
         private ActionConfigAsset GetCurrentAction()
         {
             return _entity.ActionPlayer?.CurrentAction ?? _entity.RuntimeData?.NextActionToCast;
@@ -379,69 +328,6 @@ namespace Game.Logic.Action.Combo
             return _effectiveRoutes.Exists(t => t.MatchesCommand(InputCommand.BasicAttack, CommandPhase.Performed));
         }
 
-        /// <summary>
-        /// 【上下文抢夺屏蔽】
-        /// 判定当前发生的指令是否属于“当前动作的派生指令”。
-        /// 目的：如果当前动作自己能处理这个指令，就不要让通用的上下文路由把控制权抢走。
-        /// 注意：在 Backswing 状态下通常返回 false，允许上下文路由兜底。
-        /// </summary>
-        private bool CurrentActionOwnsCommand(ActionConfigAsset currentAction, CharacterCommand command)
-        {
-            if (_entity.RuntimeData?.CurrentCommandContext == CommandContextType.Backswing)
-            {
-                return false;
-            }
-
-            return currentAction != null &&
-                   OwnsCommandViaRoutes(currentAction, command);
-        }
-
-        private static bool SupportsImmediateRoutes(ComboWindowType windowType)
-        {
-            return windowType == ComboWindowType.Execute ||
-                   windowType == ComboWindowType.RecoveryExecute;
-        }
-
-        private static bool ClearsBufferOnEnter(ComboWindowType windowType)
-        {
-            return windowType == ComboWindowType.Buffer;
-        }
-
-        private static bool FlushesBufferedInputOnExit(ComboWindowType windowType)
-        {
-            return windowType == ComboWindowType.Buffer;
-        }
-
-        private static bool EntersBackswingState(ComboWindowType windowType)
-        {
-            return windowType == ComboWindowType.Fallback;
-        }
-
-        private static bool AllowsMovementCancel(ComboWindowType windowType)
-        {
-            return windowType == ComboWindowType.RecoveryExecute;
-        }
-
-        private bool ShouldBlockContextRoutes()
-        {
-            if (_activeComboWindows.Count == 0)
-            {
-                return false;
-            }
-
-            bool hasFallbackWindow = false;
-
-            foreach (ComboWindowData window in _activeComboWindows)
-            {
-                if (window.Type == ComboWindowType.Fallback)
-                {
-                    hasFallbackWindow = true;
-                    break;
-                }
-            }
-
-            return !hasFallbackWindow;
-        }
 
         /// <summary>
         /// 【核心决策逻辑】在所有激活窗口下，寻找最优的局部路由候选
@@ -466,17 +352,15 @@ namespace Game.Logic.Action.Combo
                 bool isBuffered = (Time.time - command.Timestamp) > 0f;
                 foreach (ComboWindowData window in _activeComboWindows)
                 {
-                    if (!SupportsImmediateRoutes(window.Type))
+                    if (window.Type == ComboWindowType.Execute)
                     {
-                        continue;
-                    }
-
-                    if (TryResolveUnifiedCandidate(command, _effectiveRoutes, window.Tag, isBuffered, out RouteCandidate candidateUnified))
-                    {
-                        if (!hasCandidate || IsHigherPriorityCandidate(candidateUnified, bestCandidate))
+                        if (TryResolveUnifiedCandidate(command, _effectiveRoutes, window.Tag, isBuffered, out RouteCandidate candidateUnified))
                         {
-                            bestCandidate = candidateUnified;
-                            hasCandidate = true;
+                            if (!hasCandidate || IsHigherPriorityCandidate(candidateUnified, bestCandidate))
+                            {
+                                bestCandidate = candidateUnified;
+                                hasCandidate = true;
+                            }
                         }
                     }
                 }
@@ -549,13 +433,22 @@ namespace Game.Logic.Action.Combo
                 bool modifierSatisfied = !route.HasModifier ||
                     route.EvaluateModifier(_entity, _entity.CommandBuffer, tagToTest);
 
+                if (route.HasModifier && !modifierSatisfied)
+                {
+                    // 如果策略是穿透寻优，则当前路由视为不匹配，直接寻找下一个
+                    if (route.NonSatisfiedPolicy == ModifierNonSatisfiedPolicy.FallThrough)
+                    {
+                        continue;
+                    }
+                }
+
                 RouteCandidate resolvedCandidate = new RouteCandidate
                 {
                     Command = command,
                     NextAction = nextAction,
                     Priority = route.Priority,
                     RouteTag = tagToTest,
-                    IsPending = route.HasModifier && !modifierSatisfied,
+                    IsPending = route.HasModifier && !modifierSatisfied, // 此时能到这里说明 Policy 是 Pending
                     SourceRoute = route
                 };
 
@@ -567,94 +460,6 @@ namespace Game.Logic.Action.Combo
             }
 
             return hasCandidate;
-        }
-
-        private bool TryFindBestContextCandidate(ActionConfigAsset currentAction, out RouteCandidate bestCandidate)
-        {
-            bestCandidate = default;
-
-            CharacterConfigAsset config = _entity.Config;
-            CommandContextConfig contextConfig = config?.CommandContextConfig;
-            if (contextConfig == null || _entity.RuntimeData == null)
-            {
-                return false;
-            }
-
-            contextConfig.CollectEffectiveRoutes(_entity.RuntimeData.CurrentCommandContext, _effectiveContextRoutes);
-            if (_effectiveContextRoutes.Count == 0)
-            {
-                return false;
-            }
-
-            bool hasCandidate = false;
-            foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
-            {
-                if (CurrentActionOwnsCommand(currentAction, command))
-                {
-                    continue;
-                }
-
-                bool isBuffered = (Time.time - command.Timestamp) > 0f;
-                if (!TryResolveContextCandidate(command, _effectiveContextRoutes, isBuffered, out RouteCandidate candidate))
-                {
-                    continue;
-                }
-
-                if (!hasCandidate || IsHigherPriorityCandidate(candidate, bestCandidate))
-                {
-                    bestCandidate = candidate;
-                    hasCandidate = true;
-                }
-            }
-
-            return hasCandidate;
-        }
-
-        private bool TryResolveContextCandidate(
-            CharacterCommand command,
-            List<ContextRoute> routes,
-            bool isBuffered,
-            out RouteCandidate candidate)
-        {
-            candidate = default;
-            bool hasCandidate = false;
-
-            foreach (ContextRoute route in routes)
-            {
-                if (route == null || !route.Evaluate(command, isBuffered, _entity))
-                {
-                    continue;
-                }
-
-                ActionConfigAsset nextAction = route.NextAction;
-                if (nextAction == null)
-                {
-                    continue;
-                }
-
-                RouteCandidate resolvedCandidate = new RouteCandidate
-                {
-                    Command = command,
-                    NextAction = nextAction,
-                    Priority = route.Priority
-                };
-
-                if (!hasCandidate || IsHigherPriorityCandidate(resolvedCandidate, candidate))
-                {
-                    candidate = resolvedCandidate;
-                    hasCandidate = true;
-                }
-            }
-
-            return hasCandidate;
-        }
-
-        private bool OwnsCommandViaRoutes(ActionConfigAsset currentAction, CharacterCommand command)
-        {
-            _effectiveRoutes.Clear();
-            currentAction?.CollectEffectiveRoutes(_effectiveRoutes);
-
-            return _effectiveRoutes.Exists(t => t.MatchesCommand(command.Type, command.Phase));
         }
 
         /// <summary>
@@ -717,7 +522,6 @@ namespace Game.Logic.Action.Combo
                 Type = commandType,
                 Phase = commandPhase,
                 Source = routeSource,
-                Context = _entity.RuntimeData?.CurrentCommandContext ?? CommandContextType.None,
                 RouteTag = routeTag,
                 ActionId = actionId,
                 Timestamp = Time.time
@@ -878,9 +682,6 @@ namespace Game.Logic.Action.Combo
                     break;
                 case ActionState.Hit:
                     _entity.Machine.ChangeState<CharacterHitStunState>();
-                    break;
-                case ActionState.Backswing:
-                    _entity.Machine.ChangeState<CharacterActionBackswingState>();
                     break;
             }
         }

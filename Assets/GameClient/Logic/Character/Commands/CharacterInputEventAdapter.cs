@@ -24,20 +24,21 @@ namespace Game.Logic.Character
             provider.OnMoveStarted += HandleMoveStarted;
             provider.OnMovePerformed += HandleMovePerformed;
             provider.OnMoveCanceled += HandleMoveCanceled;
+            provider.OnMoveHeld += HandleMoveHeld;
             provider.OnBasicAttackStarted += HandleBasicAttackStarted;
             provider.OnBasicAttackCanceled += HandleBasicAttackCanceled;
             provider.OnBasicAttackHoldStart += HandleBasicAttackHoldStart;
-            provider.OnBasicAttackHold += HandleBasicAttackHold;
+            provider.OnBasicAttackHeld += HandleBasicAttackHeld;
             provider.OnBasicAttackHoldCancel += HandleBasicAttackHoldCancel;
             provider.OnSpecialAttack += HandleSpecialAttack;
             provider.OnSpecialAttackHoldStart += HandleSpecialAttackHoldStart;
             provider.OnSpecialAttackHold += HandleSpecialAttackHold;
             provider.OnSpecialAttackHoldCancel += HandleSpecialAttackHoldCancel;
             provider.OnUltimate += HandleUltimate;
-            provider.OnEvadeFrontStarted += HandleEvadeFront;
-            provider.OnEvadeBackStarted += HandleEvadeBack;
-            provider.OnEvadeHold += HandleEvadeHold;
-            provider.OnEvadeHoldCancel += HandleEvadeHoldCancel;
+            provider.OnEvadeStarted += HandleEvadeStarted;
+            provider.OnEvadePerformed += HandleEvadePerformed;
+            provider.OnEvadeCanceled += HandleEvadeCanceled;
+            provider.OnEvadeHeld += HandleEvadeHeld;
         }
 
         public void Unbind(IInputProvider provider)
@@ -53,17 +54,16 @@ namespace Game.Logic.Character
             provider.OnBasicAttackStarted -= HandleBasicAttackStarted;
             provider.OnBasicAttackCanceled -= HandleBasicAttackCanceled;
             provider.OnBasicAttackHoldStart -= HandleBasicAttackHoldStart;
-            provider.OnBasicAttackHold -= HandleBasicAttackHold;
+            provider.OnBasicAttackHeld -= HandleBasicAttackHeld;
             provider.OnBasicAttackHoldCancel -= HandleBasicAttackHoldCancel;
             provider.OnSpecialAttack -= HandleSpecialAttack;
             provider.OnSpecialAttackHoldStart -= HandleSpecialAttackHoldStart;
             provider.OnSpecialAttackHold -= HandleSpecialAttackHold;
             provider.OnSpecialAttackHoldCancel -= HandleSpecialAttackHoldCancel;
             provider.OnUltimate -= HandleUltimate;
-            provider.OnEvadeFrontStarted -= HandleEvadeFront;
-            provider.OnEvadeBackStarted -= HandleEvadeBack;
-            provider.OnEvadeHold -= HandleEvadeHold;
-            provider.OnEvadeHoldCancel -= HandleEvadeHoldCancel;
+            provider.OnEvadeStarted -= HandleEvadeStarted;
+            provider.OnEvadePerformed -= HandleEvadePerformed;
+            provider.OnEvadeCanceled -= HandleEvadeCanceled;
 
             if (ReferenceEquals(_provider, provider))
             {
@@ -82,20 +82,20 @@ namespace Game.Logic.Character
         private void HandleMoveStarted() => Dispatch(InputCommand.Move, CommandPhase.Started);
         private void HandleMovePerformed() => Dispatch(InputCommand.Move, CommandPhase.Performed);
         private void HandleMoveCanceled() => Dispatch(InputCommand.Move, CommandPhase.Canceled);
-
+        private void HandleMoveHeld() => Dispatch(InputCommand.Move, CommandPhase.Held);
         private void HandleBasicAttackStarted() => Dispatch(InputCommand.BasicAttack, CommandPhase.Started);
         private void HandleBasicAttackCanceled() => Dispatch(InputCommand.BasicAttack, CommandPhase.Canceled);
         private void HandleBasicAttackHoldStart() { }
-        private void HandleBasicAttackHold() => Dispatch(InputCommand.BasicAttack, CommandPhase.Performed);
+        private void HandleBasicAttackHeld() => Dispatch(InputCommand.BasicAttack, CommandPhase.Performed);
         private void HandleBasicAttackHoldCancel() => Dispatch(InputCommand.BasicAttack, CommandPhase.Canceled);
         private void HandleSpecialAttack() => Dispatch(InputCommand.SpecialAttack, CommandPhase.Started);
         private void HandleSpecialAttackHoldStart() { }
         private void HandleSpecialAttackHold() => Dispatch(InputCommand.SpecialAttack, CommandPhase.Performed);
         private void HandleSpecialAttackHoldCancel() => Dispatch(InputCommand.SpecialAttack, CommandPhase.Canceled);
         private void HandleUltimate() => Dispatch(InputCommand.Ultimate, CommandPhase.Started);
-        private void HandleEvadeFront() => Dispatch(InputCommand.Evade, CommandPhase.Started);
-        private void HandleEvadeBack() => Dispatch(InputCommand.Evade, CommandPhase.Started);
-        private void HandleEvadeHold() => Dispatch(InputCommand.Evade, CommandPhase.Performed);
-        private void HandleEvadeHoldCancel() => Dispatch(InputCommand.Evade, CommandPhase.Canceled);
+        private void HandleEvadeStarted() => Dispatch(InputCommand.Evade, CommandPhase.Started);
+        private void HandleEvadePerformed() => Dispatch(InputCommand.Evade, CommandPhase.Performed);
+        private void HandleEvadeCanceled() => Dispatch(InputCommand.Evade, CommandPhase.Canceled);
+        private void HandleEvadeHeld() => Dispatch(InputCommand.Evade, CommandPhase.Held);
     }
 }
