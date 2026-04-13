@@ -351,7 +351,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1333332657814026,
                     "animationClip": {
-                        "instanceID": 71288
+                        "instanceID": 49366
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -386,7 +386,7 @@
                     "blendInDuration": 0.1333332657814026,
                     "blendOutDuration": 0.13333332538604737,
                     "animationClip": {
-                        "instanceID": 71068
+                        "instanceID": 50610
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -421,7 +421,7 @@
                     "blendInDuration": 0.13333332538604737,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 72168
+                        "instanceID": 51854
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -456,7 +456,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 0,
-                    "comboTag": "Buffer"
+                    "comboTag": "Buffer1"
                 }
             },
             {
@@ -474,8 +474,8 @@
                     "duration": 0.5999999046325684,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 3,
-                    "comboTag": "Recovery"
+                    "windowType": 1,
+                    "comboTag": "Execute1"
                 }
             },
             {
@@ -493,8 +493,8 @@
                     "duration": 3.2666664123535158,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 2,
-                    "comboTag": ""
+                    "windowType": 1,
+                    "comboTag": "BackSwing"
                 }
             },
             {
@@ -582,7 +582,12 @@
                     "blendOutDuration": 0.0,
                     "referenceDirection": 6,
                     "rotationMode": 1,
-                    "updateFrequency": 0
+                    "updateFrequency": 0,
+                    "localRotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 }
             }
         ]

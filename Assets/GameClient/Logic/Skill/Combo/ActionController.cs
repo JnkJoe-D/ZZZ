@@ -147,17 +147,7 @@ namespace Game.Logic.Action.Combo
         {
             if (action == null || _entity.Config == null) return;
 
-            float speed = 1.0f;
-            switch (action.SpeedMultiplier)
-            {
-                case SpeedMultiplierType.Jog: speed = _entity.Config.JogMultipier; break;
-                case SpeedMultiplierType.Dash: speed = _entity.Config.DashMultipier; break;
-                case SpeedMultiplierType.Dodge: speed = _entity.Config.DodgeMultipier; break;
-                case SpeedMultiplierType.Attack: speed = _entity.Config.AttackMultipier; break;
-                case SpeedMultiplierType.Skill: speed = _entity.Config.SkillMultipier; break;
-                case SpeedMultiplierType.None:
-                default: speed = 1.0f; break;
-            }
+            float speed = action.PlaybackSpeed;
 
             _entity.ActionPlayer.SetPlaySpeed(speed);
         }

@@ -60,7 +60,7 @@ namespace Game.Logic.Action.Config
         [Header("转向优先级策略")]
         public ActionTurnMode TurnMode = ActionTurnMode.InputDirection;
 
-        [Header("状态转换 (v3)")]
+        [Header("状态转换")]
         [Tooltip("指定此动作执行时的目标状态机主状态/子状态。")]
         public ActionState EnterState = ActionState.Idle;
 
@@ -80,16 +80,14 @@ namespace Game.Logic.Action.Config
         public List<ActionRouteSetAsset> RouteSets = new();
 
         // ── 每帧行为标志（v3 新增）────────────────────────────
-        [Header("姿态/移动行为控制 (v3)")]
-        [Tooltip("启用后，动作播放期间状态机会自动将角色面朝输入方向旋转。")]
-        public bool FollowInputDirection;
-
+        [Header("速度配置")]
         [Range(0f, 30f)]
         [Tooltip("旋转平滑角速度。")]
         public float FaceToSpeed = 10f;
 
-        [Tooltip("启用此动作时，覆盖角色配置中的基础移动速度。")]
-        public SpeedMultiplierType SpeedMultiplier = SpeedMultiplierType.None;
+        [Tooltip("播放速度")]
+        [Range(0f,10f)]
+        public float PlaybackSpeed = 1f;
 
         /// <summary>
         /// 收集此动作上所有有效的统一路由（展开集合资产）。

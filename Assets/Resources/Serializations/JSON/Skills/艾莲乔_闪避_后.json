@@ -52,6 +52,9 @@
                 },
                 {
                     "rid": 1005
+                },
+                {
+                    "rid": 1006
                 }
             ]
         },
@@ -63,7 +66,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1006
+                    "rid": 1007
                 }
             ]
         },
@@ -75,7 +78,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1007
+                    "rid": 1008
                 }
             ]
         },
@@ -109,7 +112,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1008
+                            "rid": 1009
                         }
                     ],
                     "isMasterTrack": true,
@@ -200,10 +203,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1009
+                            "rid": 1010
                         },
                         {
-                            "rid": 1010
+                            "rid": 1011
                         }
                     ]
                 }
@@ -226,13 +229,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ]
                 }
             },
             {
                 "rid": 1006,
+                "type": {
+                    "class": "ComboWindowTrack",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "b6231b42-7d35-4011-8697-b351c312953b",
+                    "trackType": "ComboWindowTrack",
+                    "trackName": "输入派生窗口",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1013
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1007,
                 "type": {
                     "class": "HitTrack",
                     "ns": "SkillEditor",
@@ -251,7 +277,7 @@
                 }
             },
             {
-                "rid": 1007,
+                "rid": 1008,
                 "type": {
                     "class": "MotionWindowTrack",
                     "ns": "SkillEditor",
@@ -268,13 +294,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1014
                         }
                     ]
                 }
             },
             {
-                "rid": 1008,
+                "rid": 1009,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "SkillEditor",
@@ -289,7 +315,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 56972
+                        "instanceID": 58240
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -309,7 +335,7 @@
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1010,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -328,7 +354,7 @@
                 }
             },
             {
-                "rid": 1010,
+                "rid": 1011,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -347,7 +373,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1012,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "SkillEditor",
@@ -357,8 +383,8 @@
                     "clipId": "78219418-6f38-40df-989b-7f1d3bc60500",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 5.6666669845581059,
+                    "startTime": 0.5333333611488342,
+                    "duration": 5.133333683013916,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 1,
@@ -366,7 +392,26 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1013,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "SkillEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "5f9b3216-c296-41a6-9ba4-5634deb88c46",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 5.6666669845581059,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "windowType": 1,
+                    "comboTag": "DashStart"
+                }
+            },
+            {
+                "rid": 1014,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "SkillEditor",

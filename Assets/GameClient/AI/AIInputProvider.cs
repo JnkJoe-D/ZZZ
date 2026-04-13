@@ -22,6 +22,7 @@ namespace Game.AI
         public event Action OnMovePerformed;
         public event Action OnMoveCanceled;
         public event Action OnMoveHeld;
+        public event Action OnMoveHeldCanceled;
         public event Action OnEvadeStarted;
         public event Action OnEvadePerformed;
         public event Action OnEvadeCanceled;

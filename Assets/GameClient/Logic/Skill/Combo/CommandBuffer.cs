@@ -26,7 +26,7 @@ namespace Game.Logic.Action.Combo
         private readonly List<CharacterCommand> _commands = new();
         private readonly Dictionary<InputCommand, CommandPayload> _heldInputs = new();
         private long _nextBufferOrder;
-        private const float ExpirationTime = 0.3f;
+        private const float ExpirationTime = 1f;
 
         public void Push(CharacterCommand command)
         {

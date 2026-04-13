@@ -8,8 +8,6 @@ namespace Game.Logic.Action.Config
     [CreateAssetMenu(fileName = "LocomotionConfigAsset", menuName = "Config/Action/Locomotion Config")]
     public class LocomotionConfigAsset : ActionConfigAsset
     {
-        [Header("Locomotion Params")]
-        public float MoveSpeedMultiplier = 1.0f;
-        public string BlendParamRule;
+
     }
 }

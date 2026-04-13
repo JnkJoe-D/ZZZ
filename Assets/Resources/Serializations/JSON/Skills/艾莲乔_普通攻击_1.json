@@ -295,7 +295,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1333332061767578,
                     "animationClip": {
-                        "instanceID": 71684
+                        "instanceID": 44386
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -330,7 +330,7 @@
                     "blendInDuration": 0.1333332061767578,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 69924
+                        "instanceID": 45630
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -365,7 +365,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 0,
-                    "comboTag": "Buffer"
+                    "comboTag": "Buffer1"
                 }
             },
             {
@@ -383,8 +383,8 @@
                     "duration": 0.43333351612091067,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 3,
-                    "comboTag": "Recovery"
+                    "windowType": 1,
+                    "comboTag": "Execute1"
                 }
             },
             {
@@ -402,8 +402,8 @@
                     "duration": 3.200000047683716,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 2,
-                    "comboTag": ""
+                    "windowType": 1,
+                    "comboTag": "BackSwing"
                 }
             },
             {

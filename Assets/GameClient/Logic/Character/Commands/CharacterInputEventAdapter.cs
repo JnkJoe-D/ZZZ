@@ -25,6 +25,7 @@ namespace Game.Logic.Character
             provider.OnMovePerformed += HandleMovePerformed;
             provider.OnMoveCanceled += HandleMoveCanceled;
             provider.OnMoveHeld += HandleMoveHeld;
+            provider.OnMoveHeldCanceled += HandleMoveCanceled;
             provider.OnBasicAttackStarted += HandleBasicAttackStarted;
             provider.OnBasicAttackCanceled += HandleBasicAttackCanceled;
             provider.OnBasicAttackHoldStart += HandleBasicAttackHoldStart;
@@ -51,6 +52,8 @@ namespace Game.Logic.Character
             provider.OnMoveStarted -= HandleMoveStarted;
             provider.OnMovePerformed -= HandleMovePerformed;
             provider.OnMoveCanceled -= HandleMoveCanceled;
+            provider.OnMoveHeld -= HandleMoveHeld;
+            provider.OnMoveHeldCanceled -= HandleMoveCanceled;
             provider.OnBasicAttackStarted -= HandleBasicAttackStarted;
             provider.OnBasicAttackCanceled -= HandleBasicAttackCanceled;
             provider.OnBasicAttackHoldStart -= HandleBasicAttackHoldStart;
@@ -64,6 +67,7 @@ namespace Game.Logic.Character
             provider.OnEvadeStarted -= HandleEvadeStarted;
             provider.OnEvadePerformed -= HandleEvadePerformed;
             provider.OnEvadeCanceled -= HandleEvadeCanceled;
+            provider.OnEvadeHeld -= HandleEvadeHeld;
 
             if (ReferenceEquals(_provider, provider))
             {

@@ -46,6 +46,7 @@ namespace Game.Input
         event Action OnMovePerformed;
         event Action OnMoveCanceled;
         event Action OnMoveHeld;
+        event Action OnMoveHeldCanceled;
 
         /// <summary>闪避触发 (如 Shift 键)</summary>
         event Action OnEvadeStarted;

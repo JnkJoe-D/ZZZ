@@ -15,6 +15,7 @@ namespace Game.Input
         public event Action OnMovePerformed;
         public event Action OnMoveCanceled;
         public event Action OnMoveHeld;
+        public event Action OnMoveHeldCanceled;
         // public event Action OnEvadeFrontStarted;
         public event Action OnEvadeStarted;
         public event Action OnEvadePerformed;
@@ -45,6 +46,7 @@ namespace Game.Input
             _input.GamePlay.Move.performed += _ => OnMovePerformed?.Invoke();
             _input.GamePlay.Move.canceled += _ => OnMoveCanceled?.Invoke();
             _input.GamePlay.MoveHeld.performed += _ => OnMoveHeld?.Invoke();
+            _input.GamePlay.MoveHeld.canceled += _ => OnMoveHeldCanceled?.Invoke();
 
             // _input.GamePlay.EvadeFront.started += _ => OnEvadeFrontStarted?.Invoke();
             _input.GamePlay.Evade.started += _ => OnEvadeStarted?.Invoke();
