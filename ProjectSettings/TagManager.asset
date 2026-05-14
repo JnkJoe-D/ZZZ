@@ -8,6 +8,7 @@ TagManager:
   - uiComponent
   - Enemy
   - CloseShot
+  - LocalRole
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - CharHit
   - Character
   - Ground
-  - LocalPlayer
+  - LocalRole
   - Wall
   - Camera
   - 

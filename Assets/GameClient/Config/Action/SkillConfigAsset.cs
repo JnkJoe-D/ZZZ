@@ -1,5 +1,5 @@
 using UnityEngine;
-using SkillEditor;
+using ATEditor;
 using Game.Logic.Action.Combo;
 
 namespace Game.Logic.Action.Config
@@ -29,9 +29,6 @@ namespace Game.Logic.Action.Config
     [CreateAssetMenu(fileName = "SkillConfigAsset", menuName = "Config/Action/Skill Config")]
     public class SkillConfigAsset : ActionConfigAsset
     {
-        [Header("Skill Base Info")]
-        public SkillCategory Category;
-
         [Header("Combat Params")]
         public float Cooldown = 0f;       // 冷却时间
         public int MPCost = 0;            // 蓝耗

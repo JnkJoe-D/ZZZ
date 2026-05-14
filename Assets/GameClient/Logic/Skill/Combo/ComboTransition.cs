@@ -9,9 +9,8 @@ namespace Game.Logic.Action.Combo
 {
     public enum ComboTriggerMode
     {
-        Buffered,
-        InstantOnly,
-        BufferedAndInstant
+        OnWindowExit = 0,
+        Instant = 1
     }
 
     internal static class CommandRouteEvaluator
@@ -27,9 +26,9 @@ namespace Game.Logic.Action.Combo
                    command.Phase == requiredPhase;
         }
 
-        public static bool MatchesTriggerMode(ComboTriggerMode triggerMode, bool isBuffered)
+        public static bool MatchesTriggerMode(ComboTriggerMode triggerMode, ComboTriggerMode evaluationMode)
         {
-            return !(isBuffered && triggerMode == ComboTriggerMode.InstantOnly);
+            return triggerMode == evaluationMode;
         }
 
         public static bool MatchesConditions(List<ITransitionCondition> extraConditions, CharacterEntity actor)
@@ -54,32 +53,24 @@ namespace Game.Logic.Action.Combo
     [Serializable]
     public class ContextRoute
     {
-        [Header("Trigger Command")]
         public InputCommand RequiredType;
         public CommandPhase RequiredPhase = CommandPhase.Started;
-
-        [Header("Next Action")]
-        [Tooltip("Leave empty to let the command resolver choose a context-sensitive action variant.")]
         public ActionConfigAsset NextAction;
 
-        [Header("Extra Conditions")]
         [SerializeReference]
         public List<ITransitionCondition> ExtraConditions = new();
 
-        [Tooltip("Buffer只在Buffer结束触发,Instantly只在Execute/RecoveryExecute期间触发")]
-        public ComboTriggerMode TriggerMode = ComboTriggerMode.Buffered;
+        public ComboTriggerMode TriggerMode = ComboTriggerMode.OnWindowExit;
+        public int Priority;
 
-        [Tooltip("Higher values win when multiple valid commands compete. Same priority prefers the latest input.")]
-        public int Priority = 0;
-
-        public bool Evaluate(CharacterCommand command, bool isBuffered, CharacterEntity actor)
+        public bool Evaluate(CharacterCommand command, ComboTriggerMode evaluationMode, CharacterEntity actor)
         {
             if (!CommandRouteEvaluator.MatchesCommand(RequiredType, RequiredPhase, command))
             {
                 return false;
             }
 
-            if (!CommandRouteEvaluator.MatchesTriggerMode(TriggerMode, isBuffered))
+            if (!CommandRouteEvaluator.MatchesTriggerMode(TriggerMode, evaluationMode))
             {
                 return false;
             }

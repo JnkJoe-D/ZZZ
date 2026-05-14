@@ -1,481 +1,377 @@
-# SimpleAnimancer 系统改进工作总结
+# SimpleAnimancer 绯荤粺鏀硅繘宸ヤ綔鎬荤粨
 
-## 概述
+## 姒傝堪
 
-本次改进对 SimpleAnimancer 动画系统进行了全面优化，解决了过渡系统的核心缺陷，并提升了性能和代码质量。
-
+鏈鏀硅繘瀵?SimpleAnimancer 鍔ㄧ敾绯荤粺杩涜浜嗗叏闈紭鍖栵紝瑙ｅ喅浜嗚繃娓＄郴缁熺殑鏍稿績缂洪櫡锛屽苟鎻愬崌浜嗘€ц兘鍜屼唬鐮佽川閲忋€?
 ---
 
-## 完成的工作
+## 瀹屾垚鐨勫伐浣?
+### 1. AnimState 鍩虹被浼樺寲
 
-### 1. AnimState 基类优化
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimState.cs`
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimState.cs`
+- **Playable 瀛楁璇箟鏄庣‘鍖?*
+  - 灏?`_playable` 閲嶅懡鍚嶄负 `_playableCache`
+  - 鏄庣‘娉ㄩ噴璇存槑锛氬瓙绫诲簲缁存姢鑷繁鐨勫叿浣撶被鍨?Playable 瀛楁浣滀负涓诲瓨鍌?  - 瑙ｅ喅浜嗗熀绫诲拰瀛愮被 Playable 瀛楁鍐椾綑鐨勫洶鎯?
+- **鏂板鏃堕棿褰掍竴鍖?API**
+  - `NormalizedTime` 灞炴€э細鑾峰彇/璁剧疆褰掍竴鍖栨挱鏀炬椂闂?(0.0 ~ 1.0)
+  - `IsPaused` 灞炴€э細鑾峰彇/璁剧疆鏆傚仠鐘舵€?  - `Pause()` 鏂规硶锛氭殏鍋滄挱鏀?  - `Resume()` 鏂规硶锛氭仮澶嶆挱鏀?
+### 2. AnimLayer 杩囨浮绯荤粺閲嶆瀯
 
-- **Playable 字段语义明确化**
-  - 将 `_playable` 重命名为 `_playableCache`
-  - 明确注释说明：子类应维护自己的具体类型 Playable 字段作为主存储
-  - 解决了基类和子类 Playable 字段冗余的困惑
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
 
-- **新增时间归一化 API**
-  - `NormalizedTime` 属性：获取/设置归一化播放时间 (0.0 ~ 1.0)
-  - `IsPaused` 属性：获取/设置暂停状态
-  - `Pause()` 方法：暂停播放
-  - `Resume()` 方法：恢复播放
+- **涓柇鍒楄〃娉曞疄鐜?*
+  - 鏂板 `FadingState` 缁撴瀯浣擄紝杩借釜鎵€鏈夋贰鍑虹姸鎬?  - 鏂板 `_fadingStates` 鍒楄〃锛岀鐞嗗鐘舵€佽繃娓?  - 琚腑鏂殑鐘舵€佽嚜鍔ㄥ姞閫熸贰鍑猴紙2鍊嶉€燂級
+  - 鏉冮噸褰掍竴鍖栫‘淇濇€诲拰濮嬬粓涓?1.0
 
-### 2. AnimLayer 过渡系统重构
+- **瑙ｅ喅鐨勯棶棰?*
+  - A鈫払 杩囨浮涓垏鎹㈠埌 C锛孉 鏉冮噸涓嶅啀鍗′綇
+  - 杩炵画鍒囨崲 A鈫払鈫扖鈫扗锛屾墍鏈夌姸鎬佹纭繃娓?  - 鏃犵姸鎬佷涪澶憋紝鏃犳潈閲嶅紓甯?
+### 3. AnimLayer 鐘舵€佺紦瀛樻満鍒?
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
+- **Dictionary 缂撳瓨瀹炵幇**
+  - 鏂板 `_clipStateCache` 瀛楀吀锛岀紦瀛?AnimationClip 鈫?ClipState 鏄犲皠
+  - `Play(clip)` 浼樺厛杩斿洖缂撳瓨瀹炰緥
+  - 缂撳瓨涓婇檺 32 涓姸鎬侊紝瓒呭嚭鏃惰嚜鍔ㄦ竻鐞嗘渶涔呮湭浣跨敤鐨勭姸鎬?  - 鏂板 `ClearCache()` 鏂规硶鎵嬪姩娓呴櫎缂撳瓨
 
-- **中断列表法实现**
-  - 新增 `FadingState` 结构体，追踪所有淡出状态
-  - 新增 `_fadingStates` 列表，管理多状态过渡
-  - 被中断的状态自动加速淡出（2倍速）
-  - 权重归一化确保总和始终为 1.0
+- **鎬ц兘鎻愬崌**
+  - 閬垮厤閲嶅鍒涘缓 ClipState
+  - 鍑忓皯棰戠箒 GC 鍒嗛厤
 
-- **解决的问题**
-  - A→B 过渡中切换到 C，A 权重不再卡住
-  - 连续切换 A→B→C→D，所有状态正确过渡
-  - 无状态丢失，无权重异常
+### 4. AnimLayer 鐘舵€佹竻鐞嗘満鍒?
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
 
-### 3. AnimLayer 状态缓存机制
+- **寤惰繜娓呯悊闃熷垪瀹炵幇**
+  - 鏂板 `_pendingCleanup` 瀛楀吀锛岃拷韪緟娓呯悊鐘舵€?  - 娣″嚭瀹屾垚鐨勭姸鎬佹爣璁颁负寰呮竻鐞?  - 寤惰繜 2 绉掑悗鑷姩閿€姣侊紙缂撳瓨鐘舵€侀櫎澶栵級
+  - 鏂板 `DisconnectState()` 鍜?`DestroyState()` 鏂规硶
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
+- **瑙ｅ喅鐨勫唴瀛樻硠婕?*
+  - 鏃х姸鎬佷笉鍐嶆案涔呴┗鐣欏唴瀛?  - 绔彛姝ｇ‘鍥炴敹澶嶇敤
 
-- **Dictionary 缓存实现**
-  - 新增 `_clipStateCache` 字典，缓存 AnimationClip → ClipState 映射
-  - `Play(clip)` 优先返回缓存实例
-  - 缓存上限 32 个状态，超出时自动清理最久未使用的状态
-  - 新增 `ClearCache()` 方法手动清除缓存
+### 5. LinearMixerState 闃堝€艰嚜鍔ㄦ帓搴?
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/LinearMixerState.cs`
 
-- **性能提升**
-  - 避免重复创建 ClipState
-  - 减少频繁 GC 分配
+- **鎻掑叆鎺掑簭瀹炵幇**
+  - `Add(clip, threshold)` 鑷姩鎸夐槇鍊兼帓搴?  - 鏂板 `ReorderMixerPorts()` 鏂规硶閲嶆柊杩炴帴绔彛
+  - 鏂板 `GetThreshold()` 鏂规硶鑾峰彇闃堝€?
+- **瑙ｅ喅鐨勯棶棰?*
+  - 鐢ㄦ埛鏃犻渶鎵嬪姩鎸夐『搴忔坊鍔?  - 鎻掑€艰绠楀缁堟纭?
+### 6. BlendTreeState2D 鏁扮粍棰勫垎閰嶄紭鍖?
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/BlendTreeState2D.cs`
 
-### 4. AnimLayer 状态清理机制
+- **棰勫垎閰嶇紦鍐插尯瀹炵幇**
+  - 鏂板 `_weightBuffer` 鏁扮粍锛屽垵濮嬪閲?8
+  - 鎸夐渶鑷姩鎵╁锛?鍊嶏級
+  - 鏂板 `GetPosition()` 鏂规硶鑾峰彇 2D 鍧愭爣
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
+- **鎬ц兘鎻愬崌**
+  - 娑堥櫎姣忓抚 `new float[count]` 鐨?GC 鍒嗛厤
 
-- **延迟清理队列实现**
-  - 新增 `_pendingCleanup` 字典，追踪待清理状态
-  - 淡出完成的状态标记为待清理
-  - 延迟 2 秒后自动销毁（缓存状态除外）
-  - 新增 `DisconnectState()` 和 `DestroyState()` 方法
+### 7. MixerState 瀛楁閲嶅懡鍚?
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/MixerState.cs`
 
-- **解决的内存泄漏**
-  - 旧状态不再永久驻留内存
-  - 端口正确回收复用
+- 灏?`_mixer` 閲嶅懡鍚嶄负 `_mixerPlayable`
+- 涓?`ClipState._clipPlayable` 鍛藉悕椋庢牸涓€鑷?- 鏇存柊鎵€鏈夊紩鐢?
+### 8. 娴嬭瘯鑴氭湰鏇存柊
 
-### 5. LinearMixerState 阈值自动排序
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/SimpleAnimancerTest.cs`
 
-**文件**: `Assets/GameClient/MAnimSystem/LinearMixerState.cs`
+- **鏂板娴嬭瘯鐢ㄤ緥**
+  - 鎸?F锛氶绻佸垏鎹㈡祴璇曪紙楠岃瘉涓柇鍒楄〃娉曪級
+  - 鎸?G锛氱姸鎬佺紦瀛橀獙璇?  - 鎸?H锛氬綊涓€鍖栨椂闂?API 娴嬭瘯
+  - 鎸?P锛氭殏鍋?鎭㈠娴嬭瘯
 
-- **插入排序实现**
-  - `Add(clip, threshold)` 自动按阈值排序
-  - 新增 `ReorderMixerPorts()` 方法重新连接端口
-  - 新增 `GetThreshold()` 方法获取阈值
-
-- **解决的问题**
-  - 用户无需手动按顺序添加
-  - 插值计算始终正确
-
-### 6. BlendTreeState2D 数组预分配优化
-
-**文件**: `Assets/GameClient/MAnimSystem/BlendTreeState2D.cs`
-
-- **预分配缓冲区实现**
-  - 新增 `_weightBuffer` 数组，初始容量 8
-  - 按需自动扩容（2倍）
-  - 新增 `GetPosition()` 方法获取 2D 坐标
-
-- **性能提升**
-  - 消除每帧 `new float[count]` 的 GC 分配
-
-### 7. MixerState 字段重命名
-
-**文件**: `Assets/GameClient/MAnimSystem/MixerState.cs`
-
-- 将 `_mixer` 重命名为 `_mixerPlayable`
-- 与 `ClipState._clipPlayable` 命名风格一致
-- 更新所有引用
-
-### 8. 测试脚本更新
-
-**文件**: `Assets/GameClient/MAnimSystem/SimpleAnimancerTest.cs`
-
-- **新增测试用例**
-  - 按 F：频繁切换测试（验证中断列表法）
-  - 按 G：状态缓存验证
-  - 按 H：归一化时间 API 测试
-  - 按 P：暂停/恢复测试
-
-- **改进演示**
-  - 1D 混合器演示阈值乱序添加
-  - 日志输出更详细
-
+- **鏀硅繘婕旂ず**
+  - 1D 娣峰悎鍣ㄦ紨绀洪槇鍊间贡搴忔坊鍔?  - 鏃ュ織杈撳嚭鏇磋缁?
 ---
 
-## 测试结果
+## 娴嬭瘯缁撴灉
 
-| 测试项 | 结果 |
+| 娴嬭瘯椤?| 缁撴灉 |
 |--------|------|
-| 基础播放与过渡 | ✅ 通过 |
-| 事件触发 (OnEnd/OnFadeComplete) | ✅ 通过 |
-| 频繁切换测试 (20次/50ms间隔) | ✅ 通过，无权重卡住 |
-| 状态缓存验证 | ✅ 通过，同一 Clip 返回相同实例 |
-| 归一化时间 API | ✅ 通过 |
-| 暂停/恢复功能 | ✅ 通过 |
-| 1D 混合器阈值排序 | ✅ 通过，乱序添加后正确插值 |
-| 2D 混合器 | ✅ 通过 |
+| 鍩虹鎾斁涓庤繃娓?| 鉁?閫氳繃 |
+| 浜嬩欢瑙﹀彂 (OnEnd/OnFadeComplete) | 鉁?閫氳繃 |
+| 棰戠箒鍒囨崲娴嬭瘯 (20娆?50ms闂撮殧) | 鉁?閫氳繃锛屾棤鏉冮噸鍗′綇 |
+| 鐘舵€佺紦瀛橀獙璇?| 鉁?閫氳繃锛屽悓涓€ Clip 杩斿洖鐩稿悓瀹炰緥 |
+| 褰掍竴鍖栨椂闂?API | 鉁?閫氳繃 |
+| 鏆傚仠/鎭㈠鍔熻兘 | 鉁?閫氳繃 |
+| 1D 娣峰悎鍣ㄩ槇鍊兼帓搴?| 鉁?閫氳繃锛屼贡搴忔坊鍔犲悗姝ｇ‘鎻掑€?|
+| 2D 娣峰悎鍣?| 鉁?閫氳繃 |
 
 ---
 
-## 架构改进对比
+## 鏋舵瀯鏀硅繘瀵规瘮
 
-### 过渡系统
-
-```
-旧实现：
-┌─────────────────────────────────────┐
-│  _currentState ──→ _targetState     │
-│  (只追踪2个状态，中间状态丢失)        │
-└─────────────────────────────────────┘
-
-新实现：
-┌─────────────────────────────────────┐
-│  _fadingStates[0] ──→ 淡出中        │
-│  _fadingStates[1] ──→ 淡出中(中断)   │
-│  _fadingStates[2] ──→ 淡出中(中断)   │
-│  _targetState     ──→ 淡入中        │
-│  (追踪所有状态，无丢失)              │
-└─────────────────────────────────────┘
-```
-
-### 状态生命周期
+### 杩囨浮绯荤粺
 
 ```
-旧实现：
-Play(clip) → 创建 ClipState → 连接 → [永久存在]
+鏃у疄鐜帮細
+鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹? _currentState 鈹€鈹€鈫?_targetState     鈹?鈹? (鍙拷韪?涓姸鎬侊紝涓棿鐘舵€佷涪澶?        鈹?鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?
+鏂板疄鐜帮細
+鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹? _fadingStates[0] 鈹€鈹€鈫?娣″嚭涓?       鈹?鈹? _fadingStates[1] 鈹€鈹€鈫?娣″嚭涓?涓柇)   鈹?鈹? _fadingStates[2] 鈹€鈹€鈫?娣″嚭涓?涓柇)   鈹?鈹? _targetState     鈹€鈹€鈫?娣″叆涓?       鈹?鈹? (杩借釜鎵€鏈夌姸鎬侊紝鏃犱涪澶?              鈹?鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?```
 
-新实现：
-Play(clip) → 检查缓存 → 命中：返回缓存实例
-                        未命中：创建并缓存
-         → 淡出完成 → 标记待清理 → 延迟2秒 → 销毁
+### 鐘舵€佺敓鍛藉懆鏈?
 ```
+鏃у疄鐜帮細
+Play(clip) 鈫?鍒涘缓 ClipState 鈫?杩炴帴 鈫?[姘镐箙瀛樺湪]
+
+鏂板疄鐜帮細
+Play(clip) 鈫?妫€鏌ョ紦瀛?鈫?鍛戒腑锛氳繑鍥炵紦瀛樺疄渚?                        鏈懡涓細鍒涘缓骞剁紦瀛?         鈫?娣″嚭瀹屾垚 鈫?鏍囪寰呮竻鐞?鈫?寤惰繜2绉?鈫?閿€姣?```
 
 ---
 
-## 注意事项
+## 娉ㄦ剰浜嬮」
 
-1. **缓存状态不会被清理**
-   - 通过 `Play(clip)` 播放的状态会被缓存
-   - 直接 `Play(state)` 播放的状态不会被缓存
+1. **缂撳瓨鐘舵€佷笉浼氳娓呯悊**
+   - 閫氳繃 `Play(clip)` 鎾斁鐨勭姸鎬佷細琚紦瀛?   - 鐩存帴 `Play(state)` 鎾斁鐨勭姸鎬佷笉浼氳缂撳瓨
 
-2. **中断加速倍率可配置**
-   - 当前设置为 2 倍速 (`INTERRUPT_SPEED_MULTIPLIER`)
-   - 可根据需求调整
+2. **涓柇鍔犻€熷€嶇巼鍙厤缃?*
+   - 褰撳墠璁剧疆涓?2 鍊嶉€?(`INTERRUPT_SPEED_MULTIPLIER`)
+   - 鍙牴鎹渶姹傝皟鏁?
+3. **缂撳瓨澶у皬闄愬埗**
+   - 褰撳墠涓婇檺 32 涓姸鎬?(`MAX_CACHE_SIZE`)
+   - 瓒呭嚭鏃惰嚜鍔ㄦ竻鐞嗘渶涔呮湭浣跨敤鐨勯潪褰撳墠鎾斁鐘舵€?
+4. **娓呯悊寤惰繜鏃堕棿**
+   - 褰撳墠璁剧疆涓?2 绉?(`CLEANUP_DELAY`)
+   - 鍙牴鎹渶姹傝皟鏁?
+---
 
-3. **缓存大小限制**
-   - 当前上限 32 个状态 (`MAX_CACHE_SIZE`)
-   - 超出时自动清理最久未使用的非当前播放状态
+## 鍚庣画鍙墿灞曟柟鍚?
+1. ~~**澶氬眰娣峰悎鏀寔**~~ 鉁?宸插畬鎴?   - 娣诲姞 `AnimationLayerMixerPlayable`
+   - 鏀寔 AvatarMask 瀹炵幇涓婁笅鍗婅韩鍒嗗眰
 
-4. **清理延迟时间**
-   - 当前设置为 2 秒 (`CLEANUP_DELAY`)
-   - 可根据需求调整
+2. **鍔ㄧ敾浜嬩欢绯荤粺**
+   - 鏀寔 AnimationClip 鍐呭祵浜嬩欢
+   - 鏀寔鍏抽敭甯у洖璋?
+3. ~~**鍔ㄧ敾閬僵**~~ 鉁?宸插畬鎴?   - 鏀寔 Additive 娣峰悎妯″紡
+   - 鏀寔閮ㄥ垎楠ㄩ閬僵
 
 ---
 
-## 后续可扩展方向
+## Layer 绯荤粺瀹炵幇璁板綍 (2026-02-13)
 
-1. ~~**多层混合支持**~~ ✅ 已完成
-   - 添加 `AnimationLayerMixerPlayable`
-   - 支持 AvatarMask 实现上下半身分层
+### 姒傝堪
 
-2. **动画事件系统**
-   - 支持 AnimationClip 内嵌事件
-   - 支持关键帧回调
-
-3. ~~**动画遮罩**~~ ✅ 已完成
-   - 支持 Additive 混合模式
-   - 支持部分骨骼遮罩
-
----
-
-## Layer 系统实现记录 (2026-02-13)
-
-### 概述
-
-实现了完整的多层动画混合系统，支持 AvatarMask、Additive 模式和层权重淡入淡出。
-
-### 架构设计
+瀹炵幇浜嗗畬鏁寸殑澶氬眰鍔ㄧ敾娣峰悎绯荤粺锛屾敮鎸?AvatarMask銆丄dditive 妯″紡鍜屽眰鏉冮噸娣″叆娣″嚭銆?
+### 鏋舵瀯璁捐
 
 ```
-┌───────────────────────────────────────────────────────────────┐
-│                      AnimComponent                             │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │              AnimationLayerMixerPlayable                 │  │
-│  │         (管理所有层的混合、Mask、Additive)                │  │
-│  └─────────────────────────────────────────────────────────┘  │
-│              ▲              ▲              ▲                   │
-│              │              │              │                   │
-│  ┌───────────┴───┐  ┌──────┴──────┐  ┌───┴───────────┐       │
-│  │   Layer 0     │  │   Layer 1   │  │   Layer 2     │       │
-│  │  (Base)       │  │ (UpperBody) │  │  (Effects)    │       │
-│  │  Weight: 1.0  │  │  Weight: w  │  │  Weight: w    │       │
-│  │  Mask: null   │  │  Mask: ...  │  │  Additive     │       │
-│  │  ┌─────────┐  │  │  ┌────────┐ │  │  ┌────────┐   │       │
-│  │  │ Mixer   │  │  │  │ Mixer  │ │  │  │ Mixer  │   │       │
-│  │  │(状态混合)│  │  │  │        │ │  │  │        │   │       │
-│  │  └─────────┘  │  │  └────────┘ │  │  └────────┘   │       │
-│  └───────────────┘  └─────────────┘  └───────────────┘       │
-└───────────────────────────────────────────────────────────────┘
-```
+鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?                     AnimComponent                             鈹?鈹? 鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹? 鈹?鈹? 鈹?             AnimationLayerMixerPlayable                 鈹? 鈹?鈹? 鈹?        (绠＄悊鎵€鏈夊眰鐨勬贩鍚堛€丮ask銆丄dditive)                鈹? 鈹?鈹? 鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹? 鈹?鈹?             鈻?             鈻?             鈻?                  鈹?鈹?             鈹?             鈹?             鈹?                  鈹?鈹? 鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹粹攢鈹€鈹€鈹? 鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹粹攢鈹€鈹€鈹€鈹€鈹€鈹? 鈹屸攢鈹€鈹€鈹粹攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?      鈹?鈹? 鈹?  Layer 0     鈹? 鈹?  Layer 1   鈹? 鈹?  Layer 2     鈹?      鈹?鈹? 鈹? (Base)       鈹? 鈹?(UpperBody) 鈹? 鈹? (Effects)    鈹?      鈹?鈹? 鈹? Weight: 1.0  鈹? 鈹? Weight: w  鈹? 鈹? Weight: w    鈹?      鈹?鈹? 鈹? Mask: null   鈹? 鈹? Mask: ...  鈹? 鈹? Additive     鈹?      鈹?鈹? 鈹? 鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹? 鈹? 鈹? 鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹? 鈹? 鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?  鈹?      鈹?鈹? 鈹? 鈹?Mixer   鈹? 鈹? 鈹? 鈹?Mixer  鈹?鈹? 鈹? 鈹?Mixer  鈹?  鈹?      鈹?鈹? 鈹? 鈹?鐘舵€佹贩鍚?鈹? 鈹? 鈹? 鈹?       鈹?鈹? 鈹? 鈹?       鈹?  鈹?      鈹?鈹? 鈹? 鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹? 鈹? 鈹? 鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹? 鈹? 鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?  鈹?      鈹?鈹? 鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹? 鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹? 鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?      鈹?鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?```
 
-### 完成的工作
+### 瀹屾垚鐨勫伐浣?
+#### 1. AnimLayer 灞傚睘鎬ф墿灞?
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
 
-#### 1. AnimLayer 层属性扩展
+- **鏂板灞傚睘鎬?*
+  - `Weight`: 灞傛潈閲?(0 ~ 1)
+  - `Mask`: AvatarMask 楠ㄩ閬僵
+  - `IsAdditive`: 鍙犲姞妯″紡寮€鍏?
+- **鏂板灞傛贰鍏ユ贰鍑?*
+  - `StartFade(float targetWeight, float duration)`: 灞傛潈閲嶆贰鍏ユ贰鍑?  - `UpdateLayerFade(float deltaTime)`: 鍐呴儴鏇存柊鏂规硶
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
+- **鏋勯€犲嚱鏁版墿灞?*
+  - 鏂板 `AnimationLayerMixerPlayable` 鍙傛暟
+  - 鑷姩鍚屾鍒濆鏉冮噸鍒?LayerMixer
 
-- **新增层属性**
-  - `Weight`: 层权重 (0 ~ 1)
-  - `Mask`: AvatarMask 骨骼遮罩
-  - `IsAdditive`: 叠加模式开关
+#### 2. AnimComponent 澶氬眰绠＄悊
 
-- **新增层淡入淡出**
-  - `StartFade(float targetWeight, float duration)`: 层权重淡入淡出
-  - `UpdateLayerFade(float deltaTime)`: 内部更新方法
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimComponent.cs`
 
-- **构造函数扩展**
-  - 新增 `AnimationLayerMixerPlayable` 参数
-  - 自动同步初始权重到 LayerMixer
+- **鏂板瀛楁**
+  - `_layerMixer`: AnimationLayerMixerPlayable 瀹炰緥
+  - `_layers`: List<AnimLayer> 灞傚垪琛?  - `LayerCount`: 灞傛暟閲忓睘鎬?
+- **鏂板绱㈠紩鍣?*
+  - `this[int index]`: 鎳掑垱寤哄眰
 
-#### 2. AnimComponent 多层管理
+- **鏂板鏂规硶**
+  - `GetLayer(int index)`: 鑾峰彇鎴栧垱寤烘寚瀹氬眰
+  - `CreateLayer(int index)`: 鍐呴儴鍒涘缓灞傛柟娉?  - `Play(clip, layerIndex, fadeDuration)`: 鍦ㄦ寚瀹氬眰鎾斁
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimComponent.cs`
-
-- **新增字段**
-  - `_layerMixer`: AnimationLayerMixerPlayable 实例
-  - `_layers`: List<AnimLayer> 层列表
-  - `LayerCount`: 层数量属性
-
-- **新增索引器**
-  - `this[int index]`: 懒创建层
-
-- **新增方法**
-  - `GetLayer(int index)`: 获取或创建指定层
-  - `CreateLayer(int index)`: 内部创建层方法
-  - `Play(clip, layerIndex, fadeDuration)`: 在指定层播放
-
-- **图连接重构**
+- **鍥捐繛鎺ラ噸鏋?*
   ```
-  旧: AnimLayer.Mixer -> AnimationPlayableOutput
-  新: Layer[0].Mixer ─┐
-      Layer[1].Mixer ─┼──> LayerMixer -> AnimationPlayableOutput
-      Layer[2].Mixer ─┘
-  ```
+  鏃? AnimLayer.Mixer -> AnimationPlayableOutput
+  鏂? Layer[0].Mixer 鈹€鈹?      Layer[1].Mixer 鈹€鈹尖攢鈹€> LayerMixer -> AnimationPlayableOutput
+      Layer[2].Mixer 鈹€鈹?  ```
 
-#### 3. 测试用例
+#### 3. 娴嬭瘯鐢ㄤ緥
 
-**文件**: `Assets/GameClient/MAnimSystem/Test1.cs`
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/Test1.cs`
 
-- **新增测试资源字段**
-  - `upperBodyClip`: 上半身动画
-  - `breatheClip`: 叠加动画
-  - `upperBodyMask`: 上半身遮罩
+- **鏂板娴嬭瘯璧勬簮瀛楁**
+  - `upperBodyClip`: 涓婂崐韬姩鐢?  - `breatheClip`: 鍙犲姞鍔ㄧ敾
+  - `upperBodyMask`: 涓婂崐韬伄缃?
+- **鏂板娴嬭瘯鎸夐敭**
+  - U: 涓婂崐韬眰娴嬭瘯锛堝甫 AvatarMask锛?  - I: 鍙犲姞灞傛祴璇曪紙Additive锛?  - O: 灞傛贰鍏ユ贰鍑烘祴璇?  - L: 鍔ㄦ€佸垱寤哄眰娴嬭瘯
+  - M: 澶氬眰鍚屾椂鎾斁娴嬭瘯
 
-- **新增测试按键**
-  - U: 上半身层测试（带 AvatarMask）
-  - I: 叠加层测试（Additive）
-  - O: 层淡入淡出测试
-  - L: 动态创建层测试
-  - M: 多层同时播放测试
-
-### API 使用示例
+### API 浣跨敤绀轰緥
 
 ```csharp
-// 基础层播放
-animComponent.Play(walkClip);
+// 鍩虹灞傛挱鏀?animComponent.Play(walkClip);
 
-// 上半身层播放（带 Mask）
-var upperLayer = animComponent[1];
+// 涓婂崐韬眰鎾斁锛堝甫 Mask锛?var upperLayer = animComponent[1];
 upperLayer.Mask = upperBodyMask;
 upperLayer.Play(attackClip);
 
-// 叠加层播放
-var additiveLayer = animComponent[2];
+// 鍙犲姞灞傛挱鏀?var additiveLayer = animComponent[2];
 additiveLayer.IsAdditive = true;
 additiveLayer.Play(breatheClip);
 
-// 层淡入淡出
-upperLayer.StartFade(0f, 0.25f);  // 淡出
-upperLayer.StartFade(1f, 0.25f);  // 淡入
+// 灞傛贰鍏ユ贰鍑?upperLayer.StartFade(0f, 0.25f);  // 娣″嚭
+upperLayer.StartFade(1f, 0.25f);  // 娣″叆
 
-// 在指定层播放
+// 鍦ㄦ寚瀹氬眰鎾斁
 animComponent.Play(clip, layerIndex: 1, fadeDuration: 0.25f);
 ```
 
-### 关键实现细节
+### 鍏抽敭瀹炵幇缁嗚妭
 
-| 功能 | Unity API |
+| 鍔熻兘 | Unity API |
 |------|-----------|
-| 创建层混合器 | `AnimationLayerMixerPlayable.Create(graph, inputCount)` |
-| 设置 AvatarMask | `layerMixer.SetLayerMaskFromAvatarMask(index, mask)` |
-| 设置叠加模式 | `layerMixer.SetLayerAdditive(index, true)` |
-| 设置层权重 | `layerMixer.SetInputWeight(index, weight)` |
+| 鍒涘缓灞傛贩鍚堝櫒 | `AnimationLayerMixerPlayable.Create(graph, inputCount)` |
+| 璁剧疆 AvatarMask | `layerMixer.SetLayerMaskFromAvatarMask(index, mask)` |
+| 璁剧疆鍙犲姞妯″紡 | `layerMixer.SetLayerAdditive(index, true)` |
+| 璁剧疆灞傛潈閲?| `layerMixer.SetInputWeight(index, weight)` |
 
-### 测试结果
+### 娴嬭瘯缁撴灉
 
-| 测试项 | 结果 |
+| 娴嬭瘯椤?| 缁撴灉 |
 |--------|------|
-| 基础层播放 | ✅ 通过 |
-| 上半身层（AvatarMask） | ✅ 通过 |
-| 叠加层（Additive） | ✅ 通过 |
-| 层淡入淡出 | ✅ 通过 |
-| 动态创建层 | ✅ 通过 |
-| 多层同时播放 | ✅ 通过 |
+| 鍩虹灞傛挱鏀?| 鉁?閫氳繃 |
+| 涓婂崐韬眰锛圓vatarMask锛?| 鉁?閫氳繃 |
+| 鍙犲姞灞傦紙Additive锛?| 鉁?閫氳繃 |
+| 灞傛贰鍏ユ贰鍑?| 鉁?閫氳繃 |
+| 鍔ㄦ€佸垱寤哄眰 | 鉁?閫氳繃 |
+| 澶氬眰鍚屾椂鎾斁 | 鉁?閫氳繃 |
 
-### 文件变更清单
+### 鏂囦欢鍙樻洿娓呭崟
 
-| 文件 | 变更类型 | 行数变化 |
+| 鏂囦欢 | 鍙樻洿绫诲瀷 | 琛屾暟鍙樺寲 |
 |------|----------|----------|
-| AnimLayer.cs | 修改 | +110 行 |
-| AnimComponent.cs | 重写 | +80 行 |
-| Test1.cs | 修改 | +140 行 |
+| AnimLayer.cs | 淇敼 | +110 琛?|
+| AnimComponent.cs | 閲嶅啓 | +80 琛?|
+| Test1.cs | 淇敼 | +140 琛?|
 
 ---
 
-## Bug 修复记录 (2026-02-13)
+## Bug 淇璁板綍 (2026-02-13)
 
-### 问题描述
+### 闂鎻忚堪
 
-快速切换动画时，有时会出现 Mixer 所有输入端口权重都为 0 的情况，导致动画"消失"。
+蹇€熷垏鎹㈠姩鐢绘椂锛屾湁鏃朵細鍑虹幇 Mixer 鎵€鏈夎緭鍏ョ鍙ｆ潈閲嶉兘涓?0 鐨勬儏鍐碉紝瀵艰嚧鍔ㄧ敾"娑堝け"銆?
+### 鏍规湰鍘熷洜
 
-### 根本原因
+1. **褰掍竴鍖栭€昏緫缂洪櫡**锛氬彧澶勭悊 `totalWeight > 1` 鐨勬儏鍐碉紝鏈鐞?`totalWeight < 1`
+2. **閲嶅鍔犲叆娣″嚭鍒楄〃**锛氬悓涓€鐘舵€佸彲鑳借澶氭鍔犲叆 `_fadingStates`锛屽鑷存潈閲嶈閲嶅鍑忓皯
 
-1. **归一化逻辑缺陷**：只处理 `totalWeight > 1` 的情况，未处理 `totalWeight < 1`
-2. **重复加入淡出列表**：同一状态可能被多次加入 `_fadingStates`，导致权重被重复减少
+### 淇鍐呭
 
-### 修复内容
+#### 1. 褰掍竴鍖栭€昏緫淇
 
-#### 1. 归一化逻辑修复
-
-**文件**: `AnimLayer.cs`
+**鏂囦欢**: `AnimLayer.cs`
 
 ```csharp
-// 修复前：只处理 > 1 的情况
-if (totalWeight > 1.001f && totalFadeOutWeight > 0.001f)
+// 淇鍓嶏細鍙鐞?> 1 鐨勬儏鍐?if (totalWeight > 1.001f && totalFadeOutWeight > 0.001f)
 
-// 修复后：处理所有非 1 的情况
-if (totalWeight < 0.001f) { /* 异常处理 */ }
+// 淇鍚庯細澶勭悊鎵€鏈夐潪 1 鐨勬儏鍐?if (totalWeight < 0.001f) { /* 寮傚父澶勭悊 */ }
 if (Mathf.Abs(totalWeight - 1f) > 0.001f && totalFadeOutWeight > 0.001f)
 ```
 
-#### 2. 防止重复加入淡出列表
+#### 2. 闃叉閲嶅鍔犲叆娣″嚭鍒楄〃
 
-新增 `AddToFadingStates` 方法：
-- 检查状态是否已存在
-- 已存在则更新速度（取较大值）
-- 不存在才添加新记录
+鏂板 `AddToFadingStates` 鏂规硶锛?- 妫€鏌ョ姸鎬佹槸鍚﹀凡瀛樺湪
+- 宸插瓨鍦ㄥ垯鏇存柊閫熷害锛堝彇杈冨ぇ鍊硷級
+- 涓嶅瓨鍦ㄦ墠娣诲姞鏂拌褰?
+#### 3. 鏂板娴嬭瘯鐢ㄤ緥
 
-#### 3. 新增测试用例
+- 鎸?**N** 閿細鏉冮噸褰掍竴鍖栭獙璇佹祴璇?- 30 娆″揩閫熷垏鎹紝姣忔楠岃瘉鏉冮噸鎬诲拰鏄惁涓?1
 
-- 按 **N** 键：权重归一化验证测试
-- 30 次快速切换，每次验证权重总和是否为 1
+### 鏂囦欢鍙樻洿
 
-### 文件变更
-
-| 文件 | 变更类型 |
+| 鏂囦欢 | 鍙樻洿绫诲瀷 |
 |------|----------|
-| AnimLayer.cs | 修改（归一化逻辑、新增方法） |
-| Test1.cs | 新增测试用例 |
+| AnimLayer.cs | 淇敼锛堝綊涓€鍖栭€昏緫銆佹柊澧炴柟娉曪級 |
+| Test1.cs | 鏂板娴嬭瘯鐢ㄤ緥 |
 
 ---
 
-## 文件变更清单
+## 鏂囦欢鍙樻洿娓呭崟
 
-| 文件 | 变更类型 | 行数变化 |
+| 鏂囦欢 | 鍙樻洿绫诲瀷 | 琛屾暟鍙樺寲 |
 |------|----------|----------|
-| AnimState.cs | 修改 | +47 行 |
-| AnimLayer.cs | 重写 | +210 行 |
-| ClipState.cs | 修改 | +1 行 |
-| MixerState.cs | 修改 | +5 行 |
-| LinearMixerState.cs | 重写 | +60 行 |
-| BlendTreeState2D.cs | 重写 | +30 行 |
-| Test1.cs | 重写 | +140 行 |
+| AnimState.cs | 淇敼 | +47 琛?|
+| AnimLayer.cs | 閲嶅啓 | +210 琛?|
+| ClipState.cs | 淇敼 | +1 琛?|
+| MixerState.cs | 淇敼 | +5 琛?|
+| LinearMixerState.cs | 閲嶅啓 | +60 琛?|
+| BlendTreeState2D.cs | 閲嶅啓 | +30 琛?|
+| Test1.cs | 閲嶅啓 | +140 琛?|
 
 ---
 
-**改进日期**: 2026-02-13
+**鏀硅繘鏃ユ湡**: 2026-02-13
 
 ---
 
-## 帧同步架构修正记录 (2026-02-14)
+## 甯у悓姝ユ灦鏋勪慨姝ｈ褰?(2026-02-14)
 
-### 概述
+### 姒傝堪
 
-基于对帧同步架构的正确理解，对 MAnimSystem 和 SkillEditor 进行了重大修正。核心变化是将动画驱动模式从"手动驱动"改为"始终自动驱动"。
+鍩轰簬瀵瑰抚鍚屾鏋舵瀯鐨勬纭悊瑙ｏ紝瀵?MAnimSystem 鍜?SkillEditor 杩涜浜嗛噸澶т慨姝ｃ€傛牳蹇冨彉鍖栨槸灏嗗姩鐢婚┍鍔ㄦā寮忎粠"鎵嬪姩椹卞姩"鏀逛负"濮嬬粓鑷姩椹卞姩"銆?
+### 闂鍒嗘瀽
 
-### 问题分析
-
-之前的错误理解：
-- 运行时需要 `ManualUpdate` 驱动动画更新
-- `Evaluate` 运行时和编辑器都需要
-
-正确的理解：
-- 动画始终由 Unity MonoUpdate 自动驱动
-- `ManualUpdate` 应改为 `SetSpeed`，用于速度控制
-- `Evaluate` 仅编辑器预览需要
-
-### 完成的工作
-
-#### 1. ISkillContext 增加 IsPreviewMode 属性
-
-**文件**: `Assets/SkillEditor/Runtime/System/ISkillContext.cs`
+涔嬪墠鐨勯敊璇悊瑙ｏ細
+- 杩愯鏃堕渶瑕?`ManualUpdate` 椹卞姩鍔ㄧ敾鏇存柊
+- `Evaluate` 杩愯鏃跺拰缂栬緫鍣ㄩ兘闇€瑕?
+姝ｇ‘鐨勭悊瑙ｏ細
+- 鍔ㄧ敾濮嬬粓鐢?Unity MonoUpdate 鑷姩椹卞姩
+- `ManualUpdate` 搴旀敼涓?`SetSpeed`锛岀敤浜庨€熷害鎺у埗
+- `Evaluate` 浠呯紪杈戝櫒棰勮闇€瑕?
+### 瀹屾垚鐨勫伐浣?
+#### 1. ISkillContext 澧炲姞 IsPreviewMode 灞炴€?
+**鏂囦欢**: `Assets/ATEditor/Runtime/System/ISkillContext.cs`
 
 ```csharp
 public interface ISkillContext
 {
     GameObject Owner { get; }
-    bool IsPreviewMode { get; }  // 新增
+    bool IsPreviewMode { get; }  // 鏂板
     T GetService<T>() where T : class;
 }
 ```
 
-#### 2. ClipContext 实现 IsPreviewMode
+#### 2. ClipContext 瀹炵幇 IsPreviewMode
 
-**文件**: `Assets/SkillEditor/Runtime/System/SkillRunner.cs`
+**鏂囦欢**: `Assets/ATEditor/Runtime/System/SkillRunner.cs`
 
-- ClipContext 新增 `IsPreviewMode` 属性
-- `EvaluateAt()` 设置 `IsPreviewMode = true`（编辑器预览）
-- `ManualUpdate()` 和 `Tick()` 设置 `IsPreviewMode = false`（运行时）
+- ClipContext 鏂板 `IsPreviewMode` 灞炴€?- `EvaluateAt()` 璁剧疆 `IsPreviewMode = true`锛堢紪杈戝櫒棰勮锛?- `ManualUpdate()` 鍜?`Tick()` 璁剧疆 `IsPreviewMode = false`锛堣繍琛屾椂锛?
+#### 3. AnimationClipProcessor 鍐呴儴鍒ゆ柇妯″紡
 
-#### 3. AnimationClipProcessor 内部判断模式
-
-**文件**: `Assets/SkillEditor/Runtime/Logic/Processors/AnimationClipProcessor.cs`
+**鏂囦欢**: `Assets/ATEditor/Runtime/Logic/Processors/AnimationClipProcessor.cs`
 
 ```csharp
 public override void OnUpdate(ISkillContext context, float progress)
 {
-    // 运行时直接返回，不做采样
+    // 杩愯鏃剁洿鎺ヨ繑鍥烇紝涓嶅仛閲囨牱
     if (!context.IsPreviewMode) return;
     
-    // 以下仅编辑器预览模式执行
+    // 浠ヤ笅浠呯紪杈戝櫒棰勮妯″紡鎵ц
     animService.Evaluate(time);
 }
 ```
 
-#### 4. AnimComponent 移除 UpdateMode
+#### 4. AnimComponent 绉婚櫎 UpdateMode
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimComponent.cs`
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimComponent.cs`
 
-- 移除 `UpdateMode` 枚举和 `updateMode` 字段
-- `Update()` 始终执行 `UpdateInternal()`
-- 新增 `SetSpeed(float speedScale)` 方法
+- 绉婚櫎 `UpdateMode` 鏋氫妇鍜?`updateMode` 瀛楁
+- `Update()` 濮嬬粓鎵ц `UpdateInternal()`
+- 鏂板 `SetSpeed(float speedScale)` 鏂规硶
 
-#### 5. AnimLayer 增加 SetSpeed 方法
+#### 5. AnimLayer 澧炲姞 SetSpeed 鏂规硶
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
 
 ```csharp
 public void SetSpeed(float speed)
@@ -487,72 +383,63 @@ public void SetSpeed(float speed)
 }
 ```
 
-#### 6. IAnimationService 接口更新
+#### 6. IAnimationService 鎺ュ彛鏇存柊
 
-**文件**: `Assets/SkillEditor/Runtime/Services/IServices.cs`
+**鏂囦欢**: `Assets/ATEditor/Runtime/Services/IServices.cs`
 
-- `ManualUpdate(float deltaTime)` → `SetSpeed(float speedScale)`
-- 明确语义：速度控制而非驱动更新
+- `ManualUpdate(float deltaTime)` 鈫?`SetSpeed(float speedScale)`
+- 鏄庣‘璇箟锛氶€熷害鎺у埗鑰岄潪椹卞姩鏇存柊
 
-#### 7. 创建 MAnimAnimationService 适配器
+#### 7. 鍒涘缓 MAnimAnimationService 閫傞厤鍣?
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/MAnimAnimationService.cs` (鏂板缓)
 
-**文件**: `Assets/GameClient/MAnimSystem/MAnimAnimationService.cs` (新建)
+- 瀹炵幇 `IAnimationService` 鎺ュ彛
+- 灏?SkillEditor 璋冪敤杞彂鍒?AnimComponent
 
-- 实现 `IAnimationService` 接口
-- 将 SkillEditor 调用转发到 AnimComponent
+#### 8. RuntimeAnimationService 鏇存柊
 
-#### 8. RuntimeAnimationService 更新
+**鏂囦欢**: `Assets/ATEditor/Runtime/Services/RuntimeAnimationService.cs`
 
-**文件**: `Assets/SkillEditor/Runtime/Services/RuntimeAnimationService.cs`
+- 瀹炵幇鏂扮殑 `IAnimationService` 鎺ュ彛
+- `Evaluate()` 鏂规硶鐣欑┖锛堣繍琛屾椂涓嶉渶瑕侊級
 
-- 实现新的 `IAnimationService` 接口
-- `Evaluate()` 方法留空（运行时不需要）
-
-### 架构对比
-
-```
-修改前（错误）                    修改后（正确）
-─────────────────────────────────────────────────────
-UpdateMode: Auto / Manual    →    始终 MonoUpdate 驱动
-ManualUpdate(dt) 驱动动画    →    SetSpeed(scale) 控制速度
-运行时也需要 Evaluate        →    仅编辑器预览需要 Evaluate
-```
-
-### 运行时流程
+### 鏋舵瀯瀵规瘮
 
 ```
-网络层收到指令 { skillId, frame }
-    ↓
-SkillRunner.ManualUpdate(fixedDt)
-    ↓
-Tick(fixedDt) 推进固定步长
-    ↓
-OnEnter → Play(clip)           ← 只发控制命令
-OnTick → 逻辑判定
-OnExit → 切换状态
-    ↓
-AnimComponent 由 Unity Update 自动驱动
-（不调用 OnUpdate，不做 Evaluate）
+淇敼鍓嶏紙閿欒锛?                   淇敼鍚庯紙姝ｇ‘锛?鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+UpdateMode: Auto / Manual    鈫?   濮嬬粓 MonoUpdate 椹卞姩
+ManualUpdate(dt) 椹卞姩鍔ㄧ敾    鈫?   SetSpeed(scale) 鎺у埗閫熷害
+杩愯鏃朵篃闇€瑕?Evaluate        鈫?   浠呯紪杈戝櫒棰勮闇€瑕?Evaluate
 ```
 
-### 文件变更清单
+### 杩愯鏃舵祦绋?
+```
+缃戠粶灞傛敹鍒版寚浠?{ skillId, frame }
+    鈫?SkillRunner.ManualUpdate(fixedDt)
+    鈫?Tick(fixedDt) 鎺ㄨ繘鍥哄畾姝ラ暱
+    鈫?OnEnter 鈫?Play(clip)           鈫?鍙彂鎺у埗鍛戒护
+OnTick 鈫?閫昏緫鍒ゅ畾
+OnExit 鈫?鍒囨崲鐘舵€?    鈫?AnimComponent 鐢?Unity Update 鑷姩椹卞姩
+锛堜笉璋冪敤 OnUpdate锛屼笉鍋?Evaluate锛?```
 
-| 文件 | 变更类型 | 说明 |
+### 鏂囦欢鍙樻洿娓呭崟
+
+| 鏂囦欢 | 鍙樻洿绫诲瀷 | 璇存槑 |
 |------|----------|------|
-| ISkillContext.cs | 修改 | 新增 IsPreviewMode |
-| SkillRunner.cs | 修改 | ClipContext 实现 IsPreviewMode |
-| AnimationClipProcessor.cs | 修改 | OnUpdate 内部判断 |
-| AnimComponent.cs | 重写 | 移除 UpdateMode，新增 SetSpeed |
-| AnimLayer.cs | 修改 | 新增 SetSpeed |
-| IServices.cs | 修改 | ManualUpdate → SetSpeed |
-| MAnimAnimationService.cs | 新建 | 适配器实现 |
-| RuntimeAnimationService.cs | 重写 | 更新接口实现 |
+| ISkillContext.cs | 淇敼 | 鏂板 IsPreviewMode |
+| SkillRunner.cs | 淇敼 | ClipContext 瀹炵幇 IsPreviewMode |
+| AnimationClipProcessor.cs | 淇敼 | OnUpdate 鍐呴儴鍒ゆ柇 |
+| AnimComponent.cs | 閲嶅啓 | 绉婚櫎 UpdateMode锛屾柊澧?SetSpeed |
+| AnimLayer.cs | 淇敼 | 鏂板 SetSpeed |
+| IServices.cs | 淇敼 | ManualUpdate 鈫?SetSpeed |
+| MAnimAnimationService.cs | 鏂板缓 | 閫傞厤鍣ㄥ疄鐜?|
+| RuntimeAnimationService.cs | 閲嶅啓 | 鏇存柊鎺ュ彛瀹炵幇 |
 
-### 相关文档
+### 鐩稿叧鏂囨。
 
-- [帧同步架构修正方案](./MAnimSystem_FrameSync_Refactor_Plan.md)
-- [SkillEditor 集成计划](./MAnimSystem_SkillEditor_Integration_Plan.md)
+- [甯у悓姝ユ灦鏋勪慨姝ｆ柟妗圿(./MAnimSystem_FrameSync_Refactor_Plan.md)
+- [SkillEditor 闆嗘垚璁″垝](./MAnimSystem_SkillEditor_Integration_Plan.md)
 
 ---
 
-**修正日期**: 2026-02-14
+**淇鏃ユ湡**: 2026-02-14

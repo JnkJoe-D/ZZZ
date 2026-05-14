@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using SkillEditor;
+using ATEditor;
 using UnityEngine;
 
 public class SkillBoneGetter : ISkillBoneGetter

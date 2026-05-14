@@ -31,14 +31,24 @@ namespace Game.Input
         bool HasMovementInput();
 
         // ==========================================
-        // 瞬间触发事件 (适合按键按下/抬起等一次性行为)
-        // 这些事件未来可被 Unity New Input System 改键
+        // Held 状态查询（物理按键持有状态，输入层维护，共享且唯一）
+        // key 约定为 InputCommand 枚举值，避免输入层直接依赖逻辑层类型
         // ==========================================
 
-        /// <summary>切换下一个指令触发 (如 Space 键)</summary>
+        /// <summary> 查询指定按键是否处于 Held 状态 </summary>
+        bool IsHeld(int actionKey);
+
+        /// <summary> 设置 Held 状态（由输入事件回调驱动） </summary>
+        void SetHeld(int actionKey, bool held);
+
+        // ==========================================
+        // 瞬间触发事件
+        // ==========================================
+
+        /// <summary>切换下一个指令触发</summary>
         event Action OnSwitchNext;
 
-        /// <summary>切换上一个指令触发 (如 C 键)</summary>
+        /// <summary>切换上一个指令触发</summary>
         event Action OnSwitchPre;
 
         /// <summary>移动方向输入触发</summary>
@@ -46,32 +56,27 @@ namespace Game.Input
         event Action OnMovePerformed;
         event Action OnMoveCanceled;
         event Action OnMoveHeld;
-        event Action OnMoveHeldCanceled;
 
-        /// <summary>闪避触发 (如 Shift 键)</summary>
+        /// <summary>闪避触发</summary>
         event Action OnEvadeStarted;
         event Action OnEvadePerformed;
         event Action OnEvadeCanceled;
         event Action OnEvadeHeld;
 
-        /// <summary>基础普攻指令触发 (如 鼠标左键)</summary>
+        /// <summary>基础普攻指令触发</summary>
         event Action OnBasicAttackStarted;
-        /// <summary>基础普攻指令释放触发 (用于区分长按和点按)</summary>
+        event Action OnBasicAttackPerformed;
         event Action OnBasicAttackCanceled;
-        /// <summary>基础普攻指令长按触发 (如 鼠标左键)</summary>
-        event Action OnBasicAttackHoldStart;
         event Action OnBasicAttackHeld;
-        event Action OnBasicAttackHoldCancel;
 
         /// <summary>特殊攻击触发 (如 E)</summary>
-        event Action OnSpecialAttack;
-        /// <summary>特殊攻击触发长按 (如 E)</summary>
-        event Action OnSpecialAttackHoldStart;
-        event Action OnSpecialAttackHold;
-        event Action OnSpecialAttackHoldCancel;
+        event Action OnSpecialAttackStarted;
+        event Action OnSpecialAttackPerformed;
+        event Action OnSpecialAttackCanceled;
+        event Action OnSpecialAttackHeld;
         /// <summary>终结技触发 (如 Q)</summary>
-        event Action OnUltimate;
+        event Action OnUltimateStarted;
         /// <summary>非城镇下交互 (如 F)</summary>
-        event Action OnGameplayInteract;
+        event Action OnGameplayInteractStarted;
     }
 }

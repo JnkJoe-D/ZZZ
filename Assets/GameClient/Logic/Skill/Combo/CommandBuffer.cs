@@ -18,43 +18,27 @@ namespace Game.Logic.Action.Combo
         public float Timestamp;
         public long BufferOrder;
         public bool IsConsumed;
-        public bool IsSynthetic; // 是否为被动注入的合成指令（如窗口切入时检测到的持续按键）
     }
 
+    /// <summary>
+    /// 指令缓冲区：纯缓冲池，仅存储有时效性的瞬时指令。
+    /// Held 状态跟踪已移至输入层（IInputProvider），此处不再维护。
+    /// </summary>
     public class CommandBuffer
     {
         private readonly List<CharacterCommand> _commands = new();
-        private readonly Dictionary<InputCommand, CommandPayload> _heldInputs = new();
         private long _nextBufferOrder;
-        private const float ExpirationTime = 1f;
+        private const float ExpirationTime = 0.3f;
 
         public void Push(CharacterCommand command)
         {
-            if (command == null)
-            {
-                return;
-            }
+            if (command == null) return;
 
             if (command.Timestamp <= 0f)
-            {
                 command.Timestamp = Time.time;
-            }
 
             command.BufferOrder = ++_nextBufferOrder;
             _commands.Add(command);
-
-            // 被动更新物理按键的持有状态（不受 Clear 影响）
-            if (!command.IsSynthetic)
-            {
-                if (command.Phase == CommandPhase.Held)
-                {
-                    _heldInputs[command.Type] = command.Payload;
-                }
-                else if (command.Phase == CommandPhase.Canceled)
-                {
-                    _heldInputs.Remove(command.Type);
-                }
-            }
         }
 
         public void Tick()
@@ -68,51 +52,13 @@ namespace Game.Logic.Action.Combo
             foreach (CharacterCommand command in _commands)
             {
                 if (!command.IsConsumed)
-                {
                     yield return command;
-                }
             }
         }
 
         public void Clear()
         {
             _commands.Clear();
-        }
-
-        public bool HasUnconsumedCommand()
-        {
-            foreach (CharacterCommand command in _commands)
-            {
-                if (!command.IsConsumed)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public void InjectHeldStateSnapshot()
-        {
-            foreach (var kvp in _heldInputs)
-            {
-                var cmd = new CharacterCommand
-                {
-                    Type = kvp.Key,
-                    Phase = CommandPhase.Held,
-                    Payload = kvp.Value,
-                    Timestamp = Time.time,
-                    IsConsumed = false,
-                    IsSynthetic = true,
-                    BufferOrder = ++_nextBufferOrder
-                };
-                _commands.Add(cmd);
-            }
-        }
-
-        public void ClearSyntheticCommands()
-        {
-            _commands.RemoveAll(cmd => cmd.IsSynthetic);
         }
     }
 }

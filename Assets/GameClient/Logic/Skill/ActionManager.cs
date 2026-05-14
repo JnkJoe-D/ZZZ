@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using SkillEditor;
+using ATEditor;
 using Game.Adapters;
 using Game.Logic.Action.Config;
 using Game.Logic.Character.Config;
@@ -121,7 +121,7 @@ namespace Game.Logic.Action
             int id = entity.GetInstanceID();
             if (!_contextCache.TryGetValue(id, out var ctx))
             {
-                ctx = new ProcessContext(entity.gameObject, SkillEditor.PlayMode.Runtime, SkillServiceFactory.ProvideService);
+                ctx = new ProcessContext(entity.gameObject, ATEditor.PlayMode.Runtime, SkillServiceFactory.ProvideService);
                 _contextCache[id] = ctx;
             }
             return ctx;
@@ -132,7 +132,7 @@ namespace Game.Logic.Action
             int id = entity.GetInstanceID();
             if (!_runnerCache.TryGetValue(id, out var runner))
             {
-                runner = new SkillRunner(SkillEditor.PlayMode.Runtime);
+                runner = new SkillRunner(ATEditor.PlayMode.Runtime);
                 _runnerCache[id] = runner;
             }
             return runner;

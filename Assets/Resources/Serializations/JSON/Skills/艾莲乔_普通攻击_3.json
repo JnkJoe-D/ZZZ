@@ -102,7 +102,7 @@
                 "rid": 1000,
                 "type": {
                     "class": "AnimationTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -142,7 +142,7 @@
                 "rid": 1001,
                 "type": {
                     "class": "VFXTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -161,7 +161,7 @@
                 "rid": 1002,
                 "type": {
                     "class": "AudioTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -180,7 +180,7 @@
                 "rid": 1003,
                 "type": {
                     "class": "AudioTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -199,7 +199,7 @@
                 "rid": 1004,
                 "type": {
                     "class": "ComboWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -217,9 +217,6 @@
                         },
                         {
                             "rid": 1014
-                        },
-                        {
-                            "rid": 1015
                         }
                     ]
                 }
@@ -228,7 +225,7 @@
                 "rid": 1005,
                 "type": {
                     "class": "ComboWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -242,7 +239,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1015
                         }
                     ]
                 }
@@ -251,7 +248,7 @@
                 "rid": 1006,
                 "type": {
                     "class": "HitTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -270,7 +267,7 @@
                 "rid": 1007,
                 "type": {
                     "class": "MotionWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -284,7 +281,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1016
                         }
                     ]
                 }
@@ -293,11 +290,34 @@
                 "rid": 1008,
                 "type": {
                     "class": "TransformTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "trackId": "f05b6a1a-7866-4793-96d1-763827fac0c4",
+                    "trackType": "TransformTrack",
+                    "trackName": "变换轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": false,
+                    "clips": [
+                        {
+                            "rid": 1017
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1009,
+                "type": {
+                    "class": "TransformTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "a74d660d-95db-4558-92b0-a15a24f99001",
                     "trackType": "TransformTrack",
                     "trackName": "变换轨道",
                     "isMuted": false,
@@ -313,33 +333,10 @@
                 }
             },
             {
-                "rid": 1009,
-                "type": {
-                    "class": "TransformTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "a74d660d-95db-4558-92b0-a15a24f99001",
-                    "trackType": "TransformTrack",
-                    "trackName": "变换轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": false,
-                    "clips": [
-                        {
-                            "rid": 1019
-                        }
-                    ]
-                }
-            },
-            {
                 "rid": 1010,
                 "type": {
                     "class": "SkillAnimationClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -351,7 +348,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1333332657814026,
                     "animationClip": {
-                        "instanceID": 49366
+                        "instanceID": 55550
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -374,7 +371,7 @@
                 "rid": 1011,
                 "type": {
                     "class": "SkillAnimationClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -384,9 +381,9 @@
                     "startTime": 0.8666667342185974,
                     "duration": 1.0,
                     "blendInDuration": 0.1333332657814026,
-                    "blendOutDuration": 0.13333332538604737,
+                    "blendOutDuration": 0.13333332538604736,
                     "animationClip": {
-                        "instanceID": 50610
+                        "instanceID": 67950
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -409,19 +406,19 @@
                 "rid": 1012,
                 "type": {
                     "class": "SkillAnimationClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "clipId": "3b6d8e0a-b10d-4be8-97bc-1f06a1a225c6",
                     "clipName": "动画片段",
                     "isEnabled": true,
-                    "startTime": 1.7333334684371949,
+                    "startTime": 1.7333334684371948,
                     "duration": 3.266666889190674,
-                    "blendInDuration": 0.13333332538604737,
+                    "blendInDuration": 0.13333332538604736,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 51854
+                        "instanceID": 71670
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -444,15 +441,15 @@
                 "rid": 1013,
                 "type": {
                     "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "clipId": "c5a41784-dc4a-4c2d-b4e2-787ca2c922ba",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 1.1333335638046265,
+                    "startTime": 0.8666665554046631,
+                    "duration": 0.3000001907348633,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 0,
@@ -463,34 +460,15 @@
                 "rid": 1014,
                 "type": {
                     "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "ff7f784f-b182-45ee-a20d-58a66943d024",
-                    "clipName": "连招窗口片段",
-                    "isEnabled": true,
-                    "startTime": 1.1333335638046265,
-                    "duration": 0.5999999046325684,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "windowType": 1,
-                    "comboTag": "Execute1"
-                }
-            },
-            {
-                "rid": 1015,
-                "type": {
-                    "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "clipId": "c1b6a843-422d-4d08-8166-43406938b52b",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 1.7333334684371949,
-                    "duration": 3.2666664123535158,
+                    "startTime": 1.1666667461395264,
+                    "duration": 3.8333330154418945,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 1,
@@ -498,10 +476,10 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1015,
                 "type": {
                     "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -517,10 +495,10 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1016,
                 "type": {
                     "class": "MotionFilterClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -535,10 +513,10 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1017,
                 "type": {
                     "class": "MovementClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -566,10 +544,10 @@
                 }
             },
             {
-                "rid": 1019,
+                "rid": 1018,
                 "type": {
                     "class": "RotationClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {

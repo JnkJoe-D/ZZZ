@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.AI;
+using Game.Logic.Action.Combo;
 using Game.Logic.Action.Config;
 using UnityEngine;
 
@@ -20,46 +21,53 @@ namespace Game.Logic.Character.Config
         public LayerMask GroundLayer;
 
         [Header("Movement Speed Multipliers")]
-        [Range(0, 5f)]
+        [Range(0f, 5f)]
         public float JogMultipier = 1f;
 
         [Header("Ground Jog")]
-        [Tooltip("短按移动时，Jog 状态被视为短跑的时间阈值。")]
         public float JogShortInputThreshold = 0.2f;
 
-        [Range(0, 5f)]
+        [Range(0f, 5f)]
         public float DashMultipier = 1f;
 
-        [Range(0, 5f)]
+        [Range(0f, 5f)]
         public float DodgeMultipier = 1f;
 
         [Header("Attack Speed Multiplier")]
-        [Range(0, 5f)]
+        [Range(0f, 5f)]
         public float AttackMultipier = 1f;
 
         [Header("Skill Speed Multiplier")]
-        [Range(0, 5f)]
+        [Range(0f, 5f)]
         public float SkillMultipier = 1f;
+
         [Header("Evade")]
         public int evadeLimitedTimes = 2;
         public float evadeCoolDown = 1f;
 
-        [Header("根动作")]
+        [Header("Root Action")]
         public ActionConfigAsset ActionRoot;
-        [Header("动作加载列表")]
-        public List<ActionConfigAsset> ActionProLoadList = new List<ActionConfigAsset>();
+
+        [Header("Action Preload List")]
+        public List<ActionConfigAsset> ActionProLoadList = new();
+
         [Header("AI")]
         public BehaviorTreeGraphAsset BehaviorTreeGraph;
+
         [Header("Hit Reaction")]
         public HitReactionConfig hitReactionConfig;
 
         public IEnumerable<ActionConfigAsset> GetAllActionConfigs()
         {
+            HashSet<ActionConfigAsset> collectedActions = new();
+
+            CollectActionRecursive(ActionRoot, collectedActions);
+
             if (ActionProLoadList != null)
             {
                 foreach (ActionConfigAsset action in ActionProLoadList)
                 {
-                    if (action != null) yield return action;
+                    CollectActionRecursive(action, collectedActions);
                 }
             }
 
@@ -67,7 +75,35 @@ namespace Game.Logic.Character.Config
             {
                 foreach (ActionConfigAsset hitActionConfig in hitReactionConfig.GetAllActionConfigs())
                 {
-                    yield return hitActionConfig;
+                    CollectActionRecursive(hitActionConfig, collectedActions);
+                }
+            }
+
+            foreach (ActionConfigAsset action in collectedActions)
+            {
+                yield return action;
+            }
+        }
+
+        private static void CollectActionRecursive(ActionConfigAsset action, HashSet<ActionConfigAsset> collectedActions)
+        {
+            if (action == null || !collectedActions.Add(action))
+            {
+                return;
+            }
+
+            if (action.CompleteAction != null)
+            {
+                CollectActionRecursive(action.CompleteAction, collectedActions);
+            }
+
+            List<ActionRoute> effectiveRoutes = new();
+            action.CollectEffectiveRoutes(effectiveRoutes);
+            foreach (ActionRoute route in effectiveRoutes)
+            {
+                if (route?.NextAction != null)
+                {
+                    CollectActionRecursive(route.NextAction, collectedActions);
                 }
             }
         }

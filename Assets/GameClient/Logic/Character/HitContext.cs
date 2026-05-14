@@ -13,7 +13,7 @@ namespace Game.Logic.Character
         public CharacterEntity victim;
 
         // --- 命中效果列表（源自 HitClip → HitData） ---
-        public SkillEditor.HitEffectEntry[] hitEffects;
+        public ATEditor.HitEffectEntry[] hitEffects;
 
         // --- 打击反馈参数（源自 HitClip → HitData） ---
         public bool enableHitStop;

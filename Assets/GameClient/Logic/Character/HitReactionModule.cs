@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using SkillEditor;
+using ATEditor;
 using Game.Logic.Character.Config;
 using Game.VFX;
 

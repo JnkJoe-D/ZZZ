@@ -42,6 +42,24 @@
 3. 大改动（>50行）：先给实现计划（建议落文档），获确认后实施。
 4. 默认流程：定位 -> 修改 -> 最小验证 -> 汇报结果（改动点/原因/风险）。
 
+## Karpathy 协作准则（已接入）
+1. 本项目已添加本地 skill：`.agents/skills/karpathy-guidelines/SKILL.md`。
+2. 处理中大型改动、重构、排查和评审时，默认同时遵循四条原则：先澄清假设、简单优先、手术式修改、目标驱动验证。
+3. 这套准则用于约束 AI 协作行为，不替代本文件里的项目架构边界、代码风格和文件操作限制。
+
+## Character Config Codex Skill（必须优先考虑）
+1. 本项目已添加本地 skill：`.agents/skills/character-config-codex/SKILL.md`。
+2. 当任务涉及以下任一内容时，优先使用该 skill，而不是临时全量检索所有配置文件：
+   - `CharacterConfigAsset`
+   - `ActionConfigAsset`
+   - `HitReactionConfig`
+   - 角色 Action 模板
+   - 角色/动作 ID 分配
+   - 注册缓存重建、读取、更新
+3. 默认流程是：先读 `ProjectSettings/Codex/character_action_registry.json`，只有在缓存缺失、用户要求重建、或缓存明显失真时，才允许全量扫描 `Assets/Resources/Serializations/ScriptableObjects/Action/`。
+4. 新建角色或新建动作配置时，模板中不得手填具体 ID，应由 skill 根据注册缓存按规则自动分配。
+5. 删除或重命名操作默认保持缓存“单调递增”语义，不主动回收或下调最大 ID；只有用户明确要求精确重算时，才执行全量重建。
+
 ## 文件操作策略
 - 允许优先修改：
   - `Assets/GameClient/**/*.cs`

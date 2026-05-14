@@ -8,7 +8,7 @@ namespace Game.Logic.Character
     /// </summary>
     public class DefaultDamageImpact : IHitImpact
     {
-        public virtual void Execute(HitContext ctx, SkillEditor.HitEffectEntry entry)
+        public virtual void Execute(HitContext ctx, ATEditor.HitEffectEntry entry)
         {
             // TODO: 数值计算 — 从攻击者属性和技能配置计算伤害值
             // TODO: 扣血 — victim.Health -= calculatedDamage;
@@ -26,7 +26,7 @@ namespace Game.Logic.Character
     /// </summary>
     public class HeavyDamageImpact : IHitImpact
     {
-        public void Execute(HitContext ctx, SkillEditor.HitEffectEntry entry)
+        public void Execute(HitContext ctx, ATEditor.HitEffectEntry entry)
         {
             // TODO: 重击伤害倍率
             // TODO: 更长的硬直时长覆盖
@@ -43,7 +43,7 @@ namespace Game.Logic.Character
     /// </summary>
     public class KnockbackImpact : IHitImpact
     {
-        public void Execute(HitContext ctx, SkillEditor.HitEffectEntry entry)
+        public void Execute(HitContext ctx, ATEditor.HitEffectEntry entry)
         {
             // TODO: 伤害计算
             // TODO: 通过 MovementController 施加击退力
@@ -61,7 +61,7 @@ namespace Game.Logic.Character
     /// </summary>
     public class LaunchImpact : IHitImpact
     {
-        public void Execute(HitContext ctx, SkillEditor.HitEffectEntry entry)
+        public void Execute(HitContext ctx, ATEditor.HitEffectEntry entry)
         {
             // TODO: 伤害计算
             // TODO: 通过 MovementController 施加垂直力
@@ -79,7 +79,7 @@ namespace Game.Logic.Character
     /// </summary>
     public class HealImpact : IHitImpact
     {
-        public void Execute(HitContext ctx, SkillEditor.HitEffectEntry entry)
+        public void Execute(HitContext ctx, ATEditor.HitEffectEntry entry)
         {
             // TODO: 治疗计算
             Debug.Log($"<color=green>[Impact] Heal: {ctx.attacker?.name} → {ctx.victim?.name} | Tag:{entry.eventTag}</color>");

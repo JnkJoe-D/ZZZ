@@ -50,9 +50,6 @@ namespace Game.Logic.Character
 
         public override void OnEnter()
         {
-            var provider = Entity.InputProvider;
-            bool hasMovementInput = provider != null && provider.HasMovementInput();
-
             ActionState targetState = ActionState.Idle;
             if (Entity.RuntimeData != null)
             {
@@ -78,13 +75,7 @@ namespace Game.Logic.Character
                 return;
             }
 
-            if (provider == null || !hasMovementInput)
-            {
-                ChangeSubState(IdleState);
-                return;
-            }
-
-            ChangeSubState(JogState);
+            ChangeSubState(IdleState);
         }
 
         public override void OnUpdate(float deltaTime)

@@ -1,63 +1,27 @@
-# MAnimSystem 帧同步架构修正方案
+# MAnimSystem 甯у悓姝ユ灦鏋勪慨姝ｆ柟妗?
+## 涓€銆佽儗鏅笌闂
 
-## 一、背景与问题
-
-### 1.1 当前设计的问题
-
-之前的实现假设运行时需要 `ManualUpdate` 驱动动画更新，但这与帧同步的正确做法不符：
-
-| 概念 | 错误理解 | 正确理解 |
+### 1.1 褰撳墠璁捐鐨勯棶棰?
+涔嬪墠鐨勫疄鐜板亣璁捐繍琛屾椂闇€瑕?`ManualUpdate` 椹卞姩鍔ㄧ敾鏇存柊锛屼絾杩欎笌甯у悓姝ョ殑姝ｇ‘鍋氭硶涓嶇锛?
+| 姒傚康 | 閿欒鐞嗚В | 姝ｇ‘鐞嗚В |
 |:---|:---|:---|
-| **动画驱动** | 运行时需要手动驱动 | 始终由 Unity MonoUpdate 自动驱动 |
-| **ManualUpdate** | 用于驱动动画播放 | 用于控制（速度、状态切换） |
-| **Evaluate** | 运行时和编辑器都需要 | 仅编辑器预览需要 |
+| **鍔ㄧ敾椹卞姩** | 杩愯鏃堕渶瑕佹墜鍔ㄩ┍鍔?| 濮嬬粓鐢?Unity MonoUpdate 鑷姩椹卞姩 |
+| **ManualUpdate** | 鐢ㄤ簬椹卞姩鍔ㄧ敾鎾斁 | 鐢ㄤ簬鎺у埗锛堥€熷害銆佺姸鎬佸垏鎹級 |
+| **Evaluate** | 杩愯鏃跺拰缂栬緫鍣ㄩ兘闇€瑕?| 浠呯紪杈戝櫒棰勮闇€瑕?|
 
-### 1.2 正确的帧同步流程
+### 1.2 姝ｇ‘鐨勫抚鍚屾娴佺▼
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     运行时模式 (Runtime)                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  网络层收到指令 { skillId, frame }                                │
-│       ↓                                                         │
-│  SkillRunner.ManualUpdate(fixedDt)                              │
-│       ↓                                                         │
-│  Tick(fixedDt) 推进固定步长                                      │
-│       ↓                                                         │
-│  OnEnter → Play(clip)           ← 只发控制命令                   │
-│  OnTick → 逻辑判定（伤害判定、状态检查等）                         │
-│  OnExit → 切换状态/返回待机                                       │
-│       ↓                                                         │
-│  AnimComponent 由 Unity Update 自动驱动                          │
-│  （不调用 OnUpdate，不做 Evaluate）                               │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│                     编辑器模式 (Editor Preview)                  │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  SkillRunner.EvaluateAt(time)  ← 拖拽时间轴                      │
-│       ↓                                                         │
-│  OnEnter → Play(clip)                                           │
-│  OnUpdate → Evaluate(time)  ← 手动采样动画帧                     │
-│  OnExit → 停止/清理                                              │
-│                                                                 │
-│  特点：时间可跳跃，需要手动采样                                    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?                    杩愯鏃舵ā寮?(Runtime)                         鈹?鈹溾攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?                                                                鈹?鈹? 缃戠粶灞傛敹鍒版寚浠?{ skillId, frame }                                鈹?鈹?      鈫?                                                        鈹?鈹? SkillRunner.ManualUpdate(fixedDt)                              鈹?鈹?      鈫?                                                        鈹?鈹? Tick(fixedDt) 鎺ㄨ繘鍥哄畾姝ラ暱                                      鈹?鈹?      鈫?                                                        鈹?鈹? OnEnter 鈫?Play(clip)           鈫?鍙彂鎺у埗鍛戒护                   鈹?鈹? OnTick 鈫?閫昏緫鍒ゅ畾锛堜激瀹冲垽瀹氥€佺姸鎬佹鏌ョ瓑锛?                        鈹?鈹? OnExit 鈫?鍒囨崲鐘舵€?杩斿洖寰呮満                                       鈹?鈹?      鈫?                                                        鈹?鈹? AnimComponent 鐢?Unity Update 鑷姩椹卞姩                          鈹?鈹? 锛堜笉璋冪敤 OnUpdate锛屼笉鍋?Evaluate锛?                              鈹?鈹?                                                                鈹?鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?
+鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?                    缂栬緫鍣ㄦā寮?(Editor Preview)                  鈹?鈹溾攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?                                                                鈹?鈹? SkillRunner.EvaluateAt(time)  鈫?鎷栨嫿鏃堕棿杞?                     鈹?鈹?      鈫?                                                        鈹?鈹? OnEnter 鈫?Play(clip)                                           鈹?鈹? OnUpdate 鈫?Evaluate(time)  鈫?鎵嬪姩閲囨牱鍔ㄧ敾甯?                    鈹?鈹? OnExit 鈫?鍋滄/娓呯悊                                              鈹?鈹?                                                                鈹?鈹? 鐗圭偣锛氭椂闂村彲璺宠穬锛岄渶瑕佹墜鍔ㄩ噰鏍?                                   鈹?鈹?                                                                鈹?鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?```
 
 ---
 
-## 二、任务清单
+## 浜屻€佷换鍔℃竻鍗?
+### 浠诲姟 1: ISkillContext 澧炲姞 IsPreviewMode 灞炴€?
+**鏂囦欢**: `Assets/ATEditor/Runtime/System/ISkillContext.cs`
 
-### 任务 1: ISkillContext 增加 IsPreviewMode 属性
-
-**文件**: `Assets/SkillEditor/Runtime/System/ISkillContext.cs`
-
-**修改内容**:
+**淇敼鍐呭**:
 
 ```csharp
 using UnityEngine;
@@ -69,14 +33,11 @@ namespace SkillEditor
         GameObject Owner { get; }
         
         /// <summary>
-        /// 是否为编辑器预览模式。
-        /// true: 编辑器预览，需要手动采样动画帧。
-        /// false: 运行时模式，动画由 Unity 自动驱动。
-        /// </summary>
+        /// 鏄惁涓虹紪杈戝櫒棰勮妯″紡銆?        /// true: 缂栬緫鍣ㄩ瑙堬紝闇€瑕佹墜鍔ㄩ噰鏍峰姩鐢诲抚銆?        /// false: 杩愯鏃舵ā寮忥紝鍔ㄧ敾鐢?Unity 鑷姩椹卞姩銆?        /// </summary>
         bool IsPreviewMode { get; }
         
         /// <summary>
-        /// 获取环境特定的服务，如音频管理器、特效管理器
+        /// 鑾峰彇鐜鐗瑰畾鐨勬湇鍔★紝濡傞煶棰戠鐞嗗櫒銆佺壒鏁堢鐞嗗櫒
         /// </summary>
         T GetService<T>() where T : class;
     }
@@ -85,11 +46,11 @@ namespace SkillEditor
 
 ---
 
-### 任务 2: ClipContext 实现 IsPreviewMode
+### 浠诲姟 2: ClipContext 瀹炵幇 IsPreviewMode
 
-**文件**: `Assets/SkillEditor/Runtime/System/SkillRunner.cs`
+**鏂囦欢**: `Assets/ATEditor/Runtime/System/SkillRunner.cs`
 
-**修改 ClipContext 类**:
+**淇敼 ClipContext 绫?*:
 
 ```csharp
 public class ClipContext : ISkillContext
@@ -98,8 +59,7 @@ public class ClipContext : ISkillContext
     public object CurrentClipData { get; set; }
     
     /// <summary>
-    /// 是否为编辑器预览模式。
-    /// </summary>
+    /// 鏄惁涓虹紪杈戝櫒棰勮妯″紡銆?    /// </summary>
     public bool IsPreviewMode { get; set; } = false;
     
     private Dictionary<System.Type, object> _services = new Dictionary<System.Type, object>();
@@ -126,52 +86,51 @@ public class ClipContext : ISkillContext
 }
 ```
 
-**修改 SkillRunner.EvaluateAt 方法**:
+**淇敼 SkillRunner.EvaluateAt 鏂规硶**:
 
-在编辑器预览入口设置 `IsPreviewMode = true`:
+鍦ㄧ紪杈戝櫒棰勮鍏ュ彛璁剧疆 `IsPreviewMode = true`:
 
 ```csharp
 /// <summary>
-/// 跳跃到指定时间并求值 (用于编辑器拖拽预览)
+/// 璺宠穬鍒版寚瀹氭椂闂村苟姹傚€?(鐢ㄤ簬缂栬緫鍣ㄦ嫋鎷介瑙?
 /// </summary>
 public void EvaluateAt(float time)
 {
     if (_context == null) _context = new ClipContext(gameObject);
     
-    // 设置预览模式
+    // 璁剧疆棰勮妯″紡
     _context.IsPreviewMode = true;
     
-    // ... 其余逻辑不变
+    // ... 鍏朵綑閫昏緫涓嶅彉
 }
 ```
 
-**修改 SkillRunner.Tick 方法**:
+**淇敼 SkillRunner.Tick 鏂规硶**:
 
-在运行时 Tick 中设置 `IsPreviewMode = false`:
+鍦ㄨ繍琛屾椂 Tick 涓缃?`IsPreviewMode = false`:
 
 ```csharp
 /// <summary>
-/// 核心推进逻辑
+/// 鏍稿績鎺ㄨ繘閫昏緫
 /// </summary>
 private void Tick(float dt)
 {
     if (_context != null)
     {
-        // 运行时模式
-        _context.IsPreviewMode = false;
+        // 杩愯鏃舵ā寮?        _context.IsPreviewMode = false;
     }
     
-    // ... 其余逻辑不变
+    // ... 鍏朵綑閫昏緫涓嶅彉
 }
 ```
 
 ---
 
-### 任务 3: AnimationClipProcessor.OnUpdate 内部判断模式
+### 浠诲姟 3: AnimationClipProcessor.OnUpdate 鍐呴儴鍒ゆ柇妯″紡
 
-**文件**: `Assets/SkillEditor/Runtime/Logic/Processors/AnimationClipProcessor.cs`
+**鏂囦欢**: `Assets/ATEditor/Runtime/Logic/Processors/AnimationClipProcessor.cs`
 
-**修改内容**:
+**淇敼鍐呭**:
 
 ```csharp
 using UnityEngine;
@@ -187,40 +146,37 @@ namespace SkillEditor
             
             if (animService != null && data != null && data.animationClip != null)
             {
-                // 运行时和编辑器都需要：播放动画
+                // 杩愯鏃跺拰缂栬緫鍣ㄩ兘闇€瑕侊細鎾斁鍔ㄧ敾
                 animService.Play(data.animationClip, 0.1f);
             }
         }
 
         public override void OnUpdate(ISkillContext context, float progress)
         {
-            // 运行时直接返回，不做采样
-            // 动画由 Unity Update 自动驱动
+            // 杩愯鏃剁洿鎺ヨ繑鍥烇紝涓嶅仛閲囨牱
+            // 鍔ㄧ敾鐢?Unity Update 鑷姩椹卞姩
             if (!context.IsPreviewMode) return;
             
-            // 以下仅编辑器预览模式执行
+            // 浠ヤ笅浠呯紪杈戝櫒棰勮妯″紡鎵ц
             var animService = context.GetService<IAnimationService>();
             var data = context.GetData<AnimationClip>();
             
             if (data != null && animService != null)
             {
-                // 计算绝对时间
+                // 璁＄畻缁濆鏃堕棿
                 float time = data.StartTime + data.Duration * progress;
                 
-                // 编辑器预览：手动采样动画帧
-                animService.Evaluate(time);
+                // 缂栬緫鍣ㄩ瑙堬細鎵嬪姩閲囨牱鍔ㄧ敾甯?                animService.Evaluate(time);
             }
         }
 
         public override void OnExit(ISkillContext context)
         {
-            // 动画通常不需要显式停止，让其自然播放/融合到下一个
-        }
+            // 鍔ㄧ敾閫氬父涓嶉渶瑕佹樉寮忓仠姝紝璁╁叾鑷劧鎾斁/铻嶅悎鍒颁笅涓€涓?        }
 
         public override void OnTick(ISkillContext context, float frameTime, float prevFrameTime)
         {
-            // 运行时逻辑判定（伤害判定、状态检查等）
-            // 此处可根据需要添加逻辑
+            // 杩愯鏃堕€昏緫鍒ゅ畾锛堜激瀹冲垽瀹氥€佺姸鎬佹鏌ョ瓑锛?            // 姝ゅ鍙牴鎹渶瑕佹坊鍔犻€昏緫
         }
     }
 }
@@ -228,46 +184,42 @@ namespace SkillEditor
 
 ---
 
-### 任务 4: AnimComponent 移除 UpdateMode，始终 MonoUpdate 驱动
+### 浠诲姟 4: AnimComponent 绉婚櫎 UpdateMode锛屽缁?MonoUpdate 椹卞姩
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimComponent.cs`
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimComponent.cs`
 
-**修改内容**:
+**淇敼鍐呭**:
 
-#### 4.1 移除 UpdateMode 枚举和相关字段
-
+#### 4.1 绉婚櫎 UpdateMode 鏋氫妇鍜岀浉鍏冲瓧娈?
 ```csharp
-// 删除以下代码：
-// public enum UpdateMode { Auto, Manual }
+// 鍒犻櫎浠ヤ笅浠ｇ爜锛?// public enum UpdateMode { Auto, Manual }
 // public UpdateMode updateMode = UpdateMode.Auto;
 ```
 
-#### 4.2 修改 Update 方法
+#### 4.2 淇敼 Update 鏂规硶
 
 ```csharp
 private void Update()
 {
     if (!_isGraphCreated) return;
     
-    // 始终自动更新，由 Unity 驱动
+    // 濮嬬粓鑷姩鏇存柊锛岀敱 Unity 椹卞姩
     UpdateInternal(Time.deltaTime);
 }
 ```
 
-#### 4.3 修改 ManualUpdate 方法语义
+#### 4.3 淇敼 ManualUpdate 鏂规硶璇箟
 
 ```csharp
 /// <summary>
-/// 设置动画播放速度。
-/// 用于帧同步场景下的速度控制。
-/// </summary>
-/// <param name="speedScale">速度缩放因子</param>
+/// 璁剧疆鍔ㄧ敾鎾斁閫熷害銆?/// 鐢ㄤ簬甯у悓姝ュ満鏅笅鐨勯€熷害鎺у埗銆?/// </summary>
+/// <param name="speedScale">閫熷害缂╂斁鍥犲瓙</param>
 public void SetSpeed(float speedScale)
 {
     if (!_isGraphCreated) return;
     
-    // 设置 Graph 的播放速度
-    // 注意：这会影响所有动画的播放速度
+    // 璁剧疆 Graph 鐨勬挱鏀鹃€熷害
+    // 娉ㄦ剰锛氳繖浼氬奖鍝嶆墍鏈夊姩鐢荤殑鎾斁閫熷害
     foreach (var layer in _layers)
     {
         layer?.SetSpeed(speedScale);
@@ -275,27 +227,20 @@ public void SetSpeed(float speedScale)
 }
 
 /// <summary>
-/// [已弃用] 请使用 SetSpeed 方法。
-/// 保留此方法仅为向后兼容。
-/// </summary>
-/// <param name="deltaTime">此参数在自动模式下被忽略</param>
-[System.Obsolete("请使用 SetSpeed(float speedScale) 方法。AnimComponent 始终由 Unity Update 自动驱动。")]
+/// [宸插純鐢╙ 璇蜂娇鐢?SetSpeed 鏂规硶銆?/// 淇濈暀姝ゆ柟娉曚粎涓哄悜鍚庡吋瀹广€?/// </summary>
+/// <param name="deltaTime">姝ゅ弬鏁板湪鑷姩妯″紡涓嬭蹇界暐</param>
+[System.Obsolete("璇蜂娇鐢?SetSpeed(float speedScale) 鏂规硶銆侫nimComponent 濮嬬粓鐢?Unity Update 鑷姩椹卞姩銆?)]
 public void ManualUpdate(float deltaTime)
 {
-    // 在新架构下，此方法不再需要
-    // 动画始终由 Unity Update 自动驱动
+    // 鍦ㄦ柊鏋舵瀯涓嬶紝姝ゆ柟娉曚笉鍐嶉渶瑕?    // 鍔ㄧ敾濮嬬粓鐢?Unity Update 鑷姩椹卞姩
 }
 ```
 
-#### 4.4 保留 Evaluate 方法（编辑器专用）
-
+#### 4.4 淇濈暀 Evaluate 鏂规硶锛堢紪杈戝櫒涓撶敤锛?
 ```csharp
 /// <summary>
-/// 采样当前动画到指定时间。
-/// 仅用于编辑器预览或时间轴拖拽。
-/// 运行时请勿调用此方法。
-/// </summary>
-/// <param name="time">目标时间（秒）</param>
+/// 閲囨牱褰撳墠鍔ㄧ敾鍒版寚瀹氭椂闂淬€?/// 浠呯敤浜庣紪杈戝櫒棰勮鎴栨椂闂磋酱鎷栨嫿銆?/// 杩愯鏃惰鍕胯皟鐢ㄦ鏂规硶銆?/// </summary>
+/// <param name="time">鐩爣鏃堕棿锛堢锛?/param>
 public void Evaluate(float time)
 {
     if (!_isGraphCreated) return;
@@ -311,17 +256,16 @@ public void Evaluate(float time)
 
 ---
 
-### 任务 5: AnimLayer 增加 SetSpeed 方法
+### 浠诲姟 5: AnimLayer 澧炲姞 SetSpeed 鏂规硶
 
-**文件**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/AnimLayer.cs`
 
-**新增内容**:
+**鏂板鍐呭**:
 
 ```csharp
 /// <summary>
-/// 设置当前动画的播放速度。
-/// </summary>
-/// <param name="speed">速度因子 (1.0 = 正常速度)</param>
+/// 璁剧疆褰撳墠鍔ㄧ敾鐨勬挱鏀鹃€熷害銆?/// </summary>
+/// <param name="speed">閫熷害鍥犲瓙 (1.0 = 姝ｅ父閫熷害)</param>
 public void SetSpeed(float speed)
 {
     if (_targetState != null)
@@ -333,11 +277,10 @@ public void SetSpeed(float speed)
 
 ---
 
-### 任务 6: IAnimationService 接口语义明确化
+### 浠诲姟 6: IAnimationService 鎺ュ彛璇箟鏄庣‘鍖?
+**鏂囦欢**: `Assets/ATEditor/Runtime/Services/IServices.cs`
 
-**文件**: `Assets/SkillEditor/Runtime/Services/IServices.cs`
-
-**修改内容**:
+**淇敼鍐呭**:
 
 ```csharp
 using UnityEngine;
@@ -347,39 +290,32 @@ namespace SkillEditor
     public interface IAnimationService
     {
         /// <summary>
-        /// 播放动画片段。
-        /// 运行时和编辑器都需要。
-        /// </summary>
-        /// <param name="clip">动画片段</param>
-        /// <param name="transitionDuration">过渡时间</param>
+        /// 鎾斁鍔ㄧ敾鐗囨銆?        /// 杩愯鏃跺拰缂栬緫鍣ㄩ兘闇€瑕併€?        /// </summary>
+        /// <param name="clip">鍔ㄧ敾鐗囨</param>
+        /// <param name="transitionDuration">杩囨浮鏃堕棿</param>
         void Play(UnityEngine.AnimationClip clip, float transitionDuration);
         
         /// <summary>
-        /// 采样到指定时间。
-        /// 仅编辑器预览需要，运行时请勿调用。
-        /// </summary>
-        /// <param name="time">目标时间（秒）</param>
+        /// 閲囨牱鍒版寚瀹氭椂闂淬€?        /// 浠呯紪杈戝櫒棰勮闇€瑕侊紝杩愯鏃惰鍕胯皟鐢ㄣ€?        /// </summary>
+        /// <param name="time">鐩爣鏃堕棿锛堢锛?/param>
         void Evaluate(float time);
         
         /// <summary>
-        /// 设置动画播放速度。
-        /// 用于帧同步场景下的速度控制。
-        /// </summary>
-        /// <param name="speedScale">速度缩放因子</param>
+        /// 璁剧疆鍔ㄧ敾鎾斁閫熷害銆?        /// 鐢ㄤ簬甯у悓姝ュ満鏅笅鐨勯€熷害鎺у埗銆?        /// </summary>
+        /// <param name="speedScale">閫熷害缂╂斁鍥犲瓙</param>
         void SetSpeed(float speedScale);
     }
     
-    // ... 其他接口保持不变
+    // ... 鍏朵粬鎺ュ彛淇濇寔涓嶅彉
 }
 ```
 
 ---
 
-### 任务 7: MAnimAnimationService 适配器重新设计
+### 浠诲姟 7: MAnimAnimationService 閫傞厤鍣ㄩ噸鏂拌璁?
+**鏂囦欢**: `Assets/GameClient/MAnimSystem/MAnimAnimationService.cs` (鏂板缓)
 
-**文件**: `Assets/GameClient/MAnimSystem/MAnimAnimationService.cs` (新建)
-
-**完整代码**:
+**瀹屾暣浠ｇ爜**:
 
 ```csharp
 using UnityEngine;
@@ -388,42 +324,31 @@ using SkillEditor;
 namespace Game.MAnimSystem
 {
     /// <summary>
-    /// MAnimSystem 的 SkillEditor 动画服务适配器。
-    /// 实现 IAnimationService 接口，将 SkillEditor 的动画调用转发到 AnimComponent。
-    /// 
-    /// 设计说明：
-    /// - Play: 运行时和编辑器都需要，触发动画播放。
-    /// - Evaluate: 仅编辑器预览需要，手动采样动画帧。
-    /// - SetSpeed: 用于速度控制，不影响动画驱动方式。
-    /// 
-    /// 动画始终由 AnimComponent 的 Unity Update 自动驱动。
-    /// </summary>
+    /// MAnimSystem 鐨?SkillEditor 鍔ㄧ敾鏈嶅姟閫傞厤鍣ㄣ€?    /// 瀹炵幇 IAnimationService 鎺ュ彛锛屽皢 SkillEditor 鐨勫姩鐢昏皟鐢ㄨ浆鍙戝埌 AnimComponent銆?    /// 
+    /// 璁捐璇存槑锛?    /// - Play: 杩愯鏃跺拰缂栬緫鍣ㄩ兘闇€瑕侊紝瑙﹀彂鍔ㄧ敾鎾斁銆?    /// - Evaluate: 浠呯紪杈戝櫒棰勮闇€瑕侊紝鎵嬪姩閲囨牱鍔ㄧ敾甯с€?    /// - SetSpeed: 鐢ㄤ簬閫熷害鎺у埗锛屼笉褰卞搷鍔ㄧ敾椹卞姩鏂瑰紡銆?    /// 
+    /// 鍔ㄧ敾濮嬬粓鐢?AnimComponent 鐨?Unity Update 鑷姩椹卞姩銆?    /// </summary>
     public class MAnimAnimationService : IAnimationService
     {
         /// <summary>
-        /// 关联的 AnimComponent 实例。
-        /// </summary>
+        /// 鍏宠仈鐨?AnimComponent 瀹炰緥銆?        /// </summary>
         private AnimComponent _animComponent;
         
         /// <summary>
-        /// 当前播放的动画片段。
-        /// </summary>
+        /// 褰撳墠鎾斁鐨勫姩鐢荤墖娈点€?        /// </summary>
         private AnimationClip _currentClip;
         
         /// <summary>
-        /// 构造动画服务适配器。
-        /// </summary>
-        /// <param name="animComponent">AnimComponent 实例</param>
+        /// 鏋勯€犲姩鐢绘湇鍔￠€傞厤鍣ㄣ€?        /// </summary>
+        /// <param name="animComponent">AnimComponent 瀹炰緥</param>
         public MAnimAnimationService(AnimComponent animComponent)
         {
             _animComponent = animComponent;
         }
         
         /// <summary>
-        /// 播放动画片段。
-        /// </summary>
-        /// <param name="clip">动画片段</param>
-        /// <param name="transitionDuration">过渡时间</param>
+        /// 鎾斁鍔ㄧ敾鐗囨銆?        /// </summary>
+        /// <param name="clip">鍔ㄧ敾鐗囨</param>
+        /// <param name="transitionDuration">杩囨浮鏃堕棿</param>
         public void Play(AnimationClip clip, float transitionDuration)
         {
             if (_animComponent == null || clip == null) return;
@@ -433,22 +358,18 @@ namespace Game.MAnimSystem
         }
         
         /// <summary>
-        /// 采样到指定时间。
-        /// 仅编辑器预览需要，运行时请勿调用。
-        /// </summary>
-        /// <param name="time">目标时间（秒）</param>
+        /// 閲囨牱鍒版寚瀹氭椂闂淬€?        /// 浠呯紪杈戝櫒棰勮闇€瑕侊紝杩愯鏃惰鍕胯皟鐢ㄣ€?        /// </summary>
+        /// <param name="time">鐩爣鏃堕棿锛堢锛?/param>
         public void Evaluate(float time)
         {
             if (_animComponent == null) return;
             
-            // 编辑器预览：手动采样动画帧
-            _animComponent.Evaluate(time);
+            // 缂栬緫鍣ㄩ瑙堬細鎵嬪姩閲囨牱鍔ㄧ敾甯?            _animComponent.Evaluate(time);
         }
         
         /// <summary>
-        /// 设置动画播放速度。
-        /// </summary>
-        /// <param name="speedScale">速度缩放因子</param>
+        /// 璁剧疆鍔ㄧ敾鎾斁閫熷害銆?        /// </summary>
+        /// <param name="speedScale">閫熷害缂╂斁鍥犲瓙</param>
         public void SetSpeed(float speedScale)
         {
             if (_animComponent == null) return;
@@ -457,9 +378,8 @@ namespace Game.MAnimSystem
         }
         
         /// <summary>
-        /// 获取当前播放的动画片段。
-        /// </summary>
-        /// <returns>当前动画片段</returns>
+        /// 鑾峰彇褰撳墠鎾斁鐨勫姩鐢荤墖娈点€?        /// </summary>
+        /// <returns>褰撳墠鍔ㄧ敾鐗囨</returns>
         public AnimationClip GetCurrentClip()
         {
             return _currentClip;
@@ -470,11 +390,11 @@ namespace Game.MAnimSystem
 
 ---
 
-### 任务 8: RuntimeAnimationService 更新
+### 浠诲姟 8: RuntimeAnimationService 鏇存柊
 
-**文件**: `Assets/SkillEditor/Runtime/Services/RuntimeAnimationService.cs`
+**鏂囦欢**: `Assets/ATEditor/Runtime/Services/RuntimeAnimationService.cs`
 
-**修改内容**:
+**淇敼鍐呭**:
 
 ```csharp
 using UnityEngine;
@@ -498,14 +418,14 @@ namespace SkillEditor
         public void Play(UnityEngine.AnimationClip clip, float transitionDuration)
         {
             if (_animator == null || clip == null) return;
-            // Animator 播放逻辑
+            // Animator 鎾斁閫昏緫
             Debug.Log($"[RuntimeAnimation] Playing clip: {clip.name}");
         }
 
         public void Evaluate(float time)
         {
-            // 运行时不需要 Evaluate
-            // 动画由 Unity 自动驱动
+            // 杩愯鏃朵笉闇€瑕?Evaluate
+            // 鍔ㄧ敾鐢?Unity 鑷姩椹卞姩
         }
 
         public void SetSpeed(float speedScale)
@@ -519,116 +439,70 @@ namespace SkillEditor
 
 ---
 
-## 三、文件变更清单
-
-| 文件 | 操作 | 变更内容 |
+## 涓夈€佹枃浠跺彉鏇存竻鍗?
+| 鏂囦欢 | 鎿嶄綔 | 鍙樻洿鍐呭 |
 |------|------|----------|
-| `ISkillContext.cs` | 修改 | 新增 `IsPreviewMode` 属性 |
-| `SkillRunner.cs` | 修改 | ClipContext 实现 IsPreviewMode，EvaluateAt/Tick 设置模式 |
-| `AnimationClipProcessor.cs` | 修改 | OnUpdate 内部判断 IsPreviewMode |
-| `AnimComponent.cs` | 修改 | 移除 UpdateMode，始终 MonoUpdate 驱动，新增 SetSpeed |
-| `AnimLayer.cs` | 修改 | 新增 SetSpeed 方法 |
-| `IServices.cs` | 修改 | ManualUpdate 改为 SetSpeed，明确语义 |
-| `MAnimAnimationService.cs` | 新建 | IAnimationService 适配器实现 |
-| `RuntimeAnimationService.cs` | 修改 | 更新接口实现 |
+| `ISkillContext.cs` | 淇敼 | 鏂板 `IsPreviewMode` 灞炴€?|
+| `SkillRunner.cs` | 淇敼 | ClipContext 瀹炵幇 IsPreviewMode锛孍valuateAt/Tick 璁剧疆妯″紡 |
+| `AnimationClipProcessor.cs` | 淇敼 | OnUpdate 鍐呴儴鍒ゆ柇 IsPreviewMode |
+| `AnimComponent.cs` | 淇敼 | 绉婚櫎 UpdateMode锛屽缁?MonoUpdate 椹卞姩锛屾柊澧?SetSpeed |
+| `AnimLayer.cs` | 淇敼 | 鏂板 SetSpeed 鏂规硶 |
+| `IServices.cs` | 淇敼 | ManualUpdate 鏀逛负 SetSpeed锛屾槑纭涔?|
+| `MAnimAnimationService.cs` | 鏂板缓 | IAnimationService 閫傞厤鍣ㄥ疄鐜?|
+| `RuntimeAnimationService.cs` | 淇敼 | 鏇存柊鎺ュ彛瀹炵幇 |
 
 ---
 
-## 四、验证计划
+## 鍥涖€侀獙璇佽鍒?
+### 4.1 鍗曞厓娴嬭瘯
 
-### 4.1 单元测试
+1. **AnimComponent 椹卞姩娴嬭瘯**
+   - 楠岃瘉 Update 濮嬬粓鑷姩鎵ц
+   - 楠岃瘉 SetSpeed 姝ｇ‘褰卞搷鎾斁閫熷害
 
-1. **AnimComponent 驱动测试**
-   - 验证 Update 始终自动执行
-   - 验证 SetSpeed 正确影响播放速度
+2. **IsPreviewMode 娴嬭瘯**
+   - 缂栬緫鍣ㄩ瑙堟椂 IsPreviewMode = true
+   - 杩愯鏃?Tick 鏃?IsPreviewMode = false
 
-2. **IsPreviewMode 测试**
-   - 编辑器预览时 IsPreviewMode = true
-   - 运行时 Tick 时 IsPreviewMode = false
+3. **AnimationClipProcessor 娴嬭瘯**
+   - 棰勮妯″紡锛歄nUpdate 璋冪敤 Evaluate
+   - 杩愯鏃舵ā寮忥細OnUpdate 涓嶈皟鐢?Evaluate
 
-3. **AnimationClipProcessor 测试**
-   - 预览模式：OnUpdate 调用 Evaluate
-   - 运行时模式：OnUpdate 不调用 Evaluate
+### 4.2 闆嗘垚娴嬭瘯
 
-### 4.2 集成测试
+1. **缂栬緫鍣ㄩ瑙堟祦绋?*
+   - 鎷栨嫿鏃堕棿杞达紝楠岃瘉鍔ㄧ敾姝ｇ‘閲囨牱
+   - 楠岃瘉 Play 鍜?Evaluate 閮借璋冪敤
 
-1. **编辑器预览流程**
-   - 拖拽时间轴，验证动画正确采样
-   - 验证 Play 和 Evaluate 都被调用
-
-2. **运行时帧同步流程**
-   - 模拟网络指令，触发技能播放
-   - 验证 Play 被调用，Evaluate 不被调用
-   - 验证动画由 Unity 自动驱动
+2. **杩愯鏃跺抚鍚屾娴佺▼**
+   - 妯℃嫙缃戠粶鎸囦护锛岃Е鍙戞妧鑳芥挱鏀?   - 楠岃瘉 Play 琚皟鐢紝Evaluate 涓嶈璋冪敤
+   - 楠岃瘉鍔ㄧ敾鐢?Unity 鑷姩椹卞姩
 
 ---
 
-## 五、实施顺序
-
+## 浜斻€佸疄鏂介『搴?
 ```
-任务 1: ISkillContext 增加 IsPreviewMode
-    │
-    ▼
-任务 2: ClipContext 实现 IsPreviewMode
-    │
-    ▼
-任务 3: AnimationClipProcessor 内部判断
-    │
-    ▼
-任务 4: AnimComponent 移除 UpdateMode
-    │
-    ▼
-任务 5: AnimLayer 增加 SetSpeed
-    │
-    ▼
-任务 6: IAnimationService 接口更新
-    │
-    ▼
-任务 7: MAnimAnimationService 适配器
-    │
-    ▼
-任务 8: RuntimeAnimationService 更新
-    │
-    ▼
-验证测试
+浠诲姟 1: ISkillContext 澧炲姞 IsPreviewMode
+    鈹?    鈻?浠诲姟 2: ClipContext 瀹炵幇 IsPreviewMode
+    鈹?    鈻?浠诲姟 3: AnimationClipProcessor 鍐呴儴鍒ゆ柇
+    鈹?    鈻?浠诲姟 4: AnimComponent 绉婚櫎 UpdateMode
+    鈹?    鈻?浠诲姟 5: AnimLayer 澧炲姞 SetSpeed
+    鈹?    鈻?浠诲姟 6: IAnimationService 鎺ュ彛鏇存柊
+    鈹?    鈻?浠诲姟 7: MAnimAnimationService 閫傞厤鍣?    鈹?    鈻?浠诲姟 8: RuntimeAnimationService 鏇存柊
+    鈹?    鈻?楠岃瘉娴嬭瘯
 ```
 
 ---
 
-## 六、架构对比
-
-### 修改前
-
+## 鍏€佹灦鏋勫姣?
+### 淇敼鍓?
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    AnimComponent                            │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ UpdateMode: Auto / Manual                           │   │
-│  │                                                     │   │
-│  │ Auto:   Update() → UpdateInternal(dt)              │   │
-│  │ Manual: ManualUpdate(dt) → UpdateInternal(dt)      │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-```
+鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?                   AnimComponent                            鈹?鈹? 鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?  鈹?鈹? 鈹?UpdateMode: Auto / Manual                           鈹?  鈹?鈹? 鈹?                                                    鈹?  鈹?鈹? 鈹?Auto:   Update() 鈫?UpdateInternal(dt)              鈹?  鈹?鈹? 鈹?Manual: ManualUpdate(dt) 鈫?UpdateInternal(dt)      鈹?  鈹?鈹? 鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?  鈹?鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?```
 
-### 修改后
-
+### 淇敼鍚?
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    AnimComponent                            │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ 始终由 Unity Update 自动驱动                          │   │
-│  │                                                     │   │
-│  │ Update() → UpdateInternal(dt)  ← 始终执行           │   │
-│  │                                                     │   │
-│  │ 控制接口：                                           │   │
-│  │   Play(clip, fade)     → 播放动画                   │   │
-│  │   SetSpeed(scale)      → 速度控制                   │   │
-│  │   Evaluate(time)       → 编辑器预览采样             │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-```
+鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?                   AnimComponent                            鈹?鈹? 鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?  鈹?鈹? 鈹?濮嬬粓鐢?Unity Update 鑷姩椹卞姩                          鈹?  鈹?鈹? 鈹?                                                    鈹?  鈹?鈹? 鈹?Update() 鈫?UpdateInternal(dt)  鈫?濮嬬粓鎵ц           鈹?  鈹?鈹? 鈹?                                                    鈹?  鈹?鈹? 鈹?鎺у埗鎺ュ彛锛?                                          鈹?  鈹?鈹? 鈹?  Play(clip, fade)     鈫?鎾斁鍔ㄧ敾                   鈹?  鈹?鈹? 鈹?  SetSpeed(scale)      鈫?閫熷害鎺у埗                   鈹?  鈹?鈹? 鈹?  Evaluate(time)       鈫?缂栬緫鍣ㄩ瑙堥噰鏍?            鈹?  鈹?鈹? 鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?  鈹?鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?```
 
 ---
 
-**文档日期**: 2026-02-14
+**鏂囨。鏃ユ湡**: 2026-02-14

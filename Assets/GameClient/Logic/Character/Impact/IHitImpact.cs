@@ -11,6 +11,6 @@ namespace Game.Logic.Character
         /// </summary>
         /// <param name="ctx">命中上下文（包含攻击者、受击者、碰撞信息等）</param>
         /// <param name="entry">当前正在处理的效果条目（包含 eventTag 和 targetTags）</param>
-        void Execute(HitContext ctx, SkillEditor.HitEffectEntry entry);
+        void Execute(HitContext ctx, ATEditor.HitEffectEntry entry);
     }
 }

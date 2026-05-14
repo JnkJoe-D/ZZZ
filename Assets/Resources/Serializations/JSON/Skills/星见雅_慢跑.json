@@ -1,5 +1,7 @@
 {
-    "isLoop": false,
+    "isLoop": true,
+    "beforePlayEvents": [],
+    "onCompleteEvents": [],
     "groups": [
         {
             "groupId": "4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28",
@@ -43,22 +45,13 @@
         {
             "groupId": "e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b",
             "groupName": "输入",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
                 {
                     "rid": 1004
-                }
-            ]
-        },
-        {
-            "groupId": "c049ddd2-da2f-47c7-939b-5c2ab38fc517",
-            "groupName": "命中",
-            "isCollapsed": true,
-            "isEnabled": true,
-            "isLocked": false,
-            "tracks": [
+                },
                 {
                     "rid": 1005
                 }
@@ -66,13 +59,25 @@
         },
         {
             "groupId": "2618bfdd-54e5-4e01-b001-9112a202093c",
-            "groupName": "动画位移",
-            "isCollapsed": false,
+            "groupName": "命中",
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
                 {
                     "rid": 1006
+                }
+            ]
+        },
+        {
+            "groupId": "c049ddd2-da2f-47c7-939b-5c2ab38fc517",
+            "groupName": "动画位移",
+            "isCollapsed": true,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1007
                 }
             ]
         },
@@ -92,7 +97,7 @@
                 "rid": 1000,
                 "type": {
                     "class": "AnimationTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -106,7 +111,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1007
+                            "rid": 1008
                         }
                     ],
                     "isMasterTrack": true,
@@ -126,7 +131,7 @@
                 "rid": 1001,
                 "type": {
                     "class": "VFXTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -145,7 +150,7 @@
                 "rid": 1002,
                 "type": {
                     "class": "AudioTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -164,7 +169,7 @@
                 "rid": 1003,
                 "type": {
                     "class": "AudioTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -183,7 +188,7 @@
                 "rid": 1004,
                 "type": {
                     "class": "ComboWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -195,14 +200,64 @@
                     "isHidden": false,
                     "isCollapsed": false,
                     "isEnabled": true,
-                    "clips": []
+                    "clips": [
+                        {
+                            "rid": 1009
+                        }
+                    ]
                 }
             },
             {
                 "rid": 1005,
                 "type": {
+                    "class": "ComboWindowTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "35e0f368-365e-46c4-884b-b0f48b40a8e0",
+                    "trackType": "ComboWindowTrack",
+                    "trackName": "输入派生窗口",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1010
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1006,
+                "type": {
+                    "class": "MotionWindowTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "15e2bdc7-968f-4cfa-a5f8-f20e16b3ce0c",
+                    "trackType": "MotionWindowTrack",
+                    "trackName": "位移窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1011
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1007,
+                "type": {
                     "class": "HitTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -218,33 +273,10 @@
                 }
             },
             {
-                "rid": 1006,
-                "type": {
-                    "class": "MotionWindowTrack",
-                    "ns": "SkillEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "15e2bdc7-968f-4cfa-a5f8-f20e16b3ce0c",
-                    "trackType": "MotionWindowTrack",
-                    "trackName": "位移窗口轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": true,
-                    "clips": [
-                        {
-                            "rid": 1008
-                        }
-                    ]
-                }
-            },
-            {
-                "rid": 1007,
+                "rid": 1008,
                 "type": {
                     "class": "SkillAnimationClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -253,10 +285,10 @@
                     "isEnabled": true,
                     "startTime": 0.0,
                     "duration": 0.6000000238418579,
-                    "blendInDuration": 0.13333334028720857,
+                    "blendInDuration": 0.13333334028720856,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 39760
+                        "instanceID": 82368
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -276,10 +308,48 @@
                 }
             },
             {
-                "rid": 1008,
+                "rid": 1009,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "6b860ab8-4809-4878-9d0f-da1c4628206b",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.6000000238418579,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "windowType": 1,
+                    "comboTag": "Execute1"
+                }
+            },
+            {
+                "rid": 1010,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "7bfc7c01-08d8-4db3-b5e0-28bee617c8dd",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.6000000238418579,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "windowType": 1,
+                    "comboTag": "Evade1"
+                }
+            },
+            {
+                "rid": 1011,
                 "type": {
                     "class": "MotionFilterClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
   m_Name: "\u827E\u83B2\u4E54_\u653B\u51FB_\u7279\u6B8A\u51B2\u523A\u653B\u51FB_2"
   m_EditorClassIdentifier: 
-  ID: 10222
+  ID: 10418
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 415d4e751eb856a44981e0a33e33dbaf, type: 3}
   TurnMode: 2

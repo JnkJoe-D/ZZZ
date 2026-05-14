@@ -21,6 +21,7 @@ namespace Game.Logic.Character
         [Header("Test Spawner Config")]
         public string characterPrefabPath = "Assets/Resources/Character_Player.prefab";
         public Game.Logic.Character.Config.CharacterConfigAsset testCharacterConfig;
+        public Game.Logic.Character.Config.PartyConfigAsset testPartyConfig;
         public Transform spawnPoint;
 
         public bool IsSpawnCompleted { get; private set; }
@@ -42,22 +43,24 @@ namespace Game.Logic.Character
             IsSpawnCompleted = false;
             IsSpawnSucceeded = false;
 
-            if (CharcterManager.Instance == null || testCharacterConfig == null)
+            if (CharcterManager.Instance == null || (testCharacterConfig == null && testPartyConfig == null))
             {
                 IsSpawnCompleted = true;
-                Debug.LogWarning("[Test_Character] CharacterManager or testCharacterConfig is not ready.");
+                Debug.LogWarning("[Test_Character] CharacterManager or party configuration is not ready.");
                 yield break;
             }
 
             Vector3 pos = spawnPoint != null ? spawnPoint.position : Vector3.zero;
             Quaternion rot = spawnPoint != null ? spawnPoint.rotation : Quaternion.identity;
 
-            Debug.Log("[Test_Character] Requesting CharacterManager to spawn character...");
-            var spawnTask = CharcterManager.Instance.PossessNewCharacterAsync(
-                characterPrefabPath,
-                testCharacterConfig,
-                pos,
-                rot);
+            Debug.Log("[Test_Character] Requesting CharacterManager to spawn controllable role or party...");
+            System.Threading.Tasks.Task<CharacterEntity> spawnTask = testPartyConfig != null
+                ? CharcterManager.Instance.InitializePartyAsync(testPartyConfig, pos, rot)
+                : CharcterManager.Instance.PossessNewCharacterAsync(
+                    characterPrefabPath,
+                    testCharacterConfig,
+                    pos,
+                    rot);
 
             while (!spawnTask.IsCompleted)
             {
@@ -100,7 +103,7 @@ namespace Game.Logic.Character
             }
             Debug.Log("[GameRoot] [4/9] Assets ... OK");
 
-            SkillEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.SkillAssetLoader());
+            ATEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.SkillAssetLoader());
             Debug.Log("[GameRoot] [4.5/9] SkillEditor AssetLoader Injected ... OK");
             yield return null;
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using Game.Camera;
 using Game.Resource;
-using SkillEditor;
+using ATEditor;
 using UnityEngine;
 using Game.Logic.Character;
 

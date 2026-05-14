@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
+  m_Name: "\u5B89\u6BD4_\u5207\u4EBA_\u5207\u51FA"
+  m_EditorClassIdentifier: 
+  ID: 10023
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 8e655cb6662be13478b40ca02e4be8ba, type: 3}
+  TurnMode: 1
+  EnterState: 70
+  CompleteMode: 20
+  CompleteAction: {fileID: 11400000, guid: 490fb4141147cbd489e6c3464b901b0b, type: 2}
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: 9d0402f47d454057b5973feb7b1de91b, type: 2}
+  - {fileID: 11400000, guid: 945b43785ac04270a1c11efbec6ebfb3, type: 2}
+  - {fileID: 11400000, guid: c95e4eeb2ad04a8685048db8cec1af22, type: 2}
+  - {fileID: 11400000, guid: 96dca57bac5945439deaf67665302212, type: 2}
+  FaceToSpeed: 10
+  PlaybackSpeed: 1
+  Cooldown: 2
+  MPCost: 0
+  CastRange: 2
+  CanBeInterrupted: 1
+  CinematicCameraPrefab: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []

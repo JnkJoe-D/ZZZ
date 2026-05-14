@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "rules": {
+    "roleIdRange": {
+      "start": 1000,
+      "end": 1999
+    },
+    "firstActionMappedRoleId": 1001,
+    "actionIdRange": {
+      "start": 10000,
+      "end": 99999
+    },
+    "actionBlockSize": 200
+  },
+  "paths": {
+    "templateCacheRoot": "Assets/Resources/Serializations/ScriptableObjects/Action"
+  },
+  "allocators": {
+    "roleId": {
+      "hasAllocated": true,
+      "maxAllocated": 1003
+    }
+  },
+  "roleActionAllocators": [
+    {
+      "roleId": 1001,
+      "roleName": "安比",
+      "actionRange": {
+        "start": 10000,
+        "end": 10199
+      },
+      "hasAllocated": true,
+      "maxAllocated": 10023
+    },
+    {
+      "roleId": 1002,
+      "roleName": "星见雅",
+      "actionRange": {
+        "start": 10200,
+        "end": 10399
+      },
+      "hasAllocated": true,
+      "maxAllocated": 10220
+    },
+    {
+      "roleId": 1003,
+      "roleName": "艾莲乔",
+      "actionRange": {
+        "start": 10400,
+        "end": 10599
+      },
+      "hasAllocated": true,
+      "maxAllocated": 10420
+    }
+  ],
+  "stats": {
+    "characterCount": 3,
+    "actionCount": 66,
+    "hitReactionCount": 3,
+    "lastRebuildUtc": "2026-05-10T09:57:28.108480+00:00"
+  }
+}

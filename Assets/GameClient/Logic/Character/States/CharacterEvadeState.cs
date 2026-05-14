@@ -1,7 +1,7 @@
 using Game.FSM;
 using Game.Input;
 using Game.Logic.Action.Config;
-using SkillEditor;
+using ATEditor;
 using UnityEngine;
 
 namespace Game.Logic.Character

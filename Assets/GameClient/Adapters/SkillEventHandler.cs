@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Game.Framework;
-using SkillEditor;
+using ATEditor;
 
 namespace Game.Adapters
 {

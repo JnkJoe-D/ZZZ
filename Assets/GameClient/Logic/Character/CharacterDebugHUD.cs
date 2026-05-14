@@ -1,6 +1,8 @@
 using System.Linq;
+using Game.Input;
 using Game.Logic.Action.Combo;
 using Game.Logic.Character;
+using Game.Logic.Character.SubStates;
 using UnityEngine;
 
 namespace Game.Logic.DebugTools
@@ -13,8 +15,20 @@ namespace Game.Logic.DebugTools
         private GUIStyle labelStyle;
         private GUIStyle titleStyle;
         private GUIStyle historyStyle;
+        private GUIStyle heldActiveStyle;
+        private GUIStyle heldInactiveStyle;
 
         private Texture2D backgroundTexture;
+        private Texture2D heldBgTexture;
+
+        // 所有可被 Held 的按键类型
+        private static readonly (InputCommand type, string label)[] HeldKeyDefs =
+        {
+            (InputCommand.Move, "Move"),
+            (InputCommand.Evade, "Evade"),
+            (InputCommand.BasicAttack, "Attack"),
+            (InputCommand.SpecialAttack, "Special"),
+        };
 
         private void Start()
         {
@@ -36,6 +50,7 @@ namespace Game.Logic.DebugTools
             }
 
             backgroundTexture = CreateRoundedTex(128, 128, 15, new Color(0.12f, 0.12f, 0.12f, 0.85f));
+            heldBgTexture = CreateRoundedTex(128, 128, 15, new Color(0.1f, 0.1f, 0.15f, 0.9f));
 
             boxStyle = new GUIStyle
             {
@@ -62,6 +77,18 @@ namespace Game.Logic.DebugTools
                 fontSize = 13
             };
             historyStyle.normal.textColor = new Color(0.8f, 0.8f, 0.8f);
+
+            heldActiveStyle = new GUIStyle(labelStyle)
+            {
+                fontSize = 14,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter
+            };
+            heldActiveStyle.normal.textColor = new Color(0.3f, 1f, 0.5f);
+
+            heldInactiveStyle = new GUIStyle(heldActiveStyle);
+            heldInactiveStyle.normal.textColor = new Color(0.4f, 0.4f, 0.4f);
+            heldInactiveStyle.fontStyle = FontStyle.Normal;
         }
 
         private void OnGUI()
@@ -73,6 +100,44 @@ namespace Game.Logic.DebugTools
 
             InitStyles();
 
+            DrawHeldKeysPanel();
+            DrawMainPanel();
+        }
+
+        private void DrawHeldKeysPanel()
+        {
+            var provider = targetEntity.InputProvider;
+            if (provider == null) return;
+
+            float panelWidth = 160;
+            float lineH = 22;
+            float panelHeight = 40 + HeldKeyDefs.Length * lineH;
+            float margin = 20;
+            Rect rect = new Rect(margin, margin, panelWidth, panelHeight);
+
+            var heldBoxStyle = new GUIStyle
+            {
+                normal = { background = heldBgTexture },
+                padding = new RectOffset(12, 12, 10, 10)
+            };
+
+            GUILayout.BeginArea(rect, heldBoxStyle);
+            {
+                GUILayout.Label("HELD KEYS", titleStyle);
+                GUILayout.Space(4);
+
+                foreach (var (type, label) in HeldKeyDefs)
+                {
+                    bool isHeld = provider.IsHeld((int)type);
+                    string prefix = isHeld ? "●" : "○";
+                    GUILayout.Label($" {prefix}  {label}", isHeld ? heldActiveStyle : heldInactiveStyle);
+                }
+            }
+            GUILayout.EndArea();
+        }
+
+        private void DrawMainPanel()
+        {
             float width = 360;
             float height = 500;
             float margin = 20;
@@ -88,7 +153,13 @@ namespace Game.Logic.DebugTools
                 {
                     DrawInfo("Current State", machine.CurrentState?.GetType().Name ?? "None");
                     DrawInfo("Previous State", machine.PreviousState?.GetType().Name ?? "None", new Color(0.7f, 0.7f, 0.7f));
+                    DrawInfo("Ground SubState", GetGroundSubStateLabel(machine.CurrentState), new Color(0.55f, 0.9f, 0.65f));
                 }
+
+                DrawInfo(
+                    "Target Ground",
+                    targetEntity.RuntimeData?.TargetGroundSubState.ToString() ?? "None",
+                    new Color(0.75f, 0.9f, 1f));
 
 
                 DrawInfo(
@@ -160,6 +231,17 @@ namespace Game.Logic.DebugTools
             GUILayout.Label(value, labelStyle);
             GUI.color = oldColor;
             GUILayout.EndHorizontal();
+        }
+
+        private static string GetGroundSubStateLabel(object currentState)
+        {
+            if (currentState is not CharacterGroundState groundState)
+            {
+                return "-";
+            }
+
+            GroundSubState subState = groundState.CurrentSubState;
+            return subState != null ? subState.GetType().Name : "None";
         }
 
         private Texture2D CreateRoundedTex(int width, int height, int radius, Color color)

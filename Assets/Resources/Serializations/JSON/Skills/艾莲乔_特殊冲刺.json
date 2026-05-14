@@ -95,7 +95,7 @@
                 "rid": 1000,
                 "type": {
                     "class": "AnimationTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -129,7 +129,7 @@
                 "rid": 1001,
                 "type": {
                     "class": "VFXTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -148,7 +148,7 @@
                 "rid": 1002,
                 "type": {
                     "class": "AudioTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -167,7 +167,7 @@
                 "rid": 1003,
                 "type": {
                     "class": "AudioTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -186,7 +186,7 @@
                 "rid": 1004,
                 "type": {
                     "class": "ComboWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -209,7 +209,7 @@
                 "rid": 1005,
                 "type": {
                     "class": "ComboWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -232,7 +232,7 @@
                 "rid": 1006,
                 "type": {
                     "class": "HitTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -251,7 +251,7 @@
                 "rid": 1007,
                 "type": {
                     "class": "MotionWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -274,7 +274,7 @@
                 "rid": 1008,
                 "type": {
                     "class": "SkillAnimationClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -282,7 +282,7 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.40000003576278689,
+                    "duration": 0.40000003576278687,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
@@ -309,7 +309,7 @@
                 "rid": 1009,
                 "type": {
                     "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -317,7 +317,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.40000003576278689,
+                    "duration": 0.40000003576278687,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 1,
@@ -328,7 +328,7 @@
                 "rid": 1010,
                 "type": {
                     "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -336,7 +336,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.40000003576278689,
+                    "duration": 0.40000003576278687,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 1,
@@ -347,7 +347,7 @@
                 "rid": 1011,
                 "type": {
                     "class": "MotionFilterClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -355,7 +355,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.40000003576278689,
+                    "duration": 0.40000003576278687,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1

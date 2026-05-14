@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: "\u827E\u83B2\u4E54_\u6307\u4EE4\u96C6_6_\u5207\u4EBA_0_\u7ACB\u5373\u5207\u51FA"
+  m_EditorClassIdentifier: 
+  Routes:
+  - Category: 0
+    RequiredWindowTag: Execute1
+    TriggerMode: 1
+    ConditionCheckTiming: 20
+    EventType: 0
+    RequiredType: 60
+    RequiredPhase: 0
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 69c71407d0a627e4e964e64fcce2274f, type: 2}
+    ExtraConditions: []
+    Priority: 20
+  references:
+    version: 2
+    RefIds: []

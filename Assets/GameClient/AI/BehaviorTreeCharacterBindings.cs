@@ -258,7 +258,7 @@ namespace Game.AI
         public bool TriggerBasicAttack()
         {
             if (inputProvider == null )return false;
-            inputProvider.TriggerBasicAttack();
+            inputProvider.TriggerBasicAttackStarted();
             return true;
         }
 
@@ -267,7 +267,7 @@ namespace Game.AI
         {
             if (inputProvider == null) return false;
 
-            inputProvider.TriggerSpecialAttack();
+            inputProvider.TriggerSpecialAttackStarted();
             return true;
         }
 
@@ -276,7 +276,7 @@ namespace Game.AI
         {
             if (inputProvider == null) return false;
 
-            inputProvider.TriggerUltimate();
+            inputProvider.TriggerUltimateStarted();
             return true;
         }
 
@@ -285,7 +285,7 @@ namespace Game.AI
         {
             if (inputProvider == null) return false;
 
-            inputProvider.TriggerEvadeFront();
+            inputProvider.TriggerEvadeStarted();
             return true;
         }
         /// <summary>尝试触发后闪避。</summary>
@@ -293,7 +293,7 @@ namespace Game.AI
         {
             if (inputProvider == null) return false;
 
-            inputProvider.TriggerEvadeBack();
+            inputProvider.TriggerEvadeStarted();
             return true;
         }
     }

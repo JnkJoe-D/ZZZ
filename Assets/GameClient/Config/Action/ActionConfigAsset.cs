@@ -16,6 +16,7 @@ namespace Game.Logic.Action.Config
         Skill = 40,     // CharacterSkillState
         Evade = 50,     // CharacterEvadeState
         Hit = 60,       // CharacterHitStunState
+        Switch = 70,    // CharacterSwitchState
     }
 
     /// <summary>

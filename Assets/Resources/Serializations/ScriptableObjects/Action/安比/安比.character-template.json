@@ -1,0 +1,356 @@
+{
+  "version": 2,
+  "character": {
+    "roleName": "安比",
+    "prefabPath": "Assets/Resources/Prefab/Role/Anbi/Anbi.prefab",
+    "actionRootKey": "基础_待机",
+    "autoAllocateRoleId": true
+  },
+  "hitReaction": {
+    "enabled": true,
+    "lightKey": "受击_轻_前",
+    "heavyKey": null,
+    "knockAwayKey": null
+  },
+  "params": {},
+  "actions": [
+    {
+      "key": "基础_待机",
+      "displayName": "基础_待机",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_慢跑起步",
+      "displayName": "基础_慢跑起步",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": false
+    },
+    {
+      "key": "基础_慢跑",
+      "displayName": "基础_慢跑",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": false
+    },
+    {
+      "key": "基础_冲刺起步",
+      "displayName": "基础_冲刺起步",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": false
+    },
+    {
+      "key": "基础_冲刺",
+      "displayName": "基础_冲刺",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": false
+    },
+    {
+      "key": "基础_停止",
+      "displayName": "基础_停止",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": false
+    },
+    {
+      "key": "基础_急停转向",
+      "displayName": "基础_急停转向",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": false
+    },
+    {
+      "key": "攻击_普通攻击1",
+      "displayName": "攻击_普通攻击1",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_普通攻击2",
+      "displayName": "攻击_普通攻击2",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_普通攻击3",
+      "displayName": "攻击_普通攻击3",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_普通攻击4",
+      "displayName": "攻击_普通攻击4",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_普通攻击4_落雷",
+      "displayName": "攻击_普通攻击4_落雷",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_特殊技",
+      "displayName": "攻击_特殊技",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_特殊技_快速",
+      "displayName": "攻击_特殊技_快速",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_强化特殊技",
+      "displayName": "攻击_强化特殊技",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_强化特殊技_快速",
+      "displayName": "攻击_强化特殊技_快速",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_终极技",
+      "displayName": "攻击_终极技",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "安比_闪避_前",
+      "displayName": "安比_闪避_前",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "安比_闪避_后",
+      "displayName": "安比_闪避_后",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_冲刺普攻",
+      "displayName": "攻击_冲刺普攻",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "受击_轻_前",
+      "displayName": "受击_轻_前",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "受击_重",
+      "displayName": "受击_重",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "切人_切入",
+      "displayName": "切人_切入",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "切人_切出",
+      "displayName": "切人_切出",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    }
+  ],
+  "resolved": {
+    "roleName": "安比",
+    "roleId": 1001,
+    "templatePath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比.character-template.json",
+    "roleFolder": "Assets/Resources/Serializations/ScriptableObjects/Action/安比",
+    "characterAssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比.asset",
+    "hitReactionAssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比受击.asset",
+    "actions": [
+      {
+        "key": "基础_待机",
+        "actionId": 10000,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_待机.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_慢跑起步",
+        "actionId": 10001,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_慢跑起步.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_慢跑",
+        "actionId": 10002,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_慢跑.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_冲刺起步",
+        "actionId": 10003,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_冲刺起步.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_冲刺",
+        "actionId": 10004,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_冲刺.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_停止",
+        "actionId": 10005,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_停止.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_急停转向",
+        "actionId": 10006,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_急停转向.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "攻击_普通攻击1",
+        "actionId": 10007,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击1.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_普通攻击2",
+        "actionId": 10008,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击2.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_普通攻击3",
+        "actionId": 10009,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击3.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_普通攻击4",
+        "actionId": 10010,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_普通攻击4_落雷",
+        "actionId": 10011,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4_落雷.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_特殊技",
+        "actionId": 10012,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_特殊技.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_特殊技_快速",
+        "actionId": 10013,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_特殊技_快速.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_强化特殊技",
+        "actionId": 10014,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_强化特殊技.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_强化特殊技_快速",
+        "actionId": 10015,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_强化特殊技_快速.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_终极技",
+        "actionId": 10016,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_终极技.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "安比_闪避_前",
+        "actionId": 10017,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_前闪.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "安比_闪避_后",
+        "actionId": 10018,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_后闪.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_冲刺普攻",
+        "actionId": 10019,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_冲刺普攻.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "受击_轻_前",
+        "actionId": 10020,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_受击_轻_前.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "受击_重",
+        "actionId": 10021,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_受击_重.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "切人_切入",
+        "actionId": 10022,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_切人_切入.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "切人_切出",
+        "actionId": 10023,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_切人_切出.asset",
+        "assetType": "SkillConfigAsset"
+      }
+    ],
+    "routeSetAssetPaths": [
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_0_0_慢跑起步.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_0_1_慢跑起步停止.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_0_2_慢跑停止.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_0_3_冲刺停止.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_1_0_一段攻击指令.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_1_1_一段攻击指令_后摇.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_2_0_后摇移动.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_2_1_冲刺衔接.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_3_0_默认闪避.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_4_0_冲刺攻击.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_6_切人_0_立即切出.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_6_切人_1_等待切出.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_6_切人_2_立即切入.asset"
+    ],
+    "lastSyncedUtc": "2026-05-10T10:14:24.577324+00:00"
+  }
+}

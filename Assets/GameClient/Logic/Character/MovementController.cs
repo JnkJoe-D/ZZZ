@@ -2,7 +2,7 @@ using System.Diagnostics;
 using cfg;
 using Game.AI;
 
-using SkillEditor;
+using ATEditor;
 using UnityEngine;
 
 namespace Game.Logic.Character

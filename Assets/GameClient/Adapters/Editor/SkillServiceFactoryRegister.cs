@@ -1,25 +1,25 @@
 using UnityEditor;
-using SkillEditor.Editor;
+using ATEditor.Editor;
 using UnityEngine;
 
 namespace Game.Adapters.Editor
 {
     /// <summary>
-    /// 注入业务工厂到技能编辑器中
-    /// 存在于 Editor 程序集，可以隐式引用 Runtime 程序集中的游戏层与编辑器层。
-    /// 这样就实现了两端物理隔离而不发生程序集编译错误。
+    /// 娉ㄥ叆涓氬姟宸ュ巶鍒版妧鑳界紪杈戝櫒涓?
+    /// 瀛樺湪浜?Editor 绋嬪簭闆嗭紝鍙互闅愬紡寮曠敤 Runtime 绋嬪簭闆嗕腑鐨勬父鎴忓眰涓庣紪杈戝櫒灞傘€?
+    /// 杩欐牱灏卞疄鐜颁簡涓ょ鐗╃悊闅旂鑰屼笉鍙戠敓绋嬪簭闆嗙紪璇戦敊璇€?
     /// </summary>
     public static class SkillServiceFactoryRegister
     {
         [InitializeOnLoadMethod]
         private static void RegisterToSkillEditor()
         {
-            // 将业务层的 Service Factory 委托给核心编辑器
-            SkillEditorGlobalSettings.DefaultServiceFactoryCreator = owner => SkillServiceFactory.ProvideService;
+            // 灏嗕笟鍔″眰鐨?Service Factory 濮旀墭缁欐牳蹇冪紪杈戝櫒
+            ATEditorGlobalSettings.DefaultServiceFactoryCreator = owner => SkillServiceFactory.ProvideService;
             
-            // 注册编辑器窗口关停后置清理动作（防丢去重）
-            SkillEditorGlobalSettings.OnEditorDispose -= SkillServiceFactory.ClearAllStaticCaches;
-            SkillEditorGlobalSettings.OnEditorDispose += SkillServiceFactory.ClearAllStaticCaches;
+            // 娉ㄥ唽缂栬緫鍣ㄧ獥鍙ｅ叧鍋滃悗缃竻鐞嗗姩浣滐紙闃蹭涪鍘婚噸锛?
+            ATEditorGlobalSettings.OnEditorDispose -= SkillServiceFactory.ClearAllStaticCaches;
+            ATEditorGlobalSettings.OnEditorDispose += SkillServiceFactory.ClearAllStaticCaches;
         }
     }
 }

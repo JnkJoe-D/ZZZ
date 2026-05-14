@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30efc83f55cddf4e95a3a907679c0b3, type: 3}
+  m_Name: "\u661F\u89C1\u96C5_\u57FA\u7840_\u51B2\u523A\u8D77\u6B65"
+  m_EditorClassIdentifier: 
+  ID: 10200
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: de9eaa1c54627fb4c9a9b8bc7d2ee1c2, type: 3}
+  TurnMode: 0
+  EnterState: 20
+  CompleteMode: 20
+  CompleteAction: {fileID: 11400000, guid: 5c52cf2bfd17daa4bab9cf8615e0a250, type: 2}
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: 798328310cb348339e278a077965017e, type: 2}
+  - {fileID: 11400000, guid: e69d643be28f4431972836242bcc6306, type: 2}
+  - {fileID: 11400000, guid: ea7a120125d6de84693fec485332885d, type: 2}
+  - {fileID: 11400000, guid: 01e32f8b52213d644a5ac6ca88ff9fbc, type: 2}
+  FaceToSpeed: 10
+  PlaybackSpeed: 1
+  references:
+    version: 2
+    RefIds: []

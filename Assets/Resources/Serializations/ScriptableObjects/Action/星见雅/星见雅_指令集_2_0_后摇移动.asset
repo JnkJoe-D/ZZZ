@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: "\u661f\u89c1\u96c5_\u6307\u4ee4\u96c6_2_0_\u540e\u6447\u79fb\u52a8"
+  m_EditorClassIdentifier: 
+  Routes:
+  - Category: 0
+    RequiredWindowTag: BackSwing
+    TriggerMode: 1
+    ConditionCheckTiming: 20
+    RequiredType: 10
+    RequiredPhase: 0
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 5f72c8b10ad188f41a1161aab0a6ff50, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: BackSwing
+    TriggerMode: 1
+    ConditionCheckTiming: 0
+    RequiredType: 10
+    RequiredPhase: 10
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 5f72c8b10ad188f41a1161aab0a6ff50, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: BackSwing
+    TriggerMode: 1
+    ConditionCheckTiming: 0
+    RequiredType: 10
+    RequiredPhase: 30
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 5f72c8b10ad188f41a1161aab0a6ff50, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  references:
+    version: 2
+    RefIds: []

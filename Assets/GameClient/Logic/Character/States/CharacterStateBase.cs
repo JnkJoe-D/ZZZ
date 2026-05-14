@@ -34,4 +34,24 @@ namespace Game.Logic.Character
 
         public virtual void OnDestroy() { }
     }
+
+    public sealed class CharacterSwitchState : CharacterStateBase
+    {
+        private IInputCommandHandler _inputHandler;
+        public override IInputCommandHandler InputHandler => _inputHandler;
+
+        public override void OnInit(FSMSystem<CharacterEntity> fsm)
+        {
+            base.OnInit(fsm);
+            _inputHandler = new ComboInputCommandHandler(Entity);
+        }
+
+        public override void OnExit()
+        {
+            if (Entity is RoleEntity roleEntity)
+            {
+                CharcterManager.Instance?.CancelPreparedSwitch(roleEntity);
+            }
+        }
+    }
 }

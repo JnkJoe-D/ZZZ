@@ -1,7 +1,4 @@
 using Game.FSM;
-using Game.Logic.Action.Config;
-using SkillEditor;
-using UnityEngine;
 
 namespace Game.Logic.Character
 {
@@ -16,20 +13,5 @@ namespace Game.Logic.Character
             _inputHandler = new ComboInputCommandHandler(Entity);
         }
 
-        public override void OnEnter()
-        {
-            if (Entity.RuntimeData != null)
-            {
-                Entity.RuntimeData.IsBasicAttackHold = false;
-            }
-        }
-
-        public override void OnUpdate(float deltaTime)
-        {
-        }
-
-        public override void OnExit()
-        {
-        }
     }
 }

@@ -1,5 +1,5 @@
 using Game.Logic.Action.Config;
-using SkillEditor;
+using ATEditor;
 using UnityEngine;
 
 namespace Game.Logic.Character
@@ -34,38 +34,34 @@ namespace Game.Logic.Character
             if (config == null || config.TimelineAsset == null)
             {
                 Debug.LogWarning("ActionPlayer: Tried to play a null config or Missing TimelineAsset.");
-                IsPlaying = false;
                 return null;
             }
 
-            // 清理旧 Runner 监听与状态
+            // 先验证 Timeline 可用性，避免在确认前就清理旧动作
+            var timeline = Game.Logic.Action.ActionManager.Instance.GetOrLoadTimeline(config);
+            if (timeline == null)
+            {
+                Debug.LogWarning($"[ActionPlayer] Timeline cache miss for action '{config.name}'. Skipping — keeping current action alive.");
+                return null;
+            }
+
+            // Timeline 验证通过，此时才安全地清理旧 Runner
             StopAction();
 
             FaceTo(config);
 
-            // 从管理器索要新 Runner, Context, Timeline
-            var timeline = Game.Logic.Action.ActionManager.Instance.GetOrLoadTimeline(config);
-            if (timeline != null)
-            {
-                _runner = Game.Logic.Action.ActionManager.Instance.GetRunner(_entity);
-                _context = Game.Logic.Action.ActionManager.Instance.GetContext(_entity);
-                
-                // _runner.OnEnd -= HandleRunnerEnd;
-                // _runner.OnEnd += HandleRunnerEnd;
+            // 从管理器索要新 Runner, Context
+            _runner = Game.Logic.Action.ActionManager.Instance.GetRunner(_entity);
+            _context = Game.Logic.Action.ActionManager.Instance.GetContext(_entity);
 
-                // 默认恢复全局速度
-                _context.GlobalPlaySpeed = 1.0f;
-                
-                _runner.Play(timeline, _context);
-                CurrentAction = config;
-                IsPlaying = true;
-                ActionStartTime = Time.time;
-            }
-            else
-            {
-                Debug.LogWarning($"[ActionPlayer] Timeline cache miss for action '{config.name}'. Ensure preload completed before playback.");
-                IsPlaying = false;
-            }
+            // 默认恢复全局速度
+            _context.GlobalPlaySpeed = 1.0f;
+
+            _runner.Play(timeline, _context);
+            CurrentAction = config;
+            IsPlaying = true;
+            ActionStartTime = Time.time;
+
             return _runner;
         }
 
@@ -74,6 +70,10 @@ namespace Game.Logic.Character
             if (IsPlaying && _runner != null)
             {
                 _runner.Tick(deltaTime);
+                if (_runner.CurrentState == SkillRunner.State.None)
+                {
+                    IsPlaying = false;
+                }
             }
         }
 

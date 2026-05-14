@@ -1,0 +1,53 @@
+{
+  "version": 2,
+  "character": {
+    "roleName": "__ROLE_NAME__",
+    "prefabPath": "Assets/Resources/Prefab/Role/__ROLE_NAME__/__ROLE_NAME__.prefab",
+    "actionRootKey": "基础_待机",
+    "autoAllocateRoleId": true
+  },
+  "hitReaction": {
+    "enabled": true,
+    "lightKey": "受击_轻",
+    "heavyKey": "受击_重",
+    "knockAwayKey": null
+  },
+  "params": {
+    "normalAttackCount": 4,
+    "hasDashAttack": true,
+    "hasSpecialDashAttack": false,
+    "hasEvadeForward": true,
+    "hasEvadeBackward": true,
+    "hasHeavyHit": true
+  },
+  "actions": [
+    {
+      "key": "基础_待机",
+      "displayName": "基础_待机",
+      "assetType": "LocomotionConfigAsset",
+      "group": "base",
+      "preload": true,
+      "enterState": "Idle",
+      "completeMode": "Default"
+    },
+    {
+      "key": "普通攻击1",
+      "displayName": "普通攻击1",
+      "assetType": "SkillConfigAsset",
+      "group": "normal_attack",
+      "preload": false,
+      "category": "LightAttack",
+      "turnMode": "EnemyPriorityThenInput"
+    }
+  ],
+  "resolved": {
+    "roleName": "__ROLE_NAME__",
+    "roleId": null,
+    "templatePath": null,
+    "roleFolder": null,
+    "characterAssetPath": null,
+    "hitReactionAssetPath": null,
+    "actions": [],
+    "lastSyncedUtc": null
+  }
+}

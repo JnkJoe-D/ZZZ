@@ -1,6 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
-
+using Game.Logic.Character;
 namespace Game.Input
 {
     /// <summary>
@@ -11,31 +12,42 @@ namespace Game.Input
     {
         public event Action OnSwitchNext;
         public event Action OnSwitchPre;
+
         public event Action OnMoveStarted;
         public event Action OnMovePerformed;
         public event Action OnMoveCanceled;
         public event Action OnMoveHeld;
-        public event Action OnMoveHeldCanceled;
-        // public event Action OnEvadeFrontStarted;
+
         public event Action OnEvadeStarted;
         public event Action OnEvadePerformed;
         public event Action OnEvadeCanceled;
         public event Action OnEvadeHeld;
+
         public event Action OnBasicAttackStarted;
+        public event Action OnBasicAttackPerformed;
         public event Action OnBasicAttackCanceled;
-        public event Action OnBasicAttackHoldStart;
         public event Action OnBasicAttackHeld;
-        public event Action OnBasicAttackHoldCancel;
-        public event Action OnSpecialAttack;
-        public event Action OnSpecialAttackHoldStart;
-        public event Action OnSpecialAttackHold;
-        public event Action OnSpecialAttackHoldCancel;
-        public event Action OnUltimate;
-        public event Action OnGameplayInteract;
+
+        public event Action OnSpecialAttackStarted;
+        public event Action OnSpecialAttackPerformed;
+        public event Action OnSpecialAttackCanceled;
+        public event Action OnSpecialAttackHeld;
+
+        public event Action OnUltimateStarted;
+
+        public event Action OnGameplayInteractStarted;
 
         private PlayerControl _input;
         private Vector2 _currentMoveInput;
         private Vector2 _lastMoveInput;
+        private readonly HashSet<int> _heldActions = new();
+
+        public bool IsHeld(int actionKey) => _heldActions.Contains(actionKey);
+        public void SetHeld(int actionKey, bool held)
+        {
+            if (held) _heldActions.Add(actionKey);
+            else _heldActions.Remove(actionKey);
+        }
 
         private void Awake()
         {
@@ -44,26 +56,58 @@ namespace Game.Input
             // 订阅瞬发事件
             _input.GamePlay.Move.started += _ => OnMoveStarted?.Invoke();
             _input.GamePlay.Move.performed += _ => OnMovePerformed?.Invoke();
-            _input.GamePlay.Move.canceled += _ => OnMoveCanceled?.Invoke();
-            _input.GamePlay.MoveHeld.performed += _ => OnMoveHeld?.Invoke();
-            _input.GamePlay.MoveHeld.canceled += _ => OnMoveHeldCanceled?.Invoke();
-
-            // _input.GamePlay.EvadeFront.started += _ => OnEvadeFrontStarted?.Invoke();
+            _input.GamePlay.Move.canceled += _ =>
+            {
+                OnMoveCanceled?.Invoke();
+                _heldActions.Remove((int)InputCommand.Move);
+            };
+            _input.GamePlay.MoveHeld.performed += _ =>
+            {
+                OnMoveHeld?.Invoke();
+                _heldActions.Add((int)InputCommand.Move);
+            };
+            // 闪避
             _input.GamePlay.Evade.started += _ => OnEvadeStarted?.Invoke();
             _input.GamePlay.Evade.performed += _ => OnEvadePerformed?.Invoke();
-            _input.GamePlay.Evade.canceled += _ => OnEvadeCanceled?.Invoke();
-            _input.GamePlay.EvadeHeld.performed += _ => OnEvadeHeld?.Invoke();
+            _input.GamePlay.Evade.canceled += _ =>
+            {
+                OnEvadeCanceled?.Invoke();
+                _heldActions.Remove((int)InputCommand.Evade); 
+            };
+            _input.GamePlay.EvadeHeld.performed += _ =>
+            {
+                OnEvadeHeld?.Invoke();
+                _heldActions.Add((int)InputCommand.Evade);
+            };
+            // 普通攻击
             _input.GamePlay.LightAttack.started += _ => OnBasicAttackStarted?.Invoke();
-            _input.GamePlay.LightAttack.canceled += _ => OnBasicAttackCanceled?.Invoke();
-            _input.GamePlay.LightAttackHeld.started += _ => OnBasicAttackHoldStart?.Invoke();
-            _input.GamePlay.LightAttackHeld.performed += _ => OnBasicAttackHeld?.Invoke();
-            _input.GamePlay.LightAttackHeld.canceled += _ => OnBasicAttackHoldCancel?.Invoke();
-            _input.GamePlay.SpecialSkill.started += _ => OnSpecialAttack?.Invoke();
-            _input.GamePlay.SpecialSkillHeld.started += _ => OnSpecialAttackHold?.Invoke();
-            _input.GamePlay.SpecialSkillHeld.performed += _ => OnSpecialAttackHoldStart?.Invoke();
-            _input.GamePlay.SpecialSkillHeld.canceled += _ => OnSpecialAttackHoldCancel?.Invoke();
-            _input.GamePlay.Ultimate.started += _ => OnUltimate?.Invoke();
-            _input.GamePlay.Interact.started += _ => OnGameplayInteract?.Invoke();
+            _input.GamePlay.LightAttack.performed += _ => OnBasicAttackPerformed?.Invoke();
+            _input.GamePlay.LightAttack.canceled += _ =>
+            {
+                OnBasicAttackCanceled?.Invoke();
+                _heldActions.Remove((int)InputCommand.BasicAttack);
+            };
+            _input.GamePlay.LightAttackHeld.performed += _ =>
+            {
+                OnBasicAttackHeld?.Invoke();
+                _heldActions.Add((int)InputCommand.BasicAttack);
+            };
+            // 特殊技
+            _input.GamePlay.SpecialSkill.started += _ => OnSpecialAttackStarted?.Invoke();
+            _input.GamePlay.SpecialSkill.performed += _ => OnSpecialAttackPerformed?.Invoke();
+            _input.GamePlay.SpecialSkill.canceled += _ =>
+            {
+                OnSpecialAttackCanceled?.Invoke();
+                _heldActions.Remove((int)InputCommand.SpecialAttack);
+            };
+            _input.GamePlay.SpecialSkillHeld.performed += _ =>
+            {
+                OnSpecialAttackHeld?.Invoke();
+                _heldActions.Add((int)InputCommand.SpecialAttack);
+            };
+            // 
+            _input.GamePlay.Ultimate.started += _ => OnUltimateStarted?.Invoke();
+            _input.GamePlay.Interact.started += _ => OnGameplayInteractStarted?.Invoke();
             _input.GamePlay.SwitchNext.started += _ => OnSwitchNext?.Invoke();
             _input.GamePlay.SwitchPre.started += _ => OnSwitchPre?.Invoke();
 

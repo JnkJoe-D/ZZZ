@@ -20,7 +20,6 @@ namespace Game.Logic.Character
         /// <summary>
         /// 基础攻击是否处于按住蓄力状态。
         /// </summary>
-        public bool IsBasicAttackHold { get; set; }
 
         /// <summary>
         /// 当前正在执行或即将执行的动作资产。
@@ -32,6 +31,7 @@ namespace Game.Logic.Character
         /// 移动输入是否处于“短输入”判定范围内（由 JogState 维护）。
         /// </summary>
         public bool IsShortMoveInput { get; set; }
+
 
         // ── 全链路追踪字段 (用于调试与回溯) ──
         public CommandRouteSource LastRouteSource { get; private set; }
@@ -147,7 +147,6 @@ namespace Game.Logic.Character
             LastResolvedCommandPhase = CommandPhase.Started;
             LastResolvedActionId = -1;
             TargetGroundSubState = ActionState.Idle;
-            IsBasicAttackHold = false;
             IsShortMoveInput = false;
         }
     }

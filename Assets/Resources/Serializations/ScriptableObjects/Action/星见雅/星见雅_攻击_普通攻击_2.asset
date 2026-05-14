@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
+  m_Name: "\u661F\u89C1\u96C5_\u653B\u51FB_\u666E\u901A\u653B\u51FB_2"
+  m_EditorClassIdentifier: 
+  ID: 10209
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 1cad1a2548180854abe9e9a7e864cf62, type: 3}
+  TurnMode: 2
+  EnterState: 40
+  CompleteMode: 20
+  CompleteAction: {fileID: 11400000, guid: e3a9c03227a8fa74c80985a0510beec8, type: 2}
+  Routes:
+  - Category: 0
+    RequiredWindowTag: Execute1
+    TriggerMode: 1
+    ConditionCheckTiming: 0
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 0
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: af671d476d00b744584ec34b607e8996, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: Buffer1
+    TriggerMode: 0
+    ConditionCheckTiming: 0
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 0
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: af671d476d00b744584ec34b607e8996, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  RouteSets:
+  - {fileID: 11400000, guid: e69d643be28f4431972836242bcc6306, type: 2}
+  - {fileID: 11400000, guid: 22d0fc9289794c44953011472885221e, type: 2}
+  - {fileID: 11400000, guid: 0ae99841e2fe44a48bbd2c6042a90734, type: 2}
+  FaceToSpeed: 10
+  PlaybackSpeed: 1
+  Cooldown: 0.2
+  MPCost: 0
+  CastRange: 2
+  CanBeInterrupted: 1
+  CinematicCameraPrefab: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []

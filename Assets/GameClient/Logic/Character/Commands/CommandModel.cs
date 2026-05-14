@@ -9,9 +9,10 @@ namespace Game.Logic.Character
         BasicAttack = 20,
         SpecialAttack = 30,
         Ultimate = 40,
-        Evade = 50
+        Evade = 50,
+        Switch = 60,
+        Interact = 70,
     }
-
     public enum ConditionCommand
     {
         None = 0,

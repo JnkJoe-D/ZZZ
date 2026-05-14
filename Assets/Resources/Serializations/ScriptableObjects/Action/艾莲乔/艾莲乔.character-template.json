@@ -1,0 +1,320 @@
+{
+  "version": 2,
+  "character": {
+    "roleName": "艾莲乔",
+    "prefabPath": "Assets/Resources/Prefab/Role/Ellen/Ellen.prefab",
+    "actionRootKey": "基础_待机",
+    "autoAllocateRoleId": true
+  },
+  "hitReaction": {
+    "enabled": true,
+    "lightKey": null,
+    "heavyKey": null,
+    "knockAwayKey": null
+  },
+  "params": {},
+  "actions": [
+    {
+      "key": "基础_待机",
+      "displayName": "基础_待机",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_慢跑起步",
+      "displayName": "基础_慢跑起步",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_慢跑",
+      "displayName": "基础_慢跑",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_冲刺",
+      "displayName": "基础_冲刺",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_特殊冲刺",
+      "displayName": "基础_特殊冲刺",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_慢跑停止",
+      "displayName": "基础_慢跑停止",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_冲刺停止",
+      "displayName": "基础_冲刺停止",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_慢跑起步停止",
+      "displayName": "基础_慢跑起步停止",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_特殊冲刺起步_前",
+      "displayName": "基础_特殊冲刺起步_前",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "基础_特殊冲刺起步_后",
+      "displayName": "基础_特殊冲刺起步_后",
+      "assetType": "LocomotionConfigAsset",
+      "group": "locomotion",
+      "preload": true
+    },
+    {
+      "key": "攻击_普通攻击_1",
+      "displayName": "攻击_普通攻击_1",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": true
+    },
+    {
+      "key": "攻击_普通攻击_2",
+      "displayName": "攻击_普通攻击_2",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": true
+    },
+    {
+      "key": "攻击_普通攻击_3",
+      "displayName": "攻击_普通攻击_3",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": true
+    },
+    {
+      "key": "攻击_普通攻击_3_霜冻",
+      "displayName": "攻击_普通攻击_3_霜冻",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": true
+    },
+    {
+      "key": "闪避_前_1",
+      "displayName": "闪避_前_1",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": true
+    },
+    {
+      "key": "闪避_后_1",
+      "displayName": "闪避_后_1",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": true
+    },
+    {
+      "key": "攻击_冲刺攻击",
+      "displayName": "攻击_冲刺攻击",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": true
+    },
+    {
+      "key": "攻击_特殊冲刺攻击_1",
+      "displayName": "攻击_特殊冲刺攻击_1",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": true
+    },
+    {
+      "key": "攻击_特殊冲刺攻击_2",
+      "displayName": "攻击_特殊冲刺攻击_2",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": true
+    },
+    {
+      "key": "切人_切入",
+      "displayName": "切人_切入",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "切人_切出",
+      "displayName": "切人_切出",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    }
+  ],
+  "resolved": {
+    "roleName": "艾莲乔",
+    "roleId": 1003,
+    "templatePath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔.character-template.json",
+    "roleFolder": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔",
+    "characterAssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔.asset",
+    "hitReactionAssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_受击配置.asset",
+    "actions": [
+      {
+        "key": "基础_待机",
+        "actionId": 10400,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_待机.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_慢跑起步",
+        "actionId": 10401,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_慢跑起步.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_慢跑",
+        "actionId": 10402,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_慢跑.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_冲刺",
+        "actionId": 10403,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_冲刺.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_特殊冲刺",
+        "actionId": 10404,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_特殊冲刺.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_慢跑停止",
+        "actionId": 10405,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_慢跑停止.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_冲刺停止",
+        "actionId": 10406,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_冲刺停止.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_慢跑起步停止",
+        "actionId": 10407,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_慢跑起步停止.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_特殊冲刺起步_前",
+        "actionId": 10408,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_特殊冲刺起步_前.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "基础_特殊冲刺起步_后",
+        "actionId": 10409,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_基础_特殊冲刺起步_后.asset",
+        "assetType": "LocomotionConfigAsset"
+      },
+      {
+        "key": "攻击_普通攻击_1",
+        "actionId": 10410,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_攻击_普通攻击_1.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_普通攻击_2",
+        "actionId": 10411,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_攻击_普通攻击_2.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_普通攻击_3",
+        "actionId": 10412,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_攻击_普通攻击_3.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_普通攻击_3_霜冻",
+        "actionId": 10413,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_攻击_普通攻击_3_霜冻.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "闪避_前_1",
+        "actionId": 10414,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_闪避_前_1.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "闪避_后_1",
+        "actionId": 10415,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_闪避_后_1.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_冲刺攻击",
+        "actionId": 10416,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_攻击_冲刺攻击.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_特殊冲刺攻击_1",
+        "actionId": 10417,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_攻击_特殊冲刺攻击_1.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_特殊冲刺攻击_2",
+        "actionId": 10418,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_攻击_特殊冲刺攻击_2.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "切人_切入",
+        "actionId": 10419,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_切人_切入.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "切人_切出",
+        "actionId": 10420,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_切人_切出.asset",
+        "assetType": "SkillConfigAsset"
+      }
+    ],
+    "routeSetAssetPaths": [
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_0_0_慢跑起步.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_0_1_慢跑起步停止.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_0_2_慢跑停止.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_0_3_冲刺停止.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_1_0_一段攻击指令.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_1_1_一段攻击指令_后摇.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_2_0_后摇移动.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_2_1_冲刺衔接.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_3_0_默认闪避.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_3_1_特殊冲刺起步_前.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_3_2_特殊冲刺起步_后.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_4_0_冲刺攻击.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_4_1_特殊冲刺攻击.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_6_切人_0_立即切出.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_6_切人_1_等待切出.asset",
+      "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_6_切人_2_立即切入.asset"
+    ],
+    "lastSyncedUtc": "2026-05-10T09:57:13.437270+00:00"
+  }
+}

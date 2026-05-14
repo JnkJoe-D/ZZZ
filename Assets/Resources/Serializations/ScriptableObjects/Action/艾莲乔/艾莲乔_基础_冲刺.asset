@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f30efc83f55cddf4e95a3a907679c0b3, type: 3}
   m_Name: "\u827E\u83B2\u4E54_\u57FA\u7840_\u51B2\u523A"
   m_EditorClassIdentifier: 
-  ID: 1214
+  ID: 10403
   Name: 
   TimelineAsset: {fileID: 4900000, guid: bac0828d2da8c73418c4f07fd17e05cc, type: 3}
   TurnMode: 0
@@ -21,10 +21,12 @@ MonoBehaviour:
   CompleteAction: {fileID: 0}
   Routes:
   - Category: 0
-    RequiredType: 10
-    RequiredPhase: 20
     RequiredWindowTag: Execute1
     TriggerMode: 1
+    ConditionCheckTiming: 20
+    EventType: 0
+    RequiredType: 10
+    RequiredPhase: 20
     Modifier: 20
     ModifierRequiredType: 0
     ModifierRequiredPhase: 0
@@ -34,9 +36,12 @@ MonoBehaviour:
     ExtraConditions: []
     Priority: 0
   RouteSets:
+  - {fileID: 11400000, guid: 69f87d310ac1ce240a313d249023a50a, type: 2}
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: 8db2c3e8d1e9f054583fb1496a8633a5, type: 2}
   - {fileID: 11400000, guid: 5d4a502ea31a12241bc5607fe2c03112, type: 2}
+  - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
+  - {fileID: 11400000, guid: 583f82f198484fa4db2e6e5bb6a36e69, type: 2}
   FaceToSpeed: 10
   PlaybackSpeed: 0.8
   references:

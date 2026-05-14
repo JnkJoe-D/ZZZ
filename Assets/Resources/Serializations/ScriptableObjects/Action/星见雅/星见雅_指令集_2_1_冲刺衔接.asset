@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: "\u661f\u89c1\u96c5_\u6307\u4ee4\u96c6_2_1_\u51b2\u523a\u8854\u63a5"
+  m_EditorClassIdentifier: 
+  Routes:
+  - Category: 0
+    RequiredType: 10
+    RequiredPhase: 0
+    RequiredWindowTag: EvadeToDash
+    TriggerMode: 1
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 5c52cf2bfd17daa4bab9cf8615e0a250, type: 2}
+    ExtraConditions: []
+    Priority: 1
+  - Category: 0
+    RequiredType: 10
+    RequiredPhase: 10
+    RequiredWindowTag: EvadeToDash
+    TriggerMode: 1
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 5c52cf2bfd17daa4bab9cf8615e0a250, type: 2}
+    ExtraConditions: []
+    Priority: 1
+  - Category: 0
+    RequiredType: 10
+    RequiredPhase: 30
+    RequiredWindowTag: EvadeToDash
+    TriggerMode: 1
+    Modifier: 0
+    ModifierRequiredType: 0
+    ModifierRequiredPhase: 0
+    ModifierConditions: 
+    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: 5c52cf2bfd17daa4bab9cf8615e0a250, type: 2}
+    ExtraConditions: []
+    Priority: 1
+  references:
+    version: 2
+    RefIds: []

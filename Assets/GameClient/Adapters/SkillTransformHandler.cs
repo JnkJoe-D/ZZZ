@@ -1,5 +1,5 @@
 using Game.Logic.Character;
-using SkillEditor;
+using ATEditor;
 using UnityEngine;
 
 namespace Game.Adapters

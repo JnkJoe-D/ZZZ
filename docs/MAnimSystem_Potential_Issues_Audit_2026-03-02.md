@@ -1,4 +1,4 @@
-﻿# MAnimSystem 潜在问题全面审计报告（静态代码审计）
+# MAnimSystem 潜在问题全面审计报告（静态代码审计）
 
 - 审计日期：2026-03-02
 - 审计范围：
@@ -65,7 +65,7 @@
 
 - 代码位置：
   - `Assets/GameClient/MAnimSystem/AnimComponent.cs:439-449`
-  - 调用链：`Assets/GameClient/SkillEditor/Runtime/Playback/Core/ProcessContext.cs:103,111,129,134`
+  - 调用链：`Assets/GameClient/ATEditor/Runtime/Playback/Core/ProcessContext.cs:103,111,129,134`
 - 证据：
   - `GetLayerMask/SetLayerMask` 仅校验 `layer < 0`，未校验 `layer >= _layers.Count`
   - `ProcessContext.PushLayerMask` 在播放前就会读取原 mask，层可能尚未创建

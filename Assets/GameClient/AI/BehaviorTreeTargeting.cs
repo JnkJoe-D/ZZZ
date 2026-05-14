@@ -106,7 +106,8 @@ namespace Game.AI
         /// <summary>
         /// 当前已注册且有效的角色集合。
         /// </summary>
-        public static IEnumerable<CharacterEntity> Characters => characters.Where(character => character != null);
+        public static IEnumerable<CharacterEntity> Characters =>
+            characters.Where(character => character != null && character.gameObject.activeInHierarchy);
 
         /// <summary>
         /// 注册一个角色到索敌系统。

@@ -4,21 +4,32 @@ using Game.FSM;
 using Game.Input;
 using Game.Logic.Character.Motion;
 using Game.MAnimSystem;
-using SkillEditor;
+using ATEditor;
 using UnityEngine;
 
 namespace Game.Logic.Character
 {
     public abstract class CharacterEntity : MonoBehaviour, ISkillEventHandler
     {
-        private MAnimSystem.AnimComponent _animComponent;
-        public Config.CharacterConfigAsset Config { get; private set; }
+        private AnimComponent _animComponent;
+        private CharacterInputEventAdapter _inputEventAdapter;
+        private bool _isInputBound;
+        private IInputProvider _boundInputProvider;
+        private IInputProvider _inputProvider;
+        private TargetFinder _targetFinder;
+        private ICameraController _cameraController;
+        private CharacterTeamContext _teamContext;
+        private readonly Dictionary<Renderer, bool> _rendererVisibleStates = new();
+        private readonly Dictionary<Collider, bool> _colliderEnabledStates = new();
 
-        public IInputProvider InputProvider { get; protected set; }
+        public virtual IInputProvider InputProvider => _inputProvider;
+        public virtual TargetFinder TargetFinder => _targetFinder;
+        public virtual ICameraController CameraController => _cameraController;
+
+        public Config.CharacterConfigAsset Config { get; private set; }
         public IMovementController MovementController { get; protected set; }
-        public ICameraController CameraController { get; protected set; }
         public HitReactionModule HitReactionModule { get; protected set; }
-        public TargetFinder TargetFinder { get; protected set; }
+
 
         public FSMSystem<CharacterEntity> StateMachine { get; private set; }
         public FSMSystem<CharacterEntity> Machine => StateMachine;
@@ -29,6 +40,9 @@ namespace Game.Logic.Character
         public SkillMotionWindowHandler MotionWindowHandler { get; private set; }
         public CharacterRuntimeData RuntimeData { get; private set; }
 
+        public bool IsRuntimeInitialized { get; private set; }
+        public bool IsControlActive { get; private set; }
+        public bool IsPresentationVisible { get; private set; } = true;
 
         public event System.Action<string> OnSkillTimelineEvent;
 
@@ -38,7 +52,8 @@ namespace Game.Logic.Character
         private IInputCommandHandler CurrentInputHandler =>
             (StateMachine?.CurrentState as CharacterStateBase)?.InputHandler ?? CharacterStateBase.InputHandlerStatic;
 
-        private CharacterInputEventAdapter _inputEventAdapter;
+        protected virtual bool AutoBindInputOnStart => true;
+        protected virtual bool AutoAssignCameraOnStart => false;
 
         protected virtual void Awake()
         {
@@ -52,6 +67,7 @@ namespace Game.Logic.Character
             MotionWindowHandler = new SkillMotionWindowHandler(this);
             RuntimeData = new CharacterRuntimeData();
             _inputEventAdapter = new CharacterInputEventAdapter(() => CurrentInputHandler);
+            CachePresentationState();
         }
 
         protected abstract void InitRequiredComponents();
@@ -65,43 +81,130 @@ namespace Game.Logic.Character
             HitReactionModule?.Init(this);
         }
 
-        private void Start()
+        public void AssignTeamContext(CharacterTeamContext teamContext)
         {
-            if (Config == null)
+            IInputProvider previousProvider = InputProvider;
+            bool wasInputBound = _isInputBound;
+            if (wasInputBound)
+            {
+                UnbindInput();
+            }
+
+            _teamContext = teamContext;
+
+            IInputProvider currentProvider = InputProvider;
+            if (!ReferenceEquals(previousProvider, currentProvider))
+            {
+                DisableReplacedInputProvider(previousProvider, currentProvider);
+            }
+
+            if (wasInputBound)
+            {
+                BindInput();
+            }
+        }
+
+        public void EnsureRuntimeInitialized()
+        {
+            if (IsRuntimeInitialized || Config == null)
             {
                 return;
             }
 
-            if (StateMachine == null)
+            FSMManager fsmMgr = FSMManager.Instance;
+            if (fsmMgr == null)
             {
-                FSMManager fsmMgr = FSMManager.Instance;
-                if (fsmMgr != null)
-                {
-                    StateMachine = fsmMgr.CreateFSM<CharacterEntity>(this);
-                    StateMachine.AddState(new CharacterGroundState());
-                    StateMachine.AddState(new CharacterSkillState());
-                    StateMachine.AddState(new CharacterEvadeState());
-                    StateMachine.AddState(new CharacterHitStunState());
+                return;
+            }
 
-                    // 初始化动作根节点。如果配置了 ActionRoot，则播放它（它会自动带动状态机进入 EnterState）。
-                    // 如果未配置，则回退到原有的硬编码进入 GroundState。
-                    if (Config.ActionRoot != null)
-                    {
-                        ActionController.PlayAction(Config.ActionRoot);
-                    }
-                    else
-                    {
-                        StateMachine.ChangeState<CharacterGroundState>();
-                    }
+            StateMachine = fsmMgr.CreateFSM<CharacterEntity>(this);
+            StateMachine.AddState(new CharacterGroundState());
+            StateMachine.AddState(new CharacterSkillState());
+            StateMachine.AddState(new CharacterEvadeState());
+            StateMachine.AddState(new CharacterHitStunState());
+            StateMachine.AddState(new CharacterSwitchState());
+
+            if (Config.ActionRoot != null)
+            {
+                ActionController.PlayAction(Config.ActionRoot);
+            }
+            else
+            {
+                StateMachine.ChangeState<CharacterGroundState>();
+            }
+
+            IsRuntimeInitialized = true;
+        }
+
+        public void SetControlActive(bool active, bool assignCameraTarget = true)
+        {
+            if (active)
+            {
+                ActivateControl(assignCameraTarget);
+            }
+            else
+            {
+                DeactivateControl();
+            }
+        }
+
+        public void SetCameraRigActive(bool active)
+        {
+            CameraController?.SetCameraActive(active);
+            CameraController?.EnableInput(active && IsControlActive);
+        }
+
+        public void ResetSwitchState()
+        {
+            CommandBuffer?.Clear();
+        }
+
+        public void SetPresentationVisible(bool visible)
+        {
+            IsPresentationVisible = visible;
+
+            foreach (KeyValuePair<Renderer, bool> pair in _rendererVisibleStates)
+            {
+                if (pair.Key != null)
+                {
+                    pair.Key.enabled = visible && pair.Value;
                 }
             }
 
-            GameCameraManager.Instance?.SetTarget(transform);
-            _inputEventAdapter?.Bind(InputProvider);
+            foreach (KeyValuePair<Collider, bool> pair in _colliderEnabledStates)
+            {
+                if (pair.Key != null)
+                {
+                    pair.Key.enabled = visible && pair.Value;
+                }
+            }
+        }
+
+        private void Start()
+        {
+            EnsureRuntimeInitialized();
+
+            if (AutoBindInputOnStart)
+            {
+                BindInput();
+                IsControlActive = true;
+            }
+
+            if (AutoAssignCameraOnStart)
+            {
+                GameCameraManager.Instance?.SetTarget(transform);
+                CameraController?.EnableInput(true);
+                CameraController?.SetCameraActive(true);
+            }
         }
 
         public void OnSkillEvent(string eventName, List<SkillEventParam> parameters)
         {
+            if (this is RoleEntity roleEntity)
+            {
+                CharcterManager.Instance?.HandleTimelineEvent(roleEntity, eventName);
+            }
+
             OnSkillTimelineEvent?.Invoke(eventName);
         }
 
@@ -115,12 +218,141 @@ namespace Game.Logic.Character
         private void OnDestroy()
         {
             Game.AI.BehaviorTreeCharacterRegistry.Unregister(this);
-            _inputEventAdapter?.Unbind(InputProvider);
+            UnbindInput();
+            Game.Logic.Action.ActionManager.Instance?.RemoveCache(this);
 
             if (FSMManager.Instance != null && StateMachine != null)
             {
                 FSMManager.Instance.DestroyFSM(StateMachine);
                 StateMachine = null;
+            }
+        }
+
+        private void ActivateControl(bool assignCameraTarget)
+        {
+            EnsureRuntimeInitialized();
+
+            if (InputProvider is Behaviour inputBehaviour)
+            {
+                inputBehaviour.enabled = true;
+            }
+
+            BindInput();
+            IsControlActive = true;
+
+            CameraController?.SetCameraActive(true);
+            CameraController?.EnableInput(true);
+
+            if (assignCameraTarget)
+            {
+                GameCameraManager.Instance?.SetTarget(transform);
+            }
+        }
+
+        private void DeactivateControl()
+        {
+            UnbindInput();
+            IsControlActive = false;
+            CameraController?.EnableInput(false);
+
+            if (!UsesSharedInputProvider && InputProvider is Behaviour inputBehaviour)
+            {
+                inputBehaviour.enabled = false;
+            }
+        }
+
+        private void BindInput()
+        {
+            IInputProvider provider = InputProvider;
+            if (provider == null)
+            {
+                return;
+            }
+
+            if (_isInputBound)
+            {
+                if (ReferenceEquals(_boundInputProvider, provider))
+                {
+                    return;
+                }
+
+                _inputEventAdapter?.Unbind(_boundInputProvider);
+                _isInputBound = false;
+                _boundInputProvider = null;
+            }
+
+            _inputEventAdapter?.Bind(provider);
+            _boundInputProvider = provider;
+            _isInputBound = true;
+        }
+
+        private void UnbindInput()
+        {
+            if (!_isInputBound)
+            {
+                return;
+            }
+
+            _inputEventAdapter?.Unbind(_boundInputProvider);
+            _boundInputProvider = null;
+            _isInputBound = false;
+        }
+
+        private static void DisableReplacedInputProvider(IInputProvider previousProvider, IInputProvider currentProvider)
+        {
+            if (previousProvider == null || ReferenceEquals(previousProvider, currentProvider))
+            {
+                return;
+            }
+
+            if (previousProvider is Behaviour previousBehaviour)
+            {
+                previousBehaviour.enabled = false;
+            }
+        }
+
+        protected void SetInputProvider(IInputProvider inputProvider)
+        {
+            _inputProvider = inputProvider;
+        }
+
+        protected void SetTargetFinder(TargetFinder targetFinder)
+        {
+            _targetFinder = targetFinder;
+        }
+
+        protected void SetCameraController(ICameraController cameraController)
+        {
+            _cameraController = cameraController;
+        }
+
+        protected CharacterTeamContext TeamContext => _teamContext;
+
+        private bool UsesSharedInputProvider =>
+            _teamContext != null &&
+            _teamContext.InputProvider != null &&
+            ReferenceEquals(InputProvider, _teamContext.InputProvider);
+
+        private void CachePresentationState()
+        {
+            _rendererVisibleStates.Clear();
+            Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+            foreach (Renderer renderer in renderers)
+            {
+                if (renderer != null && !_rendererVisibleStates.ContainsKey(renderer))
+                {
+                    _rendererVisibleStates.Add(renderer, renderer.enabled);
+                }
+            }
+
+            _colliderEnabledStates.Clear();
+            Collider[] colliders = GetComponentsInChildren<Collider>(true);
+            foreach (Collider collider in colliders)
+            {
+                if (collider != null && !_colliderEnabledStates.ContainsKey(collider))
+                {
+                    _colliderEnabledStates.Add(collider, collider.enabled);
+                }
             }
         }
     }

@@ -1,89 +1,61 @@
+using System;
 using System.Collections.Generic;
 using Game.FSM;
 using Game.Logic.Action.Config;
 using Game.Logic.Character;
-using Game.Logic.Character.Config;
-using SkillEditor;
+using ATEditor;
 using UnityEngine;
 
 namespace Game.Logic.Action.Combo
 {
-
-
     /// <summary>
-    /// 【动作执行中枢】
-    /// 1. 输入入口统一收口 (OnInput)
-    /// 2. 统一路由评估 (ActionRoute)
-    /// 3. 上下文路由兼容 (ContextRoute，用于 BackSwing 场景)
-    /// 4. 驱动 ActionPlayer 播放 SkillTimeline
+    /// 动作控制器：连接 ActionPlayer（底层播放）和 FSM（状态机）的核心中枢。
+    /// 
+    /// 指令分流设计：
+    ///   Instant 路由 — 仅在 OnInput 时用当前指令评估，不查缓冲区
+    ///   Buffer 路由  — 指令存入缓冲区，在 OnComboWindowExit 时统一结算
+    ///   Condition 路由 — 不依赖指令，由窗口生命周期或每帧驱动
+    ///   Event 路由    — 由外部事件（受击、切人等）触发
     /// </summary>
     public class ActionController : ISkillComboWindowHandler
     {
-        /// <summary>
-        /// 路由评估产生的候选者
-        /// </summary>
+        // ─── 内部数据结构 ───
+
         private struct RouteCandidate
         {
-            public CharacterCommand Command;            // 匹配的指令
-            public ActionConfigAsset NextAction;        // 目标动作资产 (由 Resolver 解析得出)
-            public int Priority;                        // 路由优先级
-            public string RouteTag;                     // 路由所属 Tag (一般对应窗口 Tag)
-
-            // ── 组合触发源 ──
-            public bool IsPending;                              // 是否需要暂存等待 Modifier 满足
-            public ActionRoute SourceRoute;                     // 产生此候选者的原始路由 (供 Modifier 评估)
+            public CharacterCommand Command;
+            public ActionConfigAsset NextAction;
+            public int Priority;
+            public string RouteTag;
+            public ActionRoute SourceRoute;
         }
 
-        /// <summary>
-        /// 动作执行历史记录点
-        /// </summary>
         public struct ExecutionRecord
         {
-            public InputCommand Type;           // 指令类型
-            public CommandPhase Phase;         // 指令相位
-            public CommandRouteSource Source;  // 路由来源
-            public string RouteTag;            // 路由标识
-            public int ActionId;               // 动作资产 ID
-            public float Timestamp;            // 执行时间戳
+            public InputCommand Type;
+            public CommandPhase Phase;
+            public CommandRouteSource Source;
+            public string RouteTag;
+            public int ActionId;
+            public float Timestamp;
         }
 
-        /// <summary>
-        /// 当前激活的指令/连招窗口数据
-        /// </summary>
         public sealed class ComboWindowData
         {
             public string Tag;
-            public ComboWindowType Type;
+            public List<CharacterCommand> CapturedCommands = new();
         }
+
+        // ─── 字段 ───
 
         private readonly CharacterEntity _entity;
-        
-        // ── 基建 ──
-        private readonly List<ComboWindowData> _activeComboWindows = new(); // 当前激活的 Timeline 窗口集
+        private readonly List<ComboWindowData> _activeComboWindows = new();
+        private readonly List<ActionRoute> _effectiveRoutes = new();
 
-        private bool _isTransitioning; // 防止重入的转换标志
-
-        // ── 统一路由评估管线 ──
-        private readonly List<ActionRoute> _effectiveRoutes = new(); // 缓存的统一路由 (ActionRoute)
-
-        /// <summary>
-        /// 暂存路由数据区：主触发源已匹配，等待 Modifier 满足后执行。
-        /// </summary>
-        private struct PendingRoute
-        {
-            public ActionConfigAsset TargetAction;
-            public ActionRoute SourceRoute;      // 原始路由引用 (用于 Modifier 评估)
-            public string WindowTag;             // 关联的窗口 Tag (窗口退出时清除)
-        }
-
-        private PendingRoute? _pendingRoute;
-
+        private bool _isTransitioning;
         private SkillRunner _currentRunner;
         private ActionConfigAsset _currentPlayingAction;
 
-        /// <summary>
-        /// 动作执行环形缓冲区 (记录最近 10 次执行记录)
-        /// </summary>
         public List<ExecutionRecord> ExecutionHistory { get; } = new();
 
         public ActionController(CharacterEntity entity)
@@ -91,205 +63,421 @@ namespace Game.Logic.Action.Combo
             _entity = entity;
         }
 
+        // ═══════════════════════════════════════════
+        //  公共接口
+        // ═══════════════════════════════════════════
+
+        /// <summary> 每帧更新 </summary>
         public void Update(float deltaTime)
         {
-            // 更新指令缓冲区的倒计时 (0.3s 有效期)
             _entity.CommandBuffer?.Tick();
 
-            // 每帧检查暂存路由的 Modifier 是否满足执行条件
-            if (_pendingRoute.HasValue)
-            {
-                EvaluatePendingRoute();
-            }
+            EvalConditionPerFrame();
         }
 
+        /// <summary> 播放指定动作并同步状态机 </summary>
         public SkillRunner PlayAction(ActionConfigAsset action)
         {
             if (action == null) return null;
-            PlayAndTrack(action);
-            SwitchState(action.EnterState);
+
+            if (PlayAndTrack(action))
+            {
+                Debug.Log($"<color=red>[ActionController] PlayAction: {action.ID}, State: {action.EnterState}</color>");
+                SwitchState(action.EnterState);
+            }
             return _currentRunner;
         }
 
-        private void PlayAndTrack(ActionConfigAsset action)
-        {
-            if (action == null || _entity.ActionPlayer == null)
-            {
-                return;
-            }
-
-            // 清理旧状态
-            _activeComboWindows.Clear();
-            ClearPendingRoute();
-
-            if (_currentRunner != null)
-            {
-                _currentRunner.OnComplete -= HandleActionComplete;
-                _currentRunner = null;
-            }
-
-            _currentPlayingAction = action;
-            if (_entity.RuntimeData != null)
-            {
-                _entity.RuntimeData.NextActionToCast = action;
-            }
-
-            _currentRunner = _entity.ActionPlayer.PlayAction(action);
-            if (_currentRunner != null)
-            {
-                _currentRunner.OnComplete += HandleActionComplete;
-            }
-
-            ResolvePlaySpeed(action);
-        }
-
-        private void ResolvePlaySpeed(ActionConfigAsset action)
-        {
-            if (action == null || _entity.Config == null) return;
-
-            float speed = action.PlaybackSpeed;
-
-            _entity.ActionPlayer.SetPlaySpeed(speed);
-        }
-
         /// <summary>
-        /// 指令输入唯一入口 (由 CharacterInputEventAdapter 调用)
+        /// 指令入口 — Instant/Buffer 在此分流。
+        /// 
+        /// Instant 路由：仅用当前这条指令做瞬时匹配，命中则执行，不入缓冲区。
+        /// Buffer 路由：指令入缓冲区 + 记录到活跃窗口，等 OnComboWindowExit 结算。
         /// </summary>
         public void OnInput(CharacterCommand command)
         {
-            if (_entity.CommandBuffer == null || command == null)
+            if (_entity.CommandBuffer == null || command == null) return;
+
+            // 1. 记录到活跃窗口（供 OnWindowExit 结算使用）
+            CaptureToActiveWindows(command);
+
+            // 2. Instant 分流：如果有活跃窗口，用当前指令单独做 Instant 评估
+            if (_activeComboWindows.Count > 0 && !_isTransitioning)
             {
-                return;
+                if (TryMatchInstant(command))
+                    return; // Instant 命中，指令不入缓冲区
             }
 
-            // 1. 命令压入缓冲区
+            // 3. 未命中 Instant → 入缓冲区，等待 OnWindowExit 或后续评估
             _entity.CommandBuffer.Push(command);
-
-            // 2. 若当前有激活的窗口 (Execute/Buffer等)，优先评估当前动作相关的路由
-            if (_activeComboWindows.Count > 0)
-            {
-                EvaluateCurrentActionRoutes();
-            }
-
         }
 
         /// <summary>
-        /// 当 Timeline 运行到 ComboWindowClip 的起始点时触发
+        /// 窗口开启回调 — 仅评估 Condition 路由 + 注入 Held 快照用于 Held 指令匹配。
+        /// 不再做 Instant 评估（Instant 的语义是"指令到达时"，不是"窗口开启时"）。
         /// </summary>
-        public void OnComboWindowEnter(string comboTag, ComboWindowType windowType)
+        public void OnComboWindowEnter(string comboTag)
         {
-            _activeComboWindows.Add(new ComboWindowData { Tag = comboTag, Type = windowType });
+            _activeComboWindows.Add(new ComboWindowData { Tag = comboTag });
 
-            // 如果是立即执行窗口 (Execute)，立即扫描缓冲区尝试派生下一动作
-            if (windowType == ComboWindowType.Execute)
+            // 评估窗口进入时的 Condition 路由
+            EvalCondition(comboTag, RouteConditionCheckTiming.OnWindowEnter);
+        }
+
+        /// <summary> 窗口关闭回调 — 用窗口期内捕获的指令做 OnWindowExit 结算 </summary>
+        public void OnComboWindowExit(string comboTag)
+        {
+            int idx = FindWindowIndex(comboTag);
+            ComboWindowData window = idx >= 0 ? _activeComboWindows[idx] : null;
+
+            List<CharacterCommand> captured = CollectCaptured(window);
+
+            // 1. Condition 路由（OnWindowExit 时机）
+            EvalCondition(comboTag, RouteConditionCheckTiming.OnWindowExit);
+
+            // 2. Buffer 路由（OnWindowExit 模式的指令结算）
+            EvalBufferRoutes(comboTag, captured);
+
+            if (idx >= 0)
+                _activeComboWindows.RemoveAt(idx);
+        }
+
+        /// <summary> 外部事件触发路由（如受击、切人） </summary>
+        public bool TryTriggerEvent(RouteEventType eventType, string windowTag = null)
+        {
+            if (_isTransitioning) return false;
+
+            ActionConfigAsset action = GetCurrentAction();
+            if (action == null) return false;
+
+            action.CollectEffectiveRoutes(_effectiveRoutes);
+            if (FindBestEvent(eventType, windowTag, out var candidate))
+                return Commit(candidate.Command, candidate.NextAction, CommandRouteSource.ActionRoute, candidate.RouteTag);
+
+            // 回退到根动作的路由
+            ActionConfigAsset root = _entity.Config?.ActionRoot;
+            if (root == null || root == action) return false;
+
+            root.CollectEffectiveRoutes(_effectiveRoutes);
+            if (FindBestEvent(eventType, windowTag, out candidate))
+                return Commit(candidate.Command, candidate.NextAction, CommandRouteSource.ActionRoute, candidate.RouteTag);
+
+            return false;
+        }
+
+        // ═══════════════════════════════════════════
+        //  核心播放
+        // ═══════════════════════════════════════════
+
+        /// <summary> 播放并追踪动作生命周期 </summary>
+        private bool PlayAndTrack(ActionConfigAsset action)
+        {
+            if (action == null || _entity.ActionPlayer == null) return false;
+
+            _activeComboWindows.Clear();
+
+            _currentPlayingAction = action;
+            if (_entity.RuntimeData != null)
+                _entity.RuntimeData.NextActionToCast = action;
+
+            // Play() 内部会 Tick(0f)，可能触发嵌套路由
+            _currentRunner = _entity.ActionPlayer.PlayAction(action);
+
+            // 嵌套打断检测：Tick(0f) 期间如果触发了更高优先级路由，
+            // _currentPlayingAction 已被内层替换，外层不应再切状态
+            if (_currentPlayingAction != action)
+                return false;
+
+            if (_currentRunner == null)
             {
-                _entity.CommandBuffer?.InjectHeldStateSnapshot();
-                EvaluateTransitionsAgainst(comboTag);
-                _entity.CommandBuffer?.ClearSyntheticCommands();
-                return;
+                _currentPlayingAction = null;
+                return false;
             }
 
-            // 如果是 Buffer 窗口起始点，通常清空以往指令以保证指令的新鲜度
-            if (windowType == ComboWindowType.Buffer)
+            // 幂等绑定 OnComplete（Runner 是同一缓存实例）
+            _currentRunner.OnComplete -= HandleActionComplete;
+            _currentRunner.OnComplete += HandleActionComplete;
+
+            if (_entity.Config != null)
+                _entity.ActionPlayer.SetPlaySpeed(action.PlaybackSpeed);
+
+            return true;
+        }
+
+        // ═══════════════════════════════════════════
+        //  Instant 评估（仅在 OnInput 时触发）
+        // ═══════════════════════════════════════════
+
+        /// <summary> 用单条指令在所有活跃窗口中做 Instant 匹配 </summary>
+        private bool TryMatchInstant(CharacterCommand command)
+        {
+            ActionConfigAsset action = GetCurrentAction();
+            if (action == null) return false;
+
+            action.CollectEffectiveRoutes(_effectiveRoutes);
+            if (_effectiveRoutes.Count == 0) return false;
+
+            // 只用当前这条指令做 Instant 匹配，不查缓冲区
+            foreach (ComboWindowData window in _activeComboWindows)
             {
+                if (TryResolveCommand(command, window.Tag, ComboTriggerMode.Instant, out RouteCandidate candidate))
+                {
+                    Apply(candidate);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // ═══════════════════════════════════════════
+        //  Buffer 评估（仅在 OnComboWindowExit 时触发）
+        // ═══════════════════════════════════════════
+
+        /// <summary> 用捕获的指令列表做 OnWindowExit 结算 </summary>
+        private void EvalBufferRoutes(string tag, List<CharacterCommand> commands)
+        {
+            if (_isTransitioning || commands == null) return;
+
+            ActionConfigAsset action = GetCurrentAction();
+            if (action == null) return;
+
+            action.CollectEffectiveRoutes(_effectiveRoutes);
+            if (_effectiveRoutes.Count == 0) return;
+
+            if (FindBestCommand(tag, ComboTriggerMode.OnWindowExit, commands, out var candidate))
+                Apply(candidate);
+        }
+
+        // ═══════════════════════════════════════════
+        //  Condition 评估
+        // ═══════════════════════════════════════════
+
+        /// <summary> 评估指定时机的 Condition 路由 </summary>
+        private bool EvalCondition(string tag, RouteConditionCheckTiming timing)
+        {
+            if (_isTransitioning) return false;
+
+            ActionConfigAsset action = GetCurrentAction();
+            if (action == null) return false;
+
+            action.CollectEffectiveRoutes(_effectiveRoutes);
+            if (_effectiveRoutes.Count == 0) return false;
+
+            if (FindBestCondition(tag, timing, out var candidate))
+            {
+                Apply(candidate);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary> 每帧评估活跃窗口内的 EveryFrame 条件路由 </summary>
+        private void EvalConditionPerFrame()
+        {
+            foreach (ComboWindowData window in _activeComboWindows)
+            {
+                if (EvalCondition(window.Tag, RouteConditionCheckTiming.EveryFrameInWindow))
+                    return;
+            }
+        }
+
+        // ═══════════════════════════════════════════
+        //  路由查找
+        // ═══════════════════════════════════════════
+
+        /// <summary> 将单条指令与所有路由做匹配，返回最优候选 </summary>
+        private bool TryResolveCommand(CharacterCommand command, string tag, ComboTriggerMode mode, out RouteCandidate best)
+        {
+            best = default;
+            bool found = false;
+
+            foreach (ActionRoute route in _effectiveRoutes)
+            {
+                if (route?.NextAction == null) continue;
+                if (!route.EvaluatePlayerCommand(command, tag, mode, _entity)) continue;
+
+                bool modOk = !route.HasModifier || route.EvaluateModifier(_entity, tag);
+                if (!modOk) continue;
+
+                var c = new RouteCandidate
+                {
+                    Command = command, NextAction = route.NextAction, Priority = route.Priority,
+                    RouteTag = tag, SourceRoute = route
+                };
+
+                if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
+            }
+            return found;
+        }
+
+        /// <summary> 在指令列表中找最优 PlayerCommand 候选 </summary>
+        private bool FindBestCommand(string tag, ComboTriggerMode mode, List<CharacterCommand> commands, out RouteCandidate best)
+        {
+            best = default;
+            bool found = false;
+            if (commands == null) return false;
+
+            foreach (CharacterCommand cmd in commands)
+            {
+                if (!TryResolveCommand(cmd, tag, mode, out var c)) continue;
+                if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
+            }
+            return found;
+        }
+
+        /// <summary> 查找最优 Condition 候选 </summary>
+        private bool FindBestCondition(string tag, RouteConditionCheckTiming timing, out RouteCandidate best)
+        {
+            best = default;
+            bool found = false;
+
+            foreach (ActionRoute route in _effectiveRoutes)
+            {
+                if (route?.NextAction == null) continue;
+                if (!route.EvaluateConditionTrigger(_entity, tag, timing)) continue;
+
+                bool modOk = !route.HasModifier || route.EvaluateModifier(_entity, tag);
+                if (!modOk) continue;
+
+                var c = new RouteCandidate
+                {
+                    Command = null, NextAction = route.NextAction, Priority = route.Priority,
+                    RouteTag = tag, SourceRoute = route
+                };
+
+                if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
+            }
+            return found;
+        }
+
+        /// <summary> 查找最优 Event 候选（跨活跃窗口或指定窗口） </summary>
+        private bool FindBestEvent(RouteEventType eventType, string explicitTag, out RouteCandidate best)
+        {
+            best = default;
+            bool found = false;
+
+            if (!string.IsNullOrEmpty(explicitTag))
+                return FindEventInTag(eventType, explicitTag, out best);
+
+            foreach (ComboWindowData w in _activeComboWindows)
+            {
+                if (w == null || string.IsNullOrEmpty(w.Tag)) continue;
+                if (!FindEventInTag(eventType, w.Tag, out var c)) continue;
+                if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
+            }
+            return found;
+        }
+
+        private bool FindEventInTag(RouteEventType eventType, string tag, out RouteCandidate best)
+        {
+            best = default;
+            bool found = false;
+
+            foreach (ActionRoute route in _effectiveRoutes)
+            {
+                if (route?.NextAction == null) continue;
+                if (!route.EvaluateEvent(eventType, _entity, tag)) continue;
+
+                bool modOk = !route.HasModifier || route.EvaluateModifier(_entity, tag);
+                if (!modOk) continue;
+
+                var c = new RouteCandidate
+                {
+                    Command = null, NextAction = route.NextAction, Priority = route.Priority,
+                    RouteTag = tag, SourceRoute = route
+                };
+
+                if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
+            }
+            return found;
+        }
+
+        // ═══════════════════════════════════════════
+        //  应用 & 提交
+        // ═══════════════════════════════════════════
+
+        private void Apply(RouteCandidate candidate)
+        {
+            Commit(candidate.Command, candidate.NextAction, CommandRouteSource.ActionRoute, candidate.RouteTag);
+        }
+
+        private bool Commit(CharacterCommand command, ActionConfigAsset nextAction, CommandRouteSource source, string tag = null)
+        {
+            if (nextAction == null) return false;
+
+            if (command != null &&
+                command.Type == InputCommand.Switch &&
+                nextAction.EnterState == ActionState.Switch &&
+                _entity is RoleEntity role &&
+                CharcterManager.Instance?.PrepareSwitch(role) != true)
+                return false;
+
+            _isTransitioning = true;
+            try
+            {
+                if (command != null) command.IsConsumed = true;
+
+                _entity.RuntimeData.NextActionToCast = nextAction;
+                RecordRoute(command?.Type ?? InputCommand.None, command?.Phase ?? CommandPhase.Started, nextAction, source, tag);
+
+                _activeComboWindows.Clear();
                 _entity.CommandBuffer?.Clear();
-                return;
+
+                PlayAction(nextAction);
+                return true;
             }
-
-        }
-
-        /// <summary>
-        /// 当 Timeline 运行到 ComboWindowClip 的结束点时触发
-        /// </summary>
-        public void OnComboWindowExit(string comboTag, ComboWindowType windowType)
-        {
-            _activeComboWindows.RemoveAll(x => x.Tag == comboTag && x.Type == windowType);
-
-            // 如果暂存路由关联的窗口退出，清除暂存路由
-            if (_pendingRoute.HasValue && _pendingRoute.Value.WindowTag == comboTag)
+            finally
             {
-                ClearPendingRoute();
-            }
-
-            // 如果是 Buffer 窗口退出，此时冲刷一次缓冲区进行最后的评估
-            if (windowType == ComboWindowType.Buffer)
-            {
-                EvaluateTransitionsAgainst(comboTag);
-                return;
-            }
-
-        }
-
-
-
-        /// <summary>
-        /// 评估当前动作的路由 (由 OnInput 触发)
-        /// </summary>
-        private void EvaluateCurrentActionRoutes()
-        {
-            if (_isTransitioning || _entity.CommandBuffer == null || _activeComboWindows.Count == 0)
-            {
-                return;
-            }
-
-            ActionConfigAsset currentAction = GetCurrentAction();
-            _effectiveRoutes.Clear();
-
-            currentAction?.CollectEffectiveRoutes(_effectiveRoutes);
-
-            if (_effectiveRoutes.Count == 0)
-            {
-                return;
-            }
-
-            // 扫描整个指令缓冲区，寻找最高优先级的候选路由
-            if (TryFindBestImmediateCandidate(out RouteCandidate candidate))
-            {
-                if (candidate.IsPending)
-                {
-                    candidate.Command.IsConsumed = true;
-                    SetPendingRoute(candidate.NextAction, candidate.SourceRoute, candidate.RouteTag);
-                }
-                else
-                {
-                    CommitResolvedAction(candidate.Command, candidate.NextAction, CommandRouteSource.ActionRoute, candidate.RouteTag);
-                }
+                _isTransitioning = false;
             }
         }
 
-        /// <summary>
-        /// 评估指定 Tag 的路由 (由 OnComboWindowEnter/Exit 触发)
-        /// 一般用于处理窗口开启瞬间或关闭瞬间的"指令预输入冲刷"
-        /// </summary>
-        private void EvaluateTransitionsAgainst(string tagToTest)
+        // ═══════════════════════════════════════════
+        //  动作完成回调
+        // ═══════════════════════════════════════════
+
+        private void HandleActionComplete()
         {
-            if (_isTransitioning || _entity.CommandBuffer == null)
+            ActionConfigAsset finished = _currentPlayingAction;
+            _currentPlayingAction = null;
+
+            Debug.Log($"<color=red>[ActionController] HandleActionComplete: finished={finished?.Name ?? "NULL"}, " +
+                $"ID={finished?.ID ?? -1}, completeMode={finished?.CompleteMode}</color>");
+
+            if (finished == null || _isTransitioning) return;
+
+            // 1. 动作完成时的条件路由（如持续移动输入）
+            finished.CollectEffectiveRoutes(_effectiveRoutes);
+            if (FindBestCondition(null, RouteConditionCheckTiming.OnWindowExit, out var c))
             {
+                Apply(c);
                 return;
             }
 
-            ActionConfigAsset currentAction = GetCurrentAction();
-            _effectiveRoutes.Clear();
-
-            currentAction?.CollectEffectiveRoutes(_effectiveRoutes);
-
-            if (_effectiveRoutes.Count == 0)
+            // 2. CompleteMode 处理
+            switch (finished.CompleteMode)
             {
-                return;
+                case ActionCompleteMode.TransitToAction:
+                    if (finished.CompleteAction != null) { PlayAction(finished.CompleteAction); return; }
+                    break;
+                case ActionCompleteMode.Stay:
+                    return;
             }
 
-            if (TryFindBestCandidateForTag(tagToTest, out RouteCandidate candidate))
-            {
-                if (candidate.IsPending)
-                {
-                    candidate.Command.IsConsumed = true;
-                    SetPendingRoute(candidate.NextAction, candidate.SourceRoute, candidate.RouteTag);
-                }
-                else
-                {
-                    CommitResolvedAction(candidate.Command, candidate.NextAction, CommandRouteSource.ActionRoute, candidate.RouteTag);
-                }
-            }
+            // 3. 兜底回根动作
+            PlayAction(_entity.Config?.ActionRoot);
+        }
+
+        // ═══════════════════════════════════════════
+        //  辅助方法
+        // ═══════════════════════════════════════════
+
+        private static bool IsHigherPriority(RouteCandidate a, RouteCandidate b)
+        {
+            if (a.Priority != b.Priority) return a.Priority > b.Priority;
+            long orderA = a.Command?.BufferOrder ?? 0L;
+            long orderB = b.Command?.BufferOrder ?? 0L;
+            return orderA > orderB;
         }
 
         private ActionConfigAsset GetCurrentAction()
@@ -297,357 +485,51 @@ namespace Game.Logic.Action.Combo
             return _entity.ActionPlayer?.CurrentAction ?? _entity.RuntimeData?.NextActionToCast;
         }
 
-        /// <summary>
-        /// 【冲突规避】处理普攻长短按冲突逻辑
-        /// 如果当前正在按住普攻，且当前动作拥有“Performed”相位路由，
-        /// 则跳过本帧对“Started”相位的处理，防止短按触发抢走长按判定。
-        /// </summary>
-        private bool ShouldDelayBasicAttackForHold(CharacterCommand command)
+        private void RecordRoute(InputCommand type, CommandPhase phase, ActionConfigAsset action, CommandRouteSource source, string tag)
         {
-            if (command.Type != InputCommand.BasicAttack || command.Phase != CommandPhase.Started)
-            {
-                return false;
-            }
+            _entity.RuntimeData?.RecordResolvedRoute(source, tag, type, phase, action);
 
-            if (!(_entity.RuntimeData?.IsBasicAttackHold == true))
-            {
-                return false;
-            }
-
-            // 检查统一路由
-            return _effectiveRoutes.Exists(t => t.MatchesCommand(InputCommand.BasicAttack, CommandPhase.Performed));
-        }
-
-
-        /// <summary>
-        /// 【核心决策逻辑】在所有激活窗口下，寻找最优的局部路由候选
-        /// 决策规则：
-        /// 1. 枚举缓冲区中所有未消费指令
-        /// 2. 检查指令是否因长按冲突需要延迟
-        /// 3. 在所有激活的 Execute/Recovery 窗口中寻找匹配项
-        /// 4. 比较优先级 (Priority) 和 新鲜度 (BufferOrder)
-        /// </summary>
-        private bool TryFindBestImmediateCandidate(out RouteCandidate bestCandidate)
-        {
-            bestCandidate = default;
-            bool hasCandidate = false;
-
-            foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
-            {
-                if (ShouldDelayBasicAttackForHold(command))
-                {
-                    continue;
-                }
-
-                bool isBuffered = (Time.time - command.Timestamp) > 0f;
-                foreach (ComboWindowData window in _activeComboWindows)
-                {
-                    if (window.Type == ComboWindowType.Execute)
-                    {
-                        if (TryResolveUnifiedCandidate(command, _effectiveRoutes, window.Tag, isBuffered, out RouteCandidate candidateUnified))
-                        {
-                            if (!hasCandidate || IsHigherPriorityCandidate(candidateUnified, bestCandidate))
-                            {
-                                bestCandidate = candidateUnified;
-                                hasCandidate = true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return hasCandidate;
-        }
-
-        private bool TryFindBestCandidateForTag(
-            string tagToTest,
-            out RouteCandidate bestCandidate)
-        {
-            bestCandidate = default;
-            bool hasCandidate = false;
-
-            foreach (CharacterCommand command in _entity.CommandBuffer.GetUnconsumedCommands())
-            {
-                if (ShouldDelayBasicAttackForHold(command))
-                {
-                    continue;
-                }
-
-                bool isBuffered = (Time.time - command.Timestamp) > 0f;
-
-                if (TryResolveUnifiedCandidate(command, _effectiveRoutes, tagToTest, isBuffered, out RouteCandidate candidateUnified))
-                {
-                    if (!hasCandidate || IsHigherPriorityCandidate(candidateUnified, bestCandidate))
-                    {
-                        bestCandidate = candidateUnified;
-                        hasCandidate = true;
-                    }
-                }
-            }
-
-            return hasCandidate;
-        }
-
-
-
-        /// <summary>
-        /// 评估统一路由 (ActionRoute)
-        /// 支持组合触发源：主触发源匹配后，检查 Modifier 是否满足，不满足则标记为 IsPending。
-        /// </summary>
-        private bool TryResolveUnifiedCandidate(
-            CharacterCommand command,
-            List<ActionRoute> routes,
-            string tagToTest,
-            bool isBuffered,
-            out RouteCandidate candidate)
-        {
-            candidate = default;
-            bool hasCandidate = false;
-
-            foreach (ActionRoute route in routes)
-            {
-                // 1. 核心判定逻辑：主触发源匹配 (指令 + 窗口 + TriggerMode + ExtraConditions)
-                if (route == null || !route.EvaluatePlayerCommand(command, tagToTest, isBuffered, _entity))
-                {
-                    continue;
-                }
-
-                // 2. 目标动作
-                ActionConfigAsset nextAction = route.NextAction;
-                if (nextAction == null)
-                {
-                    continue;
-                }
-
-                // 3. 检查 Modifier：如果有组合触发源，判断是否已满足
-                bool modifierSatisfied = !route.HasModifier ||
-                    route.EvaluateModifier(_entity, _entity.CommandBuffer, tagToTest);
-
-                if (route.HasModifier && !modifierSatisfied)
-                {
-                    // 如果策略是穿透寻优，则当前路由视为不匹配，直接寻找下一个
-                    if (route.NonSatisfiedPolicy == ModifierNonSatisfiedPolicy.FallThrough)
-                    {
-                        continue;
-                    }
-                }
-
-                RouteCandidate resolvedCandidate = new RouteCandidate
-                {
-                    Command = command,
-                    NextAction = nextAction,
-                    Priority = route.Priority,
-                    RouteTag = tagToTest,
-                    IsPending = route.HasModifier && !modifierSatisfied, // 此时能到这里说明 Policy 是 Pending
-                    SourceRoute = route
-                };
-
-                if (!hasCandidate || IsHigherPriorityCandidate(resolvedCandidate, candidate))
-                {
-                    candidate = resolvedCandidate;
-                    hasCandidate = true;
-                }
-            }
-
-            return hasCandidate;
-        }
-
-        /// <summary>
-        /// 【竞争规则】判断 A 是否比 B 更优
-        /// 1. 优先级 (Priority) 更大的绝对优先
-        /// 2. 优先级相同时，指令序号 (BufferOrder) 更大的优先 (即：同级输入，后按的抢占)
-        /// </summary>
-        private static bool IsHigherPriorityCandidate(RouteCandidate candidate, RouteCandidate currentBest)
-        {
-            if (candidate.Priority != currentBest.Priority)
-            {
-                return candidate.Priority > currentBest.Priority;
-            }
-
-            return candidate.Command.BufferOrder > currentBest.Command.BufferOrder;
-        }
-
-        /// <summary>
-        /// 【执行提交】应用路由裁决结果
-        /// 1. 标记指令已消费
-        /// 2. 状态机切换 (UpdateCharacterState)
-        /// 3. 清理上一动作残留窗口
-        /// </summary>
-        private bool CommitResolvedAction(
-            CharacterCommand command,
-            ActionConfigAsset nextAction,
-            CommandRouteSource routeSource,
-            string routeTag = null)
-        {
-            if (nextAction == null)
-            {
-                return false;
-            }
-
-            _isTransitioning = true;
-            command.IsConsumed = true; // 物理标记指令消费，CommandBuffer.Tick 会据此移除它
-            _entity.RuntimeData.NextActionToCast = nextAction;
-            _entity.RuntimeData?.RecordResolvedRoute(routeSource, routeTag, command.Type, command.Phase, nextAction);
-            RecordExecution(command.Type, command.Phase, nextAction, routeSource, routeTag);
-
-            _activeComboWindows.Clear();
-            _entity.CommandBuffer.Clear(); // 动作派生一旦发生，通常冲刷所有预输入 (避免连续误触)
-
-            PlayAction(nextAction);
-
-            _isTransitioning = false;
-            return true;
-        }
-
-        private void RecordExecution(
-            InputCommand commandType,
-            CommandPhase commandPhase,
-            ActionConfigAsset action,
-            CommandRouteSource routeSource,
-            string routeTag)
-        {
-            int actionId = action != null ? action.ID : -1;
             ExecutionHistory.Insert(0, new ExecutionRecord
             {
-                Type = commandType,
-                Phase = commandPhase,
-                Source = routeSource,
-                RouteTag = routeTag,
-                ActionId = actionId,
-                Timestamp = Time.time
+                Type = type, Phase = phase, Source = source,
+                RouteTag = tag, ActionId = action?.ID ?? -1, Timestamp = Time.time
             });
-
-            if (ExecutionHistory.Count > 10)
-            {
-                ExecutionHistory.RemoveAt(10);
-            }
+            if (ExecutionHistory.Count > 10) ExecutionHistory.RemoveAt(10);
         }
 
-        // ════════════════════════════════════════════════════════
-        // 生命周期、暂存路由、状态切换
-        // ════════════════════════════════════════════════════════
-
-        /// <summary>
-        /// 处理动作生命周期结束事件
-        /// </summary>
-        private void HandleActionComplete()
+        private void CaptureToActiveWindows(CharacterCommand command)
         {
-            var finishedAction = _currentPlayingAction;
-            _currentPlayingAction = null;
-
-            if (finishedAction == null || _isTransitioning)
-                return;
-
-            _pendingRoute = null; // 动作自然结束，清理未触发的暂存路由
-
-            _effectiveRoutes.Clear();
-            finishedAction.CollectEffectiveRoutes(_effectiveRoutes);
-
-            ActionRoute bestRoute = null;
-            foreach (var route in _effectiveRoutes)
-            {
-                if (route.Category != RouteTriggerCategory.ActionLifecycle) continue;
-                if (!route.EvaluateLifecycle(_entity)) continue;
-                if (bestRoute == null || route.Priority > bestRoute.Priority)
-                    bestRoute = route;
-            }
-
-            if (bestRoute?.NextAction != null)
-            {
-                _entity.RuntimeData?.RecordResolvedRoute(
-                    CommandRouteSource.ActionRoute, "ActionLifecycle",
-                    InputCommand.None, CommandPhase.Started, bestRoute.NextAction);
-                RecordExecution(InputCommand.None, CommandPhase.Started, bestRoute.NextAction,
-                    CommandRouteSource.ActionRoute, "ActionLifecycle");
-
-                PlayAndTrack(bestRoute.NextAction);
-                SwitchState(bestRoute.NextAction.EnterState);
-                return;
-            }
-
-            // 2. 静态后继
-            switch (finishedAction.CompleteMode)
-            {
-                case ActionCompleteMode.TransitToAction:
-                    if (finishedAction.CompleteAction != null)
-                    {
-                        PlayAndTrack(finishedAction.CompleteAction);
-                        SwitchState(finishedAction.CompleteAction.EnterState);
-                        return;
-                    }
-                    break;
-
-                case ActionCompleteMode.Stay:
-                    return; // 不做任何转换
-
-                case ActionCompleteMode.Default:
-                default:
-                    break;
-            }
-
-            // 3. Fallback → Idle
-            SwitchState(ActionState.Idle);
+            if (command == null) return;
+            foreach (ComboWindowData w in _activeComboWindows)
+                w.CapturedCommands.Add(CloneCommand(command));
         }
 
-        /// <summary>
-        /// 每帧轮询暂存路由的 Modifier 是否满足执行条件。
-        /// 主触发源已匹配，Modifier 一旦满足则立即执行转换。
-        /// </summary>
-        private void EvaluatePendingRoute()
+        private int FindWindowIndex(string tag)
         {
-            if (!_pendingRoute.HasValue || _isTransitioning) return;
-
-            var pending = _pendingRoute.Value;
-            if (pending.SourceRoute == null || pending.TargetAction == null)
-            {
-                _pendingRoute = null;
-                return;
-            }
-
-            // 获取当前窗口 Tag（Modifier PlayerCommand 需要窗口约束）
-            string activeTag = pending.WindowTag;
-
-            // 评估 Modifier 是否满足
-            if (!pending.SourceRoute.EvaluateModifier(_entity, _entity.CommandBuffer, activeTag))
-                return;
-
-            _pendingRoute = null; // Modifier 满足，消费掉暂存占位
-
-            _entity.RuntimeData?.RecordResolvedRoute(
-                CommandRouteSource.ActionRoute, $"Pending:{activeTag}",
-                InputCommand.None, CommandPhase.Started, pending.TargetAction);
-            RecordExecution(InputCommand.None, CommandPhase.Started, pending.TargetAction,
-                CommandRouteSource.ActionRoute, $"Pending:{activeTag}");
-
-            PlayAndTrack(pending.TargetAction);
-            SwitchState(pending.TargetAction.EnterState);
+            for (int i = _activeComboWindows.Count - 1; i >= 0; i--)
+                if (_activeComboWindows[i].Tag == tag) return i;
+            return -1;
         }
 
-        /// <summary>
-        /// 将一个动作路由设为“暂存等待 Modifier”
-        /// 典型场景：主触发源已匹配，但 Modifier 条件尚未满足。
-        /// </summary>
-        public void SetPendingRoute(ActionConfigAsset targetAction,
-            ActionRoute sourceRoute,
-            string windowTag = null)
+        /// <summary> 收集窗口捕获的指令（供 Buffer 路由结算使用） </summary>
+        private List<CharacterCommand> CollectCaptured(ComboWindowData window)
         {
-            _pendingRoute = new PendingRoute
+            List<CharacterCommand> result = new();
+            if (window != null)
+                foreach (var cmd in window.CapturedCommands) result.Add(CloneCommand(cmd));
+            return result;
+        }
+
+        private static CharacterCommand CloneCommand(CharacterCommand s)
+        {
+            return s == null ? null : new CharacterCommand
             {
-                TargetAction = targetAction,
-                SourceRoute = sourceRoute,
-                WindowTag = windowTag ?? "Pending"
+                Type = s.Type, Phase = s.Phase, Payload = s.Payload,
+                Timestamp = s.Timestamp, BufferOrder = s.BufferOrder,
+                IsConsumed = s.IsConsumed
             };
         }
 
-        public void ClearPendingRoute()
-        {
-            _pendingRoute = null;
-        }
-
-        /// <summary>
-        /// v3: 统一且唯一的状态切换入口。
-        /// 根据动作配置显式执行。
-        /// </summary>
         private void SwitchState(ActionState state)
         {
             switch (state)
@@ -656,14 +538,10 @@ namespace Game.Logic.Action.Combo
                 case ActionState.Jog:
                 case ActionState.Dash:
                 case ActionState.Stop:
-                    // 先写入目标子状态，GroundState.OnEnter 会读取
                     if (_entity.RuntimeData != null)
-                    {
                         _entity.RuntimeData.TargetGroundSubState = state;
-                    }
                     _entity.Machine.ChangeState<CharacterGroundState>();
                     break;
-
                 case ActionState.Skill:
                     _entity.Machine.ChangeState<CharacterSkillState>();
                     break;
@@ -673,8 +551,10 @@ namespace Game.Logic.Action.Combo
                 case ActionState.Hit:
                     _entity.Machine.ChangeState<CharacterHitStunState>();
                     break;
+                case ActionState.Switch:
+                    _entity.Machine.ChangeState<CharacterSwitchState>();
+                    break;
             }
         }
     }
 }
-

@@ -16,6 +16,8 @@ namespace Game.Camera
         /// 冻结/解冻相机视角的旋转输入（例如进入 UI 或者释放某些固定视角的锁敌技能时禁用）
         /// </summary>
         void EnableInput(bool enable);
+        void SetCameraActive(bool active);
+        void SnapToPose(Vector3 position, Quaternion rotation);
 
         /// <summary>
         /// 提供目标当前的视觉主前向向量（只取水平 XZ 分量并正规化）
@@ -32,6 +34,6 @@ namespace Game.Camera
 
         GameObject CreateCamera(GameObject prefab);
         void DestroyCamera(GameObject cameraInstance);
-        void PlayCameraTimeline(GameObject cameraInstance, SkillEditor.CameraControlParams paramsObj);
+        void PlayCameraTimeline(GameObject cameraInstance, ATEditor.CameraControlParams paramsObj);
     }
 }

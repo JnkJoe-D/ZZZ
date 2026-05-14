@@ -23,7 +23,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   JogMultipier: 1
-  JogShortInputThreshold: 0.08
+  JogShortInputThreshold: 0.2
   DashMultipier: 1
   DodgeMultipier: 1
   AttackMultipier: 1

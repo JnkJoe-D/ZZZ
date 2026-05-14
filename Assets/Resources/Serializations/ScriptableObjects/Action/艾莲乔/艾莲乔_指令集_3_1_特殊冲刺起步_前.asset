@@ -14,15 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Routes:
   - Category: 0
-    RequiredType: 50
-    RequiredPhase: 30
     RequiredWindowTag: Evade
     TriggerMode: 1
-    Modifier: 20
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
-    ModifierConditions: 0a000000
-    NonSatisfiedPolicy: 0
+    ConditionCheckTiming: 0
+    EventType: 0
+    RequiredType: 10
+    RequiredPhase: 0
+    Modifier: 10
+    ModifierRequiredKey: 50
+    ModifierConditions: 
+    NextAction: {fileID: 11400000, guid: 252b76f192268094da0cf1c1619bd95a, type: 2}
+    ExtraConditions: []
+    Priority: 2
+  - Category: 0
+    RequiredWindowTag: Evade
+    TriggerMode: 1
+    ConditionCheckTiming: 0
+    EventType: 0
+    RequiredType: 50
+    RequiredPhase: 30
+    Modifier: 10
+    ModifierRequiredKey: 10
+    ModifierConditions: 
     NextAction: {fileID: 11400000, guid: 252b76f192268094da0cf1c1619bd95a, type: 2}
     ExtraConditions: []
     Priority: 2

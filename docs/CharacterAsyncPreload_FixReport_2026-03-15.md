@@ -16,20 +16,20 @@ This update changed the character spawn and action preload path to an awaitable 
 
 ## Files Updated
 
-- `Assets/GameClient/SkillEditor/Runtime/Serialization/SerializationUtility.cs`
+- `Assets/GameClient/ATEditor/Runtime/Serialization/SerializationUtility.cs`
 - `Assets/GameClient/Logic/Skill/ActionManager.cs`
 - `Assets/GameClient/Logic/Character/CharacterManager.cs`
 - `Assets/GameClient/Logic/Player/PlayerManager.cs`
 - `Assets/GameClient/Logic/Character/CharacterEntity.cs`
 - `Assets/GameClient/Logic/Character/Test_Character.cs`
 - `Assets/GameClient/Logic/Character/ActionPlayer.cs`
-- `Assets/GameClient/SkillEditor/Runtime/Playback/Processes/RuntimeVFXProcess.cs`
+- `Assets/GameClient/ATEditor/Runtime/Playback/Processes/RuntimeVFXProcess.cs`
 
 ## VFX Pool Warning Analysis
 
 Warning:
 
-`[GlobalPoolManager] 归还的对象不属于任何已注册的池: FX_slash_04(Clone)`
+`[GlobalPoolManager] 褰掕繕鐨勫璞′笉灞炰簬浠讳綍宸叉敞鍐岀殑姹? FX_slash_04(Clone)`
 
 Root cause:
 

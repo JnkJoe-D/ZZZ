@@ -1,5 +1,7 @@
 {
     "isLoop": false,
+    "beforePlayEvents": [],
+    "onCompleteEvents": [],
     "groups": [
         {
             "groupId": "4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28",
@@ -95,7 +97,7 @@
                 "rid": 1000,
                 "type": {
                     "class": "AnimationTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -132,7 +134,7 @@
                 "rid": 1001,
                 "type": {
                     "class": "VFXTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -151,7 +153,7 @@
                 "rid": 1002,
                 "type": {
                     "class": "AudioTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -170,7 +172,7 @@
                 "rid": 1003,
                 "type": {
                     "class": "AudioTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -189,7 +191,7 @@
                 "rid": 1004,
                 "type": {
                     "class": "ComboWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -218,7 +220,7 @@
                 "rid": 1005,
                 "type": {
                     "class": "ComboWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -241,7 +243,7 @@
                 "rid": 1006,
                 "type": {
                     "class": "HitTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -264,7 +266,7 @@
                 "rid": 1007,
                 "type": {
                     "class": "MotionWindowTrack",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -287,7 +289,7 @@
                 "rid": 1008,
                 "type": {
                     "class": "SkillAnimationClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -296,10 +298,10 @@
                     "isEnabled": true,
                     "startTime": 0.0,
                     "duration": 0.6000000238418579,
-                    "blendInDuration": 0.13333334028720857,
+                    "blendInDuration": 0.13333334028720856,
                     "blendOutDuration": 0.06666696071624756,
                     "animationClip": {
-                        "instanceID": 46622
+                        "instanceID": 95028
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -322,7 +324,7 @@
                 "rid": 1009,
                 "type": {
                     "class": "SkillAnimationClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -330,11 +332,11 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.5333330631256104,
-                    "duration": 3.4666669368743898,
+                    "duration": 3.4666669368743896,
                     "blendInDuration": 0.06666696071624756,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 55442
+                        "instanceID": 96012
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -357,7 +359,7 @@
                 "rid": 1010,
                 "type": {
                     "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -365,7 +367,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.23333334922790528,
+                    "duration": 0.23333334922790527,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "windowType": 0,
@@ -376,7 +378,7 @@
                 "rid": 1011,
                 "type": {
                     "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -384,25 +386,25 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.5333330631256104,
-                    "duration": 3.4666669368743898,
+                    "duration": 3.4666669368743896,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 2,
-                    "comboTag": " "
+                    "windowType": 1,
+                    "comboTag": "BackSwing"
                 }
             },
             {
                 "rid": 1012,
                 "type": {
                     "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "clipId": "4829ebc2-cf97-4449-86f3-1fbe089f3389",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.23333334922790528,
+                    "startTime": 0.23333334922790527,
                     "duration": 0.2999997138977051,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -414,7 +416,7 @@
                 "rid": 1013,
                 "type": {
                     "class": "ComboWindowClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
@@ -433,14 +435,14 @@
                 "rid": 1014,
                 "type": {
                     "class": "HitClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "clipId": "2e00dc9e-3164-4c7e-98e1-a93a1aa36795",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.20000001788139344,
+                    "startTime": 0.20000001788139343,
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -489,7 +491,7 @@
                     },
                     "hitMode": 0,
                     "multiHitCount": 1,
-                    "multiHitDuration": 0.20000000298023225,
+                    "multiHitDuration": 0.20000000298023224,
                     "enableHitStop": true,
                     "hitStopDuration": 0.05000000074505806,
                     "hitVFXPrefab": {
@@ -512,21 +514,21 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 36042
+                        "instanceID": 37334
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
                         "assetName": "安比攻击受击音7",
                         "assetPath": "Assets/Resources/Audio/AnBi/安比攻击受击音7.wav"
                     },
-                    "hitStunDuration": 0.30000001192092898
+                    "hitStunDuration": 0.30000001192092896
                 }
             },
             {
                 "rid": 1015,
                 "type": {
                     "class": "MotionFilterClip",
-                    "ns": "SkillEditor",
+                    "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
