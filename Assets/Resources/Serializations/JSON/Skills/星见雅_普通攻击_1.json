@@ -298,10 +298,10 @@
                     "isEnabled": true,
                     "startTime": 0.0,
                     "duration": 0.6666666865348816,
-                    "blendInDuration": 0.13333334028720856,
+                    "blendInDuration": 0.13333334028720857,
                     "blendOutDuration": 0.1666666865348816,
                     "animationClip": {
-                        "instanceID": 70372
+                        "instanceID": 70348
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -332,11 +332,11 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.5,
-                    "duration": 3.3333334922790527,
+                    "duration": 3.3333334922790529,
                     "blendInDuration": 0.1666666865348816,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 90020
+                        "instanceID": 97096
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -366,12 +366,11 @@
                     "clipId": "1ad77c85-11d1-443a-8465-cebf6c876571",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 0.2666666805744171,
+                    "startTime": 0.11666667461395264,
+                    "duration": 0.15000000596046449,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 0,
-                    "comboTag": "Buffer"
+                    "comboTag": "Buffer1"
                 }
             },
             {
@@ -386,10 +385,9 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.5,
-                    "duration": 3.3333332538604736,
+                    "duration": 3.3333332538604738,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "BackSwing"
                 }
             },
@@ -408,8 +406,7 @@
                     "duration": 0.23333331942558289,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 3,
-                    "comboTag": "Recovery"
+                    "comboTag": "Execute1"
                 }
             },
             {
@@ -424,10 +421,9 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.8333334922790527,
+                    "duration": 3.8333334922790529,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "Evade"
                 }
             },
@@ -442,7 +438,7 @@
                     "clipId": "30c59010-6475-4742-b1c0-e74a29e1c52d",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.23333333432674408,
+                    "startTime": 0.23333333432674409,
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -491,7 +487,7 @@
                     },
                     "hitMode": 0,
                     "multiHitCount": 5,
-                    "multiHitDuration": 0.20000000298023224,
+                    "multiHitDuration": 0.20000000298023225,
                     "enableHitStop": true,
                     "hitStopDuration": 0.05000000074505806,
                     "hitVFXPrefab": {
@@ -514,14 +510,14 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 37334
+                        "instanceID": 37388
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
                         "assetName": "安比攻击受击音7",
                         "assetPath": "Assets/Resources/Audio/AnBi/安比攻击受击音7.wav"
                     },
-                    "hitStunDuration": 0.30000001192092896
+                    "hitStunDuration": 0.30000001192092898
                 }
             },
             {
@@ -536,7 +532,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.8333334922790527,
+                    "duration": 3.8333334922790529,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1

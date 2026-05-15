@@ -28,10 +28,8 @@ MonoBehaviour:
     RequiredType: 20
     RequiredPhase: 0
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: af671d476d00b744584ec34b607e8996, type: 2}
     ExtraConditions: []
     Priority: 0
@@ -43,10 +41,8 @@ MonoBehaviour:
     RequiredType: 20
     RequiredPhase: 0
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: af671d476d00b744584ec34b607e8996, type: 2}
     ExtraConditions: []
     Priority: 0
@@ -54,6 +50,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e69d643be28f4431972836242bcc6306, type: 2}
   - {fileID: 11400000, guid: 22d0fc9289794c44953011472885221e, type: 2}
   - {fileID: 11400000, guid: 0ae99841e2fe44a48bbd2c6042a90734, type: 2}
+  - {fileID: 11400000, guid: 1da2cbbee3cb87045b2023e7273702c3, type: 2}
   FaceToSpeed: 10
   PlaybackSpeed: 1
   Cooldown: 0.2

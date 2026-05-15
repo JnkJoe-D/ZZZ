@@ -16,12 +16,13 @@ MonoBehaviour:
   - Category: 0
     RequiredWindowTag: BackSwing
     TriggerMode: 1
-    ConditionCheckTiming: 20
+    ModifierCheckTiming: 20
     EventType: 0
     RequiredType: 10
     RequiredPhase: 0
     Modifier: 0
     ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
     NextAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
     ExtraConditions: []
@@ -29,12 +30,13 @@ MonoBehaviour:
   - Category: 0
     RequiredWindowTag: BackSwing
     TriggerMode: 1
-    ConditionCheckTiming: 0
+    ModifierCheckTiming: 20
     EventType: 0
     RequiredType: 10
     RequiredPhase: 10
     Modifier: 0
     ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
     NextAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
     ExtraConditions: []
@@ -42,12 +44,27 @@ MonoBehaviour:
   - Category: 0
     RequiredWindowTag: BackSwing
     TriggerMode: 1
-    ConditionCheckTiming: 0
+    ModifierCheckTiming: 20
     EventType: 0
     RequiredType: 10
     RequiredPhase: 30
     Modifier: 0
     ModifierRequiredKey: 0
+    InverseKeyStatus: 0
+    ModifierConditions: 
+    NextAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  - Category: 10
+    RequiredWindowTag: BackSwing
+    TriggerMode: 1
+    ModifierCheckTiming: 10
+    EventType: 0
+    RequiredType: 10
+    RequiredPhase: 30
+    Modifier: 10
+    ModifierRequiredKey: 10
+    InverseKeyStatus: 0
     ModifierConditions: 
     NextAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
     ExtraConditions: []

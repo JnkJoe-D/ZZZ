@@ -6,6 +6,7 @@ using ATEditor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Game.Logic.Character;
 
 namespace Game.Editor.ActionConfig
 {
@@ -360,7 +361,7 @@ namespace Game.Editor.ActionConfig
                         $"Route 需要窗口标签 '{route.RequiredWindowTag}'，但当前 Timeline 没有这个 ComboWindow。");
                 }
 
-                if (!Enum.IsDefined(typeof(ComboTriggerMode), route.TriggerMode))
+                if (!Enum.IsDefined(typeof(CommandTriggerMode), route.TriggerMode))
                 {
                     AddError(results, action, action, "InvalidTriggerMode", $"第 {i + 1} 条 Route 的 TriggerMode 不在合法枚举范围内。");
                 }

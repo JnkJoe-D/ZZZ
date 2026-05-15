@@ -14,15 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Routes:
   - Category: 0
-    RequiredType: 20
-    RequiredPhase: 0
     RequiredWindowTag: Execute1
     TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 0
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
     ExtraConditions: []
     Priority: 0

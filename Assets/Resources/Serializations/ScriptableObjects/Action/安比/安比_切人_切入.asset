@@ -26,6 +26,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 945b43785ac04270a1c11efbec6ebfb3, type: 2}
   - {fileID: 11400000, guid: 96dca57bac5945439deaf67665302212, type: 2}
   - {fileID: 11400000, guid: 6ef4370c5def1ee439d558d9833a0a2e, type: 2}
+  - {fileID: 11400000, guid: ddde41c7113d465ead61dc03cd7588a2, type: 2}
   FaceToSpeed: 10
   PlaybackSpeed: 1
   Cooldown: 2

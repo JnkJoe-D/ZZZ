@@ -30,6 +30,6 @@ MonoBehaviour:
   - Buffer1
   - BackSwing
   - Evade
-  - EvadeToDash
+  - DashLink
   - DashStart
   - Recovery

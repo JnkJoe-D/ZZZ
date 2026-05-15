@@ -34,4 +34,9 @@ namespace Game.Logic.Character
         public Vector2 DirectionSnapshot;
         public bool HasMovementInput;
     }
+    public enum CommandTriggerMode
+    {
+        OnWindowExit = 0,
+        Instant = 1
+    }
 }

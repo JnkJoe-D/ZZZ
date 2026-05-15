@@ -1,5 +1,7 @@
 {
     "isLoop": false,
+    "beforePlayEvents": [],
+    "onCompleteEvents": [],
     "groups": [
         {
             "groupId": "4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28",
@@ -260,10 +262,10 @@
                     "isEnabled": true,
                     "startTime": 0.0,
                     "duration": 3.866666793823242,
-                    "blendInDuration": 0.13333332538604736,
+                    "blendInDuration": 0.13333332538604737,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 44662
+                        "instanceID": 69368
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -297,7 +299,6 @@
                     "duration": 0.4333333373069763,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "Execute1"
                 }
             },
@@ -316,8 +317,7 @@
                     "duration": 3.433333396911621,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 2,
-                    "comboTag": " "
+                    "comboTag": "BackSwing"
                 }
             },
             {

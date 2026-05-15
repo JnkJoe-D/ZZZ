@@ -25,6 +25,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 09cc05698bc64dc8aead63699d067704, type: 2}
   - {fileID: 11400000, guid: ea7a120125d6de84693fec485332885d, type: 2}
   - {fileID: 11400000, guid: 01e32f8b52213d644a5ac6ca88ff9fbc, type: 2}
+  - {fileID: 11400000, guid: e69d643be28f4431972836242bcc6306, type: 2}
+  - {fileID: 11400000, guid: f330b7ce98b5484e8591b3686ab9ef50, type: 2}
   FaceToSpeed: 10
   PlaybackSpeed: 1
   references:

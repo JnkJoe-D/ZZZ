@@ -14,41 +14,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Routes:
   - Category: 0
+    RequiredWindowTag: Execute1
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
     RequiredType: 20
     RequiredPhase: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: 64e7438bc2a426146bd499c0a0aa1cf7, type: 2}
     ExtraConditions: []
     Priority: 0
   - Category: 0
+    RequiredWindowTag: Execute1
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
     RequiredType: 20
     RequiredPhase: 10
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: 64e7438bc2a426146bd499c0a0aa1cf7, type: 2}
     ExtraConditions: []
     Priority: 0
   - Category: 0
-    RequiredType: 20
-    RequiredPhase: 30
     RequiredWindowTag: Execute1
     TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 30
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: 64e7438bc2a426146bd499c0a0aa1cf7, type: 2}
     ExtraConditions: []
     Priority: 0

@@ -10,45 +10,62 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
-  m_Name: "\u5b89\u6bd4_\u6307\u4ee4\u96c6_2_1_\u51b2\u523a\u8854\u63a5"
+  m_Name: "\u5B89\u6BD4_\u6307\u4EE4\u96C6_2_1_\u51B2\u523A\u8854\u63A5"
   m_EditorClassIdentifier: 
   Routes:
   - Category: 0
+    RequiredWindowTag: DashLink
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
     RequiredType: 10
     RequiredPhase: 0
-    RequiredWindowTag: EvadeToDash
-    TriggerMode: 1
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
     ExtraConditions: []
     Priority: 1
   - Category: 0
+    RequiredWindowTag: DashLink
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
     RequiredType: 10
     RequiredPhase: 10
-    RequiredWindowTag: EvadeToDash
-    TriggerMode: 1
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
     ExtraConditions: []
     Priority: 1
   - Category: 0
+    RequiredWindowTag: DashLink
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
     RequiredType: 10
     RequiredPhase: 30
-    RequiredWindowTag: EvadeToDash
-    TriggerMode: 1
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
+    ExtraConditions: []
+    Priority: 1
+  - Category: 10
+    RequiredWindowTag: DashLink
+    TriggerMode: 1
+    ModifierCheckTiming: 10
+    EventType: 0
+    RequiredType: 10
+    RequiredPhase: 30
+    Modifier: 10
+    ModifierRequiredKey: 10
+    InverseKeyStatus: 0
+    ModifierConditions: 
     NextAction: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
     ExtraConditions: []
     Priority: 1

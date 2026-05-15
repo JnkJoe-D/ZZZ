@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Game.Logic.Action.Combo;
 using UnityEditor;
 using UnityEngine;
+using System.Reflection;
+using Game.Framework;
+using Game.Editor.Framework;
+using Game.Logic.Action.Combo;
 
 namespace Game.Editor.ActionConfig
 {
@@ -27,12 +30,13 @@ namespace Game.Editor.ActionConfig
             DrawProperty(ref position, property, "Category");
             DrawWindowTag(ref position, property.FindPropertyRelative("RequiredWindowTag"));
             DrawProperty(ref position, property, "TriggerMode");
-            DrawProperty(ref position, property, "ConditionCheckTiming");
+            DrawProperty(ref position, property, "ModifierCheckTiming");
             DrawProperty(ref position, property, "EventType");
             DrawProperty(ref position, property, "RequiredType");
             DrawProperty(ref position, property, "RequiredPhase");
             DrawProperty(ref position, property, "Modifier");
             DrawProperty(ref position, property, "ModifierRequiredKey");
+            DrawProperty(ref position, property, "InverseKeyStatus");
             DrawProperty(ref position, property, "ModifierConditions", includeChildren: true);
             DrawProperty(ref position, property, "NextAction");
             DrawProperty(ref position, property, "ExtraConditions", includeChildren: true);
@@ -51,14 +55,15 @@ namespace Game.Editor.ActionConfig
 
             float height = EditorGUIUtility.singleLineHeight + LineGap;
             height += PropertyHeight(property, "Category");
-            height += EditorGUIUtility.singleLineHeight + LineGap;
+            height += PropertyHeight(property, "RequiredWindowTag");
             height += PropertyHeight(property, "TriggerMode");
-            height += PropertyHeight(property, "ConditionCheckTiming");
+            height += PropertyHeight(property, "ModifierCheckTiming");
             height += PropertyHeight(property, "EventType");
             height += PropertyHeight(property, "RequiredType");
             height += PropertyHeight(property, "RequiredPhase");
             height += PropertyHeight(property, "Modifier");
             height += PropertyHeight(property, "ModifierRequiredKey");
+            height += PropertyHeight(property, "InverseKeyStatus");
             height += PropertyHeight(property, "ModifierConditions", includeChildren: true);
             height += PropertyHeight(property, "NextAction");
             height += PropertyHeight(property, "ExtraConditions", includeChildren: true);
@@ -169,14 +174,35 @@ namespace Game.Editor.ActionConfig
                 return;
             }
 
+            if (!IsVisible(child))
+            {
+                return;
+            }
+
             Rect rect = NextPropertyRect(ref position, child, includeChildren);
             EditorGUI.PropertyField(rect, child, includeChildren);
+        }
+
+        private static bool IsVisible(SerializedProperty property)
+        {
+            var field = typeof(ActionRoute).GetField(property.name);
+            if (field == null)
+            {
+                return true;
+            }
+
+            var showIf = field.GetCustomAttribute<ShowIfAttribute>();
+            return ShowIfDrawer.CheckVisible(property, showIf);
         }
 
         private static float PropertyHeight(SerializedProperty root, string propertyName, bool includeChildren = false)
         {
             SerializedProperty child = root.FindPropertyRelative(propertyName);
-            return child == null ? 0f : EditorGUI.GetPropertyHeight(child, includeChildren) + LineGap;
+            if (child == null || !IsVisible(child))
+            {
+                return 0f;
+            }
+            return EditorGUI.GetPropertyHeight(child, includeChildren) + LineGap;
         }
 
         private static Rect NextLine(ref Rect position)

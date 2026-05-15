@@ -2,17 +2,10 @@ using System;
 using System.Collections.Generic;
 using Game.Logic.Action.Config;
 using Game.Logic.Character;
-using Game.Logic.Character.Config;
 using UnityEngine;
 
 namespace Game.Logic.Action.Combo
 {
-    public enum ComboTriggerMode
-    {
-        OnWindowExit = 0,
-        Instant = 1
-    }
-
     internal static class CommandRouteEvaluator
     {
         public static bool MatchesCommand(
@@ -26,7 +19,7 @@ namespace Game.Logic.Action.Combo
                    command.Phase == requiredPhase;
         }
 
-        public static bool MatchesTriggerMode(ComboTriggerMode triggerMode, ComboTriggerMode evaluationMode)
+        public static bool MatchesTriggerMode(CommandTriggerMode triggerMode, CommandTriggerMode evaluationMode)
         {
             return triggerMode == evaluationMode;
         }
@@ -60,10 +53,10 @@ namespace Game.Logic.Action.Combo
         [SerializeReference]
         public List<ITransitionCondition> ExtraConditions = new();
 
-        public ComboTriggerMode TriggerMode = ComboTriggerMode.OnWindowExit;
+        public CommandTriggerMode TriggerMode = CommandTriggerMode.OnWindowExit;
         public int Priority;
 
-        public bool Evaluate(CharacterCommand command, ComboTriggerMode evaluationMode, CharacterEntity actor)
+        public bool Evaluate(CharacterCommand command, CommandTriggerMode evaluationMode, CharacterEntity actor)
         {
             if (!CommandRouteEvaluator.MatchesCommand(RequiredType, RequiredPhase, command))
             {

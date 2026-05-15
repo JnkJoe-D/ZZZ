@@ -104,11 +104,10 @@ namespace Game.Logic.Action.Combo
             // 2. Instant 分流：如果有活跃窗口，用当前指令单独做 Instant 评估
             if (_activeComboWindows.Count > 0 && !_isTransitioning)
             {
-                if (TryMatchInstant(command))
-                    return; // Instant 命中，指令不入缓冲区
+                if(TryMatchInstant(command))return;// Instant 指令不入缓冲区
             }
-
-            // 3. 未命中 Instant → 入缓冲区，等待 OnWindowExit 或后续评估
+        
+            // 3. buffer指令 → 入缓冲区，等待 OnWindowExit 或后续评估
             _entity.CommandBuffer.Push(command);
         }
 
@@ -121,7 +120,7 @@ namespace Game.Logic.Action.Combo
             _activeComboWindows.Add(new ComboWindowData { Tag = comboTag });
 
             // 评估窗口进入时的 Condition 路由
-            EvalCondition(comboTag, RouteConditionCheckTiming.OnWindowEnter);
+            EvalCondition(comboTag, RouteSingleModifierCheckTiming.OnWindowEnter);
         }
 
         /// <summary> 窗口关闭回调 — 用窗口期内捕获的指令做 OnWindowExit 结算 </summary>
@@ -133,10 +132,10 @@ namespace Game.Logic.Action.Combo
             List<CharacterCommand> captured = CollectCaptured(window);
 
             // 1. Condition 路由（OnWindowExit 时机）
-            EvalCondition(comboTag, RouteConditionCheckTiming.OnWindowExit);
+            if(EvalCondition(comboTag, RouteSingleModifierCheckTiming.OnWindowExit))return ;
 
             // 2. Buffer 路由（OnWindowExit 模式的指令结算）
-            EvalBufferRoutes(comboTag, captured);
+            if(EvalBufferRoutes(comboTag, captured))return;
 
             if (idx >= 0)
                 _activeComboWindows.RemoveAt(idx);
@@ -220,7 +219,7 @@ namespace Game.Logic.Action.Combo
             // 只用当前这条指令做 Instant 匹配，不查缓冲区
             foreach (ComboWindowData window in _activeComboWindows)
             {
-                if (TryResolveCommand(command, window.Tag, ComboTriggerMode.Instant, out RouteCandidate candidate))
+                if (TryResolveCommand(command, window.Tag, CommandTriggerMode.Instant, out RouteCandidate candidate))
                 {
                     Apply(candidate);
                     return true;
@@ -234,18 +233,22 @@ namespace Game.Logic.Action.Combo
         // ═══════════════════════════════════════════
 
         /// <summary> 用捕获的指令列表做 OnWindowExit 结算 </summary>
-        private void EvalBufferRoutes(string tag, List<CharacterCommand> commands)
+        private bool EvalBufferRoutes(string tag, List<CharacterCommand> commands)
         {
-            if (_isTransitioning || commands == null) return;
+            if (_isTransitioning || commands == null) return false;
 
             ActionConfigAsset action = GetCurrentAction();
-            if (action == null) return;
+            if (action == null) return false;
 
             action.CollectEffectiveRoutes(_effectiveRoutes);
-            if (_effectiveRoutes.Count == 0) return;
+            if (_effectiveRoutes.Count == 0) return false;
 
-            if (FindBestCommand(tag, ComboTriggerMode.OnWindowExit, commands, out var candidate))
+            if (FindBestCommand(tag, CommandTriggerMode.OnWindowExit, commands, out var candidate))
+            {
                 Apply(candidate);
+                return true;
+            }
+            return false;
         }
 
         // ═══════════════════════════════════════════
@@ -253,7 +256,7 @@ namespace Game.Logic.Action.Combo
         // ═══════════════════════════════════════════
 
         /// <summary> 评估指定时机的 Condition 路由 </summary>
-        private bool EvalCondition(string tag, RouteConditionCheckTiming timing)
+        private bool EvalCondition(string tag, RouteSingleModifierCheckTiming timing)
         {
             if (_isTransitioning) return false;
 
@@ -276,7 +279,7 @@ namespace Game.Logic.Action.Combo
         {
             foreach (ComboWindowData window in _activeComboWindows)
             {
-                if (EvalCondition(window.Tag, RouteConditionCheckTiming.EveryFrameInWindow))
+                if (EvalCondition(window.Tag, RouteSingleModifierCheckTiming.EveryFrameInWindow))
                     return;
             }
         }
@@ -286,7 +289,7 @@ namespace Game.Logic.Action.Combo
         // ═══════════════════════════════════════════
 
         /// <summary> 将单条指令与所有路由做匹配，返回最优候选 </summary>
-        private bool TryResolveCommand(CharacterCommand command, string tag, ComboTriggerMode mode, out RouteCandidate best)
+        private bool TryResolveCommand(CharacterCommand command, string tag, CommandTriggerMode mode, out RouteCandidate best)
         {
             best = default;
             bool found = false;
@@ -311,7 +314,7 @@ namespace Game.Logic.Action.Combo
         }
 
         /// <summary> 在指令列表中找最优 PlayerCommand 候选 </summary>
-        private bool FindBestCommand(string tag, ComboTriggerMode mode, List<CharacterCommand> commands, out RouteCandidate best)
+        private bool FindBestCommand(string tag, CommandTriggerMode mode, List<CharacterCommand> commands, out RouteCandidate best)
         {
             best = default;
             bool found = false;
@@ -326,7 +329,7 @@ namespace Game.Logic.Action.Combo
         }
 
         /// <summary> 查找最优 Condition 候选 </summary>
-        private bool FindBestCondition(string tag, RouteConditionCheckTiming timing, out RouteCandidate best)
+        private bool FindBestCondition(string tag, RouteSingleModifierCheckTiming timing, out RouteCandidate best)
         {
             best = default;
             bool found = false;
@@ -448,7 +451,7 @@ namespace Game.Logic.Action.Combo
 
             // 1. 动作完成时的条件路由（如持续移动输入）
             finished.CollectEffectiveRoutes(_effectiveRoutes);
-            if (FindBestCondition(null, RouteConditionCheckTiming.OnWindowExit, out var c))
+            if (FindBestCondition(null, RouteSingleModifierCheckTiming.OnWindowExit, out var c))
             {
                 Apply(c);
                 return;

@@ -14,22 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 10017
   Name: 
-  TimelineAsset: {fileID: 4900000, guid: d5cb0a7d48f685b469fcee7c975c5940, type: 3}
+  TimelineAsset: {fileID: 4900000, guid: 05a01d4b62116ab42bb7b0144a395664, type: 3}
   TurnMode: 1
-  LocalRoutes:
-  - RequiredType: 20
-    RequiredPhase: 0
-    NextAction: {fileID: 11400000, guid: 7a51b91027c2ec94ba9740c476a93a5f, type: 2}
-    ExtraConditions: []
-    RequiredWindowTag: Deploy
-    TriggerMode: 1
+  EnterState: 50
+  CompleteMode: 20
+  CompleteAction: {fileID: 11400000, guid: 490fb4141147cbd489e6c3464b901b0b, type: 2}
+  Routes: []
   RouteSets:
   - {fileID: 11400000, guid: ddde41c7113d465ead61dc03cd7588a2, type: 2}
   - {fileID: 11400000, guid: 9d0402f47d454057b5973feb7b1de91b, type: 2}
   - {fileID: 11400000, guid: c95e4eeb2ad04a8685048db8cec1af22, type: 2}
   - {fileID: 11400000, guid: 945b43785ac04270a1c11efbec6ebfb3, type: 2}
   - {fileID: 11400000, guid: 96dca57bac5945439deaf67665302212, type: 2}
-  Category: 110
+  FaceToSpeed: 10
+  PlaybackSpeed: 1
   Cooldown: 0.5
   MPCost: 0
   CastRange: 2

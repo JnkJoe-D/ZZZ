@@ -209,9 +209,6 @@
                         },
                         {
                             "rid": 1011
-                        },
-                        {
-                            "rid": 1012
                         }
                     ]
                 }
@@ -234,7 +231,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1012
                         }
                     ]
                 }
@@ -276,7 +273,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1014
+                            "rid": 1013
                         }
                     ]
                 }
@@ -297,7 +294,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.16666662693023683,
                     "animationClip": {
-                        "instanceID": 156590
+                        "instanceID": 83608
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -332,7 +329,7 @@
                     "blendInDuration": 0.16666662693023683,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 156592
+                        "instanceID": 104872
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -362,8 +359,8 @@
                     "clipId": "c5a41784-dc4a-4c2d-b4e2-787ca2c922ba",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 0.5,
+                    "startTime": 0.6833333969116211,
+                    "duration": 0.15000000596046449,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "Buffer1"
@@ -377,36 +374,18 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "ff7f784f-b182-45ee-a20d-58a66943d024",
-                    "clipName": "连招窗口片段",
-                    "isEnabled": true,
-                    "startTime": 0.5,
-                    "duration": 0.3333333730697632,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "comboTag": "Execute1"
-                }
-            },
-            {
-                "rid": 1012,
-                "type": {
-                    "class": "ComboWindowClip",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
                     "clipId": "c1b6a843-422d-4d08-8166-43406938b52b",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.8333333730697632,
-                    "duration": 2.5333333015441896,
+                    "duration": 2.700000047683716,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "BackSwing"
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1012,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -424,7 +403,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1013,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",

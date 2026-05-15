@@ -288,7 +288,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 80964
+                        "instanceID": 88040
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -322,7 +322,6 @@
                     "duration": 4.033333778381348,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "Execute1"
                 }
             },
@@ -341,8 +340,7 @@
                     "duration": 4.033333778381348,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
-                    "comboTag": "Evade1"
+                    "comboTag": "Evade"
                 }
             },
             {

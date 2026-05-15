@@ -44,8 +44,6 @@ namespace Game.Logic.Character
         public bool IsControlActive { get; private set; }
         public bool IsPresentationVisible { get; private set; } = true;
 
-        public event System.Action<string> OnSkillTimelineEvent;
-
         public ISkillComboWindowHandler SkillComboWindowHandler => ActionController;
         public ISkillMotionWindowHandler SkillMotionWindowHandler => MotionWindowHandler;
 
@@ -202,10 +200,13 @@ namespace Game.Logic.Character
         {
             if (this is RoleEntity roleEntity)
             {
-                CharcterManager.Instance?.HandleTimelineEvent(roleEntity, eventName);
+                Game.Framework.EventCenter.Publish(new CharacterTimelineEvent
+                {
+                    SourceEntity = roleEntity,
+                    EventName = eventName,
+                    Parameters = parameters
+                });
             }
-
-            OnSkillTimelineEvent?.Invoke(eventName);
         }
 
         private void Update()

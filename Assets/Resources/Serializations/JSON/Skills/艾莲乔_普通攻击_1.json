@@ -1,5 +1,7 @@
 {
     "isLoop": false,
+    "beforePlayEvents": [],
+    "onCompleteEvents": [],
     "groups": [
         {
             "groupId": "4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28",
@@ -295,7 +297,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1333332061767578,
                     "animationClip": {
-                        "instanceID": 44386
+                        "instanceID": 54284
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -330,7 +332,7 @@
                     "blendInDuration": 0.1333332061767578,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 45630
+                        "instanceID": 90894
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -360,11 +362,10 @@
                     "clipId": "c5a41784-dc4a-4c2d-b4e2-787ca2c922ba",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 0.30000001192092896,
+                    "startTime": 0.15000000596046449,
+                    "duration": 0.15000000596046449,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 0,
                     "comboTag": "Buffer1"
                 }
             },
@@ -379,11 +380,10 @@
                     "clipId": "ff7f784f-b182-45ee-a20d-58a66943d024",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.30000001192092896,
-                    "duration": 0.43333351612091064,
+                    "startTime": 0.30000001192092898,
+                    "duration": 0.43333351612091067,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "Execute1"
                 }
             },
@@ -402,7 +402,6 @@
                     "duration": 3.200000047683716,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "BackSwing"
                 }
             },
@@ -421,7 +420,6 @@
                     "duration": 3.9333336353302,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "Evade"
                 }
             },

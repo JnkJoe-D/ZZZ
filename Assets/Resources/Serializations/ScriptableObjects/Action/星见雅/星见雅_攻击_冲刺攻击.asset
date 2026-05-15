@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
-  m_Name: "\u661f\u89c1\u96c5_\u653b\u51fb_\u51b2\u523a\u653b\u51fb"
+  m_Name: "\u661F\u89C1\u96C5_\u653B\u51FB_\u51B2\u523A\u653B\u51FB"
   m_EditorClassIdentifier: 
   ID: 10218
   Name: 
@@ -19,15 +19,39 @@ MonoBehaviour:
   EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
-  Routes: []
+  Routes:
+  - Category: 0
+    RequiredWindowTag: Execute1
+    TriggerMode: 1
+    ConditionCheckTiming: 0
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 0
+    Modifier: 0
+    ModifierRequiredKey: 0
+    ModifierConditions: 
+    NextAction: {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: Buffer1
+    TriggerMode: 0
+    ConditionCheckTiming: 0
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 0
+    Modifier: 0
+    ModifierRequiredKey: 0
+    ModifierConditions: 
+    NextAction: {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
+    ExtraConditions: []
+    Priority: 0
   RouteSets:
   - {fileID: 11400000, guid: e69d643be28f4431972836242bcc6306, type: 2}
   - {fileID: 11400000, guid: 22d0fc9289794c44953011472885221e, type: 2}
   - {fileID: 11400000, guid: 0ae99841e2fe44a48bbd2c6042a90734, type: 2}
-  FollowInputDirection: 0
   FaceToSpeed: 10
-  SpeedMultiplier: 0
-  Category: 30
+  PlaybackSpeed: 1
   Cooldown: 0.5
   MPCost: 0
   CastRange: 2

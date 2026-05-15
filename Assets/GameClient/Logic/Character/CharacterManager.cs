@@ -64,19 +64,30 @@ namespace Game.Logic.Character
         public int PartySize => _partyMembers.Count;
         public int ActiveSlotIndex => _activeSlotIndex;
 
+        public CharcterManager()
+        {
+            Initialize();
+        }
         public void Initialize()
         {
+            EventCenter.Subscribe<CharacterTimelineEvent>(OnCharacterTimelineEvent);
             Debug.Log("[CharacterManager] Initialized.");
         }
 
         public void Shutdown()
         {
+            EventCenter.Unsubscribe<CharacterTimelineEvent>(OnCharacterTimelineEvent);
             UnpossessCurrentCharacter();
         }
 
         public void Update(float deltaTime)
         {
             MaintainStandbyIdleActions();
+        }
+
+        private void OnCharacterTimelineEvent(CharacterTimelineEvent evt)
+        {
+            HandleTimelineEvent(evt.SourceEntity, evt.EventName);
         }
 
         public async Task<CharacterEntity> InitializePartyAsync(
@@ -916,3 +927,4 @@ namespace Game.Logic.Character
 
     }
 }
+

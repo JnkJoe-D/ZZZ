@@ -10,33 +10,49 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
-  m_Name: "\u661f\u89c1\u96c5_\u6307\u4ee4\u96c6_3_0_\u9ed8\u8ba4\u95ea\u907f"
+  m_Name: "\u661F\u89C1\u96C5_\u6307\u4EE4\u96C6_3_0_\u9ED8\u8BA4\u95EA\u907F"
   m_EditorClassIdentifier: 
   Routes:
   - Category: 0
-    RequiredType: 50
-    RequiredPhase: 0
     RequiredWindowTag: Evade
     TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 50
+    RequiredPhase: 0
     Modifier: 20
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 0a000000
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: cb10ad5354ac95f48b29dad0c6963d94, type: 2}
     ExtraConditions: []
     Priority: 0
   - Category: 0
-    RequiredType: 50
-    RequiredPhase: 0
     RequiredWindowTag: Evade
     TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 50
+    RequiredPhase: 0
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: 1c65d601484b6314a90bf8659c618e8e, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: Evade
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 50
+    RequiredPhase: 0
+    Modifier: 10
+    ModifierRequiredKey: 10
+    InverseKeyStatus: 0
+    ModifierConditions: 
+    NextAction: {fileID: 11400000, guid: cb10ad5354ac95f48b29dad0c6963d94, type: 2}
     ExtraConditions: []
     Priority: 0
   references:

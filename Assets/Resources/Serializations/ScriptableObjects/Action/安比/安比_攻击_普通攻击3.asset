@@ -23,60 +23,84 @@ MonoBehaviour:
   - Category: 0
     RequiredWindowTag: Execute1
     TriggerMode: 1
-    ConditionCheckTiming: 0
+    ModifierCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
-    NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
-    ExtraConditions: []
-    Priority: 1
-  - Category: 0
-    RequiredWindowTag: Buffer1
-    TriggerMode: 0
-    ConditionCheckTiming: 0
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 30
-    Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
-    ModifierConditions: 
-    NonSatisfiedPolicy: 0
     NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
     ExtraConditions: []
     Priority: 1
   - Category: 0
     RequiredWindowTag: Execute1
     TriggerMode: 1
-    ConditionCheckTiming: 0
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 10
+    Modifier: 0
+    ModifierRequiredKey: 20
+    InverseKeyStatus: 1
+    ModifierConditions: 
+    NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: Execute1
+    TriggerMode: 1
+    ModifierCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 30
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 20
+    InverseKeyStatus: 1
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
-    NextAction: {fileID: 11400000, guid: 5db824db0cb6cde42a4bb39499f35970, type: 2}
+    NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
+    ExtraConditions: []
+    Priority: 0
+  - Category: 10
+    RequiredWindowTag: Execute1
+    TriggerMode: 1
+    ModifierCheckTiming: 10
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 20
+    Modifier: 10
+    ModifierRequiredKey: 20
+    InverseKeyStatus: 0
+    ModifierConditions: 
+    NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
     ExtraConditions: []
     Priority: 0
   - Category: 0
     RequiredWindowTag: Buffer1
     TriggerMode: 0
-    ConditionCheckTiming: 0
+    ModifierCheckTiming: 20
     EventType: 0
     RequiredType: 20
-    RequiredPhase: 0
-    Modifier: 10
-    ModifierRequiredType: 20
-    ModifierRequiredPhase: 20
+    RequiredPhase: 30
+    Modifier: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
+    NextAction: {fileID: 11400000, guid: a17238d2db42b3f4d96d027c3a261b32, type: 2}
+    ExtraConditions: []
+    Priority: 1
+  - Category: 0
+    RequiredWindowTag: Buffer1
+    TriggerMode: 0
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 20
+    Modifier: 10
+    ModifierRequiredKey: 20
+    InverseKeyStatus: 1
+    ModifierConditions: 
     NextAction: {fileID: 11400000, guid: 5db824db0cb6cde42a4bb39499f35970, type: 2}
     ExtraConditions: []
     Priority: 0

@@ -1,5 +1,7 @@
 {
     "isLoop": false,
+    "beforePlayEvents": [],
+    "onCompleteEvents": [],
     "groups": [
         {
             "groupId": "4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28",
@@ -288,11 +290,11 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.2000000476837158,
+                    "duration": 1.2000000476837159,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.13333332538604736,
+                    "blendOutDuration": 0.20000004768371583,
                     "animationClip": {
-                        "instanceID": 56834
+                        "instanceID": 59244
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -319,15 +321,15 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "29ffc610-2c69-466b-84e6-4836339eb642",
+                    "clipId": "4edb0b5d-f8b0-4075-b53c-d2db3fafadd3",
                     "clipName": "动画片段",
                     "isEnabled": true,
-                    "startTime": 1.0666667222976685,
+                    "startTime": 1.0,
                     "duration": 3.200000286102295,
-                    "blendInDuration": 0.13333332538604736,
+                    "blendInDuration": 0.20000004768371583,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 58078
+                        "instanceID": 94614
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -358,10 +360,9 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.7000000476837158,
+                    "duration": 1.0,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 0,
                     "comboTag": "Buffer1"
                 }
             },
@@ -376,11 +377,10 @@
                     "clipId": "ac5012a8-53ae-4ec1-b8a6-35e6e5032ecf",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.7000000476837158,
-                    "duration": 3.566666841506958,
+                    "startTime": 1.0,
+                    "duration": 3.2333335876464845,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "BackSwing"
                 }
             },
@@ -396,10 +396,9 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 4.266666889190674,
+                    "duration": 4.233333587646484,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "Evade"
                 }
             },
@@ -415,7 +414,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 4.266666889190674,
+                    "duration": 4.233333587646484,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1

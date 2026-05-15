@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.Input;
 using Game.Logic.Action.Config;
 using Game.Logic.Character;
+using Game.Framework;
 using UnityEngine;
 
 namespace Game.Logic.Action.Combo
@@ -10,7 +11,7 @@ namespace Game.Logic.Action.Combo
     public enum RouteTriggerCategory
     {
         PlayerCommand = 0,
-        Condition = 10,
+        SingleModifier = 10,
         Event = 20
     }
 
@@ -37,7 +38,7 @@ namespace Game.Logic.Action.Combo
         Skill = 50
     }
 
-    public enum RouteConditionCheckTiming
+    public enum RouteSingleModifierCheckTiming
     {
         EveryFrameInWindow = 0,
         OnWindowEnter = 10,
@@ -50,19 +51,35 @@ namespace Game.Logic.Action.Combo
         [Header("Trigger")]
         public RouteTriggerCategory Category;
         public string RequiredWindowTag = "Execute1";
-        public ComboTriggerMode TriggerMode = ComboTriggerMode.OnWindowExit;
-        [Header("Condition Trigger")]
-        public RouteConditionCheckTiming ConditionCheckTiming = RouteConditionCheckTiming.OnWindowExit;
+
+        [ShowIf("Category", RouteTriggerCategory.PlayerCommand)]
+        public CommandTriggerMode TriggerMode = CommandTriggerMode.OnWindowExit;
+
+        [Header("Modifier Trigger")]
+        [ShowIf("Category", RouteTriggerCategory.SingleModifier)]
+        public RouteSingleModifierCheckTiming ModifierCheckTiming = RouteSingleModifierCheckTiming.OnWindowExit;
+
         [Header("Event Trigger")]
+        [ShowIf("Category", RouteTriggerCategory.Event)]
         public RouteEventType EventType = RouteEventType.None;
 
         [Header("Player Command Trigger")]
+        [ShowIf("Category", RouteTriggerCategory.PlayerCommand)]
         public InputCommand RequiredType;
+
+        [ShowIf("Category", RouteTriggerCategory.PlayerCommand)]
         public CommandPhase RequiredPhase = CommandPhase.Started;
 
         [Header("Modifier")]
         public ModifierCategory Modifier = ModifierCategory.None;
+
+        [ShowIf("Modifier", ModifierCategory.KeyState)]
         public InputCommand ModifierRequiredKey;
+
+        [ShowIf("Modifier", ModifierCategory.KeyState)]
+        public bool InverseKeyStatus = false;
+
+        [ShowIf("Modifier", ModifierCategory.Condition)]
         public List<ConditionCommand> ModifierConditions = new();
 
         [Header("Next Action")]
@@ -80,7 +97,7 @@ namespace Game.Logic.Action.Combo
         public bool EvaluatePlayerCommand(
             CharacterCommand command,
             string activeWindowTag,
-            ComboTriggerMode evaluationMode,
+            CommandTriggerMode evaluationMode,
             CharacterEntity actor)
         {
             if (Category != RouteTriggerCategory.PlayerCommand)
@@ -109,9 +126,9 @@ namespace Game.Logic.Action.Combo
         public bool EvaluateConditionTrigger(
             CharacterEntity actor,
             string activeWindowTag,
-            RouteConditionCheckTiming evaluationTiming)
+            RouteSingleModifierCheckTiming evaluationTiming)
         {
-            if (Category != RouteTriggerCategory.Condition)
+            if (Category != RouteTriggerCategory.SingleModifier)
             {
                 return false;
             }
@@ -121,7 +138,7 @@ namespace Game.Logic.Action.Combo
                 return false;
             }
 
-            if (ConditionCheckTiming != evaluationTiming)
+            if (ModifierCheckTiming != evaluationTiming)
             {
                 return false;
             }
@@ -165,7 +182,7 @@ namespace Game.Logic.Action.Combo
                 case ModifierCategory.KeyState:
                     if (actor?.InputProvider == null)
                         return false;
-                    return actor.InputProvider.IsHeld((int)ModifierRequiredKey);
+                    return actor.InputProvider.IsHeld((int)ModifierRequiredKey) || InverseKeyStatus;
 
                 default:
                     return true;
