@@ -1,8 +1,8 @@
 using Game.Input;
-using Game.Logic.Action.Combo;
+using Game.Logic;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public static class CharacterCommandFactory
     {

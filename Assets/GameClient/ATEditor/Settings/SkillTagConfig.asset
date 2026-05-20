@@ -32,4 +32,5 @@ MonoBehaviour:
   - Evade
   - DashLink
   - DashStart
-  - Recovery
+  - SwitchCapture
+  - SwitchExecute

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Game.Logic.Character.Config
+namespace Game.Logic
 {
     /// <summary>
     /// 标准的扁平化动画组条目

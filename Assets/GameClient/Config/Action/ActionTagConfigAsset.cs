@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Logic.Action.Config
+namespace Game.Logic
 {
     [CreateAssetMenu(fileName = "ActionTagConfigAsset", menuName = "Config/Action/Action Tag Config", order = 200)]
     public class ActionTagConfigAsset : ScriptableObject

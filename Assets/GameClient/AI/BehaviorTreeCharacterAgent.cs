@@ -1,4 +1,4 @@
-using Game.Logic.Character;
+using Game.Logic;
 using UnityEngine;
 
 namespace Game.AI
@@ -199,7 +199,7 @@ namespace Game.AI
             }
 
             CharacterEntity localPlayer =
-                Game.Logic.Player.PlayerManager.Instance?.LocalCharacter ?? Game.Logic.Character.CharcterManager.Instance?.LocalCharacter;
+                Game.Logic.PlayerManager.Instance?.LocalCharacter ?? Game.Logic.CharcterManager.Instance?.LocalCharacter;
             bool isPlayerControlled = localPlayer == character;
             BehaviorTreeCharacterRegistry.SetMetadata(
                 character,

@@ -176,7 +176,7 @@ namespace ATEditor.Editor
                     window.Stop(); // Ensure window-level stop logic applies
                     events.OnRepaintRequest?.Invoke();
                 }
-            });
+            }, state.currentFilePath);
         }
 
         private void OnExportJSON()

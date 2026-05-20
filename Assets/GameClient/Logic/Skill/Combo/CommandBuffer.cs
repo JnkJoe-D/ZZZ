@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Game.Logic.Character;
+using Game.Logic;
 using UnityEngine;
 
-namespace Game.Logic.Action.Combo
+namespace Game.Logic
 {
     public enum CommandRouteSource
     {

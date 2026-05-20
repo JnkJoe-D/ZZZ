@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Game.Logic.Action.Combo;
+using Game.Logic;
 using UnityEngine;
 
-namespace Game.Logic.Action.Config
+namespace Game.Logic
 {
     /// <summary>
     /// 动作所处的状态机环境。每个 ActionConfigAsset 必须显式声明。

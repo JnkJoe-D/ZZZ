@@ -1,8 +1,8 @@
 using UnityEngine;
 using ATEditor;
-using Game.Logic.Action.Combo;
+using Game.Logic;
 
-namespace Game.Logic.Action.Config
+namespace Game.Logic
 {
     /// <summary>
     /// 攻击/技能类型

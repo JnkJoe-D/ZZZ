@@ -2,7 +2,7 @@ using Cinemachine;
 using Game.Input;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public sealed class CharacterTeamContext : MonoBehaviour
     {

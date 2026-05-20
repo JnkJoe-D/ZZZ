@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     [Serializable]
     public class TargetSearchConfig

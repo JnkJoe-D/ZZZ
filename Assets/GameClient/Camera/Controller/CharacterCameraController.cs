@@ -1,5 +1,5 @@
 using Cinemachine;
-using Game.Logic.Character;
+using Game.Logic;
 using UnityEngine;
 
 namespace Game.Camera

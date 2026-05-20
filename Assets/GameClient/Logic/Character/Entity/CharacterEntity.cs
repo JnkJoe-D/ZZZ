@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using Game.Camera;
 using Game.FSM;
 using Game.Input;
-using Game.Logic.Character.Motion;
 using Game.MAnimSystem;
 using ATEditor;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public abstract class CharacterEntity : MonoBehaviour, ISkillEventHandler
     {
@@ -26,7 +25,7 @@ namespace Game.Logic.Character
         public virtual TargetFinder TargetFinder => _targetFinder;
         public virtual ICameraController CameraController => _cameraController;
 
-        public Config.CharacterConfigAsset Config { get; private set; }
+        public CharacterConfigAsset Config { get; private set; }
         public IMovementController MovementController { get; protected set; }
         public HitReactionModule HitReactionModule { get; protected set; }
 
@@ -35,8 +34,8 @@ namespace Game.Logic.Character
         public FSMSystem<CharacterEntity> Machine => StateMachine;
 
         public ActionPlayer ActionPlayer { get; private set; }
-        public Action.Combo.CommandBuffer CommandBuffer { get; private set; }
-        public Action.Combo.ActionController ActionController { get; private set; }
+        public CommandBuffer CommandBuffer { get; private set; }
+        public ActionController ActionController { get; private set; }
         public SkillMotionWindowHandler MotionWindowHandler { get; private set; }
         public CharacterRuntimeData RuntimeData { get; private set; }
 
@@ -60,8 +59,8 @@ namespace Game.Logic.Character
             InitRequiredComponents();
 
             ActionPlayer = new ActionPlayer(this);
-            CommandBuffer = new Game.Logic.Action.Combo.CommandBuffer();
-            ActionController = new Game.Logic.Action.Combo.ActionController(this);
+            CommandBuffer = new Game.Logic.CommandBuffer();
+            ActionController = new Game.Logic.ActionController(this);
             MotionWindowHandler = new SkillMotionWindowHandler(this);
             RuntimeData = new CharacterRuntimeData();
             _inputEventAdapter = new CharacterInputEventAdapter(() => CurrentInputHandler);
@@ -70,7 +69,7 @@ namespace Game.Logic.Character
 
         protected abstract void InitRequiredComponents();
 
-        public void Init(Game.Logic.Character.Config.CharacterConfigAsset config)
+        public void Init(Game.Logic.CharacterConfigAsset config)
         {
             Config = config;
 
@@ -168,12 +167,23 @@ namespace Game.Logic.Character
                     pair.Key.enabled = visible && pair.Value;
                 }
             }
+        }
+        public void SetColliderActive(bool active)
+        {
+            LayerMask excludeMask = 0;
+            if (!active)
+            {
+                excludeMask = LayerMask.GetMask("LocalRole", "Character", "CharHit");
+            }
 
             foreach (KeyValuePair<Collider, bool> pair in _colliderEnabledStates)
             {
                 if (pair.Key != null)
                 {
-                    pair.Key.enabled = visible && pair.Value;
+                    // 保持碰撞体自身的启用状态与其初始状态一致
+                    pair.Key.enabled = pair.Value;
+                    // 设置排除层级
+                    pair.Key.excludeLayers = excludeMask;
                 }
             }
         }
@@ -220,7 +230,7 @@ namespace Game.Logic.Character
         {
             Game.AI.BehaviorTreeCharacterRegistry.Unregister(this);
             UnbindInput();
-            Game.Logic.Action.ActionManager.Instance?.RemoveCache(this);
+            Game.Logic.ActionManager.Instance?.RemoveCache(this);
 
             if (FSMManager.Instance != null && StateMachine != null)
             {

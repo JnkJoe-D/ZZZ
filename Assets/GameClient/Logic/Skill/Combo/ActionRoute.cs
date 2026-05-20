@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Game.Input;
-using Game.Logic.Action.Config;
-using Game.Logic.Character;
+using Game.Logic;
 using Game.Framework;
 using UnityEngine;
 
-namespace Game.Logic.Action.Combo
+namespace Game.Logic
 {
     public enum RouteTriggerCategory
     {
@@ -18,7 +17,8 @@ namespace Game.Logic.Action.Combo
     public enum RouteEventType
     {
         None = 0,
-        Switch = 10
+        SwitchIn = 10,
+        SwitchOut = 20,
     }
 
     public enum ModifierCategory
@@ -43,6 +43,18 @@ namespace Game.Logic.Action.Combo
         EveryFrameInWindow = 0,
         OnWindowEnter = 10,
         OnWindowExit = 20,
+    }
+
+    public enum ExecuteTarget
+    {
+        None = 0,
+        Action = 10,
+        Event = 20,
+    }
+    public enum ExecuteEvent
+    {
+        None = 0,
+        SwitchCaptureSucceed = 10,
     }
 
     [Serializable]
@@ -82,8 +94,14 @@ namespace Game.Logic.Action.Combo
         [ShowIf("Modifier", ModifierCategory.Condition)]
         public List<ConditionCommand> ModifierConditions = new();
 
-        [Header("Next Action")]
-        public ActionConfigAsset NextAction;
+        [Header("Execution Target")]
+        public ExecuteTarget ExecuteType = ExecuteTarget.Action;
+
+        [ShowIf("ExecuteType", ExecuteTarget.Action)]
+        public ActionConfigAsset ExecuteAction;
+
+        [ShowIf("ExecuteType", ExecuteTarget.Event)]
+        public ExecuteEvent RouteExecuteEvent;
 
         [Header("Extra Conditions")]
         [SerializeReference]
@@ -196,6 +214,17 @@ namespace Game.Logic.Action.Combo
                    RequiredPhase == commandPhase;
         }
 
+        public bool IsInvalid()
+        {
+            if(ExecuteType == ExecuteTarget.None
+            || (ExecuteType == ExecuteTarget.Action && ExecuteAction == null)
+            || (ExecuteType == ExecuteTarget.Event && RouteExecuteEvent == ExecuteEvent.None))
+            {
+                return false;
+            }
+            return true;
+        }
+
         private bool EvaluateModifierConditions(CharacterEntity actor)
         {
             if (ModifierConditions == null || ModifierConditions.Count == 0)
@@ -214,9 +243,9 @@ namespace Game.Logic.Action.Combo
             return true;
         }
 
-        private bool CheckCondition(ConditionCommand condition, CharacterEntity actor)
+        private bool CheckCondition(ConditionCommand condition, CharacterEntity entity)
         {
-            if (actor == null)
+            if (entity == null)
             {
                 return false;
             }
@@ -224,9 +253,10 @@ namespace Game.Logic.Action.Combo
             return condition switch
             {
                 ConditionCommand.None => true,
-                ConditionCommand.Move => actor.InputProvider != null && actor.InputProvider.HasMovementInput(),
-                ConditionCommand.ShortMove => actor.RuntimeData != null && actor.RuntimeData.IsShortMoveInput,
-                ConditionCommand.LostMove => actor.InputProvider != null && !actor.InputProvider.HasMovementInput(),
+                ConditionCommand.Move => entity.InputProvider != null && entity.InputProvider.HasMovementInput(),
+                ConditionCommand.ShortMove => entity.RuntimeData != null && entity.RuntimeData.IsShortMoveInput,
+                ConditionCommand.LostMove => entity.InputProvider != null && !entity.InputProvider.HasMovementInput(),
+                ConditionCommand.SwitchOutPending => entity.RuntimeData != null && entity.RuntimeData.IsSwitchOutPending, 
                 _ => false
             };
         }

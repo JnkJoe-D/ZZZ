@@ -23,27 +23,33 @@ MonoBehaviour:
   - Category: 0
     RequiredWindowTag: Execute1
     TriggerMode: 1
-    ConditionCheckTiming: 0
+    ModifierCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
     Modifier: 0
     ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NextAction: {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: b160746897ca318418d8374d92e49685, type: 2}
+    RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
   - Category: 0
     RequiredWindowTag: Buffer1
     TriggerMode: 0
-    ConditionCheckTiming: 0
+    ModifierCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
     Modifier: 0
     ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NextAction: {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: b160746897ca318418d8374d92e49685, type: 2}
+    RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
   RouteSets:

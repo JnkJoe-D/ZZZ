@@ -1,8 +1,8 @@
 using UnityEngine;
-using Game.Logic.Action.Config;
+using Game.Logic;
 using System.Collections.Generic;
 
-namespace Game.Logic.Character.Config
+namespace Game.Logic
 {
     /// <summary>
     /// 受击反应配置。定义角色级别的受击参数。

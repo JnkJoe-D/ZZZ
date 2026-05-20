@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Game.Logic.Action.Config;
+using Game.Logic;
 using UnityEditor;
 
 namespace Game.Editor.ActionConfig

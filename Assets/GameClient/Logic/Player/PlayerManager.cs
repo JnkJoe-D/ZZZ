@@ -1,12 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-using Game.Logic.Character;
-using Game.Logic.Character.Config;
+using Game.Logic;
 using Game.Resource;
 using Game.Camera;
 
-namespace Game.Logic.Player
+namespace Game.Logic
 {
     /// <summary>
     /// 全局玩家管理器 (PlayerManager)
@@ -52,9 +51,9 @@ namespace Game.Logic.Player
             }
 
             // 2. 实例化躯壳
-            if (Game.Logic.Action.ActionManager.Instance != null)
+            if (Game.Logic.ActionManager.Instance != null)
             {
-                await Game.Logic.Action.ActionManager.Instance.PreloadCharacterActionsAsync(config);
+                await Game.Logic.ActionManager.Instance.PreloadCharacterActionsAsync(config);
             }
 
             GameObject characterGo = UnityEngine.Object.Instantiate(characterPrefab, spawnPos, spawnRot);

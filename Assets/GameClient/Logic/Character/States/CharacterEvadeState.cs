@@ -1,10 +1,10 @@
 using Game.FSM;
 using Game.Input;
-using Game.Logic.Action.Config;
+using Game.Logic;
 using ATEditor;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public class CharacterEvadeState : CharacterStateBase
     {

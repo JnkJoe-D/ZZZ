@@ -4,7 +4,7 @@ using Game.Camera;
 using Game.Resource;
 using ATEditor;
 using UnityEngine;
-using Game.Logic.Character;
+using Game.Logic;
 
 
 

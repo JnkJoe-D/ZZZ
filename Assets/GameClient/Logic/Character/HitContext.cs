@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
     /// GameClient 层的命中上下文。

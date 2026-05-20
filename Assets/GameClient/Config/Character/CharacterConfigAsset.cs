@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using Game.AI;
-using Game.Logic.Action.Combo;
-using Game.Logic.Action.Config;
+using Game.Logic;
 using UnityEngine;
 
-namespace Game.Logic.Character.Config
+namespace Game.Logic
 {
     [CreateAssetMenu(fileName = "CharacterConfigAsset", menuName = "Config/Role/Character Config")]
     public class CharacterConfigAsset : ScriptableObject
@@ -101,9 +100,9 @@ namespace Game.Logic.Character.Config
             action.CollectEffectiveRoutes(effectiveRoutes);
             foreach (ActionRoute route in effectiveRoutes)
             {
-                if (route?.NextAction != null)
+                if (route?.ExecuteAction != null)
                 {
-                    CollectActionRecursive(route.NextAction, collectedActions);
+                    CollectActionRecursive(route.ExecuteAction, collectedActions);
                 }
             }
         }

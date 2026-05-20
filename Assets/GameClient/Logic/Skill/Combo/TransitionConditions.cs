@@ -1,8 +1,8 @@
 using System;
-using Game.Logic.Character;
+using Game.Logic;
 using UnityEngine;
 
-namespace Game.Logic.Action.Combo
+namespace Game.Logic
 {
     [Serializable]
     public sealed class HasMovementInputCondition : ITransitionCondition

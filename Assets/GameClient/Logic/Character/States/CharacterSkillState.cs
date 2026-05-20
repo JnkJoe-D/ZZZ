@@ -1,6 +1,6 @@
 using Game.FSM;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public class CharacterSkillState : CharacterStateBase
     {

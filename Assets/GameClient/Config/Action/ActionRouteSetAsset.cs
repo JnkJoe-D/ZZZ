@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Logic.Action.Combo
+namespace Game.Logic
 {
     /// <summary>
     /// 可复用的 ActionRoute 集合 ScriptableObject。

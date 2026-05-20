@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 using ATEditor;
-using Game.Logic.Character.Config;
+using Game.Logic;
 using Game.VFX;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
     /// Visual hit-reaction module for a character entity.

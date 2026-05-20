@@ -8,7 +8,7 @@ using Game.Scene;
 using Game.UI;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
     /// Lightweight runtime bootstrap used for local character spawning tests.
@@ -20,8 +20,8 @@ namespace Game.Logic.Character
 
         [Header("Test Spawner Config")]
         public string characterPrefabPath = "Assets/Resources/Character_Player.prefab";
-        public Game.Logic.Character.Config.CharacterConfigAsset testCharacterConfig;
-        public Game.Logic.Character.Config.PartyConfigAsset testPartyConfig;
+        public Game.Logic.CharacterConfigAsset testCharacterConfig;
+        public Game.Logic.PartyConfigAsset testPartyConfig;
         public Transform spawnPoint;
 
         public bool IsSpawnCompleted { get; private set; }

@@ -1,6 +1,6 @@
-using Game.Logic.Action.Combo;
+using Game.Logic;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public interface IInputCommandHandler
     {

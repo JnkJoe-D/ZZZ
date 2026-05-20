@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Game.Logic.Action.Config;
-using Game.Logic.Character;
+using Game.Logic;
 using UnityEngine;
 
-namespace Game.Logic.Action.Combo
+namespace Game.Logic
 {
     internal static class CommandRouteEvaluator
     {

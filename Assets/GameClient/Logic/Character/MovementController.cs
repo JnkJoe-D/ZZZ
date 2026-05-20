@@ -5,7 +5,7 @@ using Game.AI;
 using ATEditor;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     [RequireComponent(typeof(CharacterEntity))]
     public class MovementController : MonoBehaviour, IMovementController

@@ -1,8 +1,8 @@
-using Game.Logic.Action.Config;
+using Game.Logic;
 using ATEditor;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
     /// 全局行为播放器，剥离状态机对 Timeline API 的直接依赖
@@ -38,7 +38,7 @@ namespace Game.Logic.Character
             }
 
             // 先验证 Timeline 可用性，避免在确认前就清理旧动作
-            var timeline = Game.Logic.Action.ActionManager.Instance.GetOrLoadTimeline(config);
+            var timeline = Game.Logic.ActionManager.Instance.GetOrLoadTimeline(config);
             if (timeline == null)
             {
                 Debug.LogWarning($"[ActionPlayer] Timeline cache miss for action '{config.name}'. Skipping — keeping current action alive.");
@@ -51,8 +51,8 @@ namespace Game.Logic.Character
             FaceTo(config);
 
             // 从管理器索要新 Runner, Context
-            _runner = Game.Logic.Action.ActionManager.Instance.GetRunner(_entity);
-            _context = Game.Logic.Action.ActionManager.Instance.GetContext(_entity);
+            _runner = Game.Logic.ActionManager.Instance.GetRunner(_entity);
+            _context = Game.Logic.ActionManager.Instance.GetContext(_entity);
 
             // 默认恢复全局速度
             _context.GlobalPlaySpeed = 1.0f;

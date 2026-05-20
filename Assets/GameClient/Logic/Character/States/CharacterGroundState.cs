@@ -1,8 +1,8 @@
 using Game.AI;
 using Game.FSM;
-using Game.Logic.Action.Config;
+using Game.Logic;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public class PlayerLocomotionBlackboard
     {
@@ -17,12 +17,12 @@ namespace Game.Logic.Character
 
         public PlayerLocomotionBlackboard Blackboard { get; private set; } = new PlayerLocomotionBlackboard();
 
-        public SubStates.GroundIdleSubState IdleState { get; private set; }
-        public SubStates.GroundJogSubState JogState { get; private set; }
-        public SubStates.GroundDashSubState DashState { get; private set; }
-        public SubStates.GroundStopSubState StopState { get; private set; }
+        public GroundIdleSubState IdleState { get; private set; }
+        public GroundJogSubState JogState { get; private set; }
+        public GroundDashSubState DashState { get; private set; }
+        public GroundStopSubState StopState { get; private set; }
 
-        public SubStates.GroundSubState CurrentSubState { get; private set; }
+        public GroundSubState CurrentSubState { get; private set; }
 
         private IInputCommandHandler _defaultInputHandler;
         public override IInputCommandHandler InputHandler => CurrentSubState?.InputHandler ?? _defaultInputHandler;
@@ -32,10 +32,10 @@ namespace Game.Logic.Character
 
         public CharacterGroundState()
         {
-            IdleState = new SubStates.GroundIdleSubState();
-            JogState = new SubStates.GroundJogSubState();
-            DashState = new SubStates.GroundDashSubState();
-            StopState = new SubStates.GroundStopSubState();
+            IdleState = new GroundIdleSubState();
+            JogState = new GroundJogSubState();
+            DashState = new GroundDashSubState();
+            StopState = new GroundStopSubState();
         }
 
         public override void OnInit(FSMSystem<CharacterEntity> fsm)
@@ -89,7 +89,7 @@ namespace Game.Logic.Character
             CurrentSubState = null;
         }
 
-        public bool ChangeSubState(SubStates.GroundSubState newState)
+        public bool ChangeSubState(GroundSubState newState)
         {
             if (CurrentSubState == newState)
             {

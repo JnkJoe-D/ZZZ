@@ -24,7 +24,9 @@ MonoBehaviour:
     ModifierRequiredKey: 10
     InverseKeyStatus: 0
     ModifierConditions: 0a000000
-    NextAction: {fileID: 11400000, guid: 4bebc32c4f9b7c2419e905e133e0bc41, type: 2}
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 4bebc32c4f9b7c2419e905e133e0bc41, type: 2}
+    RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 1
   - Category: 0
@@ -38,7 +40,9 @@ MonoBehaviour:
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
     ModifierConditions: 
-    NextAction: {fileID: 11400000, guid: 89af5f7eac66f3545a53d59980bfa8ad, type: 2}
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 89af5f7eac66f3545a53d59980bfa8ad, type: 2}
+    RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 1
   - Category: 0
@@ -52,7 +56,9 @@ MonoBehaviour:
     ModifierRequiredKey: 10
     InverseKeyStatus: 0
     ModifierConditions: 
-    NextAction: {fileID: 11400000, guid: 4bebc32c4f9b7c2419e905e133e0bc41, type: 2}
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 4bebc32c4f9b7c2419e905e133e0bc41, type: 2}
+    RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 1
   references:

@@ -1,4 +1,4 @@
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
     /// 命中效果接口。每种 eventTag 对应一个 IHitImpact 实现。

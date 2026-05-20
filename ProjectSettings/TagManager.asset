@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - CloseShot
   - LocalRole
+  - SlashCam
   layers:
   - Default
   - TransparentFX
@@ -22,7 +23,7 @@ TagManager:
   - LocalRole
   - Wall
   - Camera
-  - 
+  - CharIgnore
   - 
   - 
   - 

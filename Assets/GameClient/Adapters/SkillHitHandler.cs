@@ -1,6 +1,6 @@
 using ATEditor;
 using UnityEngine;
-using Game.Logic.Character;
+using Game.Logic;
 using System;
 using System.Linq;
 

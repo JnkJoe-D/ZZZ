@@ -1,8 +1,7 @@
 using UnityEngine;
-using Game.Logic.Action.Combo;
-using Game.Logic.Action.Config;
+using Game.Logic;
 
-namespace Game.Logic.Character.SubStates
+namespace Game.Logic
 {
     public class GroundDashSubState : GroundSubState
     {

@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Game.FSM;
-using Game.Logic.Action.Config;
-using Game.Logic.Character;
+using Game.Logic;
 using ATEditor;
 using UnityEngine;
 
-namespace Game.Logic.Action.Combo
+namespace Game.Logic
 {
     /// <summary>
     /// 动作控制器：连接 ActionPlayer（底层播放）和 FSM（状态机）的核心中枢。
@@ -25,6 +24,8 @@ namespace Game.Logic.Action.Combo
         {
             public CharacterCommand Command;
             public ActionConfigAsset NextAction;
+            public ExecuteEvent RouteExecuteEvent;
+            public ExecuteTarget ExecuteType;
             public int Priority;
             public string RouteTag;
             public ActionRoute SourceRoute;
@@ -151,7 +152,7 @@ namespace Game.Logic.Action.Combo
 
             action.CollectEffectiveRoutes(_effectiveRoutes);
             if (FindBestEvent(eventType, windowTag, out var candidate))
-                return Commit(candidate.Command, candidate.NextAction, CommandRouteSource.ActionRoute, candidate.RouteTag);
+                return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
 
             // 回退到根动作的路由
             ActionConfigAsset root = _entity.Config?.ActionRoot;
@@ -159,7 +160,7 @@ namespace Game.Logic.Action.Combo
 
             root.CollectEffectiveRoutes(_effectiveRoutes);
             if (FindBestEvent(eventType, windowTag, out candidate))
-                return Commit(candidate.Command, candidate.NextAction, CommandRouteSource.ActionRoute, candidate.RouteTag);
+                return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
 
             return false;
         }
@@ -296,7 +297,9 @@ namespace Game.Logic.Action.Combo
 
             foreach (ActionRoute route in _effectiveRoutes)
             {
-                if (route?.NextAction == null) continue;
+                if (route == null) continue;
+                if (!route.IsInvalid()) continue;
+
                 if (!route.EvaluatePlayerCommand(command, tag, mode, _entity)) continue;
 
                 bool modOk = !route.HasModifier || route.EvaluateModifier(_entity, tag);
@@ -304,8 +307,13 @@ namespace Game.Logic.Action.Combo
 
                 var c = new RouteCandidate
                 {
-                    Command = command, NextAction = route.NextAction, Priority = route.Priority,
-                    RouteTag = tag, SourceRoute = route
+                    Command = command,
+                    NextAction = route.ExecuteAction,
+                    RouteExecuteEvent = route.RouteExecuteEvent,
+                    ExecuteType = route.ExecuteType,
+                    Priority = route.Priority,
+                    RouteTag = tag,
+                    SourceRoute = route
                 };
 
                 if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
@@ -336,7 +344,9 @@ namespace Game.Logic.Action.Combo
 
             foreach (ActionRoute route in _effectiveRoutes)
             {
-                if (route?.NextAction == null) continue;
+                if (route == null) continue;
+                if (!route.IsInvalid()) continue;
+
                 if (!route.EvaluateConditionTrigger(_entity, tag, timing)) continue;
 
                 bool modOk = !route.HasModifier || route.EvaluateModifier(_entity, tag);
@@ -344,8 +354,13 @@ namespace Game.Logic.Action.Combo
 
                 var c = new RouteCandidate
                 {
-                    Command = null, NextAction = route.NextAction, Priority = route.Priority,
-                    RouteTag = tag, SourceRoute = route
+                    Command = null,
+                    NextAction = route.ExecuteAction,
+                    RouteExecuteEvent = route.RouteExecuteEvent,
+                    ExecuteType = route.ExecuteType,
+                    Priority = route.Priority,
+                    RouteTag = tag,
+                    SourceRoute = route
                 };
 
                 if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
@@ -378,7 +393,9 @@ namespace Game.Logic.Action.Combo
 
             foreach (ActionRoute route in _effectiveRoutes)
             {
-                if (route?.NextAction == null) continue;
+                if (route == null) continue;
+                if (!route.IsInvalid()) continue;
+
                 if (!route.EvaluateEvent(eventType, _entity, tag)) continue;
 
                 bool modOk = !route.HasModifier || route.EvaluateModifier(_entity, tag);
@@ -386,8 +403,13 @@ namespace Game.Logic.Action.Combo
 
                 var c = new RouteCandidate
                 {
-                    Command = null, NextAction = route.NextAction, Priority = route.Priority,
-                    RouteTag = tag, SourceRoute = route
+                    Command = null,
+                    NextAction = route.ExecuteAction,
+                    RouteExecuteEvent = route.RouteExecuteEvent,
+                    ExecuteType = route.ExecuteType,
+                    Priority = route.Priority,
+                    RouteTag = tag,
+                    SourceRoute = route
                 };
 
                 if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
@@ -401,38 +423,58 @@ namespace Game.Logic.Action.Combo
 
         private void Apply(RouteCandidate candidate)
         {
-            Commit(candidate.Command, candidate.NextAction, CommandRouteSource.ActionRoute, candidate.RouteTag);
+            Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
         }
 
-        private bool Commit(CharacterCommand command, ActionConfigAsset nextAction, CommandRouteSource source, string tag = null)
+        private bool Commit(
+            CharacterCommand command,
+            ActionConfigAsset nextAction,
+            ExecuteEvent routeExecuteEvent,
+            ExecuteTarget executeType,
+            CommandRouteSource source,
+            string tag = null)
         {
-            if (nextAction == null) return false;
+            if (executeType == ExecuteTarget.None) return false;
+            if (executeType == ExecuteTarget.Action && nextAction == null) return false;
+            if (executeType == ExecuteTarget.Event && routeExecuteEvent == ExecuteEvent.None) return false;
 
-            if (command != null &&
-                command.Type == InputCommand.Switch &&
-                nextAction.EnterState == ActionState.Switch &&
-                _entity is RoleEntity role &&
-                CharcterManager.Instance?.PrepareSwitch(role) != true)
-                return false;
+            if (command != null) command.IsConsumed = true;
 
-            _isTransitioning = true;
-            try
+            if (executeType == ExecuteTarget.Action)
             {
-                if (command != null) command.IsConsumed = true;
+                // Action 类型：切换动作，需要锁定过渡状态防止嵌套，并清理窗口/缓冲
+                _isTransitioning = true;
+                try
+                {
+                    _activeComboWindows.Clear();
+                    _entity.CommandBuffer?.Clear();
 
-                _entity.RuntimeData.NextActionToCast = nextAction;
-                RecordRoute(command?.Type ?? InputCommand.None, command?.Phase ?? CommandPhase.Started, nextAction, source, tag);
-
-                _activeComboWindows.Clear();
-                _entity.CommandBuffer?.Clear();
-
-                PlayAction(nextAction);
-                return true;
+                    _entity.RuntimeData.NextActionToCast = nextAction;
+                    RecordRoute(command?.Type ?? InputCommand.None, command?.Phase ?? CommandPhase.Started, nextAction, source, tag);
+                    PlayAction(nextAction);
+                }
+                finally
+                {
+                    _isTransitioning = false;
+                }
             }
-            finally
+            else if (executeType == ExecuteTarget.Event)
             {
-                _isTransitioning = false;
+                // Event 类型：不切换动作，保留当前窗口状态和过渡锁
+                // 这样同步事件链中的后续 TryTriggerEvent 才能正常工作
+                RecordRoute(command?.Type ?? InputCommand.None, command?.Phase ?? CommandPhase.Started, null, source, tag);
+                if (_entity is RoleEntity roleEntity)
+                {
+                    Game.Framework.EventCenter.Publish(new ActionRouteExecuteEvent
+                    {
+                        SourceEntity = roleEntity,
+                        Event = routeExecuteEvent,
+                        TargetSlotHint = -1
+                    });
+                }
             }
+
+            return true;
         }
 
         // ═══════════════════════════════════════════

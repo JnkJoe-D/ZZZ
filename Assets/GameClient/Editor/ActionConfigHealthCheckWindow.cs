@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Game.Logic.Action.Combo;
-using Game.Logic.Action.Config;
+using Game.Logic;
 using ATEditor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Game.Logic.Character;
 
 namespace Game.Editor.ActionConfig
 {
@@ -325,7 +323,7 @@ namespace Game.Editor.ActionConfig
                     continue;
                 }
 
-                if (route.NextAction == null)
+                if (route.ExecuteAction == null)
                 {
                     AddError(results, action, action, "RouteMissingNextAction", $"第 {i + 1} 条 Route 的 NextAction 为空。");
                 }

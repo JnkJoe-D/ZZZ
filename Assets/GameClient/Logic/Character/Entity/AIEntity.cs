@@ -1,7 +1,7 @@
 using Game.AI;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public class AIEntity : CharacterEntity
     {

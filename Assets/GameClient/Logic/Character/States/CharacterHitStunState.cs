@@ -1,17 +1,17 @@
 using Game.FSM;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
-    /// 受击硬直状态。角色在此状态期间无法执行任何输入动作�?
-    /// 通过 ActionPlayer 播放受击 Timeline，超时后回到 GroundState�?
+    /// 受击硬直状态。角色在此状态期间无法执行任何输入动作�?
+    /// 通过 ActionPlayer 播放受击 Timeline，超时后回到 GroundState�?
     /// </summary>
     public class CharacterHitStunState : CharacterStateBase
     {
         private float _stunTimer;
         private float _stunDuration;
 
-        public override IInputCommandHandler InputHandler => NullInputHandler; // 受击中禁止输�?
+        public override IInputCommandHandler InputHandler => NullInputHandler; // 受击中禁止输�?
 
         public override void OnEnter()
         {
@@ -22,7 +22,7 @@ namespace Game.Logic.Character
             // 通过 ActionPlayer 播放受击动画
             if (Entity!=null && Entity.Config != null && Entity.Config.hitReactionConfig != null)
             {
-                // TODO: 根据 hitDirection 选择�?�?�?右受击动画变�?
+                // TODO: 根据 hitDirection 选择�?�?�?右受击动画变�?
                 var hitAnim = Entity.Config.hitReactionConfig.hitAnimLight;
                 if (hitAnim != null)
                 {
@@ -42,7 +42,7 @@ namespace Game.Logic.Character
 
         public override void OnExit()
         {
-            // 确保受击结束后恢�?ActionPlayer 速度
+            // 确保受击结束后恢�?ActionPlayer 速度
             Entity.ActionPlayer?.SetPlaySpeed(1f);
             Entity.RuntimeData.ClearHitReactionAxis();
         }

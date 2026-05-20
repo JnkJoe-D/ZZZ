@@ -1,6 +1,5 @@
 using System.Collections;
-using Game.Logic.Character;
-using Game.Logic.Character.Config;
+using Game.Logic;
 using UnityEngine;
 
 namespace Game.AI
@@ -88,9 +87,9 @@ namespace Game.AI
                 ? enemySpawnPoint.rotation
                 : Quaternion.identity;
 
-            if (Game.Logic.Action.ActionManager.Instance != null)
+            if (Game.Logic.ActionManager.Instance != null)
             {
-                var preloadTask = Game.Logic.Action.ActionManager.Instance.PreloadCharacterActionsAsync(enemyConfig);
+                var preloadTask = Game.Logic.ActionManager.Instance.PreloadCharacterActionsAsync(enemyConfig);
                 while (!preloadTask.IsCompleted)
                 {
                     yield return null;
@@ -149,7 +148,7 @@ namespace Game.AI
         /// <returns>本地玩家角色；若尚未生成则返回空。</returns>
         private static CharacterEntity ResolveLocalPlayer()
         {
-            return Game.Logic.Player.PlayerManager.Instance?.LocalCharacter ?? CharcterManager.Instance?.LocalCharacter;
+            return Game.Logic.PlayerManager.Instance?.LocalCharacter ?? CharcterManager.Instance?.LocalCharacter;
         }
 
         /// <summary>

@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Game.Logic.Character;
-using Game.Logic.Player;
+using Game.Logic;
 using UnityEngine;
 
 namespace Game.AI
@@ -316,7 +315,7 @@ namespace Game.AI
         /// </summary>
         private static CharacterEntity ResolveLocalPlayerCharacter()
         {
-            return PlayerManager.Instance?.LocalCharacter ?? Game.Logic.Character.CharcterManager.Instance?.LocalCharacter;
+            return PlayerManager.Instance?.LocalCharacter ?? Game.Logic.CharcterManager.Instance?.LocalCharacter;
         }
     }
 

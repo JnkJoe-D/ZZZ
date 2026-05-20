@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 using ATEditor;
 using Game.Adapters;
-using Game.Logic.Action.Config;
-using Game.Logic.Character.Config;
+using Game.Logic;
 
-namespace Game.Logic.Action
+namespace Game.Logic
 {
     /// <summary>
     /// 全局静态技能管理器（非Mono），用于复用 Timeline 数据和角色的播放器
@@ -116,7 +115,7 @@ namespace Game.Logic.Action
         {
             return await SerializationUtility.OpenFromJsonAsync(config.TimelineAsset);
         }
-        public ProcessContext GetContext(Character.CharacterEntity entity)
+        public ProcessContext GetContext(CharacterEntity entity)
         {
             int id = entity.GetInstanceID();
             if (!_contextCache.TryGetValue(id, out var ctx))
@@ -127,7 +126,7 @@ namespace Game.Logic.Action
             return ctx;
         }
 
-        public SkillRunner GetRunner(Character.CharacterEntity entity)
+        public SkillRunner GetRunner(CharacterEntity entity)
         {
             int id = entity.GetInstanceID();
             if (!_runnerCache.TryGetValue(id, out var runner))
@@ -138,7 +137,7 @@ namespace Game.Logic.Action
             return runner;
         }
 
-        public void RemoveCache(Character.CharacterEntity entity)
+        public void RemoveCache(CharacterEntity entity)
         {
             if(entity == null) return;
             int id = entity.GetInstanceID();

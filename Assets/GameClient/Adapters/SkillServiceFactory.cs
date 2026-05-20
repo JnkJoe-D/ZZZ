@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Game.Logic.Character;
+using Game.Logic;
 using Game.MAnimSystem;
 using ATEditor;
 using UnityEngine;

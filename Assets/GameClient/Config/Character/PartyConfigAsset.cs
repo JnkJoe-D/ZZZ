@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Logic.Character.Config
+namespace Game.Logic
 {
     [CreateAssetMenu(fileName = "PartyConfigAsset", menuName = "Config/Role/Party Config")]
     public class PartyConfigAsset : ScriptableObject

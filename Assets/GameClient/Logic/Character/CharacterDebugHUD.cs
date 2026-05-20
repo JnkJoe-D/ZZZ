@@ -1,11 +1,9 @@
 using System.Linq;
 using Game.Input;
-using Game.Logic.Action.Combo;
-using Game.Logic.Character;
-using Game.Logic.Character.SubStates;
+using Game.Logic;
 using UnityEngine;
 
-namespace Game.Logic.DebugTools
+namespace Game.Logic
 {
     public class CharacterDebugHUD : MonoBehaviour
     {

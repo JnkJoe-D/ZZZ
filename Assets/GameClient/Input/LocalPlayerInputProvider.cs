@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Game.Logic.Character;
+using Game.Logic;
 namespace Game.Input
 {
     /// <summary>

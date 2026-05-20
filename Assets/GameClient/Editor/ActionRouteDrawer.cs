@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Reflection;
 using Game.Framework;
 using Game.Editor.Framework;
-using Game.Logic.Action.Combo;
+using Game.Logic;
 
 namespace Game.Editor.ActionConfig
 {
@@ -38,7 +38,9 @@ namespace Game.Editor.ActionConfig
             DrawProperty(ref position, property, "ModifierRequiredKey");
             DrawProperty(ref position, property, "InverseKeyStatus");
             DrawProperty(ref position, property, "ModifierConditions", includeChildren: true);
-            DrawProperty(ref position, property, "NextAction");
+            DrawProperty(ref position, property, "ExecuteType");
+            DrawProperty(ref position, property, "ExecuteAction");
+            DrawProperty(ref position, property, "RouteExecuteEvent");
             DrawProperty(ref position, property, "ExtraConditions", includeChildren: true);
             DrawProperty(ref position, property, "Priority");
             EditorGUI.indentLevel--;
@@ -65,7 +67,9 @@ namespace Game.Editor.ActionConfig
             height += PropertyHeight(property, "ModifierRequiredKey");
             height += PropertyHeight(property, "InverseKeyStatus");
             height += PropertyHeight(property, "ModifierConditions", includeChildren: true);
-            height += PropertyHeight(property, "NextAction");
+            height += PropertyHeight(property, "ExecuteType");
+            height += PropertyHeight(property, "ExecuteAction");
+            height += PropertyHeight(property, "RouteExecuteEvent");
             height += PropertyHeight(property, "ExtraConditions", includeChildren: true);
             height += PropertyHeight(property, "Priority");
             return height;
@@ -83,9 +87,40 @@ namespace Game.Editor.ActionConfig
             }
 
             string tag = property.FindPropertyRelative("RequiredWindowTag")?.stringValue;
-            SerializedProperty nextAction = property.FindPropertyRelative("NextAction");
-            string nextName = nextAction?.objectReferenceValue != null ? nextAction.objectReferenceValue.name : "None";
-            return new GUIContent($"{category} / {tag ?? "-"} -> {nextName}");
+            
+            string targetName = "None";
+            SerializedProperty executeTypeProp = property.FindPropertyRelative("ExecuteType");
+            if (executeTypeProp != null)
+            {
+                // 用 intValue 获取底层枚举实际绑定的整数数值（如 0, 10, 20），enumValueIndex 返回的是 0, 1, 2 索引，强转会导致数值不匹配
+                ExecuteTarget target = (ExecuteTarget)executeTypeProp.intValue;
+                if (target == ExecuteTarget.Action)
+                {
+                    SerializedProperty executeAction = property.FindPropertyRelative("ExecuteAction");
+                    targetName = executeAction?.objectReferenceValue != null ? executeAction.objectReferenceValue.name : "None";
+                }
+                else if (target == ExecuteTarget.Event)
+                {
+                    SerializedProperty routeExecuteEvent = property.FindPropertyRelative("RouteExecuteEvent");
+                    if (routeExecuteEvent != null &&
+                        routeExecuteEvent.enumValueIndex >= 0 &&
+                        routeExecuteEvent.enumValueIndex < routeExecuteEvent.enumDisplayNames.Length)
+                    {
+                        targetName = $"[Event] {routeExecuteEvent.enumDisplayNames[routeExecuteEvent.enumValueIndex]}";
+                    }
+                    else
+                    {
+                        targetName = "[Event] None";
+                    }
+                }
+            }
+            else
+            {
+                SerializedProperty executeAction = property.FindPropertyRelative("ExecuteAction");
+                targetName = executeAction?.objectReferenceValue != null ? executeAction.objectReferenceValue.name : "None";
+            }
+            
+            return new GUIContent($"{category} / {tag ?? "-"} -> {targetName}");
         }
 
         private static void DrawWindowTag(ref Rect position, SerializedProperty tagProperty)

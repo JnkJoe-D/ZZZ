@@ -1,8 +1,6 @@
-using Game.Logic.Action.Combo;
-using Game.Logic.Action.Config;
-using Game.Logic.Character.Config;
+using Game.Logic;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
     /// 【角色运行时数据中枢】
@@ -39,7 +37,19 @@ namespace Game.Logic.Character
         public InputCommand LastResolvedCommandType { get; private set; }
         public CommandPhase LastResolvedCommandPhase { get; private set; }
         public int LastResolvedActionId { get; private set; } = -1;
-
+        
+        private bool isSwitchOutPending;
+        public bool IsSwitchOutPending
+        {
+            get
+            {
+                return isSwitchOutPending;
+            }
+            set
+            {
+                isSwitchOutPending= value;
+            }
+        }
         /// <summary>
         /// 闪避计数与冷却计时。
         /// </summary>

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
     /// 默认伤害 Impact。用于 Hit_Default、Hit_Light 等通用伤害类型。

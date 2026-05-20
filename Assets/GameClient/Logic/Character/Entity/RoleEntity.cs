@@ -2,7 +2,7 @@ using Game.Camera;
 using Game.Input;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public class RoleEntity : CharacterEntity
     {

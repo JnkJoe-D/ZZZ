@@ -1,7 +1,7 @@
 using System;
 using Game.Input;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public sealed class CharacterInputEventAdapter
     {

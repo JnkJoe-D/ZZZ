@@ -16,6 +16,7 @@ namespace ATEditor.Editor
         private Action<string> onFileSelected;
         private Vector2 scrollPos;
         private int selectedIndex = -1;
+        private bool needsScrollToSelection = true;
 
         public static void Show(string directory, Action<string> onSelected, string initialSelectedPath = null)
         {
@@ -24,6 +25,7 @@ namespace ATEditor.Editor
             window.titleContent = new GUIContent("Select JSON");
             window.onFileSelected = onSelected;
             window.preferredSelectedPath = NormalizePath(initialSelectedPath);
+            window.needsScrollToSelection = true;
             window.LoadFiles(directory);
             window.ShowUtility();
         }
@@ -92,6 +94,13 @@ namespace ATEditor.Editor
             EditorGUILayout.EndHorizontal();
 
             // 3. List Area
+            if (needsScrollToSelection && selectedIndex >= 0 && filteredPaths.Count > 0)
+            {
+                float itemY = selectedIndex * 16;
+                float scrollViewHeight = position.height - 80;
+                scrollPos.y = Mathf.Max(0, itemY - scrollViewHeight / 2);
+                needsScrollToSelection = false;
+            }
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
             
             for (int i = 0; i < filteredPaths.Count; i++)

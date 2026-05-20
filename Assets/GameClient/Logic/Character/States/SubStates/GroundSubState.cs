@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Logic.Character.SubStates
+namespace Game.Logic
 {
     /// <summary>
     /// 地表子状态基类。

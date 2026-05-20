@@ -19,22 +19,7 @@ MonoBehaviour:
   EnterState: 30
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
-  Routes:
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ConditionCheckTiming: 20
-    EventType: 0
-    RequiredType: 10
-    RequiredPhase: 0
-    Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
-    ModifierConditions: 
-    NonSatisfiedPolicy: 0
-    NextAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
-    ExtraConditions: []
-    Priority: 0
+  Routes: []
   RouteSets:
   - {fileID: 11400000, guid: c585274d9e6056448a1a96f056b089d0, type: 2}
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}

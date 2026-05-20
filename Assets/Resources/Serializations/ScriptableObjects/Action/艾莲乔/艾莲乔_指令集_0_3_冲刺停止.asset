@@ -24,7 +24,9 @@ MonoBehaviour:
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
     ModifierConditions: 14000000
-    NextAction: {fileID: 11400000, guid: 8747cc479684ac44eb99ce14a490b861, type: 2}
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 8747cc479684ac44eb99ce14a490b861, type: 2}
+    RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
   references:

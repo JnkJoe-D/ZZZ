@@ -2,15 +2,7 @@
     "isLoop": false,
     "beforePlayEvents": [
         {
-            "eventName": "ShowIncomingRole",
-            "parameters": []
-        },
-        {
-            "eventName": "SwitchCamera",
-            "parameters": []
-        },
-        {
-            "eventName": "SwitchExecute",
+            "eventName": "SwitchOutDisableLogic",
             "parameters": []
         }
     ],
@@ -229,7 +221,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "ead71bc0-6159-4434-b353-88dafbe75fbb",
+                    "trackId": "c00bd154-4a19-417c-9109-e3cd93317217",
                     "trackType": "ComboWindowTrack",
                     "trackName": "输入派生窗口",
                     "isMuted": false,
@@ -237,7 +229,11 @@
                     "isHidden": false,
                     "isCollapsed": false,
                     "isEnabled": true,
-                    "clips": []
+                    "clips": [
+                        {
+                            "rid": 1009
+                        }
+                    ]
                 }
             },
             {
@@ -277,7 +273,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1009
+                            "rid": 1010
                         }
                     ]
                 }
@@ -298,7 +294,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 62874
+                        "instanceID": 90540
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -319,6 +315,24 @@
             },
             {
                 "rid": 1009,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "b74250b8-6573-4b71-a31d-95b2b803296e",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.0,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "comboTag": "SwitchExecute"
+                }
+            },
+            {
+                "rid": 1010,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",

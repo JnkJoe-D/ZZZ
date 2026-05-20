@@ -1,7 +1,7 @@
 using ATEditor;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
     /// 标准化移动代理接口

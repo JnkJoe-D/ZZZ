@@ -1,4 +1,4 @@
-using Game.Logic.Action.Config;
+using Game.Logic;
 
 namespace ATEditor
 {

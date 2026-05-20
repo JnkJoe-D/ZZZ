@@ -1,6 +1,6 @@
 using Game.FSM;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     /// <summary>
     /// 玩家自身行为节点基类
@@ -48,10 +48,7 @@ namespace Game.Logic.Character
 
         public override void OnExit()
         {
-            if (Entity is RoleEntity roleEntity)
-            {
-                CharcterManager.Instance?.CancelPreparedSwitch(roleEntity);
-            }
+
         }
     }
 }

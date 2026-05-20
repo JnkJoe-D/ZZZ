@@ -1,6 +1,6 @@
-using Game.Logic.Action.Combo;
+using Game.Logic;
 
-namespace Game.Logic.Character.SubStates
+namespace Game.Logic
 {
     public class GroundStopSubState : GroundSubState
     {

@@ -1,7 +1,7 @@
 using ATEditor;
 using UnityEngine;
 
-namespace Game.Logic.Character.Motion
+namespace Game.Logic
 {
     public sealed class SkillMotionWindowHandler : ISkillMotionWindowHandler
     {

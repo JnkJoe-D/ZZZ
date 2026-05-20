@@ -3,93 +3,148 @@ using System.Threading.Tasks;
 using Cinemachine;
 using Game.Camera;
 using Game.Framework;
-using Game.Logic.Action;
-using Game.Logic.Action.Combo;
-using Game.Logic.Action.Config;
-using Game.Logic.Character.Config;
-using Game.Logic.DebugTools;
+using Game.Logic;
 using Game.Resource;
 using UnityEngine;
 
-namespace Game.Logic.Character
+namespace Game.Logic
 {
+    /// <summary>
+    /// 队伍成员数据封装，用于在多角色编队中跟踪特定插槽的运行时状态与配置信息。
+    /// </summary>
+    public class PartyMember
+    {
+        /// <summary> 角色在队伍中的插槽索引 (0-indexed)。 </summary>
+        public int SlotIndex;
+
+        /// <summary> 角色的静态配置资源，包含角色属性、动画配置及资源引用。 </summary>
+        public CharacterConfigAsset Config;
+
+        /// <summary> 实例化到场景中的角色运行时 Entity 实例。 </summary>
+        public RoleEntity Entity;
+
+        /// <summary> 
+        /// 角色激活版本号。每次该插槽角色切入激活状态时自增，
+        /// 用于在异步操作中校验状态的时效性，防止过期回调产生逻辑冲突。
+        /// </summary>
+        public int ActivationVersion;
+    }
+
+    /// <summary>
+    /// 角色管理器 (CharcterManager)
+    /// 架构设计说明:
+    /// 1. 职责划分 (SRP)：本类主要负责多角色小队的生命周期管理、实体容器维护、相机与队伍上下文挂载。
+    /// 2. 状态机解耦：将具体的换人状态管理、换人轨迹与物理检测、以及 Timeline 关键帧过渡动画的执行逻辑
+    ///    剥离到了纯 C# 工具类 <see cref="SwitchExecutor"/> 中，从而保持本类的架构纯洁与单一职责。
+    /// </summary>
     public class CharcterManager : Singleton<CharcterManager>
     {
-        private sealed class PartyMember
-        {
-            public int SlotIndex;
-            public CharacterConfigAsset Config;
-            public RoleEntity Entity;
-            public int ActivationVersion;
-        }
-
-        private sealed class PreparedSwitchContext
-        {
-            public PartyMember Outgoing;
-            public PartyMember Incoming;
-            public Vector3 SourcePosition;
-            public Quaternion SourceRotation;
-            public Vector3 PreviousCameraPosition;
-            public Quaternion PreviousCameraRotation;
-            public Vector3 SwitchPosition;
-            public Quaternion SwitchRotation;
-            public bool IncomingShown;
-            public bool CameraSwitched;
-            public bool Executed;
-        }
-
+        /// <summary> 队伍中当前所有的成员列表容器。 </summary>
         private readonly List<PartyMember> _partyMembers = new();
-        private readonly Collider[] _switchPositionOverlapBuffer = new Collider[32];
+
+        /// <summary> 当前生效的队伍全局配置资源（定义了成员、出生配置、相机器件等）。 </summary>
         private PartyConfigAsset _partyConfig;
+
+        /// <summary> 小队上下文组件所在的 GameObject 运行时实例。 </summary>
         private GameObject _teamInstance;
+
+        /// <summary> 小队运行时共享的逻辑上下文，控制小队内的状态同步与通信。 </summary>
         private CharacterTeamContext _teamContext;
+
+        /// <summary> 换人过程中多角色共享的虚拟相机 GameObject 实例。 </summary>
         private GameObject _sharedPartyCameraInstance;
+
+        /// <summary> 队伍共享虚拟相机的 Cinemachine 组件接口，用于接管镜头控制。 </summary>
         private CinemachineVirtualCameraBase _sharedPartyVirtualCamera;
-        private PreparedSwitchContext _preparedSwitch;
+
+        /// <summary> 当前正处于控制/激活状态下的角色插槽索引。 </summary>
         private int _activeSlotIndex = -1;
-        private bool _isSwitching;
 
-        private const string LocalRoleTag = "LocalRole";
-        private const string ShowIncomingRoleEventName = "ShowIncomingRole";
-        private const string SwitchCameraEventName = "SwitchCamera";
-        private const string SwitchExecuteEventName = "SwitchExecute";
-        private const string HideOutgoingRoleEventName = "HideOutgoingRole";
-        private const float DefaultSwitchProbeRadius = 0.3f;
-        private const float DefaultSwitchProbeHeight = 1.6f;
-        private static readonly Vector3 DefaultSwitchProbeCenter = new Vector3(0f, 0.88f, 0f);
-        private const float SwitchProbePadding = 0.05f;
-        private bool HasSharedPartyCamera => _sharedPartyVirtualCamera != null;
+        /// <summary> 负责执行具体切人逻辑的纯 C# 执行器实例。 </summary>
+        private readonly SwitchExecutor _switchExecutor;
 
+        /// <summary> 获取当前队伍是否正处于换人动作的过渡状态中。 </summary>
+        public bool IsSwitching => _switchExecutor != null && _switchExecutor.IsSwitching;
+
+        /// <summary> 暴露队伍成员列表的只读视图，提供安全的外部查询。 </summary>
+        public IReadOnlyList<PartyMember> PartyMembers => _partyMembers;
+
+        /// <summary> 暴露当前生效的队伍全局配置。 </summary>
+        public PartyConfigAsset PartyConfig => _partyConfig;
+
+        /// <summary> 获取是否已配置并挂载了共享的队伍虚拟相机。 </summary>
+        public bool HasSharedPartyCamera => _sharedPartyVirtualCamera != null;
+
+        /// <summary> 获取当前小队的运行时逻辑上下文。 </summary>
+        public CharacterTeamContext TeamContext => _teamContext;
+
+        /// <summary> 当前被玩家直接操作并占有的主控角色 Entity。 </summary>
         public CharacterEntity LocalCharacter { get; private set; }
+
+        /// <summary> 队伍的实际成员数量。 </summary>
         public int PartySize => _partyMembers.Count;
+
+        /// <summary> 当前正处于控制/激活状态下的角色插槽索引。 </summary>
         public int ActiveSlotIndex => _activeSlotIndex;
 
+        /// <summary>
+        /// 构造函数，创建换人执行器并执行基础系统初始化。
+        /// </summary>
         public CharcterManager()
         {
+            _switchExecutor = new SwitchExecutor(this);
             Initialize();
         }
+
+        /// <summary>
+        /// 查询指定角色是否正在切出队列中（供外部系统跳过处理）。
+        /// </summary>
+        public bool IsInSwitchOutQueue(RoleEntity entity)
+        {
+            return _switchExecutor != null && _switchExecutor.IsInSwitchOutQueue(entity);
+        }
+
+        /// <summary>
+        /// 系统初始化，订阅角色动画及行为 Timeline 换人关键帧事件。
+        /// </summary>
         public void Initialize()
         {
             EventCenter.Subscribe<CharacterTimelineEvent>(OnCharacterTimelineEvent);
             Debug.Log("[CharacterManager] Initialized.");
         }
 
+        /// <summary>
+        /// 系统关闭卸载，取消事件订阅并安全销毁当前所有小队成员。
+        /// </summary>
         public void Shutdown()
         {
             EventCenter.Unsubscribe<CharacterTimelineEvent>(OnCharacterTimelineEvent);
+            _switchExecutor?.Unsubscribe();
             UnpossessCurrentCharacter();
         }
 
+        /// <summary>
+        /// 轮询更新，负责驱动非主控角色的挂机/待机动作状态维持。
+        /// </summary>
         public void Update(float deltaTime)
         {
+            _switchExecutor?.Update(deltaTime);
             MaintainStandbyIdleActions();
         }
 
+        /// <summary>
+        /// 内部 Timeline 动画事件触发回调，委托给换人执行器识别执行特定的换人步骤（显隐、运镜、路由激活等）。
+        /// </summary>
         private void OnCharacterTimelineEvent(CharacterTimelineEvent evt)
         {
             HandleTimelineEvent(evt.SourceEntity, evt.EventName);
         }
 
+        /// <summary>
+        /// 异步初始化编队小队。
+        /// 1. 解析小队配置中的所有运行时成员；
+        /// 2. 调用内部重载执行底层异步资源预载与实体实例化流程。
+        /// </summary>
         public async Task<CharacterEntity> InitializePartyAsync(
             PartyConfigAsset partyConfig,
             Vector3 spawnPos,
@@ -104,6 +159,12 @@ namespace Game.Logic.Character
             return await InitializePartyAsync(members, partyConfig.InitialSlotIndex, spawnPos, spawnRot, partyConfig);
         }
 
+        /// <summary>
+        /// 异步占有并控制一个新的单体角色（非换人，属于全量重置单控角色）。
+        /// 1. 清理当前小队内所有其他角色的运行时实体；
+        /// 2. 预载当前角色的全部 Action 配置动作数据以防止运行卡顿；
+        /// 3. 生成并激活新角色 Entity，重置控制和相机参数。
+        /// </summary>
         public async Task<CharacterEntity> PossessNewCharacterAsync(
             string characterPrefabPath,
             CharacterConfigAsset config,
@@ -115,10 +176,12 @@ namespace Game.Logic.Character
                 return null;
             }
 
+            // 清理旧的角色和相机器件
             UnpossessCurrentCharacter();
             DestroySharedPartyCamera();
             CreateTeamContext(null, spawnPos, spawnRot);
 
+            // 加载角色 Prefab 预制件
             GameObject prefab = await ResolveCharacterPrefabAsync(config, characterPrefabPath);
             if (prefab == null)
             {
@@ -126,17 +189,20 @@ namespace Game.Logic.Character
                 return null;
             }
 
+            // 预载动作数据
             if (ActionManager.Instance != null)
             {
                 await ActionManager.Instance.PreloadCharacterActionsAsync(config);
             }
 
+            // 实例化运行时 Entity
             RoleEntity entity = SpawnRoleEntity(config, prefab, spawnPos, spawnRot);
             if (entity == null)
             {
                 return null;
             }
 
+            // 包装小队成员并存入索引 0 的默认插槽
             PartyMember member = new PartyMember
             {
                 SlotIndex = 0,
@@ -151,6 +217,9 @@ namespace Game.Logic.Character
             return LocalCharacter;
         }
 
+        /// <summary>
+        /// 卸载并销毁当前小队中所有的角色实体，彻底重置整个小队的运行时容器状态与相机锁定。
+        /// </summary>
         public void UnpossessCurrentCharacter()
         {
             foreach (PartyMember member in _partyMembers)
@@ -160,6 +229,7 @@ namespace Game.Logic.Character
                     continue;
                 }
 
+                // 卸载动作缓存并物理销毁 GameObject 实例
                 ActionManager.Instance?.RemoveCache(member.Entity);
                 Object.Destroy(member.Entity.gameObject);
             }
@@ -169,12 +239,17 @@ namespace Game.Logic.Character
             DestroySharedPartyCamera();
             DestroyTeamContext();
             _activeSlotIndex = -1;
-            _preparedSwitch = null;
-            _isSwitching = false;
+            
+            // 安全复位纯 C# 切人执行器的过渡状态机
+            _switchExecutor?.Reset();
+            
             LocalCharacter = null;
             GameCameraManager.Instance?.SetTarget(null);
         }
 
+        /// <summary>
+        /// 开启或禁用当前正在控制角色的玩家输入响应与相机旋转追踪目标锁定。
+        /// </summary>
         public void SetInputEnable(bool enable)
         {
             if (LocalCharacter != null)
@@ -183,6 +258,11 @@ namespace Game.Logic.Character
             }
         }
 
+        /// <summary>
+        /// 核心多角色异步队伍初始化的底层私有实现。
+        /// 1. 并发并行预载所有队伍角色的动画与路由动作数据（Task.WhenAll）；
+        /// 2. 依次生成物理 Entity 实例，将初始插槽成员置于激活态，其余成员置于 Standby 隐藏备用状态。
+        /// </summary>
         private async Task<CharacterEntity> InitializePartyAsync(
             IReadOnlyList<CharacterConfigAsset> members,
             int initialSlotIndex,
@@ -199,6 +279,7 @@ namespace Game.Logic.Character
 
             _partyConfig = partyConfig;
 
+            // 限制最多加载并生成 3 名编队成员
             List<CharacterConfigAsset> runtimeMembers = new List<CharacterConfigAsset>(3);
             for (int i = 0; i < members.Count && runtimeMembers.Count < 3; i++)
             {
@@ -213,9 +294,11 @@ namespace Game.Logic.Character
                 return null;
             }
 
+            // 建立小队逻辑上下文及共享虚拟相机
             CreateTeamContext(partyConfig, spawnPos, spawnRot);
             CreateSharedPartyCamera(partyConfig);
 
+            // 并行并发预载动作包以防在战斗中切人发生 IO 顿卡
             if (ActionManager.Instance != null)
             {
                 List<Task> preloadTasks = new List<Task>(runtimeMembers.Count);
@@ -227,6 +310,7 @@ namespace Game.Logic.Character
                 await Task.WhenAll(preloadTasks);
             }
 
+            // 串行生成所有角色的实例化 Entity 实例
             for (int i = 0; i < runtimeMembers.Count; i++)
             {
                 CharacterConfigAsset config = runtimeMembers[i];
@@ -256,6 +340,7 @@ namespace Game.Logic.Character
                 return null;
             }
 
+            // 激活初始插槽，并将备用插槽成员设为隐藏 Standby 状态
             int activeIndex = Mathf.Clamp(initialSlotIndex, 0, _partyMembers.Count - 1);
             for (int i = 0; i < _partyMembers.Count; i++)
             {
@@ -273,6 +358,10 @@ namespace Game.Logic.Character
             return LocalCharacter;
         }
 
+        /// <summary>
+        /// 物理生成并实例化角色的 RoleEntity。
+        /// 挂载并关联小队相机和队伍全局逻辑上下文，并重置控制激活标志。
+        /// </summary>
         private RoleEntity SpawnRoleEntity(
             CharacterConfigAsset config,
             GameObject prefab,
@@ -299,6 +388,9 @@ namespace Game.Logic.Character
             return entity;
         }
 
+        /// <summary>
+        /// 异步解析并载入配置的角色 Prefab，支持路径重写。
+        /// </summary>
         private async Task<GameObject> ResolveCharacterPrefabAsync(CharacterConfigAsset config, string prefabPathOverride)
         {
             if (config != null && config.CharacterPrefab != null)
@@ -314,6 +406,9 @@ namespace Game.Logic.Character
             return null;
         }
 
+        /// <summary>
+        /// 实例化并建立共享的编队相机实例。如果 Context 自身已携带共享相机则直接复用。
+        /// </summary>
         private void CreateSharedPartyCamera(PartyConfigAsset partyConfig)
         {
             DestroySharedPartyCamera();
@@ -345,6 +440,9 @@ namespace Game.Logic.Character
             _sharedPartyCameraInstance.SetActive(false);
         }
 
+        /// <summary>
+        /// 销毁运行时生成的共享虚拟相机实例，释放内存占用。
+        /// </summary>
         private void DestroySharedPartyCamera()
         {
             _sharedPartyVirtualCamera = null;
@@ -356,6 +454,9 @@ namespace Game.Logic.Character
             }
         }
 
+        /// <summary>
+        /// 创建或实例化小队的核心逻辑上下文组件及其承载的 GameObject 容器。
+        /// </summary>
         private void CreateTeamContext(PartyConfigAsset partyConfig, Vector3 spawnPos, Quaternion spawnRot)
         {
             DestroyTeamContext();
@@ -375,6 +476,9 @@ namespace Game.Logic.Character
             _teamContext.Initialize();
         }
 
+        /// <summary>
+        /// 销毁运行时生成的小队上下文实例。
+        /// </summary>
         private void DestroyTeamContext()
         {
             _teamContext = null;
@@ -386,7 +490,10 @@ namespace Game.Logic.Character
             }
         }
 
-        private void AssignTeamContext(RoleEntity entity)
+        /// <summary>
+        /// 为指定的角色实体绑定并同步小队运行时逻辑上下文，实现伤害分发及属性同步。
+        /// </summary>
+        internal void AssignTeamContext(RoleEntity entity)
         {
             if (entity == null || _teamContext == null)
             {
@@ -396,7 +503,10 @@ namespace Game.Logic.Character
             entity.AssignTeamContext(_teamContext);
         }
 
-        private void AssignSharedPartyCamera(RoleEntity entity)
+        /// <summary>
+        /// 为指定的角色实体绑定并关联队伍共享虚拟相机。
+        /// </summary>
+        internal void AssignSharedPartyCamera(RoleEntity entity)
         {
             if (entity == null || _sharedPartyVirtualCamera == null)
             {
@@ -409,7 +519,14 @@ namespace Game.Logic.Character
             }
         }
 
-        private void ActivatePartyMember(PartyMember member, Vector3 position, Quaternion rotation, bool assignCameraTarget = true)
+        /// <summary>
+        /// 激活特定的队伍成员并接管控制权。
+        /// 1. 挂载小队共享虚拟相机及逻辑上下文；
+        /// 2. 同步并定位到指定的切入坐标与旋转；
+        /// 3. 设置模型显示可见、开启控制输入、激活主控相机锁定并标记 ActiveSlotIndex；
+        /// 4. 自增激活版本号，实现异步行为的时效防夹校验。
+        /// </summary>
+        internal void ActivatePartyMember(PartyMember member, Vector3 position, Quaternion rotation, bool assignCameraTarget = true)
         {
             if (member?.Entity == null)
             {
@@ -440,7 +557,13 @@ namespace Game.Logic.Character
             _activeSlotIndex = member.SlotIndex;
         }
 
-        private void SetMemberStandby(RoleEntity entity)
+        /// <summary>
+        /// 将指定的队伍角色设为 Standby（待机隐藏备用）状态。
+        /// 1. 禁用玩家控制输入，剥离主控相机（非共享相机时关闭 CameraRig）；
+        /// 2. 模型视觉渲染置为不可见，关闭 Debug 界面；
+        /// 3. 驱动其行为控制器执行挂机待机闲置动作（ActionRoot）。
+        /// </summary>
+        internal void SetMemberStandby(RoleEntity entity)
         {
             if (entity == null)
             {
@@ -468,6 +591,9 @@ namespace Game.Logic.Character
             }
         }
 
+        /// <summary>
+        /// 同步角色实体的空间三维坐标与旋转朝向。
+        /// </summary>
         private static void SynchronizePartyMemberTransform(RoleEntity entity, Vector3 position, Quaternion rotation)
         {
             if (entity == null)
@@ -478,7 +604,10 @@ namespace Game.Logic.Character
             entity.transform.SetPositionAndRotation(position, rotation);
         }
 
-        private void UpdatePartyDebugHudVisibility(RoleEntity visibleEntity)
+        /// <summary>
+        /// 刷新队伍中所有角色的调试 HUD 面板显示可见性（仅对当前活跃控制角色显示）。
+        /// </summary>
+        internal void UpdatePartyDebugHudVisibility(RoleEntity visibleEntity)
         {
             for (int i = 0; i < _partyMembers.Count; i++)
             {
@@ -492,6 +621,9 @@ namespace Game.Logic.Character
             }
         }
 
+        /// <summary>
+        /// 开启或禁用特定角色的调试 UI HUD。
+        /// </summary>
         private static void SetDebugHudVisible(RoleEntity entity, bool visible)
         {
             if (entity == null)
@@ -509,243 +641,33 @@ namespace Game.Logic.Character
             }
         }
 
+        /// <summary>
+        /// 进入换人行为过渡状态的回调入口（委托至 SwitchExecutor 异步检测）。
+        /// </summary>
         public bool HandleSwitchStateEntered(RoleEntity outgoingEntity)
         {
-            return PrepareSwitch(outgoingEntity);
+            return _switchExecutor != null && _switchExecutor.PrepareSwitch(outgoingEntity);
         }
 
+        /// <summary>
+        /// 准备切人。锁定当前主控角色的输入并估算切入点的物理可用性（委托至 SwitchExecutor）。
+        /// </summary>
         public bool PrepareSwitch(RoleEntity outgoingEntity)
         {
-            if (_isSwitching || _partyMembers.Count <= 1 || outgoingEntity == null)
-            {
-                return false;
-            }
-
-            PartyMember from = FindPartyMember(outgoingEntity);
-            if (from == null || from.SlotIndex != _activeSlotIndex || !ReferenceEquals(LocalCharacter, outgoingEntity))
-            {
-                return false;
-            }
-
-            PartyMember to = _partyMembers[(_activeSlotIndex + 1) % _partyMembers.Count];
-            RoleEntity fromEntity = from.Entity;
-            RoleEntity toEntity = to.Entity;
-            Vector3 sourcePosition = fromEntity.transform.position;
-            Quaternion sourceRotation = fromEntity.transform.rotation;
-            Transform mainCameraTransform = GameCameraManager.Instance?.MainCameraTransform;
-            Vector3 previousCameraPosition = mainCameraTransform != null ? mainCameraTransform.position : Vector3.zero;
-            Quaternion previousCameraRotation = mainCameraTransform != null ? mainCameraTransform.rotation : sourceRotation;
-            Vector3 switchPosition = ComputeSwitchInPosition(fromEntity, toEntity, sourcePosition, mainCameraTransform, sourceRotation);
-
-            _preparedSwitch = new PreparedSwitchContext
-            {
-                Outgoing = from,
-                Incoming = to,
-                SourcePosition = sourcePosition,
-                SourceRotation = sourceRotation,
-                PreviousCameraPosition = previousCameraPosition,
-                PreviousCameraRotation = previousCameraRotation,
-                SwitchPosition = switchPosition,
-                SwitchRotation = sourceRotation
-            };
-
-            _isSwitching = true;
-            fromEntity.SetControlActive(false, assignCameraTarget: false);
-            return true;
+            return _switchExecutor != null && _switchExecutor.PrepareSwitch(outgoingEntity);
         }
 
-        public void CancelPreparedSwitch(RoleEntity outgoingEntity)
-        {
-            if (_preparedSwitch == null || _preparedSwitch.Executed)
-            {
-                return;
-            }
-
-            RoleEntity preparedOutgoing = _preparedSwitch.Outgoing?.Entity;
-            if (outgoingEntity != null && !ReferenceEquals(preparedOutgoing, outgoingEntity))
-            {
-                return;
-            }
-
-            if (_preparedSwitch.Incoming?.Entity != null && _preparedSwitch.Incoming.SlotIndex != _activeSlotIndex)
-            {
-                SetMemberStandby(_preparedSwitch.Incoming.Entity);
-            }
-
-            if (preparedOutgoing != null && ReferenceEquals(LocalCharacter, preparedOutgoing))
-            {
-                if (!HasSharedPartyCamera)
-                {
-                    preparedOutgoing.SetCameraRigActive(true);
-                }
-
-                preparedOutgoing.SetPresentationVisible(true);
-                preparedOutgoing.SetControlActive(true, assignCameraTarget: true);
-                UpdatePartyDebugHudVisibility(preparedOutgoing);
-            }
-
-            ClearPreparedSwitch();
-        }
-
+        /// <summary>
+        /// 响应 Timeline 切人关键帧动作过渡事件的转发分发接口（委托至 SwitchExecutor 状态机）。
+        /// </summary>
         public bool HandleTimelineEvent(RoleEntity sourceEntity, string eventName)
         {
-            if (sourceEntity == null || string.IsNullOrEmpty(eventName))
-            {
-                return false;
-            }
-
-            return eventName switch
-            {
-                ShowIncomingRoleEventName => ShowIncomingRole(sourceEntity),
-                SwitchCameraEventName => SwitchPreparedCamera(sourceEntity),
-                SwitchExecuteEventName => ExecutePreparedSwitch(sourceEntity),
-                HideOutgoingRoleEventName => HideOutgoingRole(sourceEntity),
-                _ => false
-            };
+            return _switchExecutor != null && _switchExecutor.HandleTimelineEvent(sourceEntity, eventName);
         }
 
-        private bool ShowIncomingRole(RoleEntity sourceEntity)
-        {
-            if (!TryGetPreparedSwitch(sourceEntity, out PreparedSwitchContext context))
-            {
-                return false;
-            }
-
-            RoleEntity incomingEntity = context.Incoming?.Entity;
-            if (incomingEntity == null)
-            {
-                return false;
-            }
-
-            AssignSharedPartyCamera(incomingEntity);
-            incomingEntity.EnsureRuntimeInitialized();
-            SynchronizePartyMemberTransform(incomingEntity, context.SwitchPosition, context.SwitchRotation);
-            incomingEntity.ResetSwitchState();
-            incomingEntity.SetPresentationVisible(true);
-
-            context.IncomingShown = true;
-            _preparedSwitch = context;
-            return true;
-        }
-
-        private bool SwitchPreparedCamera(RoleEntity sourceEntity)
-        {
-            if (!TryGetPreparedSwitch(sourceEntity, out PreparedSwitchContext context))
-            {
-                return false;
-            }
-
-            if (!context.IncomingShown && !ShowIncomingRole(sourceEntity))
-            {
-                return false;
-            }
-
-            RoleEntity outgoingEntity = context.Outgoing?.Entity;
-            RoleEntity incomingEntity = context.Incoming?.Entity;
-            if (outgoingEntity == null || incomingEntity == null)
-            {
-                return false;
-            }
-
-            GameCameraManager.Instance?.BeginInstantCut();
-            try
-            {
-                if (!HasSharedPartyCamera)
-                {
-                    outgoingEntity.SetCameraRigActive(false);
-                }
-
-                incomingEntity.SetCameraRigActive(true);
-                GameCameraManager.Instance?.SetTarget(incomingEntity.transform);
-                SnapIncomingCameraPose(
-                    incomingEntity,
-                    context.SourcePosition,
-                    context.SwitchPosition,
-                    context.PreviousCameraPosition,
-                    context.PreviousCameraRotation);
-            }
-            finally
-            {
-                GameCameraManager.Instance?.EndInstantCut();
-            }
-
-            context.CameraSwitched = true;
-            _preparedSwitch = context;
-            return true;
-        }
-
-        private bool ExecutePreparedSwitch(RoleEntity sourceEntity)
-        {
-            if (!TryGetPreparedSwitch(sourceEntity, out PreparedSwitchContext context))
-            {
-                return false;
-            }
-
-            if (!context.IncomingShown && !ShowIncomingRole(sourceEntity))
-            {
-                return false;
-            }
-
-            PartyMember incoming = context.Incoming;
-            RoleEntity incomingEntity = incoming?.Entity;
-            if (incomingEntity == null)
-            {
-                return false;
-            }
-
-            ActivatePartyMember(incoming, context.SwitchPosition, context.SwitchRotation, assignCameraTarget: false);
-            context.Executed = true;
-            _preparedSwitch = context;
-
-            if (incomingEntity.ActionController?.TryTriggerEvent(RouteEventType.Switch) != true)
-            {
-                if (incomingEntity.Config?.ActionRoot != null)
-                {
-                    incomingEntity.ActionController?.PlayAction(incomingEntity.Config.ActionRoot);
-                }
-
-                if (incomingEntity.ActionController?.TryTriggerEvent(RouteEventType.Switch) != true)
-                {
-                    Debug.LogWarning($"[CharacterManager] SwitchIn event route not found for '{incomingEntity.Config?.RoleName}'.");
-                    _isSwitching = false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool HideOutgoingRole(RoleEntity sourceEntity)
-        {
-            if (!TryGetPreparedSwitch(sourceEntity, out PreparedSwitchContext context))
-            {
-                return false;
-            }
-
-            RoleEntity outgoingEntity = context.Outgoing?.Entity;
-            if (outgoingEntity == null)
-            {
-                return false;
-            }
-
-            SetMemberStandby(outgoingEntity);
-            ClearPreparedSwitch();
-            return true;
-        }
-
-        private bool TryGetPreparedSwitch(RoleEntity sourceEntity, out PreparedSwitchContext context)
-        {
-            context = _preparedSwitch;
-            return context != null &&
-                   context.Outgoing?.Entity != null &&
-                   ReferenceEquals(context.Outgoing.Entity, sourceEntity);
-        }
-
-        private void ClearPreparedSwitch()
-        {
-            _preparedSwitch = null;
-            _isSwitching = false;
-        }
-
+        /// <summary>
+        /// 维持非主控处于备用（Standby）状态的各角色的挂机闲置循环动作。
+        /// </summary>
         private void MaintainStandbyIdleActions()
         {
             for (int i = 0; i < _partyMembers.Count; i++)
@@ -756,6 +678,12 @@ namespace Game.Logic.Character
                     entity.IsControlActive ||
                     entity.IsPresentationVisible ||
                     entity.Config?.ActionRoot == null)
+                {
+                    continue;
+                }
+
+                // 跳过正在切出队列中的角色，避免干扰其退场流程
+                if (_switchExecutor != null && _switchExecutor.IsInSwitchOutQueue(entity))
                 {
                     continue;
                 }
@@ -774,7 +702,10 @@ namespace Game.Logic.Character
             }
         }
 
-        private PartyMember FindPartyMember(RoleEntity entity)
+        /// <summary>
+        /// 依据角色的运行时实体引用，查询并返回对应的编队插槽成员包装结构。
+        /// </summary>
+        internal PartyMember FindPartyMember(RoleEntity entity)
         {
             if (entity == null)
             {
@@ -792,139 +723,6 @@ namespace Game.Logic.Character
 
             return null;
         }
-
-        private void SnapIncomingCameraPose(
-            RoleEntity targetEntity,
-            Vector3 sourcePosition,
-            Vector3 switchPosition,
-            Vector3 previousCameraPosition,
-            Quaternion previousCameraRotation)
-        {
-            Vector3 translatedCameraPosition = previousCameraPosition + (switchPosition - sourcePosition);
-            targetEntity?.CameraController?.SnapToPose(translatedCameraPosition, previousCameraRotation);
-            GameCameraManager.Instance?.ForceMainCameraPose(translatedCameraPosition, previousCameraRotation);
-        }
-
-        private Vector3 ComputeSwitchInPosition(
-            RoleEntity outgoingEntity,
-            RoleEntity incomingEntity,
-            Vector3 sourcePosition,
-            Transform cameraTransform,
-            Quaternion sourceRotation)
-        {
-            Vector3 forward = cameraTransform != null
-                ? Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up).normalized
-                : Vector3.ProjectOnPlane(sourceRotation * Vector3.forward, Vector3.up).normalized;
-
-            if (forward.sqrMagnitude <= 0.0001f)
-            {
-                forward = Vector3.ProjectOnPlane(sourceRotation * Vector3.forward, Vector3.up).normalized;
-            }
-
-            if (forward.sqrMagnitude <= 0.0001f)
-            {
-                forward = Vector3.forward;
-            }
-
-            Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
-
-            for (int i = 0; i < 4; i++)
-            {
-                Vector3 offset = _partyConfig != null
-                    ? _partyConfig.GetSwitchOffset(i)
-                    : GetDefaultSwitchOffset(i);
-                Vector3 candidatePosition = sourcePosition + right * offset.x + Vector3.up * offset.y + forward * offset.z;
-                if (IsSwitchPositionAvailable(candidatePosition, sourceRotation, outgoingEntity, incomingEntity))
-                {
-                    return candidatePosition;
-                }
-            }
-
-            return sourcePosition;
-        }
-
-        private bool IsSwitchPositionAvailable(
-            Vector3 candidatePosition,
-            Quaternion candidateRotation,
-            RoleEntity outgoingEntity,
-            RoleEntity incomingEntity)
-        {
-            GetSwitchProbeShape(incomingEntity, out Vector3 probeCenter, out float probeHeight, out float probeRadius);
-            Vector3 worldCenter = candidatePosition + candidateRotation * probeCenter;
-            float halfSegment = Mathf.Max(0f, probeHeight * 0.5f - probeRadius);
-            Vector3 point1 = worldCenter + Vector3.up * halfSegment;
-            Vector3 point2 = worldCenter - Vector3.up * halfSegment;
-            int hitCount = Physics.OverlapCapsuleNonAlloc(
-                point1,
-                point2,
-                probeRadius + SwitchProbePadding,
-                _switchPositionOverlapBuffer,
-                Physics.AllLayers,
-                QueryTriggerInteraction.Ignore);
-
-            for (int i = 0; i < hitCount; i++)
-            {
-                Collider hit = _switchPositionOverlapBuffer[i];
-                if (hit == null)
-                {
-                    continue;
-                }
-
-                if (ShouldIgnoreSwitchPositionHit(hit, outgoingEntity, incomingEntity))
-                {
-                    continue;
-                }
-
-                return false;
-            }
-
-            return true;
-        }
-
-        private static void GetSwitchProbeShape(RoleEntity entity, out Vector3 center, out float height, out float radius)
-        {
-            CharacterController controller = entity != null ? entity.GetComponent<CharacterController>() : null;
-            if (controller != null)
-            {
-                center = controller.center;
-                height = Mathf.Max(controller.height, controller.radius * 2f);
-                radius = Mathf.Max(0.05f, controller.radius);
-                return;
-            }
-
-            center = DefaultSwitchProbeCenter;
-            height = DefaultSwitchProbeHeight;
-            radius = DefaultSwitchProbeRadius;
-        }
-
-        private static bool ShouldIgnoreSwitchPositionHit(Collider hit, RoleEntity outgoingEntity, RoleEntity incomingEntity)
-        {
-            Transform hitTransform = hit.transform;
-            if (outgoingEntity != null && hitTransform.IsChildOf(outgoingEntity.transform))
-            {
-                return true;
-            }
-
-            if (incomingEntity != null && hitTransform.IsChildOf(incomingEntity.transform))
-            {
-                return true;
-            }
-
-            Transform root = hitTransform.root;
-            return root != null && root.CompareTag(LocalRoleTag);
-        }
-
-        private static Vector3 GetDefaultSwitchOffset(int switchSequence)
-        {
-            return (Mathf.Abs(switchSequence) % 4) switch
-            {
-                0 => new Vector3(1.5f, 0f, -1.25f),
-                1 => new Vector3(0f, 0f, -1.6f),
-                2 => new Vector3(-1.5f, 0f, -1.25f),
-                _ => Vector3.zero
-            };
-        }
-
     }
 }
 

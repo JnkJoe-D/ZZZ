@@ -10,20 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
-  m_Name: "\u5b89\u6bd4_\u6307\u4ee4\u96c6_1_1_\u4e00\u6bb5\u653b\u51fb\u6307\u4ee4_\u540e\u6447"
+  m_Name: "\u5B89\u6BD4_\u6307\u4EE4\u96C6_1_1_\u4E00\u6BB5\u653B\u51FB\u6307\u4EE4_\u540E\u6447"
   m_EditorClassIdentifier: 
   Routes:
   - Category: 0
-    RequiredType: 20
-    RequiredPhase: 0
     RequiredWindowTag: BackSwing
     TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 0
     Modifier: 0
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 
-    NonSatisfiedPolicy: 0
-    NextAction: {fileID: 11400000, guid: d92d1f694208d2d4683e62dc210fbf35, type: 2}
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: d92d1f694208d2d4683e62dc210fbf35, type: 2}
+    RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
   references:

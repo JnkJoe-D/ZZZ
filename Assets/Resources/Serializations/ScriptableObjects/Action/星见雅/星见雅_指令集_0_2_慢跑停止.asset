@@ -16,16 +16,17 @@ MonoBehaviour:
   - Category: 0
     RequiredWindowTag: Execute1
     TriggerMode: 1
-    ConditionCheckTiming: 0
+    ModifierCheckTiming: 20
     EventType: 0
     RequiredType: 10
     RequiredPhase: 20
     Modifier: 20
-    ModifierRequiredType: 0
-    ModifierRequiredPhase: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
     ModifierConditions: 14000000
-    NonSatisfiedPolicy: 0
-    NextAction: {fileID: 11400000, guid: 555b2cb19f0b1dc44bf82bb94f9df0e6, type: 2}
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 555b2cb19f0b1dc44bf82bb94f9df0e6, type: 2}
+    RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
   references:

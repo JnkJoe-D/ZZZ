@@ -1,4 +1,4 @@
-namespace Game.Logic.Character
+namespace Game.Logic
 {
     public enum CommandContextType
     {

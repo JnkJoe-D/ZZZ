@@ -6,7 +6,7 @@ using Game.Network;
 using UnityEngine.EventSystems;
 using System.IO;
 using Game.Config;
-using Game.Logic.Action;
+using Game.Logic;
 using Game.FSM;
 using Game.UI;
 using Game.Scene;
@@ -185,7 +185,7 @@ namespace Game.Framework
 
             // 各子系统 Shutdown（顺序与初始化相反）
 
-            Game.Logic.Action.ActionManager.Instance?.Shutdown();
+            Game.Logic.ActionManager.Instance?.Shutdown();
             Game.Input.InputManager.Instance?.Shutdown();
             Game.Camera.GameCameraManager.Instance?.Shutdown();
             SceneManager.Instance?.Shutdown();
