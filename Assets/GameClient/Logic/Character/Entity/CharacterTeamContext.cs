@@ -20,6 +20,7 @@ namespace Game.Logic
         public IInputProvider InputProvider { get; private set; }
         public TargetFinder TargetFinder => targetFinder;
         public CinemachineVirtualCameraBase SharedVirtualCamera => sharedVirtualCamera;
+        public RoleEntity ActiveRole => _activeRole;
 
         public void Initialize()
         {

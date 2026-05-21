@@ -27,6 +27,7 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
@@ -43,6 +44,7 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
@@ -57,6 +59,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 22d0fc9289794c44953011472885221e, type: 2}
   - {fileID: 11400000, guid: 0ae99841e2fe44a48bbd2c6042a90734, type: 2}
   - {fileID: 11400000, guid: 1da2cbbee3cb87045b2023e7273702c3, type: 2}
+  - {fileID: 11400000, guid: ea7a120125d6de84693fec485332885d, type: 2}
   FaceToSpeed: 10
   PlaybackSpeed: 1
   Cooldown: 2

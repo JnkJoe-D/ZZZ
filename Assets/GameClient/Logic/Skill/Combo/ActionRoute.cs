@@ -58,7 +58,54 @@ namespace Game.Logic
     }
 
     [Serializable]
-    public class ActionRoute
+    public class RouteModifierCheck
+    {
+        public ModifierCategory Category = ModifierCategory.None;
+
+        [ShowIf("Category", ModifierCategory.KeyState)]
+        public InputCommand RequiredKey;
+
+        [ShowIf("Category", ModifierCategory.Condition)]
+        public ConditionCommand Condition = ConditionCommand.None;
+
+        public bool Inverse = false;
+
+        public bool Evaluate(CharacterEntity actor)
+        {
+            switch (Category)
+            {
+                case ModifierCategory.None:
+                    return true;
+                case ModifierCategory.Condition:
+                    bool conditionResult = CheckCondition(Condition, actor);
+                    return Inverse ? !conditionResult : conditionResult;
+                case ModifierCategory.KeyState:
+                    if (actor?.InputProvider == null)
+                        return false;
+                    bool isHeld = actor.InputProvider.IsHeld((int)RequiredKey);
+                    return Inverse ? !isHeld : isHeld;
+                default:
+                    return true;
+            }
+        }
+
+        private bool CheckCondition(ConditionCommand condition, CharacterEntity entity)
+        {
+            if (entity == null) return false;
+            return condition switch
+            {
+                ConditionCommand.None => true,
+                ConditionCommand.Move => entity.InputProvider != null && entity.InputProvider.HasMovementInput(),
+                ConditionCommand.ShortMove => entity.RuntimeData != null && entity.RuntimeData.IsShortMoveInput,
+                ConditionCommand.LostMove => entity.InputProvider != null && !entity.InputProvider.HasMovementInput(),
+                ConditionCommand.SwitchOutPending => entity.RuntimeData != null && entity.RuntimeData.IsSwitchOutPending,
+                _ => false
+            };
+        }
+    }
+
+    [Serializable]
+    public class ActionRoute : ISerializationCallbackReceiver
     {
         [Header("Trigger")]
         public RouteTriggerCategory Category;
@@ -82,17 +129,20 @@ namespace Game.Logic
         [ShowIf("Category", RouteTriggerCategory.PlayerCommand)]
         public CommandPhase RequiredPhase = CommandPhase.Started;
 
-        [Header("Modifier")]
-        public ModifierCategory Modifier = ModifierCategory.None;
+        [Header("Modifiers")]
+        public List<RouteModifierCheck> Modifiers = new();
 
-        [ShowIf("Modifier", ModifierCategory.KeyState)]
-        public InputCommand ModifierRequiredKey;
+        [HideInInspector, SerializeField]
+        private ModifierCategory Modifier = ModifierCategory.None;
 
-        [ShowIf("Modifier", ModifierCategory.KeyState)]
-        public bool InverseKeyStatus = false;
+        [HideInInspector, SerializeField]
+        private InputCommand ModifierRequiredKey;
 
-        [ShowIf("Modifier", ModifierCategory.Condition)]
-        public List<ConditionCommand> ModifierConditions = new();
+        [HideInInspector, SerializeField]
+        private bool InverseKeyStatus = false;
+
+        [HideInInspector, SerializeField]
+        private List<ConditionCommand> ModifierConditions;
 
         [Header("Execution Target")]
         public ExecuteTarget ExecuteType = ExecuteTarget.Action;
@@ -110,7 +160,25 @@ namespace Game.Logic
         [Header("Execution")]
         public int Priority;
 
-        public bool HasModifier => Modifier != ModifierCategory.None;
+        public bool HasModifier => Modifiers != null && Modifiers.Count > 0;
+
+        public void OnBeforeSerialize() { }
+
+        public void OnAfterDeserialize()
+        {
+            if (Modifier != ModifierCategory.None)
+            {
+                if (Modifiers == null) Modifiers = new List<RouteModifierCheck>();
+                Modifiers.Add(new RouteModifierCheck
+                {
+                    Category = Modifier,
+                    RequiredKey = ModifierRequiredKey,
+                    Inverse = InverseKeyStatus,
+                    Condition = (ModifierConditions != null && ModifierConditions.Count > 0) ? ModifierConditions[0] : ConditionCommand.None
+                });
+                Modifier = ModifierCategory.None;
+            }
+        }
 
         public bool EvaluatePlayerCommand(
             CharacterCommand command,
@@ -189,22 +257,12 @@ namespace Game.Logic
 
         public bool EvaluateModifier(CharacterEntity actor, string activeWindowTag = null)
         {
-            switch (Modifier)
+            if (Modifiers == null || Modifiers.Count == 0) return true;
+            foreach (var mod in Modifiers)
             {
-                case ModifierCategory.None:
-                    return true;
-
-                case ModifierCategory.Condition:
-                    return EvaluateModifierConditions(actor);
-
-                case ModifierCategory.KeyState:
-                    if (actor?.InputProvider == null)
-                        return false;
-                    return actor.InputProvider.IsHeld((int)ModifierRequiredKey) || InverseKeyStatus;
-
-                default:
-                    return true;
+                if (!mod.Evaluate(actor)) return false;
             }
+            return true;
         }
 
         public bool MatchesCommand(InputCommand commandType, CommandPhase commandPhase)
@@ -225,41 +283,7 @@ namespace Game.Logic
             return true;
         }
 
-        private bool EvaluateModifierConditions(CharacterEntity actor)
-        {
-            if (ModifierConditions == null || ModifierConditions.Count == 0)
-            {
-                return true;
-            }
 
-            foreach (ConditionCommand condition in ModifierConditions)
-            {
-                if (!CheckCondition(condition, actor))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool CheckCondition(ConditionCommand condition, CharacterEntity entity)
-        {
-            if (entity == null)
-            {
-                return false;
-            }
-
-            return condition switch
-            {
-                ConditionCommand.None => true,
-                ConditionCommand.Move => entity.InputProvider != null && entity.InputProvider.HasMovementInput(),
-                ConditionCommand.ShortMove => entity.RuntimeData != null && entity.RuntimeData.IsShortMoveInput,
-                ConditionCommand.LostMove => entity.InputProvider != null && !entity.InputProvider.HasMovementInput(),
-                ConditionCommand.SwitchOutPending => entity.RuntimeData != null && entity.RuntimeData.IsSwitchOutPending, 
-                _ => false
-            };
-        }
 
         private bool MatchesWindowTag(string activeWindowTag)
         {

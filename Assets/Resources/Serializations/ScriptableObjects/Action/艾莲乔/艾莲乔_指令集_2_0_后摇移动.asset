@@ -20,6 +20,7 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 10
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
@@ -36,6 +37,7 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 10
     RequiredPhase: 10
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
@@ -52,6 +54,7 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 10
     RequiredPhase: 30
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
@@ -68,10 +71,19 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 10
     RequiredPhase: 30
-    Modifier: 10
+    Modifiers:
+    - Category: 10
+      RequiredKey: 10
+      Condition: 0
+      Inverse: 0
+    - Category: 20
+      RequiredKey: 10
+      Condition: 40
+      Inverse: 1
+    Modifier: 0
     ModifierRequiredKey: 10
     InverseKeyStatus: 0
-    ModifierConditions: 
+    ModifierConditions: 00000000
     ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
     RouteExecuteEvent: 0

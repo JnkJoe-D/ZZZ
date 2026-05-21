@@ -187,7 +187,22 @@ namespace Game.Logic
                 }
             }
         }
+        public float GetCharcterRadius()
+        {
+            var cc = GetComponent<CharacterController>();
+            if (cc != null)
+            {
+                return cc.radius + cc.skinWidth;
+            }
 
+            var capsule = GetComponent<CapsuleCollider>();
+            if (capsule != null)
+            {
+                return capsule.radius;
+            }
+
+            return 0.5f; // 默认值
+        }
         private void Start()
         {
             EnsureRuntimeInitialized();

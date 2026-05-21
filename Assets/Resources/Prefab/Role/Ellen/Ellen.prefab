@@ -1961,6 +1961,7 @@ GameObject:
   - component: {fileID: 6573431844842490833}
   - component: {fileID: 8064239406576316900}
   - component: {fileID: 4486738995458349947}
+  - component: {fileID: 2272352426451673513}
   m_Layer: 9
   m_Name: Ellen
   m_TagString: LocalRole
@@ -2076,6 +2077,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetEntity: {fileID: 0}
+--- !u!114 &2272352426451673513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2152106459170098581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f4a49cc0ba474bb00b8feebca4af1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followPoint: {fileID: 4628129251845744901}
+  lookAtPoint: {fileID: 4628129251845744901}
 --- !u!1 &2161432479644534643
 GameObject:
   m_ObjectHideFlags: 0

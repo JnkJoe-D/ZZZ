@@ -17,8 +17,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 90c7c3c116e6d474c8605348668e67fe, type: 2}
   - {fileID: 11400000, guid: 449c071fdd069104a9819308d8c66f6a, type: 2}
   InitialSlotIndex: 0
-  CameraPrefab: {fileID: 6600116627084618121, guid: eefc9c6130678ee44a5750a6b7eb4797, type: 3}
-  RightBackOffset: {x: 1.5, y: 0, z: -1.25}
-  BackOffset: {x: 0, y: 0, z: -1.6}
-  LeftBackOffset: {x: -1.5, y: 0, z: -1.25}
-  FallbackOffset: {x: 0, y: 0, z: 0}
+  TeamPrefab: {fileID: 0}
+  CameraPrefab: {fileID: 6600116627084618121, guid: eefc9c6130678ee44a5750a6b7eb4797,
+    type: 3}
+  SwitchInOffset:
+  - {x: 1.5, y: 0, z: -1.5}
+  - {x: -1.5, y: 0, z: -1.5}
+  - {x: 0, y: 0, z: -1.5}
+  - {x: 0, y: 0, z: 0}
+  blockLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  blockRadiusMultipier: 1.5

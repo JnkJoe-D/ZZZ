@@ -19,10 +19,9 @@ namespace Game.Logic
         public GameObject CameraPrefab;
 
         [Header("Switch In Offsets")]
-        public Vector3 RightBackOffset = new Vector3(1.5f, 0f, -1.25f);
-        public Vector3 BackOffset = new Vector3(0f, 0f, -1.6f);
-        public Vector3 LeftBackOffset = new Vector3(-1.5f, 0f, -1.25f);
-        public Vector3 FallbackOffset = Vector3.zero;
+        public List<Vector3> SwitchInOffset = new List<Vector3>();
+        public LayerMask blockLayer;
+        public float blockRadiusMultipier = 1.5f;
 
         public int GetValidMemberCount(int maxCount = 3)
         {
@@ -60,18 +59,6 @@ namespace Game.Logic
             }
 
             return results;
-        }
-
-        public Vector3 GetSwitchOffset(int priorityIndex)
-        {
-            int index = Mathf.Abs(priorityIndex) % 4;
-            return index switch
-            {
-                0 => RightBackOffset,
-                1 => BackOffset,
-                2 => LeftBackOffset,
-                _ => FallbackOffset
-            };
         }
     }
 }

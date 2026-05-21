@@ -27,12 +27,13 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
     ModifierConditions: 
     ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: b160746897ca318418d8374d92e49685, type: 2}
+    ExecuteAction: {fileID: 11400000, guid: af671d476d00b744584ec34b607e8996, type: 2}
     RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
@@ -43,12 +44,13 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
     ModifierConditions: 
     ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: b160746897ca318418d8374d92e49685, type: 2}
+    ExecuteAction: {fileID: 11400000, guid: af671d476d00b744584ec34b607e8996, type: 2}
     RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
@@ -57,6 +59,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 22d0fc9289794c44953011472885221e, type: 2}
   - {fileID: 11400000, guid: 0ae99841e2fe44a48bbd2c6042a90734, type: 2}
   - {fileID: 11400000, guid: 1da2cbbee3cb87045b2023e7273702c3, type: 2}
+  - {fileID: 11400000, guid: ea7a120125d6de84693fec485332885d, type: 2}
   FaceToSpeed: 10
   PlaybackSpeed: 1
   Cooldown: 0.2

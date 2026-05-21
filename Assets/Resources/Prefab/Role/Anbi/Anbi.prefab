@@ -3659,6 +3659,7 @@ GameObject:
   - component: {fileID: 8354705982429906382}
   - component: {fileID: 7625894077792401723}
   - component: {fileID: -6964840766245460749}
+  - component: {fileID: -1212198168007130481}
   m_Layer: 9
   m_Name: Anbi
   m_TagString: LocalRole
@@ -3774,6 +3775,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetEntity: {fileID: 0}
+--- !u!114 &-1212198168007130481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6866138656870126649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f4a49cc0ba474bb00b8feebca4af1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followPoint: {fileID: 6706742321838527784}
+  lookAtPoint: {fileID: 6706742321838527784}
 --- !u!1 &7097739902340499169
 GameObject:
   m_ObjectHideFlags: 0

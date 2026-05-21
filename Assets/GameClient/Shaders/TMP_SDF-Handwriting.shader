@@ -1,4 +1,4 @@
-// 带有手写/艺术效果的 SDF Shader (粉笔、水彩、毛笔、钢笔)
+// 带有手写/艺术效果的 SDF Shader (粉笔、水彩、毛笔、钢笔、水墨风、整体形变扭曲、颜色渐变、金箔效果、3D压印浮雕、动态流体字)
 // 基于 TMP_SDF-Mobile 修改，完全使用程序化噪声 (Procedural Noise)
 
 Shader "TextMeshPro/Mobile/Distance Field - Handwriting" {
@@ -50,11 +50,20 @@ Properties {
 	_CullMode			("Cull Mode", Float) = 0
 	_ColorMask			("Color Mask", Float) = 15
 
+	// ==================== 手写/艺术效果全局控制开关 ====================
+	_UseEdgeSpikes		("Use Edge & Spikes Toggle (启用边缘与毛刺)", Float) = 0
+	_UseWarp			("Use Warp Toggle (启用整体形变)", Float) = 0
+	_UseInk				("Use Ink Wash Toggle (启用水墨与晕染)", Float) = 0
+	_UseHoles			("Use Holes Toggle (启用斑驳与空洞)", Float) = 0
+	_UseGradGold		("Use Grad & Gold Toggle (启用渐变与金箔)", Float) = 0
+	_UseEmboss			("Use Emboss Toggle (启用3D压印浮雕)", Float) = 0
+	_UseFlow			("Use Flow Toggle (启用液态流动)", Float) = 0
+
 	// ==================== 手写/艺术效果专属参数 ====================
 	[Header(Handwriting Effects)]
 	_NoiseScale			("Procedural Noise Scale (边缘扭曲噪声缩放)", float) = 50
 	_EdgeDistortion		("Edge Distortion (边缘扭曲度)", Range(0, 0.5)) = 0
-	_EdgeBleed			("Ink Bleed Softness (墨水晕染柔和度)", Range(0, 5)) = 0
+	_EdgeBleed			("Ink Bleed Softness (常规边缘缩放)", Range(0, 5)) = 0
 	_WatercolorEdge		("Watercolor Edge Darken (水彩边缘沉积加深)", Range(0, 1)) = 0
 
 	[Header(Spikes and Sharpening)]
@@ -62,11 +71,46 @@ Properties {
 	_SpikeDistortion	("Spike Distortion (尖锐毛刺强度)", Range(0, 0.5)) = 0
 	_Sharpen			("Edge Sharpening (边缘锐化程度)", Range(1, 10)) = 1
 
+	[Header(Warp Distortion)]
+	_VertexWarpStrength	("Vertex Warp Strength (顶点几何整体扭曲强度)", Range(0, 50)) = 0
+	_VertexWarpScale	("Vertex Warp Scale (几何扭曲频率)", float) = 0.05
+	_WarpStrength		("Texture Warp Strength (纹理水墨扭曲强度)", Range(0, 0.05)) = 0
+	_WarpScale			("Texture Warp Scale (纹理扭曲频率)", float) = 15
+
+	[Header(Ink Wash and Bleeding)]
+	_InkBleedDist		("Ink Bleed Distance (水墨晕染宽度)", Range(0, 0.5)) = 0
+	_InkBleedSoftness	("Bleed Softness (晕染边缘虚化)", Range(0, 0.95)) = 0.5
+	_InkBleedOpacity	("Bleed Opacity (晕染透明度)", Range(0, 1)) = 0.5
+	[HDR]_InkWashColor	("Ink Wash Color (晕染淡墨颜色)", Color) = (0.1, 0.1, 0.1, 0.8)
+
+	[Header(Gradient Effect)]
+	_UseGradient		("Use Gradient (启用颜色渐变)", Float) = 0
+	[HDR]_GradientColor	("Gradient Color (渐变目标颜色)", Color) = (0, 0.5, 1, 1)
+	_GradientDirectionType("Gradient Type (0横, 1纵, 2角度)", Float) = 0
+	_GradientAngle		("Gradient Angle (渐变角度)", Range(0, 360)) = 0
+	_GradCenter			("Gradient Center (渐变中心位移)", float) = 0
+	_GradWidth			("Gradient Width (渐变过渡宽度)", float) = 250
+
+	[Header(Gold Foil Effect)]
+	_GoldFoil			("Gold Foil Strength (金箔效果强度)", Range(0, 1)) = 0
+	[HDR]_GoldColor		("Gold Foil Color (金箔颜色)", Color) = (1, 0.82, 0.35, 1)
+	_GoldDensity		("Gold Density (金箔密度)", Range(0, 1)) = 0.3
+
 	[Header(Holes and Grains)]
 	_HoleIntensity		("Hole Intensity (空洞明显程度)", Range(0, 1)) = 0
 	_HoleDensity		("Hole Density (空洞密集程度)", Range(0, 1)) = 0.5
 	_HoleScaleX			("Hole Scale X (空洞横向缩放)", float) = 50
 	_HoleScaleY			("Hole Scale Y (空洞纵向缩放)", float) = 50
+
+	[Header(3D Emboss and Deboss)]
+	_EmbossStrength		("Emboss/Deboss Strength (浮雕凹陷强度)", Range(-2.0, 2.0)) = 0.5
+	_EmbossHeight		("Bevel Slope (边缘斜坡厚度)", Range(0.1, 10.0)) = 2.0
+	_LightAngle			("Light Direction Angle (光源投影角度)", Range(0, 360)) = 135
+	_LightDepth			("Light Height (光源高度)", Range(0.1, 3.0)) = 1.0
+	_SpecularPower		("Specular Highlight (高光亮度)", Range(0, 2.0)) = 1.0
+
+	[Header(Dynamic Flow)]
+	_FlowSpeed			("Flow Speed (流动呼吸速度)", Range(0.01, 1.0)) = 0.1
 }
 
 SubShader {
@@ -136,19 +180,56 @@ SubShader {
 			float2  localPos        : TEXCOORD5;
 		};
 
+		float _UseEdgeSpikes;
+		float _UseWarp;
+		float _UseInk;
+		float _UseHoles;
+		float _UseGradGold;
+		float _UseEmboss;
+		float _UseFlow;
+
 		float _NoiseScale;
 		float _EdgeDistortion;
 		float _EdgeBleed;
 		float _WatercolorEdge;
 		
+		float _SpikeScale;
+		float _SpikeDistortion;
+		float _Sharpen;
+
+		float _VertexWarpStrength;
+		float _VertexWarpScale;
+		float _WarpStrength;
+		float _WarpScale;
+
+		float _InkBleedDist;
+		float _InkBleedSoftness;
+		float _InkBleedOpacity;
+		fixed4 _InkWashColor;
+
+		float _UseGradient;
+		fixed4 _GradientColor;
+		float _GradientDirectionType;
+		float _GradientAngle;
+		float _GradCenter;
+		float _GradWidth;
+
+		float _GoldFoil;
+		fixed4 _GoldColor;
+		float _GoldDensity;
+
 		float _HoleIntensity;
 		float _HoleDensity;
 		float _HoleScaleX;
 		float _HoleScaleY;
 
-		float _SpikeScale;
-		float _SpikeDistortion;
-		float _Sharpen;
+		float _EmbossStrength;
+		float _EmbossHeight;
+		// float _LightAngle; // 已经在 TMPro_Properties.cginc 中声明，直接使用，无需重新声明以防冲突
+		float _LightDepth;
+		// float _SpecularPower; // 已经在 TMPro_Properties.cginc 中声明，直接使用，无需重新声明以防冲突
+
+		float _FlowSpeed;
 
 		// ==================== 程序化噪声函数 (Procedural Noise) ====================
 		
@@ -171,7 +252,7 @@ SubShader {
 			);
 		}
 
-		// 3. 分形布朗运动噪声 (FBM)，通过叠加多个不同频率的噪声，生成极其自然且不规则的形状
+		// 3. 分形布朗运动噪声 (FBM)，通过叠加多个不同频率 of 噪声，生成极其自然且不规则的形状
 		// 用于生成大小不一、形状随机的镂空斑块
 		float fbm(float2 p) {
 			float v = 0.0;
@@ -197,6 +278,21 @@ SubShader {
 			float4 vert = input.vertex;
 			vert.x += _VertexOffsetX;
 			vert.y += _VertexOffsetY;
+
+			// 新增：顶点级整体弯曲扭曲 (Vertex Warp) - 根据 _UseWarp 开关控制
+			if (_UseWarp > 0.5) {
+				float2 flowOffset = float2(0, 0);
+				if (_UseFlow > 0.5) {
+					flowOffset = float2(_Time.y * _FlowSpeed * 0.2, _Time.y * _FlowSpeed * 0.15);
+				}
+				float2 vWarpUV = vert.xy * _VertexWarpScale + flowOffset;
+				float2 vWarpOffset = float2(
+					fbm(vWarpUV),
+					fbm(vWarpUV + float2(37.0, 71.0))
+				) - 0.5;
+				vert.xy += vWarpOffset * _VertexWarpStrength;
+			}
+
 			float4 vPosition = UnityObjectToClipPos(vert);
 
 			float2 pixelSize = vPosition.w;
@@ -265,55 +361,199 @@ SubShader {
 		{
 			UNITY_SETUP_INSTANCE_ID(input);
 
-			// 1. 计算边缘扭曲的坐标缩放
-			float2 noiseUV = input.localPos.xy * _NoiseScale;
-			
-			// 2. 生成平滑噪声 (Smooth Noise)：用于边缘扭曲 (Edge Distortion) 和墨水晕染 (Ink Bleed)
-			half smoothNoise = valueNoise(noiseUV);
-			
-			// 3. 计算均匀遍布的空洞噪声 (Hole Noise)
-			// 利用新增的横向(_HoleScaleX)和纵向(_HoleScaleY)比例生成UV
-			float2 holeUV = float2(input.localPos.x * _HoleScaleX, input.localPos.y * _HoleScaleY);
-			
-			// 混合高频粉末噪点(Hash)与低频笔触噪点(FBM)，生成更真实的粉笔/枯笔质感，彻底打破块状感
-			float dust = hash(holeUV * 3.0); 
-			float stroke = fbm(holeUV);
-			half holeNoise = dust * 0.4 + stroke * 0.6; 
-			
-			// 使用 _HoleDensity 做阈值裁切。
-			float holeMask = smoothstep(_HoleDensity - 0.2, _HoleDensity + 0.2, holeNoise);
+			// 为了防止字符网格 Quad 裁剪，在最外层读取原始 SDF 并生成平滑淡出系数
+			// 在接近 Quad 边缘的地方（d_raw接近0时），将任何 UV 偏移淡出为 0，实现完美的零裁剪保障！
+			half d_raw_base = tex2D(_MainTex, input.texcoord0.xy).a;
+			half uvSafeFade = smoothstep(0.12, 0.38, d_raw_base);
 
-			// 4. 读取原始文字的距离场 (SDF) 并应用边缘扭曲
-			half d_raw = tex2D(_MainTex, input.texcoord0.xy).a;
-			// 圆滑的边缘扭曲：仅改变 SDF，使得文字的外轮廓变得粗糙不平整
-			d_raw += (smoothNoise - 0.5) * _EdgeDistortion;
-			
-			// 新增：尖锐的边缘毛刺效果
-			float2 spikeUV = input.localPos.xy * _SpikeScale;
-			half spikeNoise = hash(spikeUV); // 使用纯高频哈希噪声产生像素级的锐利刺断
-			d_raw += (spikeNoise - 0.5) * _SpikeDistortion;
+			// 1. 计算纹理水墨扭曲 (Texture Warp) - 融入 _UseFlow 动态流动
+			float2 warpOffset = float2(0, 0);
+			if (_UseWarp > 0.5) {
+				float2 flowOffset = float2(0, 0);
+				if (_UseFlow > 0.5) {
+					flowOffset = float2(_Time.y * _FlowSpeed * 0.5, _Time.y * _FlowSpeed * 0.3);
+				}
+				float2 warpUV = input.localPos.xy * _WarpScale + flowOffset;
+				warpOffset = float2(
+					fbm(warpUV),
+					fbm(warpUV + float2(17.0, 31.0))
+				) - 0.5;
+			}
 
-			// 5. 动态计算墨水边缘晕染 (Ink Bleed)
-			float softnessScale = 1.0 / (1.0 + _EdgeBleed * smoothNoise);
+			// 2. 独立水波起伏 (即使关闭 Warp 整体形变，开启 Flow 时，字脊边缘依然会缓慢波动)
+			float2 flowWobble = float2(0, 0);
+			if (_UseFlow > 0.5) {
+				float flowTime = _Time.y * _FlowSpeed * 6.0;
+				// 将幅度缩小 4 倍（调到极度细腻自然的 0.00075 级别），避免眼花
+				flowWobble.x = sin(input.localPos.y * 0.05 + flowTime) * 0.00075;
+				flowWobble.y = cos(input.localPos.x * 0.05 + flowTime * 0.8) * 0.00075;
+			}
+
+			// 将所有偏移应用到采样 UV 上，并乘以边界保护系数 uvSafeFade，彻底拒绝超出字面 Quad 裁剪！
+			float2 finalUV = input.texcoord0.xy + (warpOffset * _WarpStrength + flowWobble) * uvSafeFade;
+
+			// 3. 边缘微观扭曲与毛刺 - 融入 _UseFlow 动态微颤
+			half edgeDistortionVal = 0.0;
+			half spikeDistortionVal = 0.0;
+			half smoothNoise = 0.0;
+			half spikeNoise = 0.0;
+			
+			if (_UseEdgeSpikes > 0.5) {
+				float2 flowOffset = float2(0, 0);
+				if (_UseFlow > 0.5) {
+					flowOffset = float2(_Time.y * _FlowSpeed * 0.8, -_Time.y * _FlowSpeed * 0.4);
+				}
+				float2 noiseUV = input.localPos.xy * _NoiseScale + flowOffset;
+				smoothNoise = valueNoise(noiseUV);
+				edgeDistortionVal = (smoothNoise - 0.5) * _EdgeDistortion;
+				
+				float2 spikeUV = input.localPos.xy * _SpikeScale + flowOffset * 1.5;
+				spikeNoise = hash(spikeUV);
+				spikeDistortionVal = (spikeNoise - 0.5) * _SpikeDistortion;
+			}
+
+			// 4. 读取原始文字的距离场 (SDF) 并应用微观边缘扭曲
+			half d_raw = tex2D(_MainTex, finalUV).a; 
+			
+			// 引入边缘淡出，保护透明面片边缘不产生“直边裁剪下划线”
+			half edgeFade = smoothstep(0.2, 0.45, d_raw);
+			d_raw += edgeDistortionVal * edgeFade;
+			d_raw += spikeDistortionVal * edgeFade;
+
+			// 5. 动态计算墨水边缘常规晕染 (Ink Bleed)
+			float softnessScale = 1.0;
+			if (_UseEdgeSpikes > 0.5) {
+				softnessScale = 1.0 / (1.0 + _EdgeBleed * smoothNoise);
+			}
 
 			// 结合 TMP 自带的偏置参数，计算最终的表面距离
 			half d = d_raw * input.param.x * softnessScale;
-			
-			// 新增：边缘锐化 (Sharpen)
-			// 通过乘以 _Sharpen 放大 SDF 梯度，使原本柔和的抗锯齿边缘变得刀切般锋利
-			half4 c = input.faceColor * saturate((d - input.param.w) * _Sharpen);
+			float coreDist = d - input.param.w;
+
+			// ==================== 水墨与晕染核心渲染逻辑 ====================
+			// 核心文字 Alpha
+			float finalInkAlpha = saturate(coreDist * _Sharpen);
+
+			// 未预乘主色还原
+			half4 unmultipliedFace = input.faceColor;
+			if (unmultipliedFace.a > 0.001) {
+				unmultipliedFace.rgb /= unmultipliedFace.a;
+			}
+
+			// 默认主颜色
+			half3 finalRGB = unmultipliedFace.rgb;
+
+			if (_UseInk > 0.5) {
+				// 启用晕染外圈部分 - 融入 _UseFlow 动态宣纸纤维漂移
+				float bleedDist = d - (input.param.w - _InkBleedDist * input.param.x * softnessScale);
+				float coreAlpha = saturate(coreDist * _Sharpen);
+				
+				float2 fiberUV = input.localPos.xy * 200.0;
+				if (_UseFlow > 0.5) {
+					fiberUV += float2(_Time.y * _FlowSpeed * 0.3, _Time.y * _FlowSpeed * 0.2);
+				}
+				float fiberNoise = hash(fiberUV);
+				float bleedSoft = (1.0 - _InkBleedSoftness) * 2.0;
+				float bleedAlpha = saturate(bleedDist * bleedSoft * (0.8 + fiberNoise * 0.2)) * _InkBleedOpacity;
+				
+				// 组合浓墨与淡墨晕染外圈的 Alpha
+				finalInkAlpha = max(coreAlpha, bleedAlpha);
+				// 浓淡墨双色融合
+				finalRGB = lerp(_InkWashColor.rgb, unmultipliedFace.rgb, saturate(coreAlpha));
+			}
+			// ================================================================
+
+			if (_UseGradGold > 0.5) {
+				// --- 双色颜色渐变 (Gradient Effect) ---
+				if (_UseGradient > 0.5) {
+					float gradCoord = 0.0;
+					if (_GradientDirectionType < 0.5) {
+						gradCoord = input.localPos.x;
+					} else if (_GradientDirectionType < 1.5) {
+						gradCoord = input.localPos.y;
+					} else {
+						float angleRad = _GradientAngle * 0.0174532925;
+						float2 dirVec = float2(cos(angleRad), sin(angleRad));
+						gradCoord = dot(input.localPos.xy, dirVec);
+					}
+					
+					float halfWidth = max(0.1, _GradWidth * 0.5);
+					float gradT = saturate((gradCoord - (_GradCenter - halfWidth)) / max(0.1, _GradWidth));
+					
+					finalRGB = lerp(finalRGB, _GradientColor.rgb, gradT);
+				}
+
+				// --- 闪亮金箔效果 (Gold Foil) ---
+				if (_GoldFoil > 0.0) {
+					float goldNoise = hash(input.localPos.xy * 80.0);
+					float isCore = smoothstep(0.1, 0.6, coreDist);
+					float goldMask = step(1.0 - _GoldDensity * 0.1, goldNoise) * isCore * _GoldFoil;
+					finalRGB = lerp(finalRGB, _GoldColor.rgb, goldMask);
+				}
+			}
+
+			// --- 强力动态液态波纹波光 (Dynamic Liquid Caustics & Ripple Shine) - 大幅柔和化（降低为温润的高雅反光） ---
+			if (_UseFlow > 0.5) {
+				float flowTime = _Time.y * _FlowSpeed * 6.0;
+				// 降低频率，让波光流动更加沉稳大方
+				float wave = sin(input.localPos.x * 0.02 + input.localPos.y * 0.015 + flowTime);
+				float wave2 = cos(input.localPos.x * -0.015 + input.localPos.y * 0.02 - flowTime * 0.7);
+				float combinedWave = saturate((wave * wave2) * 0.5 + 0.5);
+				
+				// 将叠加亮度从 0.35 降低至超细腻的 0.08，提供若隐若现的水光感，绝不刺眼
+				finalRGB += float3(1.0, 1.0, 1.0) * combinedWave * 0.08 * saturate(finalInkAlpha);
+			}
+
+			// 重新构建预乘 Alpha 的最终文字颜色
+			half4 c = half4(finalRGB, finalInkAlpha * input.faceColor.a);
+			c.rgb *= c.a;
+
+			// ==================== 3D 纸张凹凸压印与浮雕 (Emboss/Deboss) ====================
+			if (_UseEmboss > 0.5) {
+				// 使用屏幕空间偏导数（SDF 梯度）极其优雅高效地实时推导字脊的 3D 法线
+				float2 dGrad = float2(ddx(d), ddy(d));
+				float dGradLen = length(dGrad);
+				float2 norm2D = dGradLen > 0.0001 ? dGrad / dGradLen : float2(0, 0);
+
+				// 组合为 3D 法线向量，_EmbossHeight 控制边缘斜坡的厚度和陡峭度
+				float3 normal3D = normalize(float3(norm2D.x * _EmbossHeight, norm2D.y * _EmbossHeight, 1.0));
+
+				// 构造虚拟光照向量
+				float lightRad = _LightAngle * 0.0174532925;
+				float3 lightDir = normalize(float3(cos(lightRad), sin(lightRad), _LightDepth));
+
+				// Lambert 点乘散射强度计算
+				float ndotl = dot(normal3D, lightDir);
+				float lightIntensity = ndotl - 0.5; // 分布平移到 [-0.5, 0.5]
+
+				// 通过 _EmbossStrength 的正负号决定浮雕(Emboss)或凹陷压印(Deboss)
+				float factor = lightIntensity * _EmbossStrength;
+
+				// 阴影区叠加调暗（模拟凹折射光斑）
+				float shadow = saturate(-factor);
+				c.rgb = lerp(c.rgb, c.rgb * 0.35, shadow * saturate(finalInkAlpha * 2.0));
+
+				// 高光区叠加亮白（模拟纸张/墨水表面的高亮漫反射）
+				float specular = saturate(factor) * _SpecularPower;
+				c.rgb = lerp(c.rgb, float3(1.0, 1.0, 1.0), specular * saturate(finalInkAlpha * 2.0));
+			}
+			// ==============================================================================
 
 			// 处理描边 (Outline)
 			#ifdef OUTLINE_ON
-			c = lerp(input.outlineColor, input.faceColor, saturate((d - input.param.z) * _Sharpen));
+			c = lerp(input.outlineColor, c, saturate((d - input.param.z) * _Sharpen));
 			c *= saturate((d - input.param.y) * _Sharpen);
 			#endif
 
-			// 处理底层阴影 (Underlay)
+			// 处理阴影 (Underlay)
 			#if UNDERLAY_ON
-			half underlay_d = tex2D(_MainTex, input.texcoord1.xy).a;
-			underlay_d += (smoothNoise - 0.5) * _EdgeDistortion;
-			underlay_d += (spikeNoise - 0.5) * _SpikeDistortion;
+			float2 finalUnderlayUV = input.texcoord1.xy + warpOffset * _WarpStrength;
+			half underlay_d = tex2D(_MainTex, finalUnderlayUV).a;
+			half underlayFade = smoothstep(0.2, 0.45, underlay_d);
+			if (_UseEdgeSpikes > 0.5) {
+				underlay_d += (smoothNoise - 0.5) * _EdgeDistortion * underlayFade;
+				underlay_d += (spikeNoise - 0.5) * _SpikeDistortion * underlayFade;
+			}
 			underlay_d *= input.underlayParam.x * softnessScale;
 			c += float4(_UnderlayColor.rgb * _UnderlayColor.a, _UnderlayColor.a) * saturate((underlay_d - input.underlayParam.y) * _Sharpen) * (1 - c.a);
 			#endif
@@ -321,23 +561,35 @@ SubShader {
 			// 处理内发光式阴影 (Underlay Inner)
 			#if UNDERLAY_INNER
 			half sd = saturate((d - input.param.z) * _Sharpen);
-			half underlay_d_in = tex2D(_MainTex, input.texcoord1.xy).a;
-			underlay_d_in += (smoothNoise - 0.5) * _EdgeDistortion;
-			underlay_d_in += (spikeNoise - 0.5) * _SpikeDistortion;
+			float2 finalUnderlayUV_in = input.texcoord1.xy + warpOffset * _WarpStrength;
+			half underlay_d_in = tex2D(_MainTex, finalUnderlayUV_in).a;
+			half underlayFadeIn = smoothstep(0.2, 0.45, underlay_d_in);
+			if (_UseEdgeSpikes > 0.5) {
+				underlay_d_in += (smoothNoise - 0.5) * _EdgeDistortion * underlayFadeIn;
+				underlay_d_in += (spikeNoise - 0.5) * _SpikeDistortion * underlayFadeIn;
+			}
 			underlay_d_in *= input.underlayParam.x * softnessScale;
 			c += float4(_UnderlayColor.rgb * _UnderlayColor.a, _UnderlayColor.a) * (1 - saturate((underlay_d_in - input.underlayParam.y) * _Sharpen)) * sd * (1 - c.a);
 			#endif
 			
-			// 6. 均匀镂空应用：直接在最终颜色上相乘！
-			// 这样无论是在文字的边缘还是最中心，斑驳的概率都是绝对均匀的（如粉笔字参考图）
-			float finalAlpha = lerp(1.0, holeMask, _HoleIntensity);
-			c *= finalAlpha; // 预乘 Alpha 混合：同时降低 RGB 和 A，确保镂空处真正透明
+			// 6. 均匀镂空飞白应用 (由 _UseHoles 控制)
+			if (_UseHoles > 0.5) {
+				float2 holeUV = float2(input.localPos.x * _HoleScaleX, input.localPos.y * _HoleScaleY);
+				float dust = hash(holeUV * 3.0); 
+				float stroke = fbm(holeUV);
+				half holeNoise = dust * 0.4 + stroke * 0.6; 
+				float holeMask = smoothstep(_HoleDensity - 0.2, _HoleDensity + 0.2, holeNoise);
+				
+				float finalAlpha = lerp(1.0, holeMask, _HoleIntensity);
+				c *= finalAlpha; 
+			}
 
-			// 6. 水彩边缘加深 (Watercolor Edge Darken)
-			// SDF 距离中，d - input.param.w 在文字物理边缘处恰好为 0，向内为正
-			float edgeDist = saturate(d - input.param.w); 
-			float edgeDarken = (1.0 - smoothstep(0.0, 0.5, edgeDist)) * _WatercolorEdge * smoothNoise;
-			c.rgb = lerp(c.rgb, c.rgb * 0.5, edgeDarken);
+			// 7. 水彩边缘沉积加深 (Watercolor Edge Darken - 仅当启用水墨或边缘时生效)
+			if (_UseInk > 0.5 && _UseEdgeSpikes > 0.5) {
+				float edgeDist = saturate(d - input.param.w); 
+				float edgeDarken = (1.0 - smoothstep(0.0, 0.5, edgeDist)) * _WatercolorEdge * smoothNoise;
+				c.rgb = lerp(c.rgb, c.rgb * 0.5, edgeDarken);
+			}
 
 			// TMP 原生的裁剪区域支持
 			#if UNITY_UI_CLIP_RECT

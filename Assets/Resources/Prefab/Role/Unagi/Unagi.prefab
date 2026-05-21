@@ -4581,6 +4581,7 @@ GameObject:
   - component: {fileID: 6029065140603051004}
   - component: {fileID: 1272362794621990090}
   - component: {fileID: -5976435155760237146}
+  - component: {fileID: 3279621693047793774}
   m_Layer: 9
   m_Name: Unagi
   m_TagString: LocalRole
@@ -4696,6 +4697,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetEntity: {fileID: 0}
+--- !u!114 &3279621693047793774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5207641375562360989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f4a49cc0ba474bb00b8feebca4af1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followPoint: {fileID: 8886724965460227449}
+  lookAtPoint: {fileID: 8886724965460227449}
 --- !u!1 &5252509966566894338
 GameObject:
   m_ObjectHideFlags: 0

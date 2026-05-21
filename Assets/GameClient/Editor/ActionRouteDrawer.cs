@@ -34,10 +34,7 @@ namespace Game.Editor.ActionConfig
             DrawProperty(ref position, property, "EventType");
             DrawProperty(ref position, property, "RequiredType");
             DrawProperty(ref position, property, "RequiredPhase");
-            DrawProperty(ref position, property, "Modifier");
-            DrawProperty(ref position, property, "ModifierRequiredKey");
-            DrawProperty(ref position, property, "InverseKeyStatus");
-            DrawProperty(ref position, property, "ModifierConditions", includeChildren: true);
+            DrawProperty(ref position, property, "Modifiers", includeChildren: true);
             DrawProperty(ref position, property, "ExecuteType");
             DrawProperty(ref position, property, "ExecuteAction");
             DrawProperty(ref position, property, "RouteExecuteEvent");
@@ -63,10 +60,7 @@ namespace Game.Editor.ActionConfig
             height += PropertyHeight(property, "EventType");
             height += PropertyHeight(property, "RequiredType");
             height += PropertyHeight(property, "RequiredPhase");
-            height += PropertyHeight(property, "Modifier");
-            height += PropertyHeight(property, "ModifierRequiredKey");
-            height += PropertyHeight(property, "InverseKeyStatus");
-            height += PropertyHeight(property, "ModifierConditions", includeChildren: true);
+            height += PropertyHeight(property, "Modifiers", includeChildren: true);
             height += PropertyHeight(property, "ExecuteType");
             height += PropertyHeight(property, "ExecuteAction");
             height += PropertyHeight(property, "RouteExecuteEvent");

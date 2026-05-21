@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using cfg;
 using Cinemachine;
 using Game.Camera;
 using Game.Framework;
@@ -129,7 +130,7 @@ namespace Game.Logic
         public void Update(float deltaTime)
         {
             _switchExecutor?.Update(deltaTime);
-            MaintainStandbyIdleActions();
+
         }
 
         /// <summary>
@@ -536,7 +537,22 @@ namespace Game.Logic
             RoleEntity entity = member.Entity;
             AssignSharedPartyCamera(entity);
             AssignTeamContext(entity);
-            SynchronizePartyMemberTransform(entity, position, rotation);
+
+            // 计算安全的切入位置和旋转，防止切入新角色时穿墙或卡入障碍物
+            Vector3 spawnPos = position;
+            Quaternion spawnRot = rotation;
+
+            RoleEntity outgoing = _teamContext?.ActiveRole;
+            if (outgoing != null && outgoing != entity)
+            {
+                GetInvalidPosSwitchIn(outgoing.transform, entity, out spawnPos, out spawnRot);
+            }
+            else
+            {
+                GetInvalidPosItself(position, rotation, entity, out spawnPos, out spawnRot);
+            }
+
+            SynchronizePartyMemberTransform(entity, spawnPos, spawnRot);
 
             if (!entity.gameObject.activeSelf)
             {
@@ -544,7 +560,8 @@ namespace Game.Logic
             }
 
             entity.EnsureRuntimeInitialized();
-            SynchronizePartyMemberTransform(entity, position, rotation);
+            entity.SetColliderActive(true);
+            SynchronizePartyMemberTransform(entity, spawnPos, spawnRot);
             entity.ResetSwitchState();
             entity.SetPresentationVisible(true);
             entity.SetCameraRigActive(true);
@@ -594,7 +611,7 @@ namespace Game.Logic
         /// <summary>
         /// 同步角色实体的空间三维坐标与旋转朝向。
         /// </summary>
-        private static void SynchronizePartyMemberTransform(RoleEntity entity, Vector3 position, Quaternion rotation)
+        private void SynchronizePartyMemberTransform(RoleEntity entity, Vector3 position, Quaternion rotation)
         {
             if (entity == null)
             {
@@ -602,6 +619,102 @@ namespace Game.Logic
             }
 
             entity.transform.SetPositionAndRotation(position, rotation);
+        }
+
+        private void GetInvalidPosSwitchIn(Transform originTransform, RoleEntity switchInEntity, out Vector3 targetPos, out Quaternion targetRot)
+        {
+            Vector3 originPos = originTransform.position;
+            Quaternion originRot = originTransform.rotation;
+
+            // 1. 优先依次检测配置的偏移量位置，寻找首选且无阻挡的切入点
+            var offsets = _partyConfig != null ? _partyConfig.SwitchInOffset : null;
+            if (offsets != null)
+            {
+                for (int i = 0; i < offsets.Count; ++i)
+                {
+                    Vector3 testPos = originTransform.TransformPoint(offsets[i]);
+                    if (!IsPositionBlocked(testPos, switchInEntity))
+                    {
+                        targetPos = testPos;
+                        targetRot = originRot;
+                        return;
+                    }
+                }
+            }
+
+            // 2. 如果配置的所有偏移点都被阻挡，再用原点位置进行无阻挡检测和首要兜底
+            if (!IsPositionBlocked(originPos, switchInEntity))
+            {
+                targetPos = originPos;
+                targetRot = originRot;
+                return;
+            }
+
+            // 3. 若全部候选位置都被阻挡，则绝对兜底回到原点位置
+            targetPos = originPos;
+            targetRot = originRot;
+        }
+
+        private void GetInvalidPosItself(Vector3 position, Quaternion rotation, RoleEntity switchInEntity, out Vector3 targetPos, out Quaternion targetRot)
+        {
+            targetPos = position;
+            targetRot = rotation;
+
+            // 如果没有 outgoing（如初始化时），仅对目标点本身做防夹阻挡检测
+            if (IsPositionBlocked(position, switchInEntity))
+            {
+                var offsets = _partyConfig != null ? _partyConfig.SwitchInOffset : null;
+                if (offsets != null)
+                {
+                    for (int i = 0; i < offsets.Count; ++i)
+                    {
+                        Vector3 testPos = position + rotation * offsets[i];
+                        if (!IsPositionBlocked(testPos, switchInEntity))
+                        {
+                            targetPos = testPos;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool IsPositionBlocked(Vector3 pos, RoleEntity entity)
+        {
+            if (entity == null) return false;
+
+            // 获取角色的真实碰撞半径（含 skinWidth）
+            float radius = entity.GetCharcterRadius();
+            
+            // 投射胶囊体的半径是碰撞半径乘 _partyConfig.blockRadiusMultipier 系数
+            float checkRadius = radius * (_partyConfig != null ? _partyConfig.blockRadiusMultipier : 1.0f);
+
+            // 获取角色高度（用于确定胶囊体的顶部和底部球心）
+            float height = 2.0f;
+            var cc = entity.GetComponent<CharacterController>();
+            if (cc != null)
+            {
+                height = cc.height;
+            }
+            else
+            {
+                var capsule = entity.GetComponent<CapsuleCollider>();
+                if (capsule != null)
+                {
+                    height = capsule.height;
+                }
+            }
+
+            // 胶囊体在 pos 位置对应的底部和顶部球心
+            Vector3 pointBottom = pos + Vector3.up * checkRadius;
+            Vector3 pointTop = pos + Vector3.up * Mathf.Max(height - checkRadius, checkRadius);
+
+            // 层级读取 _partyConfig.blockLayer 配置
+            LayerMask mask = _partyConfig != null ? _partyConfig.blockLayer : (LayerMask)0;
+
+            // 通过 OverlapCapsule 投射胶囊体并检测是否有碰撞阻挡
+            Collider[] colliders = Physics.OverlapCapsule(pointBottom, pointTop, checkRadius, mask, QueryTriggerInteraction.Ignore);
+            return colliders != null && colliders.Length > 0;
         }
 
         /// <summary>
