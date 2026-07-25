@@ -1,11 +1,8 @@
-using Game.UI;
-using Game.Framework;
-using Game.UI.Modules.Common;
 using Game.Network;
 using Game.Network.Protocol;
 using UnityEngine;
 
-namespace Game.UI.Modules.Login
+namespace Game.UI
 {
     // 假设你的登录预制体放在 Assets/Resources/Prefab/UI/PanelView/Login/LoginPanel.prefab，可根据实际情况修改
     [UIPanel(ViewPrefab = "Assets/Resources/Prefab/UI/PanelView/Login/LoginPanel.prefab", Layer = UILayer.Window)]
@@ -93,7 +90,7 @@ namespace Game.UI.Modules.Login
                 NetworkManager.Instance.SetToken(response.Token);
 
                 // 在当前业务逻辑层主动控制开启过渡加载 UI
-                UIManager.Instance.Open<Loading.LoadingModule>();
+                UIManager.Instance.Open<LoadingModule>();
                 
                 // 为了演示效果，此处模拟请求进入大厅或正式副本场景
                 // 假设目标场景名为 "MainLobby"
@@ -127,8 +124,8 @@ namespace Game.UI.Modules.Login
         private void OnRegisterClick()
         {
             Debug.Log("[LoginModule] 点击注册，打开独立注册面板...");
-            UIManager.Instance.Close<Game.UI.Modules.Login.LoginModule>();
-            UIManager.Instance.Open<Game.UI.Modules.Register.RegisterModule>();
+            UIManager.Instance.Close<Game.UI.LoginModule>();
+            UIManager.Instance.Open<Game.UI.RegisterModule>();
         }
 
         protected override void OnRemove()

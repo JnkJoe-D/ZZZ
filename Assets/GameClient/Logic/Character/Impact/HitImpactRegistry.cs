@@ -65,13 +65,16 @@ namespace Game.Logic
         /// </summary>
         public static void RegisterDefaults()
         {
-            Register("Hit_Default", new DefaultDamageImpact());
-            Register("Hit_Light", new DefaultDamageImpact());
-            Register("Hit_Heavy", new HeavyDamageImpact());
+            Register("Hit_Default", new DamageAttributeImpact());
+            Register("Hit_Light", new DamageAttributeImpact());
+            Register("Hit_Heavy", new HeavyDamageAttributeImpact());
             Register("Hit_Knockback", new KnockbackImpact());
             Register("Hit_Launch", new LaunchImpact());
 
-            SetFallback(new DefaultDamageImpact());
+            // 示例/测试：艾莲普攻命中，给攻击者（自己）叠加 1 层霜冻 (CustomGauge01)
+            Register("Hit_Ellen_Frost", new ModifyAttributeImpact(AttributeId.CustomGauge01, +1f, applyToAttacker: true));
+
+            SetFallback(new DamageAttributeImpact());
         }
     }
 }

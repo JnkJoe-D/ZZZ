@@ -154,8 +154,13 @@ namespace Game.Logic
         public ExecuteEvent RouteExecuteEvent;
 
         [Header("Extra Conditions")]
-        [SerializeReference]
+        [SerializeReference, SubclassSelector]
         public List<ITransitionCondition> ExtraConditions = new();
+
+        [Header("Execute Effects")]
+        [Tooltip("路由被选中执行时的附加副作用（消耗属性、施加 Buff 等）。")]
+        [SerializeReference, SubclassSelector]
+        public List<IRouteEffect> OnExecuteEffects = new();
 
         [Header("Execution")]
         public int Priority;
@@ -206,7 +211,12 @@ namespace Game.Logic
                 return false;
             }
 
-            return CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
+            bool conditionResult = CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
+            if (!conditionResult && ExecuteAction != null && ExecuteAction.Name.Contains("Attack"))
+            {
+                Debug.Log($"<color=orange>[RouteTrace] {ExecuteAction.Name} 的 ExtraConditions 检查未通过！</color>");
+            }
+            return conditionResult;
         }
 
         public bool EvaluateConditionTrigger(

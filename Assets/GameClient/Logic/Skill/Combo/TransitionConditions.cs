@@ -42,4 +42,29 @@ namespace Game.Logic
         }
     }
 
+    /// <summary>
+    /// 索敌范围内是否有目标。用于 ActionRoute.ExtraConditions。
+    /// </summary>
+    [Serializable]
+    [SubclassDisplayName("是否有锁定目标 (HasTarget)")]
+    public sealed class HasTargetCondition : ITransitionCondition
+    {
+        [Tooltip("反转结果：勾选后变为'没有锁定目标时为真'。")]
+        public bool Inverse;
+
+        public bool Check(CharacterEntity actor)
+        {
+            // 如果实体没有 TargetFinder 组件，默认找不到
+            if (actor?.TargetFinder == null)
+            {
+                return Inverse;
+            }
+
+            // TargetFinder 只要能拿到对象就算有 Target
+            bool hasTarget = actor.TargetFinder.GetEnemy() != null;
+            
+            return Inverse ? !hasTarget : hasTarget;
+        }
+    }
+
 }

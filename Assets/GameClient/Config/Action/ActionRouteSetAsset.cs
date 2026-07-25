@@ -8,7 +8,7 @@ namespace Game.Logic
     /// 用于在多个动作间共享相同的路由配置。
     /// </summary>
     [CreateAssetMenu(fileName = "ActionRouteSetAsset", menuName = "Config/Action/Action Route Set")]
-    public class ActionRouteSetAsset : ScriptableObject
+    public class ActionRouteSetAsset : GameConfigAsset
     {
         [Header("Routes")]
         public List<ActionRoute> Routes = new();

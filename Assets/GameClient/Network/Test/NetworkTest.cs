@@ -1,10 +1,7 @@
 using UnityEngine;
 using Game.Framework;
 using Game.Network;
-using Game.Network.Protocol;
-using Game.UI;
-using Game.Config;
-
+using Game.Logic;
 namespace Game.Test
 {
     /// <summary>

@@ -9,7 +9,7 @@ namespace Game.Logic
     /// 当前阶段为接口占位，具体逻辑后续实现。
     /// </summary>
     [CreateAssetMenu(fileName = "HitReactionConfig", menuName = "Config/Role/Hit Reaction Config")]
-    public class HitReactionConfig : ScriptableObject
+    public class HitReactionConfig : GameConfigAsset
     {
         [Header("受击动画")]
         [Tooltip("击退轻")]

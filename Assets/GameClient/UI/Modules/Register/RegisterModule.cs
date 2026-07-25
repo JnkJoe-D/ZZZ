@@ -1,11 +1,8 @@
-using Game.UI;
-using Game.Framework;
-using Game.UI.Modules.Common;
 using Game.Network;
 using Game.Network.Protocol;
 using UnityEngine;
 
-namespace Game.UI.Modules.Register
+namespace Game.UI
 {
     // 假设你的注册面板预制体放在对应目录
     [UIPanel(ViewPrefab = "Assets/Resources/Prefab/UI/PanelView/Register/RegisterPanel.prefab", Layer = UILayer.Window)]
@@ -124,7 +121,7 @@ namespace Game.UI.Modules.Register
                     {
                         // 注册成功自动回到登录界面
                         UIManager.Instance.Close(this);
-                        UIManager.Instance.Open<Login.LoginModule>();
+                        UIManager.Instance.Open<LoginModule>();
                     }
                 });
             }
@@ -145,7 +142,7 @@ namespace Game.UI.Modules.Register
         {
             // 关闭注册界面，重现登录输入框
             UIManager.Instance.Close(this);
-            UIManager.Instance.Open<Login.LoginModule>();
+            UIManager.Instance.Open<LoginModule>();
         }
 
         protected override void OnRemove()

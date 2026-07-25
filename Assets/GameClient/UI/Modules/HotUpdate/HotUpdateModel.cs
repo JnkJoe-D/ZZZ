@@ -1,7 +1,7 @@
 using System;
 using Game.Framework;
 
-namespace Game.UI.Modules.HotUpdate
+namespace Game.UI 
 {
     public class HotUpdateModel : UIModel
     {

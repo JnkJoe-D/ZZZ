@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Game.UI.Modules.Register
+namespace Game.UI
 {
     public class RegisterView : UIView
     {

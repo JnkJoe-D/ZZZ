@@ -1,9 +1,6 @@
-using Game.UI;
-using Game.Framework;
-using Game.UI.Modules.Common;
 using UnityEngine;
 
-namespace Game.UI.Modules.Login
+namespace Game.UI
 {
     [UIPanel(ViewPrefab = "Assets/Resources/Prefab/UI/PanelView/LOgin/LoginBackgroundPanel.prefab", Layer = UILayer.Background, IsFullScreen = true)]
     public class LoginBackgroundModule : UIModule<LoginBackgroundView, LoginBackgroundModel>

@@ -1,6 +1,6 @@
 using Game.UI;
 
-namespace Game.UI.Modules.Register
+namespace Game.UI
 {
     public class RegisterModel : UIModel
     {

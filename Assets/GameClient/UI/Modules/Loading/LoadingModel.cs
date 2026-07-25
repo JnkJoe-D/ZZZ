@@ -1,6 +1,6 @@
 using Game.Framework;
 
-namespace Game.UI.Modules.Loading
+namespace Game.UI 
 {
     public class LoadingModel : UIModel
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Game.Logic
 {
     [CreateAssetMenu(fileName = "ActionTagConfigAsset", menuName = "Config/Action/Action Tag Config", order = 200)]
-    public class ActionTagConfigAsset : ScriptableObject
+    public class ActionTagConfigAsset : GameConfigAsset
     {
         [Tooltip("Target tags used by skills, projectiles, and hit detection.")]
         public List<string> availableTargetTags = new()

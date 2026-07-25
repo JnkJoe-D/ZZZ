@@ -38,6 +38,7 @@ namespace Game.Logic
         public ActionController ActionController { get; private set; }
         public SkillMotionWindowHandler MotionWindowHandler { get; private set; }
         public CharacterRuntimeData RuntimeData { get; private set; }
+        public StatusModule StatusModule { get; private set; }
 
         public bool IsRuntimeInitialized { get; private set; }
         public bool IsControlActive { get; private set; }
@@ -63,6 +64,7 @@ namespace Game.Logic
             ActionController = new Game.Logic.ActionController(this);
             MotionWindowHandler = new SkillMotionWindowHandler(this);
             RuntimeData = new CharacterRuntimeData();
+            StatusModule = new StatusModule();
             _inputEventAdapter = new CharacterInputEventAdapter(() => CurrentInputHandler);
             CachePresentationState();
         }
@@ -76,6 +78,7 @@ namespace Game.Logic
             CameraController?.Init(this);
             MovementController?.Init(this);
             HitReactionModule?.Init(this);
+            StatusModule?.Init(this, config?.StatusProfile);
         }
 
         public void AssignTeamContext(CharacterTeamContext teamContext)
@@ -239,12 +242,14 @@ namespace Game.Logic
             ActionPlayer?.Tick(Time.deltaTime);
             ActionController?.Update(Time.deltaTime);
             RuntimeData?.Update(Time.deltaTime);
+            StatusModule?.Tick(Time.deltaTime);
         }
 
         private void OnDestroy()
         {
             Game.AI.BehaviorTreeCharacterRegistry.Unregister(this);
             UnbindInput();
+            StatusModule?.Clear();
             Game.Logic.ActionManager.Instance?.RemoveCache(this);
 
             if (FSMManager.Instance != null && StateMachine != null)

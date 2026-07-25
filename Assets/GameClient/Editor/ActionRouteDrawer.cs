@@ -9,15 +9,24 @@ using Game.Logic;
 
 namespace Game.Editor.ActionConfig
 {
+    /// <summary>
+    /// ActionRoute 的自定义属性绘制器。
+    /// 采用自动迭代模式：新增字段时无需修改此 Drawer。
+    /// 仅对需要特殊渲染的字段（RequiredWindowTag）进行覆盖。
+    /// </summary>
     [CustomPropertyDrawer(typeof(ActionRoute))]
     public sealed class ActionRouteDrawer : PropertyDrawer
     {
         private const float LineGap = 2f;
 
+        // 需要特殊渲染的字段名称集合
+        private static readonly HashSet<string> CustomDrawnFields = new() { "RequiredWindowTag" };
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
 
+            // ── 折叠头部（自定义 Header，展示 Category/Tag/Target 摘要） ──
             Rect line = NextLine(ref position);
             property.isExpanded = EditorGUI.Foldout(line, property.isExpanded, BuildHeader(property), true);
             if (!property.isExpanded)
@@ -27,21 +36,32 @@ namespace Game.Editor.ActionConfig
             }
 
             EditorGUI.indentLevel++;
-            DrawProperty(ref position, property, "Category");
-            DrawWindowTag(ref position, property.FindPropertyRelative("RequiredWindowTag"));
-            DrawProperty(ref position, property, "TriggerMode");
-            DrawProperty(ref position, property, "ModifierCheckTiming");
-            DrawProperty(ref position, property, "EventType");
-            DrawProperty(ref position, property, "RequiredType");
-            DrawProperty(ref position, property, "RequiredPhase");
-            DrawProperty(ref position, property, "Modifiers", includeChildren: true);
-            DrawProperty(ref position, property, "ExecuteType");
-            DrawProperty(ref position, property, "ExecuteAction");
-            DrawProperty(ref position, property, "RouteExecuteEvent");
-            DrawProperty(ref position, property, "ExtraConditions", includeChildren: true);
-            DrawProperty(ref position, property, "Priority");
-            EditorGUI.indentLevel--;
 
+            // ── 自动迭代所有子属性 ──
+            SerializedProperty endProperty = property.GetEndProperty();
+            SerializedProperty iter = property.Copy();
+            bool enterChildren = true;
+
+            while (iter.NextVisible(enterChildren) && !SerializedProperty.EqualContents(iter, endProperty))
+            {
+                enterChildren = false;
+
+                // ShowIf 可见性检测
+                if (!IsVisible(iter)) continue;
+
+                // 特殊字段覆盖渲染
+                if (iter.name == "RequiredWindowTag")
+                {
+                    DrawWindowTag(ref position, iter);
+                    continue;
+                }
+
+                // 默认渲染（自动支持 SubclassSelector 等 PropertyDrawer）
+                Rect rect = NextPropertyRect(ref position, iter, true);
+                EditorGUI.PropertyField(rect, iter, true);
+            }
+
+            EditorGUI.indentLevel--;
             EditorGUI.EndProperty();
         }
 
@@ -52,22 +72,24 @@ namespace Game.Editor.ActionConfig
                 return EditorGUIUtility.singleLineHeight;
             }
 
-            float height = EditorGUIUtility.singleLineHeight + LineGap;
-            height += PropertyHeight(property, "Category");
-            height += PropertyHeight(property, "RequiredWindowTag");
-            height += PropertyHeight(property, "TriggerMode");
-            height += PropertyHeight(property, "ModifierCheckTiming");
-            height += PropertyHeight(property, "EventType");
-            height += PropertyHeight(property, "RequiredType");
-            height += PropertyHeight(property, "RequiredPhase");
-            height += PropertyHeight(property, "Modifiers", includeChildren: true);
-            height += PropertyHeight(property, "ExecuteType");
-            height += PropertyHeight(property, "ExecuteAction");
-            height += PropertyHeight(property, "RouteExecuteEvent");
-            height += PropertyHeight(property, "ExtraConditions", includeChildren: true);
-            height += PropertyHeight(property, "Priority");
+            float height = EditorGUIUtility.singleLineHeight + LineGap; // Foldout header
+
+            // 自动迭代计算高度
+            SerializedProperty endProperty = property.GetEndProperty();
+            SerializedProperty iter = property.Copy();
+            bool enterChildren = true;
+
+            while (iter.NextVisible(enterChildren) && !SerializedProperty.EqualContents(iter, endProperty))
+            {
+                enterChildren = false;
+                if (!IsVisible(iter)) continue;
+                height += EditorGUI.GetPropertyHeight(iter, true) + LineGap;
+            }
+
             return height;
         }
+
+        // ────────────────── Header 构建 ──────────────────
 
         private static GUIContent BuildHeader(SerializedProperty property)
         {
@@ -117,6 +139,8 @@ namespace Game.Editor.ActionConfig
             return new GUIContent($"{category} / {tag ?? "-"} -> {targetName}");
         }
 
+        // ────────────────── 特殊字段渲染 ──────────────────
+
         private static void DrawWindowTag(ref Rect position, SerializedProperty tagProperty)
         {
             Rect line = NextLine(ref position);
@@ -146,6 +170,23 @@ namespace Game.Editor.ActionConfig
 
             tagProperty.stringValue = newIndex <= 0 ? string.Empty : NormalizeSelectedValue(popupOptions[newIndex]);
         }
+
+        // ────────────────── 可见性检测 ──────────────────
+
+        private static bool IsVisible(SerializedProperty property)
+        {
+            var field = typeof(ActionRoute).GetField(property.name,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (field == null)
+            {
+                return true;
+            }
+
+            var showIf = field.GetCustomAttribute<ShowIfAttribute>();
+            return ShowIfDrawer.CheckVisible(property, showIf);
+        }
+
+        // ────────────────── 工具方法 ──────────────────
 
         private static string[] BuildPopupOptions(string[] tags, string currentValue, out int currentIndex)
         {
@@ -189,49 +230,6 @@ namespace Game.Editor.ActionConfig
             }
 
             return selectedOption;
-        }
-
-        private static void DrawProperty(
-            ref Rect position,
-            SerializedProperty root,
-            string propertyName,
-            bool includeChildren = false)
-        {
-            SerializedProperty child = root.FindPropertyRelative(propertyName);
-            if (child == null)
-            {
-                return;
-            }
-
-            if (!IsVisible(child))
-            {
-                return;
-            }
-
-            Rect rect = NextPropertyRect(ref position, child, includeChildren);
-            EditorGUI.PropertyField(rect, child, includeChildren);
-        }
-
-        private static bool IsVisible(SerializedProperty property)
-        {
-            var field = typeof(ActionRoute).GetField(property.name);
-            if (field == null)
-            {
-                return true;
-            }
-
-            var showIf = field.GetCustomAttribute<ShowIfAttribute>();
-            return ShowIfDrawer.CheckVisible(property, showIf);
-        }
-
-        private static float PropertyHeight(SerializedProperty root, string propertyName, bool includeChildren = false)
-        {
-            SerializedProperty child = root.FindPropertyRelative(propertyName);
-            if (child == null || !IsVisible(child))
-            {
-                return 0f;
-            }
-            return EditorGUI.GetPropertyHeight(child, includeChildren) + LineGap;
         }
 
         private static Rect NextLine(ref Rect position)

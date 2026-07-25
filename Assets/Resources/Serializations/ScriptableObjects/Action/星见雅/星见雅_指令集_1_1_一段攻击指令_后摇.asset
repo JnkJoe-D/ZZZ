@@ -20,12 +20,30 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
     ModifierConditions: 
     ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: b160746897ca318418d8374d92e49685, type: 2}
+    RouteExecuteEvent: 0
+    ExtraConditions: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: BackSwing
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 40
+    RequiredPhase: 0
+    Modifiers: []
+    Modifier: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
+    ModifierConditions: 
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 6a5978762a3863543a136e37cc50978a, type: 2}
     RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0

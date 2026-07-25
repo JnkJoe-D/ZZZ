@@ -1,8 +1,7 @@
-using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Game.UI.Modules.Login
+namespace Game.UI
 {
     public class LoginView : UIView
     {

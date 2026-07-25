@@ -2,17 +2,12 @@ using System.Collections;
 using UnityEngine;
 using Game.Pool;
 using Game.Resource;
-using Game.Network;
-using UnityEngine.EventSystems;
-using System.IO;
-using Game.Config;
-using Game.Logic;
 using Game.FSM;
 using Game.UI;
 using Game.Scene;
+using Game.Framework;
 
-
-namespace Game.Framework
+namespace Game.Logic
 {
     /// <summary>
     /// 游戏全局入口与生命周期管理器
@@ -113,7 +108,7 @@ namespace Game.Framework
             yield return null;
 
             // ── Step 3: 唤起热更新界面以接收事件 ────────
-            UIManager.Instance.Open<Game.UI.Modules.HotUpdate.HotUpdateModule>();  //Resource加载
+            UIManager.Instance.Open<Game.UI.HotUpdateModule>();  //Resource加载
             yield return null;
 
             // ── Step 4: 资源管理器（YooAsset）────────────────

@@ -20,12 +20,17 @@ namespace Game.Adapters
                 attacker = hitData.deployer.GetComponent<CharacterEntity>();
             }
 
+            var processedVictims = new System.Collections.Generic.HashSet<CharacterEntity>();
+
             foreach (var collider in hitData.targetsCollilders)
             {
                 if (collider == null) continue;
 
                 var victim = collider.GetComponentInParent<CharacterEntity>();
                 if (victim == null) continue;
+                
+                // 防止同一个实体身上的多个 Collider 被同时打中导致触发多次命中
+                if (!processedVictims.Add(victim)) continue;
 
                 // 封装单次打击逻辑
                 System.Action applySingleHit = () =>

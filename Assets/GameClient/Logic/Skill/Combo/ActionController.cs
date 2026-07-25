@@ -300,7 +300,9 @@ namespace Game.Logic
                 if (route == null) continue;
                 if (!route.IsInvalid()) continue;
 
-                if (!route.EvaluatePlayerCommand(command, tag, mode, _entity)) continue;
+                bool conditionOk = route.EvaluatePlayerCommand(command, tag, mode, _entity);
+                
+                if (!conditionOk) continue;
 
                 bool modOk = !route.HasModifier || route.EvaluateModifier(_entity, tag);
                 if (!modOk) continue;
@@ -423,6 +425,15 @@ namespace Game.Logic
 
         private void Apply(RouteCandidate candidate)
         {
+            // 执行路由附带的副作用（消耗属性、施加 Buff 等）
+            if (candidate.SourceRoute?.OnExecuteEffects != null)
+            {
+                foreach (var effect in candidate.SourceRoute.OnExecuteEffects)
+                {
+                    effect?.Execute(_entity);
+                }
+            }
+
             Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
         }
 

@@ -1,12 +1,10 @@
-using Game.UI.Modules.Common;
 using Game.Framework;
 using Game.Resource;
 using Game.Network;
-using TMPro;
+using Game.Logic;
 using UnityEngine;
-using Game.UI.Modules.Login;
 
-namespace Game.UI.Modules.HotUpdate
+namespace Game.UI
 {
     [UIPanel(ViewPrefab = "Assets/Resources/Prefab/UI/PanelView/HotUpdate/HotUpdatePanel.prefab", Layer = UILayer.Loading, IsFullScreen = true)]
     public class HotUpdateModule : UIModule<HotUpdateView, HotUpdateModel>
@@ -69,7 +67,7 @@ namespace Game.UI.Modules.HotUpdate
         private void OnRequireConfirm(HotUpdateRequireConfirmEvent e)
         {
             // 这是关键点：不再局限在 Widget，而是调用全局的 MessageBox
-            UIManager.Instance.Open<Common.MessageBoxModule>(new Common.MessageBoxModel
+            UIManager.Instance.Open<MessageBoxModule>(new MessageBoxModel
             {
                 Title = "发现新版本",
                 Content = $"本次需要更新 {e.TotalDownloadBytes / 1048576f:F10} MB 资源，是否立即下载？",
@@ -167,8 +165,8 @@ namespace Game.UI.Modules.HotUpdate
             yield return new UnityEngine.WaitForSeconds(0.5f);
             UIManager.Instance.Close(this);
             // 这里一并打开层级更低的背景视频层与窗口操作层
-            UIManager.Instance.Open<Login.LoginBackgroundModule>();
-            UIManager.Instance.Open<Login.LoginModule>();
+            UIManager.Instance.Open<LoginBackgroundModule>();
+            UIManager.Instance.Open<LoginModule>();
         }
 
         private void OnNetDisconnected(NetDisconnectedEvent e)
@@ -253,7 +251,7 @@ namespace Game.UI.Modules.HotUpdate
             Model.SpeedText = "";
             RefreshView();
 
-            UIManager.Instance.Open<Common.MessageBoxModule>(new Common.MessageBoxModel
+            UIManager.Instance.Open<MessageBoxModule>(new MessageBoxModel
             {
                 Title = "更新失败",
                 Content = $"({statusMsg}) 遇到错误：{e.Message}\n请检查网络后重试。",

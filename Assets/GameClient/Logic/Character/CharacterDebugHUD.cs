@@ -137,7 +137,7 @@ namespace Game.Logic
         private void DrawMainPanel()
         {
             float width = 360;
-            float height = 500;
+            float height = 750;
             float margin = 20;
             Rect rect = new Rect(Screen.width - width - margin, margin, width, height);
 
@@ -211,6 +211,47 @@ namespace Game.Logic
                                 historyStyle);
                         }
                     }
+                }
+                GUILayout.Space(15);
+                GUILayout.Label("STATUS & BUFFS", titleStyle);
+                if (targetEntity.StatusModule != null)
+                {
+                    // Attributes
+                    var attrSet = targetEntity.StatusModule.Attributes;
+                    if (attrSet != null)
+                    {
+                        foreach (AttributeId attrId in System.Enum.GetValues(typeof(AttributeId)))
+                        {
+                            if (attrId == AttributeId.None) continue;
+                            if (attrSet.Has(attrId))
+                            {
+                                float current = attrSet.GetCurrent(attrId);
+                                float final = attrSet.GetFinal(attrId);
+                                DrawInfo($"- {attrId}", $"{current:F1} / {final:F1}", new Color(0.6f, 0.9f, 0.6f));
+                            }
+                        }
+                    }
+
+                    // Buffs
+                    var buffs = targetEntity.StatusModule.Buffs;
+                    if (buffs != null && buffs.ActiveBuffs.Count > 0)
+                    {
+                        GUILayout.Space(5);
+                        foreach (var buff in buffs.ActiveBuffs)
+                        {
+                            string buffName = buff.Definition != null ? buff.Definition.DisplayName : "Unknown";
+                            string timeStr = buff.IsPermanent ? "Permanent" : $"{buff.RemainingTime:F1}s";
+                            DrawInfo($"+ [{buffName}]", $"Stack: {buff.CurrentStack} | {timeStr}", new Color(0.9f, 0.7f, 0.9f));
+                        }
+                    }
+                    else if (buffs != null)
+                    {
+                        GUILayout.Label("  (No active buffs)", historyStyle);
+                    }
+                }
+                else
+                {
+                    GUILayout.Label("  (StatusModule not init)", historyStyle);
                 }
             }
             GUILayout.EndArea();

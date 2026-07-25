@@ -1,6 +1,6 @@
 using Game.UI;
 
-namespace Game.UI.Modules.Login
+namespace Game.UI
 {
     public class LoginModel : UIModel
     {

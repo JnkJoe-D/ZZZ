@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Game.Logic
 {
     [CreateAssetMenu(fileName = "PartyConfigAsset", menuName = "Config/Role/Party Config")]
-    public class PartyConfigAsset : ScriptableObject
+    public class PartyConfigAsset : GameConfigAsset
     {
         [Header("Party")]
         public List<CharacterConfigAsset> Members = new List<CharacterConfigAsset>(3);

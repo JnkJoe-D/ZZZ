@@ -48,7 +48,7 @@ namespace Game.Logic
     /// 全局动作配置基类（混合态架构数据载体）
     /// 承载了 Timeline 资源引用、派生路由配置、以及状态机回流提示。
     /// </summary>
-    public abstract class ActionConfigAsset : ScriptableObject
+    public abstract class ActionConfigAsset : GameConfigAsset
     {
         [Header("基础信息")]
         public int ID;

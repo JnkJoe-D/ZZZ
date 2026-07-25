@@ -1,7 +1,7 @@
 using System;
 using Game.Framework;
 
-namespace Game.UI.Modules.Common
+namespace Game.UI
 {
     /// <summary>
     /// 通用提示弹窗视图数据

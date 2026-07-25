@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Audio.Config
+namespace Game.Logic
 {
     /// <summary>
     /// 通用动作/战斗音效库 (CommonActionAudioSO)
@@ -8,7 +8,7 @@ namespace Game.Audio.Config
     /// 生命周期：可以随关卡/场景加载，也可以常驻，由游戏体量决定。
     /// </summary>
     [CreateAssetMenu(fileName = "CommonActionAudioAsset", menuName = "Config/Audio/Common Action Audio Box")]
-    public class CommonActionAudioAsset : ScriptableObject
+    public class CommonActionAudioAsset : GameConfigAsset
     {
         [Header("材质脚步声 (Footsteps)")]
         [Tooltip("默认脚步声组合 (可随机播放)")]

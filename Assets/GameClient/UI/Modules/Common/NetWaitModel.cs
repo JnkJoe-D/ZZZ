@@ -1,6 +1,6 @@
 using Game.Framework;
 
-namespace Game.UI.Modules.Common
+namespace Game.UI
 {
     public class NetWaitModel : UIModel
     {

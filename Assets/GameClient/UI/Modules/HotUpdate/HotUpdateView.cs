@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Game.UI.Modules.HotUpdate
+namespace Game.UI
 {
     public class HotUpdateView : UIView
     {

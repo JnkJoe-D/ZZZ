@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.UI.Modules.Login
+namespace Game.UI
 {
     public class LoginBackgroundView : UIView
     {

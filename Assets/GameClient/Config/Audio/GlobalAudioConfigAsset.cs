@@ -1,7 +1,6 @@
 using UnityEngine;
-using System.Collections.Generic;
 
-namespace Game.Audio.Config
+namespace Game.Logic
 {
     /// <summary>
     /// 全局音频配置 (GlobalAudioConfigSO)
@@ -9,7 +8,7 @@ namespace Game.Audio.Config
     /// 包含极其通用的全局声音（UI点击、系统警告、大厅/登陆界面的 BGM 等）。
     /// </summary>
     [CreateAssetMenu(fileName = "GlobalAudioConfigAsset", menuName = "Config/Audio/Global Audio Config")]
-    public class GlobalAudioConfigAsset : ScriptableObject
+    public class GlobalAudioConfigAsset : GameConfigAsset
     {
         [Header("UI & System SFX")]
         [Tooltip("通用按钮点击音效")]

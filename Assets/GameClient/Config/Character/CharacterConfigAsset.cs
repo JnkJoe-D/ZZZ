@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Game.Logic
 {
     [CreateAssetMenu(fileName = "CharacterConfigAsset", menuName = "Config/Role/Character Config")]
-    public class CharacterConfigAsset : ScriptableObject
+    public class CharacterConfigAsset : GameConfigAsset
     {
         [Header("Base Info")]
         public int RoleID;
@@ -55,6 +55,10 @@ namespace Game.Logic
 
         [Header("Hit Reaction")]
         public HitReactionConfig hitReactionConfig;
+
+        [Header("Status")]
+        [Tooltip("角色状态配置（属性、初始 Buff、免疫标签）。为空时角色无属性系统。")]
+        public StatusProfile StatusProfile;
 
         public IEnumerable<ActionConfigAsset> GetAllActionConfigs()
         {

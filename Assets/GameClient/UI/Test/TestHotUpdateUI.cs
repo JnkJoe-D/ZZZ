@@ -2,9 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Game.Framework;
 using Game.Resource;
-using Game.UI;
-using Game.UI.Modules.HotUpdate;
-
+using Game.Logic;
 namespace Game.UI.Test
 {
     /// <summary>

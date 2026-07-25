@@ -27,6 +27,7 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
@@ -35,6 +36,7 @@ MonoBehaviour:
     ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
     RouteExecuteEvent: 0
     ExtraConditions: []
+    OnExecuteEffects: []
     Priority: 0
   - Category: 0
     RequiredWindowTag: Execute1
@@ -43,6 +45,7 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
@@ -51,6 +54,26 @@ MonoBehaviour:
     ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
     RouteExecuteEvent: 0
     ExtraConditions: []
+    OnExecuteEffects: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: Execute1
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 20
+    RequiredPhase: 0
+    Modifiers: []
+    Modifier: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
+    ModifierConditions: 
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
+    RouteExecuteEvent: 0
+    ExtraConditions:
+    - rid: 2933482157871464459
+    OnExecuteEffects: []
     Priority: 0
   RouteSets:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
@@ -65,4 +88,10 @@ MonoBehaviour:
   CinematicCameraPrefab: {fileID: 0}
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 2933482157871464459
+      type: {class: BuffStackCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        TargetBuff: {fileID: 0}
+        Mode: 0
+        Threshold: 1

@@ -5,24 +5,6 @@ using Game.Logic;
 namespace Game.Logic
 {
     /// <summary>
-    /// 攻击/技能类型
-    /// </summary>
-    public enum SkillCategory
-    {
-        LightAttack =10, // 普攻
-        HeavyAttack =20, // 重攻击
-        DashAttack =30, //冲刺普攻
-        DodgeCounter =40, //闪避反击
-        SpecialSkill = 50,  // 特殊技
-        EnhencedSpecialSkill = 60, //强化特殊技
-        ChainSkill =70, //切人连携技
-        AssistSkill= 80, //切人支援技
-        Ultimate =100,      //终结技
-        Evade = 110
-        // 注：Dash 已经在 GlobalAnimationConfig 中处理，此处不再列出
-    }
-
-    /// <summary>
     /// 技能独立配置
     /// 用于配置技能参数，并关联 SkillTimeline 资产
     /// </summary>

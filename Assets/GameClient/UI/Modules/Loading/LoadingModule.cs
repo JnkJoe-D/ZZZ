@@ -1,7 +1,7 @@
 using Game.Framework;
 using Game.Scene;
 
-namespace Game.UI.Modules.Loading
+namespace Game.UI
 {
     /// <summary>
     /// 全局场景加载进度条界面

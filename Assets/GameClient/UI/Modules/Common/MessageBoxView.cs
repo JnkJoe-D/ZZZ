@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Game.UI.Modules.Common
+namespace Game.UI
 {
     /// <summary>
     /// 通用提示弹窗视图组件 (需挂载在预制体根节点)

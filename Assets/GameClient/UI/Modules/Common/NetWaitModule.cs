@@ -1,7 +1,7 @@
 using Game.Framework;
 using UnityEngine;
 
-namespace Game.UI.Modules.Common
+namespace Game.UI
 {
     /// <summary>
     /// 全局网络请求等待遮罩层

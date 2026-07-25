@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine.UI;
 
-namespace Game.UI.Modules.Loading
+namespace Game.UI 
 {
     public class LoadingView : UIView
     {

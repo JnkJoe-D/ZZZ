@@ -521,7 +521,7 @@
                     "blendInDuration": 0.10000002384185791,
                     "blendOutDuration": 0.1333332061767578,
                     "animationClip": {
-                        "instanceID": 42550
+                        "instanceID": 37012
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -556,7 +556,7 @@
                     "blendInDuration": 0.1333332061767578,
                     "blendOutDuration": 0.1333332061767578,
                     "animationClip": {
-                        "instanceID": 42546
+                        "instanceID": 37008
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -591,7 +591,7 @@
                     "blendInDuration": 0.1333332061767578,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 42548
+                        "instanceID": 37010
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -783,7 +783,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 43068
+                        "instanceID": 37550
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -876,7 +876,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 43068
+                        "instanceID": 37550
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -969,7 +969,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 43068
+                        "instanceID": 37550
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -1062,7 +1062,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 43068
+                        "instanceID": 37550
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -1155,7 +1155,7 @@
                     },
                     "followTarget": true,
                     "hitAudioClip": {
-                        "instanceID": 43068
+                        "instanceID": 37550
                     },
                     "hitAudioRef": {
                         "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
@@ -1235,7 +1235,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "cameraPrefab": {
-                        "instanceID": 36656
+                        "instanceID": 38166
                     },
                     "cameraRef": {
                         "guid": "ae2fdc0964a7dbb4d96da3944a1f9c5b",
@@ -1243,7 +1243,7 @@
                         "assetPath": "Assets/Resources/Prefab/Camera/星见雅_终结技_镜头.prefab"
                     },
                     "timelineAsset": {
-                        "instanceID": 32692
+                        "instanceID": 32118
                     },
                     "timelineRef": {
                         "guid": "8caa28cdb231224428b4fb9c3ed5391a",

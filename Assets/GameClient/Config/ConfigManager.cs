@@ -8,9 +8,8 @@ using cfg;
 using SimpleJSON;
 using Game.Framework;
 using Game.Resource;
-using Game.Audio.Config;
 
-namespace Game.Config
+namespace Game.Logic
 {
     /// <summary>
     /// 数据表及全局静态配置管理器
