@@ -15,7 +15,6 @@ MonoBehaviour:
   ID: 10203
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 1aef847a92155224588389550b2d7b68, type: 3}
-  TurnMode: 0
   EnterState: 10
   CompleteMode: 0
   CompleteAction: {fileID: 0}
@@ -25,7 +24,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e69d643be28f4431972836242bcc6306, type: 2}
   - {fileID: 11400000, guid: ea7a120125d6de84693fec485332885d, type: 2}
   - {fileID: 11400000, guid: 01e32f8b52213d644a5ac6ca88ff9fbc, type: 2}
-  FaceToSpeed: 10
+  - {fileID: 11400000, guid: f330b7ce98b5484e8591b3686ab9ef50, type: 2}
   PlaybackSpeed: 1
   references:
     version: 2

@@ -93,7 +93,11 @@
             "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
-            "tracks": []
+            "tracks": [
+                {
+                    "rid": 1010
+                }
+            ]
         }
     ],
     "references": {
@@ -117,10 +121,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1011
                         },
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ],
                     "isMasterTrack": true,
@@ -211,13 +215,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
-                        },
-                        {
                             "rid": 1013
                         },
                         {
                             "rid": 1014
+                        },
+                        {
+                            "rid": 1015
                         }
                     ]
                 }
@@ -240,7 +244,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1016
                         }
                     ]
                 }
@@ -263,7 +267,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1017
                         }
                     ]
                 }
@@ -286,7 +290,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1018
                         }
                     ]
                 }
@@ -309,7 +313,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1018
+                            "rid": 1019
                         }
                     ]
                 }
@@ -332,13 +336,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1019
+                            "rid": 1020
                         }
                     ]
                 }
             },
             {
                 "rid": 1010,
+                "type": {
+                    "class": "TransformTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "44d606c6-f7b0-4709-a809-bd51e2a8a87e",
+                    "trackType": "TransformTrack",
+                    "trackName": "变换轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1021
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1011,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "ATEditor",
@@ -351,9 +378,9 @@
                     "startTime": 0.0,
                     "duration": 0.8666667342185974,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.1333332061767578,
+                    "blendOutDuration": 0.13333338499069215,
                     "animationClip": {
-                        "instanceID": 54810
+                        "instanceID": 57234
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -373,7 +400,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1012,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "ATEditor",
@@ -383,12 +410,12 @@
                     "clipId": "a05b8ca1-9628-4d77-aa5b-5c43b2f562ae",
                     "clipName": "动画片段",
                     "isEnabled": true,
-                    "startTime": 0.7333335280418396,
+                    "startTime": 0.7333333492279053,
                     "duration": 3.200000286102295,
-                    "blendInDuration": 0.1333332061767578,
+                    "blendInDuration": 0.13333338499069215,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 94306
+                        "instanceID": 99210
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -408,7 +435,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1013,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -418,29 +445,11 @@
                     "clipId": "c5a41784-dc4a-4c2d-b4e2-787ca2c922ba",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.15000000596046449,
-                    "duration": 0.15000000596046449,
+                    "startTime": 0.06666667014360428,
+                    "duration": 0.20000000298023225,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "Buffer1"
-                }
-            },
-            {
-                "rid": 1013,
-                "type": {
-                    "class": "ComboWindowClip",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "ff7f784f-b182-45ee-a20d-58a66943d024",
-                    "clipName": "连招窗口片段",
-                    "isEnabled": true,
-                    "startTime": 0.30000001192092898,
-                    "duration": 0.43333351612091067,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "comboTag": "Execute1"
                 }
             },
             {
@@ -454,8 +463,8 @@
                     "clipId": "c1b6a843-422d-4d08-8166-43406938b52b",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.7333335280418396,
-                    "duration": 3.200000047683716,
+                    "startTime": 0.5666667222976685,
+                    "duration": 3.366666793823242,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "BackSwing"
@@ -463,6 +472,24 @@
             },
             {
                 "rid": 1015,
+                "type": {
+                    "class": "ComboWindowClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "b2f58290-1376-4a0f-b5a5-a62700be465c",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.2666666805744171,
+                    "duration": 0.30000001192092898,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "comboTag": "Execute1"
+                }
+            },
+            {
+                "rid": 1016,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -480,7 +507,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1017,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -498,7 +525,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1018,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -516,7 +543,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1019,
                 "type": {
                     "class": "HitClip",
                     "ns": "ATEditor",
@@ -526,24 +553,10 @@
                     "clipId": "4842c7fd-5fab-42eb-866e-c9130fbe4e89",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.23333334922790528,
-                    "duration": 0.30000001192092898,
+                    "startTime": 0.20000001788139344,
+                    "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "hitEffects": [
-                        {
-                            "eventTag": "Hit_Ellen_Frost",
-                            "targetTags": [
-                                "Enemy"
-                            ]
-                        },
-                        {
-                            "eventTag": "Hit_Default",
-                            "targetTags": [
-                                "Enemy"
-                            ]
-                        }
-                    ],
                     "detectFrequency": 0,
                     "times": 1,
                     "maxHitTargets": 0,
@@ -561,7 +574,7 @@
                             "y": 1.0,
                             "z": 1.0
                         },
-                        "radius": 2.0,
+                        "radius": 3.0,
                         "height": 2.0,
                         "angle": 180.0,
                         "innerRadius": 1.0
@@ -579,43 +592,48 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "hitMode": 0,
-                    "multiHitCount": 3,
-                    "multiHitDuration": 0.20000000298023225,
-                    "enableHitStop": true,
-                    "hitStopDuration": 0.05000000074505806,
-                    "hitVFXPrefab": {
-                        "instanceID": 0
-                    },
-                    "hitVFXRef": {
-                        "guid": "",
-                        "assetName": "",
-                        "assetPath": ""
-                    },
-                    "hitVFXHeight": 1.0,
-                    "hitVFXPreviewOffsetXZ": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "hitVFXScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "followTarget": true,
-                    "hitAudioClip": {
-                        "instanceID": 0
-                    },
-                    "hitAudioRef": {
-                        "guid": "",
-                        "assetName": "",
-                        "assetPath": ""
-                    },
-                    "hitStunDuration": 0.30000001192092898
+                    "detects": [
+                        {
+                            "hitMode": 0,
+                            "multiHitCount": 3,
+                            "multiHitDuration": 0.20000000298023225,
+                            "enableHitStop": true,
+                            "hitStopDuration": 0.05000000074505806,
+                            "hitStunDuration": 0.30000001192092898,
+                            "hitVFXPrefab": {
+                                "instanceID": 0
+                            },
+                            "hitVFXRef": {
+                                "guid": "",
+                                "assetName": "",
+                                "assetPath": ""
+                            },
+                            "hitVFXHeight": 1.0,
+                            "hitVFXPreviewOffsetXZ": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "hitVFXScale": {
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "followTarget": true,
+                            "hitAudioClip": {
+                                "instanceID": 0
+                            },
+                            "hitAudioRef": {
+                                "guid": "",
+                                "assetName": "",
+                                "assetPath": ""
+                            },
+                            "hitEffectId": 1040000
+                        }
+                    ]
                 }
             },
             {
-                "rid": 1019,
+                "rid": 1020,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -630,6 +648,31 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1
+                }
+            },
+            {
+                "rid": 1021,
+                "type": {
+                    "class": "RotationClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "2b915404-b4a5-4131-9467-d15e9edaa521",
+                    "clipName": "旋转片段片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.20000000298023225,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "referenceDirection": 4,
+                    "rotationMode": 1,
+                    "updateFrequency": 2,
+                    "localRotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 }
             }
         ]

@@ -2,7 +2,6 @@ using ATEditor;
 using UnityEngine;
 using Game.Logic;
 using System;
-using System.Linq;
 
 
 namespace Game.Adapters
@@ -12,7 +11,10 @@ namespace Game.Adapters
         public void OnHitDetect(HitData hitData)
         {
             if (hitData.targetsCollilders == null || hitData.targetsCollilders.Length == 0) return;
-            if(hitData.hitEffects == null || hitData.hitEffects.Length == 0) return;
+            if (hitData.hitEffectId <= 0) return;
+            var hitEffectConfig = ConfigManager.Instance.Tables.TbHitEffect.GetOrDefault(hitData.hitEffectId);
+            if (hitEffectConfig == null || hitEffectConfig.Effects == null) return;
+
             // 获取攻击者实体
             CharacterEntity attacker = null;
             if (hitData.deployer != null)
@@ -33,7 +35,7 @@ namespace Game.Adapters
                 if (!processedVictims.Add(victim)) continue;
 
                 // 封装单次打击逻辑
-                System.Action applySingleHit = () =>
+                System.Action<int, int> applySingleHit = (currentHit, totalHits) =>
                 {
                     if (victim == null || collider == null) return;
 
@@ -48,7 +50,7 @@ namespace Game.Adapters
                     {
                         attacker = attacker,
                         victim = victim,
-                        hitEffects = hitData.hitEffects,
+                        hitEffectId = hitData.hitEffectId,
                         enableHitStop = hitData.enableHitStop,
                         hitStopDuration = hitData.hitStopDuration,
                         hitVFXPrefab = hitData.hitVFXPrefab,
@@ -59,20 +61,46 @@ namespace Game.Adapters
                         hitStunDuration = hitData.hitStunDuration,
                         hitPoint = hitPoint,
                         hitDirection = hitDirection,
-                        reactionAxis = -hitDirection // 默认受击轴为攻击反方向
+                        reactionAxis = -hitDirection
                     };
 
-                    // 执行 Impacts
-                    foreach (var entry in hitData.hitEffects)
+                    // ★ 数据驱动的效果分派
+                    foreach (var effect in hitEffectConfig.Effects)
                     {
-                        if (entry == null) continue;
-                        if (entry.targetTags.Contains(victim.tag))
+                        if (effect == null) continue;
+
+                        // 根据多段触发策略过滤
+                        if (effect.Policy == cfg.ZZZ.EffectTriggerPolicy.FirstHitOnly && currentHit > 0) continue;
+                        // 注意：这里需要你定义 EffectTriggerPolicy 的全集，如果还有 LastHitOnly，也可以类似处理
+
+                        // 根据 EffectTarget 决定操作谁
+                        CharacterEntity targetEntity = effect.Target == cfg.ZZZ.EffectTarget.Attacker
+                            ? attacker
+                            : victim;
+
+                        if (targetEntity == null) continue;
+
+                        switch (effect.Type)
                         {
-                            var impact = HitImpactRegistry.Resolve(entry.eventTag);
-                            impact?.Execute(ctx, entry);
+                            case cfg.ZZZ.HitEffectType.Damage:
+                                ApplyDamage(ctx, targetEntity, effect.Param1, effect.Param2);
+                                break;
+
+                            case cfg.ZZZ.HitEffectType.ModifyAttribute:
+                                ApplyModifyAttribute(targetEntity, (AttributeId)(int)effect.Param3, effect.Param1);
+                                break;
+
+                            case cfg.ZZZ.HitEffectType.ApplyBuff:
+                                // TODO: 这里需要一个 BuffRegistry 查表，把 Param3 (buff ID) 转换成 BuffDefAsset
+                                // var buffDef = BuffRegistry.Instance.GetBuff(effect.Param3);
+                                // ApplyBuff(targetEntity, buffDef, attacker);
+                                Debug.Log($"<color=green>TODO: 需要 BuffRegistry 把 ID {effect.Param3} 转成 Buff 并施加给 {targetEntity.name}</color>");
+                                break;
                         }
                     }
-                    Debug.Log($"<color=orange>[Hit] {hitData.deployer?.name} → {collider.gameObject.name} (Mode:{hitData.hitMode})</color>");
+
+                    // 视觉反馈（始终对 victim 执行）
+                    victim.HitReactionModule?.ApplyVisualFeedback(ctx);
                 };
 
                 // 分发策略
@@ -85,14 +113,76 @@ namespace Game.Adapters
                     }
                     else
                     {
-                        applySingleHit();
+                        applySingleHit(0, hitData.multiHitCount > 0 ? hitData.multiHitCount : 1);
                     }
                 }
                 else
                 {
-                    applySingleHit();
+                    applySingleHit(0, 1);
                 }
             }
+        }
+
+        /// <summary>造成伤害（扣 HP + 累积喧响值）</summary>
+        private void ApplyDamage(HitContext ctx, CharacterEntity targetEntity, float baseDamage, float dazeAmount)
+        {
+            var statusModule = targetEntity.StatusModule;
+            if (statusModule == null) return;
+
+            // 伤害计算：基础伤害 + ATK - DEF，最低 1
+            float atk = 0f;
+            float def = 0f;
+
+            if (ctx.attacker?.StatusModule?.Attributes != null)
+            {
+                if (ctx.attacker.StatusModule.Attributes.Has(AttributeId.ATK))
+                    atk = ctx.attacker.StatusModule.Attributes.GetCurrent(AttributeId.ATK);
+            }
+
+            if (targetEntity.StatusModule?.Attributes != null)
+            {
+                if (targetEntity.StatusModule.Attributes.Has(AttributeId.DEF))
+                    def = targetEntity.StatusModule.Attributes.GetCurrent(AttributeId.DEF);
+            }
+
+            float damage = Mathf.Max(1f, baseDamage + atk - def);
+
+            if (statusModule.Attributes.Has(AttributeId.HP))
+            {
+                statusModule.Attributes.Modify(AttributeId.HP, -damage);
+                Debug.Log($"<color=yellow>[DamageImpact] {ctx.attacker?.name} → {targetEntity.name} | " +
+                          $"DMG:{damage:F0} (Base:{baseDamage}) | HP:{statusModule.Attributes.GetCurrent(AttributeId.HP):F0}</color>");
+            }
+
+            // 喧响值累积
+            if (dazeAmount > 0f && statusModule.Attributes.Has(AttributeId.Daze))
+            {
+                statusModule.Attributes.Modify(AttributeId.Daze, +dazeAmount);
+            }
+        }
+
+        /// <summary>修改任意属性</summary>
+        private void ApplyModifyAttribute(CharacterEntity targetEntity, AttributeId attributeId, float delta)
+        {
+            if (targetEntity.StatusModule?.Attributes == null) return;
+            if (!targetEntity.StatusModule.Attributes.Has(attributeId)) return;
+
+            targetEntity.StatusModule.Attributes.Modify(attributeId, delta);
+        }
+
+        /// <summary>施加 Buff</summary>
+        private void ApplyBuff(CharacterEntity targetEntity, BuffDefAsset buffDef, CharacterEntity source)
+        {
+            if (buffDef == null || targetEntity.StatusModule == null) return;
+
+            if (targetEntity.StatusModule.IsBuffImmune(buffDef))
+            {
+                Debug.Log($"<color=grey>[ApplyBuff] {targetEntity.name} 免疫 Buff '{buffDef.DisplayName}'</color>");
+                return;
+            }
+
+            targetEntity.StatusModule.Buffs.AddBuff(buffDef, source);
+            Debug.Log($"<color=green>[ApplyBuff] {source?.name} → {targetEntity.name} | 施加 Buff '{buffDef.DisplayName}'</color>");
         }
     }
 }

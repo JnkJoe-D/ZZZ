@@ -18,8 +18,27 @@ MonoBehaviour:
     TriggerMode: 1
     ModifierCheckTiming: 20
     EventType: 0
+    RequiredType: 30
+    RequiredPhase: 0
+    Modifiers: []
+    Modifier: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
+    ModifierConditions: 
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 2332441b3c4cb974d8d2098f943bd8bd, type: 2}
+    RouteExecuteEvent: 0
+    ExtraConditions: []
+    OnExecuteEffects: []
+    Priority: 1
+  - Category: 0
+    RequiredWindowTag: BackSwing
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
@@ -28,6 +47,25 @@ MonoBehaviour:
     ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
     RouteExecuteEvent: 0
     ExtraConditions: []
+    OnExecuteEffects: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: BackSwing
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 30
+    RequiredPhase: 0
+    Modifiers: []
+    Modifier: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
+    ModifierConditions: 
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 947511aa0618d094b8f8ab1949bc780f, type: 2}
+    RouteExecuteEvent: 0
+    ExtraConditions: []
+    OnExecuteEffects: []
     Priority: 0
   references:
     version: 2

@@ -173,16 +173,19 @@ namespace Game.Editor.ActionConfig
 
         // ────────────────── 可见性检测 ──────────────────
 
+        private static readonly Dictionary<string, ShowIfAttribute> _showIfAttributeCache = new();
+
         private static bool IsVisible(SerializedProperty property)
         {
-            var field = typeof(ActionRoute).GetField(property.name,
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (field == null)
+            if (!_showIfAttributeCache.TryGetValue(property.name, out var showIf))
             {
-                return true;
+                var field = typeof(ActionRoute).GetField(property.name,
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                
+                showIf = field?.GetCustomAttribute<ShowIfAttribute>();
+                _showIfAttributeCache[property.name] = showIf;
             }
 
-            var showIf = field.GetCustomAttribute<ShowIfAttribute>();
             return ShowIfDrawer.CheckVisible(property, showIf);
         }
 

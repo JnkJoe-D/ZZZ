@@ -7,18 +7,70 @@ namespace ATEditor.Editor
     [CustomDrawer(typeof(HitClip))]
     public class HitClipDrawer : ClipDrawer
     {
+        private static bool _showBase = true;
+        private static bool _showHitBox = true;
+        private static bool _showDetect = true;
+        private static bool _showVFX = true;
+
         public override void DrawInspector(ClipBase clip)
         {
             var hitClip = clip as HitClip;
             if (hitClip == null) return;
             
-            // --- 引擎原生属性绘制 ---
-
             EditorGUI.BeginChangeCheck();
-            base.DrawInspector(clip);
+
+            // 1. 基础时间轴控制
+            _showBase = EditorGUILayout.Foldout(_showBase, "基础参数 (Base)", true, EditorStyles.foldoutHeader);
+            if (_showBase)
+            {
+                EditorGUILayout.BeginVertical("box");
+                hitClip.clipName = EditorGUILayout.TextField("片段名称", hitClip.clipName);
+                hitClip.StartTime = Mathf.Max(0, EditorGUILayout.FloatField("开始时间", hitClip.StartTime));
+                hitClip.Duration = Mathf.Max(0.1f, EditorGUILayout.FloatField("持续时间", hitClip.Duration));
+                EditorGUILayout.EndVertical();
+            }
+
+            // 2. 检测盒与空间参数
+            _showHitBox = EditorGUILayout.Foldout(_showHitBox, "碰撞盒参数 (HitBox)", true, EditorStyles.foldoutHeader);
+            if (_showHitBox)
+            {
+                EditorGUILayout.BeginVertical("box");
+                DrawFieldByName(hitClip, "shape");
+                DrawFieldByName(hitClip, "isHitBoxFollowBindPoint");
+                if (hitClip.isHitBoxFollowBindPoint)
+                {
+                    DrawFieldByName(hitClip, "bindPoint");
+                    if (hitClip.bindPoint == BindPoint.CustomBone)
+                        DrawFieldByName(hitClip, "customBoneName");
+                }
+                DrawFieldByName(hitClip, "positionOffset");
+                DrawFieldByName(hitClip, "rotationOffset");
+                DrawFieldByName(hitClip, "showHitBoxGizmos");
+                EditorGUILayout.EndVertical();
+            }
+
+            // 3. 判定规则与表现
+            _showDetect = EditorGUILayout.Foldout(_showDetect, "打击判定与表现 (Detection & Feedback)", true, EditorStyles.foldoutHeader);
+            if (_showDetect)
+            {
+                EditorGUILayout.BeginVertical("box");
+                DrawFieldByName(hitClip, "detectFrequency");
+                if (hitClip.detectFrequency == Frequency.Times)
+                    DrawFieldByName(hitClip, "times");
+                DrawFieldByName(hitClip, "maxHitTargets");
+                DrawFieldByName(hitClip, "targetSortMode");
+                DrawFieldByName(hitClip, "hitLayerMask");
+                DrawFieldByName(hitClip, "isSelfImpacted");
+                EditorGUILayout.Space(5);
+                DrawFieldByName(hitClip, "detects");
+                EditorGUILayout.EndVertical();
+            }
+
             bool propertiesChanged = EditorGUI.EndChangeCheck();
 
-            if (propertiesChanged && hitClip.hitVFXPrefab != null)
+            // 当前选中的 DetectConfig 的 VFX 字段变化时刷新预览
+            var selectedDetect = hitClip.SelectedDetect;
+            if (propertiesChanged && selectedDetect != null && selectedDetect.hitVFXPrefab != null)
             {
                 if (EditorWindow.HasOpenInstances<ATEditorWindow>())
                 {
@@ -37,50 +89,59 @@ namespace ATEditor.Editor
                 }
             }
 
-            // 绘制控制是否显示场景句柄的按钮（单选工具栏）
-            if (hitClip.hitVFXPrefab != null)
+            // 4. VFX 场景句柄
+            if (selectedDetect != null && selectedDetect.hitVFXPrefab != null)
             {
-                GUILayout.Space(10);
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-
-                string[] handleNames = { "无", "位置", "缩放" };
-                HitClip.HitVFXHandleType[] handleValues = { 
-                    HitClip.HitVFXHandleType.None, 
-                    HitClip.HitVFXHandleType.Position, 
-                    HitClip.HitVFXHandleType.Scale 
-                };
-
-                // 找到当前选中项的 index
-                int currentIndex = 0;
-                for (int i = 0; i < handleValues.Length; i++)
+                _showVFX = EditorGUILayout.Foldout(_showVFX, "VFX 场景调试 (Scene Handles)", true, EditorStyles.foldoutHeader);
+                if (_showVFX)
                 {
-                    if (hitClip.activeVFXHandleType == handleValues[i])
-                    {
-                        currentIndex = i;
-                        break;
-                    }
-                }
+                    EditorGUILayout.BeginVertical("box");
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.FlexibleSpace();
 
-                // 使用 Toolbar 绘制并排的排他按钮组
-                int newIndex = GUILayout.Toolbar(currentIndex, handleNames, GUILayout.Height(30), GUILayout.Width(200));
+                    string[] handleNames = { "无", "位置", "缩放" };
+                    HitClip.HitVFXHandleType[] handleValues = { 
+                        HitClip.HitVFXHandleType.None, 
+                        HitClip.HitVFXHandleType.Position, 
+                        HitClip.HitVFXHandleType.Scale 
+                    };
 
-                if (newIndex != currentIndex)
-                {
-                    hitClip.activeVFXHandleType = handleValues[newIndex];
-                    if (hitClip.activeVFXHandleType != HitClip.HitVFXHandleType.None)
+                    int currentIndex = 0;
+                    for (int i = 0; i < handleValues.Length; i++)
                     {
-                        // 强制切换到移动工具以避免 Unity 自身的句柄干扰
-                        if (Tools.current == Tool.None || Tools.current == Tool.View)
+                        if (hitClip.activeVFXHandleType == handleValues[i])
                         {
-                            Tools.current = Tool.Move;
+                            currentIndex = i;
+                            break;
                         }
                     }
-                    SceneView.RepaintAll();
-                }
 
-                GUILayout.FlexibleSpace();
-                EditorGUILayout.EndHorizontal();
+                    int newIndex = GUILayout.Toolbar(currentIndex, handleNames, GUILayout.Height(25), GUILayout.Width(200));
+
+                    if (newIndex != currentIndex)
+                    {
+                        hitClip.activeVFXHandleType = handleValues[newIndex];
+                        if (hitClip.activeVFXHandleType != HitClip.HitVFXHandleType.None)
+                        {
+                            if (Tools.current == Tool.None || Tools.current == Tool.View)
+                                Tools.current = Tool.Move;
+                        }
+                        SceneView.RepaintAll();
+                    }
+
+                    GUILayout.FlexibleSpace();
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.EndVertical();
+                }
+            }
+        }
+
+        private void DrawFieldByName(HitClip obj, string fieldName)
+        {
+            var field = typeof(HitClip).GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (field != null)
+            {
+                DrawField(field, obj);
             }
         }
 
@@ -89,11 +150,12 @@ namespace ATEditor.Editor
             var damageClip = clip as HitClip;
             if (damageClip == null) return;
 
-            // 判断是否在时间范围内，只有在非停止状态下（预览或播放）才允许激活
+            // 判断是否在时间范围内
             bool isActive = !state.isStopped && state.timeIndicator >= clip.StartTime && state.timeIndicator <= clip.StartTime + clip.Duration;
 
             // --- 实时同步特效位置逻辑 ---
-            if (isActive && damageClip.hitVFXPrefab != null && damageClip.activeVFXHandleType != HitClip.HitVFXHandleType.None)
+            var selectedDetect = damageClip.SelectedDetect;
+            if (isActive && selectedDetect != null && selectedDetect.hitVFXPrefab != null && damageClip.activeVFXHandleType != HitClip.HitVFXHandleType.None)
             {
                 Editor.EditorHitProcess activeProcess = null;
                 ATEditorWindow window = null;
@@ -143,7 +205,6 @@ namespace ATEditor.Editor
                         {
                             Undo.RecordObject(timeline, "Sync Hit VFX Transform");
 
-                            // 将把手拖动的新变动立即赋给临时的 Instance
                             if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Position) activeProcess.Instance.transform.position = newPos;
                             else if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Scale) activeProcess.Instance.transform.localScale = newScale;
 
@@ -151,12 +212,12 @@ namespace ATEditor.Editor
 
                             if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Position)
                             {
-                                damageClip.hitVFXHeight = pHeight;
-                                damageClip.hitVFXPreviewOffsetXZ = pOffsetXZ;
+                                selectedDetect.hitVFXHeight = pHeight;
+                                selectedDetect.hitVFXPreviewOffsetXZ = pOffsetXZ;
                             }
                             else if (damageClip.activeVFXHandleType == HitClip.HitVFXHandleType.Scale)
                             {
-                                damageClip.hitVFXScale = newScale;
+                                selectedDetect.hitVFXScale = newScale;
                             }
                             
                             EditorUtility.SetDirty(timeline);
@@ -200,7 +261,6 @@ namespace ATEditor.Editor
                 }
                 else
                 {
-                    // 获取 Matrix (传入 state 以供获取 Context)
                     GetMatrix(damageClip, state, out pos, out rot);
                 }
 
@@ -228,28 +288,19 @@ namespace ATEditor.Editor
                     break;
 
                 case HitBoxType.Capsule:
-                    // 修正 Capsule 绘制，高度必须大于 2 倍半径，多出的部分才是两端圆球的偏移
                     float extraHeight = Mathf.Max(0, shape.height - shape.radius * 2);
                     Vector3 upCap = Vector3.up * (extraHeight / 2f);
                     Vector3 downCap = Vector3.down * (extraHeight / 2f);
                     
-                    // 顶面圆和底面圆 (平行于 XZ 平面)
                     Handles.DrawWireArc(upCap, Vector3.up, Vector3.forward, 360, shape.radius);
                     Handles.DrawWireArc(downCap, Vector3.up, Vector3.forward, 360, shape.radius);
 
-                    // 上半球 (垂直于 XZ 平面的两个交叉半圆)
-                    // X轴旋转: 从后向前，正旋转经过上
                     Handles.DrawWireArc(upCap, Vector3.right, Vector3.back, 180, shape.radius);
-                    // Z轴旋转: 从左向右，正旋转经过上
                     Handles.DrawWireArc(upCap, Vector3.forward, Vector3.right, 180, shape.radius);
 
-                    // 下半球 (垂直于 XZ 平面的两个交叉半圆)
-                    // X轴旋转: 从前向后，正旋转经过下
                     Handles.DrawWireArc(downCap, Vector3.right, Vector3.forward, 180, shape.radius);
-                    // Z轴旋转: 从右向左，正旋转经过下
                     Handles.DrawWireArc(downCap, Vector3.forward, Vector3.left, 180, shape.radius);
 
-                    // 躯干连接线 (垂直高度线条)
                     Handles.DrawLine(upCap + Vector3.forward * shape.radius, downCap + Vector3.forward * shape.radius);
                     Handles.DrawLine(upCap + Vector3.back * shape.radius, downCap + Vector3.back * shape.radius);
                     Handles.DrawLine(upCap + Vector3.right * shape.radius, downCap + Vector3.right * shape.radius);
@@ -265,22 +316,18 @@ namespace ATEditor.Editor
                     Vector3 upCenter = Vector3.up * hS;
                     Vector3 downCenter = Vector3.down * hS;
 
-                    // 上下弧线
                     Handles.DrawWireArc(upCenter, Vector3.up, leftBoundary, shape.angle, shape.radius);
                     Handles.DrawWireArc(downCenter, Vector3.up, leftBoundary, shape.angle, shape.radius);
 
-                    // 侧边连线
                     Handles.DrawLine(upCenter, upCenter + rightBoundary * shape.radius);
                     Handles.DrawLine(upCenter, upCenter + leftBoundary * shape.radius);
                     Handles.DrawLine(downCenter, downCenter + rightBoundary * shape.radius);
                     Handles.DrawLine(downCenter, downCenter + leftBoundary * shape.radius);
 
-                    // 垂直连线 (连接上下两片的顶点和圆心)
                     Handles.DrawLine(upCenter, downCenter);
                     Handles.DrawLine(upCenter + rightBoundary * shape.radius, downCenter + rightBoundary * shape.radius);
                     Handles.DrawLine(upCenter + leftBoundary * shape.radius, downCenter + leftBoundary * shape.radius);
 
-                    // 填充区域 (这里画底面和顶面即可)
                     Handles.color = solidColor;
                     Handles.DrawSolidArc(upCenter, Vector3.up, leftBoundary, shape.angle, shape.radius);
                     Handles.DrawSolidArc(downCenter, Vector3.up, leftBoundary, shape.angle, shape.radius);
@@ -291,14 +338,11 @@ namespace ATEditor.Editor
                     Vector3 upRing = Vector3.up * hR;
                     Vector3 downRing = Vector3.down * hR;
 
-                    // 外圈上下
                     Handles.DrawWireArc(upRing, Vector3.up, Vector3.forward, 360f, shape.radius);
                     Handles.DrawWireArc(downRing, Vector3.up, Vector3.forward, 360f, shape.radius);
-                    // 内圈上下
                     Handles.DrawWireArc(upRing, Vector3.up, Vector3.forward, 360f, shape.innerRadius);
                     Handles.DrawWireArc(downRing, Vector3.up, Vector3.forward, 360f, shape.innerRadius);
 
-                    // 垂直连线辅助阅读
                     Handles.DrawLine(upRing + Vector3.forward * shape.radius, downRing + Vector3.forward * shape.radius);
                     Handles.DrawLine(upRing - Vector3.forward * shape.radius, downRing - Vector3.forward * shape.radius);
                     Handles.DrawLine(upRing + Vector3.right * shape.radius, downRing + Vector3.right * shape.radius);

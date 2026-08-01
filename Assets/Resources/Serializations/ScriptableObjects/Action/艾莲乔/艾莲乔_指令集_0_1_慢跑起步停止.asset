@@ -20,7 +20,16 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 10
     RequiredPhase: 20
-    Modifier: 20
+    Modifiers:
+    - Category: 20
+      RequiredKey: 0
+      Condition: 20
+      Inverse: 0
+    - Category: 20
+      RequiredKey: 0
+      Condition: 30
+      Inverse: 0
+    Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
     ModifierConditions: 140000001e000000
@@ -28,6 +37,7 @@ MonoBehaviour:
     ExecuteAction: {fileID: 11400000, guid: 12437ad71e4d52042a4286a7f47408e7, type: 2}
     RouteExecuteEvent: 0
     ExtraConditions: []
+    OnExecuteEffects: []
     Priority: 0
   references:
     version: 2

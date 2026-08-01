@@ -134,15 +134,15 @@
       "preload": false
     },
     {
-      "key": "安比_闪避_前",
-      "displayName": "安比_闪避_前",
+      "key": "闪避_前",
+      "displayName": "闪避_前",
       "assetType": "SkillConfigAsset",
       "group": "action",
       "preload": false
     },
     {
-      "key": "安比_闪避_后",
-      "displayName": "安比_闪避_后",
+      "key": "闪避_后",
+      "displayName": "闪避_后",
       "assetType": "SkillConfigAsset",
       "group": "action",
       "preload": false
@@ -294,15 +294,15 @@
         "assetType": "SkillConfigAsset"
       },
       {
-        "key": "安比_闪避_前",
+        "key": "闪避_前",
         "actionId": 10017,
-        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_前闪.asset",
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_闪避_前.asset",
         "assetType": "SkillConfigAsset"
       },
       {
-        "key": "安比_闪避_后",
+        "key": "闪避_后",
         "actionId": 10018,
-        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_后闪.asset",
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_闪避_后.asset",
         "assetType": "SkillConfigAsset"
       },
       {
@@ -351,6 +351,6 @@
       "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_6_切人_1_等待切出.asset",
       "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_6_切人_2_立即切入.asset"
     ],
-    "lastSyncedUtc": "2026-05-10T10:14:24.577324+00:00"
+    "lastSyncedUtc": "2026-08-01T12:12:47.680963+00:00"
   }
 }

@@ -83,7 +83,6 @@ namespace Game.Logic
 
             if (PlayAndTrack(action))
             {
-                Debug.Log($"<color=red>[ActionController] PlayAction: {action.ID}, State: {action.EnterState}</color>");
                 SwitchState(action.EnterState);
             }
             return _currentRunner;
@@ -425,7 +424,10 @@ namespace Game.Logic
 
         private void Apply(RouteCandidate candidate)
         {
-            // 执行路由附带的副作用（消耗属性、施加 Buff 等）
+            // 1. 技能表配置的基础消耗（能量扣除等）
+            candidate.SourceRoute?.ConsumeSkillCost(_entity);
+
+            // 2. 执行路由附带的特殊副作用（施加 Buff、重置特定属性等）
             if (candidate.SourceRoute?.OnExecuteEffects != null)
             {
                 foreach (var effect in candidate.SourceRoute.OnExecuteEffects)
@@ -496,9 +498,6 @@ namespace Game.Logic
         {
             ActionConfigAsset finished = _currentPlayingAction;
             _currentPlayingAction = null;
-
-            Debug.Log($"<color=red>[ActionController] HandleActionComplete: finished={finished?.Name ?? "NULL"}, " +
-                $"ID={finished?.ID ?? -1}, completeMode={finished?.CompleteMode}</color>");
 
             if (finished == null || _isTransitioning) return;
 

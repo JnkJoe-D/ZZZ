@@ -221,7 +221,11 @@ namespace ATEditor.Editor
 
             EditorGUI.BeginChangeCheck();
 
-            if (fieldType == typeof(int))
+            if (field.Name == "hitEffectId")
+            {
+                newValue = DrawHitEffectIdSelector(name, (int)value);
+            }
+            else if (fieldType == typeof(int))
             {
                 newValue = EditorGUILayout.IntField(name, (int)value);
             }
@@ -433,36 +437,49 @@ namespace ATEditor.Editor
                 EditorGUILayout.EndVertical();
                 newValue = stringArray;
             }
-            else if (value is HitEffectEntry[] hitEffectsArray)
+            else if (value is DetectConfig[] detectsArray)
             {
-                // --- HitEffectEntry[] 渲染 ---
-                string[] eventTagOptions = ActionTagOptions.GetEventTags();
-                string[] targetTagOptions = ActionTagOptions.GetTargetTags();
-
+                // --- DetectConfig[] 嵌套渲染 ---
                 EditorGUILayout.BeginVertical("box");
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(name, EditorStyles.boldLabel);
                 if (GUILayout.Button("+", GUILayout.Width(20)))
                 {
-                    Array.Resize(ref hitEffectsArray, hitEffectsArray.Length + 1);
-                    hitEffectsArray[hitEffectsArray.Length - 1] = new HitEffectEntry();
+                    Array.Resize(ref detectsArray, detectsArray.Length + 1);
+                    detectsArray[detectsArray.Length - 1] = new DetectConfig();
                     GUI.FocusControl(null);
                 }
                 EditorGUILayout.EndHorizontal();
 
-                for (int i = 0; i < hitEffectsArray.Length; i++)
-                {
-                    var entry = hitEffectsArray[i];
-                    if (entry == null) { entry = new HitEffectEntry(); hitEffectsArray[i] = entry; }
+                // 同步 selectedDetectIndex（如果当前对象是 HitClip）
+                HitClip ownerClip = obj as HitClip;
 
-                    EditorGUILayout.BeginVertical("helpbox");
+                for (int d = 0; d < detectsArray.Length; d++)
+                {
+                    var detect = detectsArray[d];
+                    if (detect == null) { detect = new DetectConfig(); detectsArray[d] = detect; }
+
+                    bool isSelected = ownerClip != null && ownerClip.selectedDetectIndex == d;
+                    var headerStyle = isSelected
+                        ? new GUIStyle("helpbox") { fontStyle = FontStyle.Bold }
+                        : new GUIStyle("helpbox");
+
+                    EditorGUILayout.BeginVertical(headerStyle);
+
+                    // 标题行：选中高亮 + 删除
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField($"效果 [{i}]", EditorStyles.miniLabel);
-                    if (GUILayout.Button("X", GUILayout.Width(20)))
+                    bool newSelected = GUILayout.Toggle(isSelected, $"检测 [{d}]", EditorStyles.toolbarButton);
+                    if (newSelected && !isSelected && ownerClip != null)
                     {
-                        var list = new List<HitEffectEntry>(hitEffectsArray);
-                        list.RemoveAt(i);
-                        hitEffectsArray = list.ToArray();
+                        ownerClip.selectedDetectIndex = d;
+                    }
+                    if (detectsArray.Length > 1 && GUILayout.Button("X", GUILayout.Width(20)))
+                    {
+                        var list = new List<DetectConfig>(detectsArray);
+                        list.RemoveAt(d);
+                        detectsArray = list.ToArray();
+                        if (ownerClip != null && ownerClip.selectedDetectIndex >= detectsArray.Length)
+                            ownerClip.selectedDetectIndex = detectsArray.Length - 1;
                         GUI.FocusControl(null);
                         EditorGUILayout.EndHorizontal();
                         EditorGUILayout.EndVertical();
@@ -470,83 +487,19 @@ namespace ATEditor.Editor
                     }
                     EditorGUILayout.EndHorizontal();
 
-                    // eventTag 下拉
-                    if (eventTagOptions != null && eventTagOptions.Length > 0)
-                    {
-                        int idx = Array.IndexOf(eventTagOptions, entry.eventTag);
-                        if (idx == -1)
-                        {
-                            var oldC = GUI.color; GUI.color = Color.yellow;
-                            entry.eventTag = EditorGUILayout.TextField("效果标签 [未知]", entry.eventTag);
-                            GUI.color = oldC;
-                        }
-                        else
-                        {
-                            int newIdx = EditorGUILayout.Popup("效果标签", idx, eventTagOptions);
-                            entry.eventTag = eventTagOptions[newIdx];
-                        }
-                    }
-                    else
-                    {
-                        entry.eventTag = EditorGUILayout.TextField("效果标签", entry.eventTag);
-                    }
+                    EditorGUI.indentLevel++;
 
-                    // targetTags 下拉列表
-                    EditorGUILayout.BeginVertical();
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("目标标签", EditorStyles.miniLabel);
-                    if (GUILayout.Button("+", GUILayout.Width(20)))
-                    {
-                        var tags = entry.targetTags ?? new string[0];
-                        Array.Resize(ref tags, tags.Length + 1);
-                        tags[tags.Length - 1] = (targetTagOptions != null && targetTagOptions.Length > 0) ? targetTagOptions[0] : "";
-                        entry.targetTags = tags;
-                        GUI.FocusControl(null);
-                    }
-                    EditorGUILayout.EndHorizontal();
+                    // 使用反射绘制 DetectConfig 的所有 SkillProperty 字段
+                    DrawDefaultInspector(detect);
 
-                    if (entry.targetTags != null)
-                    {
-                        for (int j = 0; j < entry.targetTags.Length; j++)
-                        {
-                            EditorGUILayout.BeginHorizontal();
-                            if (targetTagOptions != null && targetTagOptions.Length > 0)
-                            {
-                                int tIdx = Array.IndexOf(targetTagOptions, entry.targetTags[j]);
-                                if (tIdx == -1)
-                                {
-                                    var oldC2 = GUI.color; GUI.color = Color.red;
-                                    entry.targetTags[j] = EditorGUILayout.TextField($"[已丢失] {entry.targetTags[j]}");
-                                    GUI.color = oldC2;
-                                }
-                                else
-                                {
-                                    int newTIdx = EditorGUILayout.Popup(tIdx, targetTagOptions);
-                                    entry.targetTags[j] = targetTagOptions[newTIdx];
-                                }
-                            }
-                            else
-                            {
-                                entry.targetTags[j] = EditorGUILayout.TextField(entry.targetTags[j]);
-                            }
-                            if (GUILayout.Button("X", GUILayout.Width(20)))
-                            {
-                                var tList = new List<string>(entry.targetTags);
-                                tList.RemoveAt(j);
-                                entry.targetTags = tList.ToArray();
-                                GUI.FocusControl(null);
-                                EditorGUILayout.EndHorizontal();
-                                break;
-                            }
-                            EditorGUILayout.EndHorizontal();
-                        }
-                    }
+                    EditorGUI.indentLevel--;
                     EditorGUILayout.EndVertical();
-                    EditorGUILayout.EndVertical();
+                    GUILayout.Space(4);
                 }
                 EditorGUILayout.EndVertical();
-                newValue = hitEffectsArray;
+                newValue = detectsArray;
             }
+
             else if (value is SkillAssetReference assetRef)
             {
                 var attr = field.GetCustomAttribute<SkillAssetReferenceAttribute>();
@@ -638,6 +591,87 @@ namespace ATEditor.Editor
                 assetRef.guid = guid;
                 assetRef.assetName = target.name;
                 assetRef.assetPath = path;
+            }
+        }
+        private static string[] _hitEffectNames;
+        private static int[] _hitEffectIds;
+
+        private static int DrawHitEffectIdSelector(string label, int currentValue)
+        {
+            if (_hitEffectNames == null)
+            {
+                LoadHitEffectData();
+            }
+
+            if (_hitEffectNames == null || _hitEffectNames.Length == 0)
+            {
+                return EditorGUILayout.IntField(label, currentValue);
+            }
+
+            EditorGUILayout.BeginHorizontal();
+            int currentIndex = Array.IndexOf(_hitEffectIds, currentValue);
+            if (currentIndex == -1) currentIndex = 0; // Fallback to 0 if not found
+
+            int newIndex = EditorGUILayout.Popup(label, currentIndex, _hitEffectNames);
+            
+            if (GUILayout.Button("刷新", GUILayout.Width(40)))
+            {
+                LoadHitEffectData();
+            }
+            EditorGUILayout.EndHorizontal();
+
+            return _hitEffectIds[newIndex];
+        }
+
+        private static void LoadHitEffectData()
+        {
+            string path = "Assets/Configs/zzz_tbhiteffect.json";
+            if (!System.IO.File.Exists(path))
+            {
+                _hitEffectNames = new string[0];
+                _hitEffectIds = new int[0];
+                return;
+            }
+            
+            try
+            {
+                var lines = System.IO.File.ReadAllLines(path);
+                var namesList = new System.Collections.Generic.List<string>();
+                var idsList = new System.Collections.Generic.List<int>();
+                
+                namesList.Add("无效果 (0)");
+                idsList.Add(0);
+
+                int currentId = 0;
+                foreach (var line in lines)
+                {
+                    if (line.Contains("\"id\":"))
+                    {
+                        string idStr = System.Text.RegularExpressions.Regex.Match(line, @"\d+").Value;
+                        if (int.TryParse(idStr, out int id))
+                        {
+                            currentId = id;
+                        }
+                    }
+                    else if (line.Contains("\"name\":"))
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(line, "\"name\"\\s*:\\s*\"(.*?)\"");
+                        if (match.Success && currentId != 0)
+                        {
+                            string nameStr = match.Groups[1].Value;
+                            namesList.Add($"[{currentId}] {nameStr}");
+                            idsList.Add(currentId);
+                            currentId = 0; // reset
+                        }
+                    }
+                }
+                
+                _hitEffectNames = namesList.ToArray();
+                _hitEffectIds = idsList.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"加载 HitEffect JSON 失败: {ex.Message}");
             }
         }
     }

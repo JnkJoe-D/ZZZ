@@ -58,8 +58,7 @@ namespace Game.Logic
         [Tooltip("SkillEditor 生成的标准化时间轴数据，ActionPlayer 会解析并播放它。")]
         public TextAsset TimelineAsset;
 
-        [Header("转向优先级策略")]
-        public ActionTurnMode TurnMode = ActionTurnMode.InputDirection;
+
 
         [Header("状态转换")]
         [Tooltip("指定此动作执行时的目标状态机主状态/子状态。")]
@@ -82,9 +81,7 @@ namespace Game.Logic
 
         // ── 每帧行为标志（v3 新增）────────────────────────────
         [Header("速度配置")]
-        [Range(0f, 30f)]
-        [Tooltip("旋转平滑角速度。")]
-        public float FaceToSpeed = 10f;
+
 
         [Tooltip("播放速度")]
         [Range(0f,10f)]
@@ -116,13 +113,5 @@ namespace Game.Logic
         }
     }
 
-    /// <summary>
-    /// 转向方式。
-    /// </summary>
-    public enum ActionTurnMode
-    {
-        None,
-        InputDirection,
-        EnemyPriorityThenInput
-    }
+
 }

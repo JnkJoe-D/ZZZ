@@ -162,6 +162,7 @@ namespace Game.Logic
         [SerializeReference, SubclassSelector]
         public List<IRouteEffect> OnExecuteEffects = new();
 
+
         [Header("Execution")]
         public int Priority;
 
@@ -216,7 +217,9 @@ namespace Game.Logic
             {
                 Debug.Log($"<color=orange>[RouteTrace] {ExecuteAction.Name} 的 ExtraConditions 检查未通过！</color>");
             }
-            return conditionResult;
+            if (!conditionResult) return false;
+
+            return CheckSkillRequire(actor);
         }
 
         public bool EvaluateConditionTrigger(
@@ -239,7 +242,10 @@ namespace Game.Logic
                 return false;
             }
 
-            return CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
+            if (!CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor))
+                return false;
+
+            return CheckSkillRequire(actor);
         }
 
         public bool EvaluateEvent(
@@ -262,7 +268,10 @@ namespace Game.Logic
                 return false;
             }
 
-            return CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
+            if (!CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor))
+                return false;
+            
+            return CheckSkillRequire(actor);
         }
 
         public bool EvaluateModifier(CharacterEntity actor, string activeWindowTag = null)
@@ -298,6 +307,45 @@ namespace Game.Logic
         private bool MatchesWindowTag(string activeWindowTag)
         {
             return string.Equals(RequiredWindowTag, activeWindowTag, StringComparison.Ordinal);
+        }
+
+        public bool CheckSkillRequire(CharacterEntity actor)
+        {
+            if (ExecuteAction == null || ExecuteAction.ID <= 0) return true;
+            if (actor?.StatusModule?.Attributes == null) return true;
+            var skillConfig = ConfigManager.Instance.Tables.TbSkill.GetOrDefault(ExecuteAction.ID);
+            if (skillConfig == null) return true;
+
+            foreach (var cost in skillConfig.Costs)
+            {
+                if (cost.Require > 0)
+                {
+                    float currentVal = actor.StatusModule.Attributes.GetCurrent((Game.Logic.AttributeId)(int)cost.Type);
+                    if (currentVal < cost.Require)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public void ConsumeSkillCost(CharacterEntity actor)
+        {
+            if (ExecuteAction == null || ExecuteAction.ID <= 0) return;
+            if (actor?.StatusModule?.Attributes == null) return;
+
+            var skillConfig = ConfigManager.Instance.Tables.TbSkill.GetOrDefault(ExecuteAction.ID);
+            if (skillConfig == null) return;
+
+            foreach (var cost in skillConfig.Costs)
+            {
+                if (cost.Cost > 0)
+                {
+                    actor.StatusModule.Attributes.Modify((Game.Logic.AttributeId)(int)cost.Type, -cost.Cost);
+                    Debug.Log($"<color=cyan>[SkillCost] {actor.name} 使用技能 {ExecuteAction.ID} 消耗了 {cost.Cost} 点 {(Game.Logic.AttributeId)(int)cost.Type}</color>");
+                }
+            }
         }
     }
 }

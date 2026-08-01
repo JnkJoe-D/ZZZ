@@ -431,7 +431,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1333332657814026,
                     "animationClip": {
-                        "instanceID": 64730
+                        "instanceID": 55994
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -466,7 +466,7 @@
                     "blendInDuration": 0.1333332657814026,
                     "blendOutDuration": 0.13333332538604737,
                     "animationClip": {
-                        "instanceID": 99266
+                        "instanceID": 97970
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -501,7 +501,7 @@
                     "blendInDuration": 0.13333332538604737,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 111784
+                        "instanceID": 115448
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -643,16 +643,8 @@
                     "duration": 0.4333336353302002,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "hitEffects": [
-                        {
-                            "eventTag": "Hit_Default",
-                            "targetTags": [
-                                "Enemy"
-                            ]
-                        }
-                    ],
-                    "detectFrequency": 0,
-                    "times": 1,
+                    "detectFrequency": 1,
+                    "times": 4,
                     "maxHitTargets": 0,
                     "targetSortMode": 1,
                     "hitLayerMask": {
@@ -686,39 +678,44 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "hitMode": 1,
-                    "multiHitCount": 8,
-                    "multiHitDuration": 0.4000000059604645,
-                    "enableHitStop": false,
-                    "hitStopDuration": 0.05000000074505806,
-                    "hitVFXPrefab": {
-                        "instanceID": 0
-                    },
-                    "hitVFXRef": {
-                        "guid": "",
-                        "assetName": "",
-                        "assetPath": ""
-                    },
-                    "hitVFXHeight": 1.0,
-                    "hitVFXPreviewOffsetXZ": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "hitVFXScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "followTarget": true,
-                    "hitAudioClip": {
-                        "instanceID": 0
-                    },
-                    "hitAudioRef": {
-                        "guid": "",
-                        "assetName": "",
-                        "assetPath": ""
-                    },
-                    "hitStunDuration": 0.30000001192092898
+                    "detects": [
+                        {
+                            "hitMode": 0,
+                            "multiHitCount": 3,
+                            "multiHitDuration": 0.20000000298023225,
+                            "enableHitStop": true,
+                            "hitStopDuration": 0.05000000074505806,
+                            "hitStunDuration": 0.30000001192092898,
+                            "hitVFXPrefab": {
+                                "instanceID": 0
+                            },
+                            "hitVFXRef": {
+                                "guid": "",
+                                "assetName": "",
+                                "assetPath": ""
+                            },
+                            "hitVFXHeight": 1.0,
+                            "hitVFXPreviewOffsetXZ": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "hitVFXScale": {
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "followTarget": true,
+                            "hitAudioClip": {
+                                "instanceID": 0
+                            },
+                            "hitAudioRef": {
+                                "guid": "",
+                                "assetName": "",
+                                "assetPath": ""
+                            },
+                            "hitEffectId": 1040003
+                        }
+                    ]
                 }
             },
             {

@@ -12,10 +12,10 @@ namespace Game.Logic
         public CharacterEntity attacker;
         public CharacterEntity victim;
 
-        // --- 命中效果列表（源自 HitClip → HitData） ---
-        public ATEditor.HitEffectEntry[] hitEffects;
+        // --- 命中效果配置 ID（源自 DetectConfig → HitData） ---
+        public int hitEffectId;
 
-        // --- 打击反馈参数（源自 HitClip → HitData） ---
+        // --- 打击反馈参数（源自 DetectConfig → HitData） ---
         public bool enableHitStop;
         public float hitStopDuration;
         public GameObject hitVFXPrefab;

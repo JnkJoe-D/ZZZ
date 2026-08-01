@@ -15,13 +15,16 @@ MonoBehaviour:
   ID: 10214
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 799a40c076267bc49b1c8a18195c30cc, type: 3}
-  TurnMode: 2
   EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: e3a9c03227a8fa74c80985a0510beec8, type: 2}
   Routes: []
-  RouteSets: []
-  FaceToSpeed: 10
+  RouteSets:
+  - {fileID: 11400000, guid: 0ae99841e2fe44a48bbd2c6042a90734, type: 2}
+  - {fileID: 11400000, guid: 22d0fc9289794c44953011472885221e, type: 2}
+  - {fileID: 11400000, guid: e69d643be28f4431972836242bcc6306, type: 2}
+  - {fileID: 11400000, guid: ea7a120125d6de84693fec485332885d, type: 2}
+  - {fileID: 11400000, guid: 1da2cbbee3cb87045b2023e7273702c3, type: 2}
   PlaybackSpeed: 1
   Cooldown: 2
   MPCost: 0

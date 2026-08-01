@@ -53,4 +53,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 89af5f7eac66f3545a53d59980bfa8ad, type: 2}
   BehaviorTreeGraph: {fileID: 0}
   hitReactionConfig: {fileID: 11400000, guid: 5bc19da1b911c8641bdb0fb721baaace, type: 2}
-  StatusProfile: {fileID: 11400000, guid: 3320ed69148d4f34c9722180444c86b1, type: 2}
+  StatusProfile: {fileID: 11400000, guid: a74a9e09f6e453446897ecbd90a3a9d8, type: 2}

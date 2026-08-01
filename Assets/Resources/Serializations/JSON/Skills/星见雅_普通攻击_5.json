@@ -93,7 +93,11 @@
             "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
-            "tracks": []
+            "tracks": [
+                {
+                    "rid": 1010
+                }
+            ]
         }
     ],
     "references": {
@@ -117,10 +121,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1011
                         },
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ],
                     "isMasterTrack": true,
@@ -211,13 +215,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
-                        },
-                        {
                             "rid": 1013
                         },
                         {
                             "rid": 1014
+                        },
+                        {
+                            "rid": 1015
                         }
                     ]
                 }
@@ -240,7 +244,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1016
                         }
                     ]
                 }
@@ -263,7 +267,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1017
                         }
                     ]
                 }
@@ -286,7 +290,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1018
                         }
                     ]
                 }
@@ -309,7 +313,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1018
+                            "rid": 1019
                         }
                     ]
                 }
@@ -332,13 +336,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1019
+                            "rid": 1020
                         }
                     ]
                 }
             },
             {
                 "rid": 1010,
+                "type": {
+                    "class": "TransformTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "142c5574-63b5-4eb5-b7c4-b9b33866cf32",
+                    "trackType": "TransformTrack",
+                    "trackName": "变换轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1021
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1011,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "ATEditor",
@@ -353,7 +380,7 @@
                     "blendInDuration": 0.13333334028720857,
                     "blendOutDuration": 0.13333338499069215,
                     "animationClip": {
-                        "instanceID": 134992
+                        "instanceID": 77218
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -373,7 +400,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1012,
                 "type": {
                     "class": "SkillAnimationClip",
                     "ns": "ATEditor",
@@ -388,7 +415,7 @@
                     "blendInDuration": 0.13333338499069215,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 135976
+                        "instanceID": 109332
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -408,7 +435,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1013,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -426,7 +453,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1014,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -444,7 +471,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1015,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -462,7 +489,7 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1016,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -480,7 +507,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1017,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -498,7 +525,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1018,
                 "type": {
                     "class": "ComboWindowClip",
                     "ns": "ATEditor",
@@ -516,7 +543,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1019,
                 "type": {
                     "class": "HitClip",
                     "ns": "ATEditor",
@@ -530,14 +557,6 @@
                     "duration": 0.19999998807907105,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "hitEffects": [
-                        {
-                            "eventTag": "Hit_Default",
-                            "targetTags": [
-                                "Enemy"
-                            ]
-                        }
-                    ],
                     "detectFrequency": 0,
                     "times": 1,
                     "maxHitTargets": 0,
@@ -573,43 +592,61 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "hitMode": 1,
-                    "multiHitCount": 5,
-                    "multiHitDuration": 0.20000000298023225,
-                    "enableHitStop": true,
-                    "hitStopDuration": 0.05000000074505806,
-                    "hitVFXPrefab": {
-                        "instanceID": 0
-                    },
-                    "hitVFXRef": {
-                        "guid": "",
-                        "assetName": "",
-                        "assetPath": ""
-                    },
-                    "hitVFXHeight": 1.0,
-                    "hitVFXPreviewOffsetXZ": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "hitVFXScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "followTarget": true,
-                    "hitAudioClip": {
-                        "instanceID": 43068
-                    },
-                    "hitAudioRef": {
-                        "guid": "3b0c652427fd1564aa86ffbc9ddcca67",
-                        "assetName": "安比攻击受击音7",
-                        "assetPath": "Assets/Resources/Audio/AnBi/安比攻击受击音7.wav"
-                    },
-                    "hitStunDuration": 0.30000001192092898
+                    "detects": [
+                        {
+                            "hitMode": 0,
+                            "multiHitCount": 3,
+                            "multiHitDuration": 0.20000000298023225,
+                            "enableHitStop": false,
+                            "hitStopDuration": 0.05000000074505806,
+                            "hitStunDuration": 0.30000001192092898,
+                            "hitVFXPrefab": {
+                                "instanceID": 0
+                            },
+                            "hitVFXRef": {
+                                "guid": "",
+                                "assetName": "",
+                                "assetPath": ""
+                            },
+                            "hitVFXHeight": 1.0,
+                            "hitVFXPreviewOffsetXZ": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "hitVFXScale": {
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "followTarget": true,
+                            "hitAudioClip": {
+                                "instanceID": 0
+                            },
+                            "hitAudioRef": {
+                                "guid": "",
+                                "assetName": "",
+                                "assetPath": ""
+                            },
+                            "effects": [
+                                {
+                                    "effectType": 0,
+                                    "target": 0,
+                                    "triggerPolicy": 0,
+                                    "damageMultiplier": 1.0,
+                                    "dazeAmount": 10.0,
+                                    "attributeId": 0,
+                                    "value": 1.0,
+                                    "buffDef": {
+                                        "instanceID": 0
+                                    }
+                                }
+                            ]
+                        }
+                    ]
                 }
             },
             {
-                "rid": 1019,
+                "rid": 1020,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -624,6 +661,31 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1
+                }
+            },
+            {
+                "rid": 1021,
+                "type": {
+                    "class": "RotationClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "608fbf4b-25c1-4f82-8cbd-86f3c4454957",
+                    "clipName": "旋转片段片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.20000000298023225,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "referenceDirection": 4,
+                    "rotationMode": 1,
+                    "updateFrequency": 2,
+                    "localRotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 }
             }
         ]

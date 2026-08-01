@@ -7,14 +7,13 @@ namespace ATEditor
     [ClipDefinition(typeof(HitTrack), "打击")]
     public class HitClip : ClipBase, ISerializationCallbackReceiver
     {
-        [SkillProperty("命中效果列表")]
-        public HitEffectEntry[] hitEffects = new HitEffectEntry[0];
-
+        // ── 检测策略 ──
         [SkillProperty("检测频率")]
         public Frequency detectFrequency = Frequency.Once;
 
         [SkillProperty("检测次数")][ShowIf("detectFrequency", Frequency.Times)]
         public int times = 1;
+
         [SkillProperty("最大命中数 (0为不限)")]
         public int maxHitTargets = 0;
 
@@ -22,16 +21,18 @@ namespace ATEditor
         public TargetSortMode targetSortMode = TargetSortMode.Closest;
  
         [SkillProperty("碰撞检测层级 (LayerMask)")]
-        public LayerMask hitLayerMask = -1; // 默认 everything
+        public LayerMask hitLayerMask = -1;
 
         [SerializeField, HideInInspector]
         private int serializedHitLayerMask = -1;
+
         [SkillProperty("是否影响自身")]
         public bool isSelfImpacted = false;
         
         // --- 检测盒 ---
         [SkillProperty("检测盒")]
         public HitBoxShape shape = new HitBoxShape();
+
         // --- 编辑器辅助 ---
         [NonSerialized]
         [SkillProperty("检测盒Gizmos")]
@@ -52,50 +53,9 @@ namespace ATEditor
         [SkillProperty("旋转偏移")]
         public Vector3 rotationOffset = Vector3.zero;
 
-        // --- 受击 ---
-        [SkillProperty("受击方式")]
-        public HitMode hitMode = HitMode.Once;
-
-        [SkillProperty("受击次数")]
-        [ShowIf("hitMode", HitMode.Times)]
-        public int multiHitCount = 3;
-
-        [SkillProperty("多段受击总时长")]
-        [ShowIf("hitMode", HitMode.Times)]
-        public float multiHitDuration = 0.2f;
-
-        [SkillProperty("启用顿帧")]
-        public bool enableHitStop = false;
-
-        [SkillProperty("顿帧时长(秒)")]
-        public float hitStopDuration = 0.05f;
-
-        [SkillProperty("受击特效")]
-        public GameObject hitVFXPrefab;
-
-        [SkillAssetReference("hitVFXPrefab")][HideInInspector]
-        public SkillAssetReference hitVFXRef = new SkillAssetReference();
-
-        [SkillProperty("受击特效高度 (Y)")]
-        public float hitVFXHeight = 1.0f;
-
-        [SkillProperty("受击特效预览偏移 (XZ)")]
-        public Vector2 hitVFXPreviewOffsetXZ = Vector2.zero;
-
-        [SkillProperty("受击特效缩放")]
-        public Vector3 hitVFXScale = Vector3.one;
-
-        [SkillProperty("受击特效是否跟随目标")]
-        public bool followTarget = true;
-
-        [SkillProperty("受击音效")]
-        public AudioClip hitAudioClip;
-
-        [SkillAssetReference("hitAudioClip")][HideInInspector]
-        public SkillAssetReference hitAudioRef = new SkillAssetReference();
-
-        [SkillProperty("受击硬直时长(秒)")]
-        public float hitStunDuration = 0.3f;
+        // ── ★ 核心：嵌套的检测配置列表 ──
+        [SkillProperty("检测配置")]
+        public DetectConfig[] detects = new DetectConfig[] { new DetectConfig() };
 
         // --- 编辑器辅助 ---
         public enum HitVFXHandleType { None, Position, Scale }
@@ -103,10 +63,25 @@ namespace ATEditor
         [NonSerialized][HideInInspector]
         public HitVFXHandleType activeVFXHandleType = HitVFXHandleType.None;
 
+        /// <summary>当前在编辑器中选中的 DetectConfig 索引（用于 SceneGUI 预览）</summary>
+        [NonSerialized][HideInInspector]
+        public int selectedDetectIndex = 0;
+
         public HitClip()
         {
             clipName = "Damage Clip";
             duration = 0.5f;
+        }
+
+        /// <summary>获取当前选中的 DetectConfig（安全访问）</summary>
+        public DetectConfig SelectedDetect
+        {
+            get
+            {
+                if (detects == null || detects.Length == 0) return null;
+                int idx = Mathf.Clamp(selectedDetectIndex, 0, detects.Length - 1);
+                return detects[idx];
+            }
         }
 
         public override ClipBase Clone()
@@ -119,14 +94,10 @@ namespace ATEditor
                 duration = this.duration,
                 isEnabled = this.isEnabled,
                 
-                hitEffects = CloneHitEffects(this.hitEffects),
                 detectFrequency = this.detectFrequency,
                 times = this.times,
                 maxHitTargets = this.maxHitTargets,
                 targetSortMode = this.targetSortMode,
-                hitMode = this.hitMode,
-                multiHitCount = this.multiHitCount,
-                multiHitDuration = this.multiHitDuration,
                 hitLayerMask = this.hitLayerMask,
 
                 shape = this.shape.Clone(),
@@ -136,29 +107,21 @@ namespace ATEditor
                 customBoneName = this.customBoneName,
                 positionOffset = this.positionOffset,
                 rotationOffset = this.rotationOffset,
-                enableHitStop = this.enableHitStop,
-                hitStopDuration = this.hitStopDuration,
-                hitVFXPrefab = this.hitVFXPrefab,
-                hitVFXRef = new SkillAssetReference(this.hitVFXRef.guid, this.hitVFXRef.assetName, this.hitVFXRef.assetPath),
-                hitVFXHeight = this.hitVFXHeight,
-                hitVFXPreviewOffsetXZ = this.hitVFXPreviewOffsetXZ,
-                hitVFXScale = this.hitVFXScale,
-                followTarget = this.followTarget,
-                hitAudioClip = this.hitAudioClip,
-                hitAudioRef = new SkillAssetReference(this.hitAudioRef.guid, this.hitAudioRef.assetName, this.hitAudioRef.assetPath),
-                hitStunDuration = this.hitStunDuration,
+
+                detects = CloneDetects(this.detects),
+
                 activeVFXHandleType = this.activeVFXHandleType,
                 showHitBoxGizmos = this.showHitBoxGizmos
             };
         }
 
-        private static HitEffectEntry[] CloneHitEffects(HitEffectEntry[] source)
+        private static DetectConfig[] CloneDetects(DetectConfig[] source)
         {
-            if (source == null || source.Length == 0) return new HitEffectEntry[0];
-            var result = new HitEffectEntry[source.Length];
+            if (source == null || source.Length == 0) return new DetectConfig[] { new DetectConfig() };
+            var result = new DetectConfig[source.Length];
             for (int i = 0; i < source.Length; i++)
             {
-                result[i] = source[i]?.Clone() ?? new HitEffectEntry();
+                result[i] = source[i]?.Clone() ?? new DetectConfig();
             }
             return result;
         }

@@ -111,8 +111,6 @@ namespace ATEditor
                 if (hitRecords.TryGetValue(hit, out float lastHitTime))
                 {
                     if (clip.detectFrequency == Frequency.Once) continue;
-                    // 如果是 Times，依靠自身的计时器，这里允许命中，但是如果一个对象还在上一轮的冷却中？
-                    // 由于 DoDamageCheck 本身是按频率调用的，只要被调到了就可以生效。此处可做更精细的每目标 CD，这里从简。
                 }
 
                 // 圆柱体相关的过滤逻辑 (高度剔除、平面剔除)
@@ -128,7 +126,6 @@ namespace ATEditor
                     float targetRadius = Mathf.Max(bounds.extents.x, bounds.extents.z);
                     
                     // 1. 高度过滤 (Y轴方向)
-                    // 圆柱的上下边界是 height/2, -height/2
                     float boundMinY = localCenter.y - bounds.extents.y;
                     float boundMaxY = localCenter.y + bounds.extents.y;
                     float shapeHalfHeight = shape.height / 2f;
@@ -140,27 +137,23 @@ namespace ATEditor
                     Vector2 localPos2D = new Vector2(localCenter.x, localCenter.z);
                     float dist2D = localPos2D.magnitude;
 
-                    // 扇形与环形共有的外圈剔除：最靠近的目标点超过了外圈半径
+                    // 外圈剔除
                     if (dist2D - targetRadius > shape.radius)
                         continue;
 
                     if (shape.shapeType == HitBoxType.Sector)
                     {
-                        // 扇形角度判断
-                        // 目标包围圈包含了原点，则必然与扇形相交
                         if (dist2D > targetRadius)
                         {
                             float angle2D = Vector2.Angle(Vector2.up, localPos2D);
                             float angleTolerance = Mathf.Asin(Mathf.Clamp01(targetRadius / dist2D)) * Mathf.Rad2Deg;
                             
-                            // 最边缘点角度仍大于扇形一半，说明在扇形外
                             if (angle2D - angleTolerance > shape.angle / 2f)
                                 continue;
                         }
                     }
                     else if (shape.shapeType == HitBoxType.Ring)
                     {
-                        // 环形内孔剔除：最远离的目标点都不及内圈半径，说明完全在孔洞中
                         if (dist2D + targetRadius < shape.innerRadius)
                             continue;
                     }
@@ -202,23 +195,33 @@ namespace ATEditor
                     hitRecords[h] = Time.time;
                 }
                 currentHitCount += validHits.Count;
+
+                // ★ 根据当前检测轮次取对应的 DetectConfig
+                // 若 detects 数组长度不足，Clamp 到最后一条复用
+                int configIndex = (clip.detects != null && clip.detects.Length > 0)
+                    ? Mathf.Clamp(timesChecked, 0, clip.detects.Length - 1)
+                    : 0;
+                var detectConfig = (clip.detects != null && clip.detects.Length > 0)
+                    ? clip.detects[configIndex]
+                    : new DetectConfig();
+
                 HitData hitData = new HitData()
                 {
                     deployer = context.Owner,
                     hitBoxCenter = center,
                     targetsCollilders = validHits.ToArray(),
-                    hitEffects = clip.hitEffects,
-                    hitMode = clip.hitMode,
-                    multiHitCount = clip.multiHitCount,
-                    multiHitDuration = clip.multiHitDuration,
-                    enableHitStop = clip.enableHitStop,
-                    hitStopDuration = clip.hitStopDuration,
-                    hitVFXPrefab = clip.hitVFXPrefab,
-                    hitVFXHeight = clip.hitVFXHeight,
-                    hitVFXScale = clip.hitVFXScale,
-                    hitAudioClip = clip.hitAudioClip,
-                    hitStunDuration = clip.hitStunDuration,
-                    followTarget = clip.followTarget
+                    hitEffectId = detectConfig.hitEffectId,
+                    hitMode = detectConfig.hitMode,
+                    multiHitCount = detectConfig.multiHitCount,
+                    multiHitDuration = detectConfig.multiHitDuration,
+                    enableHitStop = detectConfig.enableHitStop,
+                    hitStopDuration = detectConfig.hitStopDuration,
+                    hitVFXPrefab = detectConfig.hitVFXPrefab,
+                    hitVFXHeight = detectConfig.hitVFXHeight,
+                    hitVFXScale = detectConfig.hitVFXScale,
+                    hitAudioClip = detectConfig.hitAudioClip,
+                    hitStunDuration = detectConfig.hitStunDuration,
+                    followTarget = detectConfig.followTarget
                 };
                 damageHandler.OnHitDetect(hitData);
             }

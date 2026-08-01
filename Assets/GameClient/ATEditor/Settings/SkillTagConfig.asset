@@ -25,6 +25,8 @@ MonoBehaviour:
   - Hit_Knockback
   - Hit_Launch
   - Hit_Ellen_Frost
+  - Hit_Ellen_Frost
+  - Hit_AddEnergy
   availableComboWindowTags:
   - Execute1
   - Execute2

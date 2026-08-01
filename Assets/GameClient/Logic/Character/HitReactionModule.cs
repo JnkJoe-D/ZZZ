@@ -142,12 +142,12 @@ namespace Game.Logic
             }
         }
 
-        public void ApplyMultiHit(float duration, int times, System.Action hitAction)
+        public void ApplyMultiHit(float duration, int times, System.Action<int, int> hitAction)
         {
             StartCoroutine(MultiHitCoroutine(duration, times, hitAction));
         }
 
-        private IEnumerator MultiHitCoroutine(float duration, int times, System.Action hitAction)
+        private IEnumerator MultiHitCoroutine(float duration, int times, System.Action<int, int> hitAction)
         {
             if (times <= 0 || duration <= 0) yield break;
 
@@ -155,7 +155,7 @@ namespace Game.Logic
             for (int i = 0; i < times; i++)
             {
                 if (_entity == null) yield break;
-                hitAction?.Invoke();
+                hitAction?.Invoke(i, times);
                 yield return new WaitForSeconds(interval);
             }
         }

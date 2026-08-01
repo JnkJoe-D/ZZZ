@@ -30,7 +30,8 @@ namespace ATEditor.Editor
         {
             if (clip.detectFrequency == Frequency.Once)
             {
-                Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered!</color> HitEffects: {clip.hitEffects?.Length ?? 0}, Time: OnEnter");
+                var detect = clip.SelectedDetect;
+                Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered!</color> HitEffectId: {detect?.hitEffectId ?? 0}, Time: OnEnter");
             }
             lastCheckTime = -1f;
             timesChecked = 0;
@@ -51,14 +52,15 @@ namespace ATEditor.Editor
                 spawnTargetRotation = Quaternion.identity;
             }
 
-            if (clip.hitVFXPrefab != null)
+            var selectedDetect = clip.SelectedDetect;
+            if (selectedDetect != null && selectedDetect.hitVFXPrefab != null)
             {
                 Vector3 spawnPos = GetPreviewPosition();
                 Quaternion spawnRot = GetPreviewRotation();
-                vfxInstance = EditorVFXManager.Instance.Spawn(clip.hitVFXPrefab, spawnPos, spawnRot);
+                vfxInstance = EditorVFXManager.Instance.Spawn(selectedDetect.hitVFXPrefab, spawnPos, spawnRot);
                 if (vfxInstance != null)
                 {
-                    vfxInstance.transform.localScale = clip.hitVFXScale;
+                    vfxInstance.transform.localScale = selectedDetect.hitVFXScale;
                 }
             }
         }
@@ -73,7 +75,8 @@ namespace ATEditor.Editor
 
                 if (lastCheckTime < 0 || currentTime - lastCheckTime >= dynamicInterval)
                 {
-                    Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered (Times)!</color> HitEffects: {clip.hitEffects?.Length ?? 0}, Time: {currentTime:F2}, Checks: {timesChecked + 1}/{clip.times}");
+                    var detect = clip.SelectedDetect;
+                    Debug.Log($"[SkillEditor Preview] <color=orange>Damage Triggered (Times)!</color> HitEffectId: {detect?.hitEffectId ?? 0}, Time: {currentTime:F2}, Checks: {timesChecked + 1}/{clip.times}");
                     lastCheckTime = currentTime;
                     timesChecked++;
                 }
@@ -106,7 +109,9 @@ namespace ATEditor.Editor
 
         private Vector3 GetPreviewPosition()
         {
-            Vector3 localOffset = new Vector3(clip.hitVFXPreviewOffsetXZ.x, clip.hitVFXHeight, clip.hitVFXPreviewOffsetXZ.y);
+            var detect = clip.SelectedDetect;
+            if (detect == null) return spawnTargetPosition;
+            Vector3 localOffset = new Vector3(detect.hitVFXPreviewOffsetXZ.x, detect.hitVFXHeight, detect.hitVFXPreviewOffsetXZ.y);
             return spawnTargetPosition + spawnTargetRotation * localOffset;
         }
 
@@ -126,14 +131,19 @@ namespace ATEditor.Editor
         private void UpdateTransform()
         {
             if (vfxInstance == null) return;
-            vfxInstance.transform.localScale = clip.hitVFXScale;
+            var detect = clip.SelectedDetect;
+            if (detect != null)
+            {
+                vfxInstance.transform.localScale = detect.hitVFXScale;
+            }
             vfxInstance.transform.SetPositionAndRotation(GetPreviewPosition(), GetPreviewRotation());
         }
 
         public void GetCurrentRelativeOffset(out float height, out Vector2 offsetXZ)
         {
-            height = clip.hitVFXHeight;
-            offsetXZ = clip.hitVFXPreviewOffsetXZ;
+            var detect = clip.SelectedDetect;
+            height = detect != null ? detect.hitVFXHeight : 1.0f;
+            offsetXZ = detect != null ? detect.hitVFXPreviewOffsetXZ : Vector2.zero;
 
             if (vfxInstance == null) return;
 

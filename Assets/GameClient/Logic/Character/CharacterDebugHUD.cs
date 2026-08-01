@@ -40,6 +40,16 @@ namespace Game.Logic
             }
         }
 
+        private static bool isHudVisible = false;
+
+        private void Update()
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.F2))
+            {
+                isHudVisible = !isHudVisible;
+            }
+        }
+
         private void InitStyles()
         {
             if (boxStyle != null)
@@ -91,6 +101,8 @@ namespace Game.Logic
 
         private void OnGUI()
         {
+            if (!isHudVisible) return;
+
             if (targetEntity == null)
             {
                 return;
@@ -206,8 +218,12 @@ namespace Game.Logic
                         {
                             var record = history[i];
                             string timeStr = record.Timestamp.ToString("F1");
+                            string triggerStr = record.Type == InputCommand.None 
+                                ? "<color=#ffb366>AutoCondition</color>" 
+                                : $"{record.Type}/{record.Phase}";
+
                             GUILayout.Label(
-                                $"<color=#aaaaaa>[{timeStr}]</color> {record.Type}/{record.Phase} {record.Source} {record.RouteTag ?? "-"} <color=#66ccff>-></color> {record.ActionId}",
+                                $"<color=#aaaaaa>[{timeStr}]</color> {triggerStr} {record.Source} {record.RouteTag ?? "-"} <color=#66ccff>-></color> {record.ActionId}",
                                 historyStyle);
                         }
                     }

@@ -15,19 +15,22 @@ namespace cfg
 public partial class Tables
 {
     public demo.Tbitem Tbitem {get; }
-    public demo.Tbskill Tbskill {get; }
+    public ZZZ.TbHitEffect TbHitEffect {get; }
+    public ZZZ.TbSkill TbSkill {get; }
 
     public Tables(System.Func<string, JSONNode> loader)
     {
         Tbitem = new demo.Tbitem(loader("demo_tbitem"));
-        Tbskill = new demo.Tbskill(loader("demo_tbskill"));
+        TbHitEffect = new ZZZ.TbHitEffect(loader("zzz_tbhiteffect"));
+        TbSkill = new ZZZ.TbSkill(loader("zzz_tbskill"));
         ResolveRef();
     }
     
     private void ResolveRef()
     {
         Tbitem.ResolveRef(this);
-        Tbskill.ResolveRef(this);
+        TbHitEffect.ResolveRef(this);
+        TbSkill.ResolveRef(this);
     }
 }
 

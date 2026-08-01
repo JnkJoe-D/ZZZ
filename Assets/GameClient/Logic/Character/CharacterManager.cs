@@ -618,7 +618,18 @@ namespace Game.Logic
                 return;
             }
 
-            entity.transform.SetPositionAndRotation(position, rotation);
+            var cc = entity.GetComponent<CharacterController>();
+            if (cc != null)
+            {
+                bool wasEnabled = cc.enabled;
+                cc.enabled = false;
+                entity.transform.SetPositionAndRotation(position, rotation);
+                cc.enabled = wasEnabled;
+            }
+            else
+            {
+                entity.transform.SetPositionAndRotation(position, rotation);
+            }
         }
 
         private void GetInvalidPosSwitchIn(Transform originTransform, RoleEntity switchInEntity, out Vector3 targetPos, out Quaternion targetRot)

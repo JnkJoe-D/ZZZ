@@ -32,7 +32,6 @@ namespace Game.Logic
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             Application.targetFrameRate = 60;
-            HitImpactRegistry.RegisterDefaults();
         }
 
         private IEnumerator SpawnRoutine()
@@ -76,6 +75,10 @@ namespace Game.Logic
             else if (!IsSpawnSucceeded)
             {
                 Debug.LogWarning("[Test_Character] Character spawn completed without returning a valid CharacterEntity.");
+            }
+            else
+            {
+                UIManager.Instance.Open<Game.UI.Modules.RoleStatus.StatusPanelModule>();
             }
         }
 

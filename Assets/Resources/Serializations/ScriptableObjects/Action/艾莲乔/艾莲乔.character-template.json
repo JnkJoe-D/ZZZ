@@ -160,6 +160,20 @@
       "assetType": "SkillConfigAsset",
       "group": "action",
       "preload": false
+    },
+    {
+      "key": "攻击_特殊技_1",
+      "displayName": "攻击_特殊技_1",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
+    },
+    {
+      "key": "攻击_特殊技_2_强化",
+      "displayName": "攻击_特殊技_2_强化",
+      "assetType": "SkillConfigAsset",
+      "group": "action",
+      "preload": false
     }
   ],
   "resolved": {
@@ -295,6 +309,18 @@
         "actionId": 10420,
         "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_切人_切出.asset",
         "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_特殊技_1",
+        "actionId": 10421,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_攻击_特殊技_1.asset",
+        "assetType": "SkillConfigAsset"
+      },
+      {
+        "key": "攻击_特殊技_2_强化",
+        "actionId": 10422,
+        "assetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_攻击_特殊技_2_强化.asset",
+        "assetType": "SkillConfigAsset"
       }
     ],
     "routeSetAssetPaths": [
@@ -315,6 +341,6 @@
       "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_6_切人_1_等待切出.asset",
       "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲乔/艾莲乔_指令集_6_切人_2_立即切入.asset"
     ],
-    "lastSyncedUtc": "2026-05-10T09:57:13.437270+00:00"
+    "lastSyncedUtc": "2026-08-01T12:12:47.759114+00:00"
   }
 }

@@ -1,0 +1,623 @@
+[
+  {
+    "id": 1010000,
+    "name": "安比_普通攻击1",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1010001,
+    "name": "安比_普通攻击2",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1010002,
+    "name": "安比_普通攻击3",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1010003,
+    "name": "安比_普通攻击4",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1010004,
+    "name": "安比_普通攻击4_落雷",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1010005,
+    "name": "安比_特殊技",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1010006,
+    "name": "安比_特殊技_快速",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1010007,
+    "name": "安比_强化特殊技",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1010008,
+    "name": "安比_强化特殊技_快速",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1020000,
+    "name": "星见雅_普通攻击_1",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1020001,
+    "name": "星见雅_普通攻击_2",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1020002,
+    "name": "星见雅_普通攻击_3",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1020003,
+    "name": "星见雅_普通攻击_4",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1020004,
+    "name": "星见雅_普通攻击_5",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1020005,
+    "name": "星见雅_特殊技_1",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1020006,
+    "name": "星见雅_特殊技_1_无前摇",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1020007,
+    "name": "星见雅_终极技",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1020008,
+    "name": "星见雅_冲刺攻击",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1040000,
+    "name": "艾莲乔_普通攻击_1",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1040001,
+    "name": "艾莲乔_普通攻击_2",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1040002,
+    "name": "艾莲乔_普通攻击_3",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1040003,
+    "name": "艾莲乔_普通攻击_3_霜冻",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1040004,
+    "name": "艾莲乔_冲刺攻击",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1040005,
+    "name": "艾莲乔_特殊冲刺攻击_1",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1040006,
+    "name": "艾莲乔_特殊冲刺攻击_2",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1040007,
+    "name": "艾莲乔_特殊技_1",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 1,
+        "Param1": 10,
+        "Param2": 0,
+        "Param3": 200
+      }
+    ]
+  },
+  {
+    "id": 1040008,
+    "name": "艾莲乔_特殊技_2_强化",
+    "desc": "",
+    "effects": [
+      {
+        "Type": 1,
+        "Target": 1,
+        "Policy": 1,
+        "Param1": 20,
+        "Param2": 10,
+        "Param3": 0
+      },
+      {
+        "Type": 2,
+        "Target": 2,
+        "Policy": 2,
+        "Param1": 2,
+        "Param2": 0,
+        "Param3": 1000
+      }
+    ]
+  }
+]

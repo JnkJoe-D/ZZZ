@@ -1,5 +1,7 @@
 {
     "isLoop": false,
+    "beforePlayEvents": [],
+    "onCompleteEvents": [],
     "groups": [
         {
             "groupId": "4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28",
@@ -285,15 +287,19 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "a2996ba5-a656-4266-b991-c05ceb989bfe",
+                    "trackId": "83cb9443-bf93-48b3-bbf7-40db14d0fa8a",
                     "trackType": "TransformTrack",
                     "trackName": "变换轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
                     "isCollapsed": false,
-                    "isEnabled": false,
-                    "clips": []
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1014
+                        }
+                    ]
                 }
             },
             {
@@ -312,7 +318,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 40654
+                        "instanceID": 52330
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -346,7 +352,6 @@
                     "duration": 0.5666667222976685,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 0,
                     "comboTag": "Buffer1"
                 }
             },
@@ -365,7 +370,6 @@
                     "duration": 0.7666666507720947,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "Execute1"
                 }
             },
@@ -384,7 +388,6 @@
                     "duration": 1.3333333730697632,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "windowType": 1,
                     "comboTag": "Evade"
                 }
             },
@@ -404,6 +407,31 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1
+                }
+            },
+            {
+                "rid": 1014,
+                "type": {
+                    "class": "RotationClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "5f54507c-10da-44de-8e64-df8252b7e138",
+                    "clipName": "旋转片段片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.10000000149011612,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "referenceDirection": 4,
+                    "rotationMode": 1,
+                    "updateFrequency": 2,
+                    "localRotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 }
             }
         ]

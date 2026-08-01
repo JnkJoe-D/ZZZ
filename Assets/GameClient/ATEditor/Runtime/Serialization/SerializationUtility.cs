@@ -81,12 +81,16 @@ namespace ATEditor
                     {
                         spawnClip.prefab = ResolveAssetImmediate<GameObject>(spawnClip.prefabRef.guid, spawnClip.prefabRef.assetPath, spawnClip.prefabRef.assetName);
                     }
-                    else if (clip is HitClip hitClip)
+                    else if (clip is HitClip hitClip && hitClip.detects != null)
                     {
-                        if (hitClip.hitVFXRef.IsValid())
-                            hitClip.hitVFXPrefab = ResolveAssetImmediate<GameObject>(hitClip.hitVFXRef.guid, hitClip.hitVFXRef.assetPath, hitClip.hitVFXRef.assetName);
-                        if (hitClip.hitAudioRef.IsValid())
-                            hitClip.hitAudioClip = ResolveAssetImmediate<AudioClip>(hitClip.hitAudioRef.guid, hitClip.hitAudioRef.assetPath, hitClip.hitAudioRef.assetName);
+                        foreach (var detect in hitClip.detects)
+                        {
+                            if (detect == null) continue;
+                            if (detect.hitVFXRef.IsValid())
+                                detect.hitVFXPrefab = ResolveAssetImmediate<GameObject>(detect.hitVFXRef.guid, detect.hitVFXRef.assetPath, detect.hitVFXRef.assetName);
+                            if (detect.hitAudioRef.IsValid())
+                                detect.hitAudioClip = ResolveAssetImmediate<AudioClip>(detect.hitAudioRef.guid, detect.hitAudioRef.assetPath, detect.hitAudioRef.assetName);
+                        }
                     }
                     else if (clip is SkillAudioClip audioClip)
                     {
@@ -155,10 +159,14 @@ namespace ATEditor
                     {
                         SyncAssetReference(spawnClip.prefabRef, spawnClip.prefab);
                     }
-                    else if (clip is HitClip hitClip)
+                    else if (clip is HitClip hitClip && hitClip.detects != null)
                     {
-                        SyncAssetReference(hitClip.hitVFXRef, hitClip.hitVFXPrefab);
-                        SyncAssetReference(hitClip.hitAudioRef, hitClip.hitAudioClip);
+                        foreach (var detect in hitClip.detects)
+                        {
+                            if (detect == null) continue;
+                            SyncAssetReference(detect.hitVFXRef, detect.hitVFXPrefab);
+                            SyncAssetReference(detect.hitAudioRef, detect.hitAudioClip);
+                        }
                     }
                     else if (clip is SkillAudioClip audioClip)
                     {
@@ -213,12 +221,16 @@ namespace ATEditor
                     {
                         spawnClip.prefab = await ResolveAsset<GameObject>(spawnClip.prefabRef.guid, spawnClip.prefabRef.assetPath, spawnClip.prefabRef.assetName);
                     }
-                    else if (clip is HitClip hitClip)
+                    else if (clip is HitClip hitClip && hitClip.detects != null)
                     {
-                        if (hitClip.hitVFXRef.IsValid())
-                            hitClip.hitVFXPrefab = await ResolveAsset<GameObject>(hitClip.hitVFXRef.guid, hitClip.hitVFXRef.assetPath, hitClip.hitVFXRef.assetName);
-                        if (hitClip.hitAudioRef.IsValid())
-                            hitClip.hitAudioClip = await ResolveAsset<AudioClip>(hitClip.hitAudioRef.guid, hitClip.hitAudioRef.assetPath, hitClip.hitAudioRef.assetName);
+                        foreach (var detect in hitClip.detects)
+                        {
+                            if (detect == null) continue;
+                            if (detect.hitVFXRef.IsValid())
+                                detect.hitVFXPrefab = await ResolveAsset<GameObject>(detect.hitVFXRef.guid, detect.hitVFXRef.assetPath, detect.hitVFXRef.assetName);
+                            if (detect.hitAudioRef.IsValid())
+                                detect.hitAudioClip = await ResolveAsset<AudioClip>(detect.hitAudioRef.guid, detect.hitAudioRef.assetPath, detect.hitAudioRef.assetName);
+                        }
                     }
                     else if (clip is SkillAudioClip audioClip)
                     {

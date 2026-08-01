@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63074c9602a112246aa7af4f029de4c8, type: 3}
+  m_Name: StatusProfile_Allen
+  m_EditorClassIdentifier: 
+  Attributes:
+  - {fileID: 11400000, guid: f63b5ac6940bec04b9036ad04a205433, type: 2}
+  - {fileID: 11400000, guid: 3589e08bf32094e45a46a039d019a757, type: 2}
+  - {fileID: 11400000, guid: 912ff01c9e83e9d41917ef3f494c52e5, type: 2}
+  - {fileID: 11400000, guid: c157c8825a91dce479251fbb9862b086, type: 2}
+  - {fileID: 11400000, guid: 62c0a36c1aa20304e9b7048dc80dd2ea, type: 2}
+  Overrides:
+  - Attribute: {fileID: 11400000, guid: 3589e08bf32094e45a46a039d019a757, type: 2}
+    InitialValue: 12500
+    MaxValue: 99999
+  - Attribute: {fileID: 11400000, guid: f63b5ac6940bec04b9036ad04a205433, type: 2}
+    InitialValue: 12500
+    MaxValue: 12500
+  - Attribute: {fileID: 11400000, guid: c157c8825a91dce479251fbb9862b086, type: 2}
+    InitialValue: 1000
+    MaxValue: 9999
+  - Attribute: {fileID: 11400000, guid: 912ff01c9e83e9d41917ef3f494c52e5, type: 2}
+    InitialValue: 0
+    MaxValue: 1000
+  InitialBuffs: []
+  ImmuneTags: []

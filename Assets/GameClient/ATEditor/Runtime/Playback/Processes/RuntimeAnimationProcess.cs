@@ -21,10 +21,6 @@ namespace ATEditor
 
         public override void OnEnter()
         {
-            // 临时调试：确认动画 Process 是否真正进入
-            UnityEngine.Debug.Log($"<color=yellow>[AnimProcess] OnEnter: clip={clip.animationClip?.name ?? "NULL"}, "
-                + $"layer={clip.layer}, startTime={clip.StartTime}, endTime={clip.EndTime}</color>");
-
             if (clip.overrideMask != null)
             {
                 context.PushLayerMask((int)clip.layer, clip.overrideMask);
