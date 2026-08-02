@@ -36,13 +36,12 @@ namespace ATEditor.Editor
             {
                 EditorGUILayout.BeginVertical("box");
                 DrawFieldByName(hitClip, "shape");
-                DrawFieldByName(hitClip, "isHitBoxFollowBindPoint");
-                if (hitClip.isHitBoxFollowBindPoint)
+                DrawFieldByName(hitClip, "bindPoint");
+                if (hitClip.bindPoint == BindPoint.CustomBone)
                 {
-                    DrawFieldByName(hitClip, "bindPoint");
-                    if (hitClip.bindPoint == BindPoint.CustomBone)
-                        DrawFieldByName(hitClip, "customBoneName");
+                    DrawCustomBoneField(hitClip);
                 }
+                DrawFieldByName(hitClip, "hitBoxFollowMode");
                 DrawFieldByName(hitClip, "positionOffset");
                 DrawFieldByName(hitClip, "rotationOffset");
                 DrawFieldByName(hitClip, "showHitBoxGizmos");
@@ -58,7 +57,17 @@ namespace ATEditor.Editor
                 if (hitClip.detectFrequency == Frequency.Times)
                     DrawFieldByName(hitClip, "times");
                 DrawFieldByName(hitClip, "maxHitTargets");
-                DrawFieldByName(hitClip, "targetSortMode");
+                if (hitClip.maxHitTargets > 0)
+                    DrawFieldByName(hitClip, "targetSortMode");
+
+                EditorGUILayout.Space(2);
+                DrawFieldByName(hitClip, "hitDirectionMode");
+                if (hitClip.hitDirectionMode == HitDirectionMode.OnEnterCustomRelative)
+                {
+                    DrawFieldByName(hitClip, "customHitDirection");
+                }
+
+                EditorGUILayout.Space(2);
                 DrawFieldByName(hitClip, "hitLayerMask");
                 DrawFieldByName(hitClip, "isSelfImpacted");
                 EditorGUILayout.Space(5);
@@ -134,6 +143,108 @@ namespace ATEditor.Editor
                     EditorGUILayout.EndVertical();
                 }
             }
+        }
+
+        private static readonly System.Collections.Generic.Dictionary<string, bool?> _boneValidationStatus = new System.Collections.Generic.Dictionary<string, bool?>();
+
+        private void DrawCustomBoneField(HitClip hitClip)
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            string clipKey = !string.IsNullOrEmpty(hitClip.clipId) ? hitClip.clipId : hitClip.GetHashCode().ToString();
+            _boneValidationStatus.TryGetValue(clipKey, out bool? isValid);
+
+            Color oldBgColor = GUI.backgroundColor;
+            if (isValid.HasValue)
+            {
+                GUI.backgroundColor = isValid.Value 
+                    ? new Color(0.6f, 1f, 0.6f, 1f)   // 有效：绿色
+                    : new Color(1f, 0.55f, 0.55f, 1f); // 无效：红色
+            }
+
+            string newName = EditorGUILayout.TextField("自定义骨骼名称", hitClip.customBoneName);
+            if (newName != hitClip.customBoneName)
+            {
+                hitClip.customBoneName = newName;
+                _boneValidationStatus.Remove(clipKey);
+            }
+
+            GUI.backgroundColor = oldBgColor;
+
+            if (GUILayout.Button(new GUIContent("检测", "检测当前预览角色层级中是否存在该自定义骨骼"), GUILayout.Width(50), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
+            {
+                bool found = CheckBoneExists(hitClip.customBoneName, out string msg);
+                _boneValidationStatus[clipKey] = found;
+                if (found)
+                {
+                    Debug.Log($"<color=green>[HitClip 骨骼检测通过]</color> {msg}");
+                }
+                else
+                {
+                    Debug.LogWarning($"<color=red>[HitClip 骨骼检测失败]</color> {msg}");
+                }
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private static bool CheckBoneExists(string boneName, out string message)
+        {
+            if (string.IsNullOrWhiteSpace(boneName))
+            {
+                message = "骨骼名称为空！";
+                return false;
+            }
+
+            GameObject previewTarget = null;
+            if (EditorWindow.HasOpenInstances<ATEditorWindow>())
+            {
+                var window = EditorWindow.GetWindow<ATEditorWindow>(false, "动作时间轴编辑器", false);
+                var editorState = window != null ? window.GetState() : null;
+                if (editorState != null)
+                {
+                    if (editorState.PreviewContext != null && editorState.PreviewContext.Owner != null)
+                    {
+                        previewTarget = editorState.PreviewContext.Owner;
+                    }
+                    else if (editorState.previewTarget != null)
+                    {
+                        previewTarget = editorState.previewTarget;
+                    }
+                }
+            }
+
+            if (previewTarget == null)
+            {
+                message = "未找到预览角色，请先在时间轴编辑器指定或激活预览角色！";
+                return false;
+            }
+
+            Transform found = FindBoneRecursive(previewTarget.transform, boneName.Trim());
+            if (found != null)
+            {
+                message = $"在角色 [{previewTarget.name}] 中成功找到骨骼: {found.name}";
+                return true;
+            }
+
+            message = $"在角色 [{previewTarget.name}] 层级中未找到名为 '{boneName}' 的骨骼！";
+            return false;
+        }
+
+        public static Transform FindBoneRecursive(Transform parent, string boneName)
+        {
+            if (parent == null || string.IsNullOrEmpty(boneName)) return null;
+            if (parent.name.Equals(boneName, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return parent;
+            }
+
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                Transform result = FindBoneRecursive(parent.GetChild(i), boneName);
+                if (result != null) return result;
+            }
+            return null;
         }
 
         private void DrawFieldByName(HitClip obj, string fieldName)
@@ -254,10 +365,9 @@ namespace ATEditor.Editor
 
                 Vector3 pos;
                 Quaternion rot;
-                if (!damageClip.isHitBoxFollowBindPoint && activeProcess != null)
+                if (activeProcess != null)
                 {
-                    pos = activeProcess.fixedHitBoxPosition;
-                    rot = activeProcess.fixedHitBoxRotation;
+                    activeProcess.GetHitBoxMatrix(out pos, out rot);
                 }
                 else
                 {
@@ -361,25 +471,76 @@ namespace ATEditor.Editor
 
         private void GetMatrix(HitClip clip, ATEditorState state, out Vector3 pos, out Quaternion rot)
         {
-            Transform parent = null;
+            Transform rootTrans = null;
+            if (state != null && state.PreviewContext != null && state.PreviewContext.Owner != null)
+            {
+                rootTrans = state.PreviewContext.Owner.transform;
+            }
+            else if (state != null && state.previewTarget != null)
+            {
+                rootTrans = state.previewTarget.transform;
+            }
+
+            Quaternion rootRot = rootTrans != null ? rootTrans.rotation : Quaternion.identity;
+            Vector3 rootPos = rootTrans != null ? rootTrans.position : Vector3.zero;
+
+            Transform bindTrans = null;
             if (state != null && state.PreviewContext != null)
             {
                 var actor = state.PreviewContext.GetService<ISkillBoneGetter>();
                 if (actor != null)
                 {
-                    parent = actor.GetBone(clip.bindPoint, clip.customBoneName);
+                    bindTrans = actor.GetBone(clip.bindPoint, clip.customBoneName);
                 }
             }
-            
-            if (parent != null)
+
+            if (bindTrans == null && state != null && state.previewTarget != null)
             {
-                pos = parent.position + parent.rotation * clip.positionOffset;
-                rot = parent.rotation * Quaternion.Euler(clip.rotationOffset);
+                var getter = new Game.Adapters.SkillBoneGetter(state.previewTarget);
+                bindTrans = getter.GetBone(clip.bindPoint, clip.customBoneName);
             }
-            else
+
+            if (bindTrans == null) bindTrans = rootTrans;
+
+            switch (clip.hitBoxFollowMode)
             {
-                pos = clip.positionOffset;
-                rot = Quaternion.Euler(clip.rotationOffset);
+                case HitBoxFollowMode.PositionOnly:
+                    if (bindTrans != null)
+                        pos = bindTrans.position + rootRot * clip.positionOffset;
+                    else
+                        pos = rootPos + rootRot * clip.positionOffset;
+                    rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    break;
+
+                case HitBoxFollowMode.RotationOnly:
+                    pos = rootPos + rootRot * clip.positionOffset;
+                    if (bindTrans != null)
+                        rot = bindTrans.rotation * Quaternion.Euler(clip.rotationOffset);
+                    else
+                        rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    break;
+
+                case HitBoxFollowMode.None:
+                    if (bindTrans != null && clip.bindPoint != BindPoint.LogicRoot)
+                        pos = bindTrans.position + rootRot * clip.positionOffset;
+                    else
+                        pos = rootPos + rootRot * clip.positionOffset;
+                    rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    break;
+
+                case HitBoxFollowMode.Both:
+                default:
+                    if (bindTrans != null)
+                    {
+                        pos = bindTrans.position + bindTrans.rotation * clip.positionOffset;
+                        rot = bindTrans.rotation * Quaternion.Euler(clip.rotationOffset);
+                    }
+                    else
+                    {
+                        pos = rootPos + rootRot * clip.positionOffset;
+                        rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    }
+                    break;
             }
         }
     }

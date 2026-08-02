@@ -26,6 +26,17 @@ namespace ATEditor
         Random 
     }
 
+    /// <summary>受击方向计算模式</summary>
+    public enum HitDirectionMode
+    {
+        /// <summary>攻击者根节点 -> 目标 (适合常规近战向外辐射击退，默认)</summary>
+        AttackerToTarget,
+        /// <summary>检测盒中心 -> 目标 (适合范围AOE/爆炸中心外弹)</summary>
+        BoxToTarget,
+        /// <summary>片段进入首帧(OnEnter)锁定的相对方向 (基于首帧攻击者局部坐标系XZ平面，如 <0,1> 为攻击者正前方)</summary>
+        OnEnterCustomRelative
+    }
+
     /// <summary>命中效果类型</summary>
     public enum HitEffectType
     {

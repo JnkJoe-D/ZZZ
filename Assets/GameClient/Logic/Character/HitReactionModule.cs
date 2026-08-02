@@ -69,20 +69,31 @@ namespace Game.Logic
                 return;
             }
 
-            if (ctx.attacker != null)
-            {
-                _entity.MovementController?.FaceToTargetImmediately(ctx.attacker.transform);
-                return;
-            }
-
-            Vector3 directionToAttacker = -ctx.reactionAxis;
+            // 面对攻击袭来的方向（-hitDirection）
+            Vector3 directionToAttacker = -ctx.hitDirection;
             directionToAttacker.y = 0f;
+
+            // 若 hitDirection 为 0，降级为朝向攻击者实时位置
             if (directionToAttacker.sqrMagnitude <= 0.0001f)
             {
-                return;
+                if (ctx.attacker != null)
+                {
+                    directionToAttacker = ctx.attacker.transform.position - transform.position;
+                    directionToAttacker.y = 0f;
+                }
             }
 
-            transform.forward = directionToAttacker.normalized;
+            if (directionToAttacker.sqrMagnitude > 0.0001f)
+            {
+                if (_entity.MovementController != null)
+                {
+                    _entity.MovementController.FaceToImmediately(directionToAttacker.normalized);
+                }
+                else
+                {
+                    transform.forward = directionToAttacker.normalized;
+                }
+            }
         }
 
         private void SpawnHitVFX(HitContext ctx)
@@ -162,8 +173,8 @@ namespace Game.Logic
 
         private void ApplyHitStop(HitContext ctx)
         {
-            ctx.attacker?.ActionPlayer?.SetPlaySpeed(0f);
-            _entity.ActionPlayer?.SetPlaySpeed(0f);
+            ctx.attacker?.ActionPlayer?.SetPlaySpeed(ctx.hitStopScale);
+            _entity.ActionPlayer?.SetPlaySpeed(ctx.hitStopScale);
 
             StartCoroutine(RestoreAfterHitStop(ctx));
         }

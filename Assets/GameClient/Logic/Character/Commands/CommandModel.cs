@@ -29,6 +29,7 @@ namespace Game.Logic
         Performed = 10,
         Canceled = 20,
         Held = 30,
+        None = 40,
     }
 
     public struct CommandPayload

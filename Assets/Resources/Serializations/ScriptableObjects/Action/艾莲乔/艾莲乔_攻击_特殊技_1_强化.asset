@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
-  m_Name: "\u827E\u83B2\u4E54_\u653B\u51FB_\u7279\u6B8A\u6280_2_\u5F3A\u5316"
+  m_Name: "\u827E\u83B2\u4E54_\u653B\u51FB_\u7279\u6B8A\u6280_1_\u5F3A\u5316"
   m_EditorClassIdentifier: 
-  ID: 10422
+  ID: 140240
   Name: 
   TimelineAsset: {fileID: 4900000, guid: e8be25275d782e843a94f74913322a90, type: 3}
   EnterState: 40
@@ -33,9 +33,9 @@ MonoBehaviour:
     ModifierConditions: 
     ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 0bfb17c4668d4454fb3567fcaa774a27, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     ExtraConditions: []
-    OnExecuteEffects: []
     Priority: 0
   - Category: 0
     RequiredWindowTag: Execute1
@@ -51,20 +51,51 @@ MonoBehaviour:
     ModifierConditions: 
     ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 0bfb17c4668d4454fb3567fcaa774a27, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     ExtraConditions: []
-    OnExecuteEffects: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: Buffer1
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 30
+    RequiredPhase: 0
+    Modifiers: []
+    Modifier: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
+    ModifierConditions: 
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: fcb197eb2c968364ebbcaad4e1421a4e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    ExtraConditions: []
+    Priority: 0
+  - Category: 0
+    RequiredWindowTag: Execute1
+    TriggerMode: 1
+    ModifierCheckTiming: 20
+    EventType: 0
+    RequiredType: 30
+    RequiredPhase: 0
+    Modifiers: []
+    Modifier: 0
+    ModifierRequiredKey: 0
+    InverseKeyStatus: 0
+    ModifierConditions: 
+    ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: fcb197eb2c968364ebbcaad4e1421a4e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    ExtraConditions: []
     Priority: 0
   RouteSets:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
   PlaybackSpeed: 1
-  Cooldown: 0.2
-  MPCost: 0
-  CastRange: 2
-  CanBeInterrupted: 1
-  CinematicCameraPrefab: {fileID: 0}
   references:
     version: 2
     RefIds: []

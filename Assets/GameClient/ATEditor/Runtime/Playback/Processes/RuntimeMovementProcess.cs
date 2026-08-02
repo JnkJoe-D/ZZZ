@@ -26,7 +26,14 @@ namespace ATEditor
 
             // 计算固定目标/回滚目标点
             Transform owner = context.OwnerTransform;
-            fixedTargetPos = owner.position + owner.rotation * clip.targetPosition;
+            if (clip.referenceCoordinate == CoordinateSystem.World)
+            {
+                fixedTargetPos = clip.targetPosition;
+            }
+            else
+            {
+                fixedTargetPos = owner.position + owner.rotation * clip.targetPosition;
+            }
 
             // 碰撞层级处理
             if (clip.displacementType == DisplacementType.Continuous && clip.ignoreLayerMask != 0)
@@ -136,16 +143,63 @@ namespace ATEditor
 
             float R1 = transformHandler.GetTargetRadius();
             float R2 = transformHandler.GetRadius();
-            float dist = R1 + R2;
+            float totalDist = R1 + R2 + clip.offsetRadius;
 
-            if (clip.targetPositionEnum == TargetPositionType.EnemyFront)
+            // 确定参考基准方向 (XZ 平面)
+            Vector3 baseDir;
+            if (clip.targetBaseDirection == TargetBaseDirection.TargetFacing)
             {
-                return D2 - stableDirection * dist;
+                baseDir = target.forward;
+                baseDir.y = 0f;
+                if (baseDir.sqrMagnitude < 0.001f) baseDir = Vector3.forward;
+                else baseDir.Normalize();
             }
-            else // EnemyBack
+            else // LineOfSight: 目标指向角色的方向 (D1 - D2)
             {
-                return D2 + stableDirection * dist;
+                baseDir = -stableDirection;
+                baseDir.y = 0f;
+                if (baseDir.sqrMagnitude < 0.001f) baseDir = -context.OwnerTransform.forward;
+                else baseDir.Normalize();
             }
+
+            Vector3 offsetDir;
+            switch (clip.targetPositionEnum)
+            {
+                case TargetPositionType.EnemyFront:
+                    offsetDir = baseDir;
+                    break;
+                case TargetPositionType.EnemyBack:
+                    offsetDir = -baseDir;
+                    break;
+                case TargetPositionType.EnemyLeft:
+                    offsetDir = Quaternion.Euler(0f, -90f, 0f) * baseDir;
+                    break;
+                case TargetPositionType.EnemyRight:
+                    offsetDir = Quaternion.Euler(0f, 90f, 0f) * baseDir;
+                    break;
+                case TargetPositionType.CustomAngle:
+                    offsetDir = Quaternion.Euler(0f, clip.angleOffset, 0f) * baseDir;
+                    break;
+                case TargetPositionType.InputDirection:
+                    Vector3 inputDir = transformHandler.GetInputDirection(true);
+                    if (inputDir.sqrMagnitude > 0.01f)
+                    {
+                        inputDir.y = 0f;
+                        offsetDir = inputDir.normalized;
+                    }
+                    else
+                    {
+                        offsetDir = baseDir;
+                    }
+                    break;
+                default:
+                    offsetDir = baseDir;
+                    break;
+            }
+
+            Vector3 targetPos = D2 + offsetDir * totalDist;
+            targetPos.y += clip.targetPosition.y;
+            return targetPos;
         }
 
         private float EvaluateCurve(float t, MovementCurve curve)

@@ -27,7 +27,12 @@ namespace ATEditor
         public bool enableHitStop = false;
 
         [SkillProperty("顿帧时长(秒)")]
+        [ShowIf("enableHitStop", true)]
         public float hitStopDuration = 0.05f;
+
+        [SkillProperty("顿帧倍率")]
+        [ShowIf("enableHitStop", true)]
+        public float hitStopScale = 0f;
 
         [SkillProperty("受击硬直时长(秒)")]
         public float hitStunDuration = 0.3f;
@@ -71,6 +76,7 @@ namespace ATEditor
                 multiHitDuration = this.multiHitDuration,
                 enableHitStop = this.enableHitStop,
                 hitStopDuration = this.hitStopDuration,
+                hitStopScale = this.hitStopScale,
                 hitStunDuration = this.hitStunDuration,
                 hitVFXPrefab = this.hitVFXPrefab,
                 hitVFXRef = new SkillAssetReference(this.hitVFXRef.guid, this.hitVFXRef.assetName, this.hitVFXRef.assetPath),

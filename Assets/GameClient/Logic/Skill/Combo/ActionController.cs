@@ -38,6 +38,7 @@ namespace Game.Logic
             public CommandRouteSource Source;
             public string RouteTag;
             public int ActionId;
+            public string ActionName;
             public float Timestamp;
         }
 
@@ -427,15 +428,6 @@ namespace Game.Logic
             // 1. 技能表配置的基础消耗（能量扣除等）
             candidate.SourceRoute?.ConsumeSkillCost(_entity);
 
-            // 2. 执行路由附带的特殊副作用（施加 Buff、重置特定属性等）
-            if (candidate.SourceRoute?.OnExecuteEffects != null)
-            {
-                foreach (var effect in candidate.SourceRoute.OnExecuteEffects)
-                {
-                    effect?.Execute(_entity);
-                }
-            }
-
             Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
         }
 
@@ -513,14 +505,22 @@ namespace Game.Logic
             switch (finished.CompleteMode)
             {
                 case ActionCompleteMode.TransitToAction:
-                    if (finished.CompleteAction != null) { PlayAction(finished.CompleteAction); return; }
+                    if (finished.CompleteAction != null)
+                    {
+                        RecordRoute(InputCommand.None, CommandPhase.None, finished.CompleteAction, CommandRouteSource.ActionComplete, "TransitToAction");
+                        PlayAction(finished.CompleteAction);
+                        return;
+                    }
                     break;
                 case ActionCompleteMode.Stay:
+                    RecordRoute(InputCommand.None, CommandPhase.None, null, CommandRouteSource.ActionComplete, "Stay");
                     return;
             }
 
             // 3. 兜底回根动作
-            PlayAction(_entity.Config?.ActionRoot);
+            ActionConfigAsset rootAction = _entity.Config?.ActionRoot;
+            RecordRoute(InputCommand.None, CommandPhase.None, rootAction, CommandRouteSource.ActionComplete, "RootFallback");
+            PlayAction(rootAction);
         }
 
         // ═══════════════════════════════════════════
@@ -547,7 +547,7 @@ namespace Game.Logic
             ExecutionHistory.Insert(0, new ExecutionRecord
             {
                 Type = type, Phase = phase, Source = source,
-                RouteTag = tag, ActionId = action?.ID ?? -1, Timestamp = Time.time
+                RouteTag = tag, ActionId = action?.ID ?? -1, ActionName = action?.name, Timestamp = Time.time
             });
             if (ExecutionHistory.Count > 10) ExecutionHistory.RemoveAt(10);
         }

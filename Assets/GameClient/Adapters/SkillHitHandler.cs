@@ -43,7 +43,33 @@ namespace Game.Adapters
                     Vector3 attackerPos = hitData.deployer != null ? hitData.deployer.transform.position : Vector3.zero;
                     Vector3 hitBoxPos = hitData.hitBoxCenter;
                     Vector3 hitPoint = collider.ClosestPoint(hitBoxPos);
-                    Vector3 hitDirection = (victim.transform.position - hitBoxPos).normalized;
+
+                    Vector3 hitDirection = Vector3.forward;
+                    switch (hitData.hitDirectionMode)
+                    {
+                        case HitDirectionMode.BoxToTarget:
+                            hitDirection = (victim.transform.position - hitBoxPos);
+                            hitDirection.y = 0f;
+                            if (hitDirection.sqrMagnitude < 0.0001f)
+                                hitDirection = victim.transform.position - attackerPos;
+                            break;
+
+                        case HitDirectionMode.AttackerToTarget:
+                            hitDirection = (victim.transform.position - attackerPos);
+                            hitDirection.y = 0f;
+                            break;
+
+                        case HitDirectionMode.OnEnterCustomRelative:
+                            hitDirection = hitData.customWorldDirection;
+                            hitDirection.y = 0f;
+                            break;
+                    }
+
+                    if (hitDirection.sqrMagnitude < 0.0001f)
+                    {
+                        hitDirection = hitData.deployer != null ? hitData.deployer.transform.forward : Vector3.forward;
+                    }
+                    hitDirection.Normalize();
 
                     // 构建 HitContext
                     var ctx = new HitContext
@@ -53,6 +79,7 @@ namespace Game.Adapters
                         hitEffectId = hitData.hitEffectId,
                         enableHitStop = hitData.enableHitStop,
                         hitStopDuration = hitData.hitStopDuration,
+                        hitStopScale = hitData.hitStopScale,
                         hitVFXPrefab = hitData.hitVFXPrefab,
                         hitVFXHeight = hitData.hitVFXHeight,
                         hitVFXScale = hitData.hitVFXScale,

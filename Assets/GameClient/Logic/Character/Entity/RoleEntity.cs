@@ -23,6 +23,10 @@ namespace Game.Logic
             HitReactionModule = GetComponent<HitReactionModule>();
             if (HitReactionModule == null) HitReactionModule = gameObject.AddComponent<HitReactionModule>();
 
+            FootIKModule = GetComponent<FootIKModule>();
+            if (FootIKModule == null) FootIKModule = GetComponentInChildren<FootIKModule>();
+            if (FootIKModule == null) FootIKModule = gameObject.AddComponent<FootIKModule>();
+
             CameraPointBinder cameraPointBinder = GetComponent<CameraPointBinder>();
             if (cameraPointBinder == null) cameraPointBinder = gameObject.AddComponent<CameraPointBinder>();
         }

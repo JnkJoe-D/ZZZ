@@ -22,6 +22,11 @@ namespace ATEditor
         // ★ 新：命中效果配置 ID（查表用）
         public int hitEffectId;
 
+        // 受击方向控制
+        public HitDirectionMode hitDirectionMode;
+        public Vector2 customHitDirection;
+        public Vector3 customWorldDirection;
+
         // 命中模式
         public HitMode hitMode;
         public int multiHitCount;
@@ -30,6 +35,7 @@ namespace ATEditor
         // 打击反馈参数（来自 DetectConfig）
         public bool enableHitStop;
         public float hitStopDuration;
+        public float hitStopScale;
         public GameObject hitVFXPrefab;
         public float hitVFXHeight;
         public AudioClip hitAudioClip;

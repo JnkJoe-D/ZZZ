@@ -42,7 +42,35 @@ namespace Game.Input
         private Vector2 _lastMoveInput;
         private readonly HashSet<int> _heldActions = new();
 
-        public bool IsHeld(int actionKey) => _heldActions.Contains(actionKey);
+        public bool IsHeld(int actionKey)
+        {
+            if (actionKey == (int)InputCommand.Move)
+            {
+                return HasMovementInput();
+            }
+
+            if (_input != null)
+            {
+                switch ((InputCommand)actionKey)
+                {
+                    case InputCommand.BasicAttack:
+                        return _input.GamePlay.LightAttack.IsPressed() || _heldActions.Contains(actionKey);
+                    case InputCommand.SpecialAttack:
+                        return _input.GamePlay.SpecialSkill.IsPressed() || _heldActions.Contains(actionKey);
+                    case InputCommand.Evade:
+                        return _input.GamePlay.Evade.IsPressed() || _heldActions.Contains(actionKey);
+                    case InputCommand.Ultimate:
+                        return _input.GamePlay.Ultimate.IsPressed() || _heldActions.Contains(actionKey);
+                    case InputCommand.Interact:
+                        return _input.GamePlay.Interact.IsPressed() || _heldActions.Contains(actionKey);
+                    case InputCommand.Switch:
+                        return _input.GamePlay.SwitchNext.IsPressed() || _input.GamePlay.SwitchPre.IsPressed() || _heldActions.Contains(actionKey);
+                }
+            }
+
+            return _heldActions.Contains(actionKey);
+        }
+
         public void SetHeld(int actionKey, bool held)
         {
             if (held) _heldActions.Add(actionKey);
@@ -53,7 +81,7 @@ namespace Game.Input
         {
             _input = new PlayerControl();
 
-            // 订阅瞬发事件
+            // 订阅瞬发与持续事件
             _input.GamePlay.Move.started += _ => OnMoveStarted?.Invoke();
             _input.GamePlay.Move.performed += _ => OnMovePerformed?.Invoke();
             _input.GamePlay.Move.canceled += _ =>
@@ -66,6 +94,11 @@ namespace Game.Input
                 OnMoveHeld?.Invoke();
                 _heldActions.Add((int)InputCommand.Move);
             };
+            _input.GamePlay.MoveHeld.canceled += _ =>
+            {
+                _heldActions.Remove((int)InputCommand.Move);
+            };
+
             // 闪避
             _input.GamePlay.Evade.started += _ => OnEvadeStarted?.Invoke();
             _input.GamePlay.Evade.performed += _ => OnEvadePerformed?.Invoke();
@@ -79,6 +112,11 @@ namespace Game.Input
                 OnEvadeHeld?.Invoke();
                 _heldActions.Add((int)InputCommand.Evade);
             };
+            _input.GamePlay.EvadeHeld.canceled += _ =>
+            {
+                _heldActions.Remove((int)InputCommand.Evade);
+            };
+
             // 普通攻击
             _input.GamePlay.LightAttack.started += _ => OnBasicAttackStarted?.Invoke();
             _input.GamePlay.LightAttack.performed += _ => OnBasicAttackPerformed?.Invoke();
@@ -92,6 +130,11 @@ namespace Game.Input
                 OnBasicAttackHeld?.Invoke();
                 _heldActions.Add((int)InputCommand.BasicAttack);
             };
+            _input.GamePlay.LightAttackHeld.canceled += _ =>
+            {
+                _heldActions.Remove((int)InputCommand.BasicAttack);
+            };
+
             // 特殊技
             _input.GamePlay.SpecialSkill.started += _ => OnSpecialAttackStarted?.Invoke();
             _input.GamePlay.SpecialSkill.performed += _ => OnSpecialAttackPerformed?.Invoke();
@@ -105,12 +148,15 @@ namespace Game.Input
                 OnSpecialAttackHeld?.Invoke();
                 _heldActions.Add((int)InputCommand.SpecialAttack);
             };
-            // 
+            _input.GamePlay.SpecialSkillHeld.canceled += _ =>
+            {
+                _heldActions.Remove((int)InputCommand.SpecialAttack);
+            };
+
             _input.GamePlay.Ultimate.started += _ => OnUltimateStarted?.Invoke();
             _input.GamePlay.Interact.started += _ => OnGameplayInteractStarted?.Invoke();
             _input.GamePlay.SwitchNext.started += _ => OnSwitchNext?.Invoke();
             _input.GamePlay.SwitchPre.started += _ => OnSwitchPre?.Invoke();
-
         }
 
         private void OnEnable()
@@ -120,6 +166,9 @@ namespace Game.Input
 
         private void OnDisable()
         {
+            _heldActions.Clear();
+            _currentMoveInput = Vector2.zero;
+            _lastMoveInput = Vector2.zero;
             _input.Disable();
         }
 

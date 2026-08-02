@@ -17,8 +17,26 @@ namespace ATEditor
 
     public enum TargetPositionType
     {
-        EnemyFront,     // 敌人前侧
-        EnemyBack       // 敌人后侧
+        [InspectorName("敌人前侧 (EnemyFront)")]
+        EnemyFront,
+        [InspectorName("敌人后侧 (EnemyBack)")]
+        EnemyBack,
+        [InspectorName("敌人左侧 (EnemyLeft)")]
+        EnemyLeft,
+        [InspectorName("敌人右侧 (EnemyRight)")]
+        EnemyRight,
+        [InspectorName("自定义角度 (CustomAngle)")]
+        CustomAngle,
+        [InspectorName("输入方向 (InputDirection)")]
+        InputDirection
+    }
+
+    public enum TargetBaseDirection
+    {
+        [InspectorName("角色-敌人连线 (LineOfSight)")]
+        LineOfSight,
+        [InspectorName("敌人自身朝向 (TargetFacing)")]
+        TargetFacing
     }
 
     public enum DisplacementType
@@ -50,10 +68,22 @@ namespace ATEditor
         [SkillProperty("目标位置")]
         public Vector3 targetPosition;
 
-        // referenceDestination == ReferenceTarget
-        [SkillProperty("目标位置枚举")]
+        // referenceDestination == Target
+        [SkillProperty("目标位置模式")]
         [ShowIf("referenceDestination", ReferenceDestination.Target)]
         public TargetPositionType targetPositionEnum = TargetPositionType.EnemyFront;
+
+        [SkillProperty("基准朝向")]
+        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        public TargetBaseDirection targetBaseDirection = TargetBaseDirection.LineOfSight;
+
+        [SkillProperty("额外半径偏移")]
+        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        public float offsetRadius = 0f;
+
+        [SkillProperty("自定义角度(度)")]
+        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        public float angleOffset = 0f;
 
         [Header("通用设置")]
         [SkillProperty("位移方式")]
@@ -85,6 +115,9 @@ namespace ATEditor
                 referenceCoordinate = this.referenceCoordinate,
                 targetPosition = this.targetPosition,
                 targetPositionEnum = this.targetPositionEnum,
+                targetBaseDirection = this.targetBaseDirection,
+                offsetRadius = this.offsetRadius,
+                angleOffset = this.angleOffset,
                 displacementType = this.displacementType,
                 movementCurve = this.movementCurve,
                 ignoreLayerMask = this.ignoreLayerMask

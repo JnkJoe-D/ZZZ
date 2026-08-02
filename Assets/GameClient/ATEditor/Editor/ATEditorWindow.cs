@@ -386,6 +386,8 @@ namespace ATEditor.Editor
             return state?.currentTimeline;
         }
 
+        public ATEditorState State => state;
+        public ATEditorEvents Events => events;
         public ATEditorState GetState() => state;
         public ATEditorEvents GetEvents() => events;
 

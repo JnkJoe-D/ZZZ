@@ -18,7 +18,6 @@ namespace Game.Logic
 
         public override void OnEnter()
         {
-
             _ctx.HostEntity.RuntimeData.IsShortMoveInput = true;
             _stateTime = 0f;
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using Game.Framework;
 using Game.Logic;
@@ -14,6 +15,9 @@ namespace Game.Editor.Framework
     [CustomEditor(typeof(GameConfigAsset), true)]
     public class GameConfigAssetEditor : UnityEditor.Editor
     {
+        private static readonly Dictionary<(System.Type, string), FieldInfo> _fieldCache = new();
+        private static readonly Dictionary<FieldInfo, ShowIfAttribute> _showIfCache = new();
+
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
@@ -52,11 +56,15 @@ namespace Game.Editor.Framework
         /// </summary>
         private bool IsPropertyVisible(SerializedProperty property)
         {
-            // 从目标类型获取字段信息
             FieldInfo field = GetFieldFromProperty(property);
             if (field == null) return true;
 
-            var showIf = field.GetCustomAttribute<ShowIfAttribute>();
+            if (!_showIfCache.TryGetValue(field, out var showIf))
+            {
+                showIf = field.GetCustomAttribute<ShowIfAttribute>();
+                _showIfCache[field] = showIf;
+            }
+
             if (showIf == null) return true;
 
             return ShowIfDrawer.CheckVisible(property, showIf);
@@ -64,11 +72,19 @@ namespace Game.Editor.Framework
 
         /// <summary>
         /// 从 SerializedProperty 解析出对应的 FieldInfo。
-        /// 支持直接字段和嵌套路径（如 array 元素内的字段）。
+        /// 支持直接字段和嵌套路径（如 array 元素内的字段），并进行全局字典缓存。
         /// </summary>
         private FieldInfo GetFieldFromProperty(SerializedProperty property)
         {
-            System.Type type = target.GetType();
+            System.Type targetType = target.GetType();
+            var key = (targetType, property.propertyPath);
+
+            if (_fieldCache.TryGetValue(key, out var cachedField))
+            {
+                return cachedField;
+            }
+
+            System.Type type = targetType;
             string[] pathParts = property.propertyPath.Split('.');
 
             FieldInfo field = null;
@@ -77,8 +93,7 @@ namespace Game.Editor.Framework
                 string part = pathParts[i];
 
                 // 跳过 Array 路径段（如 "Array" 和 "data[0]"）
-                if (part == "Array") continue;
-                if (part.StartsWith("data[")) continue;
+                if (part == "Array" || part.StartsWith("data[")) continue;
 
                 field = type?.GetField(part,
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -103,6 +118,7 @@ namespace Game.Editor.Framework
                 }
             }
 
+            _fieldCache[key] = field;
             return field;
         }
     }

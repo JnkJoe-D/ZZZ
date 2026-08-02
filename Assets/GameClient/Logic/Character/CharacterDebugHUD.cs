@@ -172,12 +172,19 @@ namespace Game.Logic
                     new Color(0.75f, 0.9f, 1f));
 
 
-                DrawInfo(
-                    "Last Route",
-                    targetEntity.RuntimeData == null
-                        ? "None"
-                        : $"{targetEntity.RuntimeData.LastRouteSource} / {targetEntity.RuntimeData.LastResolvedCommandType}/{targetEntity.RuntimeData.LastResolvedCommandPhase}",
-                    new Color(1f, 0.8f, 0.45f));
+                string lastRouteText = "None";
+                if (targetEntity.RuntimeData != null)
+                {
+                    if (targetEntity.RuntimeData.LastRouteSource == CommandRouteSource.ActionComplete)
+                    {
+                        lastRouteText = $"ActionComplete ({targetEntity.RuntimeData.LastRouteTag ?? "-"})";
+                    }
+                    else
+                    {
+                        lastRouteText = $"{targetEntity.RuntimeData.LastRouteSource} / {targetEntity.RuntimeData.LastResolvedCommandType}/{targetEntity.RuntimeData.LastResolvedCommandPhase}";
+                    }
+                }
+                DrawInfo("Last Route", lastRouteText, new Color(1f, 0.8f, 0.45f));
                 DrawInfo(
                     "Route Detail",
                     targetEntity.RuntimeData == null
@@ -218,12 +225,26 @@ namespace Game.Logic
                         {
                             var record = history[i];
                             string timeStr = record.Timestamp.ToString("F1");
-                            string triggerStr = record.Type == InputCommand.None 
-                                ? "<color=#ffb366>AutoCondition</color>" 
-                                : $"{record.Type}/{record.Phase}";
+                            string triggerStr;
+                            if (record.Source == CommandRouteSource.ActionComplete)
+                            {
+                                triggerStr = "<color=#c084fc>Complete</color>";
+                            }
+                            else if (record.Type == InputCommand.None)
+                            {
+                                triggerStr = "<color=#ffb366>AutoCondition</color>";
+                            }
+                            else
+                            {
+                                triggerStr = $"{record.Type}/{record.Phase}";
+                            }
+
+                            string actionDesc = record.ActionId > 0 
+                                ? record.ActionId.ToString() 
+                                : (!string.IsNullOrEmpty(record.ActionName) ? record.ActionName : "None/Stay");
 
                             GUILayout.Label(
-                                $"<color=#aaaaaa>[{timeStr}]</color> {triggerStr} {record.Source} {record.RouteTag ?? "-"} <color=#66ccff>-></color> {record.ActionId}",
+                                $"<color=#aaaaaa>[{timeStr}]</color> {triggerStr} {record.Source} {record.RouteTag ?? "-"} <color=#66ccff>-></color> {actionDesc}",
                                 historyStyle);
                         }
                     }

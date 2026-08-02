@@ -16,7 +16,6 @@ namespace Game.Logic
 
         public override void OnEnter()
         {
-
         }
 
         public override void OnUpdate(float deltaTime)

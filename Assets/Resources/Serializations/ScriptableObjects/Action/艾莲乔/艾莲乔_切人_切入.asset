@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
   m_Name: "\u827E\u83B2\u4E54_\u5207\u4EBA_\u5207\u5165"
   m_EditorClassIdentifier: 
-  ID: 10419
+  ID: 140120
   Name: 
   TimelineAsset: {fileID: 4900000, guid: a2a0585b77b05c24788cfeec8e806999, type: 3}
-  TurnMode: 1
   EnterState: 70
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
@@ -27,13 +26,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5d4a502ea31a12241bc5607fe2c03112, type: 2}
   - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
   - {fileID: 11400000, guid: 88af4c9d2a2b9f54e896f88493c95379, type: 2}
-  FaceToSpeed: 10
   PlaybackSpeed: 1
-  Cooldown: 0.5
-  MPCost: 0
-  CastRange: 2
-  CanBeInterrupted: 0
-  CinematicCameraPrefab: {fileID: 0}
   references:
     version: 2
     RefIds: []

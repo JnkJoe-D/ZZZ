@@ -5,28 +5,70 @@ using UnityEditor;
 
 namespace Game.Editor.ActionConfig
 {
+    [InitializeOnLoad]
     public static class ActionTagOptions
     {
+        private static ActionTagConfigAsset _cachedConfig;
+        private static string[] _cachedComboWindowTags;
+        private static string[] _cachedTargetTags;
+        private static string[] _cachedEventTags;
+
+        static ActionTagOptions()
+        {
+            EditorApplication.projectChanged += InvalidateCache;
+        }
+
+        public static void InvalidateCache()
+        {
+            _cachedConfig = null;
+            _cachedComboWindowTags = null;
+            _cachedTargetTags = null;
+            _cachedEventTags = null;
+        }
+
         public static string[] GetComboWindowTags()
         {
+            if (_cachedComboWindowTags != null && _cachedConfig != null)
+            {
+                return _cachedComboWindowTags;
+            }
+
             ActionTagConfigAsset config = LoadConfig();
-            return ToUniqueArray(config?.availableComboWindowTags);
+            _cachedComboWindowTags = ToUniqueArray(config?.availableComboWindowTags);
+            return _cachedComboWindowTags;
         }
 
         public static string[] GetTargetTags()
         {
+            if (_cachedTargetTags != null && _cachedConfig != null)
+            {
+                return _cachedTargetTags;
+            }
+
             ActionTagConfigAsset config = LoadConfig();
-            return ToUniqueArray(config?.availableTargetTags);
+            _cachedTargetTags = ToUniqueArray(config?.availableTargetTags);
+            return _cachedTargetTags;
         }
 
         public static string[] GetEventTags()
         {
+            if (_cachedEventTags != null && _cachedConfig != null)
+            {
+                return _cachedEventTags;
+            }
+
             ActionTagConfigAsset config = LoadConfig();
-            return ToUniqueArray(config?.availableEventTags);
+            _cachedEventTags = ToUniqueArray(config?.availableEventTags);
+            return _cachedEventTags;
         }
 
         private static ActionTagConfigAsset LoadConfig()
         {
+            if (_cachedConfig != null)
+            {
+                return _cachedConfig;
+            }
+
             string[] guids = AssetDatabase.FindAssets("t:ActionTagConfigAsset");
             if (guids.Length == 0)
             {
@@ -40,25 +82,25 @@ namespace Game.Editor.ActionConfig
 
             Array.Sort(guids, StringComparer.Ordinal);
             string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            return AssetDatabase.LoadAssetAtPath<ActionTagConfigAsset>(path);
+            _cachedConfig = AssetDatabase.LoadAssetAtPath<ActionTagConfigAsset>(path);
+            return _cachedConfig;
         }
 
         private static string[] ToUniqueArray(List<string> source)
         {
-            if (source == null)
+            if (source == null || source.Count == 0)
             {
                 return Array.Empty<string>();
             }
 
-            List<string> tags = new();
-            foreach (string tag in source)
+            List<string> tags = new(source.Count);
+            for (int i = 0; i < source.Count; i++)
             {
-                if (string.IsNullOrWhiteSpace(tag) || tags.Contains(tag))
+                string tag = source[i];
+                if (!string.IsNullOrWhiteSpace(tag) && !tags.Contains(tag))
                 {
-                    continue;
+                    tags.Add(tag);
                 }
-
-                tags.Add(tag);
             }
 
             return tags.ToArray();

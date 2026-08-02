@@ -11,11 +11,20 @@ namespace Game.Framework
     {
         public string ComparisonField { get; }
         public object ComparisonValue { get; }
+        public object[] ComparisonValues { get; }
 
         public ShowIfAttribute(string comparisonField, object comparisonValue)
         {
             ComparisonField = comparisonField;
             ComparisonValue = comparisonValue;
+            ComparisonValues = null;
+        }
+
+        public ShowIfAttribute(string comparisonField, params object[] comparisonValues)
+        {
+            ComparisonField = comparisonField;
+            ComparisonValue = null;
+            ComparisonValues = comparisonValues;
         }
     }
 }

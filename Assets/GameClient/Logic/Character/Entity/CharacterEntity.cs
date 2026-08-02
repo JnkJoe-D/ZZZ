@@ -28,6 +28,7 @@ namespace Game.Logic
         public CharacterConfigAsset Config { get; private set; }
         public IMovementController MovementController { get; protected set; }
         public HitReactionModule HitReactionModule { get; protected set; }
+        public FootIKModule FootIKModule { get; protected set; }
 
 
         public FSMSystem<CharacterEntity> StateMachine { get; private set; }
@@ -78,6 +79,7 @@ namespace Game.Logic
             CameraController?.Init(this);
             MovementController?.Init(this);
             HitReactionModule?.Init(this);
+            FootIKModule?.Init(this);
             StatusModule?.Init(this, config?.StatusProfile);
         }
 

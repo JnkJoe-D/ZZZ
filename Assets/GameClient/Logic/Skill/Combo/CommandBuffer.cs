@@ -7,7 +7,8 @@ namespace Game.Logic
     public enum CommandRouteSource
     {
         None = 0,
-        ActionRoute = 10
+        ActionRoute = 10,
+        ActionComplete = 20
     }
 
     public class CharacterCommand

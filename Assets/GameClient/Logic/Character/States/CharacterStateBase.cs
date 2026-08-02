@@ -46,6 +46,11 @@ namespace Game.Logic
             _inputHandler = new ComboInputCommandHandler(Entity);
         }
 
+        public override void OnEnter()
+        {
+            base.OnEnter();
+        }
+
         public override void OnExit()
         {
 

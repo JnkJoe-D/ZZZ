@@ -15,6 +15,7 @@ namespace Game.Logic
 
         public override void OnEnter()
         {
+            base.OnEnter();
             
             _stunDuration = Entity.RuntimeData.CurrentHitStunDuration;
             _stunTimer = 0f;

@@ -150,18 +150,16 @@ namespace Game.Logic
         [ShowIf("ExecuteType", ExecuteTarget.Action)]
         public ActionConfigAsset ExecuteAction;
 
+        [ShowIf("ExecuteType", ExecuteTarget.Action)]
+        [Tooltip("是否需要校验下一个动作在配表中配置的释放条件（如能量/耐力要求等）及执行消耗。默认为 true；若为 false 则无需校验条件且不扣除配表消耗，可直接释放。")]
+        public bool ValidateSkillRequirement = true;
+
         [ShowIf("ExecuteType", ExecuteTarget.Event)]
         public ExecuteEvent RouteExecuteEvent;
 
         [Header("Extra Conditions")]
         [SerializeReference, SubclassSelector]
         public List<ITransitionCondition> ExtraConditions = new();
-
-        [Header("Execute Effects")]
-        [Tooltip("路由被选中执行时的附加副作用（消耗属性、施加 Buff 等）。")]
-        [SerializeReference, SubclassSelector]
-        public List<IRouteEffect> OnExecuteEffects = new();
-
 
         [Header("Execution")]
         public int Priority;
@@ -311,6 +309,7 @@ namespace Game.Logic
 
         public bool CheckSkillRequire(CharacterEntity actor)
         {
+            if (!ValidateSkillRequirement) return true;
             if (ExecuteAction == null || ExecuteAction.ID <= 0) return true;
             if (actor?.StatusModule?.Attributes == null) return true;
             var skillConfig = ConfigManager.Instance.Tables.TbSkill.GetOrDefault(ExecuteAction.ID);
@@ -332,6 +331,7 @@ namespace Game.Logic
 
         public void ConsumeSkillCost(CharacterEntity actor)
         {
+            if (!ValidateSkillRequirement) return;
             if (ExecuteAction == null || ExecuteAction.ID <= 0) return;
             if (actor?.StatusModule?.Attributes == null) return;
 

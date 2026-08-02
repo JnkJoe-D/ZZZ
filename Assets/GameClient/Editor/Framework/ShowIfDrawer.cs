@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using Game.Framework;
 using UnityEditor;
@@ -12,6 +13,8 @@ namespace Game.Editor.Framework
     [CustomPropertyDrawer(typeof(ShowIfAttribute))]
     public sealed class ShowIfDrawer : PropertyDrawer
     {
+        private static readonly Dictionary<(string, string), string> _comparisonPathCache = new();
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (CheckVisible(property, attribute as ShowIfAttribute))
@@ -31,20 +34,42 @@ namespace Game.Editor.Framework
         {
             if (attr == null) return true;
 
-            string path = property.propertyPath;
-            int lastDot = path.LastIndexOf('.');
-            string parentPath = lastDot > 0 ? path.Substring(0, lastDot) : string.Empty;
-            
-            SerializedProperty comparisonProp = string.IsNullOrEmpty(parentPath) 
-                ? property.serializedObject.FindProperty(attr.ComparisonField)
-                : property.serializedObject.FindProperty($"{parentPath}.{attr.ComparisonField}");
+            string propPath = property.propertyPath;
+            var key = (propPath, attr.ComparisonField);
 
+            if (!_comparisonPathCache.TryGetValue(key, out string comparisonPath))
+            {
+                int lastDot = propPath.LastIndexOf('.');
+                string parentPath = lastDot > 0 ? propPath.Substring(0, lastDot) : string.Empty;
+                comparisonPath = string.IsNullOrEmpty(parentPath)
+                    ? attr.ComparisonField
+                    : $"{parentPath}.{attr.ComparisonField}";
+                _comparisonPathCache[key] = comparisonPath;
+            }
+
+            SerializedProperty comparisonProp = property.serializedObject.FindProperty(comparisonPath);
             if (comparisonProp == null)
             {
                 return true;
             }
 
             object currentValue = GetPropertyValue(comparisonProp);
+
+            if (attr.ComparisonValues != null && attr.ComparisonValues.Length > 0)
+            {
+                foreach (var val in attr.ComparisonValues)
+                {
+                    object targetVal = val;
+                    if (comparisonProp.propertyType == SerializedPropertyType.Enum && targetVal != null && targetVal.GetType().IsEnum)
+                    {
+                        targetVal = (int)targetVal;
+                    }
+
+                    if (Equals(currentValue, targetVal)) return true;
+                }
+                return false;
+            }
+
             object targetValue = attr.ComparisonValue;
 
             // Handle Enum comparison (SerializedProperty.intValue vs Enum object)

@@ -328,7 +328,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.13333332538604737,
                     "animationClip": {
-                        "instanceID": 53514
+                        "instanceID": 58548
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -363,7 +363,7 @@
                     "blendInDuration": 0.13333332538604737,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 95490
+                        "instanceID": 102744
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -473,6 +473,11 @@
                     "times": 1,
                     "maxHitTargets": 0,
                     "targetSortMode": 1,
+                    "hitDirectionMode": 0,
+                    "customHitDirection": {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
                     "hitLayerMask": {
                         "serializedVersion": "2",
                         "m_Bits": 192
@@ -539,7 +544,7 @@
                                 "assetName": "",
                                 "assetPath": ""
                             },
-                            "hitEffectId": 1040006
+                            "hitEffectId": 1040008
                         }
                     ]
                 }

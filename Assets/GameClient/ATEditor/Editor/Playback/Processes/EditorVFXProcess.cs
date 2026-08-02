@@ -22,24 +22,7 @@ namespace ATEditor.Editor
             if (clip.effectPrefab == null) return;
 
             // 1. 获取挂点
-            Transform targetTransform = null;
-            // 尝试获取 ISkillActor (如果预览模型挂了脚本)
-            var actor = context.GetService<ISkillBoneGetter>();
-            if (actor != null)
-            {
-                targetTransform = actor.GetBone(clip.bindPoint, clip.customBoneName);
-            }
-            // 尝试获取 Animator (用于通用人形骨骼)
-            else 
-            {
-                var animator = context.Owner.GetComponent<Animator>();
-                if (animator != null && animator.isHuman)
-                {
-                    targetTransform = GetHumanBone(animator, clip.bindPoint);
-                }
-            }
-            
-            // 降级: Owner Transform
+            Transform targetTransform = GetTargetTransform();
             if (targetTransform == null)
             {
                 targetTransform = context.OwnerTransform;
@@ -118,34 +101,14 @@ namespace ATEditor.Editor
         {
             if (context.Owner == null) return null;
 
-            var actor = context.Owner.GetComponent<ISkillBoneGetter>();
+            var actor = context.GetService<ISkillBoneGetter>() ?? context.Owner.GetComponent<ISkillBoneGetter>();
             if (actor != null)
             {
                 return actor.GetBone(clip.bindPoint, clip.customBoneName);
             }
-            
-            var animator = context.Owner.GetComponent<Animator>();
-            if (animator != null && animator.isHuman)
-            {
-                var bone = GetHumanBone(animator, clip.bindPoint);
-                if (bone != null) return bone;
-            }
 
-            return context.OwnerTransform;
-        }
-
-        private Transform GetHumanBone(Animator animator, BindPoint point)
-        {
-            switch (point)
-            {
-                case BindPoint.Head: return animator.GetBoneTransform(HumanBodyBones.Head);
-                case BindPoint.LeftHand: return animator.GetBoneTransform(HumanBodyBones.LeftHand);
-                case BindPoint.RightHand: return animator.GetBoneTransform(HumanBodyBones.RightHand);
-                case BindPoint.Body: return animator.GetBoneTransform(HumanBodyBones.Spine); // or Hips
-                case BindPoint.LogicRoot: return animator.transform;
-                // Weapon 无法直接从 Animator 获取，需自行约定或降级
-                default: return null;
-            }
+            var boneGetter = new Game.Adapters.SkillBoneGetter(context.Owner);
+            return boneGetter.GetBone(clip.bindPoint, clip.customBoneName) ?? context.OwnerTransform;
         }
 
         public void ForceUpdateTransform()

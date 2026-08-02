@@ -13,6 +13,7 @@ namespace ATEditor
         private int timesChecked = 0;
         private Vector3 fixedHitBoxPosition;
         private Quaternion fixedHitBoxRotation;
+        private Vector3 onEnterCustomDirection = Vector3.forward;
 
         public override void OnEnable()
         {
@@ -26,9 +27,22 @@ namespace ATEditor
             currentHitCount = 0;
             timesChecked = 0;
 
-            if (!clip.isHitBoxFollowBindPoint)
+            GetMatrix(out fixedHitBoxPosition, out fixedHitBoxRotation);
+
+            // ★ 在片段进入首帧(OnEnter)固化相对受击世界方向
+            if (clip.hitDirectionMode == HitDirectionMode.OnEnterCustomRelative)
             {
-                GetMatrix(out fixedHitBoxPosition, out fixedHitBoxRotation);
+                if (context.Owner != null)
+                {
+                    Vector3 localDir = new Vector3(clip.customHitDirection.x, 0f, clip.customHitDirection.y);
+                    if (localDir.sqrMagnitude < 0.0001f) localDir = Vector3.forward;
+                    onEnterCustomDirection = (context.Owner.transform.rotation * localDir).normalized;
+                    onEnterCustomDirection.y = 0f;
+                }
+                else
+                {
+                    onEnterCustomDirection = Vector3.forward;
+                }
             }
 
             if (clip.detectFrequency == Frequency.Once)
@@ -61,15 +75,7 @@ namespace ATEditor
 
             Vector3 center;
             Quaternion rotation;
-            if (clip.isHitBoxFollowBindPoint)
-            {
-                GetMatrix(out center, out rotation);
-            }
-            else
-            {
-                center = fixedHitBoxPosition;
-                rotation = fixedHitBoxRotation;
-            }
+            GetHitBoxMatrix(out center, out rotation);
 
             var shape = clip.shape;
             
@@ -211,11 +217,15 @@ namespace ATEditor
                     hitBoxCenter = center,
                     targetsCollilders = validHits.ToArray(),
                     hitEffectId = detectConfig.hitEffectId,
+                    hitDirectionMode = clip.hitDirectionMode,
+                    customHitDirection = clip.customHitDirection,
+                    customWorldDirection = onEnterCustomDirection,
                     hitMode = detectConfig.hitMode,
                     multiHitCount = detectConfig.multiHitCount,
                     multiHitDuration = detectConfig.multiHitDuration,
                     enableHitStop = detectConfig.enableHitStop,
                     hitStopDuration = detectConfig.hitStopDuration,
+                    hitStopScale = detectConfig.hitStopScale,
                     hitVFXPrefab = detectConfig.hitVFXPrefab,
                     hitVFXHeight = detectConfig.hitVFXHeight,
                     hitVFXScale = detectConfig.hitVFXScale,
@@ -227,8 +237,37 @@ namespace ATEditor
             }
         }
 
+        public void GetHitBoxMatrix(out Vector3 pos, out Quaternion rot)
+        {
+            GetMatrix(out Vector3 currentPos, out Quaternion currentRot);
+            switch (clip.hitBoxFollowMode)
+            {
+                case HitBoxFollowMode.None:
+                    pos = fixedHitBoxPosition;
+                    rot = fixedHitBoxRotation;
+                    break;
+                case HitBoxFollowMode.PositionOnly:
+                    pos = currentPos;
+                    rot = fixedHitBoxRotation;
+                    break;
+                case HitBoxFollowMode.RotationOnly:
+                    pos = fixedHitBoxPosition;
+                    rot = currentRot;
+                    break;
+                case HitBoxFollowMode.Both:
+                default:
+                    pos = currentPos;
+                    rot = currentRot;
+                    break;
+            }
+        }
+
         private void GetMatrix(out Vector3 pos, out Quaternion rot)
         {
+            Transform rootTrans = context != null ? context.OwnerTransform : null;
+            Quaternion rootRot = rootTrans != null ? rootTrans.rotation : Quaternion.identity;
+            Vector3 rootPos = rootTrans != null ? rootTrans.position : Vector3.zero;
+
             Transform bindTrans = null;
             if (context != null)
             {
@@ -238,16 +277,47 @@ namespace ATEditor
                     bindTrans = actor.GetBone(clip.bindPoint, clip.customBoneName);
                 }
             }
+            if (bindTrans == null) bindTrans = rootTrans;
 
-            if (bindTrans != null)
+            switch (clip.hitBoxFollowMode)
             {
-                pos = bindTrans.position + bindTrans.rotation * clip.positionOffset;
-                rot = bindTrans.rotation * Quaternion.Euler(clip.rotationOffset);
-            }
-            else
-            {
-                pos = clip.positionOffset;
-                rot = Quaternion.Euler(clip.rotationOffset);
+                case HitBoxFollowMode.PositionOnly:
+                    if (bindTrans != null)
+                        pos = bindTrans.position + rootRot * clip.positionOffset;
+                    else
+                        pos = rootPos + rootRot * clip.positionOffset;
+                    rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    break;
+
+                case HitBoxFollowMode.RotationOnly:
+                    pos = rootPos + rootRot * clip.positionOffset;
+                    if (bindTrans != null)
+                        rot = bindTrans.rotation * Quaternion.Euler(clip.rotationOffset);
+                    else
+                        rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    break;
+
+                case HitBoxFollowMode.None:
+                    if (bindTrans != null && clip.bindPoint != BindPoint.LogicRoot)
+                        pos = bindTrans.position + rootRot * clip.positionOffset;
+                    else
+                        pos = rootPos + rootRot * clip.positionOffset;
+                    rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    break;
+
+                case HitBoxFollowMode.Both:
+                default:
+                    if (bindTrans != null)
+                    {
+                        pos = bindTrans.position + bindTrans.rotation * clip.positionOffset;
+                        rot = bindTrans.rotation * Quaternion.Euler(clip.rotationOffset);
+                    }
+                    else
+                    {
+                        pos = rootPos + rootRot * clip.positionOffset;
+                        rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    }
+                    break;
             }
         }
 

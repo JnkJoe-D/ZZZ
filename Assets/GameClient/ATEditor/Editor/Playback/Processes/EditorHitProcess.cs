@@ -36,10 +36,7 @@ namespace ATEditor.Editor
             lastCheckTime = -1f;
             timesChecked = 0;
 
-            if (!clip.isHitBoxFollowBindPoint)
-            {
-                GetMatrix(out fixedHitBoxPosition, out fixedHitBoxRotation);
-            }
+            GetMatrix(out fixedHitBoxPosition, out fixedHitBoxRotation);
 
             if (context.OwnerTransform != null)
             {
@@ -152,8 +149,37 @@ namespace ATEditor.Editor
             offsetXZ = new Vector2(localPos.x, localPos.z);
         }
 
+        public void GetHitBoxMatrix(out Vector3 pos, out Quaternion rot)
+        {
+            GetMatrix(out Vector3 currentPos, out Quaternion currentRot);
+            switch (clip.hitBoxFollowMode)
+            {
+                case HitBoxFollowMode.None:
+                    pos = fixedHitBoxPosition;
+                    rot = fixedHitBoxRotation;
+                    break;
+                case HitBoxFollowMode.PositionOnly:
+                    pos = currentPos;
+                    rot = fixedHitBoxRotation;
+                    break;
+                case HitBoxFollowMode.RotationOnly:
+                    pos = fixedHitBoxPosition;
+                    rot = currentRot;
+                    break;
+                case HitBoxFollowMode.Both:
+                default:
+                    pos = currentPos;
+                    rot = currentRot;
+                    break;
+            }
+        }
+
         public void GetMatrix(out Vector3 pos, out Quaternion rot)
         {
+            Transform rootTrans = context != null ? context.OwnerTransform : null;
+            Quaternion rootRot = rootTrans != null ? rootTrans.rotation : Quaternion.identity;
+            Vector3 rootPos = rootTrans != null ? rootTrans.position : Vector3.zero;
+
             Transform bindTrans = null;
             if (context != null)
             {
@@ -163,21 +189,47 @@ namespace ATEditor.Editor
                     bindTrans = actor.GetBone(clip.bindPoint, clip.customBoneName);
                 }
             }
+            if (bindTrans == null) bindTrans = rootTrans;
 
-            if (bindTrans != null)
+            switch (clip.hitBoxFollowMode)
             {
-                pos = bindTrans.position + bindTrans.rotation * clip.positionOffset;
-                rot = bindTrans.rotation * Quaternion.Euler(clip.rotationOffset);
-            }
-            else if (context != null && context.OwnerTransform != null)
-            {
-                pos = context.OwnerTransform.position + context.OwnerTransform.rotation * clip.positionOffset;
-                rot = context.OwnerTransform.rotation * Quaternion.Euler(clip.rotationOffset);
-            }
-            else
-            {
-                pos = clip.positionOffset;
-                rot = Quaternion.Euler(clip.rotationOffset);
+                case HitBoxFollowMode.PositionOnly:
+                    if (bindTrans != null)
+                        pos = bindTrans.position + rootRot * clip.positionOffset;
+                    else
+                        pos = rootPos + rootRot * clip.positionOffset;
+                    rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    break;
+
+                case HitBoxFollowMode.RotationOnly:
+                    pos = rootPos + rootRot * clip.positionOffset;
+                    if (bindTrans != null)
+                        rot = bindTrans.rotation * Quaternion.Euler(clip.rotationOffset);
+                    else
+                        rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    break;
+
+                case HitBoxFollowMode.None:
+                    if (bindTrans != null && clip.bindPoint != BindPoint.LogicRoot)
+                        pos = bindTrans.position + rootRot * clip.positionOffset;
+                    else
+                        pos = rootPos + rootRot * clip.positionOffset;
+                    rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    break;
+
+                case HitBoxFollowMode.Both:
+                default:
+                    if (bindTrans != null)
+                    {
+                        pos = bindTrans.position + bindTrans.rotation * clip.positionOffset;
+                        rot = bindTrans.rotation * Quaternion.Euler(clip.rotationOffset);
+                    }
+                    else
+                    {
+                        pos = rootPos + rootRot * clip.positionOffset;
+                        rot = rootRot * Quaternion.Euler(clip.rotationOffset);
+                    }
+                    break;
             }
         }
     }

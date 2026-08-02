@@ -18,6 +18,7 @@ namespace Game.Logic
         // --- 打击反馈参数（源自 DetectConfig → HitData） ---
         public bool enableHitStop;
         public float hitStopDuration;
+        public float hitStopScale;
         public GameObject hitVFXPrefab;
         public float hitVFXHeight;
         public Vector3 hitVFXScale;

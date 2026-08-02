@@ -74,6 +74,12 @@ namespace ATEditor.Editor
                 }
             }
 
+            if (parent == null && state != null && state.previewTarget != null)
+            {
+                var getter = new Game.Adapters.SkillBoneGetter(state.previewTarget);
+                parent = getter.GetBone(clip.bindPoint, clip.customBoneName);
+            }
+
             if (parent != null)
             {
                 pos = parent.position + parent.rotation * clip.positionOffset;

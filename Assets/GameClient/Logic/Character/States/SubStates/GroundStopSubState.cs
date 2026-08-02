@@ -15,7 +15,7 @@ namespace Game.Logic
 
         public override void OnEnter()
         {
-
+            
             
             // if (_ctx.HostEntity.Config != null)
             // {

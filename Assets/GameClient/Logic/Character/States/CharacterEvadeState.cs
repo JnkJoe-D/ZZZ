@@ -24,6 +24,7 @@ namespace Game.Logic
 
         public override void OnEnter()
         {
+            base.OnEnter();
             Entity.RuntimeData.RecordEvade(Entity.Config);
         }
 

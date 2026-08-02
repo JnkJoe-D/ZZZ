@@ -13,14 +13,7 @@ namespace Game.Logic
             _handler = new DefaultInputCommandHandler(context.HostEntity);
         }
 
-        public override void OnEnter()
-        {
 
-            // if (_ctx.HostEntity.Config.IdleConfig != null)
-            // {
-            //     _ctx.HostEntity.ActionController.PlayAction(_ctx.HostEntity.Config.IdleConfig);
-            // }
-        }
 
         public override void OnUpdate(float deltaTime)
         {

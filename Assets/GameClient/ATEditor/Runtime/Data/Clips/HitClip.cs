@@ -19,6 +19,13 @@ namespace ATEditor
 
         [SkillProperty("选择策略")]
         public TargetSortMode targetSortMode = TargetSortMode.Closest;
+
+        [SkillProperty("受击方向模式")]
+        public HitDirectionMode hitDirectionMode = HitDirectionMode.AttackerToTarget;
+
+        [SkillProperty("相对受击方向(XZ:X右,Y前)")]
+        [ShowIf("hitDirectionMode", HitDirectionMode.OnEnterCustomRelative)]
+        public Vector2 customHitDirection = new Vector2(0, 1);
  
         [SkillProperty("碰撞检测层级 (LayerMask)")]
         public LayerMask hitLayerMask = -1;
@@ -38,8 +45,8 @@ namespace ATEditor
         [SkillProperty("检测盒Gizmos")]
         public bool showHitBoxGizmos = false;
 
-        [SkillProperty("检测盒是否跟随绑定点")]
-        public bool isHitBoxFollowBindPoint = true;
+        [SkillProperty("检测盒跟随模式")]
+        public HitBoxFollowMode hitBoxFollowMode = HitBoxFollowMode.PositionOnly;
 
         [SkillProperty("检测盒绑定点")]
         public BindPoint bindPoint = BindPoint.LogicRoot;
@@ -98,11 +105,13 @@ namespace ATEditor
                 times = this.times,
                 maxHitTargets = this.maxHitTargets,
                 targetSortMode = this.targetSortMode,
+                hitDirectionMode = this.hitDirectionMode,
+                customHitDirection = this.customHitDirection,
                 hitLayerMask = this.hitLayerMask,
 
                 shape = this.shape.Clone(),
 
-                isHitBoxFollowBindPoint = this.isHitBoxFollowBindPoint,
+                hitBoxFollowMode = this.hitBoxFollowMode,
                 bindPoint = this.bindPoint,
                 customBoneName = this.customBoneName,
                 positionOffset = this.positionOffset,

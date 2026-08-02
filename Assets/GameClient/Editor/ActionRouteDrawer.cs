@@ -191,37 +191,53 @@ namespace Game.Editor.ActionConfig
 
         // ────────────────── 工具方法 ──────────────────
 
-        private static string[] BuildPopupOptions(string[] tags, string currentValue, out int currentIndex)
-        {
-            List<string> options = new()
-            {
-                "<Empty>"
-            };
+        private static string[] _cachedBasePopupOptions;
+        private static string[] _lastTagsRef;
 
-            foreach (string tag in tags)
+        private static string[] GetBasePopupOptions(string[] tags)
+        {
+            if (_cachedBasePopupOptions != null && ReferenceEquals(_lastTagsRef, tags))
             {
+                return _cachedBasePopupOptions;
+            }
+
+            _lastTagsRef = tags;
+            List<string> options = new(tags.Length + 1) { "<Empty>" };
+            for (int i = 0; i < tags.Length; i++)
+            {
+                string tag = tags[i];
                 if (!string.IsNullOrWhiteSpace(tag) && !options.Contains(tag))
                 {
                     options.Add(tag);
                 }
             }
+            _cachedBasePopupOptions = options.ToArray();
+            return _cachedBasePopupOptions;
+        }
+
+        private static string[] BuildPopupOptions(string[] tags, string currentValue, out int currentIndex)
+        {
+            string[] baseOptions = GetBasePopupOptions(tags);
 
             if (string.IsNullOrWhiteSpace(currentValue))
             {
                 currentIndex = 0;
-                return options.ToArray();
+                return baseOptions;
             }
 
-            currentIndex = options.IndexOf(currentValue);
+            currentIndex = Array.IndexOf(baseOptions, currentValue);
             if (currentIndex >= 0)
             {
-                return options.ToArray();
+                return baseOptions;
             }
 
             string customOption = $"[Unregistered] {currentValue}";
-            options.Insert(1, customOption);
+            string[] result = new string[baseOptions.Length + 1];
+            result[0] = baseOptions[0];
+            result[1] = customOption;
+            Array.Copy(baseOptions, 1, result, 2, baseOptions.Length - 1);
             currentIndex = 1;
-            return options.ToArray();
+            return result;
         }
 
         private static string NormalizeSelectedValue(string selectedOption)
