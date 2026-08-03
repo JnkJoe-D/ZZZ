@@ -230,13 +230,13 @@
             {
                 "rid": 1004,
                 "type": {
-                    "class": "ComboWindowTrack",
+                    "class": "RouteWindowTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "trackId": "95a1ff0c-6f52-49d9-ae8b-c8814ebeee5b",
-                    "trackType": "ComboWindowTrack",
+                    "trackType": "RouteWindowTrack",
                     "trackName": "输入派生窗口",
                     "isMuted": false,
                     "isLocked": false,
@@ -259,13 +259,13 @@
             {
                 "rid": 1005,
                 "type": {
-                    "class": "ComboWindowTrack",
+                    "class": "RouteWindowTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "trackId": "8917f82c-06a4-4a95-a8ef-8934bf26bebc",
-                    "trackType": "ComboWindowTrack",
+                    "trackType": "RouteWindowTrack",
                     "trackName": "输入派生窗口轨道",
                     "isMuted": false,
                     "isLocked": false,
@@ -282,13 +282,13 @@
             {
                 "rid": 1006,
                 "type": {
-                    "class": "ComboWindowTrack",
+                    "class": "RouteWindowTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "trackId": "c8520a22-82c4-4f0d-9f0a-ffc6bd5d5c14",
-                    "trackType": "ComboWindowTrack",
+                    "trackType": "RouteWindowTrack",
                     "trackName": "输入派生窗口轨道",
                     "isMuted": false,
                     "isLocked": false,
@@ -535,7 +535,7 @@
             {
                 "rid": 1017,
                 "type": {
-                    "class": "SkillAnimationClip",
+                    "class": "AnimationClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -570,7 +570,7 @@
             {
                 "rid": 1018,
                 "type": {
-                    "class": "SkillAnimationClip",
+                    "class": "AnimationClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -605,7 +605,7 @@
             {
                 "rid": 1019,
                 "type": {
-                    "class": "SkillAnimationClip",
+                    "class": "AnimationClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -640,7 +640,7 @@
             {
                 "rid": 1020,
                 "type": {
-                    "class": "ComboWindowClip",
+                    "class": "RouteWindowClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -658,7 +658,7 @@
             {
                 "rid": 1021,
                 "type": {
-                    "class": "ComboWindowClip",
+                    "class": "RouteWindowClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -676,7 +676,7 @@
             {
                 "rid": 1022,
                 "type": {
-                    "class": "ComboWindowClip",
+                    "class": "RouteWindowClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -694,7 +694,7 @@
             {
                 "rid": 1023,
                 "type": {
-                    "class": "ComboWindowClip",
+                    "class": "RouteWindowClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -712,7 +712,7 @@
             {
                 "rid": 1024,
                 "type": {
-                    "class": "ComboWindowClip",
+                    "class": "RouteWindowClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },

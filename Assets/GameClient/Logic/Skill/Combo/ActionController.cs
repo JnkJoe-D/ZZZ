@@ -16,7 +16,7 @@ namespace Game.Logic
     ///   Condition 路由 — 不依赖指令，由窗口生命周期或每帧驱动
     ///   Event 路由    — 由外部事件（受击、切人等）触发
     /// </summary>
-    public class ActionController : ISkillComboWindowHandler
+    public class ActionController : IRouteWindowHandler
     {
         // ─── 内部数据结构 ───
 

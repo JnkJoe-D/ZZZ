@@ -658,7 +658,8 @@ namespace ATEditor.Editor
                 foreach (var clipType in clipTypes)
                 {
                     string clipDisplayName = TrackRegistry.GetClipDisplayName(clipType);
-                    menu.AddItem(new GUIContent($"添加{clipDisplayName}片段"), false, () => clipOps.OnAddClip(track, clickTime, clipType));
+                    string suffix = clipDisplayName.EndsWith("片段") ? "" : "片段";
+                    menu.AddItem(new GUIContent($"添加{clipDisplayName}{suffix}"), false, () => clipOps.OnAddClip(track, clickTime, clipType));
                 }
             }
             else

@@ -19,19 +19,11 @@ namespace ATEditor.Editor
             
             EditorGUI.BeginChangeCheck();
 
-            // 1. 基础时间轴控制
-            _showBase = EditorGUILayout.Foldout(_showBase, "基础参数 (Base)", true, EditorStyles.foldoutHeader);
-            if (_showBase)
-            {
-                EditorGUILayout.BeginVertical("box");
-                hitClip.clipName = EditorGUILayout.TextField("片段名称", hitClip.clipName);
-                hitClip.StartTime = Mathf.Max(0, EditorGUILayout.FloatField("开始时间", hitClip.StartTime));
-                hitClip.Duration = Mathf.Max(0.1f, EditorGUILayout.FloatField("持续时间", hitClip.Duration));
-                EditorGUILayout.EndVertical();
-            }
+            // 1. 基础信息卡片
+            DrawBaseClipCard(clip, ref _showBase, "基础信息");
 
             // 2. 检测盒与空间参数
-            _showHitBox = EditorGUILayout.Foldout(_showHitBox, "碰撞盒参数 (HitBox)", true, EditorStyles.foldoutHeader);
+            _showHitBox = EditorGUILayout.Foldout(_showHitBox, "碰撞盒参数", true, EditorStyles.foldoutHeader);
             if (_showHitBox)
             {
                 EditorGUILayout.BeginVertical("box");
@@ -49,7 +41,7 @@ namespace ATEditor.Editor
             }
 
             // 3. 判定规则与表现
-            _showDetect = EditorGUILayout.Foldout(_showDetect, "打击判定与表现 (Detection & Feedback)", true, EditorStyles.foldoutHeader);
+            _showDetect = EditorGUILayout.Foldout(_showDetect, "打击判定与表现", true, EditorStyles.foldoutHeader);
             if (_showDetect)
             {
                 EditorGUILayout.BeginVertical("box");
@@ -101,7 +93,7 @@ namespace ATEditor.Editor
             // 4. VFX 场景句柄
             if (selectedDetect != null && selectedDetect.hitVFXPrefab != null)
             {
-                _showVFX = EditorGUILayout.Foldout(_showVFX, "VFX 场景调试 (Scene Handles)", true, EditorStyles.foldoutHeader);
+                _showVFX = EditorGUILayout.Foldout(_showVFX, "受击特效场景调试", true, EditorStyles.foldoutHeader);
                 if (_showVFX)
                 {
                     EditorGUILayout.BeginVertical("box");
@@ -487,7 +479,7 @@ namespace ATEditor.Editor
             Transform bindTrans = null;
             if (state != null && state.PreviewContext != null)
             {
-                var actor = state.PreviewContext.GetService<ISkillBoneGetter>();
+                var actor = state.PreviewContext.GetService<IBoneGetter>();
                 if (actor != null)
                 {
                     bindTrans = actor.GetBone(clip.bindPoint, clip.customBoneName);
@@ -496,7 +488,7 @@ namespace ATEditor.Editor
 
             if (bindTrans == null && state != null && state.previewTarget != null)
             {
-                var getter = new Game.Adapters.SkillBoneGetter(state.previewTarget);
+                var getter = new Game.Adapters.ATBoneGetter(state.previewTarget);
                 bindTrans = getter.GetBone(clip.bindPoint, clip.customBoneName);
             }
 

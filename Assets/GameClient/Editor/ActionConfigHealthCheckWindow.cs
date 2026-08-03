@@ -243,7 +243,7 @@ namespace Game.Editor.ActionConfig
 
                     foreach (ClipBase clip in track.clips)
                     {
-                        if (clip is not ComboWindowClip comboWindow || !comboWindow.isEnabled)
+                        if (clip is not RouteWindowClip comboWindow || !comboWindow.isEnabled)
                         {
                             continue;
                         }

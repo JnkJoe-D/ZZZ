@@ -46,20 +46,22 @@ namespace Game.Camera
             }
 
             SetBindingSource(entity);
+            _isInputDisabled = false;
+            _isYawLocked = false;
+            _isPitchLocked = false;
+            ApplyAxisInputState();
         }
 
         public void EnableInput(bool enable)
         {
-            if (_virtualCamera == null)
+            // 如果绑定了角色实体，且该实体并不是当前主控角色（例如待机隐藏的队友），则不应该篡改共享相机的输入状态
+            if (_entity != null && !_entity.IsControlActive && !enable)
             {
                 return;
             }
 
-            CinemachineInputProvider inputProvider = _virtualCamera.GetComponent<CinemachineInputProvider>();
-            if (inputProvider != null)
-            {
-                inputProvider.enabled = enable;
-            }
+            _isInputDisabled = !enable;
+            ApplyAxisInputState();
         }
 
         public void SetCameraActive(bool active)
@@ -93,6 +95,10 @@ namespace Game.Camera
             if (_virtualCamera == virtualCamera)
             {
                 RefreshVirtualCameraTargets();
+                _isInputDisabled = false;
+                _isYawLocked = false;
+                _isPitchLocked = false;
+                ApplyAxisInputState();
                 return;
             }
 
@@ -100,6 +106,10 @@ namespace Game.Camera
             _virtualCamera = virtualCamera;
             _impluseSource = ResolveImpulseSource(virtualCamera);
             RefreshVirtualCameraTargets();
+            _isInputDisabled = false;
+            _isYawLocked = false;
+            _isPitchLocked = false;
+            ApplyAxisInputState();
         }
 
         public void SetBindingSource(CharacterEntity entity)
@@ -359,5 +369,527 @@ namespace Game.Camera
             return virtualCamera.GetComponent<CinemachineImpulseSource>()
                 ?? virtualCamera.GetComponentInParent<CinemachineImpulseSource>();
         }
+
+        #region Regular Camera Control Implementation
+        private bool _isRecenterActive;
+        private float _recenterSmoothTime = 0.25f;
+        private float _targetPitch = 12f;
+        private ATEditor.CameraRecenterTarget _recenterTarget;
+        private bool _disableInputDuringRecenter;
+        private float _framingBiasAngle = -8.0f;
+        private float _deadzoneAngle = 1.5f;
+        private bool _allowSoftInputInterrupt = true;
+        private float _recenterYawVelocity;
+        private float _recenterPitchVelocity;
+        private float _softInputBlendWeight = 1.0f;
+
+        private bool _isLookAtActive;
+        private Vector3 _lookAtOffset = new Vector3(0, 1.2f, 0);
+        private float _lookAtSmoothSpeed = 8f;
+        private bool _lookAtFallbackToCharacter = true;
+        private Transform _cachedLookAtTransform;
+
+        private float _originalFov = -1f;
+        private float _originalDistance = -1f;
+        private float _targetFov = -1f;
+        private float _targetDistance = -1f;
+        private float _fovBlendSpeed = 5f;
+        private bool _isFovTransitionActive;
+
+        private bool _isInputDisabled;
+        private bool _isYawLocked;
+        private bool _isPitchLocked;
+        private string _cachedHorizontalAxisName = "Mouse X";
+        private string _cachedVerticalAxisName = "Mouse Y";
+        private float _lockedYawValue;
+        private float _lockedPitchValue;
+
+        private void ApplyAxisInputState()
+        {
+            if (_virtualCamera == null) return;
+
+            bool shouldLockYaw = _isInputDisabled || _isYawLocked;
+            bool shouldLockPitch = _isInputDisabled || _isPitchLocked;
+
+            if (_virtualCamera is CinemachineVirtualCamera vcam)
+            {
+                var pov = vcam.GetCinemachineComponent<CinemachinePOV>();
+                if (pov != null)
+                {
+                    if (!string.IsNullOrEmpty(pov.m_HorizontalAxis.m_InputAxisName))
+                    {
+                        _cachedHorizontalAxisName = pov.m_HorizontalAxis.m_InputAxisName;
+                    }
+                    if (!string.IsNullOrEmpty(pov.m_VerticalAxis.m_InputAxisName))
+                    {
+                        _cachedVerticalAxisName = pov.m_VerticalAxis.m_InputAxisName;
+                    }
+
+                    if (shouldLockYaw)
+                    {
+                        pov.m_HorizontalAxis.m_InputAxisName = string.Empty;
+                        pov.m_HorizontalAxis.m_InputAxisValue = 0f;
+                    }
+                    else
+                    {
+                        pov.m_HorizontalAxis.m_InputAxisName = !string.IsNullOrEmpty(_cachedHorizontalAxisName) ? _cachedHorizontalAxisName : "Mouse X";
+                    }
+
+                    if (shouldLockPitch)
+                    {
+                        pov.m_VerticalAxis.m_InputAxisName = string.Empty;
+                        pov.m_VerticalAxis.m_InputAxisValue = 0f;
+                    }
+                    else
+                    {
+                        pov.m_VerticalAxis.m_InputAxisName = !string.IsNullOrEmpty(_cachedVerticalAxisName) ? _cachedVerticalAxisName : "Mouse Y";
+                    }
+                }
+            }
+            else if (_virtualCamera is CinemachineFreeLook freeLook)
+            {
+                if (!string.IsNullOrEmpty(freeLook.m_XAxis.m_InputAxisName))
+                {
+                    _cachedHorizontalAxisName = freeLook.m_XAxis.m_InputAxisName;
+                }
+                if (!string.IsNullOrEmpty(freeLook.m_YAxis.m_InputAxisName))
+                {
+                    _cachedVerticalAxisName = freeLook.m_YAxis.m_InputAxisName;
+                }
+
+                if (shouldLockYaw)
+                {
+                    freeLook.m_XAxis.m_InputAxisName = string.Empty;
+                    freeLook.m_XAxis.m_InputAxisValue = 0f;
+                }
+                else
+                {
+                    freeLook.m_XAxis.m_InputAxisName = !string.IsNullOrEmpty(_cachedHorizontalAxisName) ? _cachedHorizontalAxisName : "Mouse X";
+                }
+
+                if (shouldLockPitch)
+                {
+                    freeLook.m_YAxis.m_InputAxisName = string.Empty;
+                    freeLook.m_YAxis.m_InputAxisValue = 0f;
+                }
+                else
+                {
+                    freeLook.m_YAxis.m_InputAxisName = !string.IsNullOrEmpty(_cachedVerticalAxisName) ? _cachedVerticalAxisName : "Mouse Y";
+                }
+            }
+
+            var inputProvider = _virtualCamera.GetComponent<CinemachineInputProvider>();
+            if (inputProvider != null)
+            {
+                inputProvider.enabled = !shouldLockYaw && !shouldLockPitch;
+            }
+        }
+
+        public void LockRotation(bool lockYaw, bool lockPitch)
+        {
+            _isYawLocked = lockYaw;
+            _isPitchLocked = lockPitch;
+
+            // 记录当前的锁定值，防止轴向漂移
+            if (_virtualCamera is CinemachineVirtualCamera vcam)
+            {
+                var pov = vcam.GetCinemachineComponent<CinemachinePOV>();
+                if (pov != null)
+                {
+                    _lockedYawValue = pov.m_HorizontalAxis.Value;
+                    _lockedPitchValue = pov.m_VerticalAxis.Value;
+                }
+            }
+            else if (_virtualCamera is CinemachineFreeLook freeLook)
+            {
+                _lockedYawValue = freeLook.m_XAxis.Value;
+                _lockedPitchValue = freeLook.m_YAxis.Value;
+            }
+
+            ApplyAxisInputState();
+        }
+
+        public void UnlockRotation()
+        {
+            _isYawLocked = false;
+            _isPitchLocked = false;
+            ApplyAxisInputState();
+        }
+
+        public void StartRecenter(
+            ATEditor.CameraRecenterTarget target,
+            float smoothTime,
+            float targetPitch,
+            bool disableInput,
+            float framingBiasAngle = -8.0f,
+            float deadzoneAngle = 1.5f,
+            bool allowSoftInput = true)
+        {
+            _recenterTarget = target;
+            _recenterSmoothTime = Mathf.Max(0.05f, smoothTime);
+            _targetPitch = targetPitch;
+            _disableInputDuringRecenter = disableInput;
+            _framingBiasAngle = framingBiasAngle;
+            _deadzoneAngle = Mathf.Max(0.01f, deadzoneAngle);
+            _allowSoftInputInterrupt = allowSoftInput;
+            _recenterYawVelocity = 0f;
+            _recenterPitchVelocity = 0f;
+            _softInputBlendWeight = 1.0f;
+            _isRecenterActive = true;
+
+            if (_disableInputDuringRecenter)
+            {
+                EnableInput(false);
+            }
+        }
+
+        private static float NormalizeAngle(float angle)
+        {
+            angle %= 360f;
+            if (angle > 180f) angle -= 360f;
+            if (angle < -180f) angle += 360f;
+            return angle;
+        }
+
+        public void UpdateRecenter(float deltaTime)
+        {
+            if (!_isRecenterActive || _virtualCamera == null || deltaTime <= 0f) return;
+
+            Transform root = GetBindingRoot();
+            if (root == null) return;
+
+            // 4. 软输入融合与打断检测 (Soft Input Blending / Interruption)
+            if (!_disableInputDuringRecenter && _allowSoftInputInterrupt)
+            {
+                float playerInputX = Mathf.Abs(UnityEngine.Input.GetAxis("Mouse X"));
+                float playerInputY = Mathf.Abs(UnityEngine.Input.GetAxis("Mouse Y"));
+                if (playerInputX > 0.05f || playerInputY > 0.05f)
+                {
+                    // 玩家主动控制视角，平滑衰减回正权重并优雅让权
+                    _softInputBlendWeight -= deltaTime * 5.0f;
+                    if (_softInputBlendWeight <= 0.05f)
+                    {
+                        StopRecenter(true);
+                        return;
+                    }
+                }
+                else
+                {
+                    _softInputBlendWeight = Mathf.MoveTowards(_softInputBlendWeight, 1.0f, deltaTime * 2.0f);
+                }
+            }
+
+            // 1. 智能构图逻辑：计算目标水平偏航角 (Yaw)
+            float targetYaw = 0f;
+
+            switch (_recenterTarget)
+            {
+                case ATEditor.CameraRecenterTarget.CombatFraming:
+                    // 智能战斗对峙构图：以角色与怪物的空间连线为中心，施加黄金分割侧向偏角
+                    Transform framingCombatTarget = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetEnemy() : null;
+                    if (framingCombatTarget != null)
+                    {
+                        Vector3 toEnemy = framingCombatTarget.position - root.position;
+                        toEnemy.y = 0;
+                        if (toEnemy.sqrMagnitude > 0.01f)
+                        {
+                            float baseAngle = Quaternion.LookRotation(toEnemy.normalized).eulerAngles.y;
+                            targetYaw = NormalizeAngle(baseAngle + _framingBiasAngle);
+                        }
+                        else
+                        {
+                            targetYaw = NormalizeAngle(root.eulerAngles.y + _framingBiasAngle);
+                        }
+                    }
+                    else
+                    {
+                        targetYaw = NormalizeAngle(root.eulerAngles.y);
+                    }
+                    break;
+
+                case ATEditor.CameraRecenterTarget.CharacterBack:
+                    // 角色背后主视角：相机朝向与角色朝向一致，即从角色背后向前看
+                    targetYaw = NormalizeAngle(root.eulerAngles.y);
+                    break;
+
+                case ATEditor.CameraRecenterTarget.MovementDirection:
+                    // 移动突进方向：以移动输入或位移方向为对齐基准
+                    Vector3 moveWorldDir = Vector3.zero;
+                    if (_entity != null && _entity.MovementController != null && _entity.InputProvider != null)
+                    {
+                        Vector2 moveInput = _entity.InputProvider.GetMovementDirection();
+                        if (moveInput.sqrMagnitude > 0.01f)
+                        {
+                            moveWorldDir = _entity.MovementController.CalculateWorldDirection(moveInput);
+                        }
+                    }
+
+                    if (moveWorldDir.sqrMagnitude > 0.01f)
+                    {
+                        targetYaw = NormalizeAngle(Quaternion.LookRotation(moveWorldDir.normalized).eulerAngles.y);
+                    }
+                    else
+                    {
+                        targetYaw = NormalizeAngle(root.eulerAngles.y);
+                    }
+                    break;
+
+                case ATEditor.CameraRecenterTarget.TargetDirection:
+                    // 直接正对目标：无侧向偏移的死锁正面视角
+                    Transform directCombatTarget = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetEnemy() : null;
+                    if (directCombatTarget != null)
+                    {
+                        Vector3 dir = directCombatTarget.position - root.position;
+                        dir.y = 0;
+                        if (dir.sqrMagnitude > 0.01f)
+                        {
+                            targetYaw = NormalizeAngle(Quaternion.LookRotation(dir.normalized).eulerAngles.y);
+                        }
+                        else
+                        {
+                            targetYaw = NormalizeAngle(root.eulerAngles.y);
+                        }
+                    }
+                    else
+                    {
+                        targetYaw = NormalizeAngle(root.eulerAngles.y);
+                    }
+                    break;
+            }
+
+            // 2 & 3. 动力学模型与三轴协同（二阶临界阻尼 SmoothDampAngle / SmoothDamp）
+            if (_virtualCamera is CinemachineVirtualCamera vcam)
+            {
+                var pov = vcam.GetCinemachineComponent<CinemachinePOV>();
+                if (pov != null)
+                {
+                    float currentYaw = pov.m_HorizontalAxis.Value;
+                    float diffYaw = Mathf.DeltaAngle(currentYaw, targetYaw);
+
+                    // 死区控制
+                    if (Mathf.Abs(diffYaw) > _deadzoneAngle)
+                    {
+                        float newYaw = Mathf.SmoothDampAngle(currentYaw, targetYaw, ref _recenterYawVelocity, _recenterSmoothTime, 720f, deltaTime);
+                        pov.m_HorizontalAxis.Value = newYaw;
+                    }
+                    else
+                    {
+                        _recenterYawVelocity = Mathf.MoveTowards(_recenterYawVelocity, 0f, 360f * deltaTime);
+                    }
+
+                    // 垂直俯仰角协同
+                    if (Mathf.Abs(_targetPitch - (-999f)) > 0.1f)
+                    {
+                        float currentPitch = pov.m_VerticalAxis.Value;
+                        float diffPitch = _targetPitch - currentPitch;
+                        if (Mathf.Abs(diffPitch) > (_deadzoneAngle * 0.7f))
+                        {
+                            float newPitch = Mathf.SmoothDamp(currentPitch, _targetPitch, ref _recenterPitchVelocity, _recenterSmoothTime, 360f, deltaTime);
+                            pov.m_VerticalAxis.Value = newPitch;
+                        }
+                        else
+                        {
+                            _recenterPitchVelocity = Mathf.MoveTowards(_recenterPitchVelocity, 0f, 180f * deltaTime);
+                        }
+                    }
+                }
+            }
+            else if (_virtualCamera is CinemachineFreeLook freeLook)
+            {
+                float currentYaw = freeLook.m_XAxis.Value;
+                float diffYaw = Mathf.DeltaAngle(currentYaw, targetYaw);
+
+                if (Mathf.Abs(diffYaw) > _deadzoneAngle)
+                {
+                    float newYaw = Mathf.SmoothDampAngle(currentYaw, targetYaw, ref _recenterYawVelocity, _recenterSmoothTime, 720f, deltaTime);
+                    freeLook.m_XAxis.Value = newYaw;
+                }
+                else
+                {
+                    _recenterYawVelocity = Mathf.MoveTowards(_recenterYawVelocity, 0f, 360f * deltaTime);
+                }
+
+                if (Mathf.Abs(_targetPitch - (-999f)) > 0.1f)
+                {
+                    float normY = Mathf.Clamp01((_targetPitch + 40f) / 80f);
+                    float currentY = freeLook.m_YAxis.Value;
+                    float diffY = normY - currentY;
+                    if (Mathf.Abs(diffY) > 0.005f)
+                    {
+                        float newY = Mathf.SmoothDamp(currentY, normY, ref _recenterPitchVelocity, _recenterSmoothTime, 5f, deltaTime);
+                        freeLook.m_YAxis.Value = newY;
+                    }
+                    else
+                    {
+                        _recenterPitchVelocity = Mathf.MoveTowards(_recenterPitchVelocity, 0f, 2f * deltaTime);
+                    }
+                }
+            }
+        }
+
+        public void StopRecenter(bool restoreInput)
+        {
+            _isRecenterActive = false;
+            _recenterYawVelocity = 0f;
+            _recenterPitchVelocity = 0f;
+            _softInputBlendWeight = 1.0f;
+
+            if (restoreInput || _disableInputDuringRecenter)
+            {
+                EnableInput(true);
+            }
+        }
+
+        public void StartLookAtTarget(Vector3 offset, float smoothSpeed, bool fallbackToCharacter)
+        {
+            _lookAtOffset = offset;
+            _lookAtSmoothSpeed = Mathf.Max(0.1f, smoothSpeed);
+            _lookAtFallbackToCharacter = fallbackToCharacter;
+            _isLookAtActive = true;
+            _cachedLookAtTransform = _virtualCamera != null ? _virtualCamera.LookAt : null;
+        }
+
+        public void UpdateLookAtTarget(float deltaTime)
+        {
+            if (!_isLookAtActive || _virtualCamera == null) return;
+
+            Transform target = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetEnemy() : null;
+            if (target != null)
+            {
+                Vector3 targetLookPos = target.position + _lookAtOffset;
+                Transform root = GetBindingRoot();
+                if (root != null)
+                {
+                    Vector3 dir = targetLookPos - _virtualCamera.transform.position;
+                    if (dir.sqrMagnitude > 0.01f)
+                    {
+                        Quaternion targetRot = Quaternion.LookRotation(dir.normalized);
+                        float targetYaw = NormalizeAngle(targetRot.eulerAngles.y);
+                        float targetPitch = NormalizeAngle(targetRot.eulerAngles.x);
+
+                        if (_virtualCamera is CinemachineVirtualCamera vcam)
+                        {
+                            var pov = vcam.GetCinemachineComponent<CinemachinePOV>();
+                            if (pov != null)
+                            {
+                                float curYaw = pov.m_HorizontalAxis.Value;
+                                float diffYaw = Mathf.DeltaAngle(curYaw, targetYaw);
+                                float stepYaw = Mathf.Max(Mathf.Abs(diffYaw) * (1f - Mathf.Exp(-_lookAtSmoothSpeed * deltaTime)), _lookAtSmoothSpeed * 30f * deltaTime);
+                                pov.m_HorizontalAxis.Value = Mathf.MoveTowardsAngle(curYaw, targetYaw, stepYaw);
+
+                                float curPitch = pov.m_VerticalAxis.Value;
+                                float diffPitch = targetPitch - curPitch;
+                                float stepPitch = Mathf.Max(Mathf.Abs(diffPitch) * (1f - Mathf.Exp(-_lookAtSmoothSpeed * deltaTime)), _lookAtSmoothSpeed * 20f * deltaTime);
+                                pov.m_VerticalAxis.Value = Mathf.MoveTowards(curPitch, targetPitch, stepPitch);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (_lookAtFallbackToCharacter)
+            {
+                UpdateRecenter(deltaTime);
+            }
+        }
+
+        public void StopLookAtTarget(bool restore)
+        {
+            _isLookAtActive = false;
+            if (restore && _virtualCamera != null && _cachedLookAtTransform != null)
+            {
+                _virtualCamera.LookAt = _cachedLookAtTransform;
+            }
+        }
+
+        public void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed)
+        {
+            if (_virtualCamera == null) return;
+
+            if (_originalFov < 0f)
+            {
+                if (_virtualCamera is CinemachineVirtualCamera vcam)
+                {
+                    _originalFov = vcam.m_Lens.FieldOfView;
+                    var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
+                    if (transposer != null) _originalDistance = transposer.m_CameraDistance;
+                }
+                else if (_virtualCamera is CinemachineFreeLook freeLook)
+                {
+                    _originalFov = freeLook.m_Lens.FieldOfView;
+                }
+            }
+
+            _targetFov = targetFOV;
+            _targetDistance = targetDistance;
+            _fovBlendSpeed = Mathf.Max(0.1f, speed);
+            _isFovTransitionActive = true;
+        }
+
+        public void ResetCameraFOVAndDistance(float speed)
+        {
+            if (_originalFov > 0f)
+            {
+                _targetFov = _originalFov;
+                _targetDistance = _originalDistance;
+                _fovBlendSpeed = Mathf.Max(0.1f, speed);
+            }
+            else
+            {
+                _isFovTransitionActive = false;
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (_virtualCamera == null || !Application.isPlaying) return;
+
+            // 1. 如果处于轴向锁定状态且未被回正或注视驱动，则强制维持锁定角度
+            if (!_isRecenterActive && !_isLookAtActive)
+            {
+                if (_virtualCamera is CinemachineVirtualCamera vcam)
+                {
+                    var pov = vcam.GetCinemachineComponent<CinemachinePOV>();
+                    if (pov != null)
+                    {
+                        if (_isYawLocked) pov.m_HorizontalAxis.Value = _lockedYawValue;
+                        if (_isPitchLocked) pov.m_VerticalAxis.Value = _lockedPitchValue;
+                    }
+                }
+                else if (_virtualCamera is CinemachineFreeLook freeLook)
+                {
+                    if (_isYawLocked) freeLook.m_XAxis.Value = _lockedYawValue;
+                    if (_isPitchLocked) freeLook.m_YAxis.Value = _lockedPitchValue;
+                }
+            }
+
+            // 2. 处理 FOV 与 距离过渡
+            if (_isFovTransitionActive)
+            {
+                float dt = Time.deltaTime;
+                if (_virtualCamera is CinemachineVirtualCamera vcam)
+                {
+                    if (_targetFov > 0f)
+                    {
+                        vcam.m_Lens.FieldOfView = Mathf.Lerp(vcam.m_Lens.FieldOfView, _targetFov, dt * _fovBlendSpeed);
+                    }
+                    if (_targetDistance > 0f)
+                    {
+                        var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
+                        if (transposer != null)
+                        {
+                            transposer.m_CameraDistance = Mathf.Lerp(transposer.m_CameraDistance, _targetDistance, dt * _fovBlendSpeed);
+                        }
+                    }
+                }
+                else if (_virtualCamera is CinemachineFreeLook freeLook)
+                {
+                    if (_targetFov > 0f)
+                    {
+                        freeLook.m_Lens.FieldOfView = Mathf.Lerp(freeLook.m_Lens.FieldOfView, _targetFov, dt * _fovBlendSpeed);
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

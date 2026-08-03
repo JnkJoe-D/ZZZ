@@ -5,51 +5,49 @@ using UnityEngine;
 
 namespace ATEditor.Editor
 {
-    [CustomDrawer(typeof(ComboWindowClip))]
+    [CustomDrawer(typeof(RouteWindowClip))]
     public sealed class ComboWindowClipDrawer : ClipDrawer
     {
+        private static bool _showBase = true;
+        private static bool _showCombo = true;
+
         public override void DrawInspector(ClipBase clip)
         {
-            if (clip is not ComboWindowClip comboWindow)
+            if (clip is not RouteWindowClip comboWindow)
             {
                 base.DrawInspector(clip);
                 return;
             }
 
-            EditorGUILayout.LabelField("Combo Window", EditorStyles.boldLabel);
-
-            string[] tagOptions = ActionTagOptions.GetComboWindowTags();
-            string newClipName = comboWindow.clipName;
-            bool newEnabled = comboWindow.isEnabled;
-            float newStartTime = comboWindow.StartTime;
-            float newDuration = comboWindow.Duration;
-            string newComboTag = comboWindow.comboTag;
-
             EditorGUI.BeginChangeCheck();
-            newClipName = EditorGUILayout.TextField("Clip Name", newClipName);
-            newEnabled = EditorGUILayout.Toggle("Enabled", newEnabled);
-            newStartTime = Mathf.Max(0f, EditorGUILayout.FloatField("Start Time", newStartTime));
-            newDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField("Duration", newDuration));
-            newComboTag = DrawComboTagField(newComboTag, tagOptions);
+
+            // 1. 基础信息卡片
+            DrawBaseClipCard(clip, ref _showBase, "基础信息");
+
+            // 2. 连招派生窗口卡片
+            _showCombo = EditorGUILayout.Foldout(_showCombo, "连招派生配置", true, EditorStyles.foldoutHeader);
+            if (_showCombo)
+            {
+                EditorGUILayout.BeginVertical("box");
+                string[] tagOptions = ActionTagOptions.GetComboWindowTags();
+                comboWindow.comboTag = DrawComboTagField(comboWindow.comboTag, tagOptions);
+                EditorGUILayout.EndVertical();
+            }
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (UndoContext != null && UndoContext.Length > 0)
                 {
-                    Undo.RecordObjects(UndoContext, "Inspector Change: Combo Window");
+                    Undo.RecordObjects(UndoContext, "Modify Combo Window Clip");
+                    foreach (var ctx in UndoContext) EditorUtility.SetDirty(ctx);
                 }
-
-                comboWindow.clipName = newClipName;
-                comboWindow.isEnabled = newEnabled;
-                comboWindow.StartTime = newStartTime;
-                comboWindow.Duration = newDuration;
-                comboWindow.comboTag = newComboTag;
+                MarkTimelineDirty("Modify Combo Window Clip");
             }
         }
 
         public override void DrawTimelineGUI(ClipBase clip, Rect clipRect, ATEditorState state, Color clipColor, string displayName)
         {
-            if (clip is ComboWindowClip comboWindow && !string.IsNullOrWhiteSpace(comboWindow.comboTag))
+            if (clip is RouteWindowClip comboWindow && !string.IsNullOrWhiteSpace(comboWindow.comboTag))
             {
                 displayName = comboWindow.comboTag;
             }
@@ -61,22 +59,22 @@ namespace ATEditor.Editor
         {
             if (tagOptions == null || tagOptions.Length == 0)
             {
-                EditorGUILayout.HelpBox("No combo window tags are configured. Enter a tag manually.", MessageType.Warning);
-                return EditorGUILayout.TextField("Combo Tag", currentValue);
+                EditorGUILayout.HelpBox("未配置连招窗口标签，请手动输入标签。", MessageType.Warning);
+                return EditorGUILayout.TextField("连招标签", currentValue);
             }
 
             int currentIndex = Array.IndexOf(tagOptions, currentValue);
             if (currentIndex >= 0)
             {
-                int newIndex = EditorGUILayout.Popup("Combo Tag", currentIndex, tagOptions);
+                int newIndex = EditorGUILayout.Popup("连招标签", currentIndex, tagOptions);
                 return tagOptions[newIndex];
             }
 
             Color oldColor = GUI.color;
             GUI.color = Color.yellow;
-            string editedValue = EditorGUILayout.TextField("Combo Tag [Unregistered]", currentValue);
+            string editedValue = EditorGUILayout.TextField("连招标签 [未注册]", currentValue);
             GUI.color = oldColor;
-            EditorGUILayout.HelpBox("This tag is not registered in ActionTagConfigAsset.availableComboWindowTags. Keep it for migration or replace it with a registered tag.", MessageType.Warning);
+            EditorGUILayout.HelpBox("此标签未在 ActionTagConfigAsset.availableComboWindowTags 中注册。可保留用于迁移或替换为已注册标签。", MessageType.Warning);
             return editedValue;
         }
     }

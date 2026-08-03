@@ -1,0 +1,158 @@
+using Game.Logic;
+using ATEditor;
+using UnityEngine;
+
+namespace Game.Adapters
+{
+    public class ATTransformHandler : ITransformHandler
+    {
+        private CharacterEntity _entity;
+
+        public ATTransformHandler(CharacterEntity entity)
+        {
+            _entity = entity;
+        }
+
+        public void Move(Vector3 delta)
+        {
+            _entity.MovementController?.Move(delta);
+        }
+
+        public void SetPosition(Vector3 position)
+        {
+            _entity.transform.position = position;
+        }
+
+        public Vector3 GetPosition()
+        {
+            return _entity.transform.position;
+        }
+
+        public Transform GetTarget()
+        {
+            return _entity.TargetFinder?.GetEnemy();
+        }
+
+        public float GetRadius()
+        {
+            var cc = _entity.GetComponent<CharacterController>();
+            return cc != null ? cc.radius + cc.skinWidth : 0.5f;
+        }
+
+        public float GetTargetRadius()
+        {
+            var target = GetTarget();
+            if (target != null)
+            {
+                var cc = target.GetComponent<CharacterController>();
+                if (cc != null) return cc.radius + cc.skinWidth;
+                var capsule = target.GetComponent<CapsuleCollider>();
+                if (capsule != null) return capsule.radius;
+            }
+            return 0.5f;
+        }
+
+        public float GetHeight()
+        {
+            var cc = _entity.GetComponent<CharacterController>();
+            if (cc != null) return cc.height;
+            var capsule = _entity.GetComponent<CapsuleCollider>();
+            if (capsule != null) return capsule.height;
+            return 2.0f;
+        }
+
+        public Vector3 GetCenter()
+        {
+            var cc = _entity.GetComponent<CharacterController>();
+            if (cc != null) return cc.center;
+            var capsule = _entity.GetComponent<CapsuleCollider>();
+            if (capsule != null) return capsule.center;
+            return new Vector3(0f, 1.0f, 0f);
+        }
+
+        public Collider GetCollider()
+        {
+            return _entity.GetComponent<Collider>();
+        }
+
+        public Collider GetTargetCollider()
+        {
+            var target = GetTarget();
+            return target != null ? target.GetComponent<Collider>() : null;
+        }
+
+        public void SetExcludeLayers(LayerMask mask)
+        {
+            var cc = _entity.GetComponent<CharacterController>();
+            if (cc != null) cc.excludeLayers = mask;
+        }
+
+        public LayerMask GetExcludeLayers()
+        {
+            var cc = _entity.GetComponent<CharacterController>();
+            return cc != null ? cc.excludeLayers : (LayerMask)0;
+        }
+
+        public void SetRotation(Quaternion rotation)
+        {
+            _entity.transform.rotation = rotation;
+        }
+
+        public void RotateTowards(Quaternion targetRotation, float speed)
+        {
+            // 优先使用 MovementController 的 TurnSpeed 如果 speed 为默认
+            float finalSpeed = speed > 0 ? speed : (_entity.MovementController as MovementController)?.TurnSpeed ?? 15f;
+            _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, targetRotation, Time.deltaTime * finalSpeed);
+        }
+
+        public Quaternion GetRotation()
+        {
+            return _entity.transform.rotation;
+        }
+
+        public void RotateTo(Vector3 worldDirection, float speed = -1f, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.RotateTo(worldDirection, speed, localOffset);
+        }
+
+        public void RotateToImmediately(Vector3 worldDirection, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.RotateToImmediately(worldDirection, localOffset);
+        }
+
+        public void FaceTo(Vector3 direction, float speed = -1f, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.FaceTo(direction, speed, localOffset);
+        }
+
+        public void FaceToImmediately(Vector3 direction, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.FaceToImmediately(direction, localOffset);
+        }
+
+        public void FaceToTarget(Transform target, float speed = -1f, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.FaceToTarget(target, speed, localOffset);
+        }
+
+        public void FaceToTargetImmediately(Transform target, Vector3 localOffset = default)
+        {
+            _entity.MovementController?.FaceToTargetImmediately(target, localOffset);
+        }
+
+        public Vector3 GetInputDirection(bool withCamera)
+        {
+            if (_entity.InputProvider == null) return Vector3.zero;
+
+            Vector2 input = _entity.InputProvider.GetMovementDirection();
+            if (input.sqrMagnitude < 0.001f) return Vector3.zero;
+
+            if (withCamera && _entity.MovementController != null)
+            {
+                return _entity.MovementController.CalculateWorldDirection(input);
+            }
+
+            return new Vector3(input.x, 0, input.y).normalized;
+        }
+    }
+}

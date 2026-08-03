@@ -5,15 +5,15 @@ namespace ATEditor{
     /// 运行时：音频片段 Process
     /// 通过 ISkillAudioHandler 播放音频
     /// </summary>
-    [ProcessBinding(typeof(SkillAudioClip), PlayMode.Runtime)]
-    public class RuntimeAudioProcess : ProcessBase<SkillAudioClip>
+    [ProcessBinding(typeof(AudioClip), PlayMode.Runtime)]
+    public class RuntimeAudioProcess : ProcessBase<AudioClip>
     {
-        private ISkillAudioHandler audioHandler;
+        private IAudioHandler audioHandler;
         private int playingSoundId = -1;
 
         public override void OnEnable()
         {
-            audioHandler = context.GetService<ISkillAudioHandler>();
+            audioHandler = context.GetService<IAudioHandler>();
         }
 
         public override void OnEnter()

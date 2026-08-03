@@ -6,12 +6,12 @@ namespace ATEditor.Editor
     /// 编辑器预览：音频片段 Process
     /// 通过 EditorAudioManager 获取/归还 AudioSource
     /// </summary>
-    [ProcessBinding(typeof(SkillAudioClip), PlayMode.EditorPreview)]
-    public class EditorAudioProcess : ProcessBase<SkillAudioClip>
+    [ProcessBinding(typeof(AudioClip), PlayMode.EditorPreview)]
+    public class EditorAudioProcess : ProcessBase<AudioClip>
     {
         private UnityEngine.AudioSource audioSource;
         private bool isScrubbing = false;
-        private AudioClip _playingClip;
+        private UnityEngine.AudioClip _playingClip;
 
         public override void OnEnter()
         {

@@ -7,71 +7,102 @@ namespace ATEditor.Editor
     [CustomDrawer(typeof(VFXClip))]
     public class VFXClipDrawer : ClipDrawer
     {
+        private static bool _showBase = true;
+        private static bool _showVFXConfig = true;
+        private static bool _showLifecycle = true;
+        private static bool _showSceneHandles = true;
+
         public override void DrawInspector(ClipBase clip)
         {
             var vfxClip = clip as VFXClip;
             if (vfxClip == null) return;
-            
-            EditorGUILayout.LabelField("特效片段设置", EditorStyles.boldLabel);
-            
-            // 使用基类的反射绘刀
-            EditorGUI.BeginChangeCheck();
-            base.DrawInspector(clip);
-            bool propertiesChanged = EditorGUI.EndChangeCheck();
 
-            // 绘制控制是否显示场景句柄的按钮（类签页样式Toolbar锛?
+            EditorGUI.BeginChangeCheck();
+
+            // 1. 基础信息卡片
+            DrawBaseClipCard(clip, ref _showBase, "基础信息");
+
+            // 2. 特效资源与挂载卡片
+            _showVFXConfig = EditorGUILayout.Foldout(_showVFXConfig, "特效资源与挂载", true, EditorStyles.foldoutHeader);
+            if (_showVFXConfig)
+            {
+                EditorGUILayout.BeginVertical("box");
+                vfxClip.effectPrefab = (GameObject)EditorGUILayout.ObjectField("特效预制体", vfxClip.effectPrefab, typeof(GameObject), false);
+                vfxClip.bindPoint = (BindPoint)EditorGUILayout.EnumPopup("挂载点", vfxClip.bindPoint);
+                if (vfxClip.bindPoint == BindPoint.CustomBone)
+                {
+                    vfxClip.customBoneName = EditorGUILayout.TextField("自定义骨骼名", vfxClip.customBoneName);
+                }
+                vfxClip.followTarget = EditorGUILayout.Toggle("跟随挂载点移动", vfxClip.followTarget);
+                vfxClip.positionOffset = EditorGUILayout.Vector3Field("位置偏移", vfxClip.positionOffset);
+                vfxClip.rotationOffset = EditorGUILayout.Vector3Field("旋转偏移", vfxClip.rotationOffset);
+                vfxClip.scale = EditorGUILayout.Vector3Field("缩放比例", vfxClip.scale);
+                EditorGUILayout.EndVertical();
+            }
+
+            // 3. 生命周期卡片
+            _showLifecycle = EditorGUILayout.Foldout(_showLifecycle, "生命周期控制", true, EditorStyles.foldoutHeader);
+            if (_showLifecycle)
+            {
+                EditorGUILayout.BeginVertical("box");
+                vfxClip.destroyOnEnd = EditorGUILayout.Toggle("片段结束时销毁", vfxClip.destroyOnEnd);
+                vfxClip.stopEmissionOnEnd = EditorGUILayout.Toggle("结束时停止发射粒子", vfxClip.stopEmissionOnEnd);
+                EditorGUILayout.EndVertical();
+            }
+
+            // 4. 场景编辑句柄工具
             if (vfxClip.effectPrefab != null)
             {
-                GUILayout.Space(10);
-                
-                string[] toolbarOptions = new string[] { "位置", "旋转", "缩放" };
-                
-                EditorGUI.BeginChangeCheck();
-                
-                // Toolbar的选中索引。如果当前是None，则不应该有选中项　
-                // 我们可以用一个额外的变量或者巧妙地映射来处琀None 状态　
-                // 为了讀Toolbar 能取消选中，这里我们自己画一组连在一起的 Toggle 按钮
-                
-                GUILayout.BeginHorizontal();
-                
-                bool isPos = vfxClip.activeHandleType == VFXClip.VFXHandleType.Position;
-                bool isRot = vfxClip.activeHandleType == VFXClip.VFXHandleType.Rotation;
-                bool isSca = vfxClip.activeHandleType == VFXClip.VFXHandleType.Scale;
-                
-                GUIStyle leftStyle = new GUIStyle(EditorStyles.miniButtonLeft) { fontSize = 12, fixedHeight = 24 };
-                GUIStyle midStyle = new GUIStyle(EditorStyles.miniButtonMid) { fontSize = 12, fixedHeight = 24 };
-                GUIStyle rightStyle = new GUIStyle(EditorStyles.miniButtonRight) { fontSize = 12, fixedHeight = 24 };
-                
-                bool newPos = GUILayout.Toggle(isPos, "位置", leftStyle);
-                bool newRot = GUILayout.Toggle(isRot, "旋转", midStyle);
-                bool newSca = GUILayout.Toggle(isSca, "缩放", rightStyle);
-                
-                GUILayout.EndHorizontal();
-
-                if (EditorGUI.EndChangeCheck())
+                _showSceneHandles = EditorGUILayout.Foldout(_showSceneHandles, "场景交互工具", true, EditorStyles.foldoutHeader);
+                if (_showSceneHandles)
                 {
+                    EditorGUILayout.BeginVertical("box");
+                    GUILayout.BeginHorizontal();
+
+                    bool isPos = vfxClip.activeHandleType == VFXClip.VFXHandleType.Position;
+                    bool isRot = vfxClip.activeHandleType == VFXClip.VFXHandleType.Rotation;
+                    bool isSca = vfxClip.activeHandleType == VFXClip.VFXHandleType.Scale;
+
+                    GUIStyle leftStyle = new GUIStyle(EditorStyles.miniButtonLeft) { fontSize = 12, fixedHeight = 24 };
+                    GUIStyle midStyle = new GUIStyle(EditorStyles.miniButtonMid) { fontSize = 12, fixedHeight = 24 };
+                    GUIStyle rightStyle = new GUIStyle(EditorStyles.miniButtonRight) { fontSize = 12, fixedHeight = 24 };
+
+                    bool newPos = GUILayout.Toggle(isPos, "位置句柄", leftStyle);
+                    bool newRot = GUILayout.Toggle(isRot, "旋转句柄", midStyle);
+                    bool newSca = GUILayout.Toggle(isSca, "缩放句柄", rightStyle);
+
+                    GUILayout.EndHorizontal();
+
                     VFXClip.VFXHandleType newType = VFXClip.VFXHandleType.None;
-                    
-                    // 逻辑：如果点击了已经激活的，则取消激活（变成None锛夈€?
-                    // 否则切换到新点击的类型　
                     if (newPos && !isPos) newType = VFXClip.VFXHandleType.Position;
                     else if (newRot && !isRot) newType = VFXClip.VFXHandleType.Rotation;
                     else if (newSca && !isSca) newType = VFXClip.VFXHandleType.Scale;
-                    // 如果原本是激活的，由于使用了Toggle组的互斥和点击反选，我们可以判断＀
-                    // 新选中的其实就是触发事件的，如果它昀false 且原本是 true，说明是被点掉的
-                    
-                    if(isPos && !newPos) newType = VFXClip.VFXHandleType.None;
-                    if(isRot && !newRot) newType = VFXClip.VFXHandleType.None;
-                    if(isSca && !newSca) newType = VFXClip.VFXHandleType.None;
-                    
-                    vfxClip.activeHandleType = newType;
-                    
-                    if (newType == VFXClip.VFXHandleType.Position) Tools.current = Tool.Move;
-                    else if (newType == VFXClip.VFXHandleType.Rotation) Tools.current = Tool.Rotate;
-                    else if (newType == VFXClip.VFXHandleType.Scale) Tools.current = Tool.Scale;
-                    
-                    SceneView.RepaintAll();
+
+                    if (isPos && !newPos) newType = VFXClip.VFXHandleType.None;
+                    if (isRot && !newRot) newType = VFXClip.VFXHandleType.None;
+                    if (isSca && !newSca) newType = VFXClip.VFXHandleType.None;
+
+                    if (newType != vfxClip.activeHandleType)
+                    {
+                        vfxClip.activeHandleType = newType;
+                        if (newType == VFXClip.VFXHandleType.Position) Tools.current = Tool.Move;
+                        else if (newType == VFXClip.VFXHandleType.Rotation) Tools.current = Tool.Rotate;
+                        else if (newType == VFXClip.VFXHandleType.Scale) Tools.current = Tool.Scale;
+                        SceneView.RepaintAll();
+                    }
+
+                    EditorGUILayout.EndVertical();
                 }
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (UndoContext != null && UndoContext.Length > 0)
+                {
+                    Undo.RecordObjects(UndoContext, "Modify VFX Clip");
+                    foreach (var ctx in UndoContext) EditorUtility.SetDirty(ctx);
+                }
+                MarkTimelineDirty("Modify VFX Clip");
             }
         }
 

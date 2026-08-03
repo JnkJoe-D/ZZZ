@@ -66,10 +66,10 @@ namespace ATEditor
             {
                 foreach (var clip in track.clips)
                 {
-                    if (clip is SkillAnimationClip animClip)
+                    if (clip is AnimationClip animClip)
                     {
                         if (animClip.clipRef.IsValid())
-                            animClip.animationClip = ResolveAssetImmediate<AnimationClip>(animClip.clipRef.guid, animClip.clipRef.assetPath, animClip.clipRef.assetName);
+                            animClip.animationClip = ResolveAssetImmediate<UnityEngine.AnimationClip>(animClip.clipRef.guid, animClip.clipRef.assetPath, animClip.clipRef.assetName);
                         if (animClip.maskRef.IsValid())
                             animClip.overrideMask = ResolveAssetImmediate<AvatarMask>(animClip.maskRef.guid, animClip.maskRef.assetPath, animClip.maskRef.assetName);
                     }
@@ -89,10 +89,10 @@ namespace ATEditor
                             if (detect.hitVFXRef.IsValid())
                                 detect.hitVFXPrefab = ResolveAssetImmediate<GameObject>(detect.hitVFXRef.guid, detect.hitVFXRef.assetPath, detect.hitVFXRef.assetName);
                             if (detect.hitAudioRef.IsValid())
-                                detect.hitAudioClip = ResolveAssetImmediate<AudioClip>(detect.hitAudioRef.guid, detect.hitAudioRef.assetPath, detect.hitAudioRef.assetName);
+                                detect.hitAudioClip = ResolveAssetImmediate<UnityEngine.AudioClip>(detect.hitAudioRef.guid, detect.hitAudioRef.assetPath, detect.hitAudioRef.assetName);
                         }
                     }
-                    else if (clip is SkillAudioClip audioClip)
+                    else if (clip is AudioClip audioClip)
                     {
                         audioClip.audioClips.Clear();
                         if (audioClip.audioRefs != null)
@@ -100,11 +100,18 @@ namespace ATEditor
                             foreach (var r in audioClip.audioRefs)
                             {
                                 if (r.IsValid())
-                                    audioClip.audioClips.Add(ResolveAssetImmediate<AudioClip>(r.guid, r.assetPath, r.assetName));
+                                    audioClip.audioClips.Add(ResolveAssetImmediate<UnityEngine.AudioClip>(r.guid, r.assetPath, r.assetName));
                                 else
                                     audioClip.audioClips.Add(null);
                             }
                         }
+                    }
+                    else if (clip is CameraAnimationClip cameraAnimClip)
+                    {
+                        if (cameraAnimClip.cameraRef.IsValid())
+                            cameraAnimClip.cameraPrefab = ResolveAssetImmediate<GameObject>(cameraAnimClip.cameraRef.guid, cameraAnimClip.cameraRef.assetPath, cameraAnimClip.cameraRef.assetName);
+                        if (cameraAnimClip.timelineRef.IsValid())
+                            cameraAnimClip.timelineAsset = ResolveAssetImmediate<TimelineAsset>(cameraAnimClip.timelineRef.guid, cameraAnimClip.timelineRef.assetPath, cameraAnimClip.timelineRef.assetName);
                     }
                 }
             }
@@ -146,7 +153,7 @@ namespace ATEditor
             {
                 foreach (var clip in track.clips)
                 {
-                    if (clip is SkillAnimationClip animClip)
+                    if (clip is AnimationClip animClip)
                     {
                         SyncAssetReference(animClip.clipRef, animClip.animationClip);
                         SyncAssetReference(animClip.maskRef, animClip.overrideMask);
@@ -168,7 +175,7 @@ namespace ATEditor
                             SyncAssetReference(detect.hitAudioRef, detect.hitAudioClip);
                         }
                     }
-                    else if (clip is SkillAudioClip audioClip)
+                    else if (clip is AudioClip audioClip)
                     {
                         if (audioClip.audioRefs == null) audioClip.audioRefs = new List<SkillAssetReference>();
                         while (audioClip.audioRefs.Count < audioClip.audioClips.Count) audioClip.audioRefs.Add(new SkillAssetReference());
@@ -178,6 +185,11 @@ namespace ATEditor
                         {
                             SyncAssetReference(audioClip.audioRefs[i], audioClip.audioClips[i]);
                         }
+                    }
+                    else if (clip is CameraAnimationClip cameraAnimClip)
+                    {
+                        SyncAssetReference(cameraAnimClip.cameraRef, cameraAnimClip.cameraPrefab);
+                        SyncAssetReference(cameraAnimClip.timelineRef, cameraAnimClip.timelineAsset);
                     }
                 }
             }
@@ -206,10 +218,10 @@ namespace ATEditor
             {
                 foreach (var clip in track.clips)
                 {
-                    if (clip is SkillAnimationClip animClip)
+                    if (clip is AnimationClip animClip)
                     {
                         if (animClip.clipRef.IsValid())
-                            animClip.animationClip = await ResolveAsset<AnimationClip>(animClip.clipRef.guid, animClip.clipRef.assetPath, animClip.clipRef.assetName);
+                            animClip.animationClip = await ResolveAsset<UnityEngine.AnimationClip>(animClip.clipRef.guid, animClip.clipRef.assetPath, animClip.clipRef.assetName);
                         if (animClip.maskRef.IsValid())
                             animClip.overrideMask = await ResolveAsset<AvatarMask>(animClip.maskRef.guid, animClip.maskRef.assetPath, animClip.maskRef.assetName);
                     }
@@ -229,10 +241,10 @@ namespace ATEditor
                             if (detect.hitVFXRef.IsValid())
                                 detect.hitVFXPrefab = await ResolveAsset<GameObject>(detect.hitVFXRef.guid, detect.hitVFXRef.assetPath, detect.hitVFXRef.assetName);
                             if (detect.hitAudioRef.IsValid())
-                                detect.hitAudioClip = await ResolveAsset<AudioClip>(detect.hitAudioRef.guid, detect.hitAudioRef.assetPath, detect.hitAudioRef.assetName);
+                                detect.hitAudioClip = await ResolveAsset<UnityEngine.AudioClip>(detect.hitAudioRef.guid, detect.hitAudioRef.assetPath, detect.hitAudioRef.assetName);
                         }
                     }
-                    else if (clip is SkillAudioClip audioClip)
+                    else if (clip is AudioClip audioClip)
                     {
                         audioClip.audioClips.Clear();
                         if (audioClip.audioRefs != null)
@@ -240,21 +252,21 @@ namespace ATEditor
                             foreach (var r in audioClip.audioRefs)
                             {
                                 if (r.IsValid())
-                                    audioClip.audioClips.Add(await ResolveAsset<AudioClip>(r.guid, r.assetPath, r.assetName));
+                                    audioClip.audioClips.Add(await ResolveAsset<UnityEngine.AudioClip>(r.guid, r.assetPath, r.assetName));
                                 else
                                     audioClip.audioClips.Add(null);
                             }
                         }
                     }
-                    else if(clip is CameraControlClip cameraControlClip)
+                    else if (clip is CameraAnimationClip cameraAnimClip)
                     {
-                        if(cameraControlClip.cameraRef.IsValid())
+                        if (cameraAnimClip.cameraRef.IsValid())
                         {
-                            cameraControlClip.cameraPrefab = await ResolveAsset<GameObject>(cameraControlClip.cameraRef.guid, cameraControlClip.cameraRef.assetPath, cameraControlClip.cameraRef.assetName);
+                            cameraAnimClip.cameraPrefab = await ResolveAsset<GameObject>(cameraAnimClip.cameraRef.guid, cameraAnimClip.cameraRef.assetPath, cameraAnimClip.cameraRef.assetName);
                         }
-                        if (cameraControlClip.timelineRef.IsValid())
+                        if (cameraAnimClip.timelineRef.IsValid())
                         {
-                            cameraControlClip.timelineAsset = await ResolveAsset<TimelineAsset>(cameraControlClip.timelineRef.guid, cameraControlClip.timelineRef.assetPath, cameraControlClip.timelineRef.assetName);
+                            cameraAnimClip.timelineAsset = await ResolveAsset<TimelineAsset>(cameraAnimClip.timelineRef.guid, cameraAnimClip.timelineRef.assetPath, cameraAnimClip.timelineRef.assetName);
                         }
                     }
                 }
@@ -289,7 +301,7 @@ namespace ATEditor
 
                 // 仅针对常见内嵌多资源的类型（如 FBX 里的 AnimationClip / AvatarMask）尝试异步读取 SubAsset
                 if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) && 
-                    (typeof(T) == typeof(AnimationClip) || typeof(T) == typeof(AvatarMask)))
+                    (typeof(T) == typeof(UnityEngine.AnimationClip) || typeof(T) == typeof(AvatarMask)))
                 {
                     T subAsset = await Runtime.SkillSystemContext.AssetLoader.LoadSubAssetAsync<T>(address, assetName);
                     if (subAsset != null) return subAsset;
@@ -345,7 +357,7 @@ namespace ATEditor
                 string address = !string.IsNullOrEmpty(assetPath) ? assetPath : assetName;
 
                 if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) &&
-                    (typeof(T) == typeof(AnimationClip) || typeof(T) == typeof(AvatarMask)))
+                    (typeof(T) == typeof(UnityEngine.AnimationClip) || typeof(T) == typeof(AvatarMask)))
                 {
                     T subAsset = Runtime.SkillSystemContext.AssetLoader.LoadSubAsset<T>(address, assetName);
                     if (subAsset != null) return subAsset;

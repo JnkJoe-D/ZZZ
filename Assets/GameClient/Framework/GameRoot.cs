@@ -123,7 +123,7 @@ namespace Game.Logic
             Debug.Log("[GameRoot] [4/9] Assets ... OK");
             
             // ── Step 4.5: 向技能编辑器注入资源加载适配器 ────────────────
-            ATEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.SkillAssetLoader());
+            ATEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.ATAssetLoader());
             Debug.Log("[GameRoot] [4.5/9] SkillEditor AssetLoader Injected ... OK");
             
             yield return null;

@@ -44,10 +44,10 @@ namespace ATEditor
         [SkillAssetReference("hitVFXPrefab")][HideInInspector]
         public SkillAssetReference hitVFXRef = new SkillAssetReference();
 
-        [SkillProperty("受击特效高度 (Y)")]
+        [SkillProperty("受击特效高度")]
         public float hitVFXHeight = 1.0f;
 
-        [SkillProperty("受击特效预览偏移 (XZ)")]
+        [SkillProperty("受击特效预览偏移")]
         public Vector2 hitVFXPreviewOffsetXZ = Vector2.zero;
 
         [SkillProperty("受击特效缩放")]
@@ -58,7 +58,7 @@ namespace ATEditor
 
         // ── 受击音效 ──
         [SkillProperty("受击音效")]
-        public AudioClip hitAudioClip;
+        public UnityEngine.AudioClip hitAudioClip;
 
         [SkillAssetReference("hitAudioClip")][HideInInspector]
         public SkillAssetReference hitAudioRef = new SkillAssetReference();

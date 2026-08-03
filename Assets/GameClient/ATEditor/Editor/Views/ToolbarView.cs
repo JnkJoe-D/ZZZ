@@ -12,6 +12,48 @@ namespace ATEditor.Editor
         private ATEditorState state;
         private ATEditorEvents events;
 
+        // 缓存圆角按钮样式（懒初始化）
+        private static GUIStyle _roundedButtonStyle;
+        private static GUIStyle _roundedToggleStyle;
+
+        private static GUIStyle RoundedButtonStyle
+        {
+            get
+            {
+                if (_roundedButtonStyle == null)
+                {
+                    _roundedButtonStyle = new GUIStyle("miniButton")
+                    {
+                        fontSize = 11,
+                        fixedHeight = 16,
+                        padding = new RectOffset(6, 6, 1, 1),
+                        margin = new RectOffset(2, 2, 1, 0),
+                        alignment = TextAnchor.MiddleCenter,
+                    };
+                }
+                return _roundedButtonStyle;
+            }
+        }
+
+        private static GUIStyle RoundedToggleStyle
+        {
+            get
+            {
+                if (_roundedToggleStyle == null)
+                {
+                    _roundedToggleStyle = new GUIStyle("miniButton")
+                    {
+                        fontSize = 11,
+                        fixedHeight = 16,
+                        padding = new RectOffset(6, 6, 1, 1),
+                        margin = new RectOffset(2, 2, 1, 0),
+                        alignment = TextAnchor.MiddleCenter,
+                    };
+                }
+                return _roundedToggleStyle;
+            }
+        }
+
         public ToolbarView(ATEditorWindow window, ATEditorState state, ATEditorEvents events)
         {
             this.window = window;
@@ -23,57 +65,62 @@ namespace ATEditor.Editor
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
             
-            GUILayout.Space(10);
+            GUILayout.Space(8);
             
-            // 播放控制组
+            // 播放控制组（保持原有 toolbarButton 样式）
             DrawTransportControls();
             
-            GUILayout.Space(20);
-            
-            GUILayout.Space(20);
+            GUILayout.Space(16);
 
-            // 2. 文件操作组 (中间)
-            if (GUILayout.Button(Lan.ImportFromJson, EditorStyles.toolbarButton, GUILayout.Width(80)))
-            {
-                OnImportJSON();
-            }
-            if (GUILayout.Button(Lan.ExportToJson, EditorStyles.toolbarButton, GUILayout.Width(80)))
-            {
-                OnExportJSON();
-            }
-            if (GUILayout.Button(Lan.Save, EditorStyles.toolbarButton, GUILayout.Width(80)))
-            {
-                OnSaveJson();
-            }
+            // 文件操作组 - 使用圆角按钮 + 间距
+            DrawRoundedButton(Lan.ImportFromJson, 80, OnImportJSON);
+            GUILayout.Space(4);
+            DrawRoundedButton(Lan.ExportToJson, 80, OnExportJSON);
+            GUILayout.Space(4);
+            DrawRoundedButton(Lan.Save, 60, OnSaveJson);
+            GUILayout.Space(8);
+            DrawRoundedButton(Lan.Settings, 56, OnSettings);
 
-            if (GUILayout.Button(Lan.Settings, EditorStyles.toolbarButton, GUILayout.Width(60)))
-            {
-                OnSettings();
-            }
+            GUILayout.Space(8);
 
-            GUILayout.Space(10);
-
-            // 4. 预览角色选择器
+            // 预览角色选择器（移除"预览角色："文本标签，直接显示 ObjectField）
             DrawPreviewTargetSelector();
 
             GUILayout.FlexibleSpace();
 
-            // 3. 视口控制 (右侧)
-            // Timeline 选中/Inspector 按钮
+            // 视口控制 (右侧) - 文件名 Toggle + 缩放复原按钮
             string displayName = string.IsNullOrEmpty(state.currentFilePath) ? "未保存" : System.IO.Path.GetFileName(state.currentFilePath);
-            bool isSelected = GUILayout.Toggle(state.isTimelineSelected, displayName, EditorStyles.toolbarButton, GUILayout.Width(120));
+            bool isSelected = GUILayout.Toggle(state.isTimelineSelected, displayName, RoundedToggleStyle, GUILayout.Width(120));
             if (isSelected && !state.isTimelineSelected)
             {
                 window.SelectTimeline();
             }
             
+            GUILayout.Space(4);
+
+            // 缩放复原按钮保持原有样式（用户要求不改圆角）
             if (GUILayout.Button($"{Lan.Zoom}: {state.zoom:F0}px/s", EditorStyles.toolbarButton, GUILayout.Width(100)))
             {
                 state.ResetView();
                 events.OnRepaintRequest?.Invoke();
             }
 
+            GUILayout.Space(4);
             EditorGUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// 绘制圆角按钮（带悬停色差）
+        /// </summary>
+        private void DrawRoundedButton(string label, float width, System.Action onClick)
+        {
+            var oldBg = GUI.backgroundColor;
+            GUI.backgroundColor = new Color(0.85f, 0.85f, 0.85f, 1f);
+            if (GUILayout.Button(label, RoundedButtonStyle, GUILayout.Width(width)))
+            {
+                onClick?.Invoke();
+            }
+            GUI.backgroundColor = oldBg;
         }
 
         #region 按钮回调
@@ -107,7 +154,7 @@ namespace ATEditor.Editor
         }
 
         /// <summary>
-        /// 绘制播放控制按钮
+        /// 绘制播放控制按钮（保持原有紧凑 toolbarButton 样式）
         /// </summary>
         private void DrawTransportControls()
         {
@@ -221,15 +268,13 @@ namespace ATEditor.Editor
         }
 
         /// <summary>
-        /// 绘制预览角色选择器
+        /// 绘制预览角色选择器（移除"预览角色："文本标签）
         /// </summary>
         private void DrawPreviewTargetSelector()
         {
-            EditorGUILayout.LabelField(Lan.PreviewTarget, EditorStyles.miniLabel, GUILayout.Width(60));
-            
             EditorGUI.BeginChangeCheck();
             state.previewTarget = (GameObject)EditorGUILayout.ObjectField(
-                state.previewTarget, typeof(GameObject), true, GUILayout.Width(120));
+                state.previewTarget, typeof(GameObject), true, GUILayout.Width(130));
             
             if (EditorGUI.EndChangeCheck())
             {
@@ -278,3 +323,4 @@ namespace ATEditor.Editor
         }
     }
 }
+

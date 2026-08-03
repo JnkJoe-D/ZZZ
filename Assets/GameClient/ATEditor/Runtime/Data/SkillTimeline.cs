@@ -17,8 +17,8 @@ namespace ATEditor
         // Timeline 参数
         private float duration = 0f;           // 持续时间（秒）
         public bool isLoop = false;             // 是否循环播放
-        public List<SkillTimelineEvent> beforePlayEvents = new List<SkillTimelineEvent>();
-        public List<SkillTimelineEvent> onCompleteEvents = new List<SkillTimelineEvent>();
+        public List<ActionTimelineEvent> beforePlayEvents = new List<ActionTimelineEvent>();
+        public List<ActionTimelineEvent> onCompleteEvents = new List<ActionTimelineEvent>();
         [SerializeField][HideInInspector]
         private List<Group> groups = new List<Group>();
         // 唯一的子节点容器

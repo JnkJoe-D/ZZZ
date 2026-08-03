@@ -40,5 +40,20 @@ namespace Game.Logic
         /// 是否在地面上
         /// </summary>
         bool IsGrounded { get; }
+
+        /// <summary>
+        /// 当前垂直速度 (m/s)
+        /// </summary>
+        float VerticalVelocity { get; }
+
+        /// <summary>
+        /// 重置垂直速度
+        /// </summary>
+        void ResetVerticalVelocity();
+
+        /// <summary>
+        /// 设置垂直速度 (用于跳跃、击飞等动量赋予)
+        /// </summary>
+        void SetVerticalVelocity(float velocity);
     }
 }

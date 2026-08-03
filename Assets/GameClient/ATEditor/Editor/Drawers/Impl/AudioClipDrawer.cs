@@ -1,90 +1,93 @@
 using UnityEditor;
+using UnityEngine;
 using ATEditor;
 
 namespace ATEditor.Editor
 {
-    [CustomDrawer(typeof(SkillAudioClip))]
+    [CustomDrawer(typeof(AudioClip))]
     public class AudioClipDrawer : ClipDrawer
     {
+        private static bool _showBase = true;
+        private static bool _showPool = true;
+        private static bool _showAudioSettings = true;
+
         public override void DrawInspector(ClipBase clip)
         {
-            var audioClip = clip as SkillAudioClip;
+            var audioClip = clip as AudioClip;
             if (audioClip == null) return;
 
-            EditorGUILayout.LabelField("音频片段设置", EditorStyles.boldLabel);
-
-            if (audioClip.audioClips == null) 
+            if (audioClip.audioClips == null)
             {
                 audioClip.audioClips = new System.Collections.Generic.List<UnityEngine.AudioClip>();
             }
 
-            int originalCount = audioClip.audioClips.Count;
-            // 绘制音频列表 (因为 SkillInspectorBase 尚不支持通用 List 反射)
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.BeginVertical("box");
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("音频资源池 (随机选用)", EditorStyles.boldLabel);
-            if (UnityEngine.GUILayout.Button("+", UnityEngine.GUILayout.Width(20)))
-            {
-                if (UndoContext != null && UndoContext.Length > 0) Undo.RecordObjects(UndoContext, "Add AudioClip");
-                audioClip.audioClips.Add(null);
-                UnityEngine.GUI.FocusControl(null);
-            }
-            EditorGUILayout.EndHorizontal();
 
-            int removeIndex = -1;
-            for (int i = 0; i < audioClip.audioClips.Count; i++)
+            // 1. 基础信息卡片
+            DrawBaseClipCard(clip, ref _showBase, "基础信息");
+
+            // 2. 音频资源池卡片
+            _showPool = EditorGUILayout.Foldout(_showPool, $"音频资源池 ({audioClip.audioClips.Count})", true, EditorStyles.foldoutHeader);
+            if (_showPool)
             {
+                EditorGUILayout.BeginVertical("box");
                 EditorGUILayout.BeginHorizontal();
-                audioClip.audioClips[i] = (UnityEngine.AudioClip)EditorGUILayout.ObjectField(audioClip.audioClips[i], typeof(UnityEngine.AudioClip), false);
-                if (UnityEngine.GUILayout.Button("X", UnityEngine.GUILayout.Width(20)))
+                EditorGUILayout.LabelField("音频剪辑列表 (播放时随机选用)", EditorStyles.miniBoldLabel);
+                if (GUILayout.Button("+ 添加", EditorStyles.miniButton, GUILayout.Width(60)))
                 {
-                    removeIndex = i;
-                    UnityEngine.GUI.FocusControl(null);
+                    audioClip.audioClips.Add(null);
+                    GUI.FocusControl(null);
                 }
                 EditorGUILayout.EndHorizontal();
-            }
-            
-            if (removeIndex >= 0)
-            {
-                if (UndoContext != null && UndoContext.Length > 0) Undo.RecordObjects(UndoContext, "Remove AudioClip");
-                audioClip.audioClips.RemoveAt(removeIndex);
-            }
-            
-            EditorGUILayout.EndVertical();
 
-            if (EditorGUI.EndChangeCheck() || originalCount != audioClip.audioClips.Count)
+                int removeIndex = -1;
+                for (int i = 0; i < audioClip.audioClips.Count; i++)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    audioClip.audioClips[i] = (UnityEngine.AudioClip)EditorGUILayout.ObjectField($"剪辑 [{i}]", audioClip.audioClips[i], typeof(UnityEngine.AudioClip), false);
+                    if (GUILayout.Button("X", GUILayout.Width(24)))
+                    {
+                        removeIndex = i;
+                        GUI.FocusControl(null);
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+
+                if (removeIndex >= 0)
+                {
+                    audioClip.audioClips.RemoveAt(removeIndex);
+                }
+
+                if (audioClip.audioClips.Count == 0)
+                {
+                    EditorGUILayout.HelpBox("请至少添加一个 AudioClip 音频资源", MessageType.Info);
+                }
+
+                EditorGUILayout.EndVertical();
+            }
+
+            // 3. 播放与空间设置卡片
+            _showAudioSettings = EditorGUILayout.Foldout(_showAudioSettings, "播放与空间设置", true, EditorStyles.foldoutHeader);
+            if (_showAudioSettings)
             {
-                if (UndoContext != null && UndoContext.Length > 0)
-                {
-                    foreach (var ctx in UndoContext)
-                    {
-                        EditorUtility.SetDirty(ctx);
-                    }
-                }
-                // 通知基类标记改动
-                var eventField = typeof(SkillInspectorBase).GetField("OnInspectorChanged", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (eventField != null)
-                {
-                    var eventDelegate = (System.MulticastDelegate)eventField.GetValue(this);
-                    if (eventDelegate != null)
-                    {
-                        foreach (var handler in eventDelegate.GetInvocationList())
-                        {
-                            handler.Method.Invoke(handler.Target, null);
-                        }
-                    }
-                }
+                EditorGUILayout.BeginVertical("box");
+                audioClip.volume = EditorGUILayout.Slider("音量", audioClip.volume, 0f, 1f);
+                audioClip.pitch = EditorGUILayout.Slider("音调", audioClip.pitch, 0.1f, 3f);
+                audioClip.spatialBlend = EditorGUILayout.Slider("空间混合", audioClip.spatialBlend, 0f, 1f);
+                audioClip.loop = EditorGUILayout.Toggle("循环播放", audioClip.loop);
+                audioClip.isAffectSpeed = EditorGUILayout.Toggle("同步角色速度", audioClip.isAffectSpeed);
+                EditorGUILayout.EndVertical();
             }
 
             if (EditorGUI.EndChangeCheck())
             {
-                // 通知基类标记改动 (这里不通过基类自动触发，只是用 GUI 表示有修改即可，Timeline 会在自身逻辑里序列化或通过其他属性触发Dirty)
-                // 暂时留空。如果有强需求保存，在 TimelineWindow 统一按 Ctrl+S 即可
+                if (UndoContext != null && UndoContext.Length > 0)
+                {
+                    Undo.RecordObjects(UndoContext, "Modify Audio Clip");
+                    foreach (var ctx in UndoContext) EditorUtility.SetDirty(ctx);
+                }
+                MarkTimelineDirty("Modify Audio Clip");
             }
-
-            // 使用基类的反射绘制剩余的通用属性（它会跳过不支持的 List）
-            base.DrawInspector(clip);
         }
     }
 }

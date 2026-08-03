@@ -17,7 +17,7 @@ namespace ATEditor.Editor
         private sealed class PreviewClipNode
         {
             public string clipId;
-            public SkillAnimationClip clip;
+            public AnimationClip clip;
             public int layerIndex;
             public int mixerInputIndex;
             public AnimationClipPlayable playable;
@@ -36,7 +36,7 @@ namespace ATEditor.Editor
             public AnimationPlayableOutput output;
             public AnimationLayerMixerPlayable rootMixer;
             public readonly Dictionary<int, AnimationMixerPlayable> layerMixers = new Dictionary<int, AnimationMixerPlayable>();
-            public readonly Dictionary<string, SkillAnimationClip> registeredClips = new Dictionary<string, SkillAnimationClip>();
+            public readonly Dictionary<string, AnimationClip> registeredClips = new Dictionary<string, AnimationClip>();
             public readonly Dictionary<string, PreviewClipNode> clipNodes = new Dictionary<string, PreviewClipNode>();
             public bool samplingMode;
             public bool trackBaseApplied;
@@ -47,7 +47,7 @@ namespace ATEditor.Editor
 
         #region Public API
 
-        public static void RegisterClip(GameObject owner, SkillAnimationClip clip)
+        public static void RegisterClip(GameObject owner, AnimationClip clip)
         {
             if (owner == null || clip == null || string.IsNullOrEmpty(clip.clipId))
             {
@@ -320,10 +320,10 @@ namespace ATEditor.Editor
             RebuildTrackOffsets(ctx);
 
             int maxLayer = 0;
-            List<SkillAnimationClip> clips = new List<SkillAnimationClip>(ctx.registeredClips.Values);
+            List<AnimationClip> clips = new List<AnimationClip>(ctx.registeredClips.Values);
             clips.Sort(CompareClipOrder);
 
-            foreach (SkillAnimationClip clip in clips)
+            foreach (AnimationClip clip in clips)
             {
                 if (clip == null || clip.animationClip == null)
                 {
@@ -345,7 +345,7 @@ namespace ATEditor.Editor
                 ctx.layerMixers[layer] = layerMixer;
             }
 
-            foreach (SkillAnimationClip clip in clips)
+            foreach (AnimationClip clip in clips)
             {
                 if (clip == null || clip.animationClip == null || string.IsNullOrEmpty(clip.clipId))
                 {
@@ -387,7 +387,7 @@ namespace ATEditor.Editor
             ctx.dirty = false;
         }
 
-        private static int CompareClipOrder(SkillAnimationClip a, SkillAnimationClip b)
+        private static int CompareClipOrder(AnimationClip a, AnimationClip b)
         {
             if (ReferenceEquals(a, b))
             {
@@ -477,7 +477,7 @@ namespace ATEditor.Editor
 
         #region Sampling / Weight
 
-        private static float ComputeRawWeight(SkillAnimationClip clip, float currentTime)
+        private static float ComputeRawWeight(AnimationClip clip, float currentTime)
         {
             if (clip == null)
             {

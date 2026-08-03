@@ -440,14 +440,14 @@ namespace ATEditor
             }
         }
 
-        private void DispatchTimelineEvents(IReadOnlyList<SkillTimelineEvent> timelineEvents)
+        private void DispatchTimelineEvents(IReadOnlyList<ActionTimelineEvent> timelineEvents)
         {
             if (timelineEvents == null || timelineEvents.Count == 0 || context == null)
             {
                 return;
             }
 
-            ISkillEventHandler eventHandler = context.GetService<ISkillEventHandler>();
+            IEventHandler eventHandler = context.GetService<IEventHandler>();
             if (eventHandler == null)
             {
                 return;
@@ -455,7 +455,7 @@ namespace ATEditor
 
             for (int i = 0; i < timelineEvents.Count; i++)
             {
-                SkillTimelineEvent timelineEvent = timelineEvents[i];
+                ActionTimelineEvent timelineEvent = timelineEvents[i];
                 if (timelineEvent == null || string.IsNullOrEmpty(timelineEvent.eventName))
                 {
                     continue;

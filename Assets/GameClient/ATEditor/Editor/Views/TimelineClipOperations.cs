@@ -257,7 +257,8 @@ namespace ATEditor.Editor
             newClip.Duration = 1.0f;
 
             string clipDisplayName = TrackRegistry.GetClipDisplayName(newClip.GetType());
-            newClip.clipName = $"{clipDisplayName}片段";
+            string suffix = clipDisplayName.EndsWith("片段") ? "" : "片段";
+            newClip.clipName = $"{clipDisplayName}{suffix}";
 
             track.clips.Add(newClip);
 

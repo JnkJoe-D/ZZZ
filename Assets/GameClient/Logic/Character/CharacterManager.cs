@@ -345,16 +345,13 @@ namespace Game.Logic
             int activeIndex = Mathf.Clamp(initialSlotIndex, 0, _partyMembers.Count - 1);
             for (int i = 0; i < _partyMembers.Count; i++)
             {
-                PartyMember member = _partyMembers[i];
-                if (i == activeIndex)
+                if (i != activeIndex)
                 {
-                    ActivatePartyMember(member, spawnPos, spawnRot);
-                }
-                else
-                {
-                    SetMemberStandby(member.Entity);
+                    SetMemberStandby(_partyMembers[i].Entity);
                 }
             }
+
+            ActivatePartyMember(_partyMembers[activeIndex], spawnPos, spawnRot);
 
             return LocalCharacter;
         }

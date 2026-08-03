@@ -10,9 +10,56 @@ namespace ATEditor.Editor
         private static readonly Color spawnSolidColor = new Color(0f, 1f, 1f, 0.2f);
         private const float indicatorRadius = 0.2f;
 
+        private static bool _showBase = true;
+        private static bool _showSpawnConfig = true;
+        private static bool _showLogicTags = true;
+
         public override void DrawInspector(ClipBase clip)
         {
-            base.DrawInspector(clip);
+            var spawnClip = clip as SpawnClip;
+            if (spawnClip == null) return;
+
+            EditorGUI.BeginChangeCheck();
+
+            // 1. 基础信息卡片
+            DrawBaseClipCard(clip, ref _showBase, "基础信息");
+
+            // 2. 生成实体与挂载设置卡片
+            _showSpawnConfig = EditorGUILayout.Foldout(_showSpawnConfig, "生成实体与挂载设置", true, EditorStyles.foldoutHeader);
+            if (_showSpawnConfig)
+            {
+                EditorGUILayout.BeginVertical("box");
+                spawnClip.prefab = (GameObject)EditorGUILayout.ObjectField("生成预制体", spawnClip.prefab, typeof(GameObject), false);
+                spawnClip.bindPoint = (BindPoint)EditorGUILayout.EnumPopup("生成挂载点", spawnClip.bindPoint);
+                if (spawnClip.bindPoint == BindPoint.CustomBone)
+                {
+                    spawnClip.customBoneName = EditorGUILayout.TextField("自定义骨骼名", spawnClip.customBoneName);
+                }
+                spawnClip.positionOffset = EditorGUILayout.Vector3Field("位置偏移", spawnClip.positionOffset);
+                spawnClip.rotationOffset = EditorGUILayout.Vector3Field("旋转偏移", spawnClip.rotationOffset);
+                spawnClip.detach = EditorGUILayout.Toggle("出生后脱离父节点", spawnClip.detach);
+                EditorGUILayout.EndVertical();
+            }
+
+            // 3. 逻辑与标签设置卡片
+            _showLogicTags = EditorGUILayout.Foldout(_showLogicTags, "逻辑与标签参数", true, EditorStyles.foldoutHeader);
+            if (_showLogicTags)
+            {
+                EditorGUILayout.BeginVertical("box");
+                spawnClip.destroyOnInterrupt = EditorGUILayout.Toggle("被动打断时销毁", spawnClip.destroyOnInterrupt);
+                spawnClip.eventTag = EditorGUILayout.TextField("事件透传标签", spawnClip.eventTag);
+                EditorGUILayout.EndVertical();
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (UndoContext != null && UndoContext.Length > 0)
+                {
+                    Undo.RecordObjects(UndoContext, "Modify Spawn Clip");
+                    foreach (var ctx in UndoContext) EditorUtility.SetDirty(ctx);
+                }
+                MarkTimelineDirty("Modify Spawn Clip");
+            }
         }
 
         public override void DrawSceneGUI(ClipBase obj, ATEditorState state)
@@ -67,7 +114,7 @@ namespace ATEditor.Editor
             Transform parent = null;
             if (state != null && state.PreviewContext != null)
             {
-                var actor = state.PreviewContext.GetService<ISkillBoneGetter>();
+                var actor = state.PreviewContext.GetService<IBoneGetter>();
                 if (actor != null)
                 {
                     parent = actor.GetBone(clip.bindPoint, clip.customBoneName);
@@ -76,7 +123,7 @@ namespace ATEditor.Editor
 
             if (parent == null && state != null && state.previewTarget != null)
             {
-                var getter = new Game.Adapters.SkillBoneGetter(state.previewTarget);
+                var getter = new Game.Adapters.ATBoneGetter(state.previewTarget);
                 parent = getter.GetBone(clip.bindPoint, clip.customBoneName);
             }
 

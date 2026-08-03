@@ -35,5 +35,17 @@ namespace Game.Camera
         GameObject CreateCamera(GameObject prefab);
         void DestroyCamera(GameObject cameraInstance);
         void PlayCameraTimeline(GameObject cameraInstance, ATEditor.CameraControlParams paramsObj);
+
+        // 常规相机控制
+        void LockRotation(bool lockYaw, bool lockPitch);
+        void UnlockRotation();
+        void StartRecenter(ATEditor.CameraRecenterTarget target, float smoothTime, float targetPitch, bool disableInput, float framingBiasAngle = -8.0f, float deadzoneAngle = 1.5f, bool allowSoftInput = true);
+        void UpdateRecenter(float deltaTime);
+        void StopRecenter(bool restoreInput);
+        void StartLookAtTarget(Vector3 offset, float smoothSpeed, bool fallbackToCharacter);
+        void UpdateLookAtTarget(float deltaTime);
+        void StopLookAtTarget(bool restore);
+        void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed);
+        void ResetCameraFOVAndDistance(float speed);
     }
 }

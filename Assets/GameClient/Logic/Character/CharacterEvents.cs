@@ -32,6 +32,6 @@ namespace Game.Logic
     {
         public RoleEntity SourceEntity;
         public string EventName;
-        public List<SkillEventParam> Parameters;
+        public List<ATEventParam> Parameters;
     }
 }

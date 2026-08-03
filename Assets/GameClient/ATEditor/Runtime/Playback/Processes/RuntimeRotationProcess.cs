@@ -5,11 +5,11 @@ namespace ATEditor
     [ProcessBinding(typeof(RotationClip), PlayMode.Runtime)]
     public class RuntimeRotationProcess : ProcessBase<RotationClip>
     {
-        private ISkillTransformHandler _transformHandler;
+        private ITransformHandler _transformHandler;
 
         public override void OnEnable()
         {
-            _transformHandler = context.GetService<ISkillTransformHandler>();
+            _transformHandler = context.GetService<ITransformHandler>();
         }
 
         public override void OnEnter()

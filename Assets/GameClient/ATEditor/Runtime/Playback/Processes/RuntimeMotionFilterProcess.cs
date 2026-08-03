@@ -4,11 +4,11 @@ namespace ATEditor
     [ProcessBinding(typeof(MotionFilterClip), PlayMode.Runtime)]
     public class RuntimeMotionFilterProcess : ProcessBase<MotionFilterClip>
     {
-        private ISkillMotionWindowHandler _motionWindowHandler;
+        private IMotionWindowHandler _motionWindowHandler;
 
         public override void OnEnable()
         {
-            _motionWindowHandler =context.GetService<ISkillMotionWindowHandler>();
+            _motionWindowHandler =context.GetService<IMotionWindowHandler>();
         }
 
         public override void OnEnter()

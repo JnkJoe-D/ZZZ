@@ -14,14 +14,14 @@ namespace ATEditor
 
         private ParticleSpeedInfo[] particleInfos;
         private GameObject vfxInstance;
-        private ISkillVFXHandler vfxHanlder;
-        private ISkillBoneGetter boneGetter;
+        private IVFXHandler vfxHanlder;
+        private IBoneGetter boneGetter;
         private bool _returnQueued;
 
         public override void OnEnable()
         {
-            vfxHanlder = context.GetService<ISkillVFXHandler>();
-            boneGetter = context.GetService<ISkillBoneGetter>();
+            vfxHanlder = context.GetService<IVFXHandler>();
+            boneGetter = context.GetService<IBoneGetter>();
         }
 
         public override void OnEnter()

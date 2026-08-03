@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Game.Logic
 {
-    public abstract class CharacterEntity : MonoBehaviour, ISkillEventHandler
+    public abstract class CharacterEntity : MonoBehaviour, IEventHandler
     {
         private AnimComponent _animComponent;
         private CharacterInputEventAdapter _inputEventAdapter;
@@ -45,8 +45,8 @@ namespace Game.Logic
         public bool IsControlActive { get; private set; }
         public bool IsPresentationVisible { get; private set; } = true;
 
-        public ISkillComboWindowHandler SkillComboWindowHandler => ActionController;
-        public ISkillMotionWindowHandler SkillMotionWindowHandler => MotionWindowHandler;
+        public IRouteWindowHandler SkillComboWindowHandler => ActionController;
+        public IMotionWindowHandler SkillMotionWindowHandler => MotionWindowHandler;
 
         private IInputCommandHandler CurrentInputHandler =>
             (StateMachine?.CurrentState as CharacterStateBase)?.InputHandler ?? CharacterStateBase.InputHandlerStatic;
@@ -226,7 +226,7 @@ namespace Game.Logic
             }
         }
 
-        public void OnSkillEvent(string eventName, List<SkillEventParam> parameters)
+        public void OnSkillEvent(string eventName, List<ATEventParam> parameters)
         {
             if (this is RoleEntity roleEntity)
             {

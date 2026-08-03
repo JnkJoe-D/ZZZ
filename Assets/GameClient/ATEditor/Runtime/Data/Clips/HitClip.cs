@@ -14,7 +14,7 @@ namespace ATEditor
         [SkillProperty("检测次数")][ShowIf("detectFrequency", Frequency.Times)]
         public int times = 1;
 
-        [SkillProperty("最大命中数 (0为不限)")]
+        [SkillProperty("最大命中数")]
         public int maxHitTargets = 0;
 
         [SkillProperty("选择策略")]
@@ -23,11 +23,11 @@ namespace ATEditor
         [SkillProperty("受击方向模式")]
         public HitDirectionMode hitDirectionMode = HitDirectionMode.AttackerToTarget;
 
-        [SkillProperty("相对受击方向(XZ:X右,Y前)")]
+        [SkillProperty("相对受击方向")]
         [ShowIf("hitDirectionMode", HitDirectionMode.OnEnterCustomRelative)]
         public Vector2 customHitDirection = new Vector2(0, 1);
  
-        [SkillProperty("碰撞检测层级 (LayerMask)")]
+        [SkillProperty("碰撞检测层级")]
         public LayerMask hitLayerMask = -1;
 
         [SerializeField, HideInInspector]

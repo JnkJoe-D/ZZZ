@@ -16,7 +16,40 @@ namespace ATEditor.Editor
         private Action<string> onFileSelected;
         private Vector2 scrollPos;
         private int selectedIndex = -1;
+        private int lastHoveredIndex = -1;
         private bool needsScrollToSelection = true;
+
+        private static readonly Color SelectedColor = new Color(0.17f, 0.36f, 0.53f, 1f);
+        private static readonly Color SelectedHoverColor = new Color(0.22f, 0.44f, 0.65f, 1f);
+        private static readonly Color HoverColor = new Color(1f, 1f, 1f, 0.06f);
+        private static readonly Color HoverAccentColor = new Color(0.35f, 0.65f, 1f, 0.35f);
+
+        private GUIStyle normalLabelStyle;
+        private GUIStyle selectedLabelStyle;
+
+        private void OnEnable()
+        {
+            wantsMouseMove = true;
+        }
+
+        private void EnsureStyles()
+        {
+            if (normalLabelStyle == null)
+            {
+                normalLabelStyle = new GUIStyle(EditorStyles.label)
+                {
+                    padding = new RectOffset(4, 0, 0, 0)
+                };
+            }
+            if (selectedLabelStyle == null)
+            {
+                selectedLabelStyle = new GUIStyle(EditorStyles.label)
+                {
+                    padding = new RectOffset(4, 0, 0, 0),
+                    normal = { textColor = Color.white }
+                };
+            }
+        }
 
         public static void Show(string directory, Action<string> onSelected, string initialSelectedPath = null)
         {
@@ -93,48 +126,55 @@ namespace ATEditor.Editor
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
 
+            EnsureStyles();
+
             // 3. List Area
             if (needsScrollToSelection && selectedIndex >= 0 && filteredPaths.Count > 0)
             {
-                float itemY = selectedIndex * 16;
+                float itemY = selectedIndex * 18;
                 float scrollViewHeight = position.height - 80;
                 scrollPos.y = Mathf.Max(0, itemY - scrollViewHeight / 2);
                 needsScrollToSelection = false;
             }
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
             
+            int currentHoveredIndex = -1;
+            Vector2 mousePos = Event.current.mousePosition;
+
             for (int i = 0; i < filteredPaths.Count; i++)
             {
                 string filePath = filteredPaths[i];
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
                 
-                Rect rowRect = EditorGUILayout.GetControlRect(false, 16);
+                Rect rowRect = EditorGUILayout.GetControlRect(false, 18);
+                bool isHovered = rowRect.Contains(mousePos);
+                if (isHovered)
+                {
+                    currentHoveredIndex = i;
+                }
                 
-                // Draw selection highlight
+                // Draw selection / hover background
                 if (i == selectedIndex)
                 {
-                    EditorGUI.DrawRect(rowRect, new Color(0.17f, 0.36f, 0.53f)); // Unity's selection blue
+                    EditorGUI.DrawRect(rowRect, isHovered ? SelectedHoverColor : SelectedColor);
+                }
+                else if (isHovered)
+                {
+                    EditorGUI.DrawRect(rowRect, HoverColor);
+                    EditorGUI.DrawRect(new Rect(rowRect.x, rowRect.y, 2.5f, rowRect.height), HoverAccentColor);
                 }
 
-                // Handle Mouse Events
+                // Handle Mouse Events (单击直接确认导入)
                 Event e = Event.current;
-                if (e.type == EventType.MouseDown && rowRect.Contains(e.mousePosition))
+                if (e.type == EventType.MouseDown && e.button == 0 && isHovered)
                 {
                     selectedIndex = i;
-                    if (e.clickCount == 2)
-                    {
-                        ConfirmSelection();
-                    }
-                    else
-                    {
-                        Repaint();
-                    }
+                    ConfirmSelection();
+                    e.Use();
                 }
 
-                // Draw Text & Icon
-                GUIStyle labelStyle = new GUIStyle(EditorStyles.label) { padding = new RectOffset(2, 0, 0, 0) };
-                if (i == selectedIndex) labelStyle.normal.textColor = Color.white;
-                
+                // Draw Text & Icon using cached styles
+                GUIStyle labelStyle = (i == selectedIndex) ? selectedLabelStyle : normalLabelStyle;
                 GUIContent content = EditorGUIUtility.IconContent("TextAsset Icon");
                 if (content != null && content.image != null)
                 {
@@ -147,6 +187,13 @@ namespace ATEditor.Editor
                 }
             }
             EditorGUILayout.EndScrollView();
+
+            // 仅在鼠标移动且悬停项发生变化时触发重绘（零静态能耗开销）
+            if (Event.current.type == EventType.MouseMove && currentHoveredIndex != lastHoveredIndex)
+            {
+                lastHoveredIndex = currentHoveredIndex;
+                Repaint();
+            }
 
             // 4. Bottom Info Bar
             EditorGUILayout.BeginHorizontal("box");
@@ -179,8 +226,7 @@ namespace ATEditor.Editor
                 }
                 else if (e.keyCode == KeyCode.UpArrow)
                 {
-                    selectedIndex = Mathf.Max(selectedIndex - 0, 0);
-                    if (selectedIndex > 0) selectedIndex--; // Fix math
+                    selectedIndex = Mathf.Max(selectedIndex - 1, 0);
                     e.Use();
                 }
                 else if (e.keyCode == KeyCode.Return || e.keyCode == KeyCode.KeypadEnter)

@@ -26,7 +26,7 @@ namespace ATEditor
     }
 
     [Serializable]
-    [ClipDefinition(typeof(TransformTrack), "旋转片段")]
+    [ClipDefinition(typeof(TransformTrack), "旋转")]
     public class RotationClip : ClipBase
     {
         [SkillProperty("参考方向")]

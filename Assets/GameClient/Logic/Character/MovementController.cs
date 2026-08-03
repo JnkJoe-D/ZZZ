@@ -19,6 +19,22 @@ namespace Game.Logic
 
         public float TurnSpeed = 15f;
         public float Gravity => -9.81f;
+        public float GravityScale = 1.0f;
+        public float PushResistance = 0f;
+        public CharacterController CharacterController => _cc;
+
+        private float _verticalVelocity = 0f;
+        public float VerticalVelocity => _verticalVelocity;
+
+        public void ResetVerticalVelocity()
+        {
+            _verticalVelocity = 0f;
+        }
+
+        public void SetVerticalVelocity(float velocity)
+        {
+            _verticalVelocity = velocity;
+        }
 
         MotionWindowLocalDeltaFilterMode filterMode = MotionWindowLocalDeltaFilterMode.None;
         private MotionWindowVisualOffsetMode visualOffsetMode = MotionWindowVisualOffsetMode.None;
@@ -28,10 +44,13 @@ namespace Game.Logic
             _cc = gameObject.GetComponent<CharacterController>();
             if (_cc == null)
             {
+                // 预制体未预先挂载 CC 时的安全保底初始化
                 _cc = gameObject.AddComponent<CharacterController>();
                 _cc.height = 1.6f;
                 _cc.radius = 0.3f;
-                _cc.center = new Vector3(0f, 0.88f, 0f);
+                _cc.center = new Vector3(0f, 0.8f, 0f);
+                _cc.skinWidth = 0.015f;
+                _cc.minMoveDistance = 0f;
                 _cc.excludeLayers = LayerMask.GetMask("Player");
             }
 
@@ -50,6 +69,7 @@ namespace Game.Logic
         private void OnDisable()
         {
             ResetVisualOffset();
+            ResetVerticalVelocity();
         }
 
         public void ResetVisualOffset()
@@ -93,9 +113,24 @@ namespace Game.Logic
                 deltaRotation = _animator.deltaRotation;
             }
 
-            if (_cc != null && !_cc.isGrounded)
+            // --- 标准重力与贴地物理运动学解算 ---
+            if (_cc != null && _cc.enabled)
             {
-                deltaPosition += Vector3.up * Gravity * Time.deltaTime * Time.deltaTime;
+                if (_cc.isGrounded)
+                {
+                    // 接地且垂直速度向下时，保持持续向下的贴地吸附速度（-2.0f m/s），防止浮空与 isGrounded 判定抖动
+                    if (_verticalVelocity < 0f)
+                    {
+                        _verticalVelocity = -2.0f;
+                    }
+                }
+                else
+                {
+                    // 自由落体自由下落：v_y = v_0 + g * dt
+                    _verticalVelocity += (Gravity * GravityScale) * Time.deltaTime;
+                }
+
+                deltaPosition.y += _verticalVelocity * Time.deltaTime;
             }
 
             ApplyRootMotion(deltaPosition);

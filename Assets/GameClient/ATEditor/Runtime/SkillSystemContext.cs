@@ -6,12 +6,12 @@ namespace ATEditor.Runtime
     /// </summary>
     public static class SkillSystemContext
     {
-        public static ISkillAssetLoader AssetLoader { get; private set; }
+        public static IAssetLoader AssetLoader { get; private set; }
 
         /// <summary>
         /// 主工程启动时调用此方法，注入符合业务（如 YooAsset/Addressables）的资源加载器实现
         /// </summary>
-        public static void InjectAssetLoader(ISkillAssetLoader loader)
+        public static void InjectAssetLoader(IAssetLoader loader)
         {
             AssetLoader = loader;
         }

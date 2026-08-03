@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ATEditor
 {
     [Serializable]
-    public class SkillEventParam
+    public class ATEventParam
     {
         [SkillProperty("参数名")]
         public string key = "";
@@ -19,9 +19,9 @@ namespace ATEditor
         [SkillProperty("整数值")]
         public int intValue = 0;
         
-        public SkillEventParam Clone()
+        public ATEventParam Clone()
         {
-            return new SkillEventParam
+            return new ATEventParam
             {
                 key = this.key,
                 stringValue = this.stringValue,
@@ -32,22 +32,22 @@ namespace ATEditor
     }
 
     [Serializable]
-    public class SkillTimelineEvent
+    public class ActionTimelineEvent
     {
         [Header("Event Settings")]
         [SkillProperty("事件名")]
         public string eventName = "Event_Default";
 
-        public List<SkillEventParam> parameters = new List<SkillEventParam>();
+        public List<ATEventParam> parameters = new List<ATEventParam>();
 
-        public SkillTimelineEvent Clone()
+        public ActionTimelineEvent Clone()
         {
-            SkillTimelineEvent clone = new SkillTimelineEvent
+            ActionTimelineEvent clone = new ActionTimelineEvent
             {
                 eventName = eventName
             };
 
-            foreach (SkillEventParam parameter in parameters)
+            foreach (ATEventParam parameter in parameters)
             {
                 clone.parameters.Add(parameter.Clone());
             }
@@ -66,7 +66,7 @@ namespace ATEditor
 
         // 由于 SkillProperty 目前可能不支持复杂的 List 嵌套结构，
         // 这里暂时使用标准序列化。或者等后续实现自定义 Drawer。
-        public List<SkillEventParam> parameters = new List<SkillEventParam>();
+        public List<ATEventParam> parameters = new List<ATEventParam>();
         public override float Duration { get => duration; set => duration=0.1f; }
         public EventClip()
         {

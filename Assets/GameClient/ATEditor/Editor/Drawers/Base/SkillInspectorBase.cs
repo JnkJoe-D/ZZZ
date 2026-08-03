@@ -143,7 +143,10 @@ namespace ATEditor.Editor
 
         protected virtual bool ShouldShowProperty(PropertyInfo prop, object obj)
         {
-            // 额外的动态过滤可以在这里写
+            if (prop.Name == "BlendInDuration" || prop.Name == "BlendOutDuration")
+            {
+                if (obj is ClipBase c && !c.SupportsBlending) return false;
+            }
             return true;
         }
 
@@ -313,7 +316,7 @@ namespace ATEditor.Editor
                 shape.shapeType = (HitBoxType)EditorGUILayout.EnumPopup("形状类型", shape.shapeType);
                 if (shape.shapeType == HitBoxType.Box)
                 {
-                    shape.size = EditorGUILayout.Vector3Field("尺寸 (Box)", shape.size);
+                    shape.size = EditorGUILayout.Vector3Field("尺寸", shape.size);
                 }
                 if (shape.shapeType == HitBoxType.Sphere || shape.shapeType == HitBoxType.Capsule || shape.shapeType == HitBoxType.Sector || shape.shapeType == HitBoxType.Ring)
                 {
@@ -334,14 +337,14 @@ namespace ATEditor.Editor
                 EditorGUI.indentLevel--;
                 newValue = shape;
             }
-            else if (value is List<SkillEventParam> paramList)
+            else if (value is List<ATEventParam> paramList)
             {
                 EditorGUILayout.BeginVertical("box");
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(name, EditorStyles.boldLabel);
                 if (GUILayout.Button("+", GUILayout.Width(20)))
                 {
-                    paramList.Add(new SkillEventParam());
+                    paramList.Add(new ATEventParam());
                     GUI.FocusControl(null);
                 }
                 EditorGUILayout.EndHorizontal();

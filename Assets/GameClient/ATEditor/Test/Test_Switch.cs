@@ -28,7 +28,7 @@ public class Test_Switch : MonoBehaviour
             // 2. 准备上下文
             // 2. 准备上下文
             context = new ProcessContext(gameObject, ATEditor.PlayMode.Runtime,
-                SkillServiceFactory.ProvideService);
+                ATServiceFactory.ProvideService);
             runner = new SkillRunner(ATEditor.PlayMode.Runtime);
 
             timeline1 = SU.OpenFromJson(skillAsset1);

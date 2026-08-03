@@ -5,12 +5,12 @@ namespace ATEditor
     [ProcessBinding(typeof(SpawnClip), PlayMode.Runtime)]
     public class RuntimeSpawnProcess : ProcessBase<SpawnClip>
     {
-        private ISkillSpawnHandler spawnHandler;
-        private ISkillProjectileHandler spawnedProjectile;
+        private ISpawnHandler spawnHandler;
+        private IProjectileHandler spawnedProjectile;
 
         public override void OnEnable()
         {
-            spawnHandler = context.GetService<ISkillSpawnHandler>();
+            spawnHandler = context.GetService<ISpawnHandler>();
         }
 
         public override void OnEnter()
@@ -66,7 +66,7 @@ namespace ATEditor
             parent = null;
             if (context != null)
             {
-                var actor = context.GetService<ISkillBoneGetter>();
+                var actor = context.GetService<IBoneGetter>();
                 parent = actor.GetBone(clip.bindPoint);
             }
 

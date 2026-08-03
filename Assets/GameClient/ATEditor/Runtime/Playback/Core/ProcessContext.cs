@@ -97,7 +97,7 @@ namespace ATEditor
         {
             if (overrideMask == null) return;
 
-            var animHandler = GetService<ISkillAnimationHandler>(); // 懒加载
+            var animHandler = GetService<IAnimationHandler>(); // 懒加载
             if (animHandler == null) return;
 
             if (!_layerMaskStates.TryGetValue(layerIndex, out var state))
@@ -117,7 +117,7 @@ namespace ATEditor
         public void PopLayerMask(int layerIndex, AvatarMask overrideMask)
         {
             if (overrideMask == null) return;
-            var animHandler = GetService<ISkillAnimationHandler>();
+            var animHandler = GetService<IAnimationHandler>();
             if (animHandler == null) return;
 
             if (_layerMaskStates.TryGetValue(layerIndex, out var state))
@@ -186,7 +186,17 @@ namespace ATEditor
         /// <param name="cleanup">清理回调</param>
         public void RegisterCleanup(string key, Action cleanup)
         {
+            if (string.IsNullOrEmpty(key) || cleanup == null) return;
             _cleanupActions[key] = cleanup;
+        }
+
+        /// <summary>
+        /// 注册匿名系统级清理操作
+        /// </summary>
+        public void RegisterCleanup(Action cleanup)
+        {
+            if (cleanup == null) return;
+            _cleanupActions[Guid.NewGuid().ToString()] = cleanup;
         }
 
         public void RegisterStartAction(string key, Action action)

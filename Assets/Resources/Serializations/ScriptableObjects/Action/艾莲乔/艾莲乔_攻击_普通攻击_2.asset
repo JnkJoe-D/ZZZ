@@ -237,13 +237,13 @@ MonoBehaviour:
       type: {class: TargetDistanceCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         Mode: 0
-        DistanceThreshold: 2.5
+        DistanceThreshold: 6
         MaxDistance: 6
         TreatNoTargetAsMatch: 0
     - rid: 4681867898338935726
       type: {class: TargetDistanceCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         Mode: 0
-        DistanceThreshold: 2.5
+        DistanceThreshold: 6
         MaxDistance: 6
         TreatNoTargetAsMatch: 0

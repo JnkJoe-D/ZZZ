@@ -32,8 +32,8 @@ public class Test_VFX : MonoBehaviour
             // 2. 准备上下文
             context = new ProcessContext(gameObject, ATEditor.PlayMode.Runtime);
         // 3. 添加服务
-        context.AddService<ISkillAnimationHandler>(new SkillAnimationHandler(animComp));
-        context.AddService<ISkillBoneGetter>(new SkillBoneGetter(gameObject)); // 注入测试用 ISkillActor 实现
+        context.AddService<IAnimationHandler>(new ATAnimationHandler(animComp));
+        context.AddService<IBoneGetter>(new ATBoneGetter(gameObject)); // 注入测试用 ISkillActor 实现
             context.AddService<MonoBehaviour>(this);
             runner = new SkillRunner(ATEditor.PlayMode.Runtime);
 

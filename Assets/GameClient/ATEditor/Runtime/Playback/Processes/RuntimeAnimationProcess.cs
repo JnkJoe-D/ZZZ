@@ -7,15 +7,15 @@ namespace ATEditor
     /// 运行时：动画片段 Process 骨架
     /// 仅控制播放状态和速度，不控制权重
     /// </summary>
-    [ProcessBinding(typeof(SkillAnimationClip), PlayMode.Runtime)]
-    public class RuntimeAnimationProcess : ProcessBase<SkillAnimationClip>
+    [ProcessBinding(typeof(AnimationClip), PlayMode.Runtime)]
+    public class RuntimeAnimationProcess : ProcessBase<AnimationClip>
     {
         // 使用抽象接口替代具体实现
-        private ISkillAnimationHandler animHandler;
+        private IAnimationHandler animHandler;
         
         public override void OnEnable()
         {
-            animHandler = context.GetService<ISkillAnimationHandler>(); // 懒加载
+            animHandler = context.GetService<IAnimationHandler>(); // 懒加载
             animHandler?.Initialize();
         }
 

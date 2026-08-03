@@ -11,6 +11,46 @@ namespace ATEditor.Editor
             base.DrawInspector(clip);
         }
 
+        public static bool DrawBaseClipCard(ClipBase clip, ref bool isExpanded, string headerTitle = "基础信息")
+        {
+            if (clip == null) return false;
+
+            isExpanded = EditorGUILayout.Foldout(isExpanded, headerTitle, true, EditorStyles.foldoutHeader);
+            if (!isExpanded) return false;
+
+            EditorGUILayout.BeginVertical("box");
+            clip.clipName = EditorGUILayout.TextField("片段名称", clip.clipName);
+            clip.isEnabled = EditorGUILayout.Toggle("启用", clip.isEnabled);
+            clip.StartTime = Mathf.Max(0f, EditorGUILayout.FloatField("开始时间", clip.StartTime));
+            clip.Duration = Mathf.Max(0.01f, EditorGUILayout.FloatField("持续时间", clip.Duration));
+
+            if (clip.SupportsBlending)
+            {
+                clip.BlendInDuration = EditorGUILayout.FloatField("渐入时间", clip.BlendInDuration);
+                clip.BlendOutDuration = EditorGUILayout.FloatField("渐出时间", clip.BlendOutDuration);
+            }
+            EditorGUILayout.EndVertical();
+            return true;
+        }
+
+        public static void MarkTimelineDirty(string undoName = "Modify Clip")
+        {
+            if (EditorWindow.HasOpenInstances<ATEditorWindow>())
+            {
+                var window = EditorWindow.GetWindow<ATEditorWindow>(false, "技能编辑器", false);
+                if (window != null)
+                {
+                    var timeline = window.GetCurrentTimeline();
+                    if (timeline != null)
+                    {
+                        Undo.RecordObject(timeline, undoName);
+                        EditorUtility.SetDirty(timeline);
+                    }
+                    window.Repaint();
+                }
+            }
+        }
+
         public virtual void DrawSceneGUI(ClipBase clip, ATEditorState state)
         {
             // 供子类重写，用于圀Scene 窗口绘制辅助图形 (Gizmos/Handles)

@@ -3,10 +3,10 @@ namespace ATEditor.Editor
     [ProcessBinding(typeof(VisualOffsetRecoverClip), PlayMode.EditorPreview)]
     public class EditorVisualOffsetRecoverProcess : ProcessBase<VisualOffsetRecoverClip>
     {
-        private ISkillMotionWindowHandler _motionWindowHandler;
+        private IMotionWindowHandler _motionWindowHandler;
         public override void OnEnable()
         {
-            _motionWindowHandler = context.GetService<ISkillMotionWindowHandler>();
+            _motionWindowHandler = context.GetService<IMotionWindowHandler>();
         }
 
         public override void OnEnter()

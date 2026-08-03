@@ -8,12 +8,12 @@ namespace ATEditor
     [ProcessBinding(typeof(CameraImpluseClip), PlayMode.Runtime)]
     public class RuntimeCameraImpluseProcess : ProcessBase<CameraImpluseClip>
     {
-        private ISkillCameraHandler cameraHandler;
+        private ICameraHandler cameraHandler;
 
         public override void OnEnable()
         {
             base.OnEnable();
-            cameraHandler = context.GetService<ISkillCameraHandler>();
+            cameraHandler = context.GetService<ICameraHandler>();
         }
 
         public override void OnEnter()

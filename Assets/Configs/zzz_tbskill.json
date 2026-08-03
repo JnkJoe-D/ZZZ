@@ -450,8 +450,8 @@
     "costs": [
       {
         "Type": 200,
-        "Require": 200,
-        "Cost": 200
+        "Require": 40,
+        "Cost": 40
       }
     ]
   },
@@ -462,8 +462,8 @@
     "costs": [
       {
         "Type": 200,
-        "Require": 200,
-        "Cost": 200
+        "Require": 40,
+        "Cost": 40
       }
     ]
   },

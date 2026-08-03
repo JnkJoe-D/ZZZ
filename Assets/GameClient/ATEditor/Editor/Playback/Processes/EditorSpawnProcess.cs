@@ -85,7 +85,7 @@ namespace ATEditor.Editor
             parent = null;
             if (context != null)
             {
-                var actor = context.GetService<ISkillBoneGetter>();
+                var actor = context.GetService<IBoneGetter>();
                 if (actor != null)
                 {
                     parent = actor.GetBone(clip.bindPoint, clip.customBoneName);

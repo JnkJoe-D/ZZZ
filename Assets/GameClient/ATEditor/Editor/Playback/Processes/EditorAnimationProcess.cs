@@ -6,8 +6,8 @@ namespace ATEditor.Editor
     /// Editor preview animation process.
     /// Uses AnimationUtils (Playables) and does not depend on ISkillAnimationHandler.
     /// </summary>
-    [ProcessBinding(typeof(SkillAnimationClip), PlayMode.EditorPreview)]
-    public class EditorAnimationProcess : ProcessBase<SkillAnimationClip>
+    [ProcessBinding(typeof(AnimationClip), PlayMode.EditorPreview)]
+    public class EditorAnimationProcess : ProcessBase<AnimationClip>
     {
         private string tickActionKey;
         private string startActionKey;

@@ -15,11 +15,11 @@ namespace Game.Adapters.Editor
         private static void RegisterToSkillEditor()
         {
             // 灏嗕笟鍔″眰鐨?Service Factory 濮旀墭缁欐牳蹇冪紪杈戝櫒
-            ATEditorGlobalSettings.DefaultServiceFactoryCreator = owner => SkillServiceFactory.ProvideService;
+            ATEditorGlobalSettings.DefaultServiceFactoryCreator = owner => ATServiceFactory.ProvideService;
             
             // 娉ㄥ唽缂栬緫鍣ㄧ獥鍙ｅ叧鍋滃悗缃竻鐞嗗姩浣滐紙闃蹭涪鍘婚噸锛?
-            ATEditorGlobalSettings.OnEditorDispose -= SkillServiceFactory.ClearAllStaticCaches;
-            ATEditorGlobalSettings.OnEditorDispose += SkillServiceFactory.ClearAllStaticCaches;
+            ATEditorGlobalSettings.OnEditorDispose -= ATServiceFactory.ClearAllStaticCaches;
+            ATEditorGlobalSettings.OnEditorDispose += ATServiceFactory.ClearAllStaticCaches;
         }
     }
 }

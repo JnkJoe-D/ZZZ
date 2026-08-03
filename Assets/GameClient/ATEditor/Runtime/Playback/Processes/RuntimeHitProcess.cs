@@ -6,7 +6,7 @@ namespace ATEditor
     [ProcessBinding(typeof(HitClip), PlayMode.Runtime)]
     public class RuntimeHitProcess : ProcessBase<HitClip>
     {
-        private ISkillHitHandler damageHandler;
+        private IHitHandler damageHandler;
         private Dictionary<Collider, float> hitRecords = new Dictionary<Collider, float>();
         private float lastCheckTime = -1f;
         private int currentHitCount = 0;
@@ -17,7 +17,7 @@ namespace ATEditor
 
         public override void OnEnable()
         {
-            damageHandler = context.GetService<ISkillHitHandler>();
+            damageHandler = context.GetService<IHitHandler>();
         }
 
         public override void OnEnter()
@@ -271,7 +271,7 @@ namespace ATEditor
             Transform bindTrans = null;
             if (context != null)
             {
-                var actor = context.GetService<ISkillBoneGetter>();
+                var actor = context.GetService<IBoneGetter>();
                 if (actor != null)
                 {
                     bindTrans = actor.GetBone(clip.bindPoint, clip.customBoneName);

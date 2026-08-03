@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Logic
 {
-    public sealed class SkillMotionWindowHandler : ISkillMotionWindowHandler
+    public sealed class SkillMotionWindowHandler : IMotionWindowHandler
     {
         private readonly CharacterEntity _entity;
 

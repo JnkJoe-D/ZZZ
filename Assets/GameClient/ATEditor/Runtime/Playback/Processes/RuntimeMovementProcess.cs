@@ -5,7 +5,7 @@ namespace ATEditor
     [ProcessBinding(typeof(MovementClip), PlayMode.Runtime)]
     public class RuntimeMovementProcess : ProcessBase<MovementClip>
     {
-        private ISkillTransformHandler transformHandler;
+        private ITransformHandler transformHandler;
         private Vector3 startPosition;
         private Vector3 lastTargetPos;
         private LayerMask originalExcludeLayers;
@@ -15,24 +15,57 @@ namespace ATEditor
 
         public override void OnEnable()
         {
-            transformHandler = context.GetService<ISkillTransformHandler>();
+            transformHandler = context.GetService<ITransformHandler>();
         }
+
+        private Vector3 resolvedTargetPos; // 解算并校验后的最终安全目标位置
+        private bool isTargetFound = true;
 
         public override void OnEnter()
         {
             if (transformHandler == null) return;
 
             startPosition = transformHandler.GetPosition();
+            Transform owner = context.OwnerTransform;
+
+            // 初始化稳定方向
+            Transform target = transformHandler.GetTarget();
+            if (target != null)
+            {
+                Vector3 D1 = startPosition;
+                Vector3 D2 = target.position;
+                D2.y = D1.y;
+                stableDirection = (D2 - D1).normalized;
+                if (stableDirection.sqrMagnitude < 0.001f) stableDirection = owner != null ? owner.forward : Vector3.forward;
+            }
+            else
+            {
+                stableDirection = owner != null ? owner.forward : Vector3.forward;
+            }
 
             // 计算固定目标/回滚目标点
-            Transform owner = context.OwnerTransform;
             if (clip.referenceCoordinate == CoordinateSystem.World)
             {
                 fixedTargetPos = clip.targetPosition;
             }
             else
             {
-                fixedTargetPos = owner.position + owner.rotation * clip.targetPosition;
+                fixedTargetPos = (owner != null ? owner.position : startPosition) + (owner != null ? owner.rotation : Quaternion.identity) * clip.targetPosition;
+            }
+
+            // 智能解算并校验最终目标位置
+            resolvedTargetPos = MovementPositionSolver.ResolveTargetPosition(
+                clip,
+                transformHandler,
+                owner,
+                startPosition,
+                stableDirection,
+                out isTargetFound);
+
+            // 若开启了位置校验且未能找到任何合法安全目标，则取消位移
+            if (clip.enablePositionValidation && !isTargetFound)
+            {
+                return;
             }
 
             // 碰撞层级处理
@@ -41,37 +74,18 @@ namespace ATEditor
                 originalExcludeLayers = transformHandler.GetExcludeLayers();
                 transformHandler.SetExcludeLayers(clip.ignoreLayerMask);
                 hasSetLayer = true;
+                string cleanupKey = "Movement_Layer_" + (clip != null ? clip.clipId : GetHashCode().ToString());
+                context?.RegisterCleanup(cleanupKey, RestoreLayer);
             }
 
-            // 执行逻辑判断
-            if (clip.referenceDestination == ReferenceDestination.Fixed)
+            // 执行瞬时位移
+            if (clip.displacementType == DisplacementType.Instant)
             {
-                if (clip.displacementType == DisplacementType.Instant)
-                {
-                    transformHandler.SetPosition(fixedTargetPos);
-                }
-            }
-            else // Target
-            {
-                // 初始化稳定方向
-                Transform target = transformHandler.GetTarget();
-                if (target != null)
-                {
-                    Vector3 D1 = startPosition;
-                    Vector3 D2 = target.position;
-                    D2.y = D1.y;
-                    stableDirection = (D2 - D1).normalized;
-                    if (stableDirection.sqrMagnitude < 0.001f) stableDirection = context.OwnerTransform.forward;
-                }
-                else
-                {
-                    stableDirection = context.OwnerTransform.forward;
-                }
+                transformHandler.SetPosition(resolvedTargetPos);
 
-                if (clip.displacementType == DisplacementType.Instant)
+                if (clip.faceTargetOnArrival && target != null)
                 {
-                    Vector3 targetPos = CalculateTargetPosition();
-                    transformHandler.SetPosition(targetPos);
+                    transformHandler.FaceToTargetImmediately(target);
                 }
             }
             
@@ -81,6 +95,7 @@ namespace ATEditor
         public override void OnUpdate(float currentTime, float deltaTime)
         {
             if (transformHandler == null || clip.displacementType == DisplacementType.Instant) return;
+            if (clip.enablePositionValidation && !isTargetFound) return;
 
             float duration = clip.Duration;
             if (duration <= 0) return;
@@ -90,11 +105,7 @@ namespace ATEditor
             float curveT = EvaluateCurve(t, clip.movementCurve);
 
             // 计算当前帧角色应该在的位置（逻辑位置）
-            Vector3 finalTargetPos = (clip.referenceDestination == ReferenceDestination.Fixed) 
-                ? fixedTargetPos 
-                : CalculateTargetPosition();
-
-            Vector3 desiredPos = Vector3.Lerp(startPosition, finalTargetPos, curveT);
+            Vector3 desiredPos = Vector3.Lerp(startPosition, resolvedTargetPos, curveT);
             
             // 计算位移增量
             Vector3 currentPos = transformHandler.GetPosition();
@@ -103,6 +114,15 @@ namespace ATEditor
             if (delta.sqrMagnitude > 0.0001f)
             {
                 transformHandler.Move(delta);
+            }
+
+            if (clip.faceTargetOnArrival && t >= 0.99f)
+            {
+                Transform target = transformHandler.GetTarget();
+                if (target != null)
+                {
+                    transformHandler.FaceToTarget(target, 15f);
+                }
             }
         }
 
@@ -130,76 +150,6 @@ namespace ATEditor
                 transformHandler.SetExcludeLayers(originalExcludeLayers);
                 hasSetLayer = false;
             }
-        }
-
-        private Vector3 CalculateTargetPosition()
-        {
-            Transform target = transformHandler.GetTarget();
-            if (target == null) return fixedTargetPos; // 降级
-
-            Vector3 D1 = transformHandler.GetPosition();
-            Vector3 D2 = target.position;
-            D2.y = D1.y; // 保持水平计算
-
-            float R1 = transformHandler.GetTargetRadius();
-            float R2 = transformHandler.GetRadius();
-            float totalDist = R1 + R2 + clip.offsetRadius;
-
-            // 确定参考基准方向 (XZ 平面)
-            Vector3 baseDir;
-            if (clip.targetBaseDirection == TargetBaseDirection.TargetFacing)
-            {
-                baseDir = target.forward;
-                baseDir.y = 0f;
-                if (baseDir.sqrMagnitude < 0.001f) baseDir = Vector3.forward;
-                else baseDir.Normalize();
-            }
-            else // LineOfSight: 目标指向角色的方向 (D1 - D2)
-            {
-                baseDir = -stableDirection;
-                baseDir.y = 0f;
-                if (baseDir.sqrMagnitude < 0.001f) baseDir = -context.OwnerTransform.forward;
-                else baseDir.Normalize();
-            }
-
-            Vector3 offsetDir;
-            switch (clip.targetPositionEnum)
-            {
-                case TargetPositionType.EnemyFront:
-                    offsetDir = baseDir;
-                    break;
-                case TargetPositionType.EnemyBack:
-                    offsetDir = -baseDir;
-                    break;
-                case TargetPositionType.EnemyLeft:
-                    offsetDir = Quaternion.Euler(0f, -90f, 0f) * baseDir;
-                    break;
-                case TargetPositionType.EnemyRight:
-                    offsetDir = Quaternion.Euler(0f, 90f, 0f) * baseDir;
-                    break;
-                case TargetPositionType.CustomAngle:
-                    offsetDir = Quaternion.Euler(0f, clip.angleOffset, 0f) * baseDir;
-                    break;
-                case TargetPositionType.InputDirection:
-                    Vector3 inputDir = transformHandler.GetInputDirection(true);
-                    if (inputDir.sqrMagnitude > 0.01f)
-                    {
-                        inputDir.y = 0f;
-                        offsetDir = inputDir.normalized;
-                    }
-                    else
-                    {
-                        offsetDir = baseDir;
-                    }
-                    break;
-                default:
-                    offsetDir = baseDir;
-                    break;
-            }
-
-            Vector3 targetPos = D2 + offsetDir * totalDist;
-            targetPos.y += clip.targetPosition.y;
-            return targetPos;
         }
 
         private float EvaluateCurve(float t, MovementCurve curve)

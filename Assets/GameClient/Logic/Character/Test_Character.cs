@@ -105,7 +105,7 @@ namespace Game.Logic
             }
             Debug.Log("[GameRoot] [4/9] Assets ... OK");
 
-            ATEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.SkillAssetLoader());
+            ATEditor.Runtime.SkillSystemContext.InjectAssetLoader(new Game.Adapters.ATAssetLoader());
             Debug.Log("[GameRoot] [4.5/9] SkillEditor AssetLoader Injected ... OK");
             yield return null;
 

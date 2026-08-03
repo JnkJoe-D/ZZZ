@@ -183,7 +183,7 @@ namespace ATEditor.Editor
             Transform bindTrans = null;
             if (context != null)
             {
-                var actor = context.GetService<ISkillBoneGetter>();
+                var actor = context.GetService<IBoneGetter>();
                 if (actor != null)
                 {
                     bindTrans = actor.GetBone(clip.bindPoint, clip.customBoneName);

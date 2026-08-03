@@ -120,7 +120,7 @@ namespace Game.Logic
             int id = entity.GetInstanceID();
             if (!_contextCache.TryGetValue(id, out var ctx))
             {
-                ctx = new ProcessContext(entity.gameObject, ATEditor.PlayMode.Runtime, SkillServiceFactory.ProvideService);
+                ctx = new ProcessContext(entity.gameObject, ATEditor.PlayMode.Runtime, ATServiceFactory.ProvideService);
                 _contextCache[id] = ctx;
             }
             return ctx;
@@ -151,7 +151,7 @@ namespace Game.Logic
                 ctx.Clear();
                 _contextCache.Remove(id);
             }
-            SkillServiceFactory.ClearAllStaticCaches(); 
+            ATServiceFactory.ClearAllStaticCaches(); 
         }
 
         public void Shutdown()

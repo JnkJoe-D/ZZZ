@@ -3,11 +3,11 @@ namespace ATEditor
     [ProcessBinding(typeof(EventClip), PlayMode.Runtime)]
     public class RuntimeEventProcess : ProcessBase<EventClip>
     {
-        private ISkillEventHandler eventHandler;
+        private IEventHandler eventHandler;
 
         public override void OnEnable()
         {
-            eventHandler = context.GetService<ISkillEventHandler>();
+            eventHandler = context.GetService<IEventHandler>();
         }
 
         public override void OnEnter()

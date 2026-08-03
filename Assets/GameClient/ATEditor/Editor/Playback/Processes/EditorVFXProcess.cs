@@ -101,13 +101,13 @@ namespace ATEditor.Editor
         {
             if (context.Owner == null) return null;
 
-            var actor = context.GetService<ISkillBoneGetter>() ?? context.Owner.GetComponent<ISkillBoneGetter>();
+            var actor = context.GetService<IBoneGetter>() ?? context.Owner.GetComponent<IBoneGetter>();
             if (actor != null)
             {
                 return actor.GetBone(clip.bindPoint, clip.customBoneName);
             }
 
-            var boneGetter = new Game.Adapters.SkillBoneGetter(context.Owner);
+            var boneGetter = new Game.Adapters.ATBoneGetter(context.Owner);
             return boneGetter.GetBone(clip.bindPoint, clip.customBoneName) ?? context.OwnerTransform;
         }
 
