@@ -22,9 +22,9 @@ namespace ATEditor.Editor
         public Group groupData;
         
         [HideInInspector]
-        public SkillTimeline timeline;
+        public ActionTimeline timeline;
 
-        public static GroupObject Create(Group groupData, SkillTimeline timeline)
+        public static GroupObject Create(Group groupData, ActionTimeline timeline)
         {
             GroupObject obj = ScriptableObject.CreateInstance<GroupObject>();
             obj.hideFlags = HideFlags.DontSave;
@@ -44,12 +44,12 @@ namespace ATEditor.Editor
         public TrackBase trackData;
         
         [HideInInspector]
-        public SkillTimeline timeline;
+        public ActionTimeline timeline;
 
         /// <summary>
         /// 创建轨道对象
         /// </summary>
-        public static TrackObject Create(TrackBase trackData, SkillTimeline timeline)
+        public static TrackObject Create(TrackBase trackData, ActionTimeline timeline)
         {
             TrackObject obj = ScriptableObject.CreateInstance<TrackObject>();
             obj.hideFlags = HideFlags.DontSave;
@@ -69,12 +69,12 @@ namespace ATEditor.Editor
         public ClipBase clipData;
         
         [HideInInspector]
-        public SkillTimeline timeline;
+        public ActionTimeline timeline;
 
         /// <summary>
         /// 创建片段对象
         /// </summary>
-        public static ClipObject Create(ClipBase clipData, SkillTimeline timeline)
+        public static ClipObject Create(ClipBase clipData, ActionTimeline timeline)
         {
             ClipObject obj = ScriptableObject.CreateInstance<ClipObject>();
             obj.hideFlags = HideFlags.DontSave;

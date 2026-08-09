@@ -90,7 +90,7 @@ namespace ATEditor.Editor
                 else
                 {
                     state.selectedClips.Add(clip);
-                    SkillTimeline timeline = state.currentTimeline;
+                    ActionTimeline timeline = state.currentTimeline;
                     ClipObject clipObj = ClipObject.Create(clip, timeline);
                     Selection.activeObject = clipObj;
                 }
@@ -106,7 +106,7 @@ namespace ATEditor.Editor
                 state.selectedTrack = null;
                 state.selectedGroup = null;
 
-                SkillTimeline timeline = state.currentTimeline;
+                ActionTimeline timeline = state.currentTimeline;
                 ClipObject clipObj = ClipObject.Create(clip, timeline);
                 Selection.activeObject = clipObj;
             }
@@ -135,7 +135,7 @@ namespace ATEditor.Editor
 
             state.pasteTargetTrack = track;
 
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             TrackObject trackObj = TrackObject.Create(track, timeline);
             Selection.activeObject = trackObj;
         }
@@ -149,7 +149,7 @@ namespace ATEditor.Editor
             state.selectedGroup = group;
             events.NotifySelectionChanged();
 
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             GroupObject groupObj = GroupObject.Create(group, timeline);
             Selection.activeObject = groupObj;
         }
@@ -266,7 +266,7 @@ namespace ATEditor.Editor
                 float deltaX = e.mousePosition.x - dragStartMouseX;
                 float deltaTime = coords.PixelToTime(deltaX);
 
-                SkillTimeline timeline = state.currentTimeline;
+                ActionTimeline timeline = state.currentTimeline;
                 TrackBase currentTrack = null;
                 if (timeline != null)
                 {
@@ -733,7 +733,7 @@ namespace ATEditor.Editor
         /// </summary>
         private TrackBase GetTrackAtPosition(float virtualY)
         {
-            SkillTimeline timeline = window.GetCurrentTimeline();
+            ActionTimeline timeline = window.GetCurrentTimeline();
             if (timeline == null) return null;
 
             const float TRACK_HEIGHT = 40f;

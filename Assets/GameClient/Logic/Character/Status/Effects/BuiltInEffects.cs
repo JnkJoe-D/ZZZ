@@ -179,14 +179,13 @@ namespace Game.Logic
 
         public void OnApply(BuffInstance buff, CharacterEntity target)
         {
-            // 确保属性存在（如果 StatusProfile 中已配置则无需额外操作）
-            // 这里只做安全检查
+            // 确保属性存在
             var attrSet = target?.StatusModule?.Attributes;
             if (attrSet == null) return;
 
             if (!attrSet.Has(CounterAttribute))
             {
-                Debug.LogWarning($"[AttributeCounterEffect] 属性 {CounterAttribute} 未在角色 {target.name} 的 StatusProfile 中配置。");
+                Debug.LogWarning($"[AttributeCounterEffect] 属性 {CounterAttribute} 未在角色 {target.name} 的属性配置表中找到。");
             }
         }
 

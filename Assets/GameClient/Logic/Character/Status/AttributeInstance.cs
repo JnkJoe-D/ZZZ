@@ -7,6 +7,7 @@ namespace Game.Logic
     /// <summary>
     /// 单个属性的运行时实例。
     /// 管理基础值、修改器列表，并负责重新计算最终值。
+    /// 支持基于 Luban 配置直接初始化，无需依赖 ScriptableObject 资产。
     /// </summary>
     public class AttributeInstance
     {
@@ -14,11 +15,8 @@ namespace Game.Logic
         private bool _dirty = true;
         private float _cachedFinal;
 
-        /// <summary>该属性的定义资产。</summary>
-        public AttributeDefAsset Definition { get; }
-
-        /// <summary>属性 ID（从 Definition 缓存，避免反复寻址）。</summary>
-        public AttributeId Id => Definition.Id;
+        /// <summary>属性 ID（唯一真值源枚举）。</summary>
+        public AttributeId Id { get; }
 
         /// <summary>基础值（未经修改器处理的原始值）。</summary>
         public float BaseValue { get; private set; }
@@ -26,10 +24,19 @@ namespace Game.Logic
         /// <summary>当前值（应用 Clamp 后的最终可用值）。</summary>
         public float CurrentValue { get; private set; }
 
+        /// <summary>最小值限制。</summary>
+        public float MinValue { get; }
+
+        /// <summary>最大值限制。</summary>
+        public float MaxValue { get; }
+
+        /// <summary>每秒自然回复量。</summary>
+        public float RegenPerSecond { get; }
+
         /// <summary>
-        /// 当前有效的最大值。
-        /// 如果此属性有对应的 Max 属性（如 HP 对应 MaxHP），
-        /// 由 AttributeSet 在外部负责 Clamp；此处仅做自身 ClampMin/Max 裁剪。
+        /// 当前有效的最大值（应用修改器后的最终值）。
+        /// 如果此属性有对应的 Max 属性（如 HP 对应 MaxHp），
+        /// 由 AttributeSet 在外部负责 Clamp；此处仅做自身 MinValue/MaxValue 裁剪。
         /// </summary>
         public float FinalValue
         {
@@ -46,14 +53,21 @@ namespace Game.Logic
         /// <summary>属性变化回调。参数: (旧值, 新值)。</summary>
         public event Action<float, float> OnValueChanged;
 
-        public AttributeInstance(AttributeDefAsset definition, float initialValue)
+        /// <summary>
+        /// 基于 Luban 数据驱动的构造函数。
+        /// </summary>
+        public AttributeInstance(AttributeId id, float initialValue, float min = 0f, float max = float.MaxValue, float regen = 0f)
         {
-            Definition = definition ?? throw new ArgumentNullException(nameof(definition));
+            Id = id;
             BaseValue = initialValue;
+            MinValue = min;
+            MaxValue = max;
+            RegenPerSecond = regen;
+            CurrentValue = Mathf.Clamp(initialValue, min, max);
             _dirty = true;
-            // 初始化 CurrentValue
-            CurrentValue = Mathf.Clamp(initialValue, definition.ClampMin, definition.ClampMax);
         }
+
+
 
         // ────────────────── 基础值操作 ──────────────────
 
@@ -69,7 +83,7 @@ namespace Game.Logic
         public void SetCurrent(float value)
         {
             float old = CurrentValue;
-            CurrentValue = Mathf.Clamp(value, Definition.ClampMin, Definition.ClampMax);
+            CurrentValue = Mathf.Clamp(value, MinValue, MaxValue);
             if (!Mathf.Approximately(old, CurrentValue))
             {
                 OnValueChanged?.Invoke(old, CurrentValue);
@@ -82,10 +96,10 @@ namespace Game.Logic
             SetCurrent(CurrentValue + delta);
         }
 
-        /// <summary>将当前值限制在 [ClampMin, maxFromSet] 范围内。由 AttributeSet 调用。</summary>
+        /// <summary>将当前值限制在 [MinValue, maxFromSet] 范围内。由 AttributeSet 调用。</summary>
         public void ClampCurrentToMax(float maxFromSet)
         {
-            float clamped = Mathf.Clamp(CurrentValue, Definition.ClampMin, maxFromSet);
+            float clamped = Mathf.Clamp(CurrentValue, MinValue, maxFromSet);
             if (!Mathf.Approximately(clamped, CurrentValue))
             {
                 float old = CurrentValue;
@@ -147,7 +161,7 @@ namespace Game.Logic
             ApplyFinal();
         }
 
-        // ────────────────── 内部 ──────────────────
+        // ────────────────── 内部计算 ──────────────────
 
         private void MarkDirty()
         {
@@ -175,7 +189,7 @@ namespace Game.Logic
 
             // 最终值 = 基础值 × (1 + 百分比之和) + 固定值之和
             _cachedFinal = BaseValue * (1f + percent) + flat;
-            _cachedFinal = Mathf.Clamp(_cachedFinal, Definition.ClampMin, Definition.ClampMax);
+            _cachedFinal = Mathf.Clamp(_cachedFinal, MinValue, MaxValue);
             _dirty = false;
         }
 
@@ -188,7 +202,6 @@ namespace Game.Logic
         private void ApplyFinal()
         {
             // 当修改器变化时，重新计算 FinalValue
-            // 注意：对于 MaxHP 这类属性，FinalValue 的变化会由 AttributeSet 传播到 HP 的 Clamp
             _ = FinalValue; // 触发 Recalculate
         }
     }

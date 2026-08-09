@@ -42,6 +42,11 @@ namespace Game.Logic
         bool IsGrounded { get; }
 
         /// <summary>
+        /// 当前移动速度向量 (m/s)
+        /// </summary>
+        Vector3 Velocity { get; }
+
+        /// <summary>
         /// 当前垂直速度 (m/s)
         /// </summary>
         float VerticalVelocity { get; }

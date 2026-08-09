@@ -91,8 +91,11 @@ namespace Game.Input
             };
             _input.GamePlay.MoveHeld.performed += _ =>
             {
-                OnMoveHeld?.Invoke();
-                _heldActions.Add((int)InputCommand.Move);
+                if (HasMovementInput())
+                {
+                    OnMoveHeld?.Invoke();
+                    _heldActions.Add((int)InputCommand.Move);
+                }
             };
             _input.GamePlay.MoveHeld.canceled += _ =>
             {

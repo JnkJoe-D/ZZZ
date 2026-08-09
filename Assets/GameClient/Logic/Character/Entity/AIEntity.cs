@@ -17,9 +17,10 @@ namespace Game.Logic
             HitReactionModule = GetComponent<HitReactionModule>();
             if (HitReactionModule == null) HitReactionModule = gameObject.AddComponent<HitReactionModule>();
 
-            FootIKModule = GetComponent<FootIKModule>();
-            if (FootIKModule == null) FootIKModule = GetComponentInChildren<FootIKModule>();
-            if (FootIKModule == null) FootIKModule = gameObject.AddComponent<FootIKModule>();
+            // 暂时禁用 FootIK 模块
+            // FootIKModule = GetComponent<FootIKModule>();
+            // if (FootIKModule == null) FootIKModule = GetComponentInChildren<FootIKModule>();
+            // if (FootIKModule == null) FootIKModule = gameObject.AddComponent<FootIKModule>();
         }
     }
 }

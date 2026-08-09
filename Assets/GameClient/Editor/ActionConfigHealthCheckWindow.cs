@@ -221,7 +221,7 @@ namespace Game.Editor.ActionConfig
                 return result;
             }
 
-            SkillTimeline timeline = ATEditor.SerializationUtility.OpenFromJson(action.TimelineAsset);
+            ActionTimeline timeline = ATEditor.SerializationUtility.OpenFromJson(action.TimelineAsset);
             if (timeline == null)
             {
                 AddError(results, action, action.TimelineAsset, "TimelineParseFailed", "Timeline JSON 无法反序列化。");

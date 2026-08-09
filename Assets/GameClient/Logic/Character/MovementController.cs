@@ -23,6 +23,8 @@ namespace Game.Logic
         public float PushResistance = 0f;
         public CharacterController CharacterController => _cc;
 
+        public Vector3 Velocity => _cc != null ? _cc.velocity : Vector3.zero;
+
         private float _verticalVelocity = 0f;
         public float VerticalVelocity => _verticalVelocity;
 
@@ -40,7 +42,21 @@ namespace Game.Logic
         private MotionWindowVisualOffsetMode visualOffsetMode = MotionWindowVisualOffsetMode.None;
         private void Awake()
         {
-            _visualRoot = transform.Find("Visual");
+            Transform[] allChildren = GetComponentsInChildren<Transform>(true);
+            foreach (Transform child in allChildren)
+            {
+                if (child.CompareTag("CharacterVisual"))
+                {
+                    _visualRoot = child;
+                    break;
+                }
+            }
+            
+            // 如果没找到对应的 Tag，为了防止报错，可以保留原有的按名字查找作为备选兜底
+            if (_visualRoot == null)
+            {
+                _visualRoot = transform.Find("Visual");
+            }
             _cc = gameObject.GetComponent<CharacterController>();
             if (_cc == null)
             {
@@ -98,6 +114,9 @@ namespace Game.Logic
             transform.position += moveDelta;
         }
 
+        [Header("Root Motion")]
+        public bool EnableRootMotion = true;
+
         private void OnAnimatorMove()
         {
             if (_animator == null)
@@ -107,7 +126,8 @@ namespace Game.Logic
 
             Vector3 deltaPosition = Vector3.zero;
             Quaternion deltaRotation = Quaternion.identity;
-            if (_animator.applyRootMotion)
+            
+            if (_animator.applyRootMotion && EnableRootMotion)
             {
                 deltaPosition = _animator.deltaPosition;
                 deltaRotation = _animator.deltaRotation;

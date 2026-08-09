@@ -12,8 +12,8 @@ public class Test_Switch : MonoBehaviour
     private AnimComponent animComp;
     private SkillRunner runner;
     private ProcessContext context;
-    private SkillTimeline timeline1;
-    private SkillTimeline timeline2;
+    private ActionTimeline timeline1;
+    private ActionTimeline timeline2;
     private float timer = 0f;
     public void Start()
     {

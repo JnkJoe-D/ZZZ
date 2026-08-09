@@ -32,10 +32,14 @@ namespace Game.Adapters
             return _target?.GetLayerMask(layerIndex);
         }
 
-        public void PlayAnimation(UnityEngine.AnimationClip clip, int layerIndex, float fadeDuration, float speed)
+        public void PlayAnimation(UnityEngine.AnimationClip clip, int layerIndex, float fadeDuration, float speed, float startTime = 0f)
         {
             if (_target == null) return;
-            _target.Play(clip, layerIndex, fadeDuration);
+            var state = _target.Play(clip, layerIndex, fadeDuration);
+            if (state != null)
+            {
+                state.Time = startTime;
+            }
             _target.SetLayerSpeed(layerIndex, speed);
         }
 

@@ -80,7 +80,7 @@ namespace Game.Logic
             MovementController?.Init(this);
             HitReactionModule?.Init(this);
             FootIKModule?.Init(this);
-            StatusModule?.Init(this, config?.StatusProfile);
+            StatusModule?.Init(this, config);
         }
 
         public void AssignTeamContext(CharacterTeamContext teamContext)

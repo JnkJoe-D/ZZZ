@@ -30,7 +30,7 @@ namespace ATEditor.Editor
             public int ownerId;
             public GameObject owner;
             public Animator animator;
-            public SkillTimeline timeline;
+            public ActionTimeline timeline;
             public AnimationTrack masterTrack;
             public PlayableGraph graph;
             public AnimationPlayableOutput output;
@@ -99,7 +99,7 @@ namespace ATEditor.Editor
             RebuildIfDirty(ctx);
         }
 
-        public static void SetTimeline(GameObject owner, SkillTimeline timeline)
+        public static void SetTimeline(GameObject owner, ActionTimeline timeline)
         {
             if (owner == null)
             {

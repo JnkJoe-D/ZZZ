@@ -11,6 +11,9 @@
 
 namespace cfg.ZZZ
 { 
+    /// <summary>
+    /// 命中策略
+    /// </summary>
     public enum EffectTriggerPolicy
     {
         /// <summary>

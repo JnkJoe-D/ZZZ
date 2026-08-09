@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30efc83f55cddf4e95a3a907679c0b3, type: 3}
+  m_Name: "\u827E\u83B2\u4E54_\u57FA\u7840_\u7279\u6B8A\u51B2\u523A"
+  m_EditorClassIdentifier: 
+  ID: 140040
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 239c568bdd111ed40b058eb8fe0c0444, type: 3}
+  actionTimelineSO: {fileID: 11400000, guid: ed9ddde94732d8147ad5226b9d59ecdc, type: 2}
+  EnterState: 20
+  CompleteMode: 0
+  CompleteAction: {fileID: 0}
+  CompleteTransitCrossfade: -1
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: 69f87d310ac1ce240a313d249023a50a, type: 2}
+  - {fileID: 11400000, guid: 69f87d310ac1ce240a313d249023a50a, type: 2}
+  - {fileID: 11400000, guid: f896abe43785b394f9fd187a6831f929, type: 2}
+  - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
+  - {fileID: 11400000, guid: 583f82f198484fa4db2e6e5bb6a36e69, type: 2}
+  PlaybackSpeed: 1
+  references:
+    version: 2
+    RefIds: []

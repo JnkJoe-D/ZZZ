@@ -20,7 +20,8 @@ public sealed partial class Skill : Luban.BeanBase
         { if(!_buf["id"].IsNumber) { throw new SerializationException(); }  Id = _buf["id"]; }
         { if(!_buf["name"].IsString) { throw new SerializationException(); }  Name = _buf["name"]; }
         { if(!_buf["desc"].IsString) { throw new SerializationException(); }  Desc = _buf["desc"]; }
-        { var __json0 = _buf["costs"]; if(!__json0.IsArray) { throw new SerializationException(); } Costs = new System.Collections.Generic.List<ZZZ.CostInfo>(__json0.Count); foreach(JSONNode __e0 in __json0.Children) { ZZZ.CostInfo __v0;  { if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = global::cfg.ZZZ.CostInfo.DeserializeCostInfo(__e0);  }  Costs.Add(__v0); }   }
+        { var __json0 = _buf["condition"]; if(!__json0.IsArray) { throw new SerializationException(); } Condition = new System.Collections.Generic.List<ZZZ.AttributeCondition>(__json0.Count); foreach(JSONNode __e0 in __json0.Children) { ZZZ.AttributeCondition __v0;  { if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = global::cfg.ZZZ.AttributeCondition.DeserializeAttributeCondition(__e0);  }  Condition.Add(__v0); }   }
+        { var __json0 = _buf["cost"]; if(!__json0.IsArray) { throw new SerializationException(); } Cost = new System.Collections.Generic.List<ZZZ.AttributeCost>(__json0.Count); foreach(JSONNode __e0 in __json0.Children) { ZZZ.AttributeCost __v0;  { if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = global::cfg.ZZZ.AttributeCost.DeserializeAttributeCost(__e0);  }  Cost.Add(__v0); }   }
     }
 
     public static Skill DeserializeSkill(JSONNode _buf)
@@ -41,16 +42,21 @@ public sealed partial class Skill : Luban.BeanBase
     /// </summary>
     public readonly string Desc;
     /// <summary>
+    /// 技能条件
+    /// </summary>
+    public readonly System.Collections.Generic.List<ZZZ.AttributeCondition> Condition;
+    /// <summary>
     /// 技能消耗
     /// </summary>
-    public readonly System.Collections.Generic.List<ZZZ.CostInfo> Costs;
+    public readonly System.Collections.Generic.List<ZZZ.AttributeCost> Cost;
    
     public const int __ID__ = -1855166371;
     public override int GetTypeId() => __ID__;
 
     public  void ResolveRef(Tables tables)
     {
-        foreach (var _e in Costs) { _e?.ResolveRef(tables); }
+        foreach (var _e in Condition) { _e?.ResolveRef(tables); }
+        foreach (var _e in Cost) { _e?.ResolveRef(tables); }
     }
 
     public override string ToString()
@@ -59,7 +65,8 @@ public sealed partial class Skill : Luban.BeanBase
         + "id:" + Id + ","
         + "name:" + Name + ","
         + "desc:" + Desc + ","
-        + "costs:" + Luban.StringUtil.CollectionToString(Costs) + ","
+        + "condition:" + Luban.StringUtil.CollectionToString(Condition) + ","
+        + "cost:" + Luban.StringUtil.CollectionToString(Cost) + ","
         + "}";
     }
 }

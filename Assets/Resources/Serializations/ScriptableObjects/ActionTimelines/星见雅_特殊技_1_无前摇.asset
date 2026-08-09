@@ -1,0 +1,392 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
+  m_Name: "\u661F\u89C1\u96C5_\u7279\u6B8A\u6280_1_\u65E0\u524D\u6447"
+  m_EditorClassIdentifier: 
+  duration: 3.8000002
+  isLoop: 0
+  beforePlayEvents: []
+  onCompleteEvents: []
+  groups:
+  - groupId: 4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28
+    groupName: "\u52A8\u753B"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800624
+  - groupId: bf2dd4c3-588d-41e2-8451-7a4ba3258032
+    groupName: "\u7279\u6548"
+    isCollapsed: 1
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800625
+  - groupId: 87517105-7af1-4746-a8ba-834e1987bc67
+    groupName: "\u97F3\u6548"
+    isCollapsed: 1
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800626
+    - rid: 4681868069779800627
+  - groupId: e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b
+    groupName: "\u8F93\u5165"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800628
+  - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
+    groupName: "\u547D\u4E2D"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800629
+  - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
+    groupName: "\u52A8\u753B\u4F4D\u79FB"
+    isCollapsed: 1
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800630
+  - groupId: fe97c978-da0d-4d70-b973-9218b609c4bc
+    groupName: "\u53D8\u6362"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800631
+    - rid: 4681868069779800632
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868069779800624
+      type: {class: AnimationTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 573ab7eb-5a8a-4dce-ad1d-d70ff0357aa4
+        trackType: AnimationTrack
+        trackName: "\u52A8\u753B\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800633
+        - rid: 4681868069779800634
+        isMasterTrack: 1
+        offsetPos: {x: 0, y: 0, z: 0}
+        offsetRot: {x: 0, y: 0, z: 0}
+    - rid: 4681868069779800625
+      type: {class: VFXTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: d43568e5-6a7f-4b1c-afb9-46a10ad689c7
+        trackType: VFXTrack
+        trackName: "\u7279\u6548\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868069779800626
+      type: {class: AudioTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: a05efcc5-b659-4a72-b03f-4719b6d446e4
+        trackType: AudioTrack
+        trackName: "\u97F3\u6548"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868069779800627
+      type: {class: AudioTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: c14034a8-c841-4dc3-b007-b107d1d294d1
+        trackType: AudioTrack
+        trackName: "\u8BED\u97F3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868069779800628
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 95a1ff0c-6f52-49d9-ae8b-c8814ebeee5b
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800635
+        - rid: 4681868069779800636
+        - rid: 4681868069779800637
+    - rid: 4681868069779800629
+      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
+        trackType: DamageTrack
+        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800638
+    - rid: 4681868069779800630
+      type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 15e2bdc7-968f-4cfa-a5f8-f20e16b3ce0c
+        trackType: MotionWindowTrack
+        trackName: "\u4F4D\u79FB\u7A97\u53E3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800639
+    - rid: 4681868069779800631
+      type: {class: TransformTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: ce601a45-d98e-4757-ae20-f11cdc43cc3f
+        trackType: TransformTrack
+        trackName: "\u53D8\u6362\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800640
+    - rid: 4681868069779800632
+      type: {class: TransformTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: f2c3daf4-fa63-42e4-b4e1-13a679781d7b
+        trackType: TransformTrack
+        trackName: "\u53D8\u6362\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800641
+    - rid: 4681868069779800633
+      type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 2773fafd-75cc-4e1e-91f3-008668489ff8
+        clipName: "\u52A8\u753B\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.4666667
+        blendInDuration: 0.13333333
+        blendOutDuration: 0.13333336
+        animationClip: {fileID: 1827226128182048838, guid: 5bba690b5f359a74b91fd6188c287c2d,
+          type: 3}
+        playbackSpeed: 1
+        layer: 0
+        overrideMask: {fileID: 0}
+        clipRef:
+          guid: 5bba690b5f359a74b91fd6188c287c2d
+          assetName: Unagi_K_Branch_01_Attack_01
+          assetPath: Assets/Dependencies/Animation/Unagi/Unagi_K_Branch_01_Attack_01.FBX
+        maskRef:
+          guid: 
+          assetName: 
+          assetPath: 
+    - rid: 4681868069779800634
+      type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 8a333328-eae5-4375-813e-e7916e3a36cb
+        clipName: "\u52A8\u753B\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.33333334
+        duration: 3.466667
+        blendInDuration: 0.13333336
+        blendOutDuration: 0
+        animationClip: {fileID: 1827226128182048838, guid: 0e69b06016b08e446b6b9f9573ebc7a0,
+          type: 3}
+        playbackSpeed: 1
+        layer: 0
+        overrideMask: {fileID: 0}
+        clipRef:
+          guid: 0e69b06016b08e446b6b9f9573ebc7a0
+          assetName: Unagi_K_Branch_01_Attack_01_End
+          assetPath: Assets/Dependencies/Animation/Unagi/Unagi_K_Branch_01_Attack_01_End.FBX
+        maskRef:
+          guid: 
+          assetName: 
+          assetPath: 
+    - rid: 4681868069779800635
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 1ad77c85-11d1-443a-8465-cebf6c876571
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.3000002
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Buffer
+    - rid: 4681868069779800636
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: d7747720-abd9-4337-bc78-0c2fb77c5f5f
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.53333354
+        duration: 3.2666667
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: BackSwing
+    - rid: 4681868069779800637
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: a4ec491b-554f-48d0-9476-91657b164039
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.3000002
+        duration: 0.23333335
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Execute1
+    - rid: 4681868069779800638
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 379cccda-9c0b-4d82-baf8-74bfdd6d354f
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.20000002
+        duration: 0.10000017
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 64
+        serializedHitLayerMask: 64
+        isSelfImpacted: 0
+        shape:
+          shapeType: 0
+          size: {x: 1, y: 1, z: 1}
+          radius: 2
+          height: 2
+          angle: 90
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 0, z: -2}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 0
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 0
+    - rid: 4681868069779800639
+      type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: fc099760-ca41-458f-81e1-9b417c164307
+        clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.8000002
+        blendInDuration: 0
+        blendOutDuration: 0
+        localDeltaFilterMode: 1
+    - rid: 4681868069779800640
+      type: {class: MovementClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 1971d255-f8e2-4422-8e33-59a48bf42558
+        clipName: "\u79FB\u52A8\u7247\u6BB5\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.10000001
+        duration: 0.10000001
+        blendInDuration: 0
+        blendOutDuration: 0
+        referenceDestination: 1
+        referenceCoordinate: 0
+        targetPosition: {x: 0, y: 0, z: 2}
+        targetPositionEnum: 1
+        targetBaseDirection: 0
+        offsetRadius: 0
+        angleOffset: 0
+        displacementType: 1
+        movementCurve: 3
+        ignoreLayerMask:
+          serializedVersion: 2
+          m_Bits: 0
+        enablePositionValidation: 0
+        candidatePositions: []
+        enableSmartRadialFallback: 1
+        fallbackAngleStep: 30
+        maxFallbackAngle: 180
+        obstacleLayers:
+          serializedVersion: 2
+          m_Bits: 0
+        groundLayers:
+          serializedVersion: 2
+          m_Bits: 0
+        groundCheckDistance: 3
+        requireGrounded: 1
+        faceTargetOnArrival: 1
+        serializedIgnoreLayerMask: 0
+        serializedObstacleLayers: 0
+        serializedGroundLayers: 0
+    - rid: 4681868069779800641
+      type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: bf79b2bb-6874-471f-bcad-a3763d736e25
+        clipName: "\u65CB\u8F6C\u7247\u6BB5\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.10000001
+        blendInDuration: 0
+        blendOutDuration: 0
+        referenceDirection: 4
+        rotationMode: 1
+        updateFrequency: 2
+        localRotationOffset: {x: 0, y: 0, z: 0}

@@ -5,20 +5,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -28,20 +30,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -51,20 +55,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -74,20 +80,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -97,20 +105,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -120,20 +130,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -143,20 +155,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -166,20 +180,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -189,20 +205,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -212,20 +230,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -235,20 +255,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -258,20 +280,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -281,20 +305,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -304,20 +330,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -327,20 +355,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -350,20 +380,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -373,20 +405,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -396,20 +430,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -419,20 +455,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -442,20 +480,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -465,20 +505,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -488,20 +530,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -511,20 +555,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -534,20 +580,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -557,20 +605,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -580,20 +630,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -603,20 +655,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 2,
-        "Param1": 1,
-        "Param2": 0,
-        "Param3": 1000
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 2,
+        "attr_id": 2000,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -626,20 +680,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 2,
-        "Param1": 3,
-        "Param2": 0,
-        "Param3": 1000
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 2,
+        "attr_id": 2000,
+        "value": 3,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -649,20 +705,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 1,
-        "Param1": 5,
-        "Param2": 0,
-        "Param3": 200
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -672,20 +730,22 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       },
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 2,
-        "Param1": 1,
-        "Param2": 0,
-        "Param3": 1000
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 2,
+        "attr_id": 2000,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -695,12 +755,13 @@
     "desc": "",
     "effects": [
       {
-        "Type": 1,
-        "Target": 1,
-        "Policy": 1,
-        "Param1": 20,
-        "Param2": 10,
-        "Param3": 0
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   },
@@ -710,12 +771,13 @@
     "desc": "",
     "effects": [
       {
-        "Type": 2,
-        "Target": 2,
-        "Policy": 2,
-        "Param1": 1,
-        "Param2": 0,
-        "Param3": 1000
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 2,
+        "attr_id": 2000,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1
       }
     ]
   }

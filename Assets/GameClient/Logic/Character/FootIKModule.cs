@@ -36,11 +36,11 @@ namespace Game.Logic
         [Tooltip("地面碰撞层级")]
         [SerializeField] private LayerMask _groundLayer = ~0;
 
-        [Tooltip("射线检测总长度 (米)")]
-        [SerializeField] private float _raycastDistance = 0.9f;
+        [Tooltip("射线检测总长度 (米)，建议 1.2m 以上以覆盖陡坡高度差")]
+        [SerializeField] private float _raycastDistance = 1.2f;
 
-        [Tooltip("射线起点相对于脚踝骨骼的向上偏移量 (米)")]
-        [SerializeField] private float _raycastUpOffset = 0.45f;
+        [Tooltip("射线起点相对于脚踝骨骼的向上偏移量 (米)，建议 0.65m 以上以穿透高位斜坡地表")]
+        [SerializeField] private float _raycastUpOffset = 0.65f;
 
         [Tooltip("手动微调鞋底高度偏移 (米，正数垫高，负数降低，默认为 0)")]
         [SerializeField] private float _footHeightOffset = 0.0f;
@@ -50,43 +50,77 @@ namespace Game.Logic
         #endregion
 
         #region Foot Locking (Anti-Sway)
-        [Header("脚部接地锁定 (防左右晃动与滑步)")]
-        [Tooltip("是否开启脚底世界坐标定点锁定 (待机时完全钉死脚掌)")]
+        [Header("待机脚部定点锁定 (防左右晃动与滑步)")]
+        [Tooltip("是否开启脚底世界坐标定点锁定 (仅在 Idle 待机且无位移时生效，技能/移动时自动释放)")]
         [SerializeField] private bool _enableFootPlantLock = true;
 
         [Tooltip("脚部锚点最大容差距离 (米)，角色移动或迈步超过此距离时自动释放锚点")]
         [SerializeField] private float _maxPlantDistance = 0.25f;
         #endregion
 
-        #region Procedural Weight Heuristics
-        [Header("程序化抬腿自适应 (无需动画曲线)")]
-        [Tooltip("脚踝相对角色根节点的垂直高度低于此值时判定为踩地支撑 (米)")]
-        [SerializeField] private float _groundHeightThreshold = 0.12f;
+        #region Skill & Action Adaptation
+        [Header("技能与发力动作适配 (Skill & Action Adaptation)")]
+        [Tooltip("是否在角色释放技能/攻击/受击时保持脚部接地 IK (关闭则在技能期间平滑回退至纯动画)")]
+        [SerializeField] private bool _enableIKInSkill = true;
 
-        [Tooltip("脚踝相对角色根节点的垂直高度高于此值时 IK 权重完全归零 (米)")]
-        [SerializeField] private float _maxLiftHeight = 0.25f;
+        [Tooltip("技能期间 Foot IK 权重乘数 (建议 0.7~0.85，兼顾斜坡贴地与发力动作张力)")]
+        [Range(0f, 1f)]
+        [SerializeField] private float _skillIKWeight = 0.8f;
 
-        [Tooltip("脚向上抬起的垂直速度超过此阈值时加速释放 IK (米/秒)")]
-        [SerializeField] private float _liftVelocityThreshold = 0.25f;
+        [Tooltip("保留动画原始偏航与发力扭转 (Preserve Animation Twist)：脚掌贴坡时 100% 跟随小腿与动画发力旋转，彻底消除麻花扭曲")]
+        [SerializeField] private bool _preserveAnimationTwist = true;
+        #endregion
+
+        #region Predictive Trajectory Settings
+        [Header("前向轨迹预测与落地自适应 (Predictive Foot Placement)")]
+        [Tooltip("是否启用前向速度外推预测 (大幅优化奔跑/上下台阶与斜坡的贴合顺滑度)")]
+        [SerializeField] private bool _enablePrediction = true;
+
+        [Tooltip("前向预测时间窗口 (秒)，建议 0.04s ~ 0.08s (约 2~5 帧)")]
+        [Range(0.01f, 0.15f)]
+        [SerializeField] private float _predictionTime = 0.06f;
+
+        [Tooltip("预测速度指数平滑速率 (防止动画采样微小抖动)")]
+        [SerializeField] private float _velocitySmoothSpeed = 25f;
+
+        [Tooltip("落地法线与高度提前自适应比例 (0~1)，脚掌在触地前提前偏转对齐前方坡度")]
+        [Range(0f, 1f)]
+        [SerializeField] private float _landingAnticipation = 0.7f;
+        #endregion
+
+        #region Procedural Weight Heuristics (Slope-Aware)
+        [Header("斜坡自适应抬腿权重 (Slope-Aware Procedural Weight)")]
+        [Tooltip("脚踝相对下方地面接触点的垂直距离低于此值时判定为踩地支撑 (米)")]
+        [SerializeField] private float _groundDistanceThreshold = 0.10f;
+
+        [Tooltip("脚踝相对下方地面接触点的垂直距离高于此值时 IK 权重完全归零 (米)")]
+        [SerializeField] private float _maxLiftOffDistance = 0.30f;
+
+        [Tooltip("脚向上离开地面的垂直速度超过此阈值时加速释放 IK (米/秒)")]
+        [SerializeField] private float _liftVelocityThreshold = 0.30f;
         #endregion
 
         #region Suspension & Smoothing
         [Header("启用控制")]
-        [Tooltip("是否启用 Foot IK (当前已全局禁用)")]
+        [Tooltip("是否启用 Foot IK (暂时全局禁用)")]
         [SerializeField] private bool _enableIK = false;
 
         [Header("平滑与悬挂阻尼")]
         [Range(0f, 1f)]
-        [SerializeField] private float _masterWeight = 0f;
+        [SerializeField] private float _masterWeight = 1.0f;
+
+        [Tooltip("斜坡骨盆下沉平衡比例 (0~1)：0=骨盆不动纯靠双腿屈膝抬升与伸展，0.5=骨盆下沉50%落差且高位腿屈膝抬升50%落差(推荐)，1=骨盆全额下沉")]
+        [Range(0f, 1f)]
+        [SerializeField] private float _pelvisSlopeBalance = 0.5f;
 
         [Tooltip("骨盆高度调整的平滑阻尼速度")]
-        [SerializeField] private float _pelvisDamping = 12f;
+        [SerializeField] private float _pelvisDamping = 16f;
 
         [Tooltip("脚部位置追踪的平滑阻尼速度")]
-        [SerializeField] private float _footPositionDamping = 25f;
+        [SerializeField] private float _footPositionDamping = 35f;
 
         [Tooltip("脚底旋转对齐的平滑阻尼速度")]
-        [SerializeField] private float _footRotationDamping = 18f;
+        [SerializeField] private float _footRotationDamping = 20f;
         #endregion
 
         #region Debug Settings
@@ -110,6 +144,20 @@ namespace Game.Logic
         private float _lastLeftFootY;
         private float _lastRightFootY;
 
+        // 脚底世界位置与前向外推速度追踪
+        private Vector3 _lastLeftFootWorldPos;
+        private Vector3 _lastRightFootWorldPos;
+        private Vector3 _smoothLeftFootVel;
+        private Vector3 _smoothRightFootVel;
+
+        // 调试可视化数据 (预测落点)
+        private Vector3 _debugLeftPredictPos;
+        private Vector3 _debugRightPredictPos;
+        private Vector3 _debugLeftPredictHitPos;
+        private Vector3 _debugRightPredictHitPos;
+        private bool _debugLeftPredictHit;
+        private bool _debugRightPredictHit;
+
         // 脚底世界锚点 (Planted Anchors)
         private bool _isLeftPlanted;
         private bool _isRightPlanted;
@@ -125,6 +173,18 @@ namespace Game.Logic
 
         private readonly RaycastHit[] _rayHits = new RaycastHit[8];
 
+        public bool EnableIK
+        {
+            get => _enableIK;
+            set
+            {
+                _enableIK = value;
+                if (!_enableIK)
+                {
+                    ResetRuntimeState();
+                }
+            }
+        }
         public float CurrentWeight => _masterWeight;
         public bool HasBones => _pelvisBone != null && _leftFootBone != null && _rightFootBone != null;
         #endregion
@@ -132,6 +192,7 @@ namespace Game.Logic
         #region Unity Lifecycle
         private void Awake()
         {
+            EnsureGroundLayerMask();
             AutoDiscoverBonesIfMissing();
             MeasureAnkleRestBaselines();
         }
@@ -167,9 +228,29 @@ namespace Game.Logic
         public void Init(CharacterEntity entity)
         {
             _entity = entity;
+            _enableIK = true;
+            _masterWeight = 1.0f;
+            EnsureGroundLayerMask();
             AutoDiscoverBonesIfMissing();
             MeasureAnkleRestBaselines();
             InitializeRuntimeState();
+        }
+
+        private void EnsureGroundLayerMask()
+        {
+            if (_groundLayer.value == 0 || _groundLayer.value == ~0)
+            {
+                int excludeMask = LayerMask.GetMask("Ignore Raycast", "UI", "CharHit", "Character", "LocalRole", "Camera", "CharIgnore", "Water");
+                if (excludeMask != 0)
+                {
+                    _groundLayer = ~excludeMask;
+                }
+                else
+                {
+                    _groundLayer = LayerMask.GetMask("Default", "Ground", "Wall");
+                    if (_groundLayer.value == 0) _groundLayer = ~0;
+                }
+            }
         }
 
         /// <summary>
@@ -185,14 +266,14 @@ namespace Game.Logic
             if (_leftFootBone != null)
             {
                 float measured = _leftFootBone.position.y - rootY;
-                _leftAnkleRestHeight = measured > 0.03f ? measured : 0.12f;
+                _leftAnkleRestHeight = (measured > 0.03f && measured < 0.35f) ? measured : 0.12f;
                 _leftFootRestLocalRot = rootRotInv * _leftFootBone.rotation;
             }
 
             if (_rightFootBone != null)
             {
                 float measured = _rightFootBone.position.y - rootY;
-                _rightAnkleRestHeight = measured > 0.03f ? measured : 0.12f;
+                _rightAnkleRestHeight = (measured > 0.03f && measured < 0.35f) ? measured : 0.12f;
                 _rightFootRestLocalRot = rootRotInv * _rightFootBone.rotation;
             }
         }
@@ -204,6 +285,8 @@ namespace Game.Logic
                 _curLeftTargetPos = _leftFootBone.position;
                 _curLeftTargetRot = _leftFootBone.rotation;
                 _lastLeftFootY = _leftFootBone.position.y;
+                _lastLeftFootWorldPos = _leftFootBone.position;
+                _smoothLeftFootVel = Vector3.zero;
                 _leftPlantPos = _leftFootBone.position;
                 _leftPlantRot = _leftFootBone.rotation;
             }
@@ -213,6 +296,8 @@ namespace Game.Logic
                 _curRightTargetPos = _rightFootBone.position;
                 _curRightTargetRot = _rightFootBone.rotation;
                 _lastRightFootY = _rightFootBone.position.y;
+                _lastRightFootWorldPos = _rightFootBone.position;
+                _smoothRightFootVel = Vector3.zero;
                 _rightPlantPos = _rightFootBone.position;
                 _rightPlantRot = _rightFootBone.rotation;
             }
@@ -227,6 +312,8 @@ namespace Game.Logic
             _currentPelvisOffset = 0f;
             _isLeftPlanted = false;
             _isRightPlanted = false;
+            _smoothLeftFootVel = Vector3.zero;
+            _smoothRightFootVel = Vector3.zero;
             if (_fadeCoroutine != null)
             {
                 StopCoroutine(_fadeCoroutine);
@@ -239,50 +326,159 @@ namespace Game.Logic
         private void EvaluateFootIK(float deltaTime)
         {
             Transform rootTransform = _entity != null ? _entity.transform : transform;
-            Vector3 rootPos = rootTransform.position;
 
-            // 1. 程序化计算左右脚动态抬腿/踩地权重 (0~1)
-            float leftWeight = CalculateProceduralFootWeight(_leftFootBone, rootPos, ref _lastLeftFootY, deltaTime);
-            float rightWeight = CalculateProceduralFootWeight(_rightFootBone, rootPos, ref _lastRightFootY, deltaTime);
+            // 0. 实时提取脚底世界瞬态速度并进行指数平滑滤波 (用于前向速度外推预测)
+            if (_leftFootBone != null)
+            {
+                Vector3 rawVel = (_leftFootBone.position - _lastLeftFootWorldPos) / Mathf.Max(0.0001f, deltaTime);
+                _lastLeftFootWorldPos = _leftFootBone.position;
+                _smoothLeftFootVel = Vector3.Lerp(_smoothLeftFootVel, rawVel, deltaTime * _velocitySmoothSpeed);
+            }
+            if (_rightFootBone != null)
+            {
+                Vector3 rawVel = (_rightFootBone.position - _lastRightFootWorldPos) / Mathf.Max(0.0001f, deltaTime);
+                _lastRightFootWorldPos = _rightFootBone.position;
+                _smoothRightFootVel = Vector3.Lerp(_smoothRightFootVel, rawVel, deltaTime * _velocitySmoothSpeed);
+            }
 
-            // 2. 物理射线检测地面高度与法线 (自动基于测量的脚踝高度补偿，绝不陷地)
-            bool leftHit = RaycastGround(_leftFootBone, rootTransform, _leftAnkleRestHeight, out Vector3 leftGroundHitPos, out Vector3 leftGroundNormal);
-            bool rightHit = RaycastGround(_rightFootBone, rootTransform, _rightAnkleRestHeight, out Vector3 rightGroundHitPos, out Vector3 rightGroundNormal);
+            // 1. 角色状态感知与安全检测
+            bool isGrounded = true;
+            bool isMoving = false;
+            bool isSkillOrAction = false;
 
-            // 3. 计算骨盆自适应下沉 (根据触地脚的地面落差)
+            if (_entity != null)
+            {
+                if (_entity.MovementController != null)
+                {
+                    isGrounded = _entity.MovementController.IsGrounded;
+                    isMoving = _entity.MovementController.Velocity.sqrMagnitude > 0.05f;
+                }
+
+                // 智能感知是否处于技能/发力/闪避/受击状态
+                if (_entity.StateMachine != null && _entity.StateMachine.CurrentState != null)
+                {
+                    System.Type stateType = _entity.StateMachine.CurrentState.GetType();
+                    if (stateType != typeof(CharacterGroundState))
+                    {
+                        isSkillOrAction = true;
+                    }
+                }
+
+                if (_entity.RuntimeData != null && _entity.RuntimeData.TargetGroundSubState == ActionState.Skill)
+                {
+                    isSkillOrAction = true;
+                }
+            }
+
+            // 空中状态安全释放
+            if (!isGrounded)
+            {
+                _currentPelvisOffset = Mathf.Lerp(_currentPelvisOffset, 0f, deltaTime * _pelvisDamping);
+                _pelvisBone.position += new Vector3(0f, _currentPelvisOffset * _masterWeight, 0f);
+                _isLeftPlanted = false;
+                _isRightPlanted = false;
+                if (_leftFootBone != null)
+                {
+                    _curLeftTargetPos = _leftFootBone.position;
+                    _curLeftTargetRot = _leftFootBone.rotation;
+                }
+                if (_rightFootBone != null)
+                {
+                    _curRightTargetPos = _rightFootBone.position;
+                    _curRightTargetRot = _rightFootBone.rotation;
+                }
+                return;
+            }
+
+            // 技能状态权重自适应系数 (技能中平滑过渡或按配置倍率生效)
+            float stateMultiplier = 1.0f;
+            if (isSkillOrAction)
+            {
+                stateMultiplier = _enableIKInSkill ? _skillIKWeight : 0f;
+                if (stateMultiplier <= 0.001f)
+                {
+                    _currentPelvisOffset = Mathf.Lerp(_currentPelvisOffset, 0f, deltaTime * _pelvisDamping);
+                    _pelvisBone.position += new Vector3(0f, _currentPelvisOffset * _masterWeight, 0f);
+                    _isLeftPlanted = false;
+                    _isRightPlanted = false;
+                    return;
+                }
+            }
+
+            // 2. 前向速度外推预测 + 双射线融合检测 (获取当前与预测地面接触点)
+            bool leftHit = EvaluateFootGroundWithPrediction(
+                _leftFootBone,
+                _smoothLeftFootVel,
+                rootTransform,
+                _leftAnkleRestHeight,
+                out Vector3 leftGroundHitPos,
+                out Vector3 leftGroundNormal,
+                out _debugLeftPredictPos,
+                out _debugLeftPredictHitPos,
+                out _debugLeftPredictHit
+            );
+
+            bool rightHit = EvaluateFootGroundWithPrediction(
+                _rightFootBone,
+                _smoothRightFootVel,
+                rootTransform,
+                _rightAnkleRestHeight,
+                out Vector3 rightGroundHitPos,
+                out Vector3 rightGroundNormal,
+                out _debugRightPredictPos,
+                out _debugRightPredictHitPos,
+                out _debugRightPredictHit
+            );
+
+            // 3. 斜坡自适应动态权重计算 (基于脚踝相对下方地面的真实距离，确保斜坡高位脚绝对有 100% 支撑权重)
+            float leftWeight = CalculateProceduralFootWeight(_leftFootBone, leftGroundHitPos, leftHit, ref _lastLeftFootY, deltaTime);
+            float rightWeight = CalculateProceduralFootWeight(_rightFootBone, rightGroundHitPos, rightHit, ref _lastRightFootY, deltaTime);
+
+            // 4. 骨盆自适应下沉与斜坡落差平衡
+            // lowDelta < 0 (低位脚悬空需要骨盆下沉够地)，highDelta > 0 (高位脚在斜坡高处需要屈膝抬升)
             float leftDelta = (leftHit && leftWeight > 0.01f) ? (leftGroundHitPos.y - _leftFootBone.position.y) : 0f;
             float rightDelta = (rightHit && rightWeight > 0.01f) ? (rightGroundHitPos.y - _rightFootBone.position.y) : 0f;
 
-            float targetPelvisOffset = Mathf.Min(leftDelta, rightDelta);
-            if (targetPelvisOffset > 0f)
+            float minDelta = Mathf.Min(leftDelta, rightDelta);
+            float targetPelvisOffset = 0f;
+            if (minDelta < 0f)
             {
-                targetPelvisOffset = 0f; // 骨盆只在单脚下陷时下沉，不主动上抬
+                // 骨盆按平衡比例适度下沉，为高位腿腾出充足的屈膝抬升空间
+                targetPelvisOffset = minDelta * _pelvisSlopeBalance;
             }
 
             _currentPelvisOffset = Mathf.Lerp(_currentPelvisOffset, targetPelvisOffset, deltaTime * _pelvisDamping);
-            _pelvisBone.position += new Vector3(0f, _currentPelvisOffset * _masterWeight, 0f);
+            _pelvisBone.position += new Vector3(0f, _currentPelvisOffset * _masterWeight * stateMultiplier, 0f);
 
-            // 4. 左脚：固定鞋底基准面旋转 + 两骨骼 IK 解算 + 定点锚定
+            // 只有在严格待机（非技能、非发力、非移动）时才允许定点锁定，彻底避免发力动作脚底被钉死拉扯
+            bool allowPlantLock = _enableFootPlantLock && !isMoving && !isSkillOrAction;
+
+            // 5. 左脚：贴坡旋转 (100% 保留小腿扭转与动画 Yaw) + 两骨骼余弦定理 IK 解算
             if (_leftThighBone != null && _leftCalfBone != null && _leftFootBone != null)
             {
-                float finalLeftWeight = leftWeight * _masterWeight;
+                float finalLeftWeight = leftWeight * _masterWeight * stateMultiplier;
 
                 if (leftHit && finalLeftWeight > 0.001f)
                 {
-                    // 严格基于鞋底固定基准面与地面法线计算平坦鞋底旋转，消除动画瞬态翘脚
-                    Quaternion flatSoleRot = CalculateFlatSoleRotation(_leftFootRestLocalRot, leftGroundNormal, rootTransform);
+                    // 贴坡旋转：保留动画当前帧脚踝与小腿的自然发力偏航角，仅叠加坡度倾角
+                    Quaternion slopeAlignedRot = AlignFootRotationToSlope(_leftFootBone.rotation, leftGroundNormal);
 
                     Vector3 desiredTargetPos;
                     Quaternion desiredTargetRot;
 
-                    if (_enableFootPlantLock)
+                    if (allowPlantLock)
                     {
                         float distToPlant = Vector3.Distance(_leftFootBone.position, _leftPlantPos);
-                        if (!_isLeftPlanted || distToPlant > _maxPlantDistance)
+                        if (!_isLeftPlanted || distToPlant > _maxPlantDistance || Mathf.Abs(_leftPlantPos.y - leftGroundHitPos.y) > 0.03f)
                         {
                             _leftPlantPos = leftGroundHitPos;
-                            _leftPlantRot = flatSoleRot;
+                            _leftPlantRot = slopeAlignedRot;
                             _isLeftPlanted = true;
+                        }
+                        else
+                        {
+                            // 垂直高度始终随地面最新检测更新，防止被卡死在低处
+                            _leftPlantPos.y = leftGroundHitPos.y;
                         }
 
                         desiredTargetPos = _leftPlantPos;
@@ -290,12 +486,16 @@ namespace Game.Logic
                     }
                     else
                     {
+                        _isLeftPlanted = false;
                         desiredTargetPos = leftGroundHitPos;
-                        desiredTargetRot = flatSoleRot;
+                        desiredTargetRot = slopeAlignedRot;
                     }
 
                     _curLeftTargetPos = Vector3.Lerp(_curLeftTargetPos, desiredTargetPos, deltaTime * _footPositionDamping);
-                    SolveTwoBoneIK(_leftThighBone, _leftCalfBone, _leftFootBone, _curLeftTargetPos, finalLeftWeight);
+                    // 地面防穿模硬钳制：脚部目标高度绝对不允许低于地面接触点！
+                    _curLeftTargetPos.y = Mathf.Max(_curLeftTargetPos.y, leftGroundHitPos.y);
+
+                    SolveTwoBoneIK(_leftThighBone, _leftCalfBone, _leftFootBone, _curLeftTargetPos, finalLeftWeight, rootTransform);
 
                     _curLeftTargetRot = Quaternion.Slerp(_curLeftTargetRot, desiredTargetRot, deltaTime * _footRotationDamping);
                     _leftFootBone.rotation = Quaternion.Slerp(_leftFootBone.rotation, _curLeftTargetRot, finalLeftWeight);
@@ -308,27 +508,31 @@ namespace Game.Logic
                 }
             }
 
-            // 5. 右脚：固定鞋底基准面旋转 + 两骨骼 IK 解算 + 定点锚定
+            // 6. 右脚：贴坡旋转 (100% 保留小腿扭转与动画 Yaw) + 两骨骼余弦定理 IK 解算
             if (_rightThighBone != null && _rightCalfBone != null && _rightFootBone != null)
             {
-                float finalRightWeight = rightWeight * _masterWeight;
+                float finalRightWeight = rightWeight * _masterWeight * stateMultiplier;
 
                 if (rightHit && finalRightWeight > 0.001f)
                 {
-                    // 严格基于鞋底固定基准面与地面法线计算平坦鞋底旋转，消除动画瞬态翘脚
-                    Quaternion flatSoleRot = CalculateFlatSoleRotation(_rightFootRestLocalRot, rightGroundNormal, rootTransform);
+                    Quaternion slopeAlignedRot = AlignFootRotationToSlope(_rightFootBone.rotation, rightGroundNormal);
 
                     Vector3 desiredTargetPos;
                     Quaternion desiredTargetRot;
 
-                    if (_enableFootPlantLock)
+                    if (allowPlantLock)
                     {
                         float distToPlant = Vector3.Distance(_rightFootBone.position, _rightPlantPos);
-                        if (!_isRightPlanted || distToPlant > _maxPlantDistance)
+                        if (!_isRightPlanted || distToPlant > _maxPlantDistance || Mathf.Abs(_rightPlantPos.y - rightGroundHitPos.y) > 0.03f)
                         {
                             _rightPlantPos = rightGroundHitPos;
-                            _rightPlantRot = flatSoleRot;
+                            _rightPlantRot = slopeAlignedRot;
                             _isRightPlanted = true;
+                        }
+                        else
+                        {
+                            // 垂直高度始终随地面最新检测更新，防止被卡死在低处
+                            _rightPlantPos.y = rightGroundHitPos.y;
                         }
 
                         desiredTargetPos = _rightPlantPos;
@@ -336,12 +540,16 @@ namespace Game.Logic
                     }
                     else
                     {
+                        _isRightPlanted = false;
                         desiredTargetPos = rightGroundHitPos;
-                        desiredTargetRot = flatSoleRot;
+                        desiredTargetRot = slopeAlignedRot;
                     }
 
                     _curRightTargetPos = Vector3.Lerp(_curRightTargetPos, desiredTargetPos, deltaTime * _footPositionDamping);
-                    SolveTwoBoneIK(_rightThighBone, _rightCalfBone, _rightFootBone, _curRightTargetPos, finalRightWeight);
+                    // 地面防穿模硬钳制：脚部目标高度绝对不允许低于地面接触点！
+                    _curRightTargetPos.y = Mathf.Max(_curRightTargetPos.y, rightGroundHitPos.y);
+
+                    SolveTwoBoneIK(_rightThighBone, _rightCalfBone, _rightFootBone, _curRightTargetPos, finalRightWeight, rootTransform);
 
                     _curRightTargetRot = Quaternion.Slerp(_curRightTargetRot, desiredTargetRot, deltaTime * _footRotationDamping);
                     _rightFootBone.rotation = Quaternion.Slerp(_rightFootBone.rotation, _curRightTargetRot, finalRightWeight);
@@ -356,24 +564,115 @@ namespace Game.Logic
         }
 
         /// <summary>
-        /// 纯程序化单脚 IK 权重启发式计算：
-        /// 综合利用脚踝局部垂直高度（Height）和垂直速度（Vertical Velocity）推导 Stance/Swing 相位。
+        /// 双射线融合地面检测：结合当前足底真实射线与前向速度外推预测射线，
+        /// 提前探知前方上坡/台阶地形并在落地前预对齐坡度法线。
         /// </summary>
-        private float CalculateProceduralFootWeight(Transform footBone, Vector3 rootPos, ref float lastY, float deltaTime)
+        private bool EvaluateFootGroundWithPrediction(
+            Transform footBone,
+            Vector3 smoothVelocity,
+            Transform rootTransform,
+            float ankleRestHeight,
+            out Vector3 finalHitPos,
+            out Vector3 finalNormal,
+            out Vector3 debugPredictPos,
+            out Vector3 debugPredictHitPos,
+            out bool debugPredictHit)
+        {
+            debugPredictPos = footBone != null ? footBone.position : Vector3.zero;
+            debugPredictHitPos = Vector3.zero;
+            debugPredictHit = false;
+
+            if (footBone == null)
+            {
+                finalHitPos = Vector3.zero;
+                finalNormal = Vector3.up;
+                return false;
+            }
+
+            Vector3 currentPos = footBone.position;
+            bool currentHit = RaycastGroundAtPosition(currentPos, rootTransform, ankleRestHeight, out Vector3 currHitPos, out Vector3 currNormal);
+
+            if (!_enablePrediction)
+            {
+                finalHitPos = currHitPos;
+                finalNormal = currNormal;
+                return currentHit;
+            }
+
+            // 计算前瞻点 (根据速度与下落趋势)
+            Vector3 forwardAndDownVel = smoothVelocity;
+            forwardAndDownVel.y = Mathf.Min(0f, forwardAndDownVel.y); // 仅在前向与下落方向外推
+
+            float speedMag = forwardAndDownVel.magnitude;
+            if (speedMag > 0.05f)
+            {
+                debugPredictPos = currentPos + forwardAndDownVel * _predictionTime;
+            }
+            else
+            {
+                debugPredictPos = currentPos;
+            }
+
+            debugPredictHit = RaycastGroundAtPosition(debugPredictPos, rootTransform, ankleRestHeight, out debugPredictHitPos, out Vector3 predNormal);
+
+            if (currentHit)
+            {
+                finalHitPos = currHitPos;
+                finalNormal = currNormal;
+
+                if (debugPredictHit)
+                {
+                    // A. 台阶/上坡防穿模提前抬升：如果预测落点高于当前落点 (例如跑上台阶/斜坡)，提前预抬升目标高度
+                    if (debugPredictHitPos.y > currHitPos.y + 0.01f)
+                    {
+                        finalHitPos.y = Mathf.Lerp(currHitPos.y, debugPredictHitPos.y, _landingAnticipation);
+                    }
+
+                    // B. 落地姿态预对齐
+                    finalNormal = Vector3.Slerp(currNormal, predNormal, _landingAnticipation * 0.5f);
+                }
+                return true;
+            }
+            else if (debugPredictHit)
+            {
+                finalHitPos = debugPredictHitPos;
+                finalNormal = predNormal;
+                return true;
+            }
+
+            finalHitPos = currentPos;
+            finalNormal = Vector3.up;
+            return false;
+        }
+
+        /// <summary>
+        /// 斜坡自适应单脚 IK 权重计算：
+        /// 基于脚踝相对下方地面接触点的真实距离进行判定，彻底消除斜坡高位脚被误判为离地抬腿的严重 Bug。
+        /// </summary>
+        private float CalculateProceduralFootWeight(Transform footBone, Vector3 groundHitPos, bool groundHit, ref float lastY, float deltaTime)
         {
             if (footBone == null) return 0f;
 
-            // A. 计算脚踝相对角色根节点的局部垂直高度
-            float localY = footBone.position.y - rootPos.y;
-
-            // B. 高度衰减：在 groundHeightThreshold 以内权重为 1，超过 maxLiftHeight 权重平滑归零
-            float heightWeight = 1f - Mathf.Clamp01((localY - _groundHeightThreshold) / Mathf.Max(0.001f, _maxLiftHeight - _groundHeightThreshold));
-
-            // C. 垂直速度判定：脚向上抬起离开地面时快速释放权重
             float currentY = footBone.position.y;
             float verticalVelocity = (currentY - lastY) / Mathf.Max(0.0001f, deltaTime);
             lastY = currentY;
 
+            if (!groundHit) return 0f;
+
+            // 1. 计算脚踝当前高度相对地面接触点的高度差 (高于地面为正，穿模为负)
+            float heightAboveGround = currentY - groundHitPos.y;
+
+            // 2. 如果脚踝低于或贴近地面 (穿模/触地支撑)，权重绝对是 100% (无论是在平地还是斜坡高位！)
+            if (heightAboveGround <= _groundDistanceThreshold)
+            {
+                return 1f;
+            }
+
+            // 3. 如果脚踝高于地面 (正在抬脚)，根据离地距离平滑衰减
+            float liftFactor = Mathf.Clamp01((heightAboveGround - _groundDistanceThreshold) / Mathf.Max(0.001f, _maxLiftOffDistance - _groundDistanceThreshold));
+            float heightWeight = 1f - liftFactor;
+
+            // 4. 向上离开地面的垂直速度越快，加速释放权重
             if (verticalVelocity > _liftVelocityThreshold)
             {
                 float velocityDamp = 1f - Mathf.Clamp01((verticalVelocity - _liftVelocityThreshold) / _liftVelocityThreshold);
@@ -384,18 +683,11 @@ namespace Game.Logic
         }
 
         /// <summary>
-        /// 物理地面向下射线检测 (使用 NonAlloc 避免 GC，自动过滤角色自身碰撞体，并根据实际脚踝自然高度计算目标点)
+        /// 针对指定空间点垂直向下发射地面检测射线 (使用 NonAlloc 避免 GC，自动过滤角色自身碰撞体，并根据实际脚踝自然高度计算目标点)
         /// </summary>
-        private bool RaycastGround(Transform footBone, Transform rootTransform, float ankleRestHeight, out Vector3 groundPos, out Vector3 groundNormal)
+        private bool RaycastGroundAtPosition(Vector3 originPos, Transform rootTransform, float ankleRestHeight, out Vector3 groundPos, out Vector3 groundNormal)
         {
-            if (footBone == null)
-            {
-                groundPos = Vector3.zero;
-                groundNormal = Vector3.up;
-                return false;
-            }
-
-            Vector3 rayStart = footBone.position + Vector3.up * _raycastUpOffset;
+            Vector3 rayStart = originPos + Vector3.up * _raycastUpOffset;
             float totalDistance = _raycastDistance + _raycastUpOffset;
 
             int hitCount = Physics.RaycastNonAlloc(rayStart, Vector3.down, _rayHits, totalDistance, _groundLayer, QueryTriggerInteraction.Ignore);
@@ -432,45 +724,65 @@ namespace Game.Logic
                 }
             }
 
-            groundPos = footBone.position;
+            groundPos = originPos;
             groundNormal = Vector3.up;
             return false;
         }
 
         /// <summary>
-        /// 基于固定鞋底固有基准面计算贴地平坦旋转：
-        /// 彻底摒弃取动画单帧瞬态旋转的方式，将鞋底固有水平基准面投射到地面法线与角色前向构建的坡度坐标系中。
-        /// 无论动画在当前帧是脚跟还是脚尖先着地，踩在地上时鞋底都会 100% 平整贴合地表！
+        /// 斜坡对齐旋转计算：
+        /// 当开启 _preserveAnimationTwist 时，将地面坡度倾角叠加在动画原始旋转上，
+        /// 100% 保持小腿发力扭转、技能动作中的偏航角 (Yaw) 与动画细节，彻底消除麻花扭曲！
         /// </summary>
-        private Quaternion CalculateFlatSoleRotation(Quaternion restLocalRot, Vector3 groundNormal, Transform rootTransform)
+        private Quaternion AlignFootRotationToSlope(Quaternion animFootRot, Vector3 groundNormal)
         {
             if (Vector3.Angle(Vector3.up, groundNormal) > _maxGroundAngle)
             {
                 groundNormal = Vector3.up;
             }
 
-            // 1. 计算贴坡的前向方向 (将角色朝向投影到坡度法线平面)
-            Vector3 groundForward = Vector3.ProjectOnPlane(rootTransform.forward, groundNormal).normalized;
-            if (groundForward.sqrMagnitude < 0.001f)
+            if (_preserveAnimationTwist)
             {
-                groundForward = rootTransform.forward;
+                // 计算地面法线相对世界 Up 的倾斜旋转差 (Pitch / Roll 贴坡)
+                Quaternion slopeTilt = Quaternion.FromToRotation(Vector3.up, groundNormal);
+
+                // 将坡度倾角叠加在动画原始旋转上：保留小腿旋转、技能发力扭转与脚踝偏航
+                return slopeTilt * animFootRot;
             }
-
-            // 2. 构建贴坡基底 (Up 严格垂直于坡面法线，Forward 顺应角色朝向)
-            Quaternion slopeBasis = Quaternion.LookRotation(groundForward, groundNormal);
-
-            // 3. 将模型固有的鞋底基准面叠加到贴坡基底
-            return slopeBasis * restLocalRot;
+            else
+            {
+                // 备用模式：全局对齐
+                Transform rootTransform = _entity != null ? _entity.transform : transform;
+                Vector3 groundForward = Vector3.ProjectOnPlane(rootTransform.forward, groundNormal).normalized;
+                if (groundForward.sqrMagnitude < 0.001f)
+                {
+                    groundForward = rootTransform.forward;
+                }
+                Quaternion slopeBasis = Quaternion.LookRotation(groundForward, groundNormal);
+                return slopeBasis * _leftFootRestLocalRot;
+            }
         }
 
         /// <summary>
-        /// 解析式两骨骼 IK 解算器 (余弦定理单次直接求解)
+        /// 解析式两骨骼 IK 解算器 (基于极向向量 Pole Vector 与余弦定理精确闭式求解)
+        /// 保证无论骨骼原始轴向为何种格式，膝关节均严格向前屈膝，高位脚 100% 抬升至斜坡高处！
         /// </summary>
-        private static void SolveTwoBoneIK(Transform root, Transform mid, Transform tip, Vector3 targetPos, float weight)
+        private static void SolveTwoBoneIK(
+            Transform root,
+            Transform mid,
+            Transform tip,
+            Vector3 targetPos,
+            float weight,
+            Transform characterRoot)
         {
-            Vector3 a = root.position;
-            Vector3 b = mid.position;
-            Vector3 c = tip.position;
+            if (weight <= 0.0001f || root == null || mid == null || tip == null)
+            {
+                return;
+            }
+
+            Vector3 a = root.position; // 大腿根部
+            Vector3 b = mid.position;  // 膝关节
+            Vector3 c = tip.position;  // 脚踝
 
             Vector3 ab = b - a;
             Vector3 bc = c - b;
@@ -482,50 +794,54 @@ namespace Game.Logic
             float lat = at.magnitude;
             float lac = ac.magnitude;
 
-            if (lab < 0.0001f || lbc < 0.0001f || lat < 0.0001f)
+            if (lab < 0.001f || lbc < 0.001f || lat < 0.001f || lac < 0.001f)
             {
                 return;
             }
 
-            // 限制目标距离在两骨骼极限长度之间
-            lat = Mathf.Clamp(lat, 0.001f, lab + lbc - 0.001f);
+            // 限制目标距离在两骨骼极限长度之间 (略留 0.001 裕量避免奇异点)
+            lat = Mathf.Clamp(lat, 0.01f, lab + lbc - 0.001f);
 
-            // 1. 求解膝关节自然弯曲平面法线 (Bend Normal)
-            Vector3 bendNormal = Vector3.Cross(ab, bc);
+            // 1. 严格计算膝盖向前弯曲方向 (Pole Direction) 与弯曲平面法线 (Hinge Normal)
+            Vector3 charFwd = characterRoot != null ? characterRoot.forward : root.forward;
+
+            // 膝盖极向向量：优先取动画当前膝盖在垂直于 at 平面上的投影；若伸直则取角色正前方
+            Vector3 kneeDir = Vector3.ProjectOnPlane(b - a, at);
+            if (kneeDir.sqrMagnitude < 0.0001f)
+            {
+                kneeDir = Vector3.ProjectOnPlane(charFwd, at);
+                if (kneeDir.sqrMagnitude < 0.0001f)
+                {
+                    kneeDir = charFwd;
+                }
+            }
+            kneeDir.Normalize();
+
+            // 弯曲铰链轴：at × kneeDir。根据右手定则，绕此轴将大腿向 kneeDir(前) 弯折
+            Vector3 bendNormal = Vector3.Cross(at, kneeDir).normalized;
             if (bendNormal.sqrMagnitude < 0.0001f)
             {
-                bendNormal = root.right;
-            }
-            else
-            {
-                bendNormal.Normalize();
+                bendNormal = characterRoot != null ? -characterRoot.right : -root.right;
             }
 
-            // 2. 余弦定理求目标大腿夹角与原始大腿夹角
+            // 2. 余弦定理求解大腿(Root)目标夹角与当前夹角
             float cosAngleA_target = Mathf.Clamp((lab * lab + lat * lat - lbc * lbc) / (2f * lab * lat), -1f, 1f);
             float angleA_target = Mathf.Acos(cosAngleA_target) * Mathf.Rad2Deg;
 
-            float cosAngleA_orig = Mathf.Clamp((lab * lab + lac * lac - lbc * lbc) / (2f * lab * lac), -1f, 1f);
-            float angleA_orig = Mathf.Acos(cosAngleA_orig) * Mathf.Rad2Deg;
-
-            // 3. 旋转 Root (大腿)
-            // 第一步：在弯曲平面内调整大腿屈伸角
-            Quaternion flexRot = Quaternion.AngleAxis(angleA_target - angleA_orig, bendNormal);
-            // 第二步：将肢体整体朝向从 ac 对准 at
-            Quaternion alignRot = Quaternion.FromToRotation(flexRot * ac, at);
-            Quaternion targetRootRot = alignRot * flexRot * root.rotation;
+            // 3. 求解大腿目标朝向向量 targetThighDir 并旋转 Root
+            // 将 at 向量绕弯曲法线旋转 angleA_target 度，得到大腿骨骼 ab 的世界目标朝向
+            Vector3 targetThighDir = (Quaternion.AngleAxis(angleA_target, bendNormal) * at).normalized;
+            Quaternion targetRootRot = Quaternion.FromToRotation(ab, targetThighDir * lab) * root.rotation;
             root.rotation = Quaternion.Slerp(root.rotation, targetRootRot, weight);
 
-            // 4. 旋转 Mid (小腿) 对准 Target
+            // 4. 旋转 Mid (小腿)：直接将小腿朝向 targetPos
             Vector3 newB = mid.position;
-            Vector3 newC = tip.position;
-            Vector3 curMidToTip = newC - newB;
+            Vector3 curMidToTip = tip.position - newB;
             Vector3 targetMidToTip = targetPos - newB;
 
             if (curMidToTip.sqrMagnitude > 0.0001f && targetMidToTip.sqrMagnitude > 0.0001f)
             {
-                Quaternion midAlignRot = Quaternion.FromToRotation(curMidToTip, targetMidToTip);
-                Quaternion targetMidRot = midAlignRot * mid.rotation;
+                Quaternion targetMidRot = Quaternion.FromToRotation(curMidToTip, targetMidToTip) * mid.rotation;
                 mid.rotation = Quaternion.Slerp(mid.rotation, targetMidRot, weight);
             }
         }
@@ -572,6 +888,7 @@ namespace Game.Logic
         /// </summary>
         public void EnableFootIK(float duration = 0.15f)
         {
+            _enableIK = true;
             FadeWeight(1f, duration);
         }
 
@@ -730,12 +1047,26 @@ namespace Game.Logic
         {
             if (!_drawGizmos) return;
 
+            // 1. 左脚可视化 (绿色真实射线，黄色预测向量与落点)
             if (_leftFootBone != null)
             {
                 Gizmos.color = Color.green;
                 Vector3 start = _leftFootBone.position + Vector3.up * _raycastUpOffset;
                 Gizmos.DrawLine(start, start + Vector3.down * (_raycastDistance + _raycastUpOffset));
                 Gizmos.DrawWireSphere(_curLeftTargetPos, 0.04f);
+
+                if (_enablePrediction && _debugLeftPredictPos != _leftFootBone.position)
+                {
+                    Gizmos.color = Color.yellow;
+                    Gizmos.DrawLine(_leftFootBone.position, _debugLeftPredictPos);
+                    Gizmos.DrawWireSphere(_debugLeftPredictPos, 0.025f);
+                    if (_debugLeftPredictHit)
+                    {
+                        Gizmos.color = new Color(1f, 0.6f, 0f, 0.85f);
+                        Gizmos.DrawWireCube(_debugLeftPredictHitPos, new Vector3(0.08f, 0.02f, 0.16f));
+                    }
+                }
+
                 if (_isLeftPlanted)
                 {
                     Gizmos.color = Color.yellow;
@@ -743,12 +1074,26 @@ namespace Game.Logic
                 }
             }
 
+            // 2. 右脚可视化 (蓝色真实射线，青色预测向量与落点)
             if (_rightFootBone != null)
             {
                 Gizmos.color = Color.blue;
                 Vector3 start = _rightFootBone.position + Vector3.up * _raycastUpOffset;
                 Gizmos.DrawLine(start, start + Vector3.down * (_raycastDistance + _raycastUpOffset));
                 Gizmos.DrawWireSphere(_curRightTargetPos, 0.04f);
+
+                if (_enablePrediction && _debugRightPredictPos != _rightFootBone.position)
+                {
+                    Gizmos.color = Color.cyan;
+                    Gizmos.DrawLine(_rightFootBone.position, _debugRightPredictPos);
+                    Gizmos.DrawWireSphere(_debugRightPredictPos, 0.025f);
+                    if (_debugRightPredictHit)
+                    {
+                        Gizmos.color = new Color(0f, 0.8f, 1f, 0.85f);
+                        Gizmos.DrawWireCube(_debugRightPredictHitPos, new Vector3(0.08f, 0.02f, 0.16f));
+                    }
+                }
+
                 if (_isRightPlanted)
                 {
                     Gizmos.color = Color.cyan;

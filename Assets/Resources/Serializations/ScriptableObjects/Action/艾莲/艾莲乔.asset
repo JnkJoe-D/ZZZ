@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc06e0520cbb132459d8e63f748b257e, type: 3}
+  m_Name: "\u827E\u83B2\u4E54"
+  m_EditorClassIdentifier: 
+  RoleID: 1003
+  RoleName: 
+  CharacterPrefab: {fileID: 5158763610275107262, guid: 1f300285bcdc3454fbb8009c7f2ebf82,
+    type: 3}
+  GroundRadius: 0.3
+  GroundHeight: 1.8
+  GroundOffset: 0.1
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  JogMultipier: 1
+  JogShortInputThreshold: 0.2
+  DashMultipier: 1
+  DodgeMultipier: 1
+  AttackMultipier: 1
+  SkillMultipier: 1
+  evadeLimitedTimes: 2
+  evadeCoolDown: 1
+  ActionRoot: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
+  ActionProLoadList:
+  - {fileID: 11400000, guid: 01314b8f7c89159429ee37b5f4564176, type: 2}
+  - {fileID: 11400000, guid: 8747cc479684ac44eb99ce14a490b861, type: 2}
+  - {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
+  - {fileID: 11400000, guid: fbe770b9c2765e84580e3708a1b559dc, type: 2}
+  - {fileID: 11400000, guid: a352943d898251a4c95dce8c96c203dd, type: 2}
+  - {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
+  - {fileID: 11400000, guid: 12437ad71e4d52042a4286a7f47408e7, type: 2}
+  - {fileID: 11400000, guid: b4ff7bab837936c41a8f679b5dffb8eb, type: 2}
+  - {fileID: 11400000, guid: 252b76f192268094da0cf1c1619bd95a, type: 2}
+  - {fileID: 11400000, guid: dcf47dcb1fb4536488a2e106ae70a30e, type: 2}
+  - {fileID: 11400000, guid: 39597b3808f14ba4e9d617ad4e2bdeb1, type: 2}
+  - {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
+  - {fileID: 11400000, guid: 4c1affe96f0c8f64da3215e776ef416d, type: 2}
+  - {fileID: 11400000, guid: de326408d3de72044b10942ea69e532c, type: 2}
+  - {fileID: 11400000, guid: 0bfb17c4668d4454fb3567fcaa774a27, type: 2}
+  - {fileID: 11400000, guid: 64e7438bc2a426146bd499c0a0aa1cf7, type: 2}
+  - {fileID: 11400000, guid: b90c9a6a6018c5841bb2e31890f20547, type: 2}
+  - {fileID: 11400000, guid: 4bebc32c4f9b7c2419e905e133e0bc41, type: 2}
+  - {fileID: 11400000, guid: 89af5f7eac66f3545a53d59980bfa8ad, type: 2}
+  BehaviorTreeGraph: {fileID: 0}
+  hitReactionConfig: {fileID: 11400000, guid: 5bc19da1b911c8641bdb0fb721baaace, type: 2}

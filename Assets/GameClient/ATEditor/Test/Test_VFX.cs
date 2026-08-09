@@ -13,7 +13,7 @@ public class Test_VFX : MonoBehaviour
     private AnimComponent animComp;
     private SkillRunner runner;
     private ProcessContext context;
-    private SkillTimeline timeline;
+    private ActionTimeline timeline;
     private float timer = 0f;
     public void Start()
     {

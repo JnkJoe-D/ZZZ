@@ -73,11 +73,11 @@ namespace ATEditor.Editor
             GUILayout.Space(16);
 
             // 文件操作组 - 使用圆角按钮 + 间距
-            DrawRoundedButton(Lan.ImportFromJson, 80, OnImportJSON);
+            DrawRoundedButton("导入", 80, OnImport);
             GUILayout.Space(4);
-            DrawRoundedButton(Lan.ExportToJson, 80, OnExportJSON);
+            DrawRoundedButton("导出/另存", 80, OnExportDual);
             GUILayout.Space(4);
-            DrawRoundedButton(Lan.Save, 60, OnSaveJson);
+            DrawRoundedButton(Lan.Save, 60, OnSaveDual);
             GUILayout.Space(8);
             DrawRoundedButton(Lan.Settings, 56, OnSettings);
 
@@ -207,11 +207,10 @@ namespace ATEditor.Editor
             events.OnRepaintRequest?.Invoke();
         }
 
-        private void OnImportJSON()
+        private void OnImport()
         {
-            JsonFileSelectionWindow.Show(state.DefaultExportDirectory, (path) => 
+            ImportTimelineWindow.Show(state.DefaultAssetDirectory, state.DefaultJsonDirectory, (newTimeline, path) => 
             {
-                var newTimeline = SerializationUtility.ImportFromJsonPath(path);
                 if (newTimeline != null)
                 {
                     window.SetCurrentTimeline(newTimeline);
@@ -226,36 +225,37 @@ namespace ATEditor.Editor
             }, state.currentFilePath);
         }
 
-        private void OnExportJSON()
+        private void OnExportDual()
         {
             if (state.currentTimeline == null) return;
             
-            string path = EditorUtility.SaveFilePanel(Lan.ExportPanelTitle, state.DefaultExportDirectory, "未命名", "json");
+            // 弹出个窗口只是为了取个名字，这里默认导向 JSON 目录
+            string path = EditorUtility.SaveFilePanel(Lan.ExportPanelTitle, state.DefaultJsonDirectory, "未命名", "json");
             
             if (!string.IsNullOrEmpty(path))
             {
-                SerializationUtility.ExportToJson(state.currentTimeline, path);
-                state.currentFilePath = path; // 记录路径
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+                SerializationUtility.SaveDual(state.currentTimeline, state.DefaultJsonDirectory, state.DefaultAssetDirectory, fileName);
+                state.currentFilePath = path; // 记录最新路径
                 AssetDatabase.Refresh();
-                Debug.Log($"[{Lan.EditorTitle}] {Lan.ExportToJson}: {path}");
             }
         }
 
-        private void OnSaveJson()
+        private void OnSaveDual()
         {
             if (state.currentTimeline == null) return;
 
-            // 如果有记录的文件路径，直接覆盖
+            // 如果有记录的文件路径，直接基于这个名字覆盖双轨
             if (!string.IsNullOrEmpty(state.currentFilePath))
             {
-                SerializationUtility.ExportToJson(state.currentTimeline, state.currentFilePath);
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(state.currentFilePath);
+                SerializationUtility.SaveDual(state.currentTimeline, state.DefaultJsonDirectory, state.DefaultAssetDirectory, fileName);
                 AssetDatabase.Refresh();
-                Debug.Log($"[{Lan.EditorTitle}] {Lan.Save}: {state.currentFilePath}");
             }
             else
             {
                 // 否则执行另存为
-                OnExportJSON();
+                OnExportDual();
             }
         }
 

@@ -42,7 +42,7 @@ namespace Game.Logic
 
     /// <summary>
     /// 全局动作配置基类。
-    /// 用于描述任意动作的基础信息，并关联 SkillTimeline 资产。
+    /// 用于描述任意动作的基础信息，并关联 ActionTimeline 资产。
     /// </summary>
     /// <summary>
     /// 全局动作配置基类（混合态架构数据载体）
@@ -57,6 +57,8 @@ namespace Game.Logic
         [Header("SkillEditor 核心资产")]
         [Tooltip("SkillEditor 生成的标准化时间轴数据，ActionPlayer 会解析并播放它。")]
         public TextAsset TimelineAsset;
+        [Tooltip("SkillEditor 生成的 ScriptableObject 格式时间轴数据（支持运行时热更），ActionPlayer 会优先解析此资源。")]
+        public ATEditor.ActionTimeline actionTimelineSO;
 
 
 
@@ -69,6 +71,10 @@ namespace Game.Logic
 
         [Tooltip("当 CompleteMode 设为 TransitToAction 时，自动衔接的这个后续动作。")]
         public ActionConfigAsset CompleteAction;
+
+        [Game.Framework.ShowIf("CompleteMode", ActionCompleteMode.TransitToAction)]
+        [Tooltip("-1表示使用下个动作自身设定的混合时间，>=0则强制覆盖混合时间。")]
+        public float CompleteTransitCrossfade = -1f;
 
         // ── 统一路由 ──────────────────────────────────────────
         [Header("统一路由")]

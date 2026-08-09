@@ -9,7 +9,7 @@ namespace ATEditor.Editor
     public class ATEditorState
     {
         // 核心数据引用
-        public SkillTimeline currentTimeline;
+        public ActionTimeline currentTimeline;
         public string currentFilePath; // 当前编辑皀JSON 文件路径
         
         // 性能缓存：通过 ID 快速索引轨遀
@@ -78,12 +78,19 @@ namespace ATEditor.Editor
         private const string PREF_FRAME_RATE = "SkillEditor_FrameRate";
         private const string PREF_TIME_STEP_MODE = "SkillEditor_TimeStepMode";
         private const string PREF_DEFAULT_PREVIEW_TARGET = "SkillEditor_DefaultPreviewTarget";
-        private const string PREF_DEFAULT_EXPORT_DIR = "SkillEditor_DefaultExportDir";
+        private const string PREF_DEFAULT_JSON_DIR = "SkillEditor_DefaultJsonDir";
+        private const string PREF_DEFAULT_ASSET_DIR = "SkillEditor_DefaultAssetDir";
         
-        public string DefaultExportDirectory
+        public string DefaultJsonDirectory
         {
-            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_EXPORT_DIR, Application.dataPath);
-            set => UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_EXPORT_DIR, value);
+            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_JSON_DIR, Application.dataPath);
+            set => UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_JSON_DIR, value);
+        }
+
+        public string DefaultAssetDirectory
+        {
+            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_ASSET_DIR, Application.dataPath);
+            set => UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_ASSET_DIR, value);
         }
 
         public string DefaultPreviewCharacterPath

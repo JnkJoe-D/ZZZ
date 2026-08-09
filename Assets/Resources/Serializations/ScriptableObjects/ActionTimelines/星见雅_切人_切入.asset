@@ -1,0 +1,331 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
+  m_Name: "\u661F\u89C1\u96C5_\u5207\u4EBA_\u5207\u5165"
+  m_EditorClassIdentifier: 
+  duration: 3.5333335
+  isLoop: 0
+  beforePlayEvents: []
+  onCompleteEvents: []
+  groups:
+  - groupId: 4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28
+    groupName: "\u52A8\u753B"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800386
+  - groupId: bf2dd4c3-588d-41e2-8451-7a4ba3258032
+    groupName: "\u7279\u6548"
+    isCollapsed: 1
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800387
+  - groupId: 87517105-7af1-4746-a8ba-834e1987bc67
+    groupName: "\u97F3\u6548"
+    isCollapsed: 1
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800388
+    - rid: 4681868069779800389
+  - groupId: e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b
+    groupName: "\u8F93\u5165"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800390
+    - rid: 4681868069779800391
+    - rid: 4681868069779800392
+    - rid: 4681868069779800393
+    - rid: 4681868069779800394
+    - rid: 4681868069779800395
+  - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
+    groupName: "\u547D\u4E2D"
+    isCollapsed: 1
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800396
+  - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
+    groupName: "\u52A8\u753B\u4F4D\u79FB"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779800397
+  - groupId: fe97c978-da0d-4d70-b973-9218b609c4bc
+    groupName: "\u53D8\u6362"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868069779800386
+      type: {class: AnimationTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 573ab7eb-5a8a-4dce-ad1d-d70ff0357aa4
+        trackType: AnimationTrack
+        trackName: "\u52A8\u753B\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800398
+        isMasterTrack: 1
+        offsetPos: {x: 0, y: 0, z: 0}
+        offsetRot: {x: 0, y: 0, z: 0}
+    - rid: 4681868069779800387
+      type: {class: VFXTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: d43568e5-6a7f-4b1c-afb9-46a10ad689c7
+        trackType: VFXTrack
+        trackName: "\u7279\u6548\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868069779800388
+      type: {class: AudioTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: a05efcc5-b659-4a72-b03f-4719b6d446e4
+        trackType: AudioTrack
+        trackName: "\u97F3\u6548"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868069779800389
+      type: {class: AudioTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: c14034a8-c841-4dc3-b007-b107d1d294d1
+        trackType: AudioTrack
+        trackName: "\u8BED\u97F3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868069779800390
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 95a1ff0c-6f52-49d9-ae8b-c8814ebeee5b
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800399
+    - rid: 4681868069779800391
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 35ad6beb-e138-4121-b3b9-5b05ba05d24d
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800400
+    - rid: 4681868069779800392
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: e2a9a9d1-21ab-439a-9b63-7311cb748d93
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800401
+    - rid: 4681868069779800393
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 9a758c0d-0a2f-4843-bf6b-1d7984cdbb1f
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800402
+    - rid: 4681868069779800394
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 87b4a49b-084f-4c3c-a168-2e7a2fb1f3c2
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800403
+    - rid: 4681868069779800395
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 6237aff4-f256-484a-a489-f96b3a030c9f
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800404
+    - rid: 4681868069779800396
+      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
+        trackType: DamageTrack
+        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868069779800397
+      type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 15e2bdc7-968f-4cfa-a5f8-f20e16b3ce0c
+        trackType: MotionWindowTrack
+        trackName: "\u4F4D\u79FB\u7A97\u53E3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868069779800405
+    - rid: 4681868069779800398
+      type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 03ebda7d-e157-4182-aed0-b82ea6d183b4
+        clipName: "\u52A8\u753B\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.5333335
+        blendInDuration: 0
+        blendOutDuration: 0
+        animationClip: {fileID: 1827226128182048838, guid: 1e29ddba1a833a44c938b4a826ce045e,
+          type: 3}
+        playbackSpeed: 1
+        layer: 0
+        overrideMask: {fileID: 0}
+        clipRef:
+          guid: 1e29ddba1a833a44c938b4a826ce045e
+          assetName: Unagi_S_SwitchIn_Normal
+          assetPath: Assets/Dependencies/Animation/Unagi/Unagi_S_SwitchIn_Normal.FBX
+        maskRef:
+          guid: 
+          assetName: 
+          assetPath: 
+    - rid: 4681868069779800399
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: ce6455d2-3183-4e32-9911-1e66b65f94b7
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.5
+        duration: 3.0333335
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: BackSwing
+    - rid: 4681868069779800400
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: ab1a8dba-37b7-470d-bf7f-a82a0b112bd8
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.5
+        duration: 3.0333335
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Execute1
+    - rid: 4681868069779800401
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 8db127d3-6fb3-4280-89b1-f8929735296b
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.5
+        duration: 3.0333335
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Evade
+    - rid: 4681868069779800402
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: bed404e3-f2eb-4fbe-87ff-a83f610aa003
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.13333336
+        duration: 0.36666664
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: DashLink
+    - rid: 4681868069779800403
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: b352297b-cc34-4fe4-bd4f-c6d5e746f729
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.5333335
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: SwitchCapture
+    - rid: 4681868069779800404
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: eb3beb2a-c620-41ed-bb8b-b38f3efdd99f
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.5333335
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: SwitchExecute
+    - rid: 4681868069779800405
+      type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: fc099760-ca41-458f-81e1-9b417c164307
+        clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.5333335
+        blendInDuration: 0
+        blendOutDuration: 0
+        localDeltaFilterMode: 1

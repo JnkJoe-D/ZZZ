@@ -15,10 +15,11 @@ MonoBehaviour:
   ID: 10007
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 24e16552675eab04d93d2e7fe0b25c5d, type: 3}
-  TurnMode: 2
+  actionTimelineSO: {fileID: 11400000, guid: 9d462e46f16bcbb4ebc3063baffbf434, type: 2}
   EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: 490fb4141147cbd489e6c3464b901b0b, type: 2}
+  CompleteTransitCrossfade: -1
   Routes:
   - Category: 0
     RequiredWindowTag: Execute1
@@ -27,15 +28,18 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
     ModifierConditions: 
     ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 3234c5172f27bf04ab44ccd062212689, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
+    CrossfadeOverride: -1
   - Category: 0
     RequiredWindowTag: Buffer1
     TriggerMode: 0
@@ -43,28 +47,25 @@ MonoBehaviour:
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
+    Modifiers: []
     Modifier: 0
     ModifierRequiredKey: 0
     InverseKeyStatus: 0
     ModifierConditions: 
     ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 3234c5172f27bf04ab44ccd062212689, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
+    CrossfadeOverride: -1
   RouteSets:
   - {fileID: 11400000, guid: 945b43785ac04270a1c11efbec6ebfb3, type: 2}
   - {fileID: 11400000, guid: 9d0402f47d454057b5973feb7b1de91b, type: 2}
   - {fileID: 11400000, guid: c95e4eeb2ad04a8685048db8cec1af22, type: 2}
   - {fileID: 11400000, guid: 6ef4370c5def1ee439d558d9833a0a2e, type: 2}
   - {fileID: 11400000, guid: f9492afd123ff034389f357e5afb108a, type: 2}
-  FaceToSpeed: 10
   PlaybackSpeed: 1
-  Cooldown: 0.2
-  MPCost: 0
-  CastRange: 2
-  CanBeInterrupted: 1
-  CinematicCameraPrefab: {fileID: 0}
   references:
     version: 2
     RefIds: []

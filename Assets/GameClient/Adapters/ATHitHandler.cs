@@ -96,32 +96,34 @@ namespace Game.Adapters
                     {
                         if (effect == null) continue;
 
-                        // 根据多段触发策略过滤
-                        if (effect.Policy == cfg.ZZZ.EffectTriggerPolicy.FirstHitOnly && currentHit > 0) continue;
-                        // 注意：这里需要你定义 EffectTriggerPolicy 的全集，如果还有 LastHitOnly，也可以类似处理
+                        // 触发概率过滤
+                        if (effect.Chance < 1f && UnityEngine.Random.value > effect.Chance) continue;
+
+                        // 根据多段触发策略过滤（FirstHitOnly 仅首段触发，EveryHit 每段都触发）
+                        if (effect.TriggerPolicy == cfg.ZZZ.EffectTriggerPolicy.FirstHitOnly && currentHit > 0) continue;
 
                         // 根据 EffectTarget 决定操作谁
-                        CharacterEntity targetEntity = effect.Target == cfg.ZZZ.EffectTarget.Attacker
+                        CharacterEntity targetEntity = effect.EffectTarget == cfg.ZZZ.EffectTarget.Attacker
                             ? attacker
                             : victim;
 
                         if (targetEntity == null) continue;
 
-                        switch (effect.Type)
+                        switch (effect.EffectType)
                         {
                             case cfg.ZZZ.HitEffectType.Damage:
-                                ApplyDamage(ctx, targetEntity, effect.Param1, effect.Param2);
+                                ApplyDamage(ctx, targetEntity, effect.Value, 0f);
                                 break;
 
                             case cfg.ZZZ.HitEffectType.ModifyAttribute:
-                                ApplyModifyAttribute(targetEntity, (AttributeId)(int)effect.Param3, effect.Param1);
+                                ApplyModifyAttribute(targetEntity, (AttributeId)effect.AttrId, effect.Value);
                                 break;
 
                             case cfg.ZZZ.HitEffectType.ApplyBuff:
-                                // TODO: 这里需要一个 BuffRegistry 查表，把 Param3 (buff ID) 转换成 BuffDefAsset
-                                // var buffDef = BuffRegistry.Instance.GetBuff(effect.Param3);
-                                // ApplyBuff(targetEntity, buffDef, attacker);
-                                Debug.Log($"<color=green>TODO: 需要 BuffRegistry 把 ID {effect.Param3} 转成 Buff 并施加给 {targetEntity.name}</color>");
+                                if (effect.BuffId > 0)
+                                {
+                                    Debug.Log($"<color=green>TODO: 需要 Buff 查表把 ID {effect.BuffId} 转成 Buff 并施加给 {targetEntity.name}</color>");
+                                }
                                 break;
                         }
                     }
@@ -182,9 +184,9 @@ namespace Game.Adapters
             }
 
             // 喧响值累积
-            if (dazeAmount > 0f && statusModule.Attributes.Has(AttributeId.Daze))
+            if (dazeAmount > 0f && statusModule.Attributes.Has(AttributeId.Decibel))
             {
-                statusModule.Attributes.Modify(AttributeId.Daze, +dazeAmount);
+                statusModule.Attributes.Modify(AttributeId.Decibel, +dazeAmount);
             }
         }
 

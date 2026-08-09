@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f30efc83f55cddf4e95a3a907679c0b3, type: 3}
-  m_Name: "\u661f\u89c1\u96c5_\u57fa\u7840_\u5f85\u673a"
+  m_Name: "\u661F\u89C1\u96C5_\u57FA\u7840_\u5F85\u673A"
   m_EditorClassIdentifier: 
   ID: 10201
   Name: 
   TimelineAsset: {fileID: 4900000, guid: d37e318056deaeb4299dbfa0e8dd5061, type: 3}
-  TurnMode: 0
+  actionTimelineSO: {fileID: 11400000, guid: 2b8c4234fdc0d944d9ab44ddd0355f28, type: 2}
   EnterState: 0
   CompleteMode: 0
   CompleteAction: {fileID: 0}
+  CompleteTransitCrossfade: -1
   Routes: []
   RouteSets:
   - {fileID: 11400000, guid: 42ee503ef0e448b3a73db7e949feee2b, type: 2}
@@ -26,7 +27,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e69d643be28f4431972836242bcc6306, type: 2}
   - {fileID: 11400000, guid: ea7a120125d6de84693fec485332885d, type: 2}
   - {fileID: 11400000, guid: 01e32f8b52213d644a5ac6ca88ff9fbc, type: 2}
-  FaceToSpeed: 10
   PlaybackSpeed: 1
   references:
     version: 2

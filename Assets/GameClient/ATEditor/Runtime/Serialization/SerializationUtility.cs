@@ -16,7 +16,7 @@ namespace ATEditor
         /// <summary>
         /// 导出技能到 JSON 文件
         /// </summary>
-        public static void ExportToJson(SkillTimeline timeline, string path)
+        public static void ExportToJson(ActionTimeline timeline, string path)
         {
             if (timeline == null) return;
 
@@ -29,14 +29,69 @@ namespace ATEditor
         }
 
         /// <summary>
+        /// 导出技能到 ScriptableObject 文件 (.asset)
+        /// </summary>
+        public static void ExportToSO(ActionTimeline timeline, string path)
+        {
+            if (timeline == null) return;
+            
+            RefreshAllGuids(timeline);
+
+            // 如果该 SO 已经是一个现成的 Asset，只需标记脏数据并保存
+            if (AssetDatabase.Contains(timeline))
+            {
+                EditorUtility.SetDirty(timeline);
+                AssetDatabase.SaveAssets();
+            }
+            else
+            {
+                // AssetDatabase 需要相对路径 (Assets/...)
+                string relativePath = path.Replace("\\", "/");
+                if (relativePath.StartsWith(Application.dataPath))
+                {
+                    relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
+                }
+
+                // 创建全新的 Asset
+                AssetDatabase.CreateAsset(timeline, relativePath);
+                AssetDatabase.SaveAssets();
+            }
+        }
+
+        /// <summary>
+        /// 双轨保存：同时保存为 SO 和 JSON，保证数据实时对齐。
+        /// </summary>
+        public static void SaveDual(ActionTimeline timeline, string jsonDir, string assetDir, string fileName)
+        {
+            if (timeline == null) return;
+            if (string.IsNullOrEmpty(fileName)) fileName = "NewTimeline";
+
+            // 统一扩展名
+            if (fileName.EndsWith(".json") || fileName.EndsWith(".asset"))
+            {
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+            }
+
+            string jsonPath = Path.Combine(jsonDir, fileName + ".json").Replace("\\", "/");
+            string assetPath = Path.Combine(assetDir, fileName + ".asset").Replace("\\", "/");
+
+            // 1. 导出 JSON
+            ExportToJson(timeline, jsonPath);
+
+            // 2. 导出 SO
+            ExportToSO(timeline, assetPath);
+            Debug.Log($"[ActionTimeline] 双轨保存完成:\nSO: {assetPath}\nJSON: {jsonPath}");
+        }
+
+        /// <summary>
         /// 从 JSON 文件路径导入技能
         /// </summary>
-        public static SkillTimeline ImportFromJsonPath(string path)
+        public static ActionTimeline ImportFromJsonPath(string path)
         {
             if (!File.Exists(path)) return null;
 
             string json = File.ReadAllText(path);
-            SkillTimeline timeline = ScriptableObject.CreateInstance<SkillTimeline>();
+            ActionTimeline timeline = ScriptableObject.CreateInstance<ActionTimeline>();
             JsonUtility.FromJsonOverwrite(json, timeline);
 
             // 导入后置处理：根据 GUID 还原资源引用
@@ -46,19 +101,19 @@ namespace ATEditor
             return timeline;
         }
         
-        public static async Task<SkillTimeline> ImportFromJsonPathAsync(string path)
+        public static async Task<ActionTimeline> ImportFromJsonPathAsync(string path)
         {
             if (!File.Exists(path)) return null;
 
             string json = File.ReadAllText(path);
-            SkillTimeline timeline = ScriptableObject.CreateInstance<SkillTimeline>();
+            ActionTimeline timeline = ScriptableObject.CreateInstance<ActionTimeline>();
             JsonUtility.FromJsonOverwrite(json, timeline);
             await ResolveAllAssets(timeline);
             timeline.RecalculateDuration();
             return timeline;
         }
         
-        private static void ResolveAllAssetsImmediate(SkillTimeline timeline)
+        private static void ResolveAllAssetsImmediate(ActionTimeline timeline)
         {
             if (timeline == null) return;
 
@@ -119,11 +174,11 @@ namespace ATEditor
         /// <summary>
         /// 从 JSON 文件获取技能
         /// </summary>
-        public static SkillTimeline OpenFromJson(TextAsset textAsset)
+        public static ActionTimeline OpenFromJson(TextAsset textAsset)
         {
             if(textAsset==null)return null;
             string json = textAsset.text;
-            SkillTimeline timeline = ScriptableObject.CreateInstance<SkillTimeline>();
+            ActionTimeline timeline = ScriptableObject.CreateInstance<ActionTimeline>();
             JsonUtility.FromJsonOverwrite(json, timeline);
 
             // 导入后置处理：根据 GUID 还原资源引用
@@ -132,12 +187,12 @@ namespace ATEditor
             return timeline;
         }
         
-        public static async Task<SkillTimeline> OpenFromJsonAsync(TextAsset textAsset)
+        public static async Task<ActionTimeline> OpenFromJsonAsync(TextAsset textAsset)
         {
             if(textAsset==null)return null;
 
             string json = textAsset.text;
-            SkillTimeline timeline = ScriptableObject.CreateInstance<SkillTimeline>();
+            ActionTimeline timeline = ScriptableObject.CreateInstance<ActionTimeline>();
             JsonUtility.FromJsonOverwrite(json, timeline);
             await ResolveAllAssets(timeline);
             timeline.RecalculateDuration();
@@ -147,7 +202,7 @@ namespace ATEditor
         /// 刷新所有片段的 GUID（遍历 groups → tracks → clips）
         /// 已通过 Inspector 自动同步，此处作为导出前的双重校验。
         /// </summary>
-        private static void RefreshAllGuids(SkillTimeline timeline)
+        private static void RefreshAllGuids(ActionTimeline timeline)
         {
             foreach (var track in timeline.AllTracks)
             {
@@ -210,7 +265,7 @@ namespace ATEditor
         /// <summary>
         /// 根据 GUID 还原所有资源（遍历 groups → tracks → clips）
         /// </summary>
-        public static async Task ResolveAllAssets(SkillTimeline timeline)
+        public static async Task ResolveAllAssets(ActionTimeline timeline)
         {
             if (timeline == null) return;
 

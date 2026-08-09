@@ -14,12 +14,32 @@ namespace cfg
 {
 public partial class Tables
 {
+    /// <summary>
+    /// 角色基础攻防表
+    /// </summary>
+    public ZZZ.TbCharacterBase TbCharacterBase {get; }
+    /// <summary>
+    /// 角色能量与喧响表
+    /// </summary>
+    public ZZZ.TbCharacterEnergy TbCharacterEnergy {get; }
+    /// <summary>
+    /// 角色元素与抗性表
+    /// </summary>
+    public ZZZ.TbCharacterElement TbCharacterElement {get; }
+    /// <summary>
+    /// 角色独有机制与Buff表
+    /// </summary>
+    public ZZZ.TbCharacterSpecial TbCharacterSpecial {get; }
     public demo.Tbitem Tbitem {get; }
     public ZZZ.TbHitEffect TbHitEffect {get; }
     public ZZZ.TbSkill TbSkill {get; }
 
     public Tables(System.Func<string, JSONNode> loader)
     {
+        TbCharacterBase = new ZZZ.TbCharacterBase(loader("zzz_tbcharacterbase"));
+        TbCharacterEnergy = new ZZZ.TbCharacterEnergy(loader("zzz_tbcharacterenergy"));
+        TbCharacterElement = new ZZZ.TbCharacterElement(loader("zzz_tbcharacterelement"));
+        TbCharacterSpecial = new ZZZ.TbCharacterSpecial(loader("zzz_tbcharacterspecial"));
         Tbitem = new demo.Tbitem(loader("demo_tbitem"));
         TbHitEffect = new ZZZ.TbHitEffect(loader("zzz_tbhiteffect"));
         TbSkill = new ZZZ.TbSkill(loader("zzz_tbskill"));
@@ -28,6 +48,10 @@ public partial class Tables
     
     private void ResolveRef()
     {
+        TbCharacterBase.ResolveRef(this);
+        TbCharacterEnergy.ResolveRef(this);
+        TbCharacterElement.ResolveRef(this);
+        TbCharacterSpecial.ResolveRef(this);
         Tbitem.ResolveRef(this);
         TbHitEffect.ResolveRef(this);
         TbSkill.ResolveRef(this);

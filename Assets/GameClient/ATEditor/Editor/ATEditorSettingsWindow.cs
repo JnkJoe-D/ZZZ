@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System;
+using System.IO;
 
 namespace ATEditor.Editor
 {
@@ -64,18 +65,52 @@ namespace ATEditor.Editor
 
             EditorGUILayout.Space();
             GUILayout.Label("导出/导入设置", EditorStyles.boldLabel);
+            
+            // Asset Directory
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(_state.DefaultExportDirectory, EditorStyles.helpBox);
-            if (GUILayout.Button("选择默认目录", GUILayout.Width(100)))
+            EditorGUILayout.LabelField("SO 保存目录:", GUILayout.Width(80));
+            EditorGUILayout.LabelField(_state.DefaultAssetDirectory, EditorStyles.helpBox);
+            if (GUILayout.Button("选择", GUILayout.Width(60)))
             {
-                string path = EditorUtility.OpenFolderPanel("选择默认导出目录", _state.DefaultExportDirectory, "");
+                string defaultPath = !string.IsNullOrEmpty(_state.DefaultAssetDirectory) ? _state.DefaultAssetDirectory : Application.dataPath;
+                string path = EditorUtility.OpenFolderPanel("选择默认 Asset 保存目录", defaultPath, "");
                 if (!string.IsNullOrEmpty(path))
                 {
-                    _state.DefaultExportDirectory = path;
+                    _state.DefaultAssetDirectory = path;
                     _onSettingsChanged?.Invoke();
                 }
             }
             EditorGUILayout.EndHorizontal();
+
+            // Json Directory
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("JSON 目录:", GUILayout.Width(80));
+            EditorGUILayout.LabelField(_state.DefaultJsonDirectory, EditorStyles.helpBox);
+            if (GUILayout.Button("选择", GUILayout.Width(60)))
+            {
+                string defaultPath = !string.IsNullOrEmpty(_state.DefaultJsonDirectory) ? _state.DefaultJsonDirectory : Application.dataPath;
+                string path = EditorUtility.OpenFolderPanel("选择默认 JSON 保存目录", defaultPath, "");
+                if (!string.IsNullOrEmpty(path))
+                {
+                    _state.DefaultJsonDirectory = path;
+                    _onSettingsChanged?.Invoke();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+            GUILayout.Label("数据同步 (双轨存储)", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("一键同步 JSON -> SO", GUILayout.Height(25)))
+            {
+                BatchSyncJsonToSO();
+            }
+            if (GUILayout.Button("一键同步 SO -> JSON", GUILayout.Height(25)))
+            {
+                BatchSyncSOToJson();
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.HelpBox("一键同步会自动检索源目录中的文件，并在目标目录中更新或创建对应文件，不涉及删除，绝对安全。", MessageType.Info);
 
             EditorGUILayout.Space();
             GUILayout.Label(Lan.SettingsDefaultPreviewTargetLabel, EditorStyles.boldLabel);
@@ -108,6 +143,108 @@ namespace ATEditor.Editor
                     _state.Language = languages[newIndex];
                     _onSettingsChanged?.Invoke();
                 }
+            }
+        }
+
+        private void BatchSyncJsonToSO()
+        {
+            if (string.IsNullOrWhiteSpace(_state.DefaultJsonDirectory) || string.IsNullOrWhiteSpace(_state.DefaultAssetDirectory))
+            {
+                EditorUtility.DisplayDialog("同步失败", "请先配置 JSON 和 SO 的保存目录。", "确定");
+                return;
+            }
+
+            string jsonDir = _state.DefaultJsonDirectory.Trim();
+            string assetDir = _state.DefaultAssetDirectory.Trim();
+
+            if (!Directory.Exists(jsonDir)) Directory.CreateDirectory(jsonDir);
+            if (!Directory.Exists(assetDir)) Directory.CreateDirectory(assetDir);
+
+            string[] jsonFiles = Directory.GetFiles(jsonDir, "*.json");
+            if (jsonFiles.Length == 0)
+            {
+                EditorUtility.DisplayDialog("提示", "未找到任何 JSON 文件。", "确定");
+                return;
+            }
+
+            bool confirm = EditorUtility.DisplayDialog("确认同步", $"即将读取 {jsonDir} 下的 {jsonFiles.Length} 个 JSON 文件，并在 {assetDir} 生成或更新 SO 资产。\n这不会删除任何文件，是否继续？", "确认同步", "取消");
+            if (!confirm) return;
+
+            int count = 0;
+            try
+            {
+                for (int i = 0; i < jsonFiles.Length; i++)
+                {
+                    EditorUtility.DisplayProgressBar("同步中", $"正在同步 {Path.GetFileName(jsonFiles[i])}", (float)i / jsonFiles.Length);
+                    ActionTimeline timeline = SerializationUtility.ImportFromJsonPath(jsonFiles[i]);
+                    if (timeline != null)
+                    {
+                        string fileName = Path.GetFileNameWithoutExtension(jsonFiles[i]);
+                        string assetPath = Path.Combine(assetDir, fileName + ".asset").Replace("\\", "/");
+                        SerializationUtility.ExportToSO(timeline, assetPath);
+                        count++;
+                    }
+                }
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+                AssetDatabase.Refresh();
+                EditorUtility.DisplayDialog("同步完成", $"成功同步 {count}/{jsonFiles.Length} 个文件至 SO 目录！", "好的");
+            }
+        }
+
+        private void BatchSyncSOToJson()
+        {
+            if (string.IsNullOrWhiteSpace(_state.DefaultJsonDirectory) || string.IsNullOrWhiteSpace(_state.DefaultAssetDirectory))
+            {
+                EditorUtility.DisplayDialog("同步失败", "请先配置 JSON 和 SO 的保存目录。", "确定");
+                return;
+            }
+
+            string jsonDir = _state.DefaultJsonDirectory.Trim();
+            string assetDir = _state.DefaultAssetDirectory.Trim();
+
+            if (!Directory.Exists(jsonDir)) Directory.CreateDirectory(jsonDir);
+            if (!Directory.Exists(assetDir)) Directory.CreateDirectory(assetDir);
+
+            string[] assetFiles = Directory.GetFiles(assetDir, "*.asset");
+            if (assetFiles.Length == 0)
+            {
+                EditorUtility.DisplayDialog("提示", "未找到任何 SO 资产文件。", "确定");
+                return;
+            }
+
+            bool confirm = EditorUtility.DisplayDialog("确认同步", $"即将读取 {assetDir} 下的 {assetFiles.Length} 个 SO 资产，并在 {jsonDir} 生成或更新 JSON 文件。\n这不会删除任何文件，是否继续？", "确认同步", "取消");
+            if (!confirm) return;
+
+            int count = 0;
+            try
+            {
+                for (int i = 0; i < assetFiles.Length; i++)
+                {
+                    EditorUtility.DisplayProgressBar("同步中", $"正在同步 {Path.GetFileName(assetFiles[i])}", (float)i / assetFiles.Length);
+                    // 为了跨平台，确保路径在 AssetDatabase 中可用
+                    string relativePath = assetFiles[i].Replace("\\", "/");
+                    if (relativePath.StartsWith(Application.dataPath)) {
+                        relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
+                    }
+                    ActionTimeline timeline = AssetDatabase.LoadAssetAtPath<ActionTimeline>(relativePath);
+                    
+                    if (timeline != null)
+                    {
+                        string fileName = Path.GetFileNameWithoutExtension(assetFiles[i]);
+                        string jsonPath = Path.Combine(jsonDir, fileName + ".json").Replace("\\", "/");
+                        SerializationUtility.ExportToJson(timeline, jsonPath);
+                        count++;
+                    }
+                }
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+                AssetDatabase.Refresh();
+                EditorUtility.DisplayDialog("同步完成", $"成功同步 {count}/{assetFiles.Length} 个文件至 JSON 目录！", "好的");
             }
         }
     }

@@ -40,7 +40,12 @@ namespace ATEditor
         /// <summary>
         /// 当前播放的时间轴
         /// </summary>
-        public SkillTimeline Timeline { get; private set; }
+        public ActionTimeline Timeline { get; private set; }
+
+        /// <summary>
+        /// 动画完成/循环时的残差时间（当前时间 - 总时长），供切招时传递时间补偿
+        /// </summary>
+        public float OvershootTime { get; private set; }
 
         // ─── 事件 ───
 
@@ -117,18 +122,17 @@ namespace ATEditor
         /// <summary>
         /// 开始播放（如正在播放或暂停则先打断旧技能）
         /// </summary>
-        public void Play(SkillTimeline timeline, ProcessContext context,float progress = 0f)
+        public void Play(ActionTimeline timeline, ProcessContext context,float startTime = 0f)
         {
             if (CurrentState != State.None)
             {
                 InterruptInternal();
             }
-            progress = progress<0f? 0f : (progress>1f? 1f : progress);
             this.Timeline = timeline;
             this.context = context;
             this.context.IsInterrupted = false; // 重置打断状态
             this.context.SetSkillId(timeline.Id); // 注入技能标识
-            CurrentTime = progress * Timeline.Duration;
+            CurrentTime = startTime < 0f ? 0f : (startTime > Timeline.Duration ? Timeline.Duration : startTime);
             CurrentState = State.Playing;
 
             BuildProcesses();
@@ -198,7 +202,7 @@ namespace ATEditor
         /// </summary>
         public void Seek(float targetTime,float deltaTime)
         {
-            if(targetTime<0f||targetTime>Timeline.Duration| Timeline == null)
+            if(Timeline == null || targetTime < 0f || targetTime > Timeline.Duration)
             {
                 return;
             }
@@ -262,6 +266,7 @@ namespace ATEditor
 
             float speed = context.GlobalPlaySpeed;
             CurrentTime += deltaTime * speed;
+            context.CurrentTime = CurrentTime;
             bool isReversing = CurrentTime - previousTime < 0 && speed < 0;
             previousTime = CurrentTime;
             // 区间扫描
@@ -318,17 +323,24 @@ namespace ATEditor
             if (Timeline != null && 
             ((!isReversing && CurrentTime >= Timeline.Duration)||(isReversing && CurrentTime <= 0f)))
             {
+                OvershootTime = !isReversing ? CurrentTime - Timeline.Duration : CurrentTime;
+
                 if (Timeline.isLoop)
                 {
                     ResetActiveProcesses();
-                    CurrentTime = !isReversing ? 0f : Timeline.Duration;
+                    CurrentTime = !isReversing ? OvershootTime : Timeline.Duration + OvershootTime;
+                    context.CurrentTime = CurrentTime;
                     OnLoopComplete?.Invoke();
 
-                    Tick(0f); //结束时间作为下轮循环的开始时间，需保证开始时间为0的片段能第一时间进入
+                    // 防止 Timeline.Duration 为 0 导致的无限死循环
+                    if (Timeline.Duration > 0.001f)
+                    {
+                        Tick(0f); // 结束时间作为下轮循环的开始时间，需保证开始时间为0的片段能第一时间进入
+                    }
                 }
                 else
                 {
-                    SkillTimeline completedTimeline = Timeline;
+                    ActionTimeline completedTimeline = Timeline;
                     FullCleanup();
                     CurrentState = State.None;
                     DispatchTimelineEvents(completedTimeline?.onCompleteEvents);

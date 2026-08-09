@@ -20,12 +20,13 @@ public sealed partial class HitEffectData : Luban.BeanBase
 {
     public HitEffectData(JSONNode _buf) 
     {
-        { if(!_buf["Type"].IsNumber) { throw new SerializationException(); }  Type = (ZZZ.HitEffectType)_buf["Type"].AsInt; }
-        { if(!_buf["Target"].IsNumber) { throw new SerializationException(); }  Target = (ZZZ.EffectTarget)_buf["Target"].AsInt; }
-        { if(!_buf["Policy"].IsNumber) { throw new SerializationException(); }  Policy = (ZZZ.EffectTriggerPolicy)_buf["Policy"].AsInt; }
-        { if(!_buf["Param1"].IsNumber) { throw new SerializationException(); }  Param1 = _buf["Param1"]; }
-        { if(!_buf["Param2"].IsNumber) { throw new SerializationException(); }  Param2 = _buf["Param2"]; }
-        { if(!_buf["Param3"].IsNumber) { throw new SerializationException(); }  Param3 = _buf["Param3"]; }
+        { if(!_buf["effect_type"].IsNumber) { throw new SerializationException(); }  EffectType = (ZZZ.HitEffectType)_buf["effect_type"].AsInt; }
+        { if(!_buf["effect_target"].IsNumber) { throw new SerializationException(); }  EffectTarget = (ZZZ.EffectTarget)_buf["effect_target"].AsInt; }
+        { if(!_buf["trigger_policy"].IsNumber) { throw new SerializationException(); }  TriggerPolicy = (ZZZ.EffectTriggerPolicy)_buf["trigger_policy"].AsInt; }
+        { if(!_buf["attr_id"].IsNumber) { throw new SerializationException(); }  AttrId = (ZZZ.AttributeId)_buf["attr_id"].AsInt; }
+        { if(!_buf["value"].IsNumber) { throw new SerializationException(); }  Value = _buf["value"]; }
+        { if(!_buf["buff_id"].IsNumber) { throw new SerializationException(); }  BuffId = _buf["buff_id"]; }
+        { if(!_buf["chance"].IsNumber) { throw new SerializationException(); }  Chance = _buf["chance"]; }
     }
 
     public static HitEffectData DeserializeHitEffectData(JSONNode _buf)
@@ -34,29 +35,33 @@ public sealed partial class HitEffectData : Luban.BeanBase
     }
 
     /// <summary>
-    /// 效果类型
+    /// 命中效果类型（Damage / ModifyAttribute / ApplyBuff）
     /// </summary>
-    public readonly ZZZ.HitEffectType Type;
+    public readonly ZZZ.HitEffectType EffectType;
     /// <summary>
-    /// 作用目标
+    /// 作用目标（Victim 受击者 / Attacker 攻击者自身）
     /// </summary>
-    public readonly ZZZ.EffectTarget Target;
+    public readonly ZZZ.EffectTarget EffectTarget;
     /// <summary>
-    /// 触发策略
+    /// 多段打击触发策略（EveryHit 每段 / FirstHitOnly 仅首段 / LastHitOnly 仅末段）
     /// </summary>
-    public readonly ZZZ.EffectTriggerPolicy Policy;
+    public readonly ZZZ.EffectTriggerPolicy TriggerPolicy;
     /// <summary>
-    /// 参数1 (属性变化量)
+    /// 目标属性 ID（仅在&#160;ModifyAttribute&#160;时生效，如&#160;TeamDecibel,&#160;Ellen_FlashFreeze；其他填&#160;None）
     /// </summary>
-    public readonly float Param1;
+    public readonly ZZZ.AttributeId AttrId;
     /// <summary>
-    /// 参数2 (喧响值 / 备用)
+    /// 数值(正):Damage 时：表示伤害基础倍率/系数（如 1.5 表示 150% 倍率），ModifyAttribute 时：表示获得的属性增量（如 15 表示获得 15 点喧响）
     /// </summary>
-    public readonly float Param2;
+    public readonly float Value;
     /// <summary>
-    /// 参数3 (目标AttributeId / 要挂的BuffId)
+    /// Buff ID（仅在&#160;ApplyBuff&#160;时生效，无则填&#160;0）
     /// </summary>
-    public readonly int Param3;
+    public readonly int BuffId;
+    /// <summary>
+    /// 触发概率（0.0 ~ 1.0，默认&#160;1.0&#160;表示 100% 触发）
+    /// </summary>
+    public readonly float Chance;
    
     public const int __ID__ = 1734677210;
     public override int GetTypeId() => __ID__;
@@ -68,12 +73,13 @@ public sealed partial class HitEffectData : Luban.BeanBase
     public override string ToString()
     {
         return "{ "
-        + "Type:" + Type + ","
-        + "Target:" + Target + ","
-        + "Policy:" + Policy + ","
-        + "Param1:" + Param1 + ","
-        + "Param2:" + Param2 + ","
-        + "Param3:" + Param3 + ","
+        + "effectType:" + EffectType + ","
+        + "effectTarget:" + EffectTarget + ","
+        + "triggerPolicy:" + TriggerPolicy + ","
+        + "attrId:" + AttrId + ","
+        + "value:" + Value + ","
+        + "buffId:" + BuffId + ","
+        + "chance:" + Chance + ","
         + "}";
     }
 }

@@ -25,10 +25,23 @@ namespace ATEditor
             {
                 context.PushLayerMask((int)clip.layer, clip.overrideMask);
             }
+            
+            float actualBlendIn = clip.BlendInDuration;
+            if (context.TransitionCrossfadeOverride.HasValue && clip.StartTime <= 0.001f)
+            {
+                float overrideValue = context.TransitionCrossfadeOverride.Value;
+                if (overrideValue >= 0f)
+                {
+                    actualBlendIn = overrideValue;
+                }
+                context.TransitionCrossfadeOverride = null;
+            }
+
             // 调用接口播放控制 + 设置速度
             if (animHandler != null)
             {
-                animHandler.PlayAnimation(clip.animationClip, (int)clip.layer, clip.BlendInDuration, clip.playbackSpeed * context.GlobalPlaySpeed);
+                float startTime = context.CurrentTime - clip.StartTime;
+                animHandler.PlayAnimation(clip.animationClip, (int)clip.layer, actualBlendIn, clip.playbackSpeed * context.GlobalPlaySpeed, startTime);
             }
             //这里的update频率比monoupdate低，所以在onenter先同步一次播放速度，确保动画按预期速度开始播放
             animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.GlobalPlaySpeed);

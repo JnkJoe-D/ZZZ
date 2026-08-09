@@ -13,7 +13,7 @@ namespace ATEditor
         AvatarMask GetLayerMask(int layerIndex);
 
         // 播放控制
-        void PlayAnimation(UnityEngine.AnimationClip clip, int layerIndex, float fadeDuration, float speed);
+        void PlayAnimation(UnityEngine.AnimationClip clip, int layerIndex, float fadeDuration, float speed, float startTime = 0f);
         void SetLayerSpeed(int layerIndex, float speed);
         
         // 基础属性

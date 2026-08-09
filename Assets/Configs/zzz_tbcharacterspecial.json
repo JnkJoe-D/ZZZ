@@ -1,0 +1,27 @@
+[
+  {
+    "characterId": 1001,
+    "initial_buffs": [],
+    "immune_tags": [],
+    "custom_attributes": []
+  },
+  {
+    "characterId": 1002,
+    "initial_buffs": [],
+    "immune_tags": [],
+    "custom_attributes": []
+  },
+  {
+    "characterId": 1003,
+    "initial_buffs": [],
+    "immune_tags": [],
+    "custom_attributes": [
+      {
+        "attr_id": 2000,
+        "init_val": 0,
+        "max_val": 6,
+        "min_val": 0
+      }
+    ]
+  }
+]

@@ -171,7 +171,7 @@ namespace ATEditor.Editor
         /// </summary>
         private void DrawTracksArea(Rect rect)
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
 
@@ -426,7 +426,7 @@ namespace ATEditor.Editor
         /// </summary>
         private void ProcessContextClick(Vector2 mousePosition)
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
 
@@ -524,7 +524,7 @@ namespace ATEditor.Editor
             // 优先处理鼠标点击（轨道、片段交互）
             if (e.type == EventType.MouseDown && e.mousePosition.y >= ATEditorStyles.TIME_RULER_HEIGHT)
             {
-                SkillTimeline timeline = state.currentTimeline;
+                ActionTimeline timeline = state.currentTimeline;
                 if (timeline == null) return;
 
     
@@ -639,7 +639,7 @@ namespace ATEditor.Editor
 
                 Rect selectionRect = coords.GetRectFromPoints(boxSelectStart, boxSelectEnd);
 
-                SkillTimeline timeline = state.currentTimeline;
+                ActionTimeline timeline = state.currentTimeline;
                 if (timeline != null && isRealDrag)
                 {
                     state.selectedTrack = null;
@@ -712,7 +712,7 @@ namespace ATEditor.Editor
             // Ctrl+A 全选
             if (e.type == EventType.KeyDown && e.keyCode == KeyCode.A && (e.control || e.command))
             {
-                SkillTimeline timeline = state.currentTimeline;
+                ActionTimeline timeline = state.currentTimeline;
                 if (timeline != null)
                 {
                     state.selectedClips.Clear();

@@ -6,7 +6,7 @@ namespace Game.Logic
     /// <summary>
     /// 状态模块 — 桥接门面。
     /// 组合 AttributeSet 和 BuffContainer，提供统一初始化和 Tick 入口。
-    /// 以组合模式挂载在 CharacterEntity 上。
+    /// 全面接入 Luban 数据驱动架构，由多子表 (Base, Energy, Element, Special) 自动装配。
     /// </summary>
     public class StatusModule
     {
@@ -14,23 +14,109 @@ namespace Game.Logic
         public BuffContainer Buffs { get; } = new();
 
         private CharacterEntity _owner;
-        private StatusProfile _profile;
+        private readonly HashSet<string> _immuneTags = new();
 
         /// <summary>
-        /// 初始化状态模块。从 StatusProfile 读取配置，创建属性实例和初始 Buff。
+        /// 基于角色配置（通过 Luban 配置表装配）进行初始化。
         /// </summary>
-        public void Init(CharacterEntity owner, StatusProfile profile)
+        public void Init(CharacterEntity owner, CharacterConfigAsset config, int level = 1)
         {
             _owner = owner;
-            _profile = profile;
-
             Attributes.Init(owner);
             Buffs.Init(owner);
+            _immuneTags.Clear();
 
-            if (profile == null) return;
+            if (config == null) return;
 
-            InitAttributes(profile);
-            InitBuffs(profile);
+            var charId = (cfg.ZZZ.CharacterId)config.RoleID;
+            InitFromConfig(owner, charId, level);
+        }
+
+        /// <summary>
+        /// 从 Luban 数据表装配角色的所有基础、能量、元素和独有特化属性。
+        /// </summary>
+        public void InitFromConfig(CharacterEntity owner, cfg.ZZZ.CharacterId characterId, int level = 1)
+        {
+            _owner = owner;
+            Attributes.Init(owner);
+            Buffs.Init(owner);
+            _immuneTags.Clear();
+
+            var tables = ConfigManager.Instance?.Tables;
+            if (tables == null)
+            {
+                Debug.LogWarning($"[StatusModule] ConfigManager.Tables 尚未初始化，无法为角色 {characterId} 加载配置！");
+                return;
+            }
+
+            // 1. 基础攻防属性 (TbCharacterBase)
+            if (tables.TbCharacterBase.DataMap.TryGetValue(characterId, out var baseCfg))
+            {
+                float hp = baseCfg.HpBase + baseCfg.HpGrowth * (level - 1);
+                float atk = baseCfg.AtkBase + baseCfg.AtkGrowth * (level - 1);
+                float def = baseCfg.DefBase + baseCfg.DefGrowth * (level - 1);
+                float impact = baseCfg.ImpactBase + baseCfg.ImpactGrowth * (level - 1);
+
+                Attributes.Register(new AttributeInstance(AttributeId.MaxHp, hp, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.HP, hp, 0f, hp));
+                Attributes.Register(new AttributeInstance(AttributeId.ATK, atk, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.DEF, def, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.Impact, impact, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.StunDmgMultiplier, baseCfg.StunDmgMult));
+                Attributes.Register(new AttributeInstance(AttributeId.CritRate, baseCfg.CritRateBase, 0f, 1f));
+                Attributes.Register(new AttributeInstance(AttributeId.CritDmg, baseCfg.CritDmgBase, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.PenRate, baseCfg.PenRateBase, 0f, 1f));
+                Attributes.Register(new AttributeInstance(AttributeId.PenValue, baseCfg.PenValBase, 0f, float.MaxValue));
+            }
+
+            // 2. 能量与喧响机制 (TbCharacterEnergy)
+            if (tables.TbCharacterEnergy.DataMap.TryGetValue(characterId, out var energyCfg))
+            {
+                Attributes.Register(new AttributeInstance(AttributeId.MaxEnergy, energyCfg.EnergyMax, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.Energy, energyCfg.EnergyInit, 0f, energyCfg.EnergyMax, energyCfg.EnergyRegenSec));
+                Attributes.Register(new AttributeInstance(AttributeId.EnergyRegen, energyCfg.EnergyRegenSec, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.EnergyGenRate, energyCfg.EnergyGenRate, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.Decibel, 0f, 0f, 3000f));
+                Attributes.Register(new AttributeInstance(AttributeId.DecibelGenRate, energyCfg.DecibelGenRate, 0f, float.MaxValue));
+            }
+
+            // 3. 元素属性与抗性 (TbCharacterElement)
+            if (tables.TbCharacterElement.DataMap.TryGetValue(characterId, out var elemCfg))
+            {
+                // 元素抗性与属性掌控预留
+            }
+
+            // 4. 角色特化专属机制、免疫标签与初始Buff (TbCharacterSpecial)
+            if (tables.TbCharacterSpecial.DataMap.TryGetValue(characterId, out var specialCfg))
+            {
+                if (specialCfg.ImmuneTags != null)
+                {
+                    for (int i = 0; i < specialCfg.ImmuneTags.Count; i++)
+                    {
+                        _immuneTags.Add(specialCfg.ImmuneTags[i]);
+                    }
+                }
+
+                if (specialCfg.CustomAttributes != null)
+                {
+                    for (int i = 0; i < specialCfg.CustomAttributes.Count; i++)
+                    {
+                        var custom = specialCfg.CustomAttributes[i];
+                        Attributes.Register(new AttributeInstance((AttributeId)custom.AttrId, custom.InitVal, custom.MinVal, custom.MaxVal));
+                    }
+                }
+
+                if (specialCfg.InitialBuffs != null)
+                {
+                    for (int i = 0; i < specialCfg.InitialBuffs.Count; i++)
+                    {
+                        int buffId = specialCfg.InitialBuffs[i];
+                        // 预留给 Luban Buff 表接入
+                    }
+                }
+            }
+
+            Debug.Log($"<color=green>[StatusModule] 角色 {characterId} 成功通过 Luban 数据表初始化属性系统！</color>");
         }
 
         /// <summary>每帧驱动。</summary>
@@ -45,16 +131,16 @@ namespace Game.Logic
         {
             Buffs.Clear();
             Attributes.Clear();
+            _immuneTags.Clear();
         }
 
         /// <summary>
         /// 检查 Buff 标签是否被免疫。
-        /// 在施加 Buff 前由 BuffContainer 外部逻辑调用（或可在 AddBuff 扩展中集成）。
         /// </summary>
         public bool IsTagImmune(string tag)
         {
-            if (_profile == null || _profile.ImmuneTags == null) return false;
-            return _profile.ImmuneTags.Contains(tag);
+            if (string.IsNullOrEmpty(tag)) return false;
+            return _immuneTags.Contains(tag);
         }
 
         /// <summary>
@@ -62,71 +148,16 @@ namespace Game.Logic
         /// </summary>
         public bool IsBuffImmune(BuffDefAsset buffDef)
         {
-            if (buffDef == null || _profile == null || _profile.ImmuneTags == null) return false;
-            if (buffDef.Tags == null || buffDef.Tags.Count == 0) return false;
+            if (buffDef == null || buffDef.Tags == null || buffDef.Tags.Count == 0) return false;
 
             for (int i = 0; i < buffDef.Tags.Count; i++)
             {
-                if (_profile.ImmuneTags.Contains(buffDef.Tags[i]))
+                if (IsTagImmune(buffDef.Tags[i]))
                 {
                     return true;
                 }
             }
             return false;
-        }
-
-        // ────────────────── 内部初始化 ──────────────────
-
-        private void InitAttributes(StatusProfile profile)
-        {
-            if (profile.Attributes == null) return;
-
-            // 构建覆盖字典
-            Dictionary<AttributeId, AttributeOverride> overrideMap = null;
-            if (profile.Overrides != null && profile.Overrides.Count > 0)
-            {
-                overrideMap = new Dictionary<AttributeId, AttributeOverride>(profile.Overrides.Count);
-                for (int i = 0; i < profile.Overrides.Count; i++)
-                {
-                    AttributeOverride ov = profile.Overrides[i];
-                    if (ov?.Attribute != null)
-                    {
-                        overrideMap[ov.Attribute.Id] = ov;
-                    }
-                }
-            }
-
-            for (int i = 0; i < profile.Attributes.Count; i++)
-            {
-                AttributeDefAsset def = profile.Attributes[i];
-                if (def == null) continue;
-
-                float initialValue = def.DefaultInitial;
-                float maxValue = def.DefaultMax;
-
-                // 应用覆盖
-                if (overrideMap != null && overrideMap.TryGetValue(def.Id, out AttributeOverride ov))
-                {
-                    initialValue = ov.InitialValue;
-                    maxValue = ov.MaxValue;
-                }
-
-                var instance = new AttributeInstance(def, initialValue);
-                Attributes.Register(instance);
-            }
-        }
-
-        private void InitBuffs(StatusProfile profile)
-        {
-            if (profile.InitialBuffs == null) return;
-
-            for (int i = 0; i < profile.InitialBuffs.Count; i++)
-            {
-                BuffDefAsset buffDef = profile.InitialBuffs[i];
-                if (buffDef == null) continue;
-
-                Buffs.AddBuff(buffDef, _owner);
-            }
         }
     }
 }

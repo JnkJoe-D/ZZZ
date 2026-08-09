@@ -29,7 +29,7 @@ namespace Game.Logic
             _entity = entity;
         }
 
-        public SkillRunner PlayAction(ActionConfigAsset config)
+        public SkillRunner PlayAction(ActionConfigAsset config, float crossfadeOverride = -1f, float startTime = 0f)
         {
             if (config == null || config.TimelineAsset == null)
             {
@@ -56,8 +56,12 @@ namespace Game.Logic
 
             // 默认恢复全局速度
             _context.GlobalPlaySpeed = 1.0f;
+            if (crossfadeOverride >= 0f)
+            {
+                _context.TransitionCrossfadeOverride = crossfadeOverride;
+            }
 
-            _runner.Play(timeline, _context);
+            _runner.Play(timeline, _context, startTime);
             CurrentAction = config;
             IsPlaying = true;
             ActionStartTime = Time.time;

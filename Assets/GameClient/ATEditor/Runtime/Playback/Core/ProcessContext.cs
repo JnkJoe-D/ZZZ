@@ -37,12 +37,15 @@ namespace ATEditor
         /// </summary>
         public object UserData { get; set; }
         public float GlobalPlaySpeed { get; set; } = 1f; // 全局播放速度控制
+        public float CurrentTime { get; set; } = 0f; // 当前时间轴时间
         
         /// <summary>
         /// 标识当前的执行上下文是否正处于被打断清理状态
         /// 供 Process 在 OnExit 时判断是自然结束还是被强制终止
         /// </summary>
         public bool IsInterrupted { get; set; } = false;
+
+        public float? TransitionCrossfadeOverride { get; set; } = null;
 
         /// <summary>
         /// 当前播放的技能 ID（由 SkillRunner.Play 注入）

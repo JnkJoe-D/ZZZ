@@ -1,35 +1,77 @@
 namespace Game.Logic
 {
     /// <summary>
-    /// 属性类型枚举。纯枚举管理，代码层快速索引。
-    /// 预留间隔便于未来在同一类别中插入新属性。
+    /// 角色属性枚举定义（与 Luban 生成表 cfg.ZZZ.AttributeId 数值与命名 100% 保持一致）。
     /// </summary>
     public enum AttributeId
     {
+        /// <summary>无</summary>
         None = 0,
 
-        // ── 生命 ──
-        HP      = 100,
-        MaxHP   = 101,
+        /// <summary>生命值</summary>
+        HP = 10,
+        /// <summary>最大生命值</summary>
+        MaxHp = 20,
+        /// <summary>攻击力</summary>
+        ATK = 30,
+        /// <summary>防御力</summary>
+        DEF = 40,
+        /// <summary>冲击力</summary>
+        Impact = 50,
+        /// <summary>失衡易伤倍率</summary>
+        StunDmgMultiplier = 60,
+        /// <summary>暴击率</summary>
+        CritRate = 70,
+        /// <summary>暴击伤害</summary>
+        CritDmg = 80,
+        /// <summary>穿透率</summary>
+        PenRate = 90,
+        /// <summary>穿透值</summary>
+        PenValue = 100,
 
-        // ── 能量 ──
-        Energy    = 200,
-        MaxEnergy = 201,
+        /// <summary>当前能量值</summary>
+        Energy = 110,
+        /// <summary>能量上限</summary>
+        MaxEnergy = 120,
+        /// <summary>能量自动回复 (点/秒)</summary>
+        EnergyRegen = 130,
+        /// <summary>能量获得效率 (%)</summary>
+        EnergyGenRate = 140,
+        /// <summary>喧响值</summary>
+        Decibel = 150,
+        /// <summary>喧响值获取效率 (%)</summary>
+        DecibelGenRate = 160,
 
-        // ── 喧响值 (受击方累积) ──
-        Daze    = 300,
-        MaxDaze = 301,
+        /// <summary>异常掌控</summary>
+        AnomalyMastery = 170,
+        /// <summary>异常精通</summary>
+        AnomalyProficiency = 180,
 
-        // ── 攻防 (占位) ──
-        ATK = 400,
-        DEF = 500,
+        /// <summary>物理伤害加成</summary>
+        PhysicalDmgBonus = 190,
+        /// <summary>火属性伤害加成</summary>
+        FireDmgBonus = 200,
+        /// <summary>冰属性伤害加成</summary>
+        IceDmgBonus = 210,
+        /// <summary>电属性伤害加成</summary>
+        ElectricDmgBonus = 220,
+        /// <summary>以太属性伤害加成</summary>
+        EtherDmgBonus = 230,
 
-        // ── 角色独有仪表 (按角色分段预留) ──
-        // 1000~1099 : 角色 A 专用
-        // 1100~1199 : 角色 B 专用
-        // ...
-        CustomGauge01 = 1000,
-        CustomGauge02 = 1100,
-        CustomGauge03 = 1200,
+        /// <summary>物理抗性</summary>
+        PhysicalRes = 240,
+        /// <summary>火属性抗性</summary>
+        FireRes = 250,
+        /// <summary>冰属性抗性</summary>
+        IceRes = 260,
+        /// <summary>电属性抗性</summary>
+        ElectricRes = 270,
+        /// <summary>以太属性抗性</summary>
+        EtherRes = 280,
+
+        /// <summary>急冻充能 (艾莲专属)</summary>
+        Ellen_FlashFreeze = 2000,
+        /// <summary>电荷值 (安比专属)</summary>
+        Anbi_Voltage = 2010,
     }
 }

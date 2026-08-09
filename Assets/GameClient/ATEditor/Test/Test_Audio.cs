@@ -11,7 +11,7 @@ public class Test_Audio : MonoBehaviour
     public float speedMultiplier = 1.0f; // 用于测试不同的播放速度
     private SkillRunner runner;
     private ProcessContext context;
-    private SkillTimeline timeline;
+    private ActionTimeline timeline;
     private float timer = 0f;
     public void Start()
     {

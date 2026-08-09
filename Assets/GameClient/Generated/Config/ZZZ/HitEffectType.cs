@@ -11,6 +11,9 @@
 
 namespace cfg.ZZZ
 { 
+    /// <summary>
+    /// 影响类型
+    /// </summary>
     public enum HitEffectType
     {
         /// <summary>

@@ -17,25 +17,129 @@ namespace cfg.ZZZ
     public enum AttributeId
     {
         /// <summary>
+        /// 无
+        /// </summary>
+        None = 0,
+        /// <summary>
         /// 生命值
         /// </summary>
-        HP = 100,
+        HP = 10,
         /// <summary>
-        /// 能量值
+        /// 最大生命值
         /// </summary>
-        Energy = 200,
+        MaxHp = 20,
         /// <summary>
-        /// 自定义属性1
+        /// 攻击力
         /// </summary>
-        CustomGauge01 = 1000,
+        ATK = 30,
         /// <summary>
-        /// 自定义属性2
+        /// 防御力
         /// </summary>
-        CustomGauge02 = 1100,
+        DEF = 40,
         /// <summary>
-        /// 自定义属性3
+        /// 冲击力
         /// </summary>
-        CustomGauge03 = 1200,
+        Impact = 50,
+        /// <summary>
+        /// 失衡易伤倍率
+        /// </summary>
+        StunDmgMultiplier = 60,
+        /// <summary>
+        /// 暴击率
+        /// </summary>
+        CritRate = 70,
+        /// <summary>
+        /// 暴击伤害
+        /// </summary>
+        CritDmg = 80,
+        /// <summary>
+        /// 穿透率
+        /// </summary>
+        PenRate = 90,
+        /// <summary>
+        /// 穿透值
+        /// </summary>
+        PenValue = 100,
+        /// <summary>
+        /// 当前能量值
+        /// </summary>
+        Energy = 110,
+        /// <summary>
+        /// 能量上限
+        /// </summary>
+        MaxEnergy = 120,
+        /// <summary>
+        /// 能量自动回复 (点/秒)
+        /// </summary>
+        EnergyRegen = 130,
+        /// <summary>
+        /// 能量获得效率 (%)
+        /// </summary>
+        EnergyGenRate = 140,
+        /// <summary>
+        /// 喧响值
+        /// </summary>
+        Decibel = 150,
+        /// <summary>
+        /// 喧响值获取效率 (%)
+        /// </summary>
+        DecibelGenRate = 160,
+        /// <summary>
+        /// 异常掌控
+        /// </summary>
+        AnomalyMastery = 170,
+        /// <summary>
+        /// 异常精通
+        /// </summary>
+        AnomalyProficiency = 180,
+        /// <summary>
+        /// 物理伤害加成
+        /// </summary>
+        PhysicalDmgBonus = 190,
+        /// <summary>
+        /// 火属性伤害加成
+        /// </summary>
+        FireDmgBonus = 200,
+        /// <summary>
+        /// 冰属性伤害加成
+        /// </summary>
+        IceDmgBonus = 210,
+        /// <summary>
+        /// 电属性伤害加成
+        /// </summary>
+        ElectricDmgBonus = 220,
+        /// <summary>
+        /// 以太属性伤害加成
+        /// </summary>
+        EtherDmgBonus = 230,
+        /// <summary>
+        /// 物理抗性
+        /// </summary>
+        PhysicalRes = 240,
+        /// <summary>
+        /// 火属性抗性
+        /// </summary>
+        FireRes = 250,
+        /// <summary>
+        /// 冰属性抗性
+        /// </summary>
+        IceRes = 260,
+        /// <summary>
+        /// 电属性抗性
+        /// </summary>
+        ElectricRes = 270,
+        /// <summary>
+        /// 以太属性抗性
+        /// </summary>
+        EtherRes = 280,
+        /// <summary>
+        /// 急冻充能
+        /// </summary>
+        Ellen_FlashFreeze = 2000,
+        /// <summary>
+        /// 电荷值
+        /// </summary>
+        Anbi_Voltage = 2010,
     }
 
 } 

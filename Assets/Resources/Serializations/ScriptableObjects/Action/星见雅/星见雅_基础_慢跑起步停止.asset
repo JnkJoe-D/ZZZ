@@ -15,10 +15,11 @@ MonoBehaviour:
   ID: 10206
   Name: 
   TimelineAsset: {fileID: 4900000, guid: afcfd89ea957b20449724e0b599da05f, type: 3}
-  TurnMode: 0
+  actionTimelineSO: {fileID: 11400000, guid: 27ccd7b7a4624cf48ad5a3c5130c4f0f, type: 2}
   EnterState: 30
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: e3a9c03227a8fa74c80985a0510beec8, type: 2}
+  CompleteTransitCrossfade: -1
   Routes: []
   RouteSets:
   - {fileID: 11400000, guid: 42ee503ef0e448b3a73db7e949feee2b, type: 2}
@@ -26,7 +27,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ea7a120125d6de84693fec485332885d, type: 2}
   - {fileID: 11400000, guid: 01e32f8b52213d644a5ac6ca88ff9fbc, type: 2}
   - {fileID: 11400000, guid: f330b7ce98b5484e8591b3686ab9ef50, type: 2}
-  FaceToSpeed: 10
   PlaybackSpeed: 1
   references:
     version: 2

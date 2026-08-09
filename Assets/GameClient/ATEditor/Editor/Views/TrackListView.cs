@@ -87,7 +87,7 @@ namespace ATEditor.Editor
         {
 
             
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
             
             Event evt = Event.current;
@@ -178,7 +178,7 @@ namespace ATEditor.Editor
 
         private void DrawTrackListInGroup(ref float virtualY, float scrollOffset, float viewportHeight, float width)
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
             if (timeline.Groups != null)
@@ -362,7 +362,7 @@ namespace ATEditor.Editor
         /// </summary>
         private void CreateNewGroup()
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
             window.RecordUndo("添加分组");
@@ -451,7 +451,7 @@ namespace ATEditor.Editor
         /// </summary>
         private void OnAddTrackToGroup(Group group, Type trackType)
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
             window.RecordUndo("添加轨道");
@@ -511,7 +511,7 @@ namespace ATEditor.Editor
             if (showDialog && !EditorUtility.DisplayDialog("确认删除", $"确定要删除轨道 '{track.trackName}' 吗？", "删除", "取消"))
                 return;
 
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
             window.RecordUndo("删除轨道");
@@ -545,7 +545,7 @@ namespace ATEditor.Editor
             if (showDialog && !EditorUtility.DisplayDialog("确认删除", $"确定要删除分组 '{group.groupName}' 及其内部所有轨道吗？", "删除", "取消"))
                 return;
 
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
             window.RecordUndo("删除分组");
@@ -617,7 +617,7 @@ namespace ATEditor.Editor
         
         private void UpdateDropTarget(float virtualMouseY)
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
             
             float y = 0f;
@@ -691,7 +691,7 @@ namespace ATEditor.Editor
         
         private void ExecuteDrop()
         {
-            SkillTimeline timeline = window.GetCurrentTimeline();
+            ActionTimeline timeline = window.GetCurrentTimeline();
             
             TrackBase track = DragAndDrop.GetGenericData("DraggingTrack") as TrackBase;
             if (track != null)
@@ -869,7 +869,7 @@ namespace ATEditor.Editor
             if (state.copiedGroup == null) return;
             
             window.RecordUndo("粘贴分组");
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             
             // 克隆分组
             Group newGroup = state.copiedGroup.Clone();
@@ -929,7 +929,7 @@ namespace ATEditor.Editor
             
             events.NotifySelectionChanged();
 
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             TrackObject trackObj = TrackObject.Create(track, timeline);
             Selection.activeObject = trackObj;
             Debug.Log($"[技能编辑器] 选中轨道: {track.trackName}");
@@ -955,7 +955,7 @@ namespace ATEditor.Editor
             
             events.NotifySelectionChanged();
 
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             GroupObject groupObj = GroupObject.Create(group, timeline);
             Selection.activeObject = groupObj;
             Debug.Log($"[技能编辑器] 选中分组: {group.groupName}");
@@ -1000,7 +1000,7 @@ namespace ATEditor.Editor
         /// </summary>
         private void DuplicateGroup(Group sourceGroup)
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
             window.RecordUndo("克隆分组");
@@ -1037,7 +1037,7 @@ namespace ATEditor.Editor
         /// </summary>
         private void DuplicateTrack(TrackBase sourceTrack)
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
             // 树状结构：查找所在分组

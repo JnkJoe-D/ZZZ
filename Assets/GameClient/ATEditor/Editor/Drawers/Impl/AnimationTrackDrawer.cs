@@ -151,7 +151,7 @@ namespace ATEditor.Editor
         {
             var result = new List<AnimationTrack>();
 
-            SkillTimeline timeline = GetCurrentTimeline();
+            ActionTimeline timeline = GetCurrentTimeline();
             if (timeline == null) return result;
 
             foreach (var track in timeline.AllTracks)
@@ -166,9 +166,9 @@ namespace ATEditor.Editor
         }
 
         /// <summary>
-        /// 通过 Inspector 选中项获取当前编辑的 SkillTimeline
+        /// 通过 Inspector 选中项获取当前编辑的 ActionTimeline
         /// </summary>
-        private static SkillTimeline GetCurrentTimeline()
+        private static ActionTimeline GetCurrentTimeline()
         {
             // 优先从 TrackObject 获取（当前选中轨道时）
             if (Selection.activeObject is TrackObject trackObj && trackObj.timeline != null)

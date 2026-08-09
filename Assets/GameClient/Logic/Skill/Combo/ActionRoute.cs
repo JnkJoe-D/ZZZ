@@ -164,6 +164,9 @@ namespace Game.Logic
         [Header("Execution")]
         public int Priority;
 
+        [Tooltip("-1表示使用下个动作自身设定的混合时间，>=0则强制覆盖混合时间。")]
+        public float CrossfadeOverride = -1f;
+
         public bool HasModifier => Modifiers != null && Modifiers.Count > 0;
 
         public void OnBeforeSerialize() { }
@@ -208,6 +211,24 @@ namespace Game.Logic
             if (!CommandRouteEvaluator.MatchesCommand(RequiredType, RequiredPhase, command))
             {
                 return false;
+            }
+
+            if (RequiredType == InputCommand.Move)
+            {
+                if (RequiredPhase == CommandPhase.Held || RequiredPhase == CommandPhase.Performed)
+                {
+                    if (actor?.InputProvider == null || !actor.InputProvider.HasMovementInput())
+                    {
+                        return false;
+                    }
+                }
+                else if (evaluationMode == CommandTriggerMode.OnWindowExit)
+                {
+                    if (actor?.InputProvider == null || !actor.InputProvider.HasMovementInput())
+                    {
+                        return false;
+                    }
+                }
             }
 
             bool conditionResult = CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
@@ -315,15 +336,21 @@ namespace Game.Logic
             var skillConfig = ConfigManager.Instance.Tables.TbSkill.GetOrDefault(ExecuteAction.ID);
             if (skillConfig == null) return true;
 
-            foreach (var cost in skillConfig.Costs)
+            if (skillConfig.Condition != null)
             {
-                if (cost.Require > 0)
+                foreach (var cond in skillConfig.Condition)
                 {
-                    float currentVal = actor.StatusModule.Attributes.GetCurrent((Game.Logic.AttributeId)(int)cost.Type);
-                    if (currentVal < cost.Require)
+                    float currentVal = actor.StatusModule.Attributes.GetCurrent((AttributeId)cond.AttrId);
+                    bool pass = cond.Op switch
                     {
-                        return false;
-                    }
+                        cfg.ZZZ.CompareOp.GreaterEqual => currentVal >= cond.Value,
+                        cfg.ZZZ.CompareOp.Greater => currentVal > cond.Value,
+                        cfg.ZZZ.CompareOp.LessEqual => currentVal <= cond.Value,
+                        cfg.ZZZ.CompareOp.Less => currentVal < cond.Value,
+                        cfg.ZZZ.CompareOp.Equal => Mathf.Approximately(currentVal, cond.Value),
+                        _ => true
+                    };
+                    if (!pass) return false;
                 }
             }
             return true;
@@ -336,14 +363,14 @@ namespace Game.Logic
             if (actor?.StatusModule?.Attributes == null) return;
 
             var skillConfig = ConfigManager.Instance.Tables.TbSkill.GetOrDefault(ExecuteAction.ID);
-            if (skillConfig == null) return;
+            if (skillConfig == null || skillConfig.Cost == null) return;
 
-            foreach (var cost in skillConfig.Costs)
+            foreach (var cost in skillConfig.Cost)
             {
-                if (cost.Cost > 0)
+                if (cost.Amount > 0)
                 {
-                    actor.StatusModule.Attributes.Modify((Game.Logic.AttributeId)(int)cost.Type, -cost.Cost);
-                    Debug.Log($"<color=cyan>[SkillCost] {actor.name} 使用技能 {ExecuteAction.ID} 消耗了 {cost.Cost} 点 {(Game.Logic.AttributeId)(int)cost.Type}</color>");
+                    actor.StatusModule.Attributes.Modify((AttributeId)cost.AttrId, -cost.Amount);
+                    Debug.Log($"<color=cyan>[SkillCost] {actor.name} 使用技能 {ExecuteAction.ID} 消耗了 {cost.Amount} 点 {cost.AttrId}</color>");
                 }
             }
         }

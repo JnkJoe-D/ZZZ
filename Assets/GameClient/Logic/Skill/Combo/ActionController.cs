@@ -78,11 +78,11 @@ namespace Game.Logic
         }
 
         /// <summary> 播放指定动作并同步状态机 </summary>
-        public SkillRunner PlayAction(ActionConfigAsset action)
+        public SkillRunner PlayAction(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
         {
             if (action == null) return null;
 
-            if (PlayAndTrack(action))
+            if (PlayAndTrack(action, crossfadeOverride, startTime))
             {
                 SwitchState(action.EnterState);
             }
@@ -98,6 +98,12 @@ namespace Game.Logic
         public void OnInput(CharacterCommand command)
         {
             if (_entity.CommandBuffer == null || command == null) return;
+
+            // 当收到 Move Canceled 指令时，清理所有活跃窗口中捕获的旧 Move 指令，防止松开按键后误触发移动
+            if (command.Type == InputCommand.Move && command.Phase == CommandPhase.Canceled)
+            {
+                PurgeActiveWindowMoveCommands();
+            }
 
             // 1. 记录到活跃窗口（供 OnWindowExit 结算使用）
             CaptureToActiveWindows(command);
@@ -170,7 +176,7 @@ namespace Game.Logic
         // ═══════════════════════════════════════════
 
         /// <summary> 播放并追踪动作生命周期 </summary>
-        private bool PlayAndTrack(ActionConfigAsset action)
+        private bool PlayAndTrack(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
         {
             if (action == null || _entity.ActionPlayer == null) return false;
 
@@ -180,8 +186,13 @@ namespace Game.Logic
             if (_entity.RuntimeData != null)
                 _entity.RuntimeData.NextActionToCast = action;
 
+            if (_currentRunner != null)
+            {
+                _currentRunner.OnComplete -= HandleActionComplete;
+            }
+
             // Play() 内部会 Tick(0f)，可能触发嵌套路由
-            _currentRunner = _entity.ActionPlayer.PlayAction(action);
+            _currentRunner = _entity.ActionPlayer.PlayAction(action, crossfadeOverride, startTime);
 
             // 嵌套打断检测：Tick(0f) 期间如果触发了更高优先级路由，
             // _currentPlayingAction 已被内层替换，外层不应再切状态
@@ -428,7 +439,8 @@ namespace Game.Logic
             // 1. 技能表配置的基础消耗（能量扣除等）
             candidate.SourceRoute?.ConsumeSkillCost(_entity);
 
-            Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
+            float crossfade = candidate.SourceRoute?.CrossfadeOverride ?? -1f;
+            Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag, crossfade);
         }
 
         private bool Commit(
@@ -437,7 +449,8 @@ namespace Game.Logic
             ExecuteEvent routeExecuteEvent,
             ExecuteTarget executeType,
             CommandRouteSource source,
-            string tag = null)
+            string tag = null,
+            float crossfadeOverride = -1f)
         {
             if (executeType == ExecuteTarget.None) return false;
             if (executeType == ExecuteTarget.Action && nextAction == null) return false;
@@ -456,7 +469,7 @@ namespace Game.Logic
 
                     _entity.RuntimeData.NextActionToCast = nextAction;
                     RecordRoute(command?.Type ?? InputCommand.None, command?.Phase ?? CommandPhase.Started, nextAction, source, tag);
-                    PlayAction(nextAction);
+                    PlayAction(nextAction, crossfadeOverride);
                 }
                 finally
                 {
@@ -490,6 +503,8 @@ namespace Game.Logic
         {
             ActionConfigAsset finished = _currentPlayingAction;
             _currentPlayingAction = null;
+            
+            float overshoot = _currentRunner != null ? _currentRunner.OvershootTime : 0f;
 
             if (finished == null || _isTransitioning) return;
 
@@ -508,7 +523,7 @@ namespace Game.Logic
                     if (finished.CompleteAction != null)
                     {
                         RecordRoute(InputCommand.None, CommandPhase.None, finished.CompleteAction, CommandRouteSource.ActionComplete, "TransitToAction");
-                        PlayAction(finished.CompleteAction);
+                        PlayAction(finished.CompleteAction, finished.CompleteTransitCrossfade, overshoot);
                         return;
                     }
                     break;
@@ -520,7 +535,7 @@ namespace Game.Logic
             // 3. 兜底回根动作
             ActionConfigAsset rootAction = _entity.Config?.ActionRoot;
             RecordRoute(InputCommand.None, CommandPhase.None, rootAction, CommandRouteSource.ActionComplete, "RootFallback");
-            PlayAction(rootAction);
+            PlayAction(rootAction, -1f, overshoot);
         }
 
         // ═══════════════════════════════════════════
@@ -550,6 +565,14 @@ namespace Game.Logic
                 RouteTag = tag, ActionId = action?.ID ?? -1, ActionName = action?.name, Timestamp = Time.time
             });
             if (ExecutionHistory.Count > 10) ExecutionHistory.RemoveAt(10);
+        }
+
+        private void PurgeActiveWindowMoveCommands()
+        {
+            foreach (ComboWindowData w in _activeComboWindows)
+            {
+                w.CapturedCommands.RemoveAll(cmd => cmd.Type == InputCommand.Move);
+            }
         }
 
         private void CaptureToActiveWindows(CharacterCommand command)

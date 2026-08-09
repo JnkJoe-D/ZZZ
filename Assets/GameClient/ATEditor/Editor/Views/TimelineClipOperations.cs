@@ -52,7 +52,7 @@ namespace ATEditor.Editor
             if (state.selectedClips.Count == 0) return;
 
             window.RecordUndo("批量删除片段");
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
             List<ClipBase> toDelete = new List<ClipBase>(state.selectedClips);
@@ -76,7 +76,7 @@ namespace ATEditor.Editor
         /// </summary>
         public void DeleteSelectedClip()
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return;
 
             List<ClipBase> clipsToDelete = new List<ClipBase>(state.selectedClips);
@@ -325,7 +325,7 @@ namespace ATEditor.Editor
         /// </summary>
         public TrackBase FindTrackContainingClip(ClipBase clip)
         {
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline == null) return null;
 
             foreach (var track in timeline.AllTracks)

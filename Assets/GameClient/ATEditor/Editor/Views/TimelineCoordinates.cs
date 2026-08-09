@@ -141,7 +141,7 @@ namespace ATEditor.Editor
             }
 
             // 2. 吸附到其他片段的边沿（跨轨道全量吸附＀
-            SkillTimeline timeline = state.currentTimeline;
+            ActionTimeline timeline = state.currentTimeline;
             if (timeline != null)
             {
                 foreach (var track in timeline.AllTracks)

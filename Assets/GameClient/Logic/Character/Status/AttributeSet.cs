@@ -10,15 +10,14 @@ namespace Game.Logic
     /// </summary>
     public class AttributeSet
     {
-        private readonly Dictionary<AttributeId, AttributeInstance> _attributes = new(8);
+        private readonly Dictionary<AttributeId, AttributeInstance> _attributes = new(16);
         private CharacterEntity _owner;
 
-        // Max → Current 的映射表（如 MaxHP → HP），用于联动 Clamp
+        // Max → Current 的映射表（如 MaxHp → HP），用于联动 Clamp
         private static readonly Dictionary<AttributeId, AttributeId> MaxToCurrentMap = new()
         {
-            { AttributeId.MaxHP, AttributeId.HP },
+            { AttributeId.MaxHp, AttributeId.HP },
             { AttributeId.MaxEnergy, AttributeId.Energy },
-            { AttributeId.MaxDaze, AttributeId.Daze },
         };
 
         public void Init(CharacterEntity owner)
@@ -105,7 +104,7 @@ namespace Game.Logic
             foreach (var pair in _attributes)
             {
                 AttributeInstance inst = pair.Value;
-                float regen = inst.Definition.RegenPerSecond;
+                float regen = inst.RegenPerSecond;
                 if (Mathf.Approximately(regen, 0f)) continue;
 
                 float old = inst.CurrentValue;
@@ -127,7 +126,7 @@ namespace Game.Logic
 
         /// <summary>
         /// 当 Max 属性的修改器变化后，需要重新 Clamp 对应的 Current 属性。
-        /// 由外部（如 BuffEffect 修改 MaxHP 后）主动调用。
+        /// 由外部（如 BuffEffect 修改 MaxHp 后）主动调用。
         /// </summary>
         public void OnMaxAttributeChanged(AttributeId maxId)
         {
@@ -153,9 +152,8 @@ namespace Game.Logic
         {
             return id switch
             {
-                AttributeId.HP => AttributeId.MaxHP,
+                AttributeId.HP => AttributeId.MaxHp,
                 AttributeId.Energy => AttributeId.MaxEnergy,
-                AttributeId.Daze => AttributeId.MaxDaze,
                 _ => AttributeId.None
             };
         }
@@ -187,7 +185,7 @@ namespace Game.Logic
             {
                 AttributeId.HP => Game.Framework.StatType.HP,
                 AttributeId.Energy => Game.Framework.StatType.MP,
-                AttributeId.Daze => Game.Framework.StatType.Stamina,
+                AttributeId.Decibel => Game.Framework.StatType.Stamina,
                 _ => Game.Framework.StatType.Experience // fallback
             };
         }

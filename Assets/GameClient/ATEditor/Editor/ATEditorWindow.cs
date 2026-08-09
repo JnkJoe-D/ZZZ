@@ -43,11 +43,39 @@ namespace ATEditor.Editor
         [MenuItem("ATEditor/动作时间轴编辑器")]
         public static void ShowWindow()
         {
-            // 尝试停靠圀Scene 视图旁边
+            // 尝试停靠在 Scene 视图旁边
             System.Type[] dockTypes = new System.Type[] { typeof(SceneView) };
             ATEditorWindow window = GetWindow<ATEditorWindow>("动作时间轴编辑器", dockTypes);
             window.minSize = new Vector2(800, 600);
             window.Show();
+        }
+
+        [UnityEditor.Callbacks.OnOpenAsset(1)]
+        public static bool OnOpenAsset(int instanceID, int line)
+        {
+            var obj = EditorUtility.InstanceIDToObject(instanceID);
+            if (obj is ActionTimeline timeline)
+            {
+                // 打开编辑器窗口
+                ShowWindow();
+                
+                // 获取窗口实例并加载 timeline
+                var window = GetWindow<ATEditorWindow>();
+                if (window != null && window.state != null)
+                {
+                    window.SetCurrentTimeline(timeline);
+                    string path = AssetDatabase.GetAssetPath(timeline);
+                    window.state.currentFilePath = path;
+                    
+                    // 重置先前的播放状态
+                    window.state.isStopped = true;
+                    window.state.timeIndicator = 0f;
+                    window.Stop();
+                    window.events.OnRepaintRequest?.Invoke();
+                }
+                return true;
+            }
+            return false;
         }
 
         private void OnEnable()
@@ -71,7 +99,7 @@ namespace ATEditor.Editor
             events.OnSelectionChanged += SyncSelectionToInspector;
 
             // 3. 数据初始匀
-            state.currentTimeline = ScriptableObject.CreateInstance<SkillTimeline>();
+            state.currentTimeline = ScriptableObject.CreateInstance<ActionTimeline>();
             state.currentTimeline.hideFlags = HideFlags.HideAndDontSave;
             
             // 绑定 Undo 回调
@@ -381,7 +409,7 @@ namespace ATEditor.Editor
         /// <summary>
         /// 获取当前 Timeline
         /// </summary>
-        public SkillTimeline GetCurrentTimeline()
+        public ActionTimeline GetCurrentTimeline()
         {
             return state?.currentTimeline;
         }
@@ -394,7 +422,7 @@ namespace ATEditor.Editor
         /// <summary>
         /// 设置当前 Timeline
         /// </summary>
-        public void SetCurrentTimeline(SkillTimeline timeline)
+        public void SetCurrentTimeline(ActionTimeline timeline)
         {
             if(state == null) return;
             

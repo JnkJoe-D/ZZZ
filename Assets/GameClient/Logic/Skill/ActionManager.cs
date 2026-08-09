@@ -13,8 +13,8 @@ namespace Game.Logic
     public class ActionManager : Game.Framework.Singleton<ActionManager>
     {
         // 缓存解析过的 JSON 数据 -> 成为 Timeline
-        private Dictionary<int, SkillTimeline> _timelineCache = new Dictionary<int, SkillTimeline>();
-        private readonly Dictionary<int, Task<SkillTimeline>> _timelineLoadTasks = new Dictionary<int, Task<SkillTimeline>>();
+        private Dictionary<int, ActionTimeline> _timelineCache = new Dictionary<int, ActionTimeline>();
+        private readonly Dictionary<int, Task<ActionTimeline>> _timelineLoadTasks = new Dictionary<int, Task<ActionTimeline>>();
         // 缓存各角色的 Context
         private Dictionary<int, ProcessContext> _contextCache = new Dictionary<int, ProcessContext>();
         // 缓存各角色的 Runner
@@ -59,9 +59,18 @@ namespace Game.Logic
             }
         }
 
-        public SkillTimeline GetOrLoadTimeline(ActionConfigAsset config)
+        public ActionTimeline GetOrLoadTimeline(ActionConfigAsset config)
         {
-            if (config == null || config.TimelineAsset == null) return null;
+            if (config == null) return null;
+            
+            // 优先直接使用 SO
+            if (config.actionTimelineSO != null)
+            {
+                _timelineCache[config.ID] = config.actionTimelineSO;
+                return config.actionTimelineSO;
+            }
+
+            if (config.TimelineAsset == null) return null;
             
             if (_timelineCache.TryGetValue(config.ID, out var timeline))
                 return timeline;
@@ -78,9 +87,18 @@ namespace Game.Logic
             return null;
         }
         
-        public async Task<SkillTimeline> GetOrLoadTimelineAsync(ActionConfigAsset config)
+        public async Task<ActionTimeline> GetOrLoadTimelineAsync(ActionConfigAsset config)
         {
-            if (config == null || config.TimelineAsset == null) return null;
+            if (config == null) return null;
+
+            // 优先直接使用 SO，免去解析 JSON 的异步任务
+            if (config.actionTimelineSO != null)
+            {
+                _timelineCache[config.ID] = config.actionTimelineSO;
+                return config.actionTimelineSO;
+            }
+
+            if (config.TimelineAsset == null) return null;
 
             if (_timelineCache.TryGetValue(config.ID, out var cachedTimeline))
             {
@@ -92,12 +110,12 @@ namespace Game.Logic
                 return await inFlightTask;
             }
 
-            Task<SkillTimeline> loadTask = LoadTimelineInternalAsync(config);
+            Task<ActionTimeline> loadTask = LoadTimelineInternalAsync(config);
             _timelineLoadTasks[config.ID] = loadTask;
 
             try
             {
-                SkillTimeline timeline = await loadTask;
+                ActionTimeline timeline = await loadTask;
                 if (timeline != null)
                 {
                     _timelineCache[config.ID] = timeline;
@@ -111,7 +129,7 @@ namespace Game.Logic
             }
         }
         
-        private static async Task<SkillTimeline> LoadTimelineInternalAsync(ActionConfigAsset config)
+        private static async Task<ActionTimeline> LoadTimelineInternalAsync(ActionConfigAsset config)
         {
             return await SerializationUtility.OpenFromJsonAsync(config.TimelineAsset);
         }

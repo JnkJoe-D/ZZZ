@@ -11,6 +11,9 @@
 
 namespace cfg.ZZZ
 { 
+    /// <summary>
+    /// 影响对象
+    /// </summary>
     public enum EffectTarget
     {
         /// <summary>
