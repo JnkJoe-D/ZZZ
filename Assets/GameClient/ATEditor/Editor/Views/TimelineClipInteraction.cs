@@ -48,6 +48,7 @@ namespace ATEditor.Editor
         {
             public ClipBase clip;
             public float initialStartTime;
+            public float initialDuration;
             public TrackBase initialTrack;
             public int trackIndexOffset;
         }
@@ -250,6 +251,7 @@ namespace ATEditor.Editor
                         {
                             clip = c,
                             initialStartTime = c.StartTime,
+                            initialDuration = c.Duration,
                             initialTrack = track,
                             trackIndexOffset = trackIndex - mainTrackIndex
                         });
@@ -486,6 +488,25 @@ namespace ATEditor.Editor
                     CurrentSnapTime = hasSnapped ? draggingClip.StartTime : -1f;
 
                     if (currentTrack != null) coords.AutoResolveBlending(currentTrack, draggingClip);
+
+                    // 同步缩放其它选中片段
+                    if (selectedClipsInitialStates.Count > 1)
+                    {
+                        float actualTimeDiff = draggingClip.StartTime - dragStartClipTime;
+                        foreach (var initState in selectedClipsInitialStates)
+                        {
+                            if (initState.clip == draggingClip) continue;
+                            float cNewStartTime = Mathf.Max(0, initState.initialStartTime + actualTimeDiff);
+                            float cTimeDiff = cNewStartTime - initState.initialStartTime;
+                            float cNewDuration = Mathf.Max(0.1f, initState.initialDuration - cTimeDiff);
+                            
+                            initState.clip.StartTime = cNewStartTime;
+                            initState.clip.Duration = cNewDuration;
+                            
+                            TrackBase track = clipOps.FindTrackContainingClip(initState.clip);
+                            if (track != null) coords.AutoResolveBlending(track, initState.clip);
+                        }
+                    }
                 }
                 else if (CurrentDragMode == DragMode.ResizeRight)
                 {
@@ -509,6 +530,22 @@ namespace ATEditor.Editor
                     CurrentSnapTime = hasSnapped ? (draggingClip.StartTime + draggingClip.Duration) : -1f;
 
                     if (currentTrack != null) coords.AutoResolveBlending(currentTrack, draggingClip);
+
+                    // 同步缩放其它选中片段
+                    if (selectedClipsInitialStates.Count > 1)
+                    {
+                        float actualDurationDiff = draggingClip.Duration - dragStartClipDuration;
+                        foreach (var initState in selectedClipsInitialStates)
+                        {
+                            if (initState.clip == draggingClip) continue;
+                            float cNewDuration = Mathf.Max(0.1f, initState.initialDuration + actualDurationDiff);
+                            
+                            initState.clip.Duration = cNewDuration;
+                            
+                            TrackBase track = clipOps.FindTrackContainingClip(initState.clip);
+                            if (track != null) coords.AutoResolveBlending(track, initState.clip);
+                        }
+                    }
                 }
                 else if (CurrentDragMode == DragMode.BlendIn)
                 {

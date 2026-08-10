@@ -109,6 +109,10 @@ namespace ATEditor.Editor
             Rect rulerRect = new Rect(0, 0, rect.width, ATEditorStyles.TIME_RULER_HEIGHT);
             EditorGUI.DrawRect(rulerRect, new Color(0.25f, 0.25f, 0.25f));
 
+            // 添加底部半透明蓝色条带（高度固定为 3，与短刻度线保持一致，左右延展）
+            Rect blueBandRect = new Rect(0, ATEditorStyles.TIME_RULER_HEIGHT - 3, rect.width, 3);
+            EditorGUI.DrawRect(blueBandRect, new Color(0.2f, 0.35f, 0.6f, 0.35f));
+
             float visibleTimeStart = Mathf.Max(0, coords.PhysXToTime(0));
             float visibleTimeEnd = coords.PhysXToTime(rect.width);
 
@@ -140,7 +144,7 @@ namespace ATEditor.Editor
 
                 if (isMajor)
                 {
-                    EditorGUI.DrawRect(new Rect(xPos, ATEditorStyles.TIME_RULER_HEIGHT - 18, 1, 18), new Color(0.6f, 0.6f, 0.6f));
+                    EditorGUI.DrawRect(new Rect(xPos, ATEditorStyles.TIME_RULER_HEIGHT - 9, 1, 9), new Color(0.6f, 0.6f, 0.6f));
 
                     string text;
                     if (isFrameIndexMode)
@@ -157,11 +161,11 @@ namespace ATEditor.Editor
                 }
                 else if (isSub)
                 {
-                    EditorGUI.DrawRect(new Rect(xPos, ATEditorStyles.TIME_RULER_HEIGHT - 10, 1, 10), new Color(0.5f, 0.5f, 0.5f));
+                    EditorGUI.DrawRect(new Rect(xPos, ATEditorStyles.TIME_RULER_HEIGHT - 5, 1, 5), new Color(0.5f, 0.5f, 0.5f));
                 }
                 else
                 {
-                    EditorGUI.DrawRect(new Rect(xPos, ATEditorStyles.TIME_RULER_HEIGHT - 5, 1, 5), new Color(0.35f, 0.35f, 0.35f));
+                    EditorGUI.DrawRect(new Rect(xPos, ATEditorStyles.TIME_RULER_HEIGHT - 3, 1, 3), new Color(0.35f, 0.35f, 0.35f));
                 }
             }
         }
@@ -272,7 +276,8 @@ namespace ATEditor.Editor
         /// </summary>
         private void DrawTrackBackground(Color color1, Color color2, Rect trackRect, int index, bool isHighlighted = false, bool isDisabled = false)
         {
-            Color bgColor = (index % 2 == 0) ? color1 : color2;
+            // 统一改用比右侧面板背景更浅的半透明浅灰色
+            Color bgColor = new Color(0.22f, 0.22f, 0.22f, 0.5f);
 
             if (isDisabled)
             {
@@ -328,12 +333,17 @@ namespace ATEditor.Editor
                     displayName = clipInteraction.GetTruncatedText(clip.clipName, textRect.width, clipStyle);
                 }
 
-                // Delegate rendering to Drawer
+                // Delegate rendering to Drawer with global 0.7 transparency
+                Color previousGuiColor = GUI.color;
+                GUI.color = new Color(previousGuiColor.r, previousGuiColor.g, previousGuiColor.b, previousGuiColor.a * 0.7f);
+
                 ClipDrawer drawer = ClipDrawerFactory.GetDrawerInstance(clip);
                 drawer.DrawTimelineGUI(clip, clipRect, state, clipColor, displayName);
 
                 // Interaction injection remains in TimelineView
                 clipInteraction.HandleClipInteraction(clip, clipRect);
+
+                GUI.color = previousGuiColor;
             }
         }
 
@@ -362,6 +372,7 @@ namespace ATEditor.Editor
         /// </summary>
         private void DrawTimeIndicator(Rect rect)
         {
+            if (state.currentTimeline == null || state.currentTimeline.Groups == null || state.currentTimeline.Groups.Count == 0) return;
             if (!state.ShouldShowIndicator) return;
 
             float x = coords.TimeToPhysX(state.timeIndicator);
@@ -502,6 +513,8 @@ namespace ATEditor.Editor
             // 处理刻度尺点击/拖拽（移动时间指针）
             if (!isBoxSelecting && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.mousePosition.y < ATEditorStyles.TIME_RULER_HEIGHT)
             {
+                if (state.currentTimeline == null || state.currentTimeline.Groups == null || state.currentTimeline.Groups.Count == 0) return;
+                
                 if(state.previewTarget==null)
                 {
                     Debug.LogWarning(Lan.PreviewTargetWarning);

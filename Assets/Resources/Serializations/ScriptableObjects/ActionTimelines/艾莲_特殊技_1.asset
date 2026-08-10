@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
   m_Name: "\u827E\u83B2_\u7279\u6B8A\u6280_1"
   m_EditorClassIdentifier: 
-  duration: 6.5
+  duration: 6.033334
   isLoop: 0
   beforePlayEvents: []
   onCompleteEvents: []
@@ -58,7 +58,7 @@ MonoBehaviour:
     - rid: 4681868069782421643
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -236,8 +236,7 @@ MonoBehaviour:
         isHidden: 0
         isCollapsed: 0
         isEnabled: 1
-        clips:
-        - rid: 4681868069782421657
+        clips: []
     - rid: 4681868069782421647
       type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -245,17 +244,17 @@ MonoBehaviour:
         clipName: "\u52A8\u753B\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.5166668
+        duration: 1.6833334
         blendInDuration: 0
         blendOutDuration: 0.100000024
-        animationClip: {fileID: 1113567975039582902, guid: 769312a99595bf44f83906711cfb6784,
+        animationClip: {fileID: -2462870943530609129, guid: 769312a99595bf44f83906711cfb6784,
           type: 3}
         playbackSpeed: 1
         layer: 0
         overrideMask: {fileID: 0}
         clipRef:
           guid: 769312a99595bf44f83906711cfb6784
-          assetName: Avatar_Female_Size02_Ellen_Ani_Attack_Branch_01
+          assetName: Avatar_Female_Size02_Ellen_Ani_Attack_Normal_Enhance_03_Card
           assetPath: Assets/Dependencies/Animation/Ellen/Avatar_Female_Size02_Ellen_Ani.fbx
         maskRef:
           guid: 
@@ -267,18 +266,18 @@ MonoBehaviour:
         clipId: a05b8ca1-9628-4d77-aa5b-5c43b2f562ae
         clipName: "\u52A8\u753B\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.4166667
-        duration: 5.0833335
+        startTime: 1.5833334
+        duration: 4.4500003
         blendInDuration: 0.100000024
         blendOutDuration: 0
-        animationClip: {fileID: -5979122663269860106, guid: 769312a99595bf44f83906711cfb6784,
+        animationClip: {fileID: 8178793867025328251, guid: 769312a99595bf44f83906711cfb6784,
           type: 3}
         playbackSpeed: 1
         layer: 0
         overrideMask: {fileID: 0}
         clipRef:
           guid: 769312a99595bf44f83906711cfb6784
-          assetName: Avatar_Female_Size02_Ellen_Ani_Attack_Branch_01_End
+          assetName: Avatar_Female_Size02_Ellen_Ani_Attack_Normal_Enhance_03_Card_End
           assetPath: Assets/Dependencies/Animation/Ellen/Avatar_Female_Size02_Ellen_Ani.fbx
         maskRef:
           guid: 
@@ -290,7 +289,7 @@ MonoBehaviour:
         clipId: c5a41784-dc4a-4c2d-b4e2-787ca2c922ba
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.53333354
+        startTime: 0.7666669
         duration: 0.23333332
         blendInDuration: 0
         blendOutDuration: 0
@@ -301,8 +300,8 @@ MonoBehaviour:
         clipId: c1b6a843-422d-4d08-8166-43406938b52b
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.7666669
-        duration: 5.733333
+        startTime: 1.0000002
+        duration: 5.0333333
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: BackSwing
@@ -313,7 +312,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 6.5
+        duration: 6.033334
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: Evade
@@ -324,7 +323,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 6.5
+        duration: 6.033334
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: SwitchCapture
@@ -335,7 +334,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0.7666669
-        duration: 5.733333
+        duration: 5.266667
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: SwitchExecute
@@ -345,7 +344,7 @@ MonoBehaviour:
         clipId: 4842c7fd-5fab-42eb-866e-c9130fbe4e89
         clipName: "\u6253\u51FB\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.40000004
+        startTime: 0.7666669
         duration: 0.1
         blendInDuration: 0
         blendOutDuration: 0
@@ -363,9 +362,9 @@ MonoBehaviour:
         shape:
           shapeType: 3
           size: {x: 1, y: 1, z: 1}
-          radius: 3
+          radius: 6
           height: 2
-          angle: 180
+          angle: 60
           innerRadius: 1
         hitBoxFollowMode: 1
         bindPoint: 0
@@ -402,7 +401,7 @@ MonoBehaviour:
         clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 6.5
+        duration: 6.033334
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
@@ -420,34 +419,3 @@ MonoBehaviour:
         rotationMode: 1
         updateFrequency: 2
         localRotationOffset: {x: 0, y: 0, z: 0}
-    - rid: 4681868069782421657
-      type: {class: CameraControlClip, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        clipId: 7701d3d3-0633-42a2-aa09-7893790d5764
-        clipName: "\u76F8\u673A\u63A7\u5236\u7247\u6BB5"
-        isEnabled: 1
-        startTime: 0
-        duration: 0.50000006
-        blendInDuration: 0
-        blendOutDuration: 0
-        controlMode: 1
-        unlockOnExit: 1
-        lockYaw: 1
-        lockPitch: 1
-        recenterTarget: 3
-        smoothTime: 0.25
-        targetPitch: 12
-        framingBiasAngle: -8
-        deadzoneAngle: 1.5
-        allowSoftInputInterrupt: 1
-        disableInputDuringRecenter: 1
-        unlockInputOnExit: 1
-        lookAtOffset: {x: 0, y: 1.2, z: 0}
-        trackSmoothSpeed: 8
-        fallbackToCharacter: 1
-        restoreLookAtOnExit: 1
-        targetFOV: 45
-        targetDistance: 3.5
-        blendInSpeed: 5
-        blendOutSpeed: 5
-        restoreOnExit: 1

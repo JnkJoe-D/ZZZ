@@ -41,6 +41,21 @@ namespace Game.Logic
     }
 
     /// <summary>
+    /// 当收集有效路由时，当前动作对于前置动作路由的继承策略。
+    /// </summary>
+    public enum RouteInheritMode
+    {
+        [InspectorName("不继承 (None)")]
+        None = 0,
+        [InspectorName("继承 (继承优先于自身) (InheritPrioritizeInherited)")]
+        InheritPrioritizeInherited = 10,
+        [InspectorName("继承 (自身优先于继承) (InheritPrioritizeSelf)")]
+        InheritPrioritizeSelf = 20,
+        [InspectorName("继承 (完全覆盖自身) (InheritAndOverrideSelf)")]
+        InheritAndOverrideSelf = 30,
+    }
+
+    /// <summary>
     /// 全局动作配置基类。
     /// 用于描述任意动作的基础信息，并关联 ActionTimeline 资产。
     /// </summary>
@@ -76,13 +91,17 @@ namespace Game.Logic
         [Tooltip("-1表示使用下个动作自身设定的混合时间，>=0则强制覆盖混合时间。")]
         public float CompleteTransitCrossfade = -1f;
 
-        // ── 统一路由 ──────────────────────────────────────────
-        [Header("统一路由")]
-        [Tooltip("将玩家指令、生命周期统一后的路由列表。")]
+        // ── 派生与继承 ──────────────────────────────────────────
+        [Header("派生与继承")]
+        [Tooltip("当前动作对于前置动作派生路由的继承策略。")]
+        public RouteInheritMode InheritMode = RouteInheritMode.None;
+
+        [Header("专属派生路由 (可被继承)")]
+        [Tooltip("当前动作专属的派生路由列表。如果后续动作设为继承，则会继承此列表中的路由。")]
         public List<ActionRoute> Routes = new();
 
-        [Header("统一路由集")]
-        [Tooltip("复用化的统一路由集资产。")]
+        [Header("通用路由集 (不被继承)")]
+        [Tooltip("通常用于配置闪避、移动等通用动作。后续动作即使设为继承，也不会继承此列表。")]
         public List<ActionRouteSetAsset> RouteSets = new();
 
         // ── 每帧行为标志（v3 新增）────────────────────────────
@@ -96,19 +115,63 @@ namespace Game.Logic
         /// <summary>
         /// 收集此动作上所有有效的统一路由（展开集合资产）。
         /// </summary>
-        public void CollectEffectiveRoutes(List<ActionRoute> results)
+        public void CollectEffectiveRoutes(List<ActionRoute> results, CharacterEntity actor = null)
         {
             if (results == null) return;
             results.Clear();
 
-            if (Routes != null)
+            bool shouldInherit = InheritMode != RouteInheritMode.None;
+            bool overrideSelf = InheritMode == RouteInheritMode.InheritAndOverrideSelf;
+            bool inheritedFirst = InheritMode == RouteInheritMode.InheritPrioritizeInherited;
+
+            List<ActionRoute> selfRoutes = new List<ActionRoute>();
+            if (!overrideSelf && Routes != null)
             {
                 foreach (var route in Routes)
                 {
-                    if (route != null) results.Add(route);
+                    if (route != null) selfRoutes.Add(route);
                 }
             }
 
+            List<ActionRoute> inheritedRoutes = new List<ActionRoute>();
+            if (shouldInherit && actor?.ActionController != null)
+            {
+                var history = actor.ActionController.ExecutionHistory;
+                if (history != null && history.Count >= 2)
+                {
+                    var prevAction = history[1].Asset;
+                    if (prevAction != null && prevAction.Routes != null)
+                    {
+                        foreach (var route in prevAction.Routes)
+                        {
+                            if (route != null) 
+                            {
+                                // 防止继承来的路由指向自己从而引发死循环
+                                if (route.ExecuteType == ExecuteTarget.Action && route.ExecuteAction != null && route.ExecuteAction.ID == this.ID)
+                                {
+                                    continue;
+                                }
+                                inheritedRoutes.Add(route);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 按优先级顺序添加
+            if (inheritedFirst)
+            {
+                results.AddRange(inheritedRoutes);
+                results.AddRange(selfRoutes);
+            }
+            else
+            {
+                // 先添加自身（如果 overrideSelf 为 true，selfRoutes 是空的）
+                results.AddRange(selfRoutes);
+                results.AddRange(inheritedRoutes);
+            }
+
+            // 3. 收集自身的通用路由集 (这部分即使被继承，也不传递给下一个动作)
             if (RouteSets != null)
             {
                 foreach (var routeSet in RouteSets)

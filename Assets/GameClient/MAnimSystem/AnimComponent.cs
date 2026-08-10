@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -211,6 +211,19 @@ namespace Game.MAnimSystem
 
             _layerSpeeds[layerIndex] = speedScale;
             _layers[layerIndex].SetSpeed(speedScale);
+        }
+
+        public void SetTime(int layerIndex, float time)
+        {
+            if (!_isGraphCreated) return;
+            AnimLayer layer = GetLayer(layerIndex);
+            if (layer == null) return;
+            var state = layer.GetCurrentState();
+            if (state != null)
+            {
+                state.Time = time;
+                Graph.Evaluate(0f);
+            }
         }
 
         public void ClearPlayGraph()

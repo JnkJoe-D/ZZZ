@@ -42,6 +42,7 @@ namespace ATEditor
         public abstract void OnUpdate(float currentTime, float deltaTime);
         public virtual void OnPause(){}
         public virtual void OnResume(){}
+        public virtual void OnSeek(float targetTime) { }
 
         public virtual void OnExit() { }
 

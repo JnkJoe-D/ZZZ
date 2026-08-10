@@ -19,7 +19,7 @@ MonoBehaviour:
   groups:
   - groupId: 4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28
     groupName: "\u52A8\u753B"
-    isCollapsed: 0
+    isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -49,17 +49,25 @@ MonoBehaviour:
     - rid: 4681868069779801033
     - rid: 4681868069779801034
     - rid: 4681868069779801035
+    - rid: 4681868080418914475
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
     groupName: "\u547D\u4E2D"
-    isCollapsed: 0
+    isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
     - rid: 4681868069779801036
     - rid: 4681868069779801037
+  - groupId: 03a6eafb-ab48-4cf8-bf9f-89b624c73ca1
+    groupName: "\u5FAA\u73AF"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868080418914488
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
-    isCollapsed: 0
+    isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -241,7 +249,7 @@ MonoBehaviour:
         startTime: 0
         duration: 1.0333334
         blendInDuration: 0
-        blendOutDuration: 0.13333327
+        blendOutDuration: 0.1500001
         animationClip: {fileID: 8447356897146514087, guid: 769312a99595bf44f83906711cfb6784,
           type: 3}
         playbackSpeed: 1
@@ -261,10 +269,10 @@ MonoBehaviour:
         clipId: a05b8ca1-9628-4d77-aa5b-5c43b2f562ae
         clipName: "\u52A8\u753B\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.86666673
+        startTime: 0.8833333
         duration: 1.0333334
-        blendInDuration: 0.13333327
-        blendOutDuration: 0.1500001
+        blendInDuration: 0.1500001
+        blendOutDuration: 0.16666675
         animationClip: {fileID: 576306169559912853, guid: 769312a99595bf44f83906711cfb6784,
           type: 3}
         playbackSpeed: 1
@@ -286,7 +294,7 @@ MonoBehaviour:
         isEnabled: 1
         startTime: 1.75
         duration: 3.2500002
-        blendInDuration: 0.1500001
+        blendInDuration: 0.16666675
         blendOutDuration: 0
         animationClip: {fileID: 1035402987161582685, guid: 769312a99595bf44f83906711cfb6784,
           type: 3}
@@ -437,3 +445,51 @@ MonoBehaviour:
         rotationMode: 1
         updateFrequency: 2
         localRotationOffset: {x: 0, y: 0, z: 0}
+    - rid: 4681868080418914475
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 5f66c3fa-bfab-46b1-93dd-8491afa35da4
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868080418914476
+    - rid: 4681868080418914476
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: f770950a-02fa-4e21-bc6d-efac83a3cd7e
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.45000002
+        duration: 0.20000002
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: TimelineSkip
+    - rid: 4681868080418914488
+      type: {class: TimelineSkipTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 1f10e00d-b28e-44f1-8e8a-7fe6da35cc5d
+        trackType: TimelineSkipTrack
+        trackName: "\u65F6\u95F4\u8F74\u8DF3\u8DC3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868080418914490
+    - rid: 4681868080418914490
+      type: {class: TimelineSkipClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 6f6dc547-8105-406c-9589-545ee6e0d884
+        clipName: "\u8DF3\u8DC3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.65000004
+        duration: 0.28333336
+        blendInDuration: 0
+        blendOutDuration: 0
+        CancelFlag: TimelineSkip

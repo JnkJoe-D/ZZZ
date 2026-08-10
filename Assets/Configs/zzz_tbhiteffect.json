@@ -780,5 +780,55 @@
         "chance": 1
       }
     ]
+  },
+  {
+    "id": 1040014,
+    "name": "艾莲_普通攻击_冰刃浪",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "id": 1040015,
+    "name": "艾莲_普通攻击_霜降",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1
+      }
+    ]
   }
 ]

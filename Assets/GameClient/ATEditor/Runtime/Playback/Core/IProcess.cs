@@ -41,6 +41,11 @@ namespace ATEditor
         /// Runner.Resume() 时调用，用于恢复状态
         /// </summary>
         void OnResume();
+        
+        /// <summary>
+        /// Runner 执行时间跳跃（Seek）时对于保持激活的片段调用，用于强制同步时间
+        /// </summary>
+        void OnSeek(float targetTime);
 
         /// <summary>
         /// 【逻辑边界】时间指针按正常步进（正向/反向）离开片段区间时调用。

@@ -22,6 +22,13 @@ namespace ATEditor
         /// </summary>
         public GameObject Owner { get; private set; }
 
+        public event Action<string> OnTimelineMessage;
+
+        public void SendTimelineMessage(string message)
+        {
+            OnTimelineMessage?.Invoke(message);
+        }
+
         /// <summary>
         /// 目标角色的 Transform
         /// </summary>
@@ -53,6 +60,11 @@ namespace ATEditor
         public int SkillId { get; private set; }
 
         public void SetSkillId(int id) { SkillId = id; }
+        
+        /// <summary>
+        /// 临时标记集合，供时间轴片段（如 SkipClip）查询外部状态
+        /// </summary>
+        public HashSet<string> Flags { get; private set; } = new HashSet<string>();
         
         // 单层字典，Key 为服务接口类型
         private Dictionary<Type, object> _services = new Dictionary<Type, object>();
@@ -289,6 +301,7 @@ namespace ATEditor
             _services.Clear();
             _componentCache.Clear();
             _layerMaskStates.Clear();
+            Flags.Clear();
         }
     }
 }

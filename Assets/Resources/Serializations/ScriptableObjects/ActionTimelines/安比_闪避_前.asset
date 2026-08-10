@@ -19,7 +19,7 @@ MonoBehaviour:
   groups:
   - groupId: 4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28
     groupName: "\u52A8\u753B"
-    isCollapsed: 0
+    isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -51,7 +51,7 @@ MonoBehaviour:
     - rid: 4681868069779800307
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
     groupName: "\u547D\u4E2D"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:

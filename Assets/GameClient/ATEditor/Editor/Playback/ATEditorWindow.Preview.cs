@@ -218,9 +218,10 @@ namespace ATEditor.Editor
         public void SeekPreview(float time)
         {
             if (IsPlaying) PausePreview();
-            if (previewRunner.CurrentState == SkillRunner.State.None)
+            if (previewRunner == null || previewRunner.CurrentState == SkillRunner.State.None)
             {
-                // 如果是停止状态下拖动，激洀Process 但保持暂偀                EnsureRunnerActive();
+                // 如果是停止状态下拖动，激洀Process 但保持暂偀
+                EnsureRunnerActive();
             }
 
             if (state != null && state.previewTarget != null)

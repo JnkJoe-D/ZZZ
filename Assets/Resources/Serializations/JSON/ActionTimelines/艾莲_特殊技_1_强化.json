@@ -1,5 +1,5 @@
 {
-    "duration": 6.333333969116211,
+    "duration": 6.766666889190674,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -435,11 +435,11 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.5166667699813843,
+                    "duration": 1.183333396911621,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.10000002384185791,
                     "animationClip": {
-                        "instanceID": 89172
+                        "instanceID": 42518
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -448,7 +448,7 @@
                     },
                     "clipRef": {
                         "guid": "769312a99595bf44f83906711cfb6784",
-                        "assetName": "Avatar_Female_Size02_Ellen_Ani_Attack_Branch_03",
+                        "assetName": "Avatar_Female_Size02_Ellen_Ani_Attack_Branch_02",
                         "assetPath": "Assets/Dependencies/Animation/Ellen/Avatar_Female_Size02_Ellen_Ani.fbx"
                     },
                     "maskRef": {
@@ -469,12 +469,12 @@
                     "clipId": "a05b8ca1-9628-4d77-aa5b-5c43b2f562ae",
                     "clipName": "动画片段",
                     "isEnabled": true,
-                    "startTime": 1.4166667461395264,
-                    "duration": 4.9166669845581059,
+                    "startTime": 1.0833333730697632,
+                    "duration": 5.683333396911621,
                     "blendInDuration": 0.10000002384185791,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 88240
+                        "instanceID": 42520
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -483,7 +483,7 @@
                     },
                     "clipRef": {
                         "guid": "769312a99595bf44f83906711cfb6784",
-                        "assetName": "Avatar_Female_Size02_Ellen_Ani_Attack_Branch_03_End",
+                        "assetName": "Avatar_Female_Size02_Ellen_Ani_Attack_Branch_02_End",
                         "assetPath": "Assets/Dependencies/Animation/Ellen/Avatar_Female_Size02_Ellen_Ani.fbx"
                     },
                     "maskRef": {
@@ -504,7 +504,7 @@
                     "clipId": "c5a41784-dc4a-4c2d-b4e2-787ca2c922ba",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.4666668176651001,
+                    "startTime": 0.7999997735023499,
                     "duration": 0.20000000298023225,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -522,8 +522,8 @@
                     "clipId": "c1b6a843-422d-4d08-8166-43406938b52b",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.6666668057441711,
-                    "duration": 5.6666669845581059,
+                    "startTime": 0.9999997615814209,
+                    "duration": 5.766666889190674,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "BackSwing"
@@ -541,7 +541,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.333333492279053,
+                    "duration": 6.766666889190674,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "Evade"
@@ -559,7 +559,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.333333492279053,
+                    "duration": 6.766666889190674,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "SwitchCapture"
@@ -577,7 +577,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.5,
-                    "duration": 5.833333492279053,
+                    "duration": 6.266666889190674,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "SwitchExecute"
@@ -594,7 +594,7 @@
                     "clipId": "4842c7fd-5fab-42eb-866e-c9130fbe4e89",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.13333335518836976,
+                    "startTime": 0.45000016689300539,
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -602,7 +602,7 @@
                     "times": 1,
                     "maxHitTargets": 0,
                     "targetSortMode": 1,
-                    "hitDirectionMode": 0,
+                    "hitDirectionMode": 2,
                     "customHitDirection": {
                         "x": 0.0,
                         "y": 1.0
@@ -690,7 +690,7 @@
                     "clipId": "7ea7fb25-bb54-4fc2-88a3-40d299238059",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.30000001192092898,
+                    "startTime": 0.7166666388511658,
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -698,7 +698,7 @@
                     "times": 1,
                     "maxHitTargets": 0,
                     "targetSortMode": 1,
-                    "hitDirectionMode": 0,
+                    "hitDirectionMode": 2,
                     "customHitDirection": {
                         "x": 0.0,
                         "y": 1.0
@@ -737,7 +737,7 @@
                     "detects": [
                         {
                             "hitMode": 1,
-                            "multiHitCount": 4,
+                            "multiHitCount": 6,
                             "multiHitDuration": 0.5,
                             "enableHitStop": true,
                             "hitStopDuration": 0.10000000149011612,
@@ -787,7 +787,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.333333492279053,
+                    "duration": 6.766666889190674,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1

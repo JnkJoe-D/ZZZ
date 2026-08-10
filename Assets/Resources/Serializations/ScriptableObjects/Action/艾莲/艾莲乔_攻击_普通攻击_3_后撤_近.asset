@@ -20,11 +20,13 @@ MonoBehaviour:
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   CompleteTransitCrossfade: -1
+  InheritMode: 0
   Routes:
   - Category: 0
     RequiredWindowTag: Buffer1
     TriggerMode: 0
     ModifierCheckTiming: 20
+    AutoCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
@@ -44,6 +46,7 @@ MonoBehaviour:
     RequiredWindowTag: Execute1
     TriggerMode: 1
     ModifierCheckTiming: 20
+    AutoCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
@@ -65,6 +68,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
   - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
   - {fileID: 11400000, guid: 36a2a976c94302b44afd0ccc5c5dd5d4, type: 2}
+  - {fileID: 11400000, guid: 92b7f162e8e43ca4eb6e794b9131ff98, type: 2}
   PlaybackSpeed: 1
   references:
     version: 2

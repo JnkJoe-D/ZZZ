@@ -28,38 +28,20 @@ namespace Game.Editor.ActionConfig
 
         public static string[] GetComboWindowTags()
         {
-            if (_cachedComboWindowTags != null && _cachedConfig != null)
-            {
-                return _cachedComboWindowTags;
-            }
-
             ActionTagConfigAsset config = LoadConfig();
-            _cachedComboWindowTags = ToUniqueArray(config?.availableComboWindowTags);
-            return _cachedComboWindowTags;
+            return ToUniqueArray(config?.availableComboWindowTags);
         }
 
         public static string[] GetTargetTags()
         {
-            if (_cachedTargetTags != null && _cachedConfig != null)
-            {
-                return _cachedTargetTags;
-            }
-
             ActionTagConfigAsset config = LoadConfig();
-            _cachedTargetTags = ToUniqueArray(config?.availableTargetTags);
-            return _cachedTargetTags;
+            return ToUniqueArray(config?.availableTargetTags);
         }
 
         public static string[] GetEventTags()
         {
-            if (_cachedEventTags != null && _cachedConfig != null)
-            {
-                return _cachedEventTags;
-            }
-
             ActionTagConfigAsset config = LoadConfig();
-            _cachedEventTags = ToUniqueArray(config?.availableEventTags);
-            return _cachedEventTags;
+            return ToUniqueArray(config?.availableEventTags);
         }
 
         private static ActionTagConfigAsset LoadConfig()

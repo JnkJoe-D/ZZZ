@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
   m_Name: "\u827E\u83B2_\u666E\u901A\u653B\u51FB_2_\u6025\u51BB"
   m_EditorClassIdentifier: 
-  duration: 5.7500005
+  duration: 5.7333336
   isLoop: 0
   beforePlayEvents: []
   onCompleteEvents: []
@@ -242,15 +242,15 @@ MonoBehaviour:
         startTime: 0
         duration: 0.9166667
         blendInDuration: 0
-        blendOutDuration: 0.08333331
-        animationClip: {fileID: -2341257596236589497, guid: 769312a99595bf44f83906711cfb6784,
+        blendOutDuration: 0.10000008
+        animationClip: {fileID: -523389576650407126, guid: 769312a99595bf44f83906711cfb6784,
           type: 3}
         playbackSpeed: 1
         layer: 0
         overrideMask: {fileID: 0}
         clipRef:
           guid: 769312a99595bf44f83906711cfb6784
-          assetName: Avatar_Female_Size02_Ellen_Ani_Attack_Normal_02_01
+          assetName: Avatar_Female_Size02_Ellen_Ani_Attack_Normal_02_02
           assetPath: Assets/Dependencies/Animation/Ellen/Avatar_Female_Size02_Ellen_Ani.fbx
         maskRef:
           guid: 
@@ -262,9 +262,9 @@ MonoBehaviour:
         clipId: a05b8ca1-9628-4d77-aa5b-5c43b2f562ae
         clipName: "\u52A8\u753B\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.8333334
+        startTime: 0.8166666
         duration: 4.916667
-        blendInDuration: 0.08333331
+        blendInDuration: 0.10000008
         blendOutDuration: 0
         animationClip: {fileID: 202240326621446236, guid: 769312a99595bf44f83906711cfb6784,
           type: 3}

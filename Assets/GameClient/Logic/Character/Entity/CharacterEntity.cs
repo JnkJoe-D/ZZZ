@@ -241,8 +241,8 @@ namespace Game.Logic
 
         private void Update()
         {
-            ActionPlayer?.Tick(Time.deltaTime);
             ActionController?.Update(Time.deltaTime);
+            ActionPlayer?.Tick(Time.deltaTime);
             RuntimeData?.Update(Time.deltaTime);
             StatusModule?.Tick(Time.deltaTime);
         }

@@ -47,6 +47,15 @@ namespace ATEditor
             animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.GlobalPlaySpeed);
         }
 
+        public override void OnSeek(float targetTime)
+        {
+            if (animHandler != null)
+            {
+                float startTime = targetTime - clip.StartTime;
+                animHandler.SetTime((int)clip.layer, startTime);
+            }
+        }
+
         public override void OnUpdate(float currentTime, float deltaTime)
         {
             // 仅控制播放状态和速度

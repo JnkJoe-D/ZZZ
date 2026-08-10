@@ -91,6 +91,10 @@ namespace ATEditor
         public ProcessContext Context => context;
         private List<ProcessInstance> processes = new List<ProcessInstance>();
         private List<ProcessInstance> activeProcesses = new List<ProcessInstance>();
+        
+        private bool _isTicking = false;
+        private float? _pendingSeekTime = null;
+        private float _pendingSeekDelta = 0f;
         /// <summary>
         /// Process 实例与其运行状态的绑定
         /// </summary>
@@ -202,10 +206,26 @@ namespace ATEditor
         /// </summary>
         public void Seek(float targetTime,float deltaTime)
         {
-            if(Timeline == null || targetTime < 0f || targetTime > Timeline.Duration)
+            if(Timeline == null || targetTime < 0f)
             {
                 return;
             }
+            
+            if (_isTicking)
+            {
+                _pendingSeekTime = targetTime;
+                _pendingSeekDelta = deltaTime;
+                return;
+            }
+            if (targetTime > Timeline.Duration)
+            {
+                targetTime = Timeline.Duration;
+            }
+            CurrentTime = targetTime;
+            if (context != null) context.CurrentTime = targetTime;
+
+            UnityEngine.Debug.Log($"[SkillRunner] Seek called! targetTime={targetTime}, dt={deltaTime}, processes={processes.Count}");
+
             for (int i = 0; i < processes.Count; i++)
             {
                 var inst = processes[i];
@@ -214,29 +234,25 @@ namespace ATEditor
 
                 if (inst.isActive && !willBeActive)
                 {
-                    // // 补充正好脱离时的最后一帧表现，保证终态不丢失
-                    // if (targetTime >= inst.clip.EndTime)
-                    // {
-                    //     inst.process.OnUpdate(inst.clip.EndTime, 0f);
-                    // }
-                    // else if (targetTime < inst.clip.startTime)
-                    // {
-                    //     inst.process.OnUpdate(inst.clip.startTime, 0f);
-                    // }
                     inst.process.OnExit();
                     inst.isActive = false;
+                    activeProcesses.Remove(inst);
+                }
+                else if (inst.isActive && willBeActive)
+                {
+                    inst.process.OnSeek(targetTime);
                 }
 
                 if (!inst.isActive && willBeActive)
                 {
                     inst.process.OnEnter();
                     inst.isActive = true;
+                    activeProcesses.Add(inst);
                 }
 
                 processes[i] = inst;
             }
 
-            CurrentTime = targetTime;
             //刷新当前帧画面
             foreach (var inst in processes)
             {
@@ -262,7 +278,10 @@ namespace ATEditor
         {
             if (CurrentState != State.Playing) return;
 
-            var actingTimeline = Timeline; // 保存当前正在运行的时间轴，以检测运行中是否切招
+            _isTicking = true;
+            try
+            {
+                var actingTimeline = Timeline; // 保存当前正在运行的时间轴，以检测运行中是否切招
 
             float speed = context.GlobalPlaySpeed;
             CurrentTime += deltaTime * speed;
@@ -320,7 +339,7 @@ namespace ATEditor
             OnTick?.Invoke(CurrentTime);
 
             // 播放结束检测
-            if (Timeline != null && 
+            if (Timeline != null && !_pendingSeekTime.HasValue && 
             ((!isReversing && CurrentTime >= Timeline.Duration)||(isReversing && CurrentTime <= 0f)))
             {
                 OvershootTime = !isReversing ? CurrentTime - Timeline.Duration : CurrentTime;
@@ -351,6 +370,19 @@ namespace ATEditor
 
                     OnComplete?.Invoke();
                 }
+            }
+            }
+            finally
+            {
+                _isTicking = false;
+            }
+            
+            if (_pendingSeekTime.HasValue)
+            {
+                float target = _pendingSeekTime.Value;
+                float dt = _pendingSeekDelta;
+                _pendingSeekTime = null;
+                Seek(target, dt);
             }
         }
 

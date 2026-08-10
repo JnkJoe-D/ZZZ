@@ -40,6 +40,7 @@ namespace Game.Logic
             public int ActionId;
             public string ActionName;
             public float Timestamp;
+            public ActionConfigAsset Asset;
         }
 
         public sealed class ComboWindowData
@@ -156,7 +157,7 @@ namespace Game.Logic
             ActionConfigAsset action = GetCurrentAction();
             if (action == null) return false;
 
-            action.CollectEffectiveRoutes(_effectiveRoutes);
+            action.CollectEffectiveRoutes(_effectiveRoutes, _entity);
             if (FindBestEvent(eventType, windowTag, out var candidate))
                 return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
 
@@ -164,7 +165,7 @@ namespace Game.Logic
             ActionConfigAsset root = _entity.Config?.ActionRoot;
             if (root == null || root == action) return false;
 
-            root.CollectEffectiveRoutes(_effectiveRoutes);
+            root.CollectEffectiveRoutes(_effectiveRoutes, _entity);
             if (FindBestEvent(eventType, windowTag, out candidate))
                 return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
 
@@ -225,7 +226,7 @@ namespace Game.Logic
             ActionConfigAsset action = GetCurrentAction();
             if (action == null) return false;
 
-            action.CollectEffectiveRoutes(_effectiveRoutes);
+            action.CollectEffectiveRoutes(_effectiveRoutes, _entity);
             if (_effectiveRoutes.Count == 0) return false;
 
             // 只用当前这条指令做 Instant 匹配，不查缓冲区
@@ -252,7 +253,7 @@ namespace Game.Logic
             ActionConfigAsset action = GetCurrentAction();
             if (action == null) return false;
 
-            action.CollectEffectiveRoutes(_effectiveRoutes);
+            action.CollectEffectiveRoutes(_effectiveRoutes, _entity);
             if (_effectiveRoutes.Count == 0) return false;
 
             if (FindBestCommand(tag, CommandTriggerMode.OnWindowExit, commands, out var candidate))
@@ -275,7 +276,7 @@ namespace Game.Logic
             ActionConfigAsset action = GetCurrentAction();
             if (action == null) return false;
 
-            action.CollectEffectiveRoutes(_effectiveRoutes);
+            action.CollectEffectiveRoutes(_effectiveRoutes, _entity);
             if (_effectiveRoutes.Count == 0) return false;
 
             if (FindBestCondition(tag, timing, out var candidate))
@@ -360,10 +361,20 @@ namespace Game.Logic
                 if (route == null) continue;
                 if (!route.IsInvalid()) continue;
 
-                if (!route.EvaluateConditionTrigger(_entity, tag, timing)) continue;
-
-                bool modOk = !route.HasModifier || route.EvaluateModifier(_entity, tag);
-                if (!modOk) continue;
+                if (route.Category == RouteTriggerCategory.Auto)
+                {
+                    if (!route.EvaluateAutoTrigger(_entity, tag, timing)) continue;
+                }
+                else if (route.Category == RouteTriggerCategory.SingleModifier)
+                {
+                    if (!route.EvaluateConditionTrigger(_entity, tag, timing)) continue;
+                    bool modOk = !route.HasModifier || route.EvaluateModifier(_entity, tag);
+                    if (!modOk) continue;
+                }
+                else
+                {
+                    continue;
+                }
 
                 var c = new RouteCandidate
                 {
@@ -490,6 +501,15 @@ namespace Game.Logic
                         TargetSlotHint = -1
                     });
                 }
+
+                if (routeExecuteEvent == ExecuteEvent.TimelineRewind)
+                {
+                    _entity.ActionPlayer?.SendTimelineMessage(ExecuteEvent.TimelineRewind.ToString());
+                }
+                else if (routeExecuteEvent == ExecuteEvent.TimelineSkip)
+                {
+                    _entity.ActionPlayer?.SetTimelineFlag(ExecuteEvent.TimelineSkip.ToString());
+                }
             }
 
             return true;
@@ -509,7 +529,7 @@ namespace Game.Logic
             if (finished == null || _isTransitioning) return;
 
             // 1. 动作完成时的条件路由（如持续移动输入）
-            finished.CollectEffectiveRoutes(_effectiveRoutes);
+            finished.CollectEffectiveRoutes(_effectiveRoutes, _entity);
             if (FindBestCondition(null, RouteSingleModifierCheckTiming.OnWindowExit, out var c))
             {
                 Apply(c);
@@ -562,7 +582,8 @@ namespace Game.Logic
             ExecutionHistory.Insert(0, new ExecutionRecord
             {
                 Type = type, Phase = phase, Source = source,
-                RouteTag = tag, ActionId = action?.ID ?? -1, ActionName = action?.name, Timestamp = Time.time
+                RouteTag = tag, ActionId = action?.ID ?? -1, ActionName = action?.name, Timestamp = Time.time,
+                Asset = action
             });
             if (ExecutionHistory.Count > 10) ExecutionHistory.RemoveAt(10);
         }

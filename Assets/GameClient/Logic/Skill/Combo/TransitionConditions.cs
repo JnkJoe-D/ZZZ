@@ -180,4 +180,35 @@ namespace Game.Logic
             return Inverse ? !matched : matched;
         }
     }
+
+    /// <summary>
+    /// 前置动作条件。用于跨动作保留派生状态。
+    /// 例如：如果动作B是从动作A派生来的，那么动作B里可以配置一条通往动作C的路由，并附加该条件（要求前置动作=A），
+    /// 从而防止动作B在其他情况下也派生动作C。
+    /// </summary>
+    [Serializable]
+    [SubclassDisplayName("前置动作条件 (PreviousAction)")]
+    public sealed class PreviousActionCondition : ITransitionCondition
+    {
+        [Tooltip("要求上一个执行的动作必须是这个。")]
+        public ActionConfigAsset RequiredAction;
+
+        [Tooltip("反转条件：勾选则表示上一个动作【不是】这个。")]
+        public bool Inverse = false;
+
+        public bool Check(CharacterEntity actor)
+        {
+            if (RequiredAction == null || RequiredAction.ID <= 0) return Inverse;
+
+            var history = actor?.ActionController?.ExecutionHistory;
+            // history[0] 是当前正在执行的动作，history[1] 是上一个动作
+            if (history == null || history.Count < 2)
+            {
+                return Inverse;
+            }
+
+            bool matched = history[1].ActionId == RequiredAction.ID;
+            return Inverse ? !matched : matched;
+        }
+    }
 }

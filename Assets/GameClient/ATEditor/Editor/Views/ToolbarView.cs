@@ -235,6 +235,20 @@ namespace ATEditor.Editor
             if (!string.IsNullOrEmpty(path))
             {
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+                
+                // 如果当前 timeline 已经是 Asset，并且是真正的“另存为”（名字或路径改变），我们需要克隆一份，避免覆盖原有的 SO
+                if (AssetDatabase.Contains(state.currentTimeline))
+                {
+                    string oldPath = AssetDatabase.GetAssetPath(state.currentTimeline);
+                    string newAssetPath = System.IO.Path.Combine(state.DefaultAssetDirectory, fileName + ".asset").Replace("\\", "/");
+                    if (oldPath != newAssetPath)
+                    {
+                        var clone = Object.Instantiate(state.currentTimeline);
+                        clone.name = fileName; // 确保新实例名字正确
+                        window.SetCurrentTimeline(clone);
+                    }
+                }
+
                 SerializationUtility.SaveDual(state.currentTimeline, state.DefaultJsonDirectory, state.DefaultAssetDirectory, fileName);
                 state.currentFilePath = path; // 记录最新路径
                 AssetDatabase.Refresh();

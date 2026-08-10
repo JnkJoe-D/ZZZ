@@ -48,5 +48,10 @@ namespace Game.Adapters
             _target?.SetLayerSpeed(layerIndex, speed);
         }
 
+        public void SetTime(int layerIndex, float time)
+        {
+            _target?.SetTime(layerIndex, time);
+        }
+
     }
 }

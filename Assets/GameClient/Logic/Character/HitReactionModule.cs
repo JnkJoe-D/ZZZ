@@ -183,8 +183,8 @@ namespace Game.Logic
         {
             yield return new WaitForSecondsRealtime(ctx.hitStopDuration);
 
-            ctx.attacker?.ActionPlayer?.SetPlaySpeed(1f);
-            _entity.ActionPlayer?.SetPlaySpeed(1f);
+            ctx.attacker?.ActionPlayer?.RestorePlaySpeed();
+            _entity.ActionPlayer?.RestorePlaySpeed();
         }
     }
 }

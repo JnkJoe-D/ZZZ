@@ -63,18 +63,29 @@ namespace ATEditor.Editor
                 return EditorGUILayout.TextField("连招标签", currentValue);
             }
 
-            int currentIndex = Array.IndexOf(tagOptions, currentValue);
-            if (currentIndex >= 0)
+            int currentIndex = Array.IndexOf(tagOptions, currentValue ?? "");
+            
+            // If the tag is valid, or if it's completely empty (newly created clip), just show the normal dropdown
+            if (currentIndex >= 0 || string.IsNullOrEmpty(currentValue))
             {
                 int newIndex = EditorGUILayout.Popup("连招标签", currentIndex, tagOptions);
-                return tagOptions[newIndex];
+                return newIndex >= 0 ? tagOptions[newIndex] : currentValue;
             }
 
+            // If the tag is not empty but also not in the list (unregistered / legacy tag)
             Color oldColor = GUI.color;
             GUI.color = Color.yellow;
             string editedValue = EditorGUILayout.TextField("连招标签 [未注册]", currentValue);
             GUI.color = oldColor;
-            EditorGUILayout.HelpBox("此标签未在 ActionTagConfigAsset.availableComboWindowTags 中注册。可保留用于迁移或替换为已注册标签。", MessageType.Warning);
+            
+            EditorGUILayout.HelpBox("此标签未在 ActionTagConfigAsset 中注册。可保留用于迁移或从下方选择替换。", MessageType.Warning);
+            
+            int replaceIndex = EditorGUILayout.Popup("替换为已注册标签...", -1, tagOptions);
+            if (replaceIndex >= 0)
+            {
+                return tagOptions[replaceIndex];
+            }
+            
             return editedValue;
         }
     }

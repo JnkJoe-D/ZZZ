@@ -597,5 +597,31 @@
     "desc": "",
     "condition": [],
     "cost": []
+  },
+  {
+    "id": 140320,
+    "name": "攻击_普通攻击_冰刃浪",
+    "desc": "",
+    "condition": [
+      {
+        "attr_id": 2000,
+        "op": 0,
+        "value": 2
+      }
+    ],
+    "cost": [
+      {
+        "attr_id": 2000,
+        "cost_type": 0,
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": 140330,
+    "name": "攻击_普通攻击_霜降",
+    "desc": "",
+    "condition": [],
+    "cost": []
   }
 ]

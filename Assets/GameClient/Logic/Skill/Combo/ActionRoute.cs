@@ -11,7 +11,8 @@ namespace Game.Logic
     {
         PlayerCommand = 0,
         SingleModifier = 10,
-        Event = 20
+        Event = 20,
+        Auto = 30
     }
 
     public enum RouteEventType
@@ -55,6 +56,10 @@ namespace Game.Logic
     {
         None = 0,
         SwitchCaptureSucceed = 10,
+        [InspectorName("时间轴回卷 (TimelineRewind)")]
+        TimelineRewind = 20,
+        [InspectorName("设置时间轴跳跃标记 (TimelineSkip)")]
+        TimelineSkip = 30,
     }
 
     [Serializable]
@@ -117,6 +122,10 @@ namespace Game.Logic
         [Header("Modifier Trigger")]
         [ShowIf("Category", RouteTriggerCategory.SingleModifier)]
         public RouteSingleModifierCheckTiming ModifierCheckTiming = RouteSingleModifierCheckTiming.OnWindowExit;
+
+        [Header("Auto Trigger")]
+        [ShowIf("Category", RouteTriggerCategory.Auto)]
+        public RouteSingleModifierCheckTiming AutoCheckTiming = RouteSingleModifierCheckTiming.OnWindowExit;
 
         [Header("Event Trigger")]
         [ShowIf("Category", RouteTriggerCategory.Event)]
@@ -257,6 +266,32 @@ namespace Game.Logic
             }
 
             if (ModifierCheckTiming != evaluationTiming)
+            {
+                return false;
+            }
+
+            if (!CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor))
+                return false;
+
+            return CheckSkillRequire(actor);
+        }
+
+        public bool EvaluateAutoTrigger(
+            CharacterEntity actor,
+            string activeWindowTag,
+            RouteSingleModifierCheckTiming evaluationTiming)
+        {
+            if (Category != RouteTriggerCategory.Auto)
+            {
+                return false;
+            }
+
+            if (!MatchesWindowTag(activeWindowTag))
+            {
+                return false;
+            }
+
+            if (AutoCheckTiming != evaluationTiming)
             {
                 return false;
             }

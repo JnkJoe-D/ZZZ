@@ -29,9 +29,9 @@ namespace cfg.ZZZ
         /// </summary>
         Miyabi = 1002,
         /// <summary>
-        /// 艾莲乔
+        /// 艾莲
         /// </summary>
-        Allen = 1003,
+        Ellen = 1003,
     }
 
 } 

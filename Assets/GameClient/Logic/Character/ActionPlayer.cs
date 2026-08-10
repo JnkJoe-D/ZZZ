@@ -8,7 +8,7 @@ namespace Game.Logic
     /// 全局行为播放器，剥离状态机对 Timeline API 的直接依赖
     /// 统一管理 ActionConfigSO 的解析、方向校准、Runner 播放与停止
     /// </summary>
-    public class ActionPlayer
+    public class ActionPlayer : ISkillRunnerProvider
     {
         private CharacterEntity _entity;
         private SkillRunner _runner;
@@ -53,9 +53,13 @@ namespace Game.Logic
             // 从管理器索要新 Runner, Context
             _runner = Game.Logic.ActionManager.Instance.GetRunner(_entity);
             _context = Game.Logic.ActionManager.Instance.GetContext(_entity);
+            
+            // Register self as ISkillRunnerProvider
+            _context.UserData = this;
 
-            // 默认恢复全局速度
-            _context.GlobalPlaySpeed = 1.0f;
+            // 默认恢复全局速度（基础速度 * 当前动作配置速度）
+            float baseSpeed = 1.0f; // 如果有角色全局攻速Buff，可以从 _entity 获取并相乘
+            _context.GlobalPlaySpeed = baseSpeed * config.PlaybackSpeed;
             if (crossfadeOverride >= 0f)
             {
                 _context.TransitionCrossfadeOverride = crossfadeOverride;
@@ -99,6 +103,31 @@ namespace Game.Logic
             if (_context != null)
             {
                 _context.GlobalPlaySpeed = speed;
+            }
+        }
+
+        public void RestorePlaySpeed()
+        {
+            float baseSpeed = 1.0f; // 同上，如果有全局攻速Buff加成
+            float actionSpeed = CurrentAction != null ? CurrentAction.PlaybackSpeed : 1.0f;
+            SetPlaySpeed(baseSpeed * actionSpeed);
+        }
+        
+        public SkillRunner GetRunner()
+        {
+            return _runner;
+        }
+
+        public void SendTimelineMessage(string message)
+        {
+            _context?.SendTimelineMessage(message);
+        }
+
+        public void SetTimelineFlag(string flag)
+        {
+            if (_context != null && !string.IsNullOrEmpty(flag))
+            {
+                _context.Flags.Add(flag);
             }
         }
     }
