@@ -46,7 +46,7 @@ namespace Game.Logic
 
             _stateTime += deltaTime;
 
-            var config = _ctx.HostEntity.Config;
+            var config = _ctx.HostEntity.Config as RoleConfigAsset;
             if (config != null)
             {
                 _ctx.HostEntity.RuntimeData.IsShortMoveInput = _stateTime <= config.JogShortInputThreshold;
@@ -58,9 +58,9 @@ namespace Game.Logic
 
         public override void OnExit()
         {
-            if (_ctx.HostEntity.Config != null)
+            if (_ctx.HostEntity.Config is RoleConfigAsset roleConfig)
             {
-                _ctx.Blackboard.IsShortJog = _stateTime <= _ctx.HostEntity.Config.JogShortInputThreshold;
+                _ctx.Blackboard.IsShortJog = _stateTime <= roleConfig.JogShortInputThreshold;
             }
         }
     }

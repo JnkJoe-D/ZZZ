@@ -32,7 +32,7 @@ namespace Game.UI
                 Model.TipMessage = "加载中...";
             }
 
-            RefreshView();
+            View?.UpdateView(Model);
 
             if (View != null)
             {
@@ -48,14 +48,6 @@ namespace Game.UI
             }
         }
 
-        private void RefreshView()
-        {
-            if (View == null) return;
-
-            if (View.TipText != null)
-            {
-                View.TipText.text = Model.TipMessage;
-            }
-        }
+        
     }
 }

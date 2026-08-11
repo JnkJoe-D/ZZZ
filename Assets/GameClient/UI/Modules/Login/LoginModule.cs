@@ -23,21 +23,10 @@ namespace Game.UI
             // 监听网络回包
             NetworkManager.Instance.Dispatcher.Register<S2C_Login>(MsgId.Login, OnLoginResponse);
 
-            RefreshView();
+            View?.UpdateView(Model);
         }
 
-        private void RefreshView()
-        {
-            // 初始化阶段把 Model 中的默认空值或记忆值同步给界面
-            if (View.AccountInput.text != Model.Account)
-            {
-                View.AccountInput.text = Model.Account;
-            }
-            if (View.PasswordInput.text != Model.Password)
-            {
-                View.PasswordInput.text = Model.Password;
-            }
-        }
+        
 
         private void OnLoginClick()
         {
@@ -108,7 +97,7 @@ namespace Game.UI
             else
             {
                 // 登录失败
-                RefreshView(); // 此时 Model.Password 已经在发包时被清空
+                View?.UpdateView(Model); // 此时 Model.Password 已经在发包时被清空
                 
                 UIManager.Instance.Open<MessageBoxModule>(new MessageBoxModel
                 {

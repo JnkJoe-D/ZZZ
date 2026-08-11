@@ -8,7 +8,7 @@ Shader "UI/ZZZ_HealthBarFlow"
         [Header(Feature Toggles)]
         [Toggle(_USE_WAVE_EDGE)] _UseWaveEdge ("Enable Wave Edge", Float) = 1
         [Toggle(_USE_FLOW_LIGHT)] _UseFlowLight ("Enable Flow Light", Float) = 1
-        [Toggle(_USE_FLASH)] _UseFlash ("Enable Flashing", Float) = 0
+        [Toggle(_USE_FLASH)] _UseFlash ("Enable Flashing Feature (Material)", Float) = 0
 
         [Header(Health Fill Settings)]
         _FillAmount ("Fill Amount", Range(0, 1)) = 0.8
@@ -27,8 +27,10 @@ Shader "UI/ZZZ_HealthBarFlow"
         _FlowInterval ("Interval (Time between flows)", Range(0.0, 5.0)) = 1.0
 
         [Header(Flash Settings)]
+        [Toggle] _FlashActive ("Preview Flash Active (0=Gray, 1=Flash)", Float) = 1
         [HDR] _FlashColor1 ("Flash Color 1", Color) = (1, 1, 1, 1)
         [HDR] _FlashColor2 ("Flash Color 2", Color) = (1, 0.5, 0, 1)
+        [HDR] _DisabledColor ("Disabled Color", Color) = (0.5, 0.5, 0.5, 1)
         _FlashSpeed ("Flash Speed", Range(0.1, 20.0)) = 5.0
 
         [Header(Stencil)]
@@ -125,8 +127,10 @@ Shader "UI/ZZZ_HealthBarFlow"
             float _FlowInterval;
 
             // Flash Properties
+            float _FlashActive; // C# 动态传入的开关状态
             float4 _FlashColor1;
             float4 _FlashColor2;
+            float4 _DisabledColor;
             float _FlashSpeed;
 
             Varyings vert(Attributes input)
@@ -154,11 +158,19 @@ Shader "UI/ZZZ_HealthBarFlow"
 
                 // 2. FLASH EFFECT
                 #ifdef _USE_FLASH
-                // Generate a ping-pong value between 0 and 1
-                float flashPingPong = (sin(_Time.y * _FlashSpeed) * 0.5) + 0.5;
-                half4 flashTint = lerp(_FlashColor1, _FlashColor2, flashPingPong);
-                // Multiply base color with flash tint
-                color.rgb *= flashTint.rgb;
+                    // _FlashActive 由 C# 实时传递：1 为满足阈值(闪烁)，0 为未满足(变灰)
+                    if (_FlashActive > 0.5)
+                    {
+                        // Generate a ping-pong value between 0 and 1
+                        float flashPingPong = (sin(_Time.y * _FlashSpeed) * 0.5) + 0.5;
+                        half4 flashTint = lerp(_FlashColor1, _FlashColor2, flashPingPong);
+                        // Multiply base color with flash tint
+                        color.rgb *= flashTint.rgb;
+                    }
+                    else
+                    {
+                        color.rgb *= _DisabledColor.rgb;
+                    }
                 #endif
 
                 // 3. FILL & WAVE EDGE LOGIC

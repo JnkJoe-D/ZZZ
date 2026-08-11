@@ -51,6 +51,7 @@ namespace Game.AI
         public const string Ultimate = "character.ultimate";
         public const string EvadeFront = "character.evade_front";
         public const string EvadeBack = "character.evade_back";
+        public const string PlayAction = "character.play_action";
     }
 
     /// <summary>
@@ -378,6 +379,10 @@ namespace Game.AI
                     facade,
                     target => target.TriggerEvadeFront(),
                     target => target.IsEvadeState));
+
+            bindings.RegisterActionHandler(
+                BehaviorTreeCharacterTaskKeys.PlayAction,
+                new CharacterPlayActionHandler(facade));
 
             return bindings;
         }
@@ -721,6 +726,68 @@ namespace Game.AI
             public bool Triggered;
             public bool ObservedActiveState;
             public int GraceTicksRemaining;
+        }
+    }
+
+    /// <summary>
+    /// 直接驱动 ActionController 播放指定 ActionConfigAsset 的节点处理器。
+    /// 适用于怪物 AI 等无输入抽象直接播动作的场合。
+    /// </summary>
+    internal sealed class CharacterPlayActionHandler : IBehaviorTreeActionHandler
+    {
+        private readonly IBehaviorTreeCharacterFacade facade;
+
+        public CharacterPlayActionHandler(IBehaviorTreeCharacterFacade facade)
+        {
+            this.facade = facade;
+        }
+
+        public void OnEnter(BehaviorTreeExecutionContext context, BehaviorTreeDefinitionNode node)
+        {
+            var targetAction = node.TargetAction;
+            if (targetAction != null && facade is BehaviorTreeCharacterFacade btFacade && btFacade.Character != null)
+            {
+                btFacade.Character.ActionController?.PlayAction(targetAction);
+            }
+        }
+
+        public BehaviorTreeNodeStatus Tick(BehaviorTreeExecutionContext context, BehaviorTreeDefinitionNode node)
+        {
+            var targetAction = node.TargetAction;
+            if (targetAction == null || !(facade is BehaviorTreeCharacterFacade btFacade) || btFacade.Character == null)
+            {
+                return BehaviorTreeNodeStatus.Failure;
+            }
+            
+            var actionPlayer = btFacade.Character.ActionPlayer;
+            if (actionPlayer != null)
+            {
+                // 判断当前动作是不是目标动作
+                if (actionPlayer.CurrentAction != null && actionPlayer.CurrentAction.ID == targetAction.ID)
+                {
+                    if (actionPlayer.IsPlaying)
+                    {
+                        return BehaviorTreeNodeStatus.Running;
+                    }
+                    else
+                    {
+                        return BehaviorTreeNodeStatus.Success;
+                    }
+                }
+                
+                // 如果一进来动作就被别的更高优先级顶掉了，或者动作结束切回Idle了
+                // 通常可以返回 Success，让树继续评估。或者如果还没播放过就失败？
+                // 这里简易处理，当作成功完成
+                return BehaviorTreeNodeStatus.Success;
+            }
+
+            return BehaviorTreeNodeStatus.Failure;
+        }
+
+        public void OnExit(BehaviorTreeExecutionContext context, BehaviorTreeDefinitionNode node, BehaviorTreeNodeStatus lastStatus, BehaviorTreeNodeStopReason stopReason)
+        {
+            // 如果是被 Abort 强行中断，可能需要强切回 Idle？
+            // 依赖 ActionRoot 或 Idle 节点自身去切更好，避免过度耦合
         }
     }
 }

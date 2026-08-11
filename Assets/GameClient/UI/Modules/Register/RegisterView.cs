@@ -77,5 +77,17 @@ namespace Game.UI
             BackBtn = transform.Find("View/Content/Operations/BackBtn").GetComponent<Button>();
             BackText = transform.Find("View/Content/Operations/BackBtn/BackText").GetComponent<TMP_Text>();
         }
-    }
+    
+        public void UpdateView(RegisterModel model)
+        {
+            if (AccountInput.text != model.Account)
+                AccountInput.text = model.Account;
+            if (PasswordInput.text != model.Password)
+                PasswordInput.text = model.Password;
+            if (RepeatInput.text != model.RepeatPassword)
+                RepeatInput.text = model.RepeatPassword;
+            if(EmailInput.text != model.Email)
+                EmailInput.tag = model.Email;
+        }
+}
 }

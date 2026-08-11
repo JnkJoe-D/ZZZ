@@ -1,5 +1,5 @@
 {
-    "duration": 4.650000095367432,
+    "duration": 4.65000057220459,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -502,7 +502,7 @@
                     "isLocked": false,
                     "isHidden": false,
                     "isCollapsed": false,
-                    "isEnabled": true,
+                    "isEnabled": false,
                     "clips": [
                         {
                             "rid": 1030
@@ -529,7 +529,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.033333539962768558,
                     "animationClip": {
-                        "instanceID": 89114
+                        "instanceID": 34472
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -564,7 +564,7 @@
                     "blendInDuration": 0.033333539962768558,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 88328
+                        "instanceID": 34474
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -876,8 +876,8 @@
                     "clipId": "ff188346-a31a-4769-9a1c-dcc0341d41e0",
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 4.650000095367432,
+                    "startTime": 0.01666666753590107,
+                    "duration": 4.633333683013916,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 3
@@ -894,8 +894,8 @@
                     "clipId": "380a5cb8-89f2-4e25-af99-104a3aae05be",
                     "clipName": "视觉偏移片段",
                     "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 1.0,
+                    "startTime": 0.01666666753590107,
+                    "duration": 0.9833332896232605,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "visualOffsetMode": 3

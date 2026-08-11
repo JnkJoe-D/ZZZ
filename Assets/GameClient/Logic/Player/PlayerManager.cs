@@ -73,7 +73,7 @@ namespace Game.Logic
             //    这代表屏幕前的玩家视线转移到了新的躯壳上
             GameCameraManager.Instance?.SetTarget(characterGo.transform);
 
-            Debug.Log($"[PlayerManager] Successfully possessed new character: {config.RoleName}");
+            Debug.Log($"[PlayerManager] Successfully possessed new character: {config.Name}");
             return LocalCharacter;
         }
 

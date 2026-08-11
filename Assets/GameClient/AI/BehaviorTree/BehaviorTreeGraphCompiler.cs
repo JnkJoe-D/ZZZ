@@ -110,6 +110,10 @@ namespace Game.AI
                     case BehaviorTreeActionNodeModel actionNode:
                         definitionNode.TaskKey = actionNode.TaskKey;
                         break;
+                    case BehaviorTreePlayActionNodeModel playActionNode:
+                        definitionNode.TaskKey = "character.play_action";
+                        definitionNode.TargetAction = playActionNode.TargetAction;
+                        break;
                 }
 
                 definition.Nodes.Add(definitionNode);

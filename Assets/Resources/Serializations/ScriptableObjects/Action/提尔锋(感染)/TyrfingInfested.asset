@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25727d6c642c74145bc87312680d2a5a, type: 3}
+  m_Name: TyrfingInfested
+  m_EditorClassIdentifier: 
+  ID: 0
+  Name: 
+  Prefab: {fileID: 0}
+  GroundRadius: 0.3
+  GroundHeight: 1.8
+  GroundOffset: 0.1
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  ActionRoot: {fileID: 0}
+  ActionProLoadList: []
+  BehaviorTreeGraph: {fileID: 0}
+  hitReactionConfig: {fileID: 0}
+  Faction: 10
+  Grade: 0
+  Weaknesses: 
+  Resistances: 
+  PerceptionRadius: 15
+  LoseTargetRadius: 25
+  FieldOfView: 120
+  PoiseLevel: 1
+  MaxDaze: 100

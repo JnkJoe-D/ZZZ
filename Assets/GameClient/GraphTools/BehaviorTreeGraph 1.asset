@@ -16,13 +16,14 @@ MonoBehaviour:
   Version: 1
   DisplayName: New Graph
   Metadata:
-    ViewPosition: {x: -33, y: -193, z: 0}
+    ViewPosition: {x: -25, y: -228, z: 0}
     ViewScale: {x: 1, y: 1, z: 1}
-    LastOpenedAtUtc: 2026-03-17T09:18:48.5312567Z
+    LastOpenedAtUtc: 2026-08-11T20:46:57.9625733Z
     LastCompiledAtUtc: 
   Nodes:
   - rid: 1000
   - rid: 1001
+  - rid: 1003
   Edges:
   - rid: 1002
   Blackboard: []
@@ -65,6 +66,17 @@ MonoBehaviour:
         SortOrder: 0
         IsEnabled: 1
         ChildIndex: 0
+    - rid: 1003
+      type: {class: BehaviorTreeActionNodeModel, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        nodeId: 4ebb85e1902049dd8363717c35bda54d
+        Title: Action
+        Position: {x: 411, y: 619}
+        IsEnabled: 1
+        IsCollapsed: 0
+        Note: 
+        Description: 
+        TaskKey: 
     - rid: 1006
       type: {class: BehaviorTreeDefinition, ns: Game.AI, asm: Assembly-CSharp}
       data:
@@ -92,6 +104,7 @@ MonoBehaviour:
           ServiceKey: 
           IntervalSeconds: 0
           TaskKey: 
+          TargetAction: {fileID: 0}
           Children:
           - 5c8824b5fd854c18b61e8b3303193c1e
         - NodeId: 5c8824b5fd854c18b61e8b3303193c1e
@@ -116,5 +129,6 @@ MonoBehaviour:
           ServiceKey: 
           IntervalSeconds: 0
           TaskKey: d
+          TargetAction: {fileID: 0}
           Children: []
         Blackboard: []

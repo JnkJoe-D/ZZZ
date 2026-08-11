@@ -398,6 +398,7 @@ namespace Game.GraphTools.Editor
                 BehaviorTreeNodeSearchItem.Condition => new BehaviorTreeConditionNodeModel(),
                 BehaviorTreeNodeSearchItem.Service => new BehaviorTreeServiceNodeModel(),
                 BehaviorTreeNodeSearchItem.Action => new BehaviorTreeActionNodeModel(),
+                BehaviorTreeNodeSearchItem.PlayAction => new BehaviorTreePlayActionNodeModel(),
                 _ => null
             };
         }

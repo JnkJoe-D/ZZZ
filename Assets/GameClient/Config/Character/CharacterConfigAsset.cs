@@ -9,40 +9,15 @@ namespace Game.Logic
     public class CharacterConfigAsset : GameConfigAsset
     {
         [Header("Base Info")]
-        public int RoleID;
-        public string RoleName;
-        public GameObject CharacterPrefab;
+        public int ID;
+        public string Name;
+        public GameObject Prefab;
 
         [Header("Ground Check")]
         public float GroundRadius = 0.3f;
         public float GroundHeight = 1.8f;
         public float GroundOffset = 0.1f;
         public LayerMask GroundLayer;
-
-        [Header("Movement Speed Multipliers")]
-        [Range(0f, 5f)]
-        public float JogMultipier = 1f;
-
-        [Header("Ground Jog")]
-        public float JogShortInputThreshold = 0.2f;
-
-        [Range(0f, 5f)]
-        public float DashMultipier = 1f;
-
-        [Range(0f, 5f)]
-        public float DodgeMultipier = 1f;
-
-        [Header("Attack Speed Multiplier")]
-        [Range(0f, 5f)]
-        public float AttackMultipier = 1f;
-
-        [Header("Skill Speed Multiplier")]
-        [Range(0f, 5f)]
-        public float SkillMultipier = 1f;
-
-        [Header("Evade")]
-        public int evadeLimitedTimes = 2;
-        public float evadeCoolDown = 1f;
 
         [Header("Root Action")]
         public ActionConfigAsset ActionRoot;

@@ -20,11 +20,13 @@ MonoBehaviour:
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   CompleteTransitCrossfade: -1
+  InheritMode: 0
   Routes:
   - Category: 0
     RequiredWindowTag: Buffer1
     TriggerMode: 0
     ModifierCheckTiming: 20
+    AutoCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
@@ -44,6 +46,7 @@ MonoBehaviour:
     RequiredWindowTag: Execute1
     TriggerMode: 1
     ModifierCheckTiming: 20
+    AutoCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
@@ -63,6 +66,7 @@ MonoBehaviour:
     RequiredWindowTag: Buffer1
     TriggerMode: 1
     ModifierCheckTiming: 20
+    AutoCheckTiming: 20
     EventType: 0
     RequiredType: 30
     RequiredPhase: 0
@@ -73,7 +77,7 @@ MonoBehaviour:
     ModifierConditions: 
     ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: fcb197eb2c968364ebbcaad4e1421a4e, type: 2}
-    ValidateSkillRequirement: 1
+    ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0
@@ -82,6 +86,7 @@ MonoBehaviour:
     RequiredWindowTag: Execute1
     TriggerMode: 1
     ModifierCheckTiming: 20
+    AutoCheckTiming: 20
     EventType: 0
     RequiredType: 30
     RequiredPhase: 0
@@ -92,7 +97,7 @@ MonoBehaviour:
     ModifierConditions: 
     ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: fcb197eb2c968364ebbcaad4e1421a4e, type: 2}
-    ValidateSkillRequirement: 1
+    ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
     ExtraConditions: []
     Priority: 0

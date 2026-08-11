@@ -81,6 +81,10 @@ namespace Game.GraphTools.Editor
                     BuildGraphNodeInspector(actionNode);
                     BuildActionInspector(actionNode);
                     break;
+                case BehaviorTreePlayActionNodeModel playActionNode:
+                    BuildGraphNodeInspector(playActionNode);
+                    BuildPlayActionInspector(playActionNode);
+                    break;
                 case BehaviorTreeBlackboardEntry blackboardEntry:
                     BuildBehaviorTreeBlackboardInspector(blackboardEntry);
                     break;
@@ -276,6 +280,19 @@ namespace Game.GraphTools.Editor
                 "Task Key",
                 model.TaskKey,
                 value => ApplyChange("Edit Task Key", () => model.TaskKey = value)));
+        }
+
+        private void BuildPlayActionInspector(BehaviorTreePlayActionNodeModel model)
+        {
+            UnityEditor.UIElements.ObjectField actionField = new UnityEditor.UIElements.ObjectField("Target Action")
+            {
+                objectType = typeof(Game.Logic.ActionConfigAsset),
+                allowSceneObjects = false,
+                value = model.TargetAction
+            };
+            actionField.RegisterValueChangedCallback(evt =>
+                ApplyChange("Edit Target Action", () => model.TargetAction = (Game.Logic.ActionConfigAsset)evt.newValue));
+            bodyContainer.Add(actionField);
         }
 
         private void BuildBehaviorTreeBlackboardInspector(BehaviorTreeBlackboardEntry model)

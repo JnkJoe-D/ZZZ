@@ -187,4 +187,19 @@ namespace Game.AI
             Title = "Action";
         }
     }
+    [Serializable]
+    [GraphNodeDefinition("BehaviorTree/Play Action", typeof(BehaviorTreeGraphAsset), 45)]
+    /// <summary>
+    /// 作者态直接播放动作节点。
+    /// </summary>
+    public sealed class BehaviorTreePlayActionNodeModel : BehaviorTreeNodeModelBase
+    {
+        public Game.Logic.ActionConfigAsset TargetAction;
+        public override BehaviorTreeNodeKind NodeKind => BehaviorTreeNodeKind.Action;
+
+        public BehaviorTreePlayActionNodeModel()
+        {
+            Title = "Play Action";
+        }
+    }
 }

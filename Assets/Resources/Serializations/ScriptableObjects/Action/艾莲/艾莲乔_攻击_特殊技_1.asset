@@ -15,16 +15,18 @@ MonoBehaviour:
   ID: 140230
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 46dcc45eae93967438ce3c91e373f780, type: 3}
-  actionTimelineSO: {fileID: 11400000, guid: 71308d95e8a69174eba643c0d4de3828, type: 2}
+  actionTimelineSO: {fileID: 0}
   EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   CompleteTransitCrossfade: -1
+  InheritMode: 0
   Routes:
   - Category: 0
     RequiredWindowTag: Buffer1
     TriggerMode: 0
     ModifierCheckTiming: 20
+    AutoCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
@@ -44,6 +46,7 @@ MonoBehaviour:
     RequiredWindowTag: Execute1
     TriggerMode: 1
     ModifierCheckTiming: 20
+    AutoCheckTiming: 20
     EventType: 0
     RequiredType: 20
     RequiredPhase: 0
@@ -60,9 +63,9 @@ MonoBehaviour:
     Priority: 0
     CrossfadeOverride: -1
   RouteSets:
-  - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
+  - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   PlaybackSpeed: 1
   references:
     version: 2

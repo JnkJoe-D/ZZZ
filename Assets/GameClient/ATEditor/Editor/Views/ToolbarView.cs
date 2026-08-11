@@ -213,6 +213,15 @@ namespace ATEditor.Editor
             {
                 if (newTimeline != null)
                 {
+                    // 只要导入的是 Asset，立马克隆一份切断与底层 AssetDatabase 的联系，用克隆体作为编辑器上下文
+                    // 这样所有的修改都只在内存里，直到保存时才覆盖目标文件
+                    if (AssetDatabase.Contains(newTimeline))
+                    {
+                        var clone = Object.Instantiate(newTimeline);
+                        clone.name = newTimeline.name;
+                        newTimeline = clone;
+                    }
+
                     window.SetCurrentTimeline(newTimeline);
                     state.RebuildTrackCache();
                     state.currentFilePath = path; // 记录路径
@@ -236,18 +245,8 @@ namespace ATEditor.Editor
             {
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
                 
-                // 如果当前 timeline 已经是 Asset，并且是真正的“另存为”（名字或路径改变），我们需要克隆一份，避免覆盖原有的 SO
-                if (AssetDatabase.Contains(state.currentTimeline))
-                {
-                    string oldPath = AssetDatabase.GetAssetPath(state.currentTimeline);
-                    string newAssetPath = System.IO.Path.Combine(state.DefaultAssetDirectory, fileName + ".asset").Replace("\\", "/");
-                    if (oldPath != newAssetPath)
-                    {
-                        var clone = Object.Instantiate(state.currentTimeline);
-                        clone.name = fileName; // 确保新实例名字正确
-                        window.SetCurrentTimeline(clone);
-                    }
-                }
+                // 由于 currentTimeline 始终是内存独立的 Clone，直接改名并保存即可
+                state.currentTimeline.name = fileName; 
 
                 SerializationUtility.SaveDual(state.currentTimeline, state.DefaultJsonDirectory, state.DefaultAssetDirectory, fileName);
                 state.currentFilePath = path; // 记录最新路径

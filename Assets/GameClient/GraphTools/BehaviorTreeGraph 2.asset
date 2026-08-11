@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25496fc75d23129459b050c24ae7e9c1, type: 3}
+  m_Name: BehaviorTreeGraph 2
+  m_EditorClassIdentifier: 
+  GraphId: 8b60235be3d64a29891d85f17c199184
+  Version: 1
+  DisplayName: New Graph
+  Metadata:
+    ViewPosition: {x: 0, y: 0, z: 0}
+    ViewScale: {x: 1, y: 1, z: 1}
+    LastOpenedAtUtc: 2026-08-11T21:06:32.5992294Z
+    LastCompiledAtUtc: 
+  Nodes:
+  - rid: 1000
+  - rid: 1001
+  - rid: 1003
+  Edges:
+  - rid: 1002
+  Blackboard: []
+  Groups: []
+  Comments: []
+  CompiledDefinition:
+    rid: 4681868102985318572
+  references:
+    version: 2
+    RefIds:
+    - rid: 1000
+      type: {class: BehaviorTreeRootNodeModel, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        nodeId: 120801424ed44948a0bdb45d5d7fcbe7
+        Title: Root
+        Position: {x: 313, y: 109}
+        IsEnabled: 1
+        IsCollapsed: 0
+        Note: 
+        Description: 
+    - rid: 1001
+      type: {class: BehaviorTreeActionNodeModel, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        nodeId: 35c711a9aec44025a2d6baa933e98092
+        Title: Action
+        Position: {x: 149, y: 288}
+        IsEnabled: 1
+        IsCollapsed: 0
+        Note: 
+        Description: 
+        TaskKey: 
+    - rid: 1002
+      type: {class: BehaviorTreeChildEdgeModel, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        edgeId: 8e764ff1c4124ae097fbe47696fac04d
+        OutputNodeId: 120801424ed44948a0bdb45d5d7fcbe7
+        OutputPortId: output
+        InputNodeId: 35c711a9aec44025a2d6baa933e98092
+        InputPortId: input
+        SortOrder: 0
+        IsEnabled: 1
+        ChildIndex: 0
+    - rid: 1003
+      type: {class: BehaviorTreePlayActionNodeModel, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        nodeId: 22ef4fba3b1d4c668189fdd7f4ad0aa0
+        Title: Play Action
+        Position: {x: 538, y: 307}
+        IsEnabled: 1
+        IsCollapsed: 0
+        Note: 
+        Description: 
+        TargetAction: {fileID: 0}
+    - rid: 4681868102985318572
+      type: {class: BehaviorTreeDefinition, ns: Game.AI, asm: Assembly-CSharp}
+      data:
+        RootNodeId: 
+        Nodes: []
+        Blackboard: []

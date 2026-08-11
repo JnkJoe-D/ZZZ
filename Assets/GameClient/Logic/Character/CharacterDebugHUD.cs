@@ -148,7 +148,7 @@ namespace Game.Logic
 
         private void DrawMainPanel()
         {
-            float width = 360;
+            float width = 520;
             float height = 750;
             float margin = 20;
             Rect rect = new Rect(Screen.width - width - margin, margin, width, height);
@@ -240,7 +240,7 @@ namespace Game.Logic
                             }
 
                             string actionDesc = record.ActionId > 0 
-                                ? record.ActionId.ToString() 
+                                ? $"{record.ActionId} ({record.ActionName})" 
                                 : (!string.IsNullOrEmpty(record.ActionName) ? record.ActionName : "None/Stay");
 
                             GUILayout.Label(

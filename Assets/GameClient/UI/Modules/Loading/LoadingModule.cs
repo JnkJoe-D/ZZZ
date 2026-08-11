@@ -24,7 +24,7 @@ namespace Game.UI
             EventCenter.Subscribe<SceneLoadProgressEvent>(OnProgressUpdate);
             EventCenter.Subscribe<SceneChangeEndEvent>(OnSceneLoadEnd);
             
-            RefreshView();
+            View?.UpdateProgress(Model.Progress, Model.LoadingText);
         }
 
         protected override void OnHide()
@@ -47,22 +47,7 @@ namespace Game.UI
                 Model.LoadingText = e.LoadingText;
             }
             
-            RefreshView();
-        }
-
-        private void RefreshView()
-        {
-            if (View == null) return;
-
-            if (View.LoadingImage != null)
-            {
-                View.LoadingImage.fillAmount = Model.Progress;
-            }
-
-            if (View.LoadingText != null)
-            {
-                View.LoadingText.text = Model.LoadingText;
-            }
+            View?.UpdateProgress(Model.Progress, Model.LoadingText);
         }
     }
 }

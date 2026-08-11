@@ -413,7 +413,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.10000002384185791,
                     "animationClip": {
-                        "instanceID": 88794
+                        "instanceID": 52888
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -448,7 +448,7 @@
                     "blendInDuration": 0.10000002384185791,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 88198
+                        "instanceID": 52890
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,

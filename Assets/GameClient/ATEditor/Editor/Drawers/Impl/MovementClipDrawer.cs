@@ -88,8 +88,9 @@ namespace ATEditor.Editor
                 }
                 else
                 {
-                    // 单一目标模式：展示单一目标的朝向、半径、角度
                     moveClip.targetBaseDirection = (TargetBaseDirection)EditorGUILayout.EnumPopup("基准朝向", moveClip.targetBaseDirection);
+                    moveClip.targetAnchor = (DistanceAnchor)EditorGUILayout.EnumPopup("目标参照锚点", moveClip.targetAnchor);
+                    moveClip.selfAnchor = (DistanceAnchor)EditorGUILayout.EnumPopup("自身参照锚点", moveClip.selfAnchor);
                     moveClip.offsetRadius = EditorGUILayout.FloatField("额外半径偏移", moveClip.offsetRadius);
 
                     if (moveClip.targetPositionEnum == TargetPositionType.CustomAngle)
@@ -189,6 +190,8 @@ namespace ATEditor.Editor
                     cand.label = EditorGUILayout.TextField("备注标签", cand.label);
                     cand.targetPositionEnum = (CandidatePositionType)EditorGUILayout.EnumPopup("目标位置模式", cand.targetPositionEnum);
                     cand.targetBaseDirection = (TargetBaseDirection)EditorGUILayout.EnumPopup("基准朝向", cand.targetBaseDirection);
+                    cand.targetAnchor = (DistanceAnchor)EditorGUILayout.EnumPopup("目标参照锚点", cand.targetAnchor);
+                    cand.selfAnchor = (DistanceAnchor)EditorGUILayout.EnumPopup("自身参照锚点", cand.selfAnchor);
                     cand.offsetRadius = EditorGUILayout.FloatField("额外半径偏移", cand.offsetRadius);
 
                     if (cand.targetPositionEnum == CandidatePositionType.CustomAngle)
@@ -347,9 +350,6 @@ namespace ATEditor.Editor
             if (moveClip.displacementType == DisplacementType.Continuous)
             {
                 moveClip.movementCurve = (MovementCurve)EditorGUILayout.EnumPopup("移动曲线", moveClip.movementCurve);
-
-                int layerMask = EditorGUILayout.MaskField("忽略的碰撞层级", InternalEditorUtility.LayerMaskToConcatenatedLayersMask(moveClip.ignoreLayerMask), InternalEditorUtility.layers);
-                moveClip.ignoreLayerMask = InternalEditorUtility.ConcatenatedLayersMaskToLayerMask(layerMask);
             }
             EditorGUILayout.EndVertical();
         }

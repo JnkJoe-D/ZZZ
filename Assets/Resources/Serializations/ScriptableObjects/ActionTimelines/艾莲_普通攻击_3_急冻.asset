@@ -49,6 +49,7 @@ MonoBehaviour:
     - rid: 4681868069779801080
     - rid: 4681868069779801081
     - rid: 4681868069779801082
+    - rid: 4681868102985318443
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
     groupName: "\u547D\u4E2D"
     isCollapsed: 0
@@ -57,6 +58,13 @@ MonoBehaviour:
     tracks:
     - rid: 4681868069779801083
     - rid: 4681868069779801084
+  - groupId: 50586f84-6bc9-4e9d-9b71-ea088a873da7
+    groupName: "\u65F6\u95F4"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868102985318420
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
     isCollapsed: 0
@@ -64,6 +72,13 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 4681868069779801085
+  - groupId: 64b82706-0313-4116-8278-ca54d95af27c
+    groupName: "\u89C6\u89C9"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868102985318435
   - groupId: fe97c978-da0d-4d70-b973-9218b609c4bc
     groupName: "\u53D8\u6362"
     isCollapsed: 0
@@ -74,7 +89,7 @@ MonoBehaviour:
     - rid: 4681868069779801087
   - groupId: b2999504-8882-463a-8ede-368b78dfafc0
     groupName: "\u7269\u7406"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -541,7 +556,7 @@ MonoBehaviour:
         clipName: "\u65CB\u8F6C\u7247\u6BB5\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 0.36666667
+        duration: 0.6666667
         blendInDuration: 0
         blendOutDuration: 0
         referenceDirection: 4
@@ -563,37 +578,44 @@ MonoBehaviour:
         targetPosition: {x: 0, y: 0, z: 0}
         targetPositionEnum: 6
         targetBaseDirection: 0
+        targetAnchor: 1
+        selfAnchor: 1
         offsetRadius: 0
         angleOffset: 0
         displacementType: 1
         movementCurve: 0
-        ignoreLayerMask:
-          serializedVersion: 2
-          m_Bits: 0
         enablePositionValidation: 1
         candidatePositions:
         - label: "\u5019\u9009\u70B9 #1"
           targetPositionEnum: 1
           targetBaseDirection: 0
-          offsetRadius: 0
+          targetAnchor: 0
+          selfAnchor: 0
+          offsetRadius: 2
           angleOffset: 0
           heightOffset: 0
         - label: "\u5019\u9009\u70B9 #2"
           targetPositionEnum: 0
           targetBaseDirection: 0
-          offsetRadius: 0
+          targetAnchor: 0
+          selfAnchor: 0
+          offsetRadius: 2
           angleOffset: 0
           heightOffset: 0
         - label: "\u5019\u9009\u70B9 #3"
           targetPositionEnum: 2
           targetBaseDirection: 0
-          offsetRadius: 0
+          targetAnchor: 0
+          selfAnchor: 0
+          offsetRadius: 2
           angleOffset: 0
           heightOffset: 0
         - label: "\u5019\u9009\u70B9 #4"
           targetPositionEnum: 3
           targetBaseDirection: 0
-          offsetRadius: 0
+          targetAnchor: 0
+          selfAnchor: 0
+          offsetRadius: 2
           angleOffset: 0
           heightOffset: 0
         enableSmartRadialFallback: 1
@@ -608,7 +630,6 @@ MonoBehaviour:
         groundCheckDistance: 3
         requireGrounded: 1
         faceTargetOnArrival: 0
-        serializedIgnoreLayerMask: 0
         serializedObstacleLayers: 1024
         serializedGroundLayers: 256
     - rid: 4681868069782421519
@@ -668,3 +689,76 @@ MonoBehaviour:
         blendInSpeed: 5
         blendOutSpeed: 5
         restoreOnExit: 1
+    - rid: 4681868102985318420
+      type: {class: TimelineSkipTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 1826f468-9cf8-487f-b73a-a0881b7afd99
+        trackType: TimelineSkipTrack
+        trackName: "\u65F6\u95F4\u8F74\u8DF3\u8DC3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318424
+    - rid: 4681868102985318424
+      type: {class: TimelineSkipClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 562eb98a-590c-47f2-a26e-763956e1c507
+        clipName: "\u8DF3\u8DC3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.65000004
+        duration: 0.28333336
+        blendInDuration: 0
+        blendOutDuration: 0
+        CancelFlag: TimelineSkip
+    - rid: 4681868102985318435
+      type: {class: VisualTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: d7e978ed-a1ff-46c7-9dfa-e04c4287d587
+        trackType: VisualTrack
+        trackName: "\u89C6\u89C9\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318437
+    - rid: 4681868102985318437
+      type: {class: VisualFadingClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: f8c2a74a-feec-400c-bb3e-415be56e7238
+        clipName: "\u89C6\u89C9\u9690\u73B0\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.08333334
+        duration: 0.16666666
+        blendInDuration: 0
+        blendOutDuration: 0
+        TargetType: 0
+        Inverse: 0
+    - rid: 4681868102985318443
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: a28c6b0d-e4f1-4a47-bdac-7184885e8449
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318444
+    - rid: 4681868102985318444
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: cd412579-7dff-4133-9bf1-60d49fa5da87
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.45000002
+        duration: 0.20000002
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: TimelineSkip

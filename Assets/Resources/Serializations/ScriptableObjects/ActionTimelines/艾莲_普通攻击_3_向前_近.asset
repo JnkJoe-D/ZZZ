@@ -26,7 +26,7 @@ MonoBehaviour:
     - rid: 4681868069779801028
   - groupId: bf2dd4c3-588d-41e2-8451-7a4ba3258032
     groupName: "\u7279\u6548"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -52,26 +52,19 @@ MonoBehaviour:
     - rid: 4681868080418914475
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
     groupName: "\u547D\u4E2D"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
     - rid: 4681868069779801036
     - rid: 4681868069779801037
   - groupId: 03a6eafb-ab48-4cf8-bf9f-89b624c73ca1
-    groupName: "\u5FAA\u73AF"
+    groupName: "\u65F6\u95F4"
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
     - rid: 4681868080418914488
-  - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
-    groupName: "\u52A8\u753B\u4F4D\u79FB"
-    isCollapsed: 1
-    isEnabled: 1
-    isLocked: 0
-    tracks:
-    - rid: 4681868069779801038
   - groupId: fe97c978-da0d-4d70-b973-9218b609c4bc
     groupName: "\u53D8\u6362"
     isCollapsed: 0
@@ -79,6 +72,13 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 4681868069779801039
+  - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
+    groupName: "\u52A8\u753B\u4F4D\u79FB"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868069779801038
   references:
     version: 2
     RefIds:

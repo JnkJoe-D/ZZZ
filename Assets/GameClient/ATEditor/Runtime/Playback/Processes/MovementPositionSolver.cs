@@ -79,6 +79,10 @@ namespace ATEditor
 
             Vector3 targetPos = target.position;
 
+            float targetOffset = GetAnchorOffset(clip.targetAnchor, rTarget);
+            float selfOffset = GetAnchorOffset(clip.selfAnchor, rSelf);
+            float minSafeDist = rTarget + rSelf + 0.001f;
+
             // 如果未开启位置校验，直接按配置计算
             if (!clip.enablePositionValidation)
             {
@@ -88,16 +92,23 @@ namespace ATEditor
                     {
                         var first = clip.candidatePositions[0];
                         Vector3 dir = CalculateOffsetDirection(first.targetPositionEnum, first.targetBaseDirection, first.angleOffset, target, startPos, inputDir);
-                        float distance = rTarget + rSelf + first.offsetRadius;
+                        
+                        float candTargetOffset = GetAnchorOffset(first.targetAnchor, rTarget);
+                        float candSelfOffset = GetAnchorOffset(first.selfAnchor, rSelf);
+                        float desiredDist = candTargetOffset + candSelfOffset + first.offsetRadius;
+                        float finalDist = Mathf.Max(desiredDist, minSafeDist);
+
                         isFound = true;
-                        return targetPos + dir * distance + Vector3.up * first.heightOffset;
+                        return targetPos + dir * finalDist + Vector3.up * first.heightOffset;
                     }
                 }
 
                 Vector3 defaultDir = CalculateOffsetDirection(clip.targetPositionEnum, clip.targetBaseDirection, clip.angleOffset, target, startPos, inputDir);
-                float defaultDist = rTarget + rSelf + clip.offsetRadius;
+                float defaultDesiredDist = targetOffset + selfOffset + clip.offsetRadius;
+                float defaultFinalDist = Mathf.Max(defaultDesiredDist, minSafeDist);
+
                 isFound = true;
-                return targetPos + defaultDir * defaultDist;
+                return targetPos + defaultDir * defaultFinalDist;
             }
 
             // --- 智能多阶段校验流水线 ---
@@ -113,7 +124,12 @@ namespace ATEditor
                         if (candidate == null) continue;
 
                         Vector3 candDir = CalculateOffsetDirection(candidate.targetPositionEnum, candidate.targetBaseDirection, candidate.angleOffset, target, startPos, inputDir);
-                        float candDist = rTarget + rSelf + candidate.offsetRadius;
+                        
+                        float candTargetOffset = GetAnchorOffset(candidate.targetAnchor, rTarget);
+                        float candSelfOffset = GetAnchorOffset(candidate.selfAnchor, rSelf);
+                        float desiredDist = candTargetOffset + candSelfOffset + candidate.offsetRadius;
+                        float candDist = Mathf.Max(desiredDist, minSafeDist);
+                        
                         Vector3 rawCandidatePos = targetPos + candDir * candDist;
 
                         if (ValidatePosition(rawCandidatePos, candidate.heightOffset, rSelf, hSelf, cSelf,
@@ -139,7 +155,11 @@ namespace ATEditor
                         baseDir = firstCand.targetBaseDirection;
                         Vector3 baseFwd = GetBaseDirectionVector(baseDir, target, startPos);
                         baseAngle = GetTypeBaseAngle(firstCand.targetPositionEnum, inputDir, baseFwd) + firstCand.angleOffset;
-                        distance = rTarget + rSelf + firstCand.offsetRadius;
+                        
+                        float candTargetOffset = GetAnchorOffset(firstCand.targetAnchor, rTarget);
+                        float candSelfOffset = GetAnchorOffset(firstCand.selfAnchor, rSelf);
+                        float desiredDist = candTargetOffset + candSelfOffset + firstCand.offsetRadius;
+                        distance = Mathf.Max(desiredDist, minSafeDist);
                     }
 
                     Vector3 baseForward = GetBaseDirectionVector(baseDir, target, startPos);
@@ -182,7 +202,10 @@ namespace ATEditor
             else // 模式 B: 单一目标位置模式 (EnemyFront, EnemyBack, CustomAngle 等)
             {
                 Vector3 mainDir = CalculateOffsetDirection(clip.targetPositionEnum, clip.targetBaseDirection, clip.angleOffset, target, startPos, inputDir);
-                float mainDist = rTarget + rSelf + clip.offsetRadius;
+                
+                float desiredDist = targetOffset + selfOffset + clip.offsetRadius;
+                float mainDist = Mathf.Max(desiredDist, minSafeDist);
+                
                 Vector3 rawMainPos = targetPos + mainDir * mainDist;
 
                 if (ValidatePosition(rawMainPos, 0f, rSelf, hSelf, cSelf,
@@ -232,6 +255,19 @@ namespace ATEditor
                 // 单一目标受阻且扩散搜索无结果：不进行任何移动，保持原地
                 isFound = false;
                 return startPos;
+            }
+        }
+
+        private static float GetAnchorOffset(DistanceAnchor anchor, float radius)
+        {
+            switch (anchor)
+            {
+                case DistanceAnchor.Root:
+                    return 0f;
+                case DistanceAnchor.NearEdge:
+                    return radius;
+                default:
+                    return radius;
             }
         }
 

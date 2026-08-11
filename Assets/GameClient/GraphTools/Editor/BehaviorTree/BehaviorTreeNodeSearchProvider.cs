@@ -62,6 +62,7 @@ namespace Game.GraphTools.Editor
 
                 entries.Add(new SearchTreeGroupEntry(new GUIContent("Leaf"), 1));
                 entries.Add(CreateEntry("Action", BehaviorTreeNodeSearchItem.Action, 2));
+                entries.Add(CreateEntry("Play Action", BehaviorTreeNodeSearchItem.PlayAction, 2));
             }
 
             return entries;
@@ -98,6 +99,7 @@ namespace Game.GraphTools.Editor
         Parallel,
         Condition,
         Service,
-        Action
+        Action,
+        PlayAction
     }
 }

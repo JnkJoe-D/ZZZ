@@ -103,28 +103,29 @@ namespace Game.Logic
 
         public bool CanEvade(CharacterConfigAsset config)
         {
-            if (config == null)
+            if (config is RoleConfigAsset roleConfig)
             {
-                return false;
+                if (EvadeCount >= roleConfig.evadeLimitedTimes && EvadeTimer > 0f)
+                {
+                    return false;
+                }
             }
-
-            if (EvadeCount >= config.evadeLimitedTimes && EvadeTimer > 0f)
-            {
-                return false;
-            }
-
+            // 如果不是 RoleConfigAsset，默认允许闪避（或者默认不允许？通常怪物没有闪避次数限制，或者怪物自己有CD，这里给默认 true）
             return true;
         }
 
         public void RecordEvade(CharacterConfigAsset config)
         {
-            if (config == null)
+            if (config is RoleConfigAsset roleConfig)
             {
-                return;
+                EvadeCount++;
+                EvadeTimer = roleConfig.evadeCoolDown;
             }
-
-            EvadeCount++;
-            EvadeTimer = config.evadeCoolDown;
+            else
+            {
+                EvadeCount++;
+                EvadeTimer = 1f; // 默认值
+            }
         }
 
 

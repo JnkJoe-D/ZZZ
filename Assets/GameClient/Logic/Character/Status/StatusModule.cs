@@ -28,7 +28,7 @@ namespace Game.Logic
 
             if (config == null) return;
 
-            var charId = (cfg.ZZZ.CharacterId)config.RoleID;
+            var charId = (cfg.ZZZ.CharacterId)config.ID;
             InitFromConfig(owner, charId, level);
         }
 

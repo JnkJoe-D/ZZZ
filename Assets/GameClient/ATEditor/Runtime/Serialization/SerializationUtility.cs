@@ -37,23 +37,30 @@ namespace ATEditor
             
             RefreshAllGuids(timeline);
 
-            // 如果该 SO 已经是一个现成的 Asset，只需标记脏数据并保存
-            if (AssetDatabase.Contains(timeline))
+            string relativePath = path.Replace("\\", "/");
+            if (relativePath.StartsWith(Application.dataPath))
             {
-                EditorUtility.SetDirty(timeline);
+                relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
+            }
+
+            var existingAsset = AssetDatabase.LoadAssetAtPath<ActionTimeline>(relativePath);
+            if (existingAsset != null)
+            {
+                // 如果已存在文件，深拷贝数据覆盖（避免修改原有的内存指针）
+                if (existingAsset != timeline)
+                {
+                    EditorUtility.CopySerialized(timeline, existingAsset);
+                }
+                EditorUtility.SetDirty(existingAsset);
                 AssetDatabase.SaveAssets();
             }
             else
             {
-                // AssetDatabase 需要相对路径 (Assets/...)
-                string relativePath = path.Replace("\\", "/");
-                if (relativePath.StartsWith(Application.dataPath))
-                {
-                    relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
-                }
-
-                // 创建全新的 Asset
-                AssetDatabase.CreateAsset(timeline, relativePath);
+                // 创建全新的 Asset。这里克隆一份，防止将编辑器当前使用的内存实例直接绑定到 AssetDatabase，
+                // 从而保证编辑器里的 timeline 始终是内存独立的，不会意外修改原文件。
+                var assetToSave = Object.Instantiate(timeline);
+                assetToSave.name = timeline.name;
+                AssetDatabase.CreateAsset(assetToSave, relativePath);
                 AssetDatabase.SaveAssets();
             }
         }

@@ -3,6 +3,14 @@ using UnityEngine;
 
 namespace ATEditor
 {
+    public enum DistanceAnchor
+    {
+        [InspectorName("中心根节点")]
+        Root,
+        [InspectorName("表面碰撞体边缘")]
+        NearEdge
+    }
+
     public enum ReferenceDestination
     {
         Fixed,          // 固定
@@ -86,7 +94,13 @@ namespace ATEditor
         [Tooltip("基准朝向")]
         public TargetBaseDirection targetBaseDirection = TargetBaseDirection.LineOfSight;
 
-        [Tooltip("额外半径偏移 (最终距离 = 目标半径 + 自身半径 + 偏移)")]
+        [Tooltip("目标碰撞参照锚点")]
+        public DistanceAnchor targetAnchor = DistanceAnchor.NearEdge;
+
+        [Tooltip("自身碰撞参照锚点")]
+        public DistanceAnchor selfAnchor = DistanceAnchor.NearEdge;
+
+        [Tooltip("额外距离偏移 (最终期望距离 = 目标锚点偏移 + 自身锚点偏移 + 此偏移)")]
         public float offsetRadius = 0f;
 
         [Tooltip("自定义角度(度)")]
@@ -97,11 +111,13 @@ namespace ATEditor
 
         public MovementPositionCandidate() { }
 
-        public MovementPositionCandidate(string label, CandidatePositionType posType, TargetBaseDirection baseDir = TargetBaseDirection.LineOfSight, float radius = 0f, float angle = 0f, float height = 0f)
+        public MovementPositionCandidate(string label, CandidatePositionType posType, TargetBaseDirection baseDir = TargetBaseDirection.LineOfSight, DistanceAnchor targetAnchor = DistanceAnchor.NearEdge, DistanceAnchor selfAnchor = DistanceAnchor.NearEdge, float radius = 0f, float angle = 0f, float height = 0f)
         {
             this.label = label;
             this.targetPositionEnum = posType;
             this.targetBaseDirection = baseDir;
+            this.targetAnchor = targetAnchor;
+            this.selfAnchor = selfAnchor;
             this.offsetRadius = radius;
             this.angleOffset = angle;
             this.heightOffset = height;
@@ -114,6 +130,8 @@ namespace ATEditor
                 label = this.label,
                 targetPositionEnum = this.targetPositionEnum,
                 targetBaseDirection = this.targetBaseDirection,
+                targetAnchor = this.targetAnchor,
+                selfAnchor = this.selfAnchor,
                 offsetRadius = this.offsetRadius,
                 angleOffset = this.angleOffset,
                 heightOffset = this.heightOffset
@@ -146,7 +164,15 @@ namespace ATEditor
         [ShowIf("referenceDestination", ReferenceDestination.Target)]
         public TargetBaseDirection targetBaseDirection = TargetBaseDirection.LineOfSight;
 
-        [SkillProperty("额外半径偏移")]
+        [SkillProperty("目标参照锚点")]
+        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        public DistanceAnchor targetAnchor = DistanceAnchor.NearEdge;
+
+        [SkillProperty("自身参照锚点")]
+        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        public DistanceAnchor selfAnchor = DistanceAnchor.NearEdge;
+
+        [SkillProperty("额外距离偏移")]
         [ShowIf("referenceDestination", ReferenceDestination.Target)]
         public float offsetRadius = 0f;
 
@@ -160,10 +186,6 @@ namespace ATEditor
 
         [SkillProperty("移动曲线")]
         public MovementCurve movementCurve = MovementCurve.Linear;
-
-        [SkillProperty("忽略的碰撞层级")]
-        [ShowIf("displacementType", DisplacementType.Continuous)]
-        public LayerMask ignoreLayerMask;
 
         [Header("位置校验与智能寻位")]
         [SkillProperty("启用位置可用性校验")]
@@ -207,8 +229,6 @@ namespace ATEditor
         public bool faceTargetOnArrival = true;
 
         [SerializeField, HideInInspector]
-        private int serializedIgnoreLayerMask;
-        [SerializeField, HideInInspector]
         private int serializedObstacleLayers;
         [SerializeField, HideInInspector]
         private int serializedGroundLayers;
@@ -245,11 +265,12 @@ namespace ATEditor
                 targetPosition = this.targetPosition,
                 targetPositionEnum = this.targetPositionEnum,
                 targetBaseDirection = this.targetBaseDirection,
+                targetAnchor = this.targetAnchor,
+                selfAnchor = this.selfAnchor,
                 offsetRadius = this.offsetRadius,
                 angleOffset = this.angleOffset,
                 displacementType = this.displacementType,
                 movementCurve = this.movementCurve,
-                ignoreLayerMask = this.ignoreLayerMask,
                 enablePositionValidation = this.enablePositionValidation,
                 candidatePositions = clonedCandidates,
                 enableSmartRadialFallback = this.enableSmartRadialFallback,
@@ -265,14 +286,12 @@ namespace ATEditor
 
         public void OnBeforeSerialize()
         {
-            serializedIgnoreLayerMask = ignoreLayerMask.value;
             serializedObstacleLayers = obstacleLayers.value;
             serializedGroundLayers = groundLayers.value;
         }
 
         public void OnAfterDeserialize()
         {
-            ignoreLayerMask.value = serializedIgnoreLayerMask;
             obstacleLayers.value = serializedObstacleLayers;
             groundLayers.value = serializedGroundLayers;
         }

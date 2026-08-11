@@ -32,7 +32,7 @@ namespace Game.UI
             EventCenter.Subscribe<NetReconnectedEvent>(OnReconnectSuccess);
             EventCenter.Subscribe<NetReconnectFailedEvent>(OnNetReconnectFailed);
             
-            RefreshView();
+            View?.UpdateView(Model);
         }
 
         protected override void OnRemove()
@@ -61,7 +61,7 @@ namespace Game.UI
             // 计算简单的速度 (可根据真实时间 Delta 计算)
             Model.SpeedText = "下载中...";
             
-            RefreshView();
+            View?.UpdateView(Model);
         }
 
         private void OnRequireConfirm(HotUpdateRequireConfirmEvent e)
@@ -94,7 +94,7 @@ namespace Game.UI
             Model.DownloadProgress = e.Progress;
             Model.StatusText = e.StatusText;
             Model.SpeedText = ""; // 检查阶段不需要网络速度
-            RefreshView();
+            View?.UpdateView(Model);
         }
 
         private void OnUpdateCompleted(HotUpdateCompletedEvent e)
@@ -104,14 +104,14 @@ namespace Game.UI
             Debug.Log("[HotUpdateModule] 资源就绪，等待整个引擎初始化结束...");
             Model.DownloadProgress = 1f;
             Model.StatusText = "资源已准备就绪，正在加载核心配置...";
-            RefreshView();
+            View?.UpdateView(Model);
         }
 
         private void OnLoginStageStart(GameLoginStageStartEvent e)
         {
             Debug.Log("[HotUpdateModule] 核心就绪，转入连接服务器动画阶段...");
             Model.StatusText = "正在连接网络服务器";
-            RefreshView();
+            View?.UpdateView(Model);
 
             StartDotAnim();
         }
@@ -143,7 +143,7 @@ namespace Game.UI
             while (true)
             {
                 Model.SpeedText = dots[i];
-                RefreshView();
+                View?.UpdateView(Model);
                 i = (i + 1) % dots.Length;
                 yield return new UnityEngine.WaitForSeconds(0.35f);
             }
@@ -154,7 +154,7 @@ namespace Game.UI
             StopDotAnim();
             Model.StatusText = "连接服务器成功";
             Model.SpeedText = "";
-            RefreshView();
+            View?.UpdateView(Model);
 
             // 延迟0.5秒后切入游戏，关闭本热更与加载屏
             View.StartCoroutine(DelayClose());
@@ -179,14 +179,14 @@ namespace Game.UI
         {
             Model.StatusText = $"正在重新连接服务器({e.Attempt})";
             StartDotAnim();
-            RefreshView();
+            View?.UpdateView(Model);
         }
         private void OnReconnectSuccess(NetReconnectedEvent e)
         {
             StopDotAnim();
             Model.StatusText = "重新连接服务器成功";
             Model.SpeedText = "";
-            RefreshView();
+            View?.UpdateView(Model);
 
             // 延迟0.5秒后切入游戏，关闭本热更与加载屏
             View.StartCoroutine(DelayClose());
@@ -196,7 +196,7 @@ namespace Game.UI
             StopDotAnim();
             Model.StatusText = "连接服务器失败";
             Model.SpeedText = "";
-            RefreshView();
+            View?.UpdateView(Model);
 
             UIManager.Instance.Open<MessageBoxModule>(new MessageBoxModel
             {
@@ -208,7 +208,7 @@ namespace Game.UI
                 {
                     Model.StatusText = "正在重新连接服务器";
                     StartDotAnim();
-                    RefreshView();
+                    View?.UpdateView(Model);
                     // 手动要求底部网络组件重新连接
                     NetworkManager.Instance.ConnectTcp();
                 },
@@ -249,7 +249,7 @@ namespace Game.UI
 
             Model.StatusText = statusMsg;
             Model.SpeedText = "";
-            RefreshView();
+            View?.UpdateView(Model);
 
             UIManager.Instance.Open<MessageBoxModule>(new MessageBoxModel
             {
@@ -260,7 +260,7 @@ namespace Game.UI
                 OnConfirm = () => 
                 {
                     Model.StatusText = "正在重新开始检查更新";
-                    RefreshView();
+                    View?.UpdateView(Model);
                     EventCenter.Publish(new Game.Resource.HotUpdateRetryEvent());
                 },
                 OnCancel = () => 
@@ -274,55 +274,6 @@ namespace Game.UI
             });
         }
 
-        private void RefreshView()
-        {
-            if (View == null) return;
-
-            /*
-            // -------------------------------------------------------------
-            // 【正式代码示例】通过配置表加载静态文本与图片背景 (假设拥有 TbUIConfig)
-            // -------------------------------------------------------------
-            // 1. 获取配表数据
-            // var uiConfig = ConfigManager.Instance.Tables.TbUIConfig.Get(1001); 
-            // 
-            // 2. 加载 Sprite 图集并赋值给 Background
-            // var bgHandle = ResourceManager.Instance.LoadAssetAsync<Sprite>(uiConfig.BgPath, sprite => {
-            //      View.Background.sprite = sprite;
-            // });
-            //
-            // 3. 赋值多语言 / 硬编码文字
-            // View.HeaderText.text = uiConfig.TitleText;
-            */
-
-            // -------------------------------------------------------------
-            // 本地测试：直接操作 View 组件中绑定的对象
-            // 由于上面未开启正式加载代码，背景图片将直接使用预制体默认指定的引用
-            // -------------------------------------------------------------
-            
-            if (View.ProgressImage != null)
-            {
-                View.ProgressImage.fillAmount = Model.DownloadProgress;
-            }
-
-            if (View.ProcessText != null && !string.IsNullOrEmpty(Model.StatusText))
-            {
-                View.ProcessText.text = Model.StatusText;
-            }
-
-            if (View.VersionText != null)
-            {
-                View.VersionText.text = Model.VersionText;
-            }
-
-            if (View.SpeedText != null)
-            {
-                View.SpeedText.text = Model.SpeedText;
-            }
-
-            if (View.HeaderText != null)
-            {
-                View.HeaderText.text = "检测更新"; // 硬编码测试
-            }
-        }
+        
     }
 }

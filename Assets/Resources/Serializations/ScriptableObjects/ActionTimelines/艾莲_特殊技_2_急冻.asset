@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
   m_Name: "\u827E\u83B2_\u7279\u6B8A\u6280_2_\u6025\u51BB"
   m_EditorClassIdentifier: 
-  duration: 4.65
+  duration: 4.6500006
   isLoop: 0
   beforePlayEvents: []
   onCompleteEvents: []
@@ -23,74 +23,74 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421683
+    - rid: 4681868102985318526
   - groupId: bf2dd4c3-588d-41e2-8451-7a4ba3258032
     groupName: "\u7279\u6548"
     isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421684
+    - rid: 4681868102985318527
   - groupId: 87517105-7af1-4746-a8ba-834e1987bc67
     groupName: "\u97F3\u6548"
     isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421685
-    - rid: 4681868069782421686
+    - rid: 4681868102985318528
+    - rid: 4681868102985318529
   - groupId: e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b
     groupName: "\u8F93\u5165"
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421687
-    - rid: 4681868069782421688
-    - rid: 4681868069782421689
-    - rid: 4681868069782421690
+    - rid: 4681868102985318530
+    - rid: 4681868102985318531
+    - rid: 4681868102985318532
+    - rid: 4681868102985318533
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
     groupName: "\u547D\u4E2D"
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421691
-    - rid: 4681868069782421692
+    - rid: 4681868102985318534
+    - rid: 4681868102985318535
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421693
-    - rid: 4681868069782421694
-    - rid: 4681868069782421695
+    - rid: 4681868102985318536
+    - rid: 4681868102985318537
+    - rid: 4681868102985318538
   - groupId: fe97c978-da0d-4d70-b973-9218b609c4bc
     groupName: "\u53D8\u6362"
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421696
+    - rid: 4681868102985318539
   - groupId: ff9ad6d3-bb0e-47ad-84fa-12ab1c19bedd
     groupName: "\u7269\u7406"
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421697
+    - rid: 4681868102985318540
   - groupId: b2b987af-05a4-4cd0-b092-9462c399a0c0
     groupName: "\u76F8\u673A"
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421698
+    - rid: 4681868102985318541
   references:
     version: 2
     RefIds:
-    - rid: 4681868069782421683
+    - rid: 4681868102985318526
       type: {class: AnimationTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 573ab7eb-5a8a-4dce-ad1d-d70ff0357aa4
@@ -102,12 +102,12 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421699
-        - rid: 4681868069782421700
+        - rid: 4681868102985318542
+        - rid: 4681868102985318543
         isMasterTrack: 1
         offsetPos: {x: 0, y: 0, z: 0}
         offsetRot: {x: 0, y: 0, z: 0}
-    - rid: 4681868069782421684
+    - rid: 4681868102985318527
       type: {class: VFXTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: d43568e5-6a7f-4b1c-afb9-46a10ad689c7
@@ -119,7 +119,7 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips: []
-    - rid: 4681868069782421685
+    - rid: 4681868102985318528
       type: {class: AudioTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: a05efcc5-b659-4a72-b03f-4719b6d446e4
@@ -131,7 +131,7 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips: []
-    - rid: 4681868069782421686
+    - rid: 4681868102985318529
       type: {class: AudioTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: c14034a8-c841-4dc3-b007-b107d1d294d1
@@ -143,7 +143,7 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips: []
-    - rid: 4681868069782421687
+    - rid: 4681868102985318530
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 95a1ff0c-6f52-49d9-ae8b-c8814ebeee5b
@@ -155,9 +155,9 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421701
-        - rid: 4681868069782421702
-    - rid: 4681868069782421688
+        - rid: 4681868102985318544
+        - rid: 4681868102985318545
+    - rid: 4681868102985318531
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: b3baf3da-1541-4ab2-8265-f6850731c53b
@@ -169,8 +169,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421703
-    - rid: 4681868069782421689
+        - rid: 4681868102985318546
+    - rid: 4681868102985318532
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 08ec0a99-296c-403d-b1c7-4bacb6c08f0c
@@ -182,8 +182,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421704
-    - rid: 4681868069782421690
+        - rid: 4681868102985318547
+    - rid: 4681868102985318533
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: e9912b1d-414a-428b-aba6-45e6d8bbc379
@@ -195,8 +195,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421705
-    - rid: 4681868069782421691
+        - rid: 4681868102985318548
+    - rid: 4681868102985318534
       type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
@@ -208,8 +208,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421706
-    - rid: 4681868069782421692
+        - rid: 4681868102985318549
+    - rid: 4681868102985318535
       type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 1148e3c9-37d5-447a-a0f9-733cfa142ea8
@@ -221,8 +221,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421707
-    - rid: 4681868069782421693
+        - rid: 4681868102985318550
+    - rid: 4681868102985318536
       type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 15e2bdc7-968f-4cfa-a5f8-f20e16b3ce0c
@@ -234,8 +234,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421708
-    - rid: 4681868069782421694
+        - rid: 4681868102985318551
+    - rid: 4681868102985318537
       type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: e0deed2d-a75f-4920-99f3-08961fd423a9
@@ -247,8 +247,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421709
-    - rid: 4681868069782421695
+        - rid: 4681868102985318552
+    - rid: 4681868102985318538
       type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 04b8782f-64e1-4a77-9fa4-f6ab3cbb15fe
@@ -260,8 +260,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421710
-    - rid: 4681868069782421696
+        - rid: 4681868102985318553
+    - rid: 4681868102985318539
       type: {class: TransformTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 2b9fcf9c-8d3a-4238-a79a-cf6c1467ec44
@@ -273,8 +273,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868069782421711
-    - rid: 4681868069782421697
+        - rid: 4681868102985318554
+    - rid: 4681868102985318540
       type: {class: PhysicsTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 82c4d99e-812c-47b1-974f-028b6a384d24
@@ -286,8 +286,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 0
         clips:
-        - rid: 4681868069782421712
-    - rid: 4681868069782421698
+        - rid: 4681868102985318555
+    - rid: 4681868102985318541
       type: {class: CameraTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 6df8ca13-290b-488d-ac30-dcd29035e7fd
@@ -297,11 +297,11 @@ MonoBehaviour:
         isLocked: 0
         isHidden: 0
         isCollapsed: 0
-        isEnabled: 1
+        isEnabled: 0
         clips:
-        - rid: 4681868069782421713
-        - rid: 4681868069782421714
-    - rid: 4681868069782421699
+        - rid: 4681868102985318556
+        - rid: 4681868102985318557
+    - rid: 4681868102985318542
       type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: b84015a3-cf3b-4c5f-ac3f-a6b01318c04f
@@ -324,7 +324,7 @@ MonoBehaviour:
           guid: 
           assetName: 
           assetPath: 
-    - rid: 4681868069782421700
+    - rid: 4681868102985318543
       type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: a05b8ca1-9628-4d77-aa5b-5c43b2f562ae
@@ -347,7 +347,7 @@ MonoBehaviour:
           guid: 
           assetName: 
           assetPath: 
-    - rid: 4681868069782421701
+    - rid: 4681868102985318544
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: c5a41784-dc4a-4c2d-b4e2-787ca2c922ba
@@ -358,7 +358,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: Buffer1
-    - rid: 4681868069782421702
+    - rid: 4681868102985318545
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: c1b6a843-422d-4d08-8166-43406938b52b
@@ -369,7 +369,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: BackSwing
-    - rid: 4681868069782421703
+    - rid: 4681868102985318546
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 939d85f4-d501-4c8a-b400-ed460bd2da67
@@ -380,7 +380,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: Evade
-    - rid: 4681868069782421704
+    - rid: 4681868102985318547
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 22468a39-2eaf-4f47-ac9b-d272e5e9f912
@@ -391,7 +391,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: SwitchCapture
-    - rid: 4681868069782421705
+    - rid: 4681868102985318548
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: a3a73aa8-3cb0-4a11-9b18-b735be4e46bf
@@ -402,7 +402,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: SwitchExecute
-    - rid: 4681868069782421706
+    - rid: 4681868102985318549
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 4842c7fd-5fab-42eb-866e-c9130fbe4e89
@@ -458,7 +458,7 @@ MonoBehaviour:
             assetName: 
             assetPath: 
           hitEffectId: 1040012
-    - rid: 4681868069782421707
+    - rid: 4681868102985318550
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 3831c478-90e0-460e-8152-fe7f651fa49e
@@ -514,29 +514,29 @@ MonoBehaviour:
             assetName: 
             assetPath: 
           hitEffectId: 1040013
-    - rid: 4681868069782421708
+    - rid: 4681868102985318551
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: ff188346-a31a-4769-9a1c-dcc0341d41e0
         clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 4.65
+        startTime: 0.016666668
+        duration: 4.6333337
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 3
-    - rid: 4681868069782421709
+    - rid: 4681868102985318552
       type: {class: VisualOffsetClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 380a5cb8-89f2-4e25-af99-104a3aae05be
         clipName: "\u89C6\u89C9\u504F\u79FB\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 1
+        startTime: 0.016666668
+        duration: 0.9833333
         blendInDuration: 0
         blendOutDuration: 0
         visualOffsetMode: 3
-    - rid: 4681868069782421710
+    - rid: 4681868102985318553
       type: {class: VisualOffsetRecoverClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 7b55666c-2467-450c-b51d-9a34fed1bff0
@@ -547,7 +547,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         recoverySpeed: 2
-    - rid: 4681868069782421711
+    - rid: 4681868102985318554
       type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 2d9d6dfd-39ca-44c3-9f8b-5b13f2324f46
@@ -561,7 +561,7 @@ MonoBehaviour:
         rotationMode: 1
         updateFrequency: 2
         localRotationOffset: {x: 0, y: 0, z: 0}
-    - rid: 4681868069782421712
+    - rid: 4681868102985318555
       type: {class: PhysicsClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 46f9b8b8-d13a-404e-91e1-c9a0678536a4
@@ -587,7 +587,7 @@ MonoBehaviour:
         pushResistance: 1
         restorePushResistanceOnExit: 1
         serializedExcludeLayers: 1216
-    - rid: 4681868069782421713
+    - rid: 4681868102985318556
       type: {class: CameraControlClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: dc54bfe1-1f6a-44be-9bf0-80eebccf1d75
@@ -618,7 +618,7 @@ MonoBehaviour:
         blendInSpeed: 5
         blendOutSpeed: 5
         restoreOnExit: 1
-    - rid: 4681868069782421714
+    - rid: 4681868102985318557
       type: {class: CameraControlClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: c463a8dc-b1db-4ffa-a1e4-41efbd6c542e

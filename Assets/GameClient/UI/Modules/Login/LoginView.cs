@@ -53,5 +53,18 @@ namespace Game.UI
             RegisterBtn = transform.Find("View/Content/Operations/RegisterBtn").GetComponent<Button>();
             RegisterText = transform.Find("View/Content/Operations/RegisterBtn/RegisterText").GetComponent<TMP_Text>();
         }
-    }
+    
+        public void UpdateView(LoginModel model)
+        {
+            // 初始化阶段把 Model 中的默认空值或记忆值同步给界面
+            if (AccountInput.text != model.Account)
+            {
+                AccountInput.text = model.Account;
+            }
+            if (PasswordInput.text != model.Password)
+            {
+                PasswordInput.text = model.Password;
+            }
+        }
+}
 }

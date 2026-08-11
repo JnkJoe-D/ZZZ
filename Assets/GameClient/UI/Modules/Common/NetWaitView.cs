@@ -47,5 +47,14 @@ namespace Game.UI
                 yield return null;
             }
         }
-    }
+    
+        public void UpdateView(NetWaitModel model)
+        {
+
+            if (TipText != null)
+            {
+                TipText.text = model.TipMessage;
+            }
+        }
+}
 }

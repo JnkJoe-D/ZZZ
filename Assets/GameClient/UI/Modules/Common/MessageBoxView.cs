@@ -32,5 +32,37 @@ namespace Game.UI
             BindUIComponents();
         }
 
+        public void UpdateView(MessageBoxModel model)
+        {
+            string defaultTitle = "系统提示";
+            string defaultConfirm = "确定";
+            string defaultCancel = "取消";
+
+            if (TitleText != null) 
+                TitleText.text = model.Title ?? defaultTitle;
+
+            if (ContentText != null) 
+                ContentText.text = model.Content;
+            
+            // 确认按钮文本
+            if (ConfirmText != null)
+            {
+                ConfirmText.text = model.ConfirmText ?? defaultConfirm;
+            }
+
+            // 处理单按钮/双按钮模式
+            if (model.IsSingleButton)
+            {
+                if (CancelBtn != null) CancelBtn.gameObject.SetActive(false);
+            }
+            else
+            {
+                if (CancelBtn != null) CancelBtn.gameObject.SetActive(true);
+                if (CancelText != null)
+                {
+                    CancelText.text = model.CancelText ?? defaultCancel;
+                }
+            }
+        }
     }
 }

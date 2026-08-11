@@ -201,7 +201,7 @@ namespace Game.Logic
         /// </summary>
         private void ExecuteSwitch(PartyMember outgoing, PartyMember incoming)
         {
-            Debug.Log($"[SwitchExecutor] ExecuteSwitch: {outgoing.Config?.RoleName} → {incoming.Config?.RoleName}");
+            Debug.Log($"[SwitchExecutor] ExecuteSwitch: {outgoing.Config?.Name} → {incoming.Config?.Name}");
 
             RoleEntity outEntity = outgoing.Entity;
             RoleEntity inEntity = incoming.Entity;
@@ -271,7 +271,7 @@ namespace Game.Logic
                 CreationVersion = member.ActivationVersion
             });
 
-            Debug.Log($"[SwitchExecutor] Enqueued switch-out: {member.Config?.RoleName}, Version={member.ActivationVersion}");
+            Debug.Log($"[SwitchExecutor] Enqueued switch-out: {member.Config?.Name}, Version={member.ActivationVersion}");
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace Game.Logic
                     }
                 }
 
-                Debug.Log($"[SwitchExecutor] Cancelled switch-out: {member.Config?.RoleName}, wasPlayingExit={wasPlayingExit}");
+                Debug.Log($"[SwitchExecutor] Cancelled switch-out: {member.Config?.Name}, wasPlayingExit={wasPlayingExit}");
                 return true;
             }
             return false;
@@ -331,7 +331,7 @@ namespace Game.Logic
                 entity.ActionController?.PlayAction(entity.Config.ActionRoot);
             }
 
-            Debug.Log($"[SwitchExecutor] Completed switch-out: {task.Member.Config?.RoleName}");
+            Debug.Log($"[SwitchExecutor] Completed switch-out: {task.Member.Config?.Name}");
         }
 
         // ═══════════════════════════════════════════
@@ -352,7 +352,7 @@ namespace Game.Logic
             task.Phase = SwitchOutPhase.PlayingExit;
             task.Member.Entity?.SetColliderActive(false);
 
-            Debug.Log($"[SwitchExecutor] SwitchOutDisableLogic: {task.Member.Config?.RoleName} → PlayingExit");
+            Debug.Log($"[SwitchExecutor] SwitchOutDisableLogic: {task.Member.Config?.Name} → PlayingExit");
             return true;
         }
 

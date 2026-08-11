@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc06e0520cbb132459d8e63f748b257e, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e, type: 3}
   m_Name: "\u5B89\u6BD4"
   m_EditorClassIdentifier: 
   RoleID: 1001
   RoleName: 
   CharacterPrefab: {fileID: 6866138656870126649, guid: 58a89a85b7ed98e4885d1ebbcd76228d,
     type: 3}
+  UIConfig: {fileID: 11400000, guid: 99984aa8d8d8e5a468c5bd223c11d994, type: 2}
   GroundRadius: 0.3
   GroundHeight: 1.8
   GroundOffset: 0.1
@@ -35,4 +36,3 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 490fb4141147cbd489e6c3464b901b0b, type: 2}
   BehaviorTreeGraph: {fileID: 0}
   hitReactionConfig: {fileID: 11400000, guid: 482c0f22a8a668540bb93f6822cb1e21, type: 2}
-  StatusProfile: {fileID: 11400000, guid: d3822bd2f20db814f9337a5c0bab2c3d, type: 2}

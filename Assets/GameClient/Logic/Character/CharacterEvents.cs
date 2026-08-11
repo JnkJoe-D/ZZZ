@@ -34,4 +34,14 @@ namespace Game.Logic
         public string EventName;
         public List<ATEventParam> Parameters;
     }
+
+    /// <summary>
+    /// 当玩家当前控制（激活）的角色发生改变时广播
+    /// </summary>
+    public struct ActiveCharacterChangedEvent : IGameEvent
+    {
+        public int OldSlotIndex;
+        public int NewSlotIndex;
+        public RoleEntity NewEntity;
+    }
 }

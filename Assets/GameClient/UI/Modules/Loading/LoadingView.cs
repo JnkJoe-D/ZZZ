@@ -25,5 +25,18 @@ namespace Game.UI
             base.OnInit();
             BindUIComponents();
         }
+
+        public void UpdateProgress(float progress, string text)
+        {
+            if (LoadingImage != null)
+            {
+                LoadingImage.fillAmount = progress;
+            }
+
+            if (LoadingText != null)
+            {
+                LoadingText.text = text;
+            }
+        }
     }
 }

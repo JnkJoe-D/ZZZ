@@ -14,7 +14,8 @@ Material:
   m_ValidKeywords:
   - _USE_FLASH
   - _USE_WAVE_EDGE
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _FLASHACTIVE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -38,8 +39,10 @@ Material:
     - _ColorMask: 15
     - _EdgeSlant: 0
     - _EdgeWidth: 0.0089
+    - _EnableFlashFeature: 0
     - _EraseAmount: 0
-    - _FillAmount: 0.813
+    - _FillAmount: 0.33333334
+    - _FlashActive: 1
     - _FlashSpeed: 8
     - _FlowAngle: 0.1
     - _FlowInterval: 1
@@ -59,8 +62,9 @@ Material:
     - _WaveSpeed: 1.8
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DisabledColor: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 1}
     - _EdgeColor: {r: 0.5, g: 1, b: 0.8, a: 0}
-    - _FlashColor1: {r: 1, g: 0.6135605, b: 0, a: 1}
-    - _FlashColor2: {r: 0, g: 1, b: 0.59910536, a: 1}
+    - _FlashColor1: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
+    - _FlashColor2: {r: 1, g: 1, b: 1, a: 1}
     - _FlowColor: {r: 1, g: 1, b: 1, a: 0.5}
   m_BuildTextureStacks: []

@@ -41,6 +41,7 @@ namespace Game.AI
         public string ServiceKey = string.Empty;
         public float IntervalSeconds;
         public string TaskKey = string.Empty;
+        public Game.Logic.ActionConfigAsset TargetAction;
         public List<string> Children = new List<string>();
 
         /// <summary>

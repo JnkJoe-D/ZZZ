@@ -25,20 +25,10 @@ namespace Game.UI
             // 监听网络响应
             NetworkManager.Instance.Dispatcher.Register<S2C_Register>(MsgId.Register, OnRegisterResponse);
 
-            RefreshView();
+            View?.UpdateView(Model);
         }
 
-        private void RefreshView()
-        {
-            if (View.AccountInput.text != Model.Account)
-                View.AccountInput.text = Model.Account;
-            if (View.PasswordInput.text != Model.Password)
-                View.PasswordInput.text = Model.Password;
-            if (View.RepeatInput.text != Model.RepeatPassword)
-                View.RepeatInput.text = Model.RepeatPassword;
-            if(View.EmailInput.text != Model.Email)
-                View.EmailInput.tag = Model.Email;
-        }
+        
 
         private void OnConfirmClick()
         {
@@ -98,7 +88,7 @@ namespace Game.UI
             // 发包后清空输入保护安全
             Model.Password = "";
             Model.RepeatPassword = "";
-            RefreshView();
+            View?.UpdateView(Model);
 
             UIManager.Instance.Open<NetWaitModule>(new NetWaitModel() { TipMessage = "注册中..." });
         }

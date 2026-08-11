@@ -186,7 +186,7 @@ namespace Game.Logic
             GameObject prefab = await ResolveCharacterPrefabAsync(config, characterPrefabPath);
             if (prefab == null)
             {
-                Debug.LogError($"[CharacterManager] Failed to resolve prefab for '{config.RoleName}'.");
+                Debug.LogError($"[CharacterManager] Failed to resolve prefab for '{config.Name}'.");
                 return null;
             }
 
@@ -214,7 +214,7 @@ namespace Game.Logic
             _partyMembers.Add(member);
             ActivatePartyMember(member, spawnPos, spawnRot);
 
-            Debug.Log($"[CharacterManager] Spawned single controllable role: {config.RoleName}");
+            Debug.Log($"[CharacterManager] Spawned single controllable role: {config.Name}");
             return LocalCharacter;
         }
 
@@ -318,7 +318,7 @@ namespace Game.Logic
                 GameObject prefab = await ResolveCharacterPrefabAsync(config, null);
                 if (prefab == null)
                 {
-                    Debug.LogError($"[CharacterManager] Missing CharacterPrefab on '{config.RoleName}'.");
+                    Debug.LogError($"[CharacterManager] Missing CharacterPrefab on '{config.Name}'.");
                     continue;
                 }
 
@@ -391,9 +391,9 @@ namespace Game.Logic
         /// </summary>
         private async Task<GameObject> ResolveCharacterPrefabAsync(CharacterConfigAsset config, string prefabPathOverride)
         {
-            if (config != null && config.CharacterPrefab != null)
+            if (config != null && config.Prefab != null)
             {
-                return config.CharacterPrefab;
+                return config.Prefab;
             }
 
             if (!string.IsNullOrEmpty(prefabPathOverride))
@@ -566,9 +566,20 @@ namespace Game.Logic
             entity.SetControlActive(true, assignCameraTarget);
             UpdatePartyDebugHudVisibility(entity);
             member.ActivationVersion++;
-
+            
             LocalCharacter = entity;
+            int oldSlotIndex = _activeSlotIndex;
             _activeSlotIndex = member.SlotIndex;
+
+            if (oldSlotIndex != _activeSlotIndex)
+            {
+                EventCenter.Publish(new ActiveCharacterChangedEvent 
+                {
+                    OldSlotIndex = oldSlotIndex,
+                    NewSlotIndex = _activeSlotIndex,
+                    NewEntity = entity
+                });
+            }
         }
 
         /// <summary>

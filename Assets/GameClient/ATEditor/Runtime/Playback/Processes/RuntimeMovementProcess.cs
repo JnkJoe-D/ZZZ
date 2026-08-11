@@ -8,8 +8,6 @@ namespace ATEditor
         private ITransformHandler transformHandler;
         private Vector3 startPosition;
         private Vector3 lastTargetPos;
-        private LayerMask originalExcludeLayers;
-        private bool hasSetLayer;
         private Vector3 fixedTargetPos; // 用于 Fixed 模式下的目标点缓存
         private Vector3 stableDirection; // 用于 Target 模式下的稳定参考方向
 
@@ -68,16 +66,6 @@ namespace ATEditor
                 return;
             }
 
-            // 碰撞层级处理
-            if (clip.displacementType == DisplacementType.Continuous && clip.ignoreLayerMask != 0)
-            {
-                originalExcludeLayers = transformHandler.GetExcludeLayers();
-                transformHandler.SetExcludeLayers(clip.ignoreLayerMask);
-                hasSetLayer = true;
-                string cleanupKey = "Movement_Layer_" + (clip != null ? clip.clipId : GetHashCode().ToString());
-                context?.RegisterCleanup(cleanupKey, RestoreLayer);
-            }
-
             // 执行瞬时位移
             if (clip.displacementType == DisplacementType.Instant)
             {
@@ -128,28 +116,16 @@ namespace ATEditor
 
         public override void OnExit()
         {
-            RestoreLayer();
         }
 
         public override void OnDisable()
         {
-            RestoreLayer();
         }
 
         public override void Reset()
         {
             base.Reset();
             transformHandler = null;
-            hasSetLayer = false;
-        }
-
-        private void RestoreLayer()
-        {
-            if (hasSetLayer && transformHandler != null)
-            {
-                transformHandler.SetExcludeLayers(originalExcludeLayers);
-                hasSetLayer = false;
-            }
         }
 
         private float EvaluateCurve(float t, MovementCurve curve)

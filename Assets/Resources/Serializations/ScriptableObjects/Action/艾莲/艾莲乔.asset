@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc06e0520cbb132459d8e63f748b257e, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e, type: 3}
   m_Name: "\u827E\u83B2\u4E54"
   m_EditorClassIdentifier: 
   RoleID: 1003
   RoleName: 
   CharacterPrefab: {fileID: 5158763610275107262, guid: 1f300285bcdc3454fbb8009c7f2ebf82,
     type: 3}
+  UIConfig: {fileID: 11400000, guid: 1bb90a7b62951834abf1c70b166dd838, type: 2}
   GroundRadius: 0.3
   GroundHeight: 1.8
   GroundOffset: 0.1
