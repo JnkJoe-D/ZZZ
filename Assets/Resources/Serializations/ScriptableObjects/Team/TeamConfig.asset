@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c8f278d8d9ef4d318708bbec0d5b6a41, type: 3}
-  m_Name: Test_PlayerParty
+  m_Name: TeamConfig
   m_EditorClassIdentifier: 
   Members:
   - {fileID: 11400000, guid: b078d3312fc5d444a850565c4fa517e7, type: 2}
@@ -29,3 +29,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   blockRadiusMultipier: 1.5
+  TargetSearchConfig:
+    SearchRadius: 15
+    SearchLayerMask:
+      serializedVersion: 2
+      m_Bits: 128
+    PriorityTags:
+    - Enemy
+    - Monster

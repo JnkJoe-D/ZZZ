@@ -65,7 +65,7 @@ namespace Game.Logic
         private const string EventHideOutgoingRole = "HideOutgoingRole";
 
         // ─── 字段 ───
-        private readonly CharcterManager _manager;
+        private readonly TeamManager _manager;
         private readonly List<SwitchOutTask> _switchOutQueue = new();
 
         /// <summary> 是否有正在进行中的切出任务。 </summary>
@@ -73,7 +73,7 @@ namespace Game.Logic
 
         // ─── 构造与生命周期 ───
 
-        public SwitchExecutor(CharcterManager manager)
+        public SwitchExecutor(TeamManager manager)
         {
             _manager = manager;
             Subscribe();
@@ -99,7 +99,7 @@ namespace Game.Logic
 
         /// <summary>
         /// 每帧更新，清理已完成/已取消的任务。
-        /// 由 CharacterManager.Update 驱动。
+        /// 由 TeamManager.Update 驱动。
         /// </summary>
         public void Update(float deltaTime)
         {
@@ -163,7 +163,7 @@ namespace Game.Logic
 
         /// <summary>
         /// Timeline 事件的回调入口。
-        /// 由 CharacterManager.HandleTimelineEvent 转发。
+        /// 由 TeamManager.HandleTimelineEvent 转发。
         /// 处理切出动作的阶段过渡事件。
         /// </summary>
         public bool HandleTimelineEvent(RoleEntity sourceEntity, string eventName)

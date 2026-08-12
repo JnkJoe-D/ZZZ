@@ -5,7 +5,6 @@ namespace Game.Logic
 {
     public class AIEntity : CharacterEntity
     {
-        protected override bool AutoAssignCameraOnStart => false;
 
         protected override void InitRequiredComponents()
         {

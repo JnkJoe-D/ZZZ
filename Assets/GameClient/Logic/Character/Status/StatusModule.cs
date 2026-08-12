@@ -13,13 +13,13 @@ namespace Game.Logic
         public AttributeSet Attributes { get; } = new();
         public BuffContainer Buffs { get; } = new();
 
-        private CharacterEntity _owner;
+        private RoleEntity _owner;
         private readonly HashSet<string> _immuneTags = new();
 
         /// <summary>
         /// 基于角色配置（通过 Luban 配置表装配）进行初始化。
         /// </summary>
-        public void Init(CharacterEntity owner, CharacterConfigAsset config, int level = 1)
+        public void Init(RoleEntity owner, CharacterConfigAsset config, int level = 1)
         {
             _owner = owner;
             Attributes.Init(owner);
@@ -35,7 +35,7 @@ namespace Game.Logic
         /// <summary>
         /// 从 Luban 数据表装配角色的所有基础、能量、元素和独有特化属性。
         /// </summary>
-        public void InitFromConfig(CharacterEntity owner, cfg.ZZZ.CharacterId characterId, int level = 1)
+        public void InitFromConfig(RoleEntity owner, cfg.ZZZ.CharacterId characterId, int level = 1)
         {
             _owner = owner;
             Attributes.Init(owner);
@@ -68,6 +68,15 @@ namespace Game.Logic
                 Attributes.Register(new AttributeInstance(AttributeId.PenRate, baseCfg.PenRateBase, 0f, 1f));
                 Attributes.Register(new AttributeInstance(AttributeId.PenValue, baseCfg.PenValBase, 0f, float.MaxValue));
             }
+            else
+            {
+                Debug.LogWarning($"[StatusModule] 找不到角色 {characterId} 的基础配置 (TbCharacterBase)！使用保底数据。");
+                Attributes.Register(new AttributeInstance(AttributeId.MaxHp, 10000f, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.HP, 10000f, 0f, 10000f));
+                Attributes.Register(new AttributeInstance(AttributeId.ATK, 1000f, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.DEF, 500f, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.Impact, 100f, 0f, float.MaxValue));
+            }
 
             // 2. 能量与喧响机制 (TbCharacterEnergy)
             if (tables.TbCharacterEnergy.DataMap.TryGetValue(characterId, out var energyCfg))
@@ -78,6 +87,16 @@ namespace Game.Logic
                 Attributes.Register(new AttributeInstance(AttributeId.EnergyGenRate, energyCfg.EnergyGenRate, 0f, float.MaxValue));
                 Attributes.Register(new AttributeInstance(AttributeId.Decibel, 0f, 0f, 3000f));
                 Attributes.Register(new AttributeInstance(AttributeId.DecibelGenRate, energyCfg.DecibelGenRate, 0f, float.MaxValue));
+            }
+            else
+            {
+                Debug.LogWarning($"[StatusModule] 找不到角色 {characterId} 的能量配置 (TbCharacterEnergy)！使用保底数据。");
+                Attributes.Register(new AttributeInstance(AttributeId.MaxEnergy, 120f, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.Energy, 0f, 0f, 120f, 1.2f));
+                Attributes.Register(new AttributeInstance(AttributeId.EnergyRegen, 1.2f, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.EnergyGenRate, 1f, 0f, float.MaxValue));
+                Attributes.Register(new AttributeInstance(AttributeId.Decibel, 0f, 0f, 3000f));
+                Attributes.Register(new AttributeInstance(AttributeId.DecibelGenRate, 1f, 0f, float.MaxValue));
             }
 
             // 3. 元素属性与抗性 (TbCharacterElement)
@@ -158,6 +177,46 @@ namespace Game.Logic
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 获取指定技能（如强化特殊技）的能量消耗阈值
+        /// </summary>
+        public float GetEXSpecialAttackCost(int skillId)
+        {
+            if (skillId <= 0) return 0f;
+            
+            var tables = ConfigManager.Instance?.Tables;
+            if (tables == null) return 0f;
+            
+            var skillConfig = tables.TbSkill.GetOrDefault(skillId);
+            if (skillConfig == null) return 0f;
+
+            // 优先从消耗列表 (Cost) 中查找对应能量 (Energy) 的数值
+            if (skillConfig.Cost != null)
+            {
+                foreach (var cost in skillConfig.Cost)
+                {
+                    if ((int)cost.AttrId == (int)AttributeId.Energy && cost.Amount > 0)
+                    {
+                        return cost.Amount;
+                    }
+                }
+            }
+
+            // 如果 Cost 未配但 Condition 配置了限制要求，也作为阈值提取
+            if (skillConfig.Condition != null)
+            {
+                foreach (var cond in skillConfig.Condition)
+                {
+                    if ((int)cond.AttrId == (int)AttributeId.Energy && cond.Value > 0)
+                    {
+                        return cond.Value;
+                    }
+                }
+            }
+
+            return 0f;
         }
     }
 }

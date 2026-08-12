@@ -20,7 +20,7 @@ namespace Game.Logic
         [Header("Test Spawner Config")]
         public string characterPrefabPath = "Assets/Resources/Character_Player.prefab";
         public Game.Logic.CharacterConfigAsset testCharacterConfig;
-        public Game.Logic.PartyConfigAsset testPartyConfig;
+        public Game.Logic.TeamConfigAsset testPartyConfig;
         public Transform spawnPoint;
 
         public bool IsSpawnCompleted { get; private set; }
@@ -41,7 +41,7 @@ namespace Game.Logic
             IsSpawnCompleted = false;
             IsSpawnSucceeded = false;
 
-            if (CharcterManager.Instance == null || (testCharacterConfig == null && testPartyConfig == null))
+            if (TeamManager.Instance == null || (testCharacterConfig == null && testPartyConfig == null))
             {
                 IsSpawnCompleted = true;
                 Debug.LogWarning("[Test_Character] CharacterManager or party configuration is not ready.");
@@ -53,8 +53,8 @@ namespace Game.Logic
 
             Debug.Log("[Test_Character] Requesting CharacterManager to spawn controllable role or party...");
             System.Threading.Tasks.Task<CharacterEntity> spawnTask = testPartyConfig != null
-                ? CharcterManager.Instance.InitializePartyAsync(testPartyConfig, pos, rot)
-                : CharcterManager.Instance.PossessNewCharacterAsync(
+                ? TeamManager.Instance.InitializePartyAsync(testPartyConfig, pos, rot)
+                : TeamManager.Instance.PossessNewCharacterAsync(
                     characterPrefabPath,
                     testCharacterConfig,
                     pos,

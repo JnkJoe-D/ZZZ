@@ -15,6 +15,9 @@ namespace Game.UI.Modules.RoleStatus
         {
             base.OnCreate();
 
+            // 将 Model 注入到 View 中，实现完全的 MVC 数据驱动
+            View.Model = Model;
+
             // 订阅底层属性数值变化事件 (HP/MP)
             EventCenter.Subscribe<PlayerStatChangedEvent>(OnPlayerStatChanged);
             // 订阅核心机制变化事件
@@ -49,52 +52,20 @@ namespace Game.UI.Modules.RoleStatus
 
         private int GetViewSlotIndex(int memberSlotIndex)
         {
-            int activeSlot = CharcterManager.Instance.ActiveSlotIndex;
+            int activeSlot = TeamManager.Instance.ActiveSlotIndex;
             if (activeSlot < 0) activeSlot = 0;
-            int count = CharcterManager.Instance.PartyMembers.Count;
+            int count = TeamManager.Instance.PartyMembers.Count;
             if (count <= 0) return 0;
             
             // 0 -> Active, 1 -> Next, 2 -> Next.Next
             return (memberSlotIndex - activeSlot + count) % count;
         }
 
-        private float GetEXSpecialAttackCost(int skillId)
-        {
-            if (skillId <= 0) return 0f;
-            
-            var skillConfig = ConfigManager.Instance.Tables.TbSkill.GetOrDefault(skillId);
-            if (skillConfig == null) return 0f;
 
-            // 优先从消耗列表 (Cost) 中查找对应能量 (Energy) 的数值
-            if (skillConfig.Cost != null)
-            {
-                foreach (var cost in skillConfig.Cost)
-                {
-                    if ((int)cost.AttrId == (int)AttributeId.Energy && cost.Amount > 0)
-                    {
-                        return cost.Amount;
-                    }
-                }
-            }
-
-            // 如果 Cost 未配但 Condition 配置了限制要求，也作为阈值提取
-            if (skillConfig.Condition != null)
-            {
-                foreach (var cond in skillConfig.Condition)
-                {
-                    if ((int)cond.AttrId == (int)AttributeId.Energy && cond.Value > 0)
-                    {
-                        return cond.Value;
-                    }
-                }
-            }
-
-            return 0f;
-        }
 
         private void RefreshAllStatus()
         {
-            var partyMembers = CharcterManager.Instance?.PartyMembers;
+            var partyMembers = TeamManager.Instance?.PartyMembers;
             if (partyMembers == null) return;
 
             // 获取数据，直接分发给 View 进行表现刷新
@@ -105,7 +76,8 @@ namespace Game.UI.Modules.RoleStatus
 
                 if (member.Config is RoleConfigAsset roleConfig && roleConfig.UIConfig?.RoleIconGeneral != null)
                 {
-                    View.UpdateRoleIcon(viewSlotIndex, roleConfig.UIConfig.RoleIconGeneral);
+                    Model.RoleData[viewSlotIndex].RoleIcon = roleConfig.UIConfig.RoleIconGeneral;
+                    View.UpdateRoleIcon(viewSlotIndex);
                 }
 
                 if (member.Entity?.StatusModule != null)
@@ -120,12 +92,16 @@ namespace Game.UI.Modules.RoleStatus
                     float thresholdPercent = 0f;
                     if (member.Config is RoleConfigAsset rc && rc.UIConfig != null && rc.UIConfig.EXSpecialAttackID > 0)
                     {
-                        float cost = GetEXSpecialAttackCost(rc.UIConfig.EXSpecialAttackID);
+                        float cost = member.Entity.StatusModule.GetEXSpecialAttackCost(rc.UIConfig.EXSpecialAttackID);
                         thresholdPercent = maxEnergy > 0 ? cost / maxEnergy : 0f;
                     }
 
-                    View.UpdateHp(viewSlotIndex, hpPercent);
-                    View.UpdateEnergy(viewSlotIndex, energyPercent, thresholdPercent);
+                    Model.RoleData[viewSlotIndex].HpPercent = hpPercent;
+                    Model.RoleData[viewSlotIndex].EnergyPercent = energyPercent;
+                    Model.RoleData[viewSlotIndex].EnergyThresholdPercent = thresholdPercent;
+
+                    View.UpdateHp(viewSlotIndex);
+                    View.UpdateEnergy(viewSlotIndex);
                 }
 
                 // 动态生成或重新挂载角色专属机制UI
@@ -157,7 +133,7 @@ namespace Game.UI.Modules.RoleStatus
 
         private void OnMechanicStatChanged(MechanicStatChangedEvent evt)
         {
-            var partyMembers = CharcterManager.Instance?.PartyMembers;
+            var partyMembers = TeamManager.Instance?.PartyMembers;
             if (partyMembers == null) return;
 
             PartyMember targetMember = null;
@@ -178,7 +154,7 @@ namespace Game.UI.Modules.RoleStatus
 
         private void OnPlayerStatChanged(PlayerStatChangedEvent evt)
         {
-            var partyMembers = CharcterManager.Instance?.PartyMembers;
+            var partyMembers = TeamManager.Instance?.PartyMembers;
             if (partyMembers == null) return;
 
             PartyMember targetMember = null;
@@ -198,7 +174,8 @@ namespace Game.UI.Modules.RoleStatus
             if (evt.StatType == StatType.HP)
             {
                 float percent = evt.MaxValue > 0 ? evt.NewValue / evt.MaxValue : 0;
-                View.UpdateHp(viewSlotIndex, percent);
+                Model.RoleData[viewSlotIndex].HpPercent = percent;
+                View.UpdateHp(viewSlotIndex);
             }
             // StatType.MP 对应 AttributeId.Energy (框架底层的默认映射)
             else if (evt.StatType == StatType.MP)
@@ -206,13 +183,15 @@ namespace Game.UI.Modules.RoleStatus
                 float percent = evt.MaxValue > 0 ? evt.NewValue / evt.MaxValue : 0;
                 
                 float thresholdPercent = 0f;
-                if (targetMember.Config is RoleConfigAsset rCfg && rCfg.UIConfig != null && rCfg.UIConfig.EXSpecialAttackID > 0)
+                if (targetMember.Config is RoleConfigAsset rCfg && rCfg.UIConfig != null && rCfg.UIConfig.EXSpecialAttackID > 0 && targetMember.Entity?.StatusModule != null)
                 {
-                    float cost = GetEXSpecialAttackCost(rCfg.UIConfig.EXSpecialAttackID);
+                    float cost = targetMember.Entity.StatusModule.GetEXSpecialAttackCost(rCfg.UIConfig.EXSpecialAttackID);
                     thresholdPercent = evt.MaxValue > 0 ? cost / evt.MaxValue : 0f;
                 }
                 
-                View.UpdateEnergy(viewSlotIndex, percent, thresholdPercent);
+                Model.RoleData[viewSlotIndex].EnergyPercent = percent;
+                Model.RoleData[viewSlotIndex].EnergyThresholdPercent = thresholdPercent;
+                View.UpdateEnergy(viewSlotIndex);
             }
         }
     }

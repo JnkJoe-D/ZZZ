@@ -9,8 +9,7 @@ namespace Game.Logic
         [SerializeField]
         private MonoBehaviour inputProviderComponent;
 
-        [SerializeField]
-        private TargetFinder targetFinder;
+
 
         [SerializeField]
         private CinemachineVirtualCameraBase sharedVirtualCamera;
@@ -18,14 +17,14 @@ namespace Game.Logic
         private RoleEntity _activeRole;
 
         public IInputProvider InputProvider { get; private set; }
-        public TargetFinder TargetFinder => targetFinder;
+        public ITargetFinder TargetFinder => TeamManager.Instance?.TargetFinder;
         public CinemachineVirtualCameraBase SharedVirtualCamera => sharedVirtualCamera;
         public RoleEntity ActiveRole => _activeRole;
 
         public void Initialize()
         {
             ResolveInputProvider();
-            ResolveTargetFinder();
+
             ResolveSharedVirtualCamera();
         }
 
@@ -70,18 +69,7 @@ namespace Game.Logic
             }
         }
 
-        private void ResolveTargetFinder()
-        {
-            if (targetFinder == null)
-            {
-                targetFinder = GetComponentInChildren<TargetFinder>(true);
-            }
 
-            if (targetFinder == null)
-            {
-                targetFinder = gameObject.AddComponent<TargetFinder>();
-            }
-        }
 
         private void ResolveSharedVirtualCamera()
         {

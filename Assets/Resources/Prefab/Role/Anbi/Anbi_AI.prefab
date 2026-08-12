@@ -3655,7 +3655,6 @@ GameObject:
   m_Component:
   - component: {fileID: 903472634424793280}
   - component: {fileID: 7752268510638765556}
-  - component: {fileID: 1076736516217941079}
   - component: {fileID: 8354705982429906382}
   - component: {fileID: 7677661786253130567}
   m_Layer: 7
@@ -3704,25 +3703,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1076736516217941079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6866138656870126649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7548dffa873bfa44eba9cf68c5a5eb0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  config:
-    SearchRadius: 20
-    SearchLayerMask:
-      serializedVersion: 2
-      m_Bits: 128
-    PriorityTags:
-    - Enemy
 --- !u!143 &8354705982429906382
 CharacterController:
   m_ObjectHideFlags: 0

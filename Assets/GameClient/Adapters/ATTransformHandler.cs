@@ -30,7 +30,7 @@ namespace Game.Adapters
 
         public Transform GetTarget()
         {
-            return _entity.TargetFinder?.GetEnemy();
+            return _entity.TargetFinder?.GetTarget();
         }
 
         public float GetRadius()

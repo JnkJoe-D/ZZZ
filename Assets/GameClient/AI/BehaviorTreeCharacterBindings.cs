@@ -178,7 +178,7 @@ namespace Game.AI
         /// </summary>
         private static CharacterEntity ResolveLocalPlayerCharacter()
         {
-            return PlayerManager.Instance?.LocalCharacter ?? Game.Logic.CharcterManager.Instance?.LocalCharacter;
+            return PlayerManager.Instance?.LocalCharacter ?? Game.Logic.TeamManager.Instance?.LocalCharacter;
         }
     }
 

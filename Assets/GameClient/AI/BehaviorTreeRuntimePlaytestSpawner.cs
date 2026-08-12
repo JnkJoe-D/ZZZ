@@ -148,7 +148,7 @@ namespace Game.AI
         /// <returns>本地玩家角色；若尚未生成则返回空。</returns>
         private static CharacterEntity ResolveLocalPlayer()
         {
-            return Game.Logic.PlayerManager.Instance?.LocalCharacter ?? CharcterManager.Instance?.LocalCharacter;
+            return Game.Logic.PlayerManager.Instance?.LocalCharacter ?? TeamManager.Instance?.LocalCharacter;
         }
 
         /// <summary>

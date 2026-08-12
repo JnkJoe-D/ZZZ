@@ -4,50 +4,69 @@ using UnityEngine;
 
 namespace Game.Logic
 {
-    [Serializable]
-    public class TargetSearchConfig
+    /// <summary>
+    /// 索敌接口，解耦实体与具体的索敌实现。
+    /// </summary>
+    public interface ITargetFinder
     {
-        [Tooltip("搜索半径")]
-        public float SearchRadius = 15f;
-        [Tooltip("搜索的层级过滤")]
-        public LayerMask SearchLayerMask = -1; // 默认 All
-        [Tooltip("优先级标签，越靠前获取时优先级越高")]
-        public List<string> PriorityTags = new List<string> { "Enemy" };
+        /// <summary>
+        /// 获取当前的索敌目标。
+        /// </summary>
+        Transform GetTarget();
     }
 
     /// <summary>
-    /// 索敌类，用于获取范围内最新的优先目标
+    /// 玩家角色专用的索敌实现，使用球形范围检测并根据权重/距离筛选目标。
     /// </summary>
-    public class TargetFinder : MonoBehaviour
+    public class RoleTargetFinder : ITargetFinder
     {
-        public TargetSearchConfig config = new TargetSearchConfig();
-
-        /// <summary>
-        /// 暂定获取 Enemy 标签或优先配置标签里分值最高的最近目标
-        /// </summary>
-        public Transform GetEnemy()
+        [Serializable]
+        public class RoleTargetFinderCfg
         {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, config.SearchRadius, config.SearchLayerMask);
+            [Tooltip("搜索半径")]
+            public float SearchRadius = 15f;
+            
+            [Tooltip("搜索的层级过滤")]
+            public LayerMask SearchLayerMask = -1; // 默认 All
+            
+            [Tooltip("优先级标签，越靠前获取时优先级越高")]
+            public List<string> PriorityTags = new List<string> { "Enemy", "Monster" };
+        }
+
+        private readonly RoleTargetFinderCfg _config;
+        private readonly TeamManager _teamManager;
+
+        public RoleTargetFinder(RoleTargetFinderCfg config, TeamManager teamManager)
+        {
+            _config = config ?? new RoleTargetFinderCfg();
+            _teamManager = teamManager;
+        }
+
+        public Transform GetTarget()
+        {
+            var activeEntity = _teamManager?.LocalCharacter;
+            if (activeEntity == null) return null;
+
+            Transform center = activeEntity.transform;
+
+            Collider[] colliders = Physics.OverlapSphere(center.position, _config.SearchRadius, _config.SearchLayerMask);
             Transform bestTarget = null;
             int bestPriority = int.MaxValue;
             float closestSqrDist = float.MaxValue;
 
             foreach (var col in colliders)
             {
-                if (col.gameObject == this.gameObject) continue;
+                if (col.gameObject == center.gameObject) continue;
 
-                int priority = config.PriorityTags.IndexOf(col.tag);
+                int priority = _config.PriorityTags.IndexOf(col.tag);
                 
-                // 如果对象的 Tag 不在优先级配置列表中，退回兼容用户的暂定要求 (Enemy 标签)
+                // 如果对象的 Tag 不在优先级配置列表中，直接跳过
                 if (priority == -1)
                 {
-                    if (col.CompareTag("Enemy"))
-                        priority = 999; // 给定一个较低的默认优先级
-                    else
-                        continue;
+                    continue;
                 }
 
-                float sqrDist = (col.transform.position - transform.position).sqrMagnitude;
+                float sqrDist = (col.transform.position - center.position).sqrMagnitude;
 
                 // 优先级数值越小越优先（索引靠前）
                 if (priority < bestPriority)
@@ -64,6 +83,69 @@ namespace Game.Logic
             }
 
             return bestTarget;
+        }
+    }
+
+    [Serializable]
+    public class MonsterSensorConfig
+    {
+        [Tooltip("警戒/发现玩家的半径")]
+        public float DetectionRadius = 10f;
+        [Tooltip("追击半径（超出此半径则丢失目标，返回巡逻）")]
+        public float PursuitRadius = 20f;
+    }
+
+    /// <summary>
+    /// 怪物专用的轻量级索敌实现，利用状态机迟滞机制（Hysteresis），时间复杂度 O(1)。
+    /// </summary>
+    public class MonsterTargetFinder : ITargetFinder
+    {
+        private readonly MonsterSensorConfig _config;
+        private readonly Transform _ownerTransform;
+        private readonly TeamManager _teamManager;
+        
+        private Transform _currentTarget;
+
+        public MonsterTargetFinder(MonsterSensorConfig config, Transform ownerTransform, TeamManager teamManager)
+        {
+            _config = config ?? new MonsterSensorConfig();
+            _ownerTransform = ownerTransform;
+            _teamManager = teamManager;
+        }
+
+        public Transform GetTarget()
+        {
+            if (_ownerTransform == null || _teamManager == null) return null;
+
+            // 获取当前上场的玩家角色
+            var activeEntity = _teamManager.LocalCharacter;
+            if (activeEntity == null) 
+            {
+                _currentTarget = null;
+                return null;
+            }
+
+            Transform player = activeEntity.transform;
+            float distanceSqr = (player.position - _ownerTransform.position).sqrMagnitude;
+
+            if (_currentTarget == null)
+            {
+                // 还没发现目标时，使用 DetectionRadius (视野范围) 判定
+                if (distanceSqr <= _config.DetectionRadius * _config.DetectionRadius)
+                {
+                    _currentTarget = player;
+                }
+            }
+            else
+            {
+                // 已经发现目标时，使用 PursuitRadius (追击容差范围) 判定
+                if (distanceSqr > _config.PursuitRadius * _config.PursuitRadius)
+                {
+                    _currentTarget = null; // 跑太远，丢失目标
+                }
+            }
+
+            return _currentTarget;
         }
     }
 }

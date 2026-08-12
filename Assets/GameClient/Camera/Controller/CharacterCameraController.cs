@@ -586,7 +586,7 @@ namespace Game.Camera
             {
                 case ATEditor.CameraRecenterTarget.CombatFraming:
                     // 智能战斗对峙构图：以角色与怪物的空间连线为中心，施加黄金分割侧向偏角
-                    Transform framingCombatTarget = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetEnemy() : null;
+                    Transform framingCombatTarget = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetTarget() : null;
                     if (framingCombatTarget != null)
                     {
                         Vector3 toEnemy = framingCombatTarget.position - root.position;
@@ -636,7 +636,7 @@ namespace Game.Camera
 
                 case ATEditor.CameraRecenterTarget.TargetDirection:
                     // 直接正对目标：无侧向偏移的死锁正面视角
-                    Transform directCombatTarget = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetEnemy() : null;
+                    Transform directCombatTarget = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetTarget() : null;
                     if (directCombatTarget != null)
                     {
                         Vector3 dir = directCombatTarget.position - root.position;
@@ -753,7 +753,7 @@ namespace Game.Camera
         {
             if (!_isLookAtActive || _virtualCamera == null) return;
 
-            Transform target = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetEnemy() : null;
+            Transform target = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetTarget() : null;
             if (target != null)
             {
                 Vector3 targetLookPos = target.position + _lookAtOffset;

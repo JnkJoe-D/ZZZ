@@ -62,7 +62,7 @@ namespace Game.Logic
             }
 
             // TargetFinder 只要能拿到对象就算有 Target
-            bool hasTarget = actor.TargetFinder.GetEnemy() != null;
+            bool hasTarget = actor.TargetFinder.GetTarget() != null;
             
             return Inverse ? !hasTarget : hasTarget;
         }
@@ -104,7 +104,7 @@ namespace Game.Logic
 
         public bool Check(CharacterEntity actor)
         {
-            Transform target = actor?.TargetFinder?.GetEnemy();
+            Transform target = actor?.TargetFinder?.GetTarget();
             if (target == null)
             {
                 if (TreatNoTargetAsMatch) return true;

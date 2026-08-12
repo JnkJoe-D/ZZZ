@@ -199,7 +199,7 @@ namespace Game.AI
             }
 
             CharacterEntity localPlayer =
-                Game.Logic.PlayerManager.Instance?.LocalCharacter ?? Game.Logic.CharcterManager.Instance?.LocalCharacter;
+                Game.Logic.PlayerManager.Instance?.LocalCharacter ?? Game.Logic.TeamManager.Instance?.LocalCharacter;
             bool isPlayerControlled = localPlayer == character;
             BehaviorTreeCharacterRegistry.SetMetadata(
                 character,

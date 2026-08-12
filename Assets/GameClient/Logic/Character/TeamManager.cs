@@ -32,19 +32,19 @@ namespace Game.Logic
     }
 
     /// <summary>
-    /// 角色管理器 (CharcterManager)
+    /// 角色管理器 (TeamManager)
     /// 架构设计说明:
     /// 1. 职责划分 (SRP)：本类主要负责多角色小队的生命周期管理、实体容器维护、相机与队伍上下文挂载。
     /// 2. 状态机解耦：将具体的换人状态管理、换人轨迹与物理检测、以及 Timeline 关键帧过渡动画的执行逻辑
     ///    剥离到了纯 C# 工具类 <see cref="SwitchExecutor"/> 中，从而保持本类的架构纯洁与单一职责。
     /// </summary>
-    public class CharcterManager : Singleton<CharcterManager>
+    public class TeamManager : Singleton<TeamManager>
     {
         /// <summary> 队伍中当前所有的成员列表容器。 </summary>
         private readonly List<PartyMember> _partyMembers = new();
 
         /// <summary> 当前生效的队伍全局配置资源（定义了成员、出生配置、相机器件等）。 </summary>
-        private PartyConfigAsset _partyConfig;
+        private TeamConfigAsset _teamConfig;
 
         /// <summary> 小队上下文组件所在的 GameObject 运行时实例。 </summary>
         private GameObject _teamInstance;
@@ -71,13 +71,16 @@ namespace Game.Logic
         public IReadOnlyList<PartyMember> PartyMembers => _partyMembers;
 
         /// <summary> 暴露当前生效的队伍全局配置。 </summary>
-        public PartyConfigAsset PartyConfig => _partyConfig;
+        public TeamConfigAsset TeamConfig => _teamConfig;
 
         /// <summary> 获取是否已配置并挂载了共享的队伍虚拟相机。 </summary>
         public bool HasSharedPartyCamera => _sharedPartyVirtualCamera != null;
 
         /// <summary> 获取当前小队的运行时逻辑上下文。 </summary>
         public CharacterTeamContext TeamContext => _teamContext;
+
+        /// <summary> 队伍共享的索敌组件。 </summary>
+        public ITargetFinder TargetFinder { get; private set; }
 
         /// <summary> 当前被玩家直接操作并占有的主控角色 Entity。 </summary>
         public CharacterEntity LocalCharacter { get; private set; }
@@ -91,7 +94,7 @@ namespace Game.Logic
         /// <summary>
         /// 构造函数，创建换人执行器并执行基础系统初始化。
         /// </summary>
-        public CharcterManager()
+        public TeamManager()
         {
             _switchExecutor = new SwitchExecutor(this);
             Initialize();
@@ -111,7 +114,7 @@ namespace Game.Logic
         public void Initialize()
         {
             EventCenter.Subscribe<CharacterTimelineEvent>(OnCharacterTimelineEvent);
-            Debug.Log("[CharacterManager] Initialized.");
+            Debug.Log("[TeamManager] Initialized.");
         }
 
         /// <summary>
@@ -147,17 +150,17 @@ namespace Game.Logic
         /// 2. 调用内部重载执行底层异步资源预载与实体实例化流程。
         /// </summary>
         public async Task<CharacterEntity> InitializePartyAsync(
-            PartyConfigAsset partyConfig,
+            TeamConfigAsset teamConfig,
             Vector3 spawnPos,
             Quaternion spawnRot)
         {
-            if (partyConfig == null)
+            if (teamConfig == null)
             {
                 return null;
             }
 
-            List<CharacterConfigAsset> members = partyConfig.BuildRuntimeMembers();
-            return await InitializePartyAsync(members, partyConfig.InitialSlotIndex, spawnPos, spawnRot, partyConfig);
+            List<CharacterConfigAsset> members = teamConfig.BuildRuntimeMembers();
+            return await InitializePartyAsync(members, teamConfig.InitialSlotIndex, spawnPos, spawnRot, teamConfig);
         }
 
         /// <summary>
@@ -186,7 +189,7 @@ namespace Game.Logic
             GameObject prefab = await ResolveCharacterPrefabAsync(config, characterPrefabPath);
             if (prefab == null)
             {
-                Debug.LogError($"[CharacterManager] Failed to resolve prefab for '{config.Name}'.");
+                Debug.LogError($"[TeamManager] Failed to resolve prefab for '{config.Name}'.");
                 return null;
             }
 
@@ -214,7 +217,7 @@ namespace Game.Logic
             _partyMembers.Add(member);
             ActivatePartyMember(member, spawnPos, spawnRot);
 
-            Debug.Log($"[CharacterManager] Spawned single controllable role: {config.Name}");
+            Debug.Log($"[TeamManager] Spawned single controllable role: {config.Name}");
             return LocalCharacter;
         }
 
@@ -236,7 +239,7 @@ namespace Game.Logic
             }
 
             _partyMembers.Clear();
-            _partyConfig = null;
+            _teamConfig = null;
             DestroySharedPartyCamera();
             DestroyTeamContext();
             _activeSlotIndex = -1;
@@ -245,6 +248,7 @@ namespace Game.Logic
             _switchExecutor?.Reset();
             
             LocalCharacter = null;
+            TargetFinder = null;
             GameCameraManager.Instance?.SetTarget(null);
         }
 
@@ -269,7 +273,7 @@ namespace Game.Logic
             int initialSlotIndex,
             Vector3 spawnPos,
             Quaternion spawnRot,
-            PartyConfigAsset partyConfig)
+            TeamConfigAsset teamConfig)
         {
             UnpossessCurrentCharacter();
 
@@ -278,7 +282,10 @@ namespace Game.Logic
                 return null;
             }
 
-            _partyConfig = partyConfig;
+            _teamConfig = teamConfig;
+
+            // 初始化队伍共享的索敌组件
+            TargetFinder = new RoleTargetFinder(teamConfig.TargetSearchConfig, this);
 
             // 限制最多加载并生成 3 名编队成员
             List<CharacterConfigAsset> runtimeMembers = new List<CharacterConfigAsset>(3);
@@ -296,8 +303,8 @@ namespace Game.Logic
             }
 
             // 建立小队逻辑上下文及共享虚拟相机
-            CreateTeamContext(partyConfig, spawnPos, spawnRot);
-            CreateSharedPartyCamera(partyConfig);
+            CreateTeamContext(teamConfig, spawnPos, spawnRot);
+            CreateSharedPartyCamera(teamConfig);
 
             // 并行并发预载动作包以防在战斗中切人发生 IO 顿卡
             if (ActionManager.Instance != null)
@@ -318,7 +325,7 @@ namespace Game.Logic
                 GameObject prefab = await ResolveCharacterPrefabAsync(config, null);
                 if (prefab == null)
                 {
-                    Debug.LogError($"[CharacterManager] Missing CharacterPrefab on '{config.Name}'.");
+                    Debug.LogError($"[TeamManager] Missing CharacterPrefab on '{config.Name}'.");
                     continue;
                 }
 
@@ -367,6 +374,14 @@ namespace Game.Logic
             Quaternion spawnRot)
         {
             GameObject characterGo = Object.Instantiate(prefab, spawnPos, spawnRot);
+            
+            // 解决旧预制体上残留 CharacterEntity 导致的组件重复/HUD读取错误问题
+            var oldEntity = characterGo.GetComponent<CharacterEntity>();
+            if (oldEntity != null && oldEntity.GetType() == typeof(CharacterEntity))
+            {
+                Object.DestroyImmediate(oldEntity, true);
+            }
+
             RoleEntity entity = characterGo.GetComponent<RoleEntity>();
             if (entity == null)
             {
@@ -407,7 +422,7 @@ namespace Game.Logic
         /// <summary>
         /// 实例化并建立共享的编队相机实例。如果 Context 自身已携带共享相机则直接复用。
         /// </summary>
-        private void CreateSharedPartyCamera(PartyConfigAsset partyConfig)
+        private void CreateSharedPartyCamera(TeamConfigAsset teamConfig)
         {
             DestroySharedPartyCamera();
 
@@ -418,18 +433,18 @@ namespace Game.Logic
                 return;
             }
 
-            if (partyConfig == null || partyConfig.CameraPrefab == null)
+            if (teamConfig == null || teamConfig.CameraPrefab == null)
             {
                 return;
             }
 
-            _sharedPartyCameraInstance = Object.Instantiate(partyConfig.CameraPrefab);
+            _sharedPartyCameraInstance = Object.Instantiate(teamConfig.CameraPrefab);
             _sharedPartyVirtualCamera = _sharedPartyCameraInstance.GetComponent<CinemachineVirtualCameraBase>()
                 ?? _sharedPartyCameraInstance.GetComponentInChildren<CinemachineVirtualCameraBase>(true);
 
             if (_sharedPartyVirtualCamera == null)
             {
-                Debug.LogWarning("[CharacterManager] Party camera prefab does not contain a CinemachineVirtualCameraBase.");
+                Debug.LogWarning("[TeamManager] Party camera prefab does not contain a CinemachineVirtualCameraBase.");
                 Object.Destroy(_sharedPartyCameraInstance);
                 _sharedPartyCameraInstance = null;
                 return;
@@ -455,11 +470,11 @@ namespace Game.Logic
         /// <summary>
         /// 创建或实例化小队的核心逻辑上下文组件及其承载的 GameObject 容器。
         /// </summary>
-        private void CreateTeamContext(PartyConfigAsset partyConfig, Vector3 spawnPos, Quaternion spawnRot)
+        private void CreateTeamContext(TeamConfigAsset teamConfig, Vector3 spawnPos, Quaternion spawnRot)
         {
             DestroyTeamContext();
 
-            GameObject teamPrefab = partyConfig != null ? partyConfig.TeamPrefab : null;
+            GameObject teamPrefab = teamConfig != null ? teamConfig.TeamPrefab : null;
             _teamInstance = teamPrefab != null
                 ? Object.Instantiate(teamPrefab, spawnPos, spawnRot)
                 : new GameObject("[Runtime] Character Team");
@@ -646,7 +661,7 @@ namespace Game.Logic
             Quaternion originRot = originTransform.rotation;
 
             // 1. 优先依次检测配置的偏移量位置，寻找首选且无阻挡的切入点
-            var offsets = _partyConfig != null ? _partyConfig.SwitchInOffset : null;
+            var offsets = _teamConfig != null ? _teamConfig.SwitchInOffset : null;
             if (offsets != null)
             {
                 for (int i = 0; i < offsets.Count; ++i)
@@ -682,7 +697,7 @@ namespace Game.Logic
             // 如果没有 outgoing（如初始化时），仅对目标点本身做防夹阻挡检测
             if (IsPositionBlocked(position, switchInEntity))
             {
-                var offsets = _partyConfig != null ? _partyConfig.SwitchInOffset : null;
+                var offsets = _teamConfig != null ? _teamConfig.SwitchInOffset : null;
                 if (offsets != null)
                 {
                     for (int i = 0; i < offsets.Count; ++i)
@@ -705,8 +720,8 @@ namespace Game.Logic
             // 获取角色的真实碰撞半径（含 skinWidth）
             float radius = entity.GetCharcterRadius();
             
-            // 投射胶囊体的半径是碰撞半径乘 _partyConfig.blockRadiusMultipier 系数
-            float checkRadius = radius * (_partyConfig != null ? _partyConfig.blockRadiusMultipier : 1.0f);
+            // 投射胶囊体的半径是碰撞半径乘 _teamConfig.blockRadiusMultipier 系数
+            float checkRadius = radius * (_teamConfig != null ? _teamConfig.blockRadiusMultipier : 1.0f);
 
             // 获取角色高度（用于确定胶囊体的顶部和底部球心）
             float height = 2.0f;
@@ -728,8 +743,8 @@ namespace Game.Logic
             Vector3 pointBottom = pos + Vector3.up * checkRadius;
             Vector3 pointTop = pos + Vector3.up * Mathf.Max(height - checkRadius, checkRadius);
 
-            // 层级读取 _partyConfig.blockLayer 配置
-            LayerMask mask = _partyConfig != null ? _partyConfig.blockLayer : (LayerMask)0;
+            // 层级读取 _teamConfig.blockLayer 配置
+            LayerMask mask = _teamConfig != null ? _teamConfig.blockLayer : (LayerMask)0;
 
             // 通过 OverlapCapsule 投射胶囊体并检测是否有碰撞阻挡
             Collider[] colliders = Physics.OverlapCapsule(pointBottom, pointTop, checkRadius, mask, QueryTriggerInteraction.Ignore);

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 239b5a4f424c20444958b9fe33579537, type: 3}
+  m_Name: Ellen
+  m_EditorClassIdentifier: 
+  RoleID: 0
+  RoleIconGeneral: {fileID: 21300000, guid: 91759afafc8304342b7489a2b253f4dd, type: 3}
+  RoleIconCircle: {fileID: 0}
+  MechanicUIPrefab: {fileID: 0}
+  EXSpecialAttackID: 140240

@@ -6,6 +6,8 @@ namespace Game.UI.Modules.RoleStatus
 {
     public class StatusPanelView : UIView
     {
+        public StatusPanelModel Model { get; set; }
+
         // 自动生成的UI组件字段
         public Image Content {get;private set;}
         public Image Role01 {get;private set;}
@@ -82,8 +84,11 @@ namespace Game.UI.Modules.RoleStatus
                 img.material = new Material(img.material);
         }
 
-        public void UpdateHp(int slotIndex, float percent)
+        public void UpdateHp(int slotIndex)
         {
+            if (Model == null) return;
+            float percent = Model.RoleData[slotIndex].HpPercent;
+
             Image hpFill = GetHpFill(slotIndex);
             if (hpFill == null || hpFill.material == null) return;
 
@@ -91,8 +96,12 @@ namespace Game.UI.Modules.RoleStatus
             hpFill.material.SetFloat("_FillAmount", percent);
         }
 
-        public void UpdateEnergy(int slotIndex, float percent, float thresholdPercent)
+        public void UpdateEnergy(int slotIndex)
         {
+            if (Model == null) return;
+            float percent = Model.RoleData[slotIndex].EnergyPercent;
+            float thresholdPercent = Model.RoleData[slotIndex].EnergyThresholdPercent;
+
             Image spFill = GetSPFill(slotIndex);
             Image spPoint = GetSPPoint(slotIndex);
             Image spPointGray = GetSPPointGray(slotIndex);
@@ -197,8 +206,11 @@ namespace Game.UI.Modules.RoleStatus
             }
         }
 
-        public void UpdateRoleIcon(int viewSlotIndex, Sprite icon)
+        public void UpdateRoleIcon(int viewSlotIndex)
         {
+            if (Model == null) return;
+            Sprite icon = Model.RoleData[viewSlotIndex].RoleIcon;
+
             Image roleImg = GetRoleImage(viewSlotIndex);
             if (roleImg != null && icon != null)
             {

@@ -631,6 +631,8 @@ namespace Game.Logic
 
         private void SwitchState(ActionState state)
         {
+            if (_entity.Machine == null) return;
+            
             switch (state)
             {
                 case ActionState.Idle:

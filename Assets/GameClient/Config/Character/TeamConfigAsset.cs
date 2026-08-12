@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Game.Logic
 {
-    [CreateAssetMenu(fileName = "PartyConfigAsset", menuName = "Config/Role/Party Config")]
-    public class PartyConfigAsset : GameConfigAsset
+    [CreateAssetMenu(fileName = "TeamConfigAsset", menuName = "Config/Role/Party Config")]
+    public class TeamConfigAsset : GameConfigAsset
     {
         [Header("Party")]
         public List<CharacterConfigAsset> Members = new List<CharacterConfigAsset>(3);
@@ -22,6 +22,9 @@ namespace Game.Logic
         public List<Vector3> SwitchInOffset = new List<Vector3>();
         public LayerMask blockLayer;
         public float blockRadiusMultipier = 1.5f;
+
+        [Header("Targeting")]
+        public RoleTargetFinder.RoleTargetFinderCfg TargetSearchConfig = new RoleTargetFinder.RoleTargetFinderCfg();
 
         public int GetValidMemberCount(int maxCount = 3)
         {
