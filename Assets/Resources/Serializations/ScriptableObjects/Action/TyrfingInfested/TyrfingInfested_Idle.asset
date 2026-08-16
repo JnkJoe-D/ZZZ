@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3290489fa39fab46a6c11cb5d221c9c, type: 3}
+  m_Name: TyrfingInfested_Idle
+  m_EditorClassIdentifier: 
+  ID: 0
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 9037d00f7040fa1489c9ad626f96f34d, type: 3}
+  actionTimelineSO: {fileID: 11400000, guid: 05ff427b6099ad6429f968102e8d383b, type: 2}
+  EnterState: 0
+  CompleteMode: 0
+  CompleteAction: {fileID: 0}
+  CompleteTransitCrossfade: -1
+  PlaybackSpeed: 1
+  CanBeInterruptedByLightHit: 1
+  CanBeInterruptedByHeavyHit: 1

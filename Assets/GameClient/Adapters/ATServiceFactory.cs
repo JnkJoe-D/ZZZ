@@ -60,7 +60,7 @@ namespace Game.Adapters
             }
             if (serviceType == typeof(ICameraHandler))
             {
-                return GetOrCreateCachedService(serviceType, owner, () => new ATCameraHandler(owner.GetComponent<CharacterEntity>()));
+                return GetOrCreateCachedService(serviceType, owner, () => new ATCameraHandler(owner.GetComponent<RoleEntity>()));
             }
             if (serviceType == typeof(ITransformHandler))
             {
@@ -77,12 +77,12 @@ namespace Game.Adapters
 
             if (serviceType == typeof(IRouteWindowHandler))
             {
-                return GetOrCreateCachedService(serviceType, owner ,() => owner.GetComponent<CharacterEntity>().SkillComboWindowHandler);
+                return GetOrCreateCachedService(serviceType, owner ,() => owner.GetComponent<RoleEntity>()?.ActionController);
             }
 
             if (serviceType == typeof(IMotionWindowHandler))
             {
-                return GetOrCreateCachedService(serviceType, owner, () => owner.GetComponent<CharacterEntity>().SkillMotionWindowHandler);
+                return GetOrCreateCachedService(serviceType, owner, () => owner.GetComponent<CharacterEntity>()?.MotionWindowHandler);
             }
 
             if (serviceType == typeof(IPhysicsHandler))

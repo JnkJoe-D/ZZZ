@@ -505,7 +505,7 @@ namespace ATEditor
                     continue;
                 }
 
-                eventHandler.OnSkillEvent(timelineEvent.eventName, timelineEvent.parameters);
+                eventHandler.OnActionTimelineEvent(timelineEvent.eventName, timelineEvent.parameters);
                 if (CurrentState != State.Playing || Timeline == null)
                 {
                     return;

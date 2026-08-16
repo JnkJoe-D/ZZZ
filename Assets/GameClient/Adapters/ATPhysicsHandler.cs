@@ -10,7 +10,7 @@ namespace Game.Adapters
     public class ATPhysicsHandler : IPhysicsHandler
     {
         private readonly CharacterEntity entity;
-        private readonly MovementController movementController;
+        private readonly CharacterMotor movementController;
         private readonly CharacterController cc;
         private readonly Collider col;
 
@@ -19,7 +19,7 @@ namespace Game.Adapters
             if (owner != null)
             {
                 entity = owner.GetComponent<CharacterEntity>();
-                movementController = owner.GetComponent<MovementController>();
+                movementController = owner.GetComponent<CharacterMotor>();
                 cc = owner.GetComponent<CharacterController>();
                 col = owner.GetComponent<Collider>();
             }
@@ -30,7 +30,7 @@ namespace Game.Adapters
             this.entity = entity;
             if (entity != null)
             {
-                movementController = entity.GetComponent<MovementController>();
+                movementController = entity.GetComponent<CharacterMotor>();
                 cc = entity.GetComponent<CharacterController>();
                 col = entity.GetComponent<Collider>();
             }

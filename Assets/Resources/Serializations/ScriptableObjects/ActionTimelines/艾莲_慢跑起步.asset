@@ -209,7 +209,7 @@ MonoBehaviour:
         isEnabled: 1
         startTime: 0
         duration: 1.5
-        blendInDuration: 0
+        blendInDuration: 0.1
         blendOutDuration: 0
         animationClip: {fileID: -3135577873957234835, guid: 769312a99595bf44f83906711cfb6784,
           type: 3}

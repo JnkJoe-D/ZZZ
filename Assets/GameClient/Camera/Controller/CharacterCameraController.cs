@@ -22,7 +22,7 @@ namespace Game.Camera
         private Transform lookAt;
 
         private Transform _mainCamTransform;
-        private CharacterEntity _entity;
+        private RoleEntity _entity;
         private CameraPointBinder _pointBinder;
         private bool _ownsVirtualCameraInstance;
         private CinemachineImpulseSource _impluseSource;
@@ -35,7 +35,7 @@ namespace Game.Camera
             }
         }
 
-        public void Init(CharacterEntity entity)
+        public void Init(RoleEntity entity)
         {
             if (_virtualCamera == null && _virtualCameraPrefab != null)
             {
@@ -112,7 +112,7 @@ namespace Game.Camera
             ApplyAxisInputState();
         }
 
-        public void SetBindingSource(CharacterEntity entity)
+        public void SetBindingSource(RoleEntity entity)
         {
             _entity = entity;
             _pointBinder = entity != null ? entity.GetComponent<CameraPointBinder>() : null;
@@ -615,12 +615,12 @@ namespace Game.Camera
                 case ATEditor.CameraRecenterTarget.MovementDirection:
                     // 移动突进方向：以移动输入或位移方向为对齐基准
                     Vector3 moveWorldDir = Vector3.zero;
-                    if (_entity != null && _entity.MovementController != null && _entity.InputProvider != null)
+                    if (_entity != null && _entity.CharacterMotor != null && _entity.InputProvider != null)
                     {
                         Vector2 moveInput = _entity.InputProvider.GetMovementDirection();
                         if (moveInput.sqrMagnitude > 0.01f)
                         {
-                            moveWorldDir = _entity.MovementController.CalculateWorldDirection(moveInput);
+                            moveWorldDir = _entity.CharacterMotor.CalculateWorldDirection(moveInput);
                         }
                     }
 

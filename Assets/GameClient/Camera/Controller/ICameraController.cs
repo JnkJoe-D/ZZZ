@@ -11,7 +11,7 @@ namespace Game.Camera
     /// </summary>
     public interface ICameraController
     {
-        void Init(CharacterEntity entity);
+        void Init(RoleEntity entity);
         /// <summary>
         /// 冻结/解冻相机视角的旋转输入（例如进入 UI 或者释放某些固定视角的锁敌技能时禁用）
         /// </summary>

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Game.Logic;
 
@@ -47,15 +47,7 @@ namespace Game.Logic
         public List<ElementalType> Resistances = new List<ElementalType>();
 
         [Header("感知与行为参数 (供 AI 读取)")]
-        [Tooltip("发现敌人的感知半径（索敌范围）")]
-        public float PerceptionRadius = 15f;
-        
-        [Tooltip("追击敌人的最大半径，超出后脱战或返回出生点")]
-        public float LoseTargetRadius = 25f;
-
-        [Tooltip("视野夹角（角度，例如 120度表示前方宽广视野）")]
-        [Range(0, 360)]
-        public float FieldOfView = 120f;
+        public MonsterSensorConfig SensorConfig = new MonsterSensorConfig();
 
         [Header("战斗与失衡机制 (Daze)")]
         [Tooltip("受击硬直的韧性等级 (Poise)，越高越难被打断基础动作")]

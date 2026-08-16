@@ -1,4 +1,5 @@
 {
+    "duration": 1.5,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -337,10 +338,10 @@
                     "isEnabled": true,
                     "startTime": 0.0,
                     "duration": 1.5,
-                    "blendInDuration": 0.0,
+                    "blendInDuration": 0.10000000149011612,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 42248
+                        "instanceID": 33834
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,

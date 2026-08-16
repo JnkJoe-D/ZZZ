@@ -22,7 +22,7 @@ namespace ATEditor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            // 逻辑已在 MovementController 的 OnAnimatorMove 中实现，这里无需额外处理。
+            // 逻辑已在 CharacterMotor 的 OnAnimatorMove 中实现，这里无需额外处理。
         }
 
         public override void OnDisable()

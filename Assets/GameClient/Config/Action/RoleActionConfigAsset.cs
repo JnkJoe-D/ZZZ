@@ -6,28 +6,28 @@ using Game.Logic;
 namespace Game.Logic
 {
     /// <summary>
-    /// ½ÇÉ«¶ÀÓĞµÄ¶¯×÷ÅäÖÃ£¨°üº¬ÅÉÉúºÍÁ¬ÕĞÂ·ÓÉ£©
+    /// è§’è‰²ç‹¬æœ‰çš„åŠ¨ä½œé…ç½®ï¼ˆåŒ…å«æ´¾ç”Ÿå’Œè¿æ‹›è·¯ç”±ï¼‰
     /// </summary>
     [CreateAssetMenu(fileName = "RoleActionConfigAsset", menuName = "Config/Action/Role Action Config")]
     public class RoleActionConfigAsset : ActionConfigAsset
     {
-        // ©¤©¤ ÅÉÉúÓë¼Ì³Ğ ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
-        [Header("ÅÉÉúÓë¼Ì³Ğ")]
-        [Tooltip("µ±Ç°¶¯×÷¶ÔÓÚÇ°ÖÃ¶¯×÷ÅÉÉúÂ·ÓÉµÄ¼Ì³Ğ²ßÂÔ¡£")]
+        // â”€â”€ æ´¾ç”Ÿä¸ç»§æ‰¿ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        [Header("æ´¾ç”Ÿä¸ç»§æ‰¿")]
+        [Tooltip("å½“å‰åŠ¨ä½œå¯¹äºå‰ç½®åŠ¨ä½œæ´¾ç”Ÿè·¯ç”±çš„ç»§æ‰¿ç­–ç•¥ã€‚")]
         public RouteInheritMode InheritMode = RouteInheritMode.None;
 
-        [Header("×¨ÊôÅÉÉúÂ·ÓÉ (¿É±»¼Ì³Ğ)")]
-        [Tooltip("µ±Ç°¶¯×÷×¨ÊôµÄÅÉÉúÂ·ÓÉÁĞ±í¡£Èç¹ûºóĞø¶¯×÷ÉèÎª¼Ì³Ğ£¬Ôò»á¼Ì³Ğ´ËÁĞ±íÖĞµÄÂ·ÓÉ¡£")]
+        [Header("ä¸“å±æ´¾ç”Ÿè·¯ç”± (å¯è¢«ç»§æ‰¿)")]
+        [Tooltip("å½“å‰åŠ¨ä½œä¸“å±çš„æ´¾ç”Ÿè·¯ç”±åˆ—è¡¨ã€‚å¦‚æœåç»­åŠ¨ä½œè®¾ä¸ºç»§æ‰¿ï¼Œåˆ™ä¼šç»§æ‰¿æ­¤åˆ—è¡¨ä¸­çš„è·¯ç”±ã€‚")]
         public List<ActionRoute> Routes = new();
 
-        [Header("Í¨ÓÃÂ·ÓÉ¼¯ (²»±»¼Ì³Ğ)")]
-        [Tooltip("Í¨³£ÓÃÓÚÅäÖÃÉÁ±Ü¡¢ÒÆ¶¯µÈÍ¨ÓÃ¶¯×÷¡£ºóĞø¶¯×÷¼´Ê¹ÉèÎª¼Ì³Ğ£¬Ò²²»»á¼Ì³Ğ´ËÁĞ±í¡£")]
+        [Header("é€šç”¨è·¯ç”±é›† (ä¸è¢«ç»§æ‰¿)")]
+        [Tooltip("é€šå¸¸ç”¨äºé…ç½®é—ªé¿ã€ç§»åŠ¨ç­‰é€šç”¨åŠ¨ä½œã€‚åç»­åŠ¨ä½œå³ä½¿è®¾ä¸ºç»§æ‰¿ï¼Œä¹Ÿä¸ä¼šç»§æ‰¿æ­¤åˆ—è¡¨ã€‚")]
         public List<ActionRouteSetAsset> RouteSets = new();
 
         /// <summary>
-        /// ÊÕ¼¯´Ë¶¯×÷ÉÏËùÓĞÓĞĞ§µÄÍ³Ò»Â·ÓÉ£¨Õ¹¿ª¼¯ºÏ×Ê²ú£©¡£
+        /// æ”¶é›†æ­¤åŠ¨ä½œä¸Šæ‰€æœ‰æœ‰æ•ˆçš„ç»Ÿä¸€è·¯ç”±ï¼ˆå±•å¼€é›†åˆèµ„äº§ï¼‰ã€‚
         /// </summary>
-        public override void CollectEffectiveRoutes(List<ActionRoute> results, CharacterEntity actor = null)
+        public override void CollectEffectiveRoutes(List<ActionRoute> results, RoleEntity actor = null)
         {
             if (results == null) return;
             results.Clear();
@@ -58,7 +58,7 @@ namespace Game.Logic
                         {
                             if (route != null) 
                             {
-                                // ·ÀÖ¹¼Ì³ĞÀ´µÄÂ·ÓÉÖ¸Ïò×Ô¼º´Ó¶øÒı·¢ËÀÑ­»·
+                                // é˜²æ­¢ç»§æ‰¿æ¥çš„è·¯ç”±æŒ‡å‘è‡ªå·±ä»è€Œå¼•å‘æ­»å¾ªç¯
                                 if (route.ExecuteType == ExecuteTarget.Action && route.ExecuteAction != null && route.ExecuteAction.ID == this.ID)
                                 {
                                     continue;
@@ -70,7 +70,7 @@ namespace Game.Logic
                 }
             }
 
-            // °´ÓÅÏÈ¼¶Ë³ĞòÌí¼Ó
+            // æŒ‰ä¼˜å…ˆçº§é¡ºåºæ·»åŠ 
             if (inheritedFirst)
             {
                 results.AddRange(inheritedRoutes);
@@ -82,7 +82,7 @@ namespace Game.Logic
                 results.AddRange(inheritedRoutes);
             }
 
-            // 3. ÊÕ¼¯×ÔÉíµÄÍ¨ÓÃÂ·ÓÉ¼¯
+            // 3. æ”¶é›†è‡ªèº«çš„é€šç”¨è·¯ç”±é›†
             if (RouteSets != null)
             {
                 foreach (var routeSet in RouteSets)

@@ -13,6 +13,6 @@ namespace ATEditor
         /// </summary>
         /// <param name="eventName">事件名称（如 "AddBuff", "SetCamera"）</param>
         /// <param name="parameters">事件附带的键值对参数列表</param>
-        void OnSkillEvent(string eventName, List<ATEventParam> parameters);
+        void OnActionTimelineEvent(string eventName, List<ATEventParam> parameters);
     }
 }

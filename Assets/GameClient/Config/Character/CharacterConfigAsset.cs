@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Game.AI;
 using Game.Logic;
 using UnityEngine;
 
@@ -24,9 +23,6 @@ namespace Game.Logic
 
         [Header("Action Preload List")]
         public List<ActionConfigAsset> ActionProLoadList = new();
-
-        [Header("AI")]
-        public BehaviorTreeGraphAsset BehaviorTreeGraph;
 
         [Header("Hit Reaction")]
         public HitReactionConfig hitReactionConfig;

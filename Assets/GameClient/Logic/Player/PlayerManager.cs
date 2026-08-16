@@ -9,12 +9,12 @@ namespace Game.Logic
 {
     /// <summary>
     /// 全局玩家管理器 (PlayerManager)
-    /// 负责管理“屏幕前的玩家”的控制权，处理“附身 (Possess)”到具体的 CharacterEntity 上的逻辑。
+    /// 负责管理“屏幕前的玩家”的控制权，处理“附身 (Possess)”到具体的 RoleEntity 上的逻辑。
     /// </summary>
     public class PlayerManager : Game.Framework.Singleton<PlayerManager>
     {
         // 当前本机玩家附身控制的具体角色实体 (躯壳)
-        public CharacterEntity LocalCharacter { get; private set; }
+        public RoleEntity LocalCharacter { get; private set; }
 
         public void Initialize()
         {
@@ -38,7 +38,7 @@ namespace Game.Logic
         /// <param name="config">角色的基因数据配置</param>
         /// <param name="spawnPos">出生位置</param>
         /// <param name="spawnRot">出生旋转</param>
-        public async Task<CharacterEntity> PossessNewCharacterAsync(string characterPrefabPath, CharacterConfigAsset config, Vector3 spawnPos, Quaternion spawnRot)
+        public async Task<RoleEntity> PossessNewCharacterAsync(string characterPrefabPath, CharacterConfigAsset config, Vector3 spawnPos, Quaternion spawnRot)
         {
             UnpossessCurrentCharacter();
 
@@ -57,10 +57,10 @@ namespace Game.Logic
             }
 
             GameObject characterGo = UnityEngine.Object.Instantiate(characterPrefab, spawnPos, spawnRot);
-            CharacterEntity characterEntity = characterGo.GetComponent<CharacterEntity>();
+            RoleEntity characterEntity = characterGo.GetComponent<RoleEntity>();
             if (characterEntity == null)
             {
-                characterEntity = characterGo.AddComponent<CharacterEntity>();
+                characterEntity = characterGo.AddComponent<RoleEntity>();
             }
 
             // 3. 注入配置并初始化

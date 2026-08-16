@@ -1,0 +1,147 @@
+{
+    "duration": 2.016666889190674,
+    "isLoop": true,
+    "beforePlayEvents": [],
+    "onCompleteEvents": [],
+    "groups": [
+        {
+            "groupId": "986a686a-3aa8-49c9-a790-5f5afd82cd6b",
+            "groupName": "动画",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1000
+                }
+            ]
+        },
+        {
+            "groupId": "7fd40c7e-a2bb-48d2-94b0-6209321b2259",
+            "groupName": "位移过滤",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1001
+                }
+            ]
+        }
+    ],
+    "references": {
+        "version": 2,
+        "RefIds": [
+            {
+                "rid": 1000,
+                "type": {
+                    "class": "AnimationTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "e4f686a6-caf0-4ce4-9270-837b656096ee",
+                    "trackType": "AnimationTrack",
+                    "trackName": "动画轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1002
+                        }
+                    ],
+                    "isMasterTrack": true,
+                    "offsetPos": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "offsetRot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            },
+            {
+                "rid": 1001,
+                "type": {
+                    "class": "MotionWindowTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "00640495-d883-44d1-9487-16c0f8224c0a",
+                    "trackType": "MotionWindowTrack",
+                    "trackName": "动画位移窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1003
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1002,
+                "type": {
+                    "class": "AnimationClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "82a28dce-fb37-48d5-96e4-2e6152d3dbbe",
+                    "clipName": "动画片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 2.016666889190674,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "animationClip": {
+                        "instanceID": 34078
+                    },
+                    "playbackSpeed": 1.0,
+                    "layer": 0,
+                    "overrideMask": {
+                        "instanceID": 0
+                    },
+                    "clipRef": {
+                        "guid": "bbdd7cde32f1b904aae7542268cb541a",
+                        "assetName": "TyrfingInfested_Ani_Idle",
+                        "assetPath": "Assets/Dependencies/Animation/TryfingInfested/Monster_TyrfingInfested.fbx"
+                    },
+                    "maskRef": {
+                        "guid": "",
+                        "assetName": "",
+                        "assetPath": ""
+                    }
+                }
+            },
+            {
+                "rid": 1003,
+                "type": {
+                    "class": "MotionFilterClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "c3b59524-5e9e-49a6-8a9c-7fc45b3fab78",
+                    "clipName": "位移窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 2.016666889190674,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "localDeltaFilterMode": 3
+                }
+            }
+        ]
+    }
+}

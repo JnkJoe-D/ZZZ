@@ -1,0 +1,22 @@
+GridBackground{
+    --grid-background-color: rgb(40,40,40);
+    --line-color: rgba(193,196,192,0.1);
+    --thick-line-color: rgba(193,196,192,0.1);
+    --spacing: 15;
+}
+
+.running #node-border {
+    border-top-color: rgb(255, 215, 0);
+    border-bottom-color: rgb(255, 215, 0);
+    border-left-color: rgb(255, 215, 0);
+    border-right-color: rgb(255, 215, 0);
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    border-right-width: 3px;
+}
+
+.running-edge {
+    --edge-color: rgb(0, 255, 255);
+    --edge-width: 4;
+}

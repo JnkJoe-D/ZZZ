@@ -15,7 +15,7 @@ namespace Game.Adapters
 
         public void Move(Vector3 delta)
         {
-            _entity.MovementController?.Move(delta);
+            _entity.CharacterMotor?.Move(delta);
         }
 
         public void SetPosition(Vector3 position)
@@ -100,8 +100,8 @@ namespace Game.Adapters
 
         public void RotateTowards(Quaternion targetRotation, float speed)
         {
-            // 优先使用 MovementController 的 TurnSpeed 如果 speed 为默认
-            float finalSpeed = speed > 0 ? speed : (_entity.MovementController as MovementController)?.TurnSpeed ?? 15f;
+            // 优先使用 CharacterMotor 的 TurnSpeed 如果 speed 为默认
+            float finalSpeed = speed > 0 ? speed : (_entity.CharacterMotor as CharacterMotor)?.TurnSpeed ?? 15f;
             _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, targetRotation, Time.deltaTime * finalSpeed);
         }
 
@@ -112,47 +112,50 @@ namespace Game.Adapters
 
         public void RotateTo(Vector3 worldDirection, float speed = -1f, Vector3 localOffset = default)
         {
-            _entity.MovementController?.RotateTo(worldDirection, speed, localOffset);
+            _entity.CharacterMotor?.RotateTo(worldDirection, speed, localOffset);
         }
 
         public void RotateToImmediately(Vector3 worldDirection, Vector3 localOffset = default)
         {
-            _entity.MovementController?.RotateToImmediately(worldDirection, localOffset);
+            _entity.CharacterMotor?.RotateToImmediately(worldDirection, localOffset);
         }
 
         public void FaceTo(Vector3 direction, float speed = -1f, Vector3 localOffset = default)
         {
-            _entity.MovementController?.FaceTo(direction, speed, localOffset);
+            _entity.CharacterMotor?.FaceTo(direction, speed, localOffset);
         }
 
         public void FaceToImmediately(Vector3 direction, Vector3 localOffset = default)
         {
-            _entity.MovementController?.FaceToImmediately(direction, localOffset);
+            _entity.CharacterMotor?.FaceToImmediately(direction, localOffset);
         }
 
         public void FaceToTarget(Transform target, float speed = -1f, Vector3 localOffset = default)
         {
-            _entity.MovementController?.FaceToTarget(target, speed, localOffset);
+            _entity.CharacterMotor?.FaceToTarget(target, speed, localOffset);
         }
 
         public void FaceToTargetImmediately(Transform target, Vector3 localOffset = default)
         {
-            _entity.MovementController?.FaceToTargetImmediately(target, localOffset);
+            _entity.CharacterMotor?.FaceToTargetImmediately(target, localOffset);
         }
 
         public Vector3 GetInputDirection(bool withCamera)
         {
-            if (_entity.InputProvider == null) return Vector3.zero;
-
-            Vector2 input = _entity.InputProvider.GetMovementDirection();
-            if (input.sqrMagnitude < 0.001f) return Vector3.zero;
-
-            if (withCamera && _entity.MovementController != null)
+            if (_entity is RoleEntity role && role.InputProvider != null)
             {
-                return _entity.MovementController.CalculateWorldDirection(input);
+                Vector2 input = role.InputProvider.GetMovementDirection();
+                if (input.sqrMagnitude < 0.001f) return Vector3.zero;
+
+                if (withCamera && role.CharacterMotor != null)
+                {
+                    return role.CharacterMotor.CalculateWorldDirection(input);
+                }
+
+                return new Vector3(input.x, 0, input.y).normalized;
             }
 
-            return new Vector3(input.x, 0, input.y).normalized;
+            return Vector3.zero;
         }
     }
 }

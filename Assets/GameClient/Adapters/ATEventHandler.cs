@@ -12,7 +12,7 @@ namespace Game.Adapters
 
     public class ATEventHandler : IEventHandler
     {
-        public void OnSkillEvent(string eventName, List<ATEventParam> parameters)
+        public void OnActionTimelineEvent(string eventName, List<ATEventParam> parameters)
         {
             var e = new ATGlobalEvent
             {

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Game.AI;
 using Game.Logic;
 using UnityEngine;
 

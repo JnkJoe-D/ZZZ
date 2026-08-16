@@ -34,7 +34,7 @@ namespace ATEditor
             Transform target = _transformHandler.GetTarget();
             Vector3 offset = clip.localRotationOffset;
             bool immediate = clip.rotationMode == RotationMode.Immediate;
-            float speed = -1f; // 使用 MovementController 的默认转向速度
+            float speed = -1f; // 使用 CharacterMotor 的默认转向速度
 
             switch (clip.referenceDirection)
             {

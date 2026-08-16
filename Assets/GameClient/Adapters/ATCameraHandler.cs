@@ -19,8 +19,8 @@ namespace Game.Adapters
     /// </summary>
     public class ATCameraHandler : ICameraHandler
     {
-        private CharacterEntity _entity;
-        public ATCameraHandler(CharacterEntity entity)
+        private RoleEntity _entity;
+        public ATCameraHandler(RoleEntity entity)
         {
             _entity = entity;
         }

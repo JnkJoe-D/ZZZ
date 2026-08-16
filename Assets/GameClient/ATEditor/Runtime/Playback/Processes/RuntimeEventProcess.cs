@@ -14,7 +14,7 @@ namespace ATEditor
         {
             if (eventHandler != null)
             {
-                eventHandler.OnSkillEvent(clip.eventName, clip.parameters);
+                eventHandler.OnActionTimelineEvent(clip.eventName, clip.parameters);
             }
         }
 

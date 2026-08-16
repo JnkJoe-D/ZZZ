@@ -103,7 +103,7 @@ namespace Game.Logic
         /// 收集此动作上所有有效的统一路由（展开集合资产）。
         /// 基础动作不具备连招路由，仅做空实现，由派生类（如 RoleActionConfigAsset）实现具体逻辑。
         /// </summary>
-        public virtual void CollectEffectiveRoutes(List<ActionRoute> results, CharacterEntity actor = null)
+        public virtual void CollectEffectiveRoutes(List<ActionRoute> results, RoleEntity actor = null)
         {
         }
     }
