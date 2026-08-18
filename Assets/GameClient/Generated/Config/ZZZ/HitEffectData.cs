@@ -27,6 +27,7 @@ public sealed partial class HitEffectData : Luban.BeanBase
         { if(!_buf["value"].IsNumber) { throw new SerializationException(); }  Value = _buf["value"]; }
         { if(!_buf["buff_id"].IsNumber) { throw new SerializationException(); }  BuffId = _buf["buff_id"]; }
         { if(!_buf["chance"].IsNumber) { throw new SerializationException(); }  Chance = _buf["chance"]; }
+        { if(!_buf["hit_reaction"].IsNumber) { throw new SerializationException(); }  HitReaction = (ZZZ.HitReactionType)_buf["hit_reaction"].AsInt; }
     }
 
     public static HitEffectData DeserializeHitEffectData(JSONNode _buf)
@@ -62,6 +63,10 @@ public sealed partial class HitEffectData : Luban.BeanBase
     /// 触发概率（0.0 ~ 1.0，默认&#160;1.0&#160;表示 100% 触发）
     /// </summary>
     public readonly float Chance;
+    /// <summary>
+    /// 受击反馈类型
+    /// </summary>
+    public readonly ZZZ.HitReactionType HitReaction;
    
     public const int __ID__ = 1734677210;
     public override int GetTypeId() => __ID__;
@@ -80,6 +85,7 @@ public sealed partial class HitEffectData : Luban.BeanBase
         + "value:" + Value + ","
         + "buffId:" + BuffId + ","
         + "chance:" + Chance + ","
+        + "hitReaction:" + HitReaction + ","
         + "}";
     }
 }

@@ -101,9 +101,9 @@ namespace Game.Logic
             {
                 ConditionCommand.None => true,
                 ConditionCommand.Move => entity.InputProvider != null && entity.InputProvider.HasMovementInput(),
-                ConditionCommand.ShortMove => entity.RuntimeData != null && entity.RuntimeData.IsShortMoveInput,
+                ConditionCommand.ShortMove => entity.ActionData != null && entity.ActionData.IsShortMoveInput,
                 ConditionCommand.LostMove => entity.InputProvider != null && !entity.InputProvider.HasMovementInput(),
-                ConditionCommand.SwitchOutPending => entity.RuntimeData != null && entity.RuntimeData.IsSwitchOutPending,
+                ConditionCommand.SwitchOutPending => entity.SwitchData != null && entity.SwitchData.IsSwitchOutPending,
                 _ => false
             };
         }

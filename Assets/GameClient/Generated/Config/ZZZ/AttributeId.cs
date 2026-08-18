@@ -133,6 +133,10 @@ namespace cfg.ZZZ
         /// </summary>
         EtherRes = 280,
         /// <summary>
+        /// 基础抗打断等级
+        /// </summary>
+        BaseResilience = 290,
+        /// <summary>
         /// 急冻充能
         /// </summary>
         Ellen_FlashFreeze = 2000,

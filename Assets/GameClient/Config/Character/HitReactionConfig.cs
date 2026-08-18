@@ -19,6 +19,13 @@ namespace Game.Logic
         [Tooltip("击飞")]
         public ActionConfigAsset hitAnimKnowAway;
 
+        [Tooltip("原地抖动")]
+        public ActionConfigAsset hitAnimShake;
+        [Tooltip("原地打断")]
+        public ActionConfigAsset hitAnimStay;
+        [Tooltip("击倒")]
+        public ActionConfigAsset hitAnimKnockDown;
+
         [Header("击退（接口占位）")]
         public float knockbackForce = 0f;
 
@@ -29,9 +36,12 @@ namespace Game.Logic
         public float superArmorThreshold = 0f;
         public IEnumerable<ActionConfigAsset> GetAllActionConfigs()
         {
-            if(hitAnimLight != null)yield return hitAnimLight;
+            if (hitAnimLight != null) yield return hitAnimLight;
             if (hitAnimHeavy != null) yield return hitAnimHeavy;
             if (hitAnimKnowAway != null) yield return hitAnimKnowAway;
+            if (hitAnimShake != null) yield return hitAnimShake;
+            if (hitAnimStay != null) yield return hitAnimStay;
+            if (hitAnimKnockDown != null) yield return hitAnimKnockDown;
         }
     }
 }

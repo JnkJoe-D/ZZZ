@@ -13,7 +13,7 @@ namespace Game.Logic
 
         public override bool CanEnter()
         {
-            return Entity != null && Entity.RuntimeData != null && Entity.RuntimeData.CanEvade(Entity.Config);
+            return Entity != null && Entity.EvadeData != null && Entity.EvadeData.CanEvade(Entity.Config);
         }
 
         public override void OnInit(FSMSystem<RoleEntity> fsm)
@@ -25,7 +25,7 @@ namespace Game.Logic
         public override void OnEnter()
         {
             base.OnEnter();
-            Entity.RuntimeData.RecordEvade(Entity.Config);
+            Entity.EvadeData.RecordEvade(Entity.Config);
         }
 
         public override void OnUpdate(float deltaTime)

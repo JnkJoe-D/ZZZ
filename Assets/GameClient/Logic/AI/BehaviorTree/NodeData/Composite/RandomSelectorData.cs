@@ -1,0 +1,12 @@
+namespace Game.Logic.AI.BehaviorTree
+{
+    /// <summary>
+    /// 随机选择器节点数据。
+    /// 对应 NPBehave.RandomSelector —— 随机顺序执行子节点，直到某个成功为止。
+    /// 注意：中断规则仍基于编辑器中的原始顺序。
+    /// </summary>
+    [NodeColor("#6688CC")]
+    public class RandomSelectorData : CompositeData
+    {
+    }
+}

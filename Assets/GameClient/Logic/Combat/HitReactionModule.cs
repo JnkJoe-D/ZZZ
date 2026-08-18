@@ -42,6 +42,12 @@ namespace Game.Logic
                 return;
             }
 
+            // 1. 无敌判断
+            if (_entity.StatusModule != null && _entity.StatusModule.IsTagImmune("Invincible"))
+            {
+                return;
+            }
+
             _lastHitTime = Time.time;
 
             SpawnHitVFX(ctx);
@@ -52,17 +58,47 @@ namespace Game.Logic
                 ApplyHitStop(ctx);
             }
 
-            _entity.RuntimeData.CurrentHitStunDuration = ctx.hitStunDuration;
-            _entity.RuntimeData.SetHitReactionAxis(ctx.reactionAxis);
+            _entity.HitData.CurrentHitStunDuration = ctx.hitStunDuration;
+            _entity.HitData.SetHitReactionAxis(ctx.reactionAxis);
+            _entity.HitData.CurrentReactionType = ctx.reactionType;
 
-            if (!isSuperArmor)
+            // 2. 削韧与抗打断判定
+            int interruptLevel = ctx.interruptLevel;
+            int currentResilience = GetCurrentResilience();
+            
+            bool isInterrupted = interruptLevel >= currentResilience;
+
+            if (isInterrupted)
             {
                 FaceAttackerBeforeHitAnimation(ctx);
-                if (_entity is RoleEntity role)
+
+                if (ctx.reactionType != cfg.ZZZ.HitReactionType.None && ctx.reactionType != cfg.ZZZ.HitReactionType.Shake)
                 {
-                    role.StateMachine?.ChangeState<CharacterHitStunState>();
+                    if (_entity is RoleEntity role)
+                    {
+                        role.StateMachine?.ChangeState<CharacterHitStunState>();
+                    }
+                    // TODO: 对于怪物可以触发 BT 事件中断
+                }
+                else if (ctx.reactionType == cfg.ZZZ.HitReactionType.Shake)
+                {
+                    // Shake is played directly without changing state
+                    if (_entity.Config != null && _entity.Config.hitReactionConfig != null && _entity.Config.hitReactionConfig.hitAnimShake != null)
+                    {
+                        _entity.ActionPlayer?.PlayAction(_entity.Config.hitReactionConfig.hitAnimShake);
+                    }
                 }
             }
+        }
+
+        private int GetCurrentResilience()
+        {
+            if (_entity.StatusModule != null && _entity.StatusModule.Attributes != null && _entity.StatusModule.Attributes.Has(Game.Logic.AttributeId.BaseResilience))
+            {
+                float currentRes = _entity.StatusModule.Attributes.GetCurrent(Game.Logic.AttributeId.BaseResilience);
+                return Mathf.RoundToInt(currentRes);
+            }
+            return 1; // Default
         }
 
         private void FaceAttackerBeforeHitAnimation(HitContext ctx)

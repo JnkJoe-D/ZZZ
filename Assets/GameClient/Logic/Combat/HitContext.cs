@@ -14,6 +14,8 @@ namespace Game.Logic
 
         // --- 命中效果配置 ID（源自 DetectConfig → HitData） ---
         public int hitEffectId;
+        public int interruptLevel;
+        public cfg.ZZZ.HitReactionType reactionType;
 
         // --- 打击反馈参数（源自 DetectConfig → HitData） ---
         public bool enableHitStop;

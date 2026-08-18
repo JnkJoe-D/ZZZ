@@ -21,7 +21,8 @@ namespace Game.Logic
 
         public ActionPlayer ActionPlayer { get; private set; }
         public SkillMotionWindowHandler MotionWindowHandler { get; private set; }
-        public CharacterRuntimeData RuntimeData { get; private set; }
+        public ActionRuntimeData ActionData { get; private set; }
+        public HitReactionRuntimeData HitData { get; private set; }
         public StatusModule StatusModule { get; private set; }
 
         protected virtual void Awake()
@@ -34,7 +35,8 @@ namespace Game.Logic
 
             if (ActionPlayer == null) ActionPlayer = new ActionPlayer(this);
             if (MotionWindowHandler == null) MotionWindowHandler = new SkillMotionWindowHandler(this);
-            if (RuntimeData == null) RuntimeData = new CharacterRuntimeData();
+            if (ActionData == null) ActionData = new ActionRuntimeData();
+            if (HitData == null) HitData = new HitReactionRuntimeData();
             if (StatusModule == null) StatusModule = new StatusModule();
         }
 
@@ -46,7 +48,8 @@ namespace Game.Logic
 
             if (ActionPlayer == null) ActionPlayer = new ActionPlayer(this);
             if (MotionWindowHandler == null) MotionWindowHandler = new SkillMotionWindowHandler(this);
-            if (RuntimeData == null) RuntimeData = new CharacterRuntimeData();
+            if (ActionData == null) ActionData = new ActionRuntimeData();
+            if (HitData == null) HitData = new HitReactionRuntimeData();
             if (StatusModule == null) StatusModule = new StatusModule();
 
             CharacterMotor?.Init(this);
@@ -82,7 +85,6 @@ namespace Game.Logic
         protected virtual void Update()
         {
             ActionPlayer?.Tick(Time.deltaTime);
-            RuntimeData?.Update(Time.deltaTime);
             StatusModule?.Tick(Time.deltaTime);
         }
 

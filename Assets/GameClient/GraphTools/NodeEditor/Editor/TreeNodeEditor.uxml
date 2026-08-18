@@ -2,11 +2,13 @@
     <Style src="project://database/Assets/GameClient/GraphTools/NodeEditor/Editor/TreeNodeEditor.uss?fileID=7433441132597879392&amp;guid=916bc92077b809646bef221040a9251f&amp;type=3#TreeNodeEditor" />
     <ui:VisualElement style="flex-grow: 1; width: auto; flex-direction: row;">
         <ui:VisualElement name="Left_Inspector" style="flex-grow: 0.2;">
-            <ui:Label tabindex="-1" text="Inspector" parse-escape-sequences="true" display-tooltip-when-elided="true" name="titile" style="-unity-text-align: middle-left; -unity-font-style: bold;" />
             <InspectorViewr style="flex-grow: 1;" />
         </ui:VisualElement>
         <ui:VisualElement name="Right_Graph" style="flex-grow: 0.8;">
-            <ui:Label tabindex="-1" text="Graph" parse-escape-sequences="true" display-tooltip-when-elided="true" name="title" style="-unity-font-style: bold; -unity-text-align: middle-left;" />
+            <uie:Toolbar>
+                <uie:ToolbarButton text="Validate" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Validate" style="left: 10px; -unity-text-align: middle-center; -unity-font-style: bold;" />
+                <uie:ToolbarButton text="SaveAs" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SaveAs" style="left: 10px; -unity-text-align: middle-center; -unity-font-style: bold;" />
+            </uie:Toolbar>
             <TreeGraphViewr />
         </ui:VisualElement>
     </ui:VisualElement>

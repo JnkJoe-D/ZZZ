@@ -67,6 +67,9 @@ namespace ATEditor
         [SkillProperty("命中效果 ID")]
         public int hitEffectId = 0;
 
+        [SkillProperty("打断等级")]
+        public int interruptLevel = 1;
+
         public DetectConfig Clone()
         {
             return new DetectConfig
@@ -86,7 +89,8 @@ namespace ATEditor
                 followTarget = this.followTarget,
                 hitAudioClip = this.hitAudioClip,
                 hitAudioRef = new SkillAssetReference(this.hitAudioRef.guid, this.hitAudioRef.assetName, this.hitAudioRef.assetPath),
-                hitEffectId = this.hitEffectId
+                hitEffectId = this.hitEffectId,
+                interruptLevel = this.interruptLevel
             };
         }
     }

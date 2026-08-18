@@ -152,8 +152,9 @@ namespace Game.Logic
             // ── Step 10: 相机管理器 ───────────────────
             Game.Camera.GameCameraManager.Instance.Initialize();
 
-            // ── Step 11: 玩家连接层管理器 ────────────────
-
+            // ── Step 11: 玩家连接层与战斗业务管理器 ────────────────
+            Game.Logic.TeamManager.Instance.Initialize();
+            Game.Logic.MonsterManager.Instance.Initialize();
 
             // 发布初始化完成事件，各系统可以订阅此事件做后置操作
             EventCenter.Publish(new GameInitializedEvent());
@@ -180,6 +181,8 @@ namespace Game.Logic
 
             // 各子系统 Shutdown（顺序与初始化相反）
 
+            Game.Logic.MonsterManager.Instance?.Shutdown();
+            Game.Logic.TeamManager.Instance?.Shutdown();
             Game.Logic.ActionManager.Instance?.Shutdown();
             Game.Input.InputManager.Instance?.Shutdown();
             Game.Camera.GameCameraManager.Instance?.Shutdown();

@@ -365,7 +365,7 @@ namespace Game.Logic
                     }
                 }
 
-                if (_entity.RuntimeData != null && _entity.RuntimeData.TargetGroundSubState == ActionState.Skill)
+                if (_entity.ActionData != null && _entity.ActionData.TargetGroundSubState == ActionState.Skill)
                 {
                     isSkillOrAction = true;
                 }

@@ -184,8 +184,8 @@ namespace Game.Logic
             _activeComboWindows.Clear();
 
             _currentPlayingAction = action;
-            if (_entity.RuntimeData != null)
-                _entity.RuntimeData.NextActionToCast = action;
+            if (_entity.ActionData != null)
+                _entity.ActionData.NextActionToCast = action;
 
             _entity.ActionPlayer.OnActionComplete -= HandleActionComplete;
 
@@ -474,7 +474,7 @@ namespace Game.Logic
                     _activeComboWindows.Clear();
                     _entity.CommandBuffer?.Clear();
 
-                    _entity.RuntimeData.NextActionToCast = nextAction;
+                    _entity.ActionData.NextActionToCast = nextAction;
                     RecordRoute(command?.Type ?? InputCommand.None, command?.Phase ?? CommandPhase.Started, nextAction, source, tag);
                     PlayAction(nextAction, crossfadeOverride);
                 }
@@ -568,12 +568,12 @@ namespace Game.Logic
 
         private ActionConfigAsset GetCurrentAction()
         {
-            return _entity.ActionPlayer?.CurrentAction ?? _entity.RuntimeData?.NextActionToCast;
+            return _entity.ActionPlayer?.CurrentAction ?? _entity.ActionData?.NextActionToCast;
         }
 
         private void RecordRoute(InputCommand type, CommandPhase phase, ActionConfigAsset action, CommandRouteSource source, string tag)
         {
-            _entity.RuntimeData?.RecordResolvedRoute(source, tag, type, phase, action);
+            _entity.ComboData?.RecordResolvedRoute(source, tag, type, phase, action);
 
             ExecutionHistory.Insert(0, new ExecutionRecord
             {
@@ -635,8 +635,8 @@ namespace Game.Logic
                 case ActionState.Jog:
                 case ActionState.Dash:
                 case ActionState.Stop:
-                    if (_entity.RuntimeData != null)
-                        _entity.RuntimeData.TargetGroundSubState = state;
+                    if (_entity.ActionData != null)
+                        _entity.ActionData.TargetGroundSubState = state;
                     _entity.Machine.ChangeState<CharacterGroundState>();
                     break;
                 case ActionState.Skill:

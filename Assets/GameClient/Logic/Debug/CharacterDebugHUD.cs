@@ -168,28 +168,28 @@ namespace Game.Logic
 
                 DrawInfo(
                     "Target Ground",
-                    targetEntity.RuntimeData?.TargetGroundSubState.ToString() ?? "None",
+                    targetEntity.ActionData?.TargetGroundSubState.ToString() ?? "None",
                     new Color(0.75f, 0.9f, 1f));
 
 
                 string lastRouteText = "None";
-                if (targetEntity.RuntimeData != null)
+                if (targetEntity.ActionData != null)
                 {
-                    if (targetEntity.RuntimeData.LastRouteSource == CommandRouteSource.ActionComplete)
+                    if (targetEntity.ComboData.LastRouteSource == CommandRouteSource.ActionComplete)
                     {
-                        lastRouteText = $"ActionComplete ({targetEntity.RuntimeData.LastRouteTag ?? "-"})";
+                        lastRouteText = $"ActionComplete ({targetEntity.ComboData.LastRouteTag ?? "-"})";
                     }
                     else
                     {
-                        lastRouteText = $"{targetEntity.RuntimeData.LastRouteSource} / {targetEntity.RuntimeData.LastResolvedCommandType}/{targetEntity.RuntimeData.LastResolvedCommandPhase}";
+                        lastRouteText = $"{targetEntity.ComboData.LastRouteSource} / {targetEntity.ComboData.LastResolvedCommandType}/{targetEntity.ComboData.LastResolvedCommandPhase}";
                     }
                 }
                 DrawInfo("Last Route", lastRouteText, new Color(1f, 0.8f, 0.45f));
                 DrawInfo(
                     "Route Detail",
-                    targetEntity.RuntimeData == null
+                    targetEntity.ActionData == null
                         ? "None"
-                        : $"{targetEntity.RuntimeData.LastRouteTag ?? "-"} / {targetEntity.RuntimeData.LastResolvedActionId}",
+                        : $"{targetEntity.ComboData.LastRouteTag ?? "-"} / {targetEntity.ComboData.LastResolvedActionId}",
                     new Color(0.85f, 0.85f, 0.85f));
 
                 GUILayout.Space(15);

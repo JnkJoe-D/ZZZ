@@ -18,7 +18,7 @@ namespace Game.Logic
 
         public override void OnEnter()
         {
-            _ctx.HostEntity.RuntimeData.IsShortMoveInput = true;
+            _ctx.HostEntity.ActionData.IsShortMoveInput = true;
             _stateTime = 0f;
 
             // var config = _ctx.HostEntity.Config;
@@ -49,7 +49,7 @@ namespace Game.Logic
             var config = _ctx.HostEntity.Config as RoleConfigAsset;
             if (config != null)
             {
-                _ctx.HostEntity.RuntimeData.IsShortMoveInput = _stateTime <= config.JogShortInputThreshold;
+                _ctx.HostEntity.ActionData.IsShortMoveInput = _stateTime <= config.JogShortInputThreshold;
             }
 
             Vector2 inputDir = provider.GetMovementDirection();

@@ -17,14 +17,37 @@ namespace Game.Logic
         {
             base.OnEnter();
             
-            _stunDuration = Entity.RuntimeData.CurrentHitStunDuration;
+            _stunDuration = Entity.HitData.CurrentHitStunDuration;
             _stunTimer = 0f;
 
             // 通过 ActionPlayer 播放受击动画
-            if (Entity!=null && Entity.Config != null && Entity.Config.hitReactionConfig != null)
+            if (Entity != null && Entity.Config != null && Entity.Config.hitReactionConfig != null)
             {
-                // TODO: 根据 hitDirection 选择�?�?�?右受击动画变�?
-                var hitAnim = Entity.Config.hitReactionConfig.hitAnimLight;
+                var reactType = Entity.HitData.CurrentReactionType;
+                ActionConfigAsset hitAnim = null;
+
+                switch (reactType)
+                {
+                    case cfg.ZZZ.HitReactionType.Light:
+                        hitAnim = Entity.Config.hitReactionConfig.hitAnimLight;
+                        break;
+                    case cfg.ZZZ.HitReactionType.Heavy:
+                        hitAnim = Entity.Config.hitReactionConfig.hitAnimHeavy;
+                        break;
+                    case cfg.ZZZ.HitReactionType.Stay:
+                        hitAnim = Entity.Config.hitReactionConfig.hitAnimStay;
+                        break;
+                    case cfg.ZZZ.HitReactionType.Launch:
+                        hitAnim = Entity.Config.hitReactionConfig.hitAnimKnowAway;
+                        break;
+                    case cfg.ZZZ.HitReactionType.KnockDown:
+                        hitAnim = Entity.Config.hitReactionConfig.hitAnimKnockDown;
+                        break;
+                    case cfg.ZZZ.HitReactionType.Shake:
+                        hitAnim = Entity.Config.hitReactionConfig.hitAnimShake;
+                        break;
+                }
+
                 if (hitAnim != null)
                 {
                     Entity.ActionPlayer?.PlayAction(hitAnim);
@@ -45,7 +68,7 @@ namespace Game.Logic
         {
             // 确保受击结束后恢�?ActionPlayer 速度
             Entity.ActionPlayer?.SetPlaySpeed(1f);
-            Entity.RuntimeData.ClearHitReactionAxis();
+            Entity.HitData.ClearHitReactionAxis();
         }
     }
 }

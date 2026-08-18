@@ -21,8 +21,6 @@ MonoBehaviour:
   GroundLayer:
     serializedVersion: 2
     m_Bits: 128
-  ActionRoot: {fileID: 11400000, guid: a8ef118f0054c1f4f9794470564280dc, type: 2}
-  ActionProLoadList: []
   hitReactionConfig: {fileID: 0}
   Faction: 10
   Grade: 0
@@ -32,7 +30,8 @@ MonoBehaviour:
     DetectionRadius: 20
     PursuitRadius: 15
     FieldOfView: 120
-    AttackRange: 8
+    AttackRange: 6
     AttackCooldown: 3
   PoiseLevel: 1
   MaxDaze: 100
+  BehaviorTree: {fileID: 11400000, guid: 9de0b4738501d1c4c898f8ed31b41fda, type: 2}

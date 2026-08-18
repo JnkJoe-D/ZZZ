@@ -55,5 +55,35 @@ namespace Game.Logic
 
         [Tooltip("基础失衡值上限 (Daze Limit)，达到上限后怪物进入 Stunned 状态")]
         public float MaxDaze = 100f;
+
+        [Header("AI 行为")]
+        [Tooltip("怪物的行为树资产")]
+        public Game.Logic.AI.BehaviorTree.BehaviorTreeAsset BehaviorTree;
+
+        protected override void CollectActionConfigs(System.Collections.Generic.HashSet<ActionConfigAsset> collectedActions)
+        {
+            base.CollectActionConfigs(collectedActions);
+
+            if (BehaviorTree != null && BehaviorTree.nodes != null)
+            {
+                foreach (var node in BehaviorTree.nodes)
+                {
+                    if (node == null) continue;
+
+                    // 使用反射扫描节点中所有引用了 ActionConfigAsset (及其子类) 的字段
+                    var fields = node.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    foreach (var field in fields)
+                    {
+                        if (typeof(ActionConfigAsset).IsAssignableFrom(field.FieldType))
+                        {
+                            if (field.GetValue(node) is ActionConfigAsset action)
+                            {
+                                CollectActionRecursive(action, collectedActions);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

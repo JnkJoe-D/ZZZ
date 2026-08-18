@@ -34,17 +34,15 @@ namespace Game.Logic
         }
 
         private readonly RoleTargetFinderCfg _config;
-        private readonly TeamManager _teamManager;
 
-        public RoleTargetFinder(RoleTargetFinderCfg config, TeamManager teamManager)
+        public RoleTargetFinder(RoleTargetFinderCfg config)
         {
             _config = config ?? new RoleTargetFinderCfg();
-            _teamManager = teamManager;
         }
 
         public Transform GetTarget()
         {
-            var activeEntity = _teamManager?.LocalCharacter;
+            var activeEntity = TeamManager.Instance?.LocalCharacter;
             if (activeEntity == null) return null;
 
             Transform center = activeEntity.transform;
@@ -109,15 +107,13 @@ namespace Game.Logic
     {
         private readonly MonsterSensorConfig _config;
         private readonly Transform _ownerTransform;
-        private readonly TeamManager _teamManager;
         
         private Transform _currentTarget;
 
-        public MonsterTargetFinder(MonsterSensorConfig config, Transform ownerTransform, TeamManager teamManager)
+        public MonsterTargetFinder(MonsterSensorConfig config, Transform ownerTransform)
         {
             _config = config ?? new MonsterSensorConfig();
             _ownerTransform = ownerTransform;
-            _teamManager = teamManager;
         }
 
         public Transform GetTarget()
@@ -126,10 +122,10 @@ namespace Game.Logic
 
             // [测试环境] 暂时注释掉基于 TeamManager 的索敌逻辑
             /*
-            if (_teamManager == null) return null;
+            if (TeamManager.Instance == null) return null;
             
             // 获取当前上场的玩家角色
-            var activeEntity = _teamManager.LocalCharacter;
+            var activeEntity = TeamManager.Instance.LocalCharacter;
             if (activeEntity == null) 
             {
                 _currentTarget = null;
@@ -142,12 +138,20 @@ namespace Game.Logic
             // [测试环境] 改为广域搜索 (OverlapSphere)
             Transform player = null;
             LayerMask localRoleMask = LayerMask.GetMask("LocalRole");
-            // 直接以 PursuitRadius 作为最大搜索范围
-            Collider[] colliders = Physics.OverlapSphere(_ownerTransform.position, _config.PursuitRadius, localRoleMask);
+            // 搜索半径应取 DetectionRadius 和 PursuitRadius 的最大值，否则会导致 DetectionRadius > PursuitRadius 时远距离无法索敌
+            float maxSearchRadius = Mathf.Max(_config.DetectionRadius, _config.PursuitRadius);
+            Collider[] colliders = Physics.OverlapSphere(_ownerTransform.position, maxSearchRadius, localRoleMask);
             foreach (var col in colliders)
             {
                 if (col.CompareTag("LocalRole"))
                 {
+                    // 过滤掉未上场(后台Standby)的角色，防止索敌锁定在原地的隐形队友身上
+                    var entity = col.GetComponentInParent<RoleEntity>();
+                    if (entity != null && !entity.IsControlActive)
+                    {
+                        continue;
+                    }
+
                     player = col.transform;
                     break;
                 }
@@ -172,7 +176,9 @@ namespace Game.Logic
             else
             {
                 // 已经发现目标时，使用 PursuitRadius (追击容差范围) 判定
-                if (distanceSqr > _config.PursuitRadius * _config.PursuitRadius)
+                // 防止策划配置错误（视野大于追击）导致的索敌闪烁，追击半径不能小于视野半径
+                float actualPursuitRadius = Mathf.Max(_config.PursuitRadius, _config.DetectionRadius);
+                if (distanceSqr > actualPursuitRadius * actualPursuitRadius)
                 {
                     _currentTarget = null; // 跑太远，丢失目标
                 }

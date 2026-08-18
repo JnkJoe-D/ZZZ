@@ -15,5 +15,18 @@ namespace Game.Logic
         [Header("Evade (Player)")]
         public int evadeLimitedTimes = 2;
         public float evadeCoolDown = 1f;
+
+        [Header("Root Action")]
+        public ActionConfigAsset ActionRoot;
+
+        protected override void CollectActionConfigs(System.Collections.Generic.HashSet<ActionConfigAsset> collectedActions)
+        {
+            base.CollectActionConfigs(collectedActions);
+            
+            if (ActionRoot != null)
+            {
+                CollectActionRecursive(ActionRoot, collectedActions);
+            }
+        }
     }
 }

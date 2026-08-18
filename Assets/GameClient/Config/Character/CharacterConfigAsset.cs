@@ -18,30 +18,29 @@ namespace Game.Logic
         public float GroundOffset = 0.1f;
         public LayerMask GroundLayer;
 
-        [Header("Root Action")]
-        public ActionConfigAsset ActionRoot;
-
-        [Header("Action Preload List")]
-        public List<ActionConfigAsset> ActionProLoadList = new();
+        [System.NonSerialized]
+        protected List<ActionConfigAsset> _cachedActionConfigs;
 
         [Header("Hit Reaction")]
         public HitReactionConfig hitReactionConfig;
 
 
-        public IEnumerable<ActionConfigAsset> GetAllActionConfigs()
+        public virtual IEnumerable<ActionConfigAsset> GetAllActionConfigs()
         {
-            HashSet<ActionConfigAsset> collectedActions = new();
-
-            CollectActionRecursive(ActionRoot, collectedActions);
-
-            if (ActionProLoadList != null)
+            if (_cachedActionConfigs != null)
             {
-                foreach (ActionConfigAsset action in ActionProLoadList)
-                {
-                    CollectActionRecursive(action, collectedActions);
-                }
+                return _cachedActionConfigs;
             }
 
+            HashSet<ActionConfigAsset> collectedActions = new();
+            CollectActionConfigs(collectedActions);
+
+            _cachedActionConfigs = new List<ActionConfigAsset>(collectedActions);
+            return _cachedActionConfigs;
+        }
+
+        protected virtual void CollectActionConfigs(HashSet<ActionConfigAsset> collectedActions)
+        {
             if (hitReactionConfig != null)
             {
                 foreach (ActionConfigAsset hitActionConfig in hitReactionConfig.GetAllActionConfigs())
@@ -49,14 +48,9 @@ namespace Game.Logic
                     CollectActionRecursive(hitActionConfig, collectedActions);
                 }
             }
-
-            foreach (ActionConfigAsset action in collectedActions)
-            {
-                yield return action;
-            }
         }
 
-        private static void CollectActionRecursive(ActionConfigAsset action, HashSet<ActionConfigAsset> collectedActions)
+        protected static void CollectActionRecursive(ActionConfigAsset action, HashSet<ActionConfigAsset> collectedActions)
         {
             if (action == null || !collectedActions.Add(action))
             {

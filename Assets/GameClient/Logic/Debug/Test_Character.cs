@@ -21,6 +21,7 @@ namespace Game.Logic
         public string characterPrefabPath = "Assets/Resources/Character_Player.prefab";
         public Game.Logic.CharacterConfigAsset testCharacterConfig;
         public Game.Logic.TeamConfigAsset testPartyConfig;
+        public Game.Logic.MonsterConfigAsset testMonsterConfig;
         public Transform spawnPoint;
 
         public bool IsSpawnCompleted { get; private set; }
@@ -130,7 +131,26 @@ namespace Game.Logic
 
             Game.Camera.GameCameraManager.Instance.Initialize();
 
+            Game.Logic.TeamManager.Instance.Initialize();
+            Game.Logic.MonsterManager.Instance.Initialize();
+
+            // 自动挂载并初始化波次管理器 (以便测试 F1 刷怪)
+            var waveManager = gameObject.GetComponent<Game.Logic.Level.WaveManager>();
+            if (waveManager == null)
+            {
+                waveManager = gameObject.AddComponent<Game.Logic.Level.WaveManager>();
+            }
+            waveManager.TestMonsterConfig = testMonsterConfig;
+            waveManager.TestSpawnPoint = spawnPoint;
+
             StartCoroutine(SpawnRoutine());
+        }
+
+        private void OnDestroy()
+        {
+            Game.Logic.MonsterManager.Instance?.Shutdown();
+            Game.Logic.TeamManager.Instance?.Shutdown();
+            Game.Logic.ActionManager.Instance?.Shutdown();
         }
     }
 }

@@ -285,7 +285,7 @@ namespace Game.Logic
             _teamConfig = teamConfig;
 
             // 初始化队伍共享的索敌组件
-            TargetFinder = new RoleTargetFinder(teamConfig.TargetSearchConfig, this);
+            TargetFinder = new RoleTargetFinder(teamConfig.TargetSearchConfig);
 
             // 限制最多加载并生成 3 名编队成员
             List<CharacterConfigAsset> runtimeMembers = new List<CharacterConfigAsset>(3);
@@ -616,6 +616,7 @@ namespace Game.Logic
             }
             entity.ResetSwitchState();
             entity.SetPresentationVisible(false);
+            entity.SetColliderActive(false);
             SetDebugHudVisible(entity, false);
             if (entity.Config?.ActionRoot != null &&
                 (entity.ActionPlayer?.CurrentAction != entity.Config.ActionRoot || entity.ActionPlayer?.IsPlaying != true))

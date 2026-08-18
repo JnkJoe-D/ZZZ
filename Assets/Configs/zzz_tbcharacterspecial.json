@@ -3,13 +3,15 @@
     "characterId": 1001,
     "initial_buffs": [],
     "immune_tags": [],
-    "custom_attributes": []
+    "custom_attributes": [],
+    "baseResilience": 1
   },
   {
     "characterId": 1002,
     "initial_buffs": [],
     "immune_tags": [],
-    "custom_attributes": []
+    "custom_attributes": [],
+    "baseResilience": 1
   },
   {
     "characterId": 1003,
@@ -22,6 +24,7 @@
         "max_val": 6,
         "min_val": 0
       }
-    ]
+    ],
+    "baseResilience": 1
   }
 ]

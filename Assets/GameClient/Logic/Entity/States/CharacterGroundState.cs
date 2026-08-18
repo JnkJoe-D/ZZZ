@@ -50,10 +50,10 @@ namespace Game.Logic
         public override void OnEnter()
         {
             ActionState targetState = ActionState.Idle;
-            if (Entity.RuntimeData != null)
+            if (Entity.ActionData != null)
             {
-                targetState = Entity.RuntimeData.TargetGroundSubState;
-                Entity.RuntimeData.TargetGroundSubState = ActionState.Idle; // 消费请求
+                targetState = Entity.ActionData.TargetGroundSubState;
+                Entity.ActionData.TargetGroundSubState = ActionState.Idle; // 消费请求
             }
 
             if (targetState == ActionState.Dash)

@@ -1,0 +1,18 @@
+using Game.Logic;
+
+namespace Game.Logic
+{
+    public class ActionRuntimeData
+    {
+        public ActionState TargetGroundSubState { get; set; } = ActionState.Idle;
+        public ActionConfigAsset NextActionToCast { get; set; }
+        public bool IsShortMoveInput { get; set; }
+
+        public void Reset()
+        {
+            TargetGroundSubState = ActionState.Idle;
+            NextActionToCast = null;
+            IsShortMoveInput = false;
+        }
+    }
+}

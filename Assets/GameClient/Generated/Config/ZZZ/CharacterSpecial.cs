@@ -21,6 +21,7 @@ public sealed partial class CharacterSpecial : Luban.BeanBase
         { var __json0 = _buf["initial_buffs"]; if(!__json0.IsArray) { throw new SerializationException(); } InitialBuffs = new System.Collections.Generic.List<int>(__json0.Count); foreach(JSONNode __e0 in __json0.Children) { int __v0;  { if(!__e0.IsNumber) { throw new SerializationException(); }  __v0 = __e0; }  InitialBuffs.Add(__v0); }   }
         { var __json0 = _buf["immune_tags"]; if(!__json0.IsArray) { throw new SerializationException(); } ImmuneTags = new System.Collections.Generic.List<string>(__json0.Count); foreach(JSONNode __e0 in __json0.Children) { string __v0;  { if(!__e0.IsString) { throw new SerializationException(); }  __v0 = __e0; }  ImmuneTags.Add(__v0); }   }
         { var __json0 = _buf["custom_attributes"]; if(!__json0.IsArray) { throw new SerializationException(); } CustomAttributes = new System.Collections.Generic.List<ZZZ.CustomAttrCfg>(__json0.Count); foreach(JSONNode __e0 in __json0.Children) { ZZZ.CustomAttrCfg __v0;  { if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = global::cfg.ZZZ.CustomAttrCfg.DeserializeCustomAttrCfg(__e0);  }  CustomAttributes.Add(__v0); }   }
+        { if(!_buf["baseResilience"].IsNumber) { throw new SerializationException(); }  BaseResilience = _buf["baseResilience"]; }
     }
 
     public static CharacterSpecial DeserializeCharacterSpecial(JSONNode _buf)
@@ -44,6 +45,10 @@ public sealed partial class CharacterSpecial : Luban.BeanBase
     /// 角色独有属性配置
     /// </summary>
     public readonly System.Collections.Generic.List<ZZZ.CustomAttrCfg> CustomAttributes;
+    /// <summary>
+    /// 基础抗打断等级
+    /// </summary>
+    public readonly int BaseResilience;
    
     public const int __ID__ = -1994567740;
     public override int GetTypeId() => __ID__;
@@ -60,6 +65,7 @@ public sealed partial class CharacterSpecial : Luban.BeanBase
         + "initialBuffs:" + Luban.StringUtil.CollectionToString(InitialBuffs) + ","
         + "immuneTags:" + Luban.StringUtil.CollectionToString(ImmuneTags) + ","
         + "customAttributes:" + Luban.StringUtil.CollectionToString(CustomAttributes) + ","
+        + "baseResilience:" + BaseResilience + ","
         + "}";
     }
 }

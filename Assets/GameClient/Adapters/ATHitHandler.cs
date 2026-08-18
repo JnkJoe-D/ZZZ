@@ -71,12 +71,24 @@ namespace Game.Adapters
                     }
                     hitDirection.Normalize();
 
+                    // 构建 HitContext 之前的辅助计算
+                    cfg.ZZZ.HitReactionType maxReaction = cfg.ZZZ.HitReactionType.None;
+                    foreach (var effect in hitEffectConfig.Effects)
+                    {
+                        if (effect != null && effect.HitReaction > maxReaction)
+                        {
+                            maxReaction = effect.HitReaction;
+                        }
+                    }
+
                     // 构建 HitContext
                     var ctx = new HitContext
                     {
                         attacker = attacker,
                         victim = victim,
                         hitEffectId = hitData.hitEffectId,
+                        interruptLevel = hitData.interruptLevel,
+                        reactionType = maxReaction,
                         enableHitStop = hitData.enableHitStop,
                         hitStopDuration = hitData.hitStopDuration,
                         hitStopScale = hitData.hitStopScale,

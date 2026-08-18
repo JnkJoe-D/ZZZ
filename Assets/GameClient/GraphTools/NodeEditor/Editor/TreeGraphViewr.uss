@@ -17,6 +17,6 @@ GridBackground{
 }
 
 .running-edge {
-    --edge-color: rgb(0, 255, 255);
-    --edge-width: 4;
+    --edge-color: rgb(50, 255, 50);
+    --edge-width: 6;
 }

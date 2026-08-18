@@ -217,6 +217,7 @@ namespace ATEditor
                     hitBoxCenter = center,
                     targetsCollilders = validHits.ToArray(),
                     hitEffectId = detectConfig.hitEffectId,
+                    interruptLevel = detectConfig.interruptLevel,
                     hitDirectionMode = clip.hitDirectionMode,
                     customHitDirection = clip.customHitDirection,
                     customWorldDirection = onEnterCustomDirection,

@@ -6,11 +6,11 @@ using UnityEngine.UIElements;
 
 public class TreeNodeView : UnityEditor.Experimental.GraphView.Node
 {
-    public Game.Logic.AI.BehaviorTree.Node node;
+    public Game.Logic.AI.BehaviorTree.NodeData node;
     public Port input;
     public Port output;
     public Action<TreeNodeView> onNodeSelected;
-    public TreeNodeView(Game.Logic.AI.BehaviorTree.Node node)
+    public TreeNodeView(Game.Logic.AI.BehaviorTree.NodeData node)
     {
         this.node = node;
         title = node.name;
@@ -135,7 +135,7 @@ public class TreeNodeView : UnityEditor.Experimental.GraphView.Node
     }
     public void CreateInputPort()
     {
-        if(node is Game.Logic.AI.BehaviorTree.Root)
+        if(node is Game.Logic.AI.BehaviorTree.RootData)
         {
             input = null;
             return;
@@ -149,13 +149,13 @@ public class TreeNodeView : UnityEditor.Experimental.GraphView.Node
     }
     public void CreateOutputPort()
     {
-        if(node is Game.Logic.AI.BehaviorTree.LeafNode)
+        if(node is Game.Logic.AI.BehaviorTree.TaskData)
         {
             output = null;
             return;
         }
-        var capacity = (node is Game.Logic.AI.BehaviorTree.DecoratorNode||
-        node is Game.Logic.AI.BehaviorTree.Root) ? Port.Capacity.Single : Port.Capacity.Multi;
+        var capacity = (node is Game.Logic.AI.BehaviorTree.DecoratorData||
+        node is Game.Logic.AI.BehaviorTree.RootData) ? Port.Capacity.Single : Port.Capacity.Multi;
         output = InstantiatePort(Orientation.Vertical, Direction.Output, capacity, typeof(float));
         if(output != null)
         {
@@ -177,15 +177,77 @@ public class TreeNodeView : UnityEditor.Experimental.GraphView.Node
         node.position.y = newPos.yMin;
     }
 
-    public void UpdateState()
+    public void UpdateState(Game.Logic.AI.BehaviorTree.BTRunner runner)
     {
-        if (!Application.isPlaying) return;
-
-        RemoveFromClassList("running");
-        
-        if (node != null && node.CurrentState == Game.Logic.AI.BehaviorTree.NodeState.Active)
+        if (!UnityEngine.Application.isPlaying || runner == null || runner.RuntimeTranslationResult == null)
         {
-            AddToClassList("running");
+            
+            var nodeBorder = this.Q("node-border");
+            if (nodeBorder != null) {
+                nodeBorder.style.borderTopColor = new UnityEngine.UIElements.StyleColor(UnityEngine.UIElements.StyleKeyword.Null);
+                nodeBorder.style.borderBottomColor = new UnityEngine.UIElements.StyleColor(UnityEngine.UIElements.StyleKeyword.Null);
+                nodeBorder.style.borderLeftColor = new UnityEngine.UIElements.StyleColor(UnityEngine.UIElements.StyleKeyword.Null);
+                nodeBorder.style.borderRightColor = new UnityEngine.UIElements.StyleColor(UnityEngine.UIElements.StyleKeyword.Null);
+                nodeBorder.style.borderTopWidth = 1;
+                nodeBorder.style.borderBottomWidth = 1;
+                nodeBorder.style.borderLeftWidth = 1;
+                nodeBorder.style.borderRightWidth = 1;
+            }
+            return;
+        }
+
+        bool isActive = false;
+        bool isStopRequested = false;
+
+        if (node != null && runner.RuntimeTranslationResult.GuidToNodeMap.TryGetValue(node.guid, out var npNode))
+        {
+            isActive = npNode.CurrentState == NPBehave.Node.State.ACTIVE;
+            isStopRequested = npNode.CurrentState == NPBehave.Node.State.STOP_REQUESTED;
+        }
+
+        var border = this.Q("node-border");
+        if (isActive)
+        {
+            
+            if (border != null) {
+                border.style.borderTopColor = UnityEngine.Color.cyan;
+                border.style.borderBottomColor = UnityEngine.Color.cyan;
+                border.style.borderLeftColor = UnityEngine.Color.cyan;
+                border.style.borderRightColor = UnityEngine.Color.cyan;
+                border.style.borderTopWidth = 3;
+                border.style.borderBottomWidth = 3;
+                border.style.borderLeftWidth = 3;
+                border.style.borderRightWidth = 3;
+            }
+        }
+        else if (isStopRequested)
+        {
+            
+            if (border != null) {
+                border.style.borderTopColor = UnityEngine.Color.yellow;
+                border.style.borderBottomColor = UnityEngine.Color.yellow;
+                border.style.borderLeftColor = UnityEngine.Color.yellow;
+                border.style.borderRightColor = UnityEngine.Color.yellow;
+                border.style.borderTopWidth = 3;
+                border.style.borderBottomWidth = 3;
+                border.style.borderLeftWidth = 3;
+                border.style.borderRightWidth = 3;
+            }
+        }
+        else
+        {
+            
+            if (border != null) {
+                border.style.borderTopColor = new UnityEngine.UIElements.StyleColor(UnityEngine.UIElements.StyleKeyword.Null);
+                border.style.borderBottomColor = new UnityEngine.UIElements.StyleColor(UnityEngine.UIElements.StyleKeyword.Null);
+                border.style.borderLeftColor = new UnityEngine.UIElements.StyleColor(UnityEngine.UIElements.StyleKeyword.Null);
+                border.style.borderRightColor = new UnityEngine.UIElements.StyleColor(UnityEngine.UIElements.StyleKeyword.Null);
+                border.style.borderTopWidth = 1;
+                border.style.borderBottomWidth = 1;
+                border.style.borderLeftWidth = 1;
+                border.style.borderRightWidth = 1;
+            }
         }
     }
 }
+    

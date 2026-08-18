@@ -21,6 +21,7 @@ namespace ATEditor
 
         // ★ 新：命中效果配置 ID（查表用）
         public int hitEffectId;
+        public int interruptLevel;
 
         // 受击方向控制
         public HitDirectionMode hitDirectionMode;

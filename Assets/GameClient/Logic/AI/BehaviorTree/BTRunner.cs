@@ -1,50 +1,59 @@
+using NPBehave;
 using UnityEngine;
 
 namespace Game.Logic.AI.BehaviorTree
 {
+    /// <summary>
+    /// 轻量级行为树运行组件，负责在运行时加载和管理 NPBehave 行为树实例。
+    /// </summary>
     public class BTRunner : MonoBehaviour
     {
-        public BehaviorTreeAsset treeAsset;
-        private BehaviorTreeAsset _runtimeTree;
+        public BehaviorTree.BehaviorTreeAsset treeAsset;
 
-        public BehaviorTreeAsset RuntimeTree => _runtimeTree;
+        public Root RuntimeRoot => RuntimeTranslationResult?.Root;
+        public BehaviorTree.TranslationResult RuntimeTranslationResult { get; private set; }
+        public Blackboard RuntimeBlackboard => RuntimeRoot?.Blackboard;
 
-        public void Setup(Blackboard blackboard)
+        public void Init(BehaviorTree.BehaviorTreeAsset asset)
         {
-            if (treeAsset != null)
+            treeAsset = asset;
+            var blackboard = new Blackboard(UnityContext.GetClock());
+            
+            // 可以通过拓展将更多上下文信息注册到黑板，如 Owner (Entity) 等
+            blackboard.Set("GameObject", this.gameObject);
+            
+            RuntimeTranslationResult = BehaviorTree.BehaviorTreeTranslator.Translate(asset, blackboard);
+
+#if UNITY_EDITOR
+            // 自动挂载 NPBehave 原生 Debugger 组件供调试参考
+            if (RuntimeRoot != null)
             {
-                _runtimeTree = treeAsset.Clone();
-                _runtimeTree.blackboard = blackboard;
-                
-                if (_runtimeTree.rootNode != null)
-                {
-                    _runtimeTree.rootNode.SetTree(_runtimeTree);
-                }
+                var debugger = gameObject.GetComponent<NPBehave.Debugger>();
+                if (debugger == null) debugger = gameObject.AddComponent<NPBehave.Debugger>();
+                debugger.BehaviorTree = RuntimeRoot;
             }
-            else
-            {
-                Debug.LogWarning("BTRunner Setup failed: treeAsset is null.");
-            }
+#endif
         }
 
         public void StartTree()
         {
-            if (_runtimeTree != null && _runtimeTree.rootNode != null)
+            if (RuntimeRoot != null && RuntimeRoot.CurrentState == Node.State.INACTIVE)
             {
-                _runtimeTree.rootNode.Start();
+                RuntimeRoot.Start();
             }
         }
 
-        public void UpdateTree()
+        public void StopTree()
         {
-            if (_runtimeTree != null && _runtimeTree.rootNode != null)
+            if (RuntimeRoot != null && RuntimeRoot.CurrentState == Node.State.ACTIVE)
             {
-                // 如果树停了，自动重启（模拟Repeater）
-                if (_runtimeTree.rootNode.CurrentState == NodeState.Inactive)
-                {
-                    _runtimeTree.rootNode.Start();
-                }
+                RuntimeRoot.Stop();
             }
+        }
+
+        private void OnDestroy()
+        {
+            StopTree();
         }
     }
 }

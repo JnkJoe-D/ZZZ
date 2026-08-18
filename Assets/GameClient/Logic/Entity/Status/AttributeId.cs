@@ -68,6 +68,9 @@ namespace Game.Logic
         ElectricRes = 270,
         /// <summary>以太属性抗性</summary>
         EtherRes = 280,
+        
+        /// <summary>基础抗打断</summary>
+        BaseResilience = 290,
 
         /// <summary>急冻充能 (艾莲专属)</summary>
         Ellen_FlashFreeze = 2000,

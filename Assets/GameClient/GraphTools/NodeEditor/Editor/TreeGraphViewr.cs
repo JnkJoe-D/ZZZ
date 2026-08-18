@@ -27,23 +27,7 @@ public class TreeGraphViewr : GraphView
         this.styleSheets.Add(styleSheet);
     }
 
-    public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
-    {
-        base.BuildContextualMenu(evt);
-        
-        // 记录右键点击时的鼠标位置，并转换到 GraphView 内部容器的真实坐标（处理过缩放和平移的）
-        Vector2 nodePosition = contentViewContainer.WorldToLocal(this.LocalToWorld(evt.localMousePosition));
-
-        var types = TypeCache.GetTypesDerivedFrom<Game.Logic.AI.BehaviorTree.Node>();
-        foreach (var type in types)
-        {
-            if (type.IsAbstract) continue;
-            if (type == typeof(Game.Logic.AI.BehaviorTree.Root) && tree.rootNode != null) continue;
-            evt.menu.AppendAction($"Create Node/{type.Name}", (a) => CreateNode(type, nodePosition));
-        }
-    }
-
-    private void CreateNode(System.Type type, Vector2 position)
+    public void CreateNode(System.Type type, Vector2 position)
     {
         var node = tree.CreateNode(type);
         node.position = position; // 设置为鼠标点击的位置
@@ -51,7 +35,7 @@ public class TreeGraphViewr : GraphView
         CreateNodeView(node);
     }
 
-    private void CreateNodeView(Game.Logic.AI.BehaviorTree.Node node)
+    private void CreateNodeView(Game.Logic.AI.BehaviorTree.NodeData node)
     {
         var nodeView = new TreeNodeView(node);
         nodeView.onNodeSelected = onSelectNodeView;
@@ -117,7 +101,7 @@ public class TreeGraphViewr : GraphView
         }
         return graphViewChange;
     }
-    private TreeNodeView FindNodeViewByGuid(Game.Logic.AI.BehaviorTree.Node node)
+    private TreeNodeView FindNodeViewByGuid(Game.Logic.AI.BehaviorTree.NodeData node)
     {
         return GetNodeByGuid(node.guid) as TreeNodeView;
     }
@@ -127,7 +111,7 @@ public class TreeGraphViewr : GraphView
         ports.ForEach((endport) =>
         {
             if (startPort != endport && startPort.direction != endport.direction
-            &&startPort.node != endport.node&&(endport.node as TreeNodeView).node.ParentNode != (startPort.node as TreeNodeView).node)
+            &&startPort.node != endport.node)
             {
                 compatiblePorts.Add(endport);
             }
@@ -135,27 +119,34 @@ public class TreeGraphViewr : GraphView
         return compatiblePorts;
     }
 
-    public void UpdateNodeStates()
+    public void UpdateNodeStates(Game.Logic.AI.BehaviorTree.BTRunner runner)
     {
         nodes.ForEach(n => {
             if (n is TreeNodeView view)
             {
-                view.UpdateState();
+                view.UpdateState(runner);
             }
         });
 
         edges.ForEach(e => {
-            if (e.input != null && e.input.node is TreeNodeView inputView && inputView.node != null)
+            bool isEdgeActive = false;
+            if (UnityEngine.Application.isPlaying && runner != null && runner.RuntimeTranslationResult != null && 
+                e.input != null && e.input.node is TreeNodeView inputView && inputView.node != null)
             {
-                if (inputView.node.CurrentState == Game.Logic.AI.BehaviorTree.NodeState.Active)
+                if (runner.RuntimeTranslationResult.GuidToNodeMap.TryGetValue(inputView.node.guid, out var npNode))
                 {
-                    e.AddToClassList("running-edge");
-                }
-                else
-                {
-                    e.RemoveFromClassList("running-edge");
+                    isEdgeActive = npNode.CurrentState == NPBehave.Node.State.ACTIVE;
                 }
             }
+
+            if (isEdgeActive)
+            {
+                e.AddToClassList("running-edge");
+            }
+            else
+            {
+                e.RemoveFromClassList("running-edge");
+            }
         });
-    }
+}
 }
