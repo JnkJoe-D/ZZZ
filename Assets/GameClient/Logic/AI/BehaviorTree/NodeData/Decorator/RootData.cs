@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NPBehave;
 using UnityEngine;
 
 namespace Game.Logic.AI.BehaviorTree
@@ -11,5 +12,6 @@ namespace Game.Logic.AI.BehaviorTree
     [NodeColor("#FF6644")]
     public class RootData : DecoratorData
     {
+ 
     }
 }

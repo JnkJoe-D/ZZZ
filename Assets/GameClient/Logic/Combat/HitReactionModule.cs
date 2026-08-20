@@ -23,11 +23,13 @@ namespace Game.Logic
         public bool isSuperArmor = false;
 
         private CharacterEntity _entity;
+        private HitReactionRuntimeData _hitData;
         private float _lastHitTime = -999f;
 
         public void Init(CharacterEntity entity)
         {
             _entity = entity;
+            _hitData = _entity.DataModule?.Get<HitReactionRuntimeData>();
         }
 
         public void ApplyVisualFeedback(HitContext ctx)
@@ -58,9 +60,12 @@ namespace Game.Logic
                 ApplyHitStop(ctx);
             }
 
-            _entity.HitData.CurrentHitStunDuration = ctx.hitStunDuration;
-            _entity.HitData.SetHitReactionAxis(ctx.reactionAxis);
-            _entity.HitData.CurrentReactionType = ctx.reactionType;
+            if (_hitData != null)
+            {
+                _hitData.CurrentHitStunDuration = ctx.hitStunDuration;
+                _hitData.SetHitReactionAxis(ctx.reactionAxis);
+                _hitData.CurrentReactionType = ctx.reactionType;
+            }
 
             // 2. 削韧与抗打断判定
             int interruptLevel = ctx.interruptLevel;

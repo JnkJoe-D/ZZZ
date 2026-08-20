@@ -10,20 +10,27 @@ namespace Game.Logic
     {
         private float _stunTimer;
         private float _stunDuration;
-
-        public override IInputCommandHandler InputHandler => NullInputHandler; // 受击中禁止输�?
+        private HitReactionRuntimeData _hitData;
+        public override IInputCommandHandler InputHandler => NullInputHandler;
 
         public override void OnEnter()
         {
             base.OnEnter();
-            
-            _stunDuration = Entity.HitData.CurrentHitStunDuration;
+            _hitData = Entity.DataModule?.Get<HitReactionRuntimeData>();
+            if (_hitData != null)
+            {
+                _stunDuration = _hitData.CurrentHitStunDuration;
+            }
+            else
+            {
+                _stunDuration = 0.5f; // Fallback
+            }
             _stunTimer = 0f;
 
             // 通过 ActionPlayer 播放受击动画
-            if (Entity != null && Entity.Config != null && Entity.Config.hitReactionConfig != null)
+            if (Entity != null && Entity.Config != null && Entity.Config.hitReactionConfig != null && _hitData != null)
             {
-                var reactType = Entity.HitData.CurrentReactionType;
+                var reactType = _hitData.CurrentReactionType;
                 ActionConfigAsset hitAnim = null;
 
                 switch (reactType)
@@ -68,7 +75,7 @@ namespace Game.Logic
         {
             // 确保受击结束后恢�?ActionPlayer 速度
             Entity.ActionPlayer?.SetPlaySpeed(1f);
-            Entity.HitData.ClearHitReactionAxis();
+            _hitData?.ClearHitReactionAxis();
         }
     }
 }

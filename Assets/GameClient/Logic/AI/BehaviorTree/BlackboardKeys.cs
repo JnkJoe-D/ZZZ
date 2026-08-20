@@ -3,10 +3,8 @@ namespace Game.Logic.AI.BehaviorTree
     public enum BBKey
     {
         HasTarget,
-        TargetDistance,
-        TargetDirection,
-        IsDead,
-        CurrentHP
+        DistanceToTarget,
+        AttackCooldownTimer
     }
 
     public static class BBKeyMapper

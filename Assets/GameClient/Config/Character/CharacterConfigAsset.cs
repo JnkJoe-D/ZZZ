@@ -24,6 +24,8 @@ namespace Game.Logic
         [Header("Hit Reaction")]
         public HitReactionConfig hitReactionConfig;
 
+        [Header("Root Action")]
+        public ActionConfigAsset ActionRoot;
 
         public virtual IEnumerable<ActionConfigAsset> GetAllActionConfigs()
         {
@@ -47,6 +49,11 @@ namespace Game.Logic
                 {
                     CollectActionRecursive(hitActionConfig, collectedActions);
                 }
+            }
+            
+            if (ActionRoot != null)
+            {
+                CollectActionRecursive(ActionRoot, collectedActions);
             }
         }
 

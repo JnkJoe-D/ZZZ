@@ -3,7 +3,7 @@ using Game.Input;
 
 namespace Game.Logic
 {
-    public class ComboRouteRuntimeData
+    public class ComboRouteRuntimeData : IEntityRuntimeData
     {
         public CommandRouteSource LastRouteSource { get; private set; }
         public string LastRouteTag { get; private set; }

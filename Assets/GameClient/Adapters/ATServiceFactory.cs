@@ -77,7 +77,13 @@ namespace Game.Adapters
 
             if (serviceType == typeof(IRouteWindowHandler))
             {
-                return GetOrCreateCachedService(serviceType, owner ,() => owner.GetComponent<RoleEntity>()?.ActionController);
+                return GetOrCreateCachedService(serviceType, owner, () =>
+                {
+                    var entity = owner.GetComponent<CharacterEntity>();
+                    if (entity is RoleEntity role) return role.ActionController;
+                    if (entity is MonsterEntity monster) return monster.ActionController;
+                    return null;
+                });
             }
 
             if (serviceType == typeof(IMotionWindowHandler))

@@ -27,6 +27,18 @@
                     "rid": 1001
                 }
             ]
+        },
+        {
+            "groupId": "05379216-66ca-48b1-92c3-531680524c71",
+            "groupName": "Route",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1002
+                }
+            ]
         }
     ],
     "references": {
@@ -50,7 +62,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1002
+                            "rid": 1003
                         }
                     ],
                     "isMasterTrack": true,
@@ -84,13 +96,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1003
+                            "rid": 1004
                         }
                     ]
                 }
             },
             {
                 "rid": 1002,
+                "type": {
+                    "class": "RouteWindowTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "e960b3d2-e002-40ec-8b7b-830cfaa73ad6",
+                    "trackType": "RouteWindowTrack",
+                    "trackName": "输入派生窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1005
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1003,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -105,7 +140,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34078
+                        "instanceID": 40850
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -115,7 +150,7 @@
                     "clipRef": {
                         "guid": "bbdd7cde32f1b904aae7542268cb541a",
                         "assetName": "TyrfingInfested_Ani_Idle",
-                        "assetPath": "Assets/Dependencies/Animation/TryfingInfested/Monster_TyrfingInfested.fbx"
+                        "assetPath": "Assets/Resources/Models/TyrfingInfested/Monster_TyrfingInfested.fbx"
                     },
                     "maskRef": {
                         "guid": "",
@@ -125,7 +160,7 @@
                 }
             },
             {
-                "rid": 1003,
+                "rid": 1004,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -140,6 +175,24 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 3
+                }
+            },
+            {
+                "rid": 1005,
+                "type": {
+                    "class": "RouteWindowClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "8e2adb73-c03b-4eaf-8981-422f535d73e7",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 2.016666889190674,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "comboTag": "Execute1"
                 }
             }
         ]

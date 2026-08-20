@@ -5,6 +5,7 @@ namespace Game.Logic
 {
     public class GroundJogSubState : GroundSubState
     {
+        private ActionRuntimeData _actionData;
         private IInputCommandHandler _handler;
         public override IInputCommandHandler InputHandler => _handler;
 
@@ -13,12 +14,13 @@ namespace Game.Logic
         public override void Initialize(CharacterGroundState context)
         {
             base.Initialize(context);
+            _actionData = _ctx.HostEntity.DataModule?.Get<ActionRuntimeData>();
             _handler = new DefaultInputCommandHandler(context.HostEntity);
         }
 
         public override void OnEnter()
         {
-            _ctx.HostEntity.ActionData.IsShortMoveInput = true;
+            if (_actionData != null) _actionData.IsShortMoveInput = true;
             _stateTime = 0f;
 
             // var config = _ctx.HostEntity.Config;
@@ -47,9 +49,9 @@ namespace Game.Logic
             _stateTime += deltaTime;
 
             var config = _ctx.HostEntity.Config as RoleConfigAsset;
-            if (config != null)
+            if (config != null && _actionData != null)
             {
-                _ctx.HostEntity.ActionData.IsShortMoveInput = _stateTime <= config.JogShortInputThreshold;
+                _actionData.IsShortMoveInput = _stateTime <= config.JogShortInputThreshold;
             }
 
             Vector2 inputDir = provider.GetMovementDirection();

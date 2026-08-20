@@ -21,8 +21,12 @@ namespace Game.Logic.AI.BehaviorTree
             
             // 可以通过拓展将更多上下文信息注册到黑板，如 Owner (Entity) 等
             blackboard.Set("GameObject", this.gameObject);
+
+            // 创建并传入动作代理类
+            var monster = gameObject.GetComponent<MonsterEntity>();
+            var agent = new TreeActionAgent(monster);
             
-            RuntimeTranslationResult = BehaviorTree.BehaviorTreeTranslator.Translate(asset, blackboard);
+            RuntimeTranslationResult = BehaviorTree.BehaviorTreeTranslator.Translate(asset, blackboard, agent);
 
 #if UNITY_EDITOR
             // 自动挂载 NPBehave 原生 Debugger 组件供调试参考

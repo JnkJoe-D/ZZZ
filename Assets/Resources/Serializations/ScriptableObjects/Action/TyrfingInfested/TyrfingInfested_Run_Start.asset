@@ -12,14 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3290489fa39fab46a6c11cb5d221c9c, type: 3}
   m_Name: TyrfingInfested_Run_Start
   m_EditorClassIdentifier: 
-  ID: 0
+  ID: 200020
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 66c7196e4b5428947b898fd4e21ccb1a, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: e45a637301648ff47bc5e7d101c20f32, type: 2}
-  EnterState: 0
-  CompleteMode: 0
-  CompleteAction: {fileID: 0}
+  CompleteMode: 20
+  CompleteAction: {fileID: 11400000, guid: 730e2a8307436384484a05cde0e53450, type: 2}
   CompleteTransitCrossfade: -1
   PlaybackSpeed: 1
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: 0e40edc68cfa8304ea2c282e769cd6dd, type: 2}
   CanBeInterruptedByLightHit: 1
   CanBeInterruptedByHeavyHit: 1
+  references:
+    version: 2
+    RefIds: []

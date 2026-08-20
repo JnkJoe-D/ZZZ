@@ -8,6 +8,9 @@ namespace Game.Logic
         public new MonsterConfigAsset Config => (MonsterConfigAsset)base.Config;
         
         public Game.Logic.AI.BehaviorTree.BTRunner BTRunner { get; private set; }
+        public ActionController ActionController { get; private set; }
+        public override ITargetFinder TargetFinder => _targetFinder;
+        private MonsterTargetFinder _targetFinder;
 
         protected override void InitRequiredComponents()
         {
@@ -29,10 +32,18 @@ namespace Game.Logic
         {
             base.Init(config);
             
+            if (CommandBuffer == null) CommandBuffer = new CommandBuffer(BufferMode.SingleOverride);
+            if (ActionController == null) ActionController = new MonsterActionController(this);
+            DataModule[typeof(MonSterBehaviorRuntimeData)] ??= new MonSterBehaviorRuntimeData();
+
             if (config is MonsterConfigAsset monsterConfig)
             {
-                // 自己创建专属的索敌雷达 (不再需要显式注入全局单例)
                 _targetFinder = new MonsterTargetFinder(monsterConfig.SensorConfig, transform);
+
+                if (monsterConfig.ActionRoot != null)
+                {
+                    ActionController.PlayAction(monsterConfig.ActionRoot);
+                }
 
                 if (monsterConfig.BehaviorTree != null && BTRunner != null)
                 {
@@ -40,36 +51,17 @@ namespace Game.Logic
                     BTRunner.StartTree();
                 }
             }
-
-            if (ActionPlayer != null)
-            {
-                ActionPlayer.OnActionComplete += RecordAttackTime;
-                ActionPlayer.OnActionInterrupt += RecordAttackTime;
-            }
         }
 
         protected override void OnDestroy()
         {
-            if (ActionPlayer != null)
-            {
-                ActionPlayer.OnActionComplete -= RecordAttackTime;
-                ActionPlayer.OnActionInterrupt -= RecordAttackTime;
-            }
-        }
-
-        private float _lastAttackTime = -9999f;
-
-        private void RecordAttackTime()
-        {
-            // TODO: implement logic in NPBehave tasks
-            _lastAttackTime = Time.time;
         }
 
         protected override void Update()
         {
             base.Update();
-            // All legacy BT state update code removed. 
-            // In NPBehave, Blackboard synchronization will be handled by Sensor Services within the tree.
+            ActionController?.Update(Time.deltaTime);
+            DataModule.Get<MonSterBehaviorRuntimeData>()?.Update(Time.deltaTime);
         }
     }
 }

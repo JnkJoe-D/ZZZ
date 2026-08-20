@@ -21,9 +21,9 @@ namespace Game.Logic
 
         public ActionPlayer ActionPlayer { get; private set; }
         public SkillMotionWindowHandler MotionWindowHandler { get; private set; }
-        public ActionRuntimeData ActionData { get; private set; }
-        public HitReactionRuntimeData HitData { get; private set; }
+        public EntityDataModule DataModule { get; } = new EntityDataModule();
         public StatusModule StatusModule { get; private set; }
+        public CommandBuffer CommandBuffer { get; protected set; }
 
         protected virtual void Awake()
         {
@@ -35,8 +35,8 @@ namespace Game.Logic
 
             if (ActionPlayer == null) ActionPlayer = new ActionPlayer(this);
             if (MotionWindowHandler == null) MotionWindowHandler = new SkillMotionWindowHandler(this);
-            if (ActionData == null) ActionData = new ActionRuntimeData();
-            if (HitData == null) HitData = new HitReactionRuntimeData();
+            DataModule[typeof(ActionRuntimeData)] ??= new ActionRuntimeData();
+            DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
             if (StatusModule == null) StatusModule = new StatusModule();
         }
 
@@ -45,13 +45,7 @@ namespace Game.Logic
         public virtual void Init(Game.Logic.CharacterConfigAsset config)
         {
             Config = config;
-
-            if (ActionPlayer == null) ActionPlayer = new ActionPlayer(this);
-            if (MotionWindowHandler == null) MotionWindowHandler = new SkillMotionWindowHandler(this);
-            if (ActionData == null) ActionData = new ActionRuntimeData();
-            if (HitData == null) HitData = new HitReactionRuntimeData();
-            if (StatusModule == null) StatusModule = new StatusModule();
-
+            
             CharacterMotor?.Init(this);
             HitReactionModule?.Init(this);
             FootIKModule?.Init(this);

@@ -6,23 +6,36 @@ using Game.Logic;
 namespace Game.Logic
 {
     /// <summary>
+    /// 动作所处的状态机环境。每个 RoleActionConfigAsset 必须显式声明。
+    /// </summary>
+    public enum ActionState
+    {
+        Idle = 0,       // GroundState → Idle 子状态
+        Jog = 10,       // GroundState → Jog 子状态
+        Dash = 20,      // GroundState → Dash 子状态
+        Stop = 30,      // GroundState → Stop 子状态
+        Skill = 40,     // CharacterSkillState
+        Evade = 50,     // CharacterEvadeState
+        Hit = 60,       // CharacterHitStunState
+        Switch = 70,    // CharacterSwitchState
+    }
+
+    /// <summary>
     /// 角色独有的动作配置（包含派生和连招路由）
     /// </summary>
     [CreateAssetMenu(fileName = "RoleActionConfigAsset", menuName = "Config/Action/Role Action Config")]
     public class RoleActionConfigAsset : ActionConfigAsset
     {
+        [Header("状态转换")]
+        [Tooltip("指定此动作执行时的目标状态机主状态/子状态。")]
+        public ActionState EnterState = ActionState.Idle;
+
         // ── 派生与继承 ──────────────────────────────────────────
         [Header("派生与继承")]
         [Tooltip("当前动作对于前置动作派生路由的继承策略。")]
         public RouteInheritMode InheritMode = RouteInheritMode.None;
 
-        [Header("专属派生路由 (可被继承)")]
-        [Tooltip("当前动作专属的派生路由列表。如果后续动作设为继承，则会继承此列表中的路由。")]
-        public List<ActionRoute> Routes = new();
-
-        [Header("通用路由集 (不被继承)")]
-        [Tooltip("通常用于配置闪避、移动等通用动作。后续动作即使设为继承，也不会继承此列表。")]
-        public List<ActionRouteSetAsset> RouteSets = new();
+        // Routes 和 RouteSets 已迁移至基类 ActionConfigAsset
 
         /// <summary>
         /// 收集此动作上所有有效的统一路由（展开集合资产）。

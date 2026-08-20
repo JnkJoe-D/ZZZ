@@ -2,7 +2,7 @@ using Game.Logic;
 
 namespace Game.Logic
 {
-    public class EvadeRuntimeData
+    public class EvadeRuntimeData : IEntityRuntimeData
     {
         public int EvadeCount { get; private set; }
         public float EvadeTimer { get; private set; }

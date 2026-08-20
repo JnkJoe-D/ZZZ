@@ -12,7 +12,8 @@ namespace Game.Logic
         PlayerCommand = 0,
         SingleModifier = 10,
         Event = 20,
-        Auto = 30
+        Auto = 30,
+        AICommand = 40
     }
 
     public enum RouteEventType
@@ -101,9 +102,9 @@ namespace Game.Logic
             {
                 ConditionCommand.None => true,
                 ConditionCommand.Move => entity.InputProvider != null && entity.InputProvider.HasMovementInput(),
-                ConditionCommand.ShortMove => entity.ActionData != null && entity.ActionData.IsShortMoveInput,
+                ConditionCommand.ShortMove => entity.DataModule?.Get<ActionRuntimeData>() != null && entity.DataModule.Get<ActionRuntimeData>().IsShortMoveInput,
                 ConditionCommand.LostMove => entity.InputProvider != null && !entity.InputProvider.HasMovementInput(),
-                ConditionCommand.SwitchOutPending => entity.SwitchData != null && entity.SwitchData.IsSwitchOutPending,
+                ConditionCommand.SwitchOutPending => entity.DataModule?.Get<SwitchRuntimeData>() != null && entity.DataModule.Get<SwitchRuntimeData>().IsSwitchOutPending,
                 _ => false
             };
         }
@@ -139,6 +140,7 @@ namespace Game.Logic
         public CommandPhase RequiredPhase = CommandPhase.Started;
 
         [Header("Modifiers")]
+        [ShowIf("Category", RouteTriggerCategory.PlayerCommand, RouteTriggerCategory.SingleModifier, RouteTriggerCategory.Event, RouteTriggerCategory.Auto)]
         public List<RouteModifierCheck> Modifiers = new();
 
         [HideInInspector, SerializeField]
@@ -194,6 +196,27 @@ namespace Game.Logic
                 });
                 Modifier = ModifierCategory.None;
             }
+        }
+
+        public bool EvaluateAICommand(string activeWindowTag, ActionConfigAsset requestedAction)
+        {
+            if (Category != RouteTriggerCategory.AICommand)
+            {
+                return false;
+            }
+
+            if (!MatchesWindowTag(activeWindowTag))
+            {
+                return false;
+            }
+
+            // 严格匹配：行为树请求播放的动作，必须与路由上配置的合法过渡动作完全一致
+            if (ExecuteAction == null || ExecuteAction != requestedAction)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public bool EvaluatePlayerCommand(

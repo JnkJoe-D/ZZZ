@@ -13,6 +13,7 @@ namespace Game.Logic
         /// 获取当前的索敌目标。
         /// </summary>
         Transform GetTarget();
+        float GetDistanceToTarget();
     }
 
     /// <summary>
@@ -82,15 +83,24 @@ namespace Game.Logic
 
             return bestTarget;
         }
+
+        public float GetDistanceToTarget()
+        {
+            var target = GetTarget();
+            var activeEntity = TeamManager.Instance?.LocalCharacter;
+            if (target == null || activeEntity == null) return -1f;
+
+            return Vector3.Distance(activeEntity.transform.position, target.position);
+        }
     }
 
     [Serializable]
     public class MonsterSensorConfig
     {
-        [Tooltip("警戒/发现玩家的半径")]
-        public float DetectionRadius = 10f;
-        [Tooltip("追击半径（超出此半径则丢失目标，返回巡逻）")]
-        public float PursuitRadius = 20f;
+        [Tooltip("索敌半径")]
+        public float DetectionRadius = 20f;
+        [Tooltip("追击半径（和目标距离过远时，快速接近目标）")]
+        public float ChaseRadius = 10f;
         [Tooltip("视野夹角（角度，例如 120度表示前方宽广视野）")]
         [Range(0, 360)]
         public float FieldOfView = 120f;
@@ -138,8 +148,8 @@ namespace Game.Logic
             // [测试环境] 改为广域搜索 (OverlapSphere)
             Transform player = null;
             LayerMask localRoleMask = LayerMask.GetMask("LocalRole");
-            // 搜索半径应取 DetectionRadius 和 PursuitRadius 的最大值，否则会导致 DetectionRadius > PursuitRadius 时远距离无法索敌
-            float maxSearchRadius = Mathf.Max(_config.DetectionRadius, _config.PursuitRadius);
+
+            float maxSearchRadius = _config.DetectionRadius;
             Collider[] colliders = Physics.OverlapSphere(_ownerTransform.position, maxSearchRadius, localRoleMask);
             foreach (var col in colliders)
             {
@@ -164,27 +174,19 @@ namespace Game.Logic
             }
 
             float distanceSqr = (player.position - _ownerTransform.position).sqrMagnitude;
-
-            if (_currentTarget == null)
-            {
-                // 还没发现目标时，使用 DetectionRadius (视野范围) 判定
-                if (distanceSqr <= _config.DetectionRadius * _config.DetectionRadius)
-                {
-                    _currentTarget = player;
-                }
-            }
-            else
-            {
-                // 已经发现目标时，使用 PursuitRadius (追击容差范围) 判定
-                // 防止策划配置错误（视野大于追击）导致的索敌闪烁，追击半径不能小于视野半径
-                float actualPursuitRadius = Mathf.Max(_config.PursuitRadius, _config.DetectionRadius);
-                if (distanceSqr > actualPursuitRadius * actualPursuitRadius)
-                {
-                    _currentTarget = null; // 跑太远，丢失目标
-                }
-            }
+            
+            _currentTarget = distanceSqr <= _config.DetectionRadius * _config.DetectionRadius
+            ?player:null;
 
             return _currentTarget;
+        }
+
+        public float GetDistanceToTarget()
+        {
+            var target = GetTarget();
+            if (target == null || _ownerTransform == null) return -1f;
+
+            return Vector3.Distance(_ownerTransform.position, target.position);
         }
     }
 }

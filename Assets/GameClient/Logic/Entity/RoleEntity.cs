@@ -28,11 +28,6 @@ namespace Game.Logic
         public FSMSystem<RoleEntity> StateMachine { get; private set; }
         public FSMSystem<RoleEntity> Machine => StateMachine;
 
-        public EvadeRuntimeData EvadeData { get; private set; }
-        public ComboRouteRuntimeData ComboData { get; private set; }
-        public SwitchRuntimeData SwitchData { get; private set; }
-
-        public CommandBuffer CommandBuffer { get; private set; }
         public ActionController ActionController { get; private set; }
         public bool IsControlActive { get; protected set; }
         public bool IsPresentationVisible { get; private set; } = true;
@@ -55,12 +50,12 @@ namespace Game.Logic
         {
             base.Awake();
             if (CommandBuffer == null) CommandBuffer = new Game.Logic.CommandBuffer();
-            if (ActionController == null) ActionController = new Game.Logic.ActionController(this);
+            if (ActionController == null) ActionController = new Game.Logic.RoleActionController(this);
             if (_inputEventAdapter == null) _inputEventAdapter = new CharacterInputEventAdapter(() => GetCurrentInputHandler());
             
-            if (EvadeData == null) EvadeData = new EvadeRuntimeData();
-            if (ComboData == null) ComboData = new ComboRouteRuntimeData();
-            if (SwitchData == null) SwitchData = new SwitchRuntimeData();
+            DataModule[typeof(EvadeRuntimeData)] ??= new EvadeRuntimeData();
+            DataModule[typeof(ComboRouteRuntimeData)] ??= new ComboRouteRuntimeData();
+            DataModule[typeof(SwitchRuntimeData)] ??= new SwitchRuntimeData();
             
             CachePresentationState();
         }
@@ -90,12 +85,12 @@ namespace Game.Logic
             StatusModule?.Init(this, provider, 1);
             
             if (CommandBuffer == null) CommandBuffer = new Game.Logic.CommandBuffer();
-            if (ActionController == null) ActionController = new Game.Logic.ActionController(this);
+            if (ActionController == null) ActionController = new Game.Logic.RoleActionController(this);
             if (_inputEventAdapter == null) _inputEventAdapter = new CharacterInputEventAdapter(() => GetCurrentInputHandler());
 
-            if (EvadeData == null) EvadeData = new EvadeRuntimeData();
-            if (ComboData == null) ComboData = new ComboRouteRuntimeData();
-            if (SwitchData == null) SwitchData = new SwitchRuntimeData();
+            DataModule[typeof(EvadeRuntimeData)] ??= new EvadeRuntimeData();
+            DataModule[typeof(ComboRouteRuntimeData)] ??= new ComboRouteRuntimeData();
+            DataModule[typeof(SwitchRuntimeData)] ??= new SwitchRuntimeData();
         }
 
         public virtual void EnsureRuntimeInitialized()
@@ -151,7 +146,7 @@ namespace Game.Logic
         {
             base.Update();
             ActionController?.Update(Time.deltaTime);
-            EvadeData?.Update(Time.deltaTime);
+            DataModule.Get<EvadeRuntimeData>()?.Update(Time.deltaTime);
         }
 
         protected virtual void ActivateControl(bool assignCameraTarget)

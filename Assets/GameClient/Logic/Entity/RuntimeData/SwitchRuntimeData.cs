@@ -1,6 +1,6 @@
 namespace Game.Logic
 {
-    public class SwitchRuntimeData
+    public class SwitchRuntimeData : IEntityRuntimeData
     {
         public bool IsSwitchOutPending { get; set; }
 

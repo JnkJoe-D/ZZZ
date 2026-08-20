@@ -262,7 +262,11 @@ namespace Game.Logic
                 }
             }
 
-            member.Entity.SwitchData.IsSwitchOutPending = true;
+            if (member.Entity.DataModule != null)
+            {
+                var switchData = member.Entity.DataModule.Get<SwitchRuntimeData>();
+                if (switchData != null) switchData.IsSwitchOutPending = true;
+            }
 
             _switchOutQueue.Add(new SwitchOutTask
             {
@@ -293,7 +297,11 @@ namespace Game.Logic
                 bool wasPlayingExit = (task.Phase == SwitchOutPhase.PlayingExit);
 
                 task.Phase = SwitchOutPhase.Cancelled;
-                member.Entity.SwitchData.IsSwitchOutPending = false;
+                if (member.Entity.DataModule != null)
+                {
+                    var switchData = member.Entity.DataModule.Get<SwitchRuntimeData>();
+                    if (switchData != null) switchData.IsSwitchOutPending = false;
+                }
 
                 if (wasPlayingExit)
                 {
@@ -321,7 +329,11 @@ namespace Game.Logic
             RoleEntity entity = task.Member?.Entity;
             if (entity == null) return;
 
-            entity.SwitchData.IsSwitchOutPending = false;
+            if (entity.DataModule != null)
+            {
+                var switchData = entity.DataModule.Get<SwitchRuntimeData>();
+                if (switchData != null) switchData.IsSwitchOutPending = false;
+            }
             entity.SetPresentationVisible(false);
             entity.SetControlActive(false, assignCameraTarget: false);
 

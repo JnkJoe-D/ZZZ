@@ -225,9 +225,12 @@ namespace Game.Logic
         #endregion
 
         #region Initialization
+        private ActionRuntimeData _actionData;
+
         public void Init(CharacterEntity entity)
         {
             _entity = entity;
+            _actionData = _entity.DataModule?.Get<ActionRuntimeData>();
             _enableIK = true;
             _masterWeight = 1.0f;
             EnsureGroundLayerMask();
@@ -365,7 +368,7 @@ namespace Game.Logic
                     }
                 }
 
-                if (_entity.ActionData != null && _entity.ActionData.TargetGroundSubState == ActionState.Skill)
+                if (_actionData != null && _actionData.TargetGroundSubState == ActionState.Skill)
                 {
                     isSkillOrAction = true;
                 }

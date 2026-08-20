@@ -37,9 +37,12 @@ namespace Game.Logic
             StopState = new GroundStopSubState();
         }
 
+        private ActionRuntimeData _actionData;
+
         public override void OnInit(FSMSystem<RoleEntity> fsm)
         {
             base.OnInit(fsm);
+            _actionData = Entity.DataModule?.Get<ActionRuntimeData>();
             _defaultInputHandler = new DefaultInputCommandHandler(Entity);
             IdleState.Initialize(this);
             JogState.Initialize(this);
@@ -50,10 +53,10 @@ namespace Game.Logic
         public override void OnEnter()
         {
             ActionState targetState = ActionState.Idle;
-            if (Entity.ActionData != null)
+            if (_actionData != null)
             {
-                targetState = Entity.ActionData.TargetGroundSubState;
-                Entity.ActionData.TargetGroundSubState = ActionState.Idle; // 消费请求
+                targetState = _actionData.TargetGroundSubState;
+                _actionData.TargetGroundSubState = ActionState.Idle; // 消费请求
             }
 
             if (targetState == ActionState.Dash)

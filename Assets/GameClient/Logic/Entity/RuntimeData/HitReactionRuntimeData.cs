@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.Logic
 {
-    public class HitReactionRuntimeData
+    public class HitReactionRuntimeData : IEntityRuntimeData
     {
         public float CurrentHitStunDuration { get; set; }
         public cfg.ZZZ.HitReactionType CurrentReactionType { get; set; }

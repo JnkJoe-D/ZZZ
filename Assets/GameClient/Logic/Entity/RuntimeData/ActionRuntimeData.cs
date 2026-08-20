@@ -2,7 +2,7 @@ using Game.Logic;
 
 namespace Game.Logic
 {
-    public class ActionRuntimeData
+    public class ActionRuntimeData : IEntityRuntimeData
     {
         public ActionState TargetGroundSubState { get; set; } = ActionState.Idle;
         public ActionConfigAsset NextActionToCast { get; set; }

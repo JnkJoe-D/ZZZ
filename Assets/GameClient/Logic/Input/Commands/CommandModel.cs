@@ -12,6 +12,7 @@ namespace Game.Logic
         Evade = 50,
         Switch = 60,
         Interact = 70,
+        AIAction = 99
     }
 
     public enum ConditionCommand
@@ -32,10 +33,18 @@ namespace Game.Logic
         None = 40,
     }
 
+    public enum CommandFate
+    {
+        Pending,
+        Executed,
+        Dropped
+    }
+
     public struct CommandPayload
     {
         public Vector2 DirectionSnapshot;
         public bool HasMovementInput;
+        public ActionConfigAsset AIActionAsset;
     }
 
     public enum CommandTriggerMode

@@ -5,21 +5,6 @@ using UnityEngine;
 namespace Game.Logic
 {
     /// <summary>
-    /// 动作所处的状态机环境。每个 ActionConfigAsset 必须显式声明。
-    /// </summary>
-    public enum ActionState
-    {
-        Idle = 0,       // GroundState → Idle 子状态
-        Jog = 10,       // GroundState → Jog 子状态
-        Dash = 20,      // GroundState → Dash 子状态
-        Stop = 30,      // GroundState → Stop 子状态
-        Skill = 40,     // CharacterSkillState
-        Evade = 50,     // CharacterEvadeState
-        Hit = 60,       // CharacterHitStunState
-        Switch = 70,    // CharacterSwitchState
-    }
-
-    /// <summary>
     /// 动作播放结束后的转换策略。
     /// </summary>
     public enum ActionCompleteMode
@@ -78,9 +63,6 @@ namespace Game.Logic
 
 
         [Header("状态转换")]
-        [Tooltip("指定此动作执行时的目标状态机主状态/子状态。")]
-        public ActionState EnterState = ActionState.Idle;
-
         [Tooltip("动作正常完成后的后续转换策略。")]
         public ActionCompleteMode CompleteMode = ActionCompleteMode.Default;
 
@@ -99,12 +81,38 @@ namespace Game.Logic
         [Range(0f,10f)]
         public float PlaybackSpeed = 1f;
 
+        [Header("派生路由 (Action Routes)")]
+        [Tooltip("当前动作的派生路由列表，允许在此动作中响应输入或事件进行连段转移。")]
+        public List<ActionRoute> Routes = new();
+
+        [Header("通用路由集 (Route Sets)")]
+        [Tooltip("通常用于配置闪避、移动等通用动作，打包成集合以便复用。")]
+        public List<ActionRouteSetAsset> RouteSets = new();
+
         /// <summary>
         /// 收集此动作上所有有效的统一路由（展开集合资产）。
-        /// 基础动作不具备连招路由，仅做空实现，由派生类（如 RoleActionConfigAsset）实现具体逻辑。
+        /// 基础行为：收集自身配置的 Routes 和 RouteSets。派生类可重写加入继承逻辑。
         /// </summary>
         public virtual void CollectEffectiveRoutes(List<ActionRoute> results, RoleEntity actor = null)
         {
+            if (results == null) return;
+            results.Clear();
+
+            if (Routes != null)
+            {
+                foreach (var route in Routes)
+                {
+                    if (route != null) results.Add(route);
+                }
+            }
+
+            if (RouteSets != null)
+            {
+                foreach (var routeSet in RouteSets)
+                {
+                    routeSet?.AppendRoutes(results);
+                }
+            }
         }
     }
 

@@ -13,6 +13,7 @@ namespace Game.Logic
 
     public class CharacterCommand
     {
+        public long Id;
         public InputCommand Type;
         public CommandPhase Phase;
         public CommandPayload Payload;
@@ -21,19 +22,36 @@ namespace Game.Logic
         public bool IsConsumed;
     }
 
+    public enum BufferMode
+    {
+        Queue,
+        SingleOverride
+    }
+
     /// <summary>
     /// 指令缓冲区：纯缓冲池，仅存储有时效性的瞬时指令。
     /// Held 状态跟踪已移至输入层（IInputProvider），此处不再维护。
     /// </summary>
     public class CommandBuffer
     {
+        private readonly BufferMode _mode;
         private readonly List<CharacterCommand> _commands = new();
         private long _nextBufferOrder;
         private const float ExpirationTime = 0.3f;
 
+        public CommandBuffer(BufferMode mode = BufferMode.Queue)
+        {
+            _mode = mode;
+        }
+
         public void Push(CharacterCommand command)
         {
             if (command == null) return;
+
+            if (_mode == BufferMode.SingleOverride)
+            {
+                _commands.Clear();
+            }
 
             if (command.Timestamp <= 0f)
                 command.Timestamp = Time.time;

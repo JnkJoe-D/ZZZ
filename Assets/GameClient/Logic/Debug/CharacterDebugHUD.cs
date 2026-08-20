@@ -166,30 +166,32 @@ namespace Game.Logic
                     DrawInfo("Ground SubState", GetGroundSubStateLabel(machine.CurrentState), new Color(0.55f, 0.9f, 0.65f));
                 }
 
+                var actionData = targetEntity.DataModule?.Get<ActionRuntimeData>();
+                var comboData = targetEntity.DataModule?.Get<ComboRouteRuntimeData>();
                 DrawInfo(
                     "Target Ground",
-                    targetEntity.ActionData?.TargetGroundSubState.ToString() ?? "None",
+                    actionData?.TargetGroundSubState.ToString() ?? "None",
                     new Color(0.75f, 0.9f, 1f));
 
 
                 string lastRouteText = "None";
-                if (targetEntity.ActionData != null)
+                if (actionData != null && comboData != null)
                 {
-                    if (targetEntity.ComboData.LastRouteSource == CommandRouteSource.ActionComplete)
+                    if (comboData.LastRouteSource == CommandRouteSource.ActionComplete)
                     {
-                        lastRouteText = $"ActionComplete ({targetEntity.ComboData.LastRouteTag ?? "-"})";
+                        lastRouteText = $"ActionComplete ({comboData.LastRouteTag ?? "-"})";
                     }
                     else
                     {
-                        lastRouteText = $"{targetEntity.ComboData.LastRouteSource} / {targetEntity.ComboData.LastResolvedCommandType}/{targetEntity.ComboData.LastResolvedCommandPhase}";
+                        lastRouteText = $"{comboData.LastRouteSource} / {comboData.LastResolvedCommandType}/{comboData.LastResolvedCommandPhase}";
                     }
                 }
                 DrawInfo("Last Route", lastRouteText, new Color(1f, 0.8f, 0.45f));
                 DrawInfo(
                     "Route Detail",
-                    targetEntity.ActionData == null
+                    (actionData == null || comboData == null)
                         ? "None"
-                        : $"{targetEntity.ComboData.LastRouteTag ?? "-"} / {targetEntity.ComboData.LastResolvedActionId}",
+                        : $"{comboData.LastRouteTag ?? "-"} / {comboData.LastResolvedActionId}",
                     new Color(0.85f, 0.85f, 0.85f));
 
                 GUILayout.Space(15);

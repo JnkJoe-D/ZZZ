@@ -38,6 +38,13 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 4681868154359513114
+  - groupId: 5b040788-9720-4a60-9e92-55db7ccc9352
+    groupName: Route
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868286305501198
   references:
     version: 2
     RefIds:
@@ -101,7 +108,7 @@ MonoBehaviour:
         clipRef:
           guid: bbdd7cde32f1b904aae7542268cb541a
           assetName: TyrfingInfested_Ani_Walk_F_R
-          assetPath: Assets/Dependencies/Animation/TryfingInfested/Monster_TyrfingInfested.fbx
+          assetPath: Assets/Resources/Models/TyrfingInfested/Monster_TyrfingInfested.fbx
         maskRef:
           guid: 
           assetName: 
@@ -131,3 +138,27 @@ MonoBehaviour:
         rotationMode: 1
         updateFrequency: 2
         localRotationOffset: {x: 0, y: 0, z: 0}
+    - rid: 4681868286305501198
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: f17f6af3-e119-4d3b-93d0-3675cc41a8e1
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868286305501199
+    - rid: 4681868286305501199
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 4fcfd840-dead-4124-bc7c-9f639b487f00
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.5500002
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Execute1

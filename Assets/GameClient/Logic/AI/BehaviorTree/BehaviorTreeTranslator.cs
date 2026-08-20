@@ -14,7 +14,7 @@ namespace Game.Logic.AI.BehaviorTree
     /// </summary>
     public static class BehaviorTreeTranslator
     {
-        public static TranslationResult Translate(BehaviorTreeAsset asset, Blackboard runtimeBlackboard)
+        public static TranslationResult Translate(BehaviorTreeAsset asset, Blackboard runtimeBlackboard, TreeActionAgent agent = null)
         {
             var result = new TranslationResult();
             if (asset == null || asset.rootNode == null)
@@ -22,7 +22,7 @@ namespace Game.Logic.AI.BehaviorTree
                 return result;
             }
 
-            Node mainNode = TranslateNode(asset.rootNode, runtimeBlackboard, result.GuidToNodeMap);
+            Node mainNode = TranslateNode(asset.rootNode, runtimeBlackboard, agent, result.GuidToNodeMap);
             if (mainNode != null)
             {
                 result.Root = new Root(runtimeBlackboard, mainNode);
@@ -30,9 +30,9 @@ namespace Game.Logic.AI.BehaviorTree
             return result;
         }
 
-        private static Node TranslateNode(NodeData data, Blackboard bb, Dictionary<string, Node> map)
+        private static Node TranslateNode(NodeData data, Blackboard bb, TreeActionAgent agent, Dictionary<string, Node> map)
         {
-            var node = TranslateNodeInternal(data, bb, map);
+            var node = TranslateNodeInternal(data, bb, agent, map);
             if (node != null && !string.IsNullOrEmpty(data.guid))
             {
                 map[data.guid] = node;
@@ -40,7 +40,7 @@ namespace Game.Logic.AI.BehaviorTree
             return node;
         }
 
-        private static Node TranslateNodeInternal(NodeData data, Blackboard bb, Dictionary<string, Node> map)
+        private static Node TranslateNodeInternal(NodeData data, Blackboard bb, TreeActionAgent agent, Dictionary<string, Node> map)
         {
             if (data == null) return null;
 
@@ -49,38 +49,38 @@ namespace Game.Logic.AI.BehaviorTree
                 // -- 根节点特殊处理 --
                 case RootData rootData:
                     // RootData 只是一个壳，实际执行其 child
-                    return rootData.child != null ? TranslateNode(rootData.child, bb, map) : null;
+                    return rootData.child != null ? TranslateNode(rootData.child, bb, agent, map) : null;
 
                 // -- Composites --
                 case SelectorData _:
-                    return new Selector(TranslateChildren(data, bb, map));
+                    return new Selector(TranslateChildren(data, bb, agent, map));
                     
                 case SequenceData _:
-                    return new Sequence(TranslateChildren(data, bb, map));
+                    return new Sequence(TranslateChildren(data, bb, agent, map));
                     
                 case ParallelData parallel:
-                    return new Parallel(parallel.successPolicy, parallel.failurePolicy, TranslateChildren(data, bb, map));
+                    return new Parallel(parallel.successPolicy, parallel.failurePolicy, TranslateChildren(data, bb, agent, map));
                     
                 case RandomSelectorData _:
-                    return new RandomSelector(TranslateChildren(data, bb, map));
+                    return new RandomSelector(TranslateChildren(data, bb, agent, map));
                     
                 case RandomSequenceData _:
-                    return new RandomSequence(TranslateChildren(data, bb, map));
+                    return new RandomSequence(TranslateChildren(data, bb, agent, map));
 
                 // -- Decorators --
                 case InverterData _:
-                    return new Inverter(TranslateChild(data, bb, map));
+                    return new Inverter(TranslateChild(data, bb, agent, map));
                     
                 case FailerData _:
-                    return new Failer(TranslateChild(data, bb, map));
+                    return new Failer(TranslateChild(data, bb, agent, map));
                     
                 case SucceederData _:
-                    return new Succeeder(TranslateChild(data, bb, map));
+                    return new Succeeder(TranslateChild(data, bb, agent, map));
                     
                 case RepeaterData repeater:
                     return repeater.loopCount < 0 
-                        ? new Repeater(TranslateChild(data, bb, map)) 
-                        : new Repeater(repeater.loopCount, TranslateChild(data, bb, map));
+                        ? new Repeater(TranslateChild(data, bb, agent, map)) 
+                        : new Repeater(repeater.loopCount, TranslateChild(data, bb, agent, map));
                         
                 case CooldownData cooldown:
                     return new Cooldown(
@@ -89,41 +89,107 @@ namespace Game.Logic.AI.BehaviorTree
                         cooldown.startAfterDecoratee, 
                         cooldown.resetOnFailure, 
                         cooldown.failOnCooldown, 
-                        TranslateChild(data, bb, map)
+                        TranslateChild(data, bb, agent, map)
                     );
                     
                 case TimeMaxData timeMax:
-                    return new TimeMax(timeMax.limit, timeMax.randomVariation, timeMax.waitForChildButFailOnLimitReached, TranslateChild(data, bb, map));
+                    return new TimeMax(timeMax.limit, timeMax.randomVariation, timeMax.waitForChildButFailOnLimitReached, TranslateChild(data, bb, agent, map));
                     
                 case TimeMinData timeMin:
-                    return new TimeMin(timeMin.limit, timeMin.randomVariation, timeMin.waitOnFailure, TranslateChild(data, bb, map));
+                    return new TimeMin(timeMin.limit, timeMin.randomVariation, timeMin.waitOnFailure, TranslateChild(data, bb, agent, map));
                     
                 case RandomData random:
-                    return new Random(random.probability, TranslateChild(data, bb, map));
+                    return new Random(random.probability, TranslateChild(data, bb, agent, map));
 
                 case BBCheckBoolData bbcBool:
-                    return new BlackboardCondition(BBKeyMapper.GetString(bbcBool.key), bbcBool.op, bbcBool.value, bbcBool.stopsOnChange, TranslateChild(data, bb, map));
+                    return new BlackboardCondition(BBKeyMapper.GetString(bbcBool.key), bbcBool.op, bbcBool.value, bbcBool.stopsOnChange, TranslateChild(data, bb, agent, map));
                 case BBCheckIntData bbcInt:
-                    return new BlackboardCondition(BBKeyMapper.GetString(bbcInt.key), bbcInt.op, bbcInt.value, bbcInt.stopsOnChange, TranslateChild(data, bb, map));
+                    return new BlackboardCondition(BBKeyMapper.GetString(bbcInt.key), bbcInt.op, bbcInt.value, bbcInt.stopsOnChange, TranslateChild(data, bb, agent, map));
                 case BBCheckFloatData bbcFloat:
-                    return new BlackboardCondition(BBKeyMapper.GetString(bbcFloat.key), bbcFloat.op, bbcFloat.value, bbcFloat.stopsOnChange, TranslateChild(data, bb, map));
+                    return new BlackboardCondition(BBKeyMapper.GetString(bbcFloat.key), bbcFloat.op, bbcFloat.value, bbcFloat.stopsOnChange, TranslateChild(data, bb, agent, map));
                 case BBCheckStringData bbcString:
-                    return new BlackboardCondition(BBKeyMapper.GetString(bbcString.key), bbcString.op, bbcString.value, bbcString.stopsOnChange, TranslateChild(data, bb, map));
+                    return new BlackboardCondition(BBKeyMapper.GetString(bbcString.key), bbcString.op, bbcString.value, bbcString.stopsOnChange, TranslateChild(data, bb, agent, map));
 
                 case BlackboardQueryData bbq:
-                    return new BlackboardQuery(bbq.keys, bbq.stopsOnChange, () => true, TranslateChild(data, bb, map));
+                    return new BlackboardQuery(bbq.keys, bbq.stopsOnChange, () => true, TranslateChild(data, bb, agent, map));
 
-                // 暂时的 Service / Condition 缺省实现（需要具体逻辑注入，可使用拓展或者重载）
+                // agent代理的服务节点，通常用于在行为树运行时每帧调用代理的 ServiceUpdate 方法
                 case ServiceData service:
-                    return new Service(service.interval, service.randomVariation, () => { /* 默认空服务 */ }, TranslateChild(data, bb, map));
+                    return new Service(service.interval, service.randomVariation, () => agent.ServiceUpdate(bb), TranslateChild(data, bb, agent, map));
                     
                 case ConditionData condition:
-                    return new Condition(() => { return true; }, condition.stopsOnChange, condition.checkInterval, condition.checkVariance, TranslateChild(data, bb, map));
+                    return new Condition(() => { return true; }, condition.stopsOnChange, condition.checkInterval, condition.checkVariance, TranslateChild(data, bb, agent, map));
                     
                 case WaitForConditionData waitCond:
-                    return new WaitForCondition(() => { return true; }, waitCond.checkInterval, waitCond.randomVariance, TranslateChild(data, bb, map));
+                    return new WaitForCondition(() => { return true; }, waitCond.checkInterval, waitCond.randomVariance, TranslateChild(data, bb, agent, map));
+
+                case BBCheckStateData checkStateData:
+                    if (agent != null) {
+                        return new Condition(() => agent.CheckAIState(checkStateData.targetState), checkStateData.stopsOnChange, TranslateChild(data, bb, agent, map));
+                    }
+                    return new Condition(() => false, checkStateData.stopsOnChange, TranslateChild(data, bb, agent, map));
 
                 // -- Tasks --
+                case TryPlayActionData tryPlayData:
+                    if (agent != null) {
+                        return new NPBehave.Action(() => agent.TryPlayAction(tryPlayData.actionConfig, out _));
+                    }
+                    return new NPBehave.Action(() => { });
+
+                case ChangeAIStateData changeStateData:
+                    if (agent != null) {
+                        return new NPBehave.Action(() => agent.ChangeAIState(changeStateData.targetState));
+                    }
+                    return new NPBehave.Action(() => { });
+
+                case EvaluateStateData evalStateData:
+                    if (agent != null) {
+                        return new NPBehave.Action(() => agent.EvaluateState(evalStateData.chaseDistance));
+                    }
+                    return new NPBehave.Action(() => { });
+
+                case PlayActionAndWaitData playAndWaitData:
+                    if (agent != null) {
+                        return new Game.Logic.AI.BehaviorTree.Extensions.PlayActionAndWaitTask(
+                            playAndWaitData.actionConfig,
+                            playAndWaitData.stopAtEnd,
+                            agent.TryPlayAction,
+                            agent.CheckCommandFate,
+                            () => agent.IsPlayingAction(playAndWaitData.actionConfig)
+                        );
+                    }
+                    return new NPBehave.Action(() => { });
+
+                case DistanceAdjustData adjustData:
+                    if (agent != null) {
+                        return new Game.Logic.AI.BehaviorTree.Extensions.DistanceAdjustTask(
+                            adjustData,
+                            agent.GetDistanceToTarget,
+                            agent.TryPlayAction,
+                            agent.CheckCommandFate,
+                            agent.IsPlayingAction
+                        );
+                    }
+                    return new NPBehave.Action(() => { });
+
+                case MonsterAttackData attackData:
+                    if (agent != null) {
+                        return new Game.Logic.AI.BehaviorTree.Extensions.MonsterAttackTask(
+                            attackData,
+                            agent.TryPlayAction,
+                            agent.CheckCommandFate,
+                            agent.IsPlayingAction,
+                            agent.StartAttackCooldown
+                        );
+                    }
+                    return new NPBehave.Action(() => { });
+
+                case MultiFrameDebugData multiDebugData:
+                    return new Game.Logic.AI.BehaviorTree.Extensions.MultiFrameDebugTask(
+                        multiDebugData.duration, 
+                        multiDebugData.message
+                    );
+
                 case WaitData wait:
                     if (wait.readFromBlackboard)
                     {
@@ -147,13 +213,13 @@ namespace Game.Logic.AI.BehaviorTree
             }
         }
 
-        private static Node[] TranslateChildren(NodeData data, Blackboard bb, Dictionary<string, Node> map)
+        private static Node[] TranslateChildren(NodeData data, Blackboard bb, TreeActionAgent agent, Dictionary<string, Node> map)
         {
             var children = data.GetChildren();
             var result = new List<Node>();
             foreach (var childData in children)
             {
-                var translated = TranslateNode(childData, bb, map);
+                var translated = TranslateNode(childData, bb, agent, map);
                 if (translated != null)
                 {
                     result.Add(translated);
@@ -162,11 +228,11 @@ namespace Game.Logic.AI.BehaviorTree
             return result.ToArray();
         }
 
-        private static Node TranslateChild(NodeData data, Blackboard bb, Dictionary<string, Node> map)
+        private static Node TranslateChild(NodeData data, Blackboard bb, TreeActionAgent agent, Dictionary<string, Node> map)
         {
             if (data is DecoratorData decorator && decorator.child != null)
             {
-                return TranslateNode(decorator.child, bb, map);
+                return TranslateNode(decorator.child, bb, agent, map);
             }
             
             // NPBehave Decorator 必须有子节点。如果编辑器中未连线，用 WaitUntilStopped 占位避免崩溃
