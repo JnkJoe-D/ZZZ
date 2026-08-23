@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.Logic
 {
-    public enum InputCommand
+    public enum HardwareInputType
     {
         None = 0,
         Move = 10,
@@ -11,8 +11,7 @@ namespace Game.Logic
         Ultimate = 40,
         Evade = 50,
         Switch = 60,
-        Interact = 70,
-        AIAction = 99
+        Interact = 70
     }
 
     public enum ConditionCommand
@@ -40,11 +39,24 @@ namespace Game.Logic
         Dropped
     }
 
-    public struct CommandPayload
+    public interface ICommandPayload { }
+
+    public class InputPayload : ICommandPayload
     {
+        public HardwareInputType InputType;
+        public CommandPhase Phase;
         public Vector2 DirectionSnapshot;
         public bool HasMovementInput;
-        public ActionConfigAsset AIActionAsset;
+    }
+
+    public class DirectAssetPayload : ICommandPayload
+    {
+        public ActionConfigAsset TargetAsset;
+    }
+
+    public class SystemEventPayload : ICommandPayload
+    {
+        public RouteEventType EventType;
     }
 
     public enum CommandTriggerMode

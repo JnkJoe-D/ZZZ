@@ -20,12 +20,12 @@ namespace Game.Logic
         private Texture2D heldBgTexture;
 
         // 所有可被 Held 的按键类型
-        private static readonly (InputCommand type, string label)[] HeldKeyDefs =
+        private static readonly (HardwareInputType type, string label)[] HeldKeyDefs =
         {
-            (InputCommand.Move, "Move"),
-            (InputCommand.Evade, "Evade"),
-            (InputCommand.BasicAttack, "Attack"),
-            (InputCommand.SpecialAttack, "Special"),
+            (HardwareInputType.Move, "Move"),
+            (HardwareInputType.Evade, "Evade"),
+            (HardwareInputType.BasicAttack, "Attack"),
+            (HardwareInputType.SpecialAttack, "Special"),
         };
 
         private void Start()
@@ -183,7 +183,7 @@ namespace Game.Logic
                     }
                     else
                     {
-                        lastRouteText = $"{comboData.LastRouteSource} / {comboData.LastResolvedCommandType}/{comboData.LastResolvedCommandPhase}";
+                        lastRouteText = $"{comboData.LastRouteSource} / {(comboData.LastResolvedPayload != null ? comboData.LastResolvedPayload.ToString() : "null")}";
                     }
                 }
                 DrawInfo("Last Route", lastRouteText, new Color(1f, 0.8f, 0.45f));
@@ -207,7 +207,7 @@ namespace Game.Logic
                     {
                         foreach (CharacterCommand command in commands)
                         {
-                            DrawInfo($"> {command.Type}/{command.Phase}", $"{(Time.time - command.Timestamp):F2}s ago", Color.yellow);
+                            DrawInfo($"> {command.Payload}", $"{(Time.time - command.Timestamp):F2}s ago", Color.yellow);
                         }
                     }
                 }
@@ -232,13 +232,9 @@ namespace Game.Logic
                             {
                                 triggerStr = "<color=#c084fc>Complete</color>";
                             }
-                            else if (record.Type == InputCommand.None)
-                            {
-                                triggerStr = "<color=#ffb366>AutoCondition</color>";
-                            }
                             else
                             {
-                                triggerStr = $"{record.Type}/{record.Phase}";
+                                triggerStr = record.Source.ToString();
                             }
 
                             string actionDesc = record.ActionId > 0 

@@ -21,14 +21,14 @@ MonoBehaviour:
   GroundLayer:
     serializedVersion: 2
     m_Bits: 128
-  hitReactionConfig: {fileID: 0}
+  hitReactionConfig: {fileID: 11400000, guid: f3c5f768b41c4a448858c98bd725a4f0, type: 2}
   ActionRoot: {fileID: 11400000, guid: a8ef118f0054c1f4f9794470564280dc, type: 2}
   Faction: 10
   Grade: 0
   Weaknesses: 
   Resistances: 
   SensorConfig:
-    DetectionRadius: 20
+    DetectionRadius: 50
     ChaseRadius: 10
     FieldOfView: 120
     AttackRange: 6

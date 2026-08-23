@@ -2,17 +2,17 @@ using Game.Logic;
 
 namespace Game.Logic
 {
-    public interface IInputCommandHandler
+    public interface IActionCommandHandler
     {
         void Handle(CharacterCommand command);
     }
 
-    public class NullInputCommandHandler : IInputCommandHandler
+    public class NullInputCommandHandler : IActionCommandHandler
     {
         public void Handle(CharacterCommand command) { }
     }
 
-    public abstract class ForwardingInputCommandHandler : IInputCommandHandler
+    public abstract class ForwardingInputCommandHandler : IActionCommandHandler
     {
         protected readonly RoleEntity Entity;
 

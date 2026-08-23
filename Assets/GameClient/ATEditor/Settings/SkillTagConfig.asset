@@ -12,21 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12f02c1f7d9350448632f5ace30c62b, type: 3}
   m_Name: SkillTagConfig
   m_EditorClassIdentifier: 
-  availableTargetTags:
-  - Enemy
-  - Ally
-  - Self
-  - Friendly
-  - NPC
-  availableEventTags:
-  - Hit_Default
-  - Hit_Light
-  - Hit_Heavy
-  - Hit_Knockback
-  - Hit_Launch
-  - Hit_Ellen_Frost
-  - Hit_Ellen_Frost
-  - Hit_AddEnergy
+  availableTargetTags: []
+  availableEventTags: []
   availableComboWindowTags:
   - Execute1
   - Execute2
@@ -39,3 +26,4 @@ MonoBehaviour:
   - SwitchExecute
   - TimelineRewind
   - TimelineSkip
+  - Hit

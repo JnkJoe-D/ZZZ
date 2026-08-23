@@ -15,7 +15,7 @@ namespace Game.Logic
             _ctx = context;
         }
 
-        public virtual IInputCommandHandler InputHandler => CharacterStateBase.InputHandlerStatic;
+        public virtual IActionCommandHandler InputHandler => CharacterStateBase.InputHandlerStatic;
 
         public virtual bool CanEnter() { return true; }
         public virtual bool CanExit() { return true; }

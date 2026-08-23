@@ -11,7 +11,7 @@ namespace Game.Logic
     /// Combat resolution is handled by IHitImpact; this module focuses on
     /// reaction presentation such as VFX, audio, hit-stop, and state changes.
     /// </summary>
-    public class HitReactionModule : MonoBehaviour
+    public abstract class HitReactionModule : MonoBehaviour
     {
         [Header("受击保护")]
         public float hitProtectionInterval = 0.1f;
@@ -22,17 +22,17 @@ namespace Game.Logic
         [Header("霸体")]
         public bool isSuperArmor = false;
 
-        private CharacterEntity _entity;
-        private HitReactionRuntimeData _hitData;
-        private float _lastHitTime = -999f;
+        protected CharacterEntity _entity;
+        protected HitReactionRuntimeData _hitData;
+        protected float _lastHitTime = -999f;
 
-        public void Init(CharacterEntity entity)
+        public virtual void Init(CharacterEntity entity)
         {
             _entity = entity;
             _hitData = _entity.DataModule?.Get<HitReactionRuntimeData>();
         }
 
-        public void ApplyVisualFeedback(HitContext ctx)
+        public virtual void ApplyVisualFeedback(HitContext ctx)
         {
             if (_entity == null)
             {
@@ -77,26 +77,16 @@ namespace Game.Logic
             {
                 FaceAttackerBeforeHitAnimation(ctx);
 
-                if (ctx.reactionType != cfg.ZZZ.HitReactionType.None && ctx.reactionType != cfg.ZZZ.HitReactionType.Shake)
+                if (ctx.reactionType != cfg.ZZZ.HitReactionType.None)
                 {
-                    if (_entity is RoleEntity role)
-                    {
-                        role.StateMachine?.ChangeState<CharacterHitStunState>();
-                    }
-                    // TODO: 对于怪物可以触发 BT 事件中断
-                }
-                else if (ctx.reactionType == cfg.ZZZ.HitReactionType.Shake)
-                {
-                    // Shake is played directly without changing state
-                    if (_entity.Config != null && _entity.Config.hitReactionConfig != null && _entity.Config.hitReactionConfig.hitAnimShake != null)
-                    {
-                        _entity.ActionPlayer?.PlayAction(_entity.Config.hitReactionConfig.hitAnimShake);
-                    }
+                    OnInterrupted(ctx);
                 }
             }
         }
 
-        private int GetCurrentResilience()
+        protected abstract void OnInterrupted(HitContext ctx);
+
+        protected virtual int GetCurrentResilience()
         {
             if (_entity.StatusModule != null && _entity.StatusModule.Attributes != null && _entity.StatusModule.Attributes.Has(Game.Logic.AttributeId.BaseResilience))
             {

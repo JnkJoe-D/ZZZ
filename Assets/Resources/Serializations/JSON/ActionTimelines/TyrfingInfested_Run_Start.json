@@ -49,6 +49,9 @@
             "tracks": [
                 {
                     "rid": 1003
+                },
+                {
+                    "rid": 1004
                 }
             ]
         }
@@ -74,7 +77,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1004
+                            "rid": 1005
                         }
                     ],
                     "isMasterTrack": true,
@@ -108,7 +111,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1005
+                            "rid": 1006
                         }
                     ]
                 }
@@ -131,7 +134,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1006
+                            "rid": 1007
                         }
                     ]
                 }
@@ -154,13 +157,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1007
+                            "rid": 1008
                         }
                     ]
                 }
             },
             {
                 "rid": 1004,
+                "type": {
+                    "class": "RouteWindowTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "604ba1b7-8d35-4b1a-bbca-aa52f384600e",
+                    "trackType": "RouteWindowTrack",
+                    "trackName": "输入派生窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1009
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1005,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -175,7 +201,7 @@
                     "blendInDuration": 0.10000000149011612,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 40856
+                        "instanceID": 34222
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -195,7 +221,7 @@
                 }
             },
             {
-                "rid": 1005,
+                "rid": 1006,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -213,7 +239,7 @@
                 }
             },
             {
-                "rid": 1006,
+                "rid": 1007,
                 "type": {
                     "class": "RotationClip",
                     "ns": "ATEditor",
@@ -238,7 +264,7 @@
                 }
             },
             {
-                "rid": 1007,
+                "rid": 1008,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -253,6 +279,24 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "Execute1"
+                }
+            },
+            {
+                "rid": 1009,
+                "type": {
+                    "class": "RouteWindowClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "0d508f21-e681-4ca4-b031-9f4510e89950",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.350000023841858,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "comboTag": "Hit"
                 }
             }
         ]

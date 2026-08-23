@@ -12,9 +12,9 @@ namespace Game.Logic
         protected RoleEntity Entity => Machine.Owner;
 
         // --- 指令路由 ---
-        public static readonly IInputCommandHandler NullInputHandler = new NullInputCommandHandler();
-        public static IInputCommandHandler InputHandlerStatic => NullInputHandler;
-        public virtual IInputCommandHandler InputHandler => NullInputHandler;
+        public static readonly IActionCommandHandler NullInputHandler = new NullInputCommandHandler();
+        public static IActionCommandHandler InputHandlerStatic => NullInputHandler;
+        public virtual IActionCommandHandler InputHandler => NullInputHandler;
 
         public virtual void OnInit(FSMSystem<RoleEntity> fsm)
         {
@@ -37,8 +37,8 @@ namespace Game.Logic
 
     public sealed class CharacterSwitchState : CharacterStateBase
     {
-        private IInputCommandHandler _inputHandler;
-        public override IInputCommandHandler InputHandler => _inputHandler;
+        private IActionCommandHandler _inputHandler;
+        public override IActionCommandHandler InputHandler => _inputHandler;
 
         public override void OnInit(FSMSystem<RoleEntity> fsm)
         {

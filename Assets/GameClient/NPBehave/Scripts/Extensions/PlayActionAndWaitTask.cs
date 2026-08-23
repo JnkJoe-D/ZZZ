@@ -37,6 +37,7 @@ namespace Game.Logic.AI.BehaviorTree.Extensions
             if (_actionConfig == null || _tryPlayAction == null || _checkCommandFate == null || _isCurrentPlayingAction == null)
             {
                 Stopped(false);
+                Debug.Log("PlayActionAndWaitTask: Invalid parameters provided.");
                 return;
             }
 
@@ -45,6 +46,7 @@ namespace Game.Logic.AI.BehaviorTree.Extensions
             if (!success)
             {
                 Stopped(false);
+                Debug.Log($"PlayActionAndWaitTask: Failed to play action {_actionConfig.name}.");
                 return;
             }
 
@@ -62,9 +64,9 @@ namespace Game.Logic.AI.BehaviorTree.Extensions
                 }
                 else if (fate == CommandFate.Dropped)
                 {
-                    _internalState = TaskState.None;
                     RootNode.Clock.RemoveUpdateObserver(Tick);
                     Stopped(false);
+                    Debug.Log($"PlayActionAndWaitTask: Command {_commandId} was dropped for action {_actionConfig.name}.");
                     return;
                 }
             }
@@ -75,12 +77,14 @@ namespace Game.Logic.AI.BehaviorTree.Extensions
                 {
                     RootNode.Clock.RemoveUpdateObserver(Tick);
                     Stopped(true); 
+                    Debug.Log($"PlayActionAndWaitTask: Action {_actionConfig.name} has finished playing.");
                 }
             }
         }
 
         protected override void DoStop()
         {
+            _internalState = TaskState.None;
             RootNode.Clock.RemoveUpdateObserver(Tick);
             Stopped(false);
         }

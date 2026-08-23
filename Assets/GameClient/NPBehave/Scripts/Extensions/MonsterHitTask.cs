@@ -5,42 +5,47 @@ using Game.Logic;
 
 namespace Game.Logic.AI.BehaviorTree.Extensions
 {
-    public class MonsterAttackTask : Task
+    public class MonsterHitTask : Task
     {
-        private MonsterAttackData _data;
+        public delegate bool TryGetHitActionDelegate(out ActionConfigAsset hitAction);
+
+        private TryGetHitActionDelegate _tryGetHitAction;
         private TryPlayActionDelegate _tryPlayAction;
         private Func<long, CommandFate> _checkCommandFate;
         private Func<ActionConfigAsset, bool> _isPlayingAction;
-        private Action<float> _startCooldown;
+        private System.Action _clearHitStun;
 
         private long _commandId;
         private TaskState _internalState;
+        private ActionConfigAsset _currentAction;
 
-        public MonsterAttackTask(
-            MonsterAttackData data,
+        public MonsterHitTask(
+            TryGetHitActionDelegate tryGetHitAction,
             TryPlayActionDelegate tryPlayAction,
             Func<long, CommandFate> checkCommandFate,
             Func<ActionConfigAsset, bool> isPlayingAction,
-            Action<float> startCooldown) : base("MonsterAttackTask")
+            System.Action clearHitStun) : base("MonsterHitTask")
         {
-            _data = data;
+            _tryGetHitAction = tryGetHitAction;
             _tryPlayAction = tryPlayAction;
             _checkCommandFate = checkCommandFate;
             _isPlayingAction = isPlayingAction;
-            _startCooldown = startCooldown;
+            _clearHitStun = clearHitStun;
         }
 
         protected override void DoStart()
         {
-            if (_data.action == null)
+            if (!_tryGetHitAction(out _currentAction) || _currentAction == null)
             {
+                _clearHitStun?.Invoke();
                 Stopped(false);
                 return;
             }
 
-            bool success = _tryPlayAction(_data.action, out _commandId);
+            bool success = _tryPlayAction(_currentAction, out _commandId);
             if (!success)
             {
+                _clearHitStun?.Invoke();
                 Stopped(false);
                 return;
             }
@@ -60,17 +65,15 @@ namespace Game.Logic.AI.BehaviorTree.Extensions
                 }
                 else if (fate == CommandFate.Dropped)
                 {
-                    StopAndReturn(false); // 指令被丢弃，任务失败
+                    StopAndReturn(false); // 动作被拒绝
                 }
             }
             else if (_internalState == TaskState.Playing)
             {
-                // 一旦在播放状态且 currentaction != action，代表当前攻击动作已结束或路由到了其他动作
-                if (!_isPlayingAction(_data.action))
+                // 一旦动作结束或者路由到非受击动作
+                if (!_isPlayingAction(_currentAction))
                 {
-                    // 开启 behaviorRuntimeData 的冷却计时
-                    _startCooldown?.Invoke(_data.cooldown);
-                    StopAndReturn(true); // 动作结束，开启冷却并返回成功
+                    StopAndReturn(true); // 受击结束
                 }
             }
         }
@@ -79,6 +82,7 @@ namespace Game.Logic.AI.BehaviorTree.Extensions
         {
             _internalState = TaskState.None;
             RootNode.Clock.RemoveUpdateObserver(Tick);
+            _clearHitStun?.Invoke(); // 清除黑板中的受击状态时间
             Stopped(result);
         }
 

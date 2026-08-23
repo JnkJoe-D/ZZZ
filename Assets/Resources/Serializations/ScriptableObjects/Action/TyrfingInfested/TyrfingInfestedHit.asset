@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc907aef54d1b934298be1107be47939, type: 3}
+  m_Name: TyrfingInfestedHit
+  m_EditorClassIdentifier: 
+  hitAnimLight: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimHeavy: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimKnowAway: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimShake: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimStay: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimKnockDown: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  knockbackForce: 0
+  launchForce: 0
+  superArmorThreshold: 0

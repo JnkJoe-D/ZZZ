@@ -13,26 +13,21 @@ MonoBehaviour:
   m_Name: "\u827E\u83B2\u4E54_\u6307\u4EE4\u96C6_7_\u81EA\u52A8\u8854\u63A5_\u971C\u964D"
   m_EditorClassIdentifier: 
   Routes:
-  - Category: 30
-    RequiredWindowTag: Buffer1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    AutoCheckTiming: 20
-    EventType: 10
-    RequiredType: 0
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: af811a422b2878048bc01a5932108375, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 20
     CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500846
+    ExtraConditions: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4681868330708500846
+      type: {class: AutoTransitionTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        Timing: 20
+        RequiredWindowTag: Buffer1
+        Modifiers: []

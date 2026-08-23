@@ -8,14 +8,15 @@ namespace Game.Logic
     internal static class CommandRouteEvaluator
     {
         public static bool MatchesCommand(
-            InputCommand requiredType,
+            HardwareInputType requiredType,
             CommandPhase requiredPhase,
             CharacterCommand command)
         {
             return command != null &&
-                   command.Type != InputCommand.None &&
-                   command.Type == requiredType &&
-                   command.Phase == requiredPhase;
+                   command.Payload is InputPayload inputPayload &&
+                   inputPayload.InputType != HardwareInputType.None &&
+                   inputPayload.InputType == requiredType &&
+                   inputPayload.Phase == requiredPhase;
         }
 
         public static bool MatchesTriggerMode(CommandTriggerMode triggerMode, CommandTriggerMode evaluationMode)
@@ -45,7 +46,7 @@ namespace Game.Logic
     [Serializable]
     public class ContextRoute
     {
-        public InputCommand RequiredType;
+        public HardwareInputType RequiredType;
         public CommandPhase RequiredPhase = CommandPhase.Started;
         public ActionConfigAsset NextAction;
 

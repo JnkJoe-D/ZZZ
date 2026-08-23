@@ -16,54 +16,51 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: cd1c582eff689a94fb14868829a3a316, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 0fed23945ad3aa1458beafb9b16a45af, type: 2}
-  EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   CompleteTransitCrossfade: -1
+  PlaybackSpeed: 1
   Routes:
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Buffer1
-    TriggerMode: 0
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500775
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 79d07ffca6dce29419a56a38943f0208, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500776
+    ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: e69d643be28f4431972836242bcc6306, type: 2}
   - {fileID: 11400000, guid: 22d0fc9289794c44953011472885221e, type: 2}
   - {fileID: 11400000, guid: 0ae99841e2fe44a48bbd2c6042a90734, type: 2}
-  PlaybackSpeed: 1
+  EnterState: 40
+  InheritMode: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4681868330708500775
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []
+    - rid: 4681868330708500776
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
+        Modifiers: []

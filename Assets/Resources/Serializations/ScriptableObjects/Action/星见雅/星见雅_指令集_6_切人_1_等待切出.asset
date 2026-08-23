@@ -13,22 +13,19 @@ MonoBehaviour:
   m_Name: "\u661F\u89C1\u96C5_\u6307\u4EE4\u96C6_6_\u5207\u4EBA_1_\u7B49\u5F85\u5207\u51FA"
   m_EditorClassIdentifier: 
   Routes:
-  - Category: 10
-    RequiredWindowTag: SwitchExecute
-    TriggerMode: 0
-    ModifierCheckTiming: 10
-    EventType: 0
-    RequiredType: 60
-    RequiredPhase: 0
-    Modifier: 20
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 28000000
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 4a04a33596996e442814299742e86e38, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 20
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500731
+    ExtraConditions: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4681868330708500731
+      type: {class: DirectAssetTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredWindowTag: SwitchExecute

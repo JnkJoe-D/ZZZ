@@ -9,11 +9,11 @@ namespace Game.Logic
 {
     public enum RouteTriggerCategory
     {
-        PlayerCommand = 0,
-        SingleModifier = 10,
+        IntentCommand = 0,
+        DirectAsset = 10,
         Event = 20,
-        Auto = 30,
-        AICommand = 40
+        AutoTransition = 30,
+        ConditionOnly = 40
     }
 
     public enum RouteEventType
@@ -69,7 +69,7 @@ namespace Game.Logic
         public ModifierCategory Category = ModifierCategory.None;
 
         [ShowIf("Category", ModifierCategory.KeyState)]
-        public InputCommand RequiredKey;
+        public HardwareInputType RequiredKey;
 
         [ShowIf("Category", ModifierCategory.Condition)]
         public ConditionCommand Condition = ConditionCommand.None;
@@ -111,50 +111,8 @@ namespace Game.Logic
     }
 
     [Serializable]
-    public class ActionRoute : ISerializationCallbackReceiver
+    public class ActionRoute
     {
-        [Header("Trigger")]
-        public RouteTriggerCategory Category;
-        public string RequiredWindowTag = "Execute1";
-
-        [ShowIf("Category", RouteTriggerCategory.PlayerCommand)]
-        public CommandTriggerMode TriggerMode = CommandTriggerMode.OnWindowExit;
-
-        [Header("Modifier Trigger")]
-        [ShowIf("Category", RouteTriggerCategory.SingleModifier)]
-        public RouteSingleModifierCheckTiming ModifierCheckTiming = RouteSingleModifierCheckTiming.OnWindowExit;
-
-        [Header("Auto Trigger")]
-        [ShowIf("Category", RouteTriggerCategory.Auto)]
-        public RouteSingleModifierCheckTiming AutoCheckTiming = RouteSingleModifierCheckTiming.OnWindowExit;
-
-        [Header("Event Trigger")]
-        [ShowIf("Category", RouteTriggerCategory.Event)]
-        public RouteEventType EventType = RouteEventType.None;
-
-        [Header("Player Command Trigger")]
-        [ShowIf("Category", RouteTriggerCategory.PlayerCommand)]
-        public InputCommand RequiredType;
-
-        [ShowIf("Category", RouteTriggerCategory.PlayerCommand)]
-        public CommandPhase RequiredPhase = CommandPhase.Started;
-
-        [Header("Modifiers")]
-        [ShowIf("Category", RouteTriggerCategory.PlayerCommand, RouteTriggerCategory.SingleModifier, RouteTriggerCategory.Event, RouteTriggerCategory.Auto)]
-        public List<RouteModifierCheck> Modifiers = new();
-
-        [HideInInspector, SerializeField]
-        private ModifierCategory Modifier = ModifierCategory.None;
-
-        [HideInInspector, SerializeField]
-        private InputCommand ModifierRequiredKey;
-
-        [HideInInspector, SerializeField]
-        private bool InverseKeyStatus = false;
-
-        [HideInInspector, SerializeField]
-        private List<ConditionCommand> ModifierConditions;
-
         [Header("Execution Target")]
         public ExecuteTarget ExecuteType = ExecuteTarget.Action;
 
@@ -168,204 +126,48 @@ namespace Game.Logic
         [ShowIf("ExecuteType", ExecuteTarget.Event)]
         public ExecuteEvent RouteExecuteEvent;
 
-        [Header("Extra Conditions")]
-        [SerializeReference, SubclassSelector]
-        public List<ITransitionCondition> ExtraConditions = new();
-
         [Header("Execution")]
         public int Priority;
 
         [Tooltip("-1表示使用下个动作自身设定的混合时间，>=0则强制覆盖混合时间。")]
         public float CrossfadeOverride = -1f;
 
-        public bool HasModifier => Modifiers != null && Modifiers.Count > 0;
+        [Header("Trigger Strategy")]
+        [SerializeReference, SubclassSelector]
+        public IRouteTrigger TriggerStrategy;
 
-        public void OnBeforeSerialize() { }
+        [Header("Extra Conditions")]
+        [SerializeReference, SubclassSelector]
+        public List<ITransitionCondition> ExtraConditions = new();
 
-        public void OnAfterDeserialize()
+        public bool Evaluate(CharacterCommand command, string windowTag, RoleEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
         {
-            if (Modifier != ModifierCategory.None)
+            if (TriggerStrategy == null) return false;
+
+            if (!TriggerStrategy.Evaluate(command, windowTag, actor, timing))
+                return false;
+
+            // 新增：如果这是由 DirectAsset 触发的，必须保证它请求的动作正是本路由指向的动作
+            if (command != null && command.Payload is DirectAssetPayload directPayload)
             {
-                if (Modifiers == null) Modifiers = new List<RouteModifierCheck>();
-                Modifiers.Add(new RouteModifierCheck
+                if (ExecuteType == ExecuteTarget.Action && ExecuteAction != null)
                 {
-                    Category = Modifier,
-                    RequiredKey = ModifierRequiredKey,
-                    Inverse = InverseKeyStatus,
-                    Condition = (ModifierConditions != null && ModifierConditions.Count > 0) ? ModifierConditions[0] : ConditionCommand.None
-                });
-                Modifier = ModifierCategory.None;
-            }
-        }
-
-        public bool EvaluateAICommand(string activeWindowTag, ActionConfigAsset requestedAction)
-        {
-            if (Category != RouteTriggerCategory.AICommand)
-            {
-                return false;
-            }
-
-            if (!MatchesWindowTag(activeWindowTag))
-            {
-                return false;
-            }
-
-            // 严格匹配：行为树请求播放的动作，必须与路由上配置的合法过渡动作完全一致
-            if (ExecuteAction == null || ExecuteAction != requestedAction)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool EvaluatePlayerCommand(
-            CharacterCommand command,
-            string activeWindowTag,
-            CommandTriggerMode evaluationMode,
-            RoleEntity actor)
-        {
-            if (Category != RouteTriggerCategory.PlayerCommand)
-            {
-                return false;
-            }
-
-            if (!MatchesWindowTag(activeWindowTag))
-            {
-                return false;
-            }
-
-            if (!CommandRouteEvaluator.MatchesTriggerMode(TriggerMode, evaluationMode))
-            {
-                return false;
-            }
-
-            if (!CommandRouteEvaluator.MatchesCommand(RequiredType, RequiredPhase, command))
-            {
-                return false;
-            }
-
-            if (RequiredType == InputCommand.Move)
-            {
-                if (RequiredPhase == CommandPhase.Held || RequiredPhase == CommandPhase.Performed)
-                {
-                    if (actor?.InputProvider == null || !actor.InputProvider.HasMovementInput())
-                    {
+                    if (directPayload.TargetAsset != ExecuteAction)
                         return false;
-                    }
-                }
-                else if (evaluationMode == CommandTriggerMode.OnWindowExit)
-                {
-                    if (actor?.InputProvider == null || !actor.InputProvider.HasMovementInput())
-                    {
-                        return false;
-                    }
                 }
             }
 
-            bool conditionResult = CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
-            if (!conditionResult && ExecuteAction != null && ExecuteAction.Name.Contains("Attack"))
+            if (ExtraConditions != null && ExtraConditions.Count > 0)
             {
-                Debug.Log($"<color=orange>[RouteTrace] {ExecuteAction.Name} 的 ExtraConditions 检查未通过！</color>");
+                bool conditionResult = CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
+                if (!conditionResult && ExecuteAction != null && ExecuteAction.Name.Contains("Attack"))
+                {
+                    Debug.Log($"<color=orange>[RouteTrace] {ExecuteAction.Name} 的 ExtraConditions 检查未通过！</color>");
+                }
+                if (!conditionResult) return false;
             }
-            if (!conditionResult) return false;
 
             return CheckSkillRequire(actor);
-        }
-
-        public bool EvaluateConditionTrigger(
-            RoleEntity actor,
-            string activeWindowTag,
-            RouteSingleModifierCheckTiming evaluationTiming)
-        {
-            if (Category != RouteTriggerCategory.SingleModifier)
-            {
-                return false;
-            }
-
-            if (!MatchesWindowTag(activeWindowTag))
-            {
-                return false;
-            }
-
-            if (ModifierCheckTiming != evaluationTiming)
-            {
-                return false;
-            }
-
-            if (!CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor))
-                return false;
-
-            return CheckSkillRequire(actor);
-        }
-
-        public bool EvaluateAutoTrigger(
-            RoleEntity actor,
-            string activeWindowTag,
-            RouteSingleModifierCheckTiming evaluationTiming)
-        {
-            if (Category != RouteTriggerCategory.Auto)
-            {
-                return false;
-            }
-
-            if (!MatchesWindowTag(activeWindowTag))
-            {
-                return false;
-            }
-
-            if (AutoCheckTiming != evaluationTiming)
-            {
-                return false;
-            }
-
-            if (!CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor))
-                return false;
-
-            return CheckSkillRequire(actor);
-        }
-
-        public bool EvaluateEvent(
-            RouteEventType eventType,
-            RoleEntity actor,
-            string activeWindowTag = null)
-        {
-            if (Category != RouteTriggerCategory.Event)
-            {
-                return false;
-            }
-
-            if (EventType != eventType)
-            {
-                return false;
-            }
-
-            if (!MatchesWindowTag(activeWindowTag))
-            {
-                return false;
-            }
-
-            if (!CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor))
-                return false;
-            
-            return CheckSkillRequire(actor);
-        }
-
-        public bool EvaluateModifier(RoleEntity actor, string activeWindowTag = null)
-        {
-            if (Modifiers == null || Modifiers.Count == 0) return true;
-            foreach (var mod in Modifiers)
-            {
-                if (!mod.Evaluate(actor)) return false;
-            }
-            return true;
-        }
-
-        public bool MatchesCommand(InputCommand commandType, CommandPhase commandPhase)
-        {
-            return Category == RouteTriggerCategory.PlayerCommand &&
-                   RequiredType == commandType &&
-                   RequiredPhase == commandPhase;
         }
 
         public bool IsInvalid()
@@ -381,10 +183,6 @@ namespace Game.Logic
 
 
 
-        private bool MatchesWindowTag(string activeWindowTag)
-        {
-            return string.Equals(RequiredWindowTag, activeWindowTag, StringComparison.Ordinal);
-        }
 
         public bool CheckSkillRequire(RoleEntity actor)
         {

@@ -11,7 +11,7 @@ namespace Game.Logic
         private float _stunTimer;
         private float _stunDuration;
         private HitReactionRuntimeData _hitData;
-        public override IInputCommandHandler InputHandler => NullInputHandler;
+        public override IActionCommandHandler InputHandler => NullInputHandler;
 
         public override void OnEnter()
         {
@@ -47,7 +47,7 @@ namespace Game.Logic
                     case cfg.ZZZ.HitReactionType.Launch:
                         hitAnim = Entity.Config.hitReactionConfig.hitAnimKnowAway;
                         break;
-                    case cfg.ZZZ.HitReactionType.KnockDown:
+                    case cfg.ZZZ.HitReactionType.Knockdown:
                         hitAnim = Entity.Config.hitReactionConfig.hitAnimKnockDown;
                         break;
                     case cfg.ZZZ.HitReactionType.Shake:

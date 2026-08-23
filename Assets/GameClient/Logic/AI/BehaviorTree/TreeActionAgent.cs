@@ -26,7 +26,7 @@ namespace Game.Logic.AI.BehaviorTree
             commandId = 0;
             if (_owner == null || _owner.ActionController == null) return false;
             
-            var command = CharacterCommandFactory.Create(InputCommand.AIAction, CommandPhase.Started, actionConfig);
+            var command = CharacterCommandFactory.CreateDirectAssetCommand(actionConfig);
             commandId = command.Id;
 
             _owner.ActionController.OnInput(command);
@@ -49,8 +49,11 @@ namespace Game.Logic.AI.BehaviorTree
             var target = _owner.TargetFinder?.GetTarget();
             bb["HasTarget"] = target != null;
             bb["DistanceToTarget"] = _owner.TargetFinder?.GetDistanceToTarget() ?? float.MaxValue;
-            bb["CurrentAIState"] = _owner.DataModule?.Get<MonSterBehaviorRuntimeData>()?.CurrentState ?? MonsterAIState.Idle;
-            bb["AttackCooldownTimer"] = _owner.DataModule?.Get<MonSterBehaviorRuntimeData>()?.AttackCooldownTimer ?? 0f;
+            var beheaviorData = _owner.DataModule?.Get<MonSterBehaviorRuntimeData>();
+            bb["CurrentAIState"] = beheaviorData?.CurrentState ?? MonsterAIState.Attack;
+            bb["AttackCooldownTimer"] = beheaviorData?.AttackCooldownTimer ?? 0f;
+            var hitData = _owner.DataModule?.Get<HitReactionRuntimeData>();
+            bb["HitTriggerTimestamp"] = hitData?.HitTriggerTimestamp ?? 0f;
         }
         public bool IsPlayingAction(ActionConfigAsset actionConfig)
         {
@@ -80,6 +83,27 @@ namespace Game.Logic.AI.BehaviorTree
             aiData?.StartAttackCooldown(cooldown);
         }
 
+        public bool TryGetHitAction(out ActionConfigAsset hitAction)
+        {
+            hitAction = null;
+            if (_owner == null || _owner.DataModule == null || _owner.Config == null || _owner.Config.hitReactionConfig == null) return false;
+            
+            var hitData = _owner.DataModule.Get<HitReactionRuntimeData>();
+            if (hitData == null) return false;
+
+            hitAction = _owner.Config.hitReactionConfig.GetHitAction(hitData.CurrentReactionType);
+            return hitAction != null;
+        }
+
+        public void ClearHitStun()
+        {
+            var hitData = _owner?.DataModule?.Get<HitReactionRuntimeData>();
+            if (hitData != null)
+            {
+                hitData.CurrentHitStunDuration = 0f;
+            }
+        }
+
         public void EvaluateState(float chaseDistance)
         {
             if (_owner == null || _owner.DataModule == null) return;
@@ -88,10 +112,17 @@ namespace Game.Logic.AI.BehaviorTree
 
             if (aiData == null) return;
 
-            if (hitData != null && hitData.CurrentHitStunDuration > 0)
+            if (hitData != null && _owner is MonsterEntity monster && monster.BTRunner != null)
             {
-                aiData.ChangeState(MonsterAIState.HitStun);
-                return;
+                // 同步触发器到黑板，供条件节点监听打断
+                monster.BTRunner.RuntimeBlackboard?.Set("HitTriggerTimestamp", hitData.HitTriggerTimestamp);
+                
+                // 维持原来的被动状态轮询（如果行为树还没处理，依然置为HitStun）
+                if (hitData.CurrentHitStunDuration > 0)
+                {
+                    aiData.ChangeState(MonsterAIState.HitStun);
+                    return;
+                }
             }
 
             var target = _owner.TargetFinder?.GetTarget();

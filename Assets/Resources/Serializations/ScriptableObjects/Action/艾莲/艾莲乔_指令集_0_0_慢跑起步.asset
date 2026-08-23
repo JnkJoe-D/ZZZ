@@ -13,78 +13,69 @@ MonoBehaviour:
   m_Name: "\u827E\u83B2\u4E54_\u6307\u4EE4\u96C6_0_0_\u6162\u8DD1\u8D77\u6B65"
   m_EditorClassIdentifier: 
   Routes:
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    AutoCheckTiming: 20
-    EventType: 0
-    RequiredType: 10
-    RequiredPhase: 0
-    Modifiers:
-    - Category: 20
-      RequiredKey: 0
-      Condition: 0
-      Inverse: 0
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    AutoCheckTiming: 20
-    EventType: 0
-    RequiredType: 10
-    RequiredPhase: 10
-    Modifiers:
-    - Category: 20
-      RequiredKey: 0
-      Condition: 0
-      Inverse: 0
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500681
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    AutoCheckTiming: 20
-    EventType: 0
-    RequiredType: 10
-    RequiredPhase: 30
-    Modifiers:
-    - Category: 20
-      RequiredKey: 0
-      Condition: 0
-      Inverse: 0
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500682
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500683
+    ExtraConditions: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4681868330708500681
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers:
+        - Category: 20
+          RequiredKey: 0
+          Condition: 0
+          Inverse: 0
+    - rid: 4681868330708500682
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 10
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers:
+        - Category: 20
+          RequiredKey: 0
+          Condition: 0
+          Inverse: 0
+    - rid: 4681868330708500683
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 30
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers:
+        - Category: 20
+          RequiredKey: 0
+          Condition: 0
+          Inverse: 0

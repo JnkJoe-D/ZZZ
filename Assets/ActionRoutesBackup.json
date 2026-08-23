@@ -1,0 +1,3584 @@
+{
+    "AllConfigs": [
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_冲刺普攻.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击1.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击2.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击3.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击3.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击3.asset",
+            "Routes": [
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4_落雷.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 20,
+                            "Condition": 0,
+                            "Inverse": true
+                        }
+                    ]
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4_落雷.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4_落雷.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4_落雷.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 20,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4_落雷.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击4_落雷.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_冲刺攻击.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_1.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_2.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_3.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_3.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_3.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_4.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_4.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_4.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_5.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_5.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_5.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_冲刺攻击.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_冲刺攻击_急冻.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1_急冻.asset",
+            "Routes": [
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2.asset",
+            "Routes": [
+                {
+                    "Priority": 130,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_后撤_近.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 130,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_后撤_近.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 120,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_后撤_远.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 120,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_后撤_远.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 110,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_向前_近.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 110,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_向前_近.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 100,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_向前_远.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 100,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_向前_远.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2_急冻.asset",
+            "Routes": [
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_向前_近.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_向前_近.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_后撤_近.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_后撤_远.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_向前_近.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 20,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 30,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "TimelineSkip",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_向前_远.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_急冻.asset",
+            "Routes": [
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 20,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 30,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "TimelineSkip",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_4_冰浪刃.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_4_霜降.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_2_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_2_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_1_蓄力前摇.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_2_无蓄力.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_2_无蓄力.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_1_蓄力前摇_快蓄.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_2_无蓄力.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_2_无蓄力.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_2_蓄力.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_4_冰浪刃.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_4_冰浪刃.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_1.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_2.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_1_强化.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_2_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 1,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_2_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_2_急冻.asset",
+            "Routes": [
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 0,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_3_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Z_RoutesSet_General.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Attack_01.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Idle.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Run_End.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Run_Start.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Walk_B.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Walk_F.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Walk_F_L.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Walk_F_R.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Walk_L.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/TyrfingInfested/TyrfingInfested_Walk_R.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": 0.0,
+                    "Category": 40,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 0,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 0,
+                    "AutoCheckTiming": 0,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_0_0_慢跑起步.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_0_1_慢跑起步停止.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_停止.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_0_2_慢跑停止.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_停止.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_0_3_冲刺停止.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_停止.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_1_0_一段攻击指令.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_1_1_一段攻击指令_后摇.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 20,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_普通攻击1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_2_0_后摇移动.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        },
+                        {
+                            "Category": 20,
+                            "RequiredKey": 10,
+                            "Condition": 40,
+                            "Inverse": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_2_1_冲刺衔接.asset",
+            "Routes": [
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_3_0_默认闪避.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_闪避_前.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 10,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_闪避_后.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_闪避_前.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_4_0_冲刺攻击.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_攻击_冲刺普攻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_6_切人_0_立即切出.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 20,
+                    "ExecuteActionPath": "",
+                    "RouteExecuteEvent": 10,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "SwitchCapture",
+                    "TriggerMode": 1,
+                    "RequiredType": 60,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_切人_切出.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 20,
+                    "RequiredWindowTag": "SwitchExecute",
+                    "TriggerMode": 1,
+                    "RequiredType": 60,
+                    "RequiredPhase": 0,
+                    "EventType": 20,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 40,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_6_切人_1_等待切出.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_切人_切出.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "SwitchExecute",
+                    "TriggerMode": 0,
+                    "RequiredType": 60,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 40,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_指令集_6_切人_2_立即切入.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/安比/安比_切人_切入.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 20,
+                    "RequiredWindowTag": "SwitchExecute",
+                    "TriggerMode": 1,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 10,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_0_0_慢跑起步.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_0_1_慢跑起步停止.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_慢跑起步停止.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_0_2_慢跑停止.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_停止.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_0_3_冲刺停止.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_停止.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_1_0_一段攻击指令.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_终极技.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 40,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_特殊技_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_1_1_一段攻击指令_后摇.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_终极技.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 40,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_特殊技_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_2_0_后摇移动.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        },
+                        {
+                            "Category": 20,
+                            "RequiredKey": 10,
+                            "Condition": 40,
+                            "Inverse": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_2_1_冲刺衔接.asset",
+            "Routes": [
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_3_0_默认闪避.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_闪避_前_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 10,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_闪避_后_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_闪避_前_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_4_0_冲刺攻击.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_攻击_冲刺攻击.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_6_切人_0_立即切出.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 20,
+                    "ExecuteActionPath": "",
+                    "RouteExecuteEvent": 10,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "SwitchCapture",
+                    "TriggerMode": 1,
+                    "RequiredType": 60,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_切人_切出.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 20,
+                    "RequiredWindowTag": "SwitchExecute",
+                    "TriggerMode": 1,
+                    "RequiredType": 60,
+                    "RequiredPhase": 0,
+                    "EventType": 20,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 40,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_6_切人_1_等待切出.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_切人_切出.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "SwitchExecute",
+                    "TriggerMode": 0,
+                    "RequiredType": 60,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 40,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_指令集_6_切人_2_立即切入.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/星见雅/星见雅_切人_切入.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 20,
+                    "RequiredWindowTag": "SwitchExecute",
+                    "TriggerMode": 1,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 10,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_0_0_慢跑起步.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_0_1_慢跑起步停止.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_慢跑起步停止.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        },
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 30,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_0_2_慢跑停止.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_慢跑停止.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_0_3_冲刺停止.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_冲刺停止.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 20,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 20,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_1_0_一段攻击指令.asset",
+            "Routes": [
+                {
+                    "Priority": 2,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 90,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_1_强化.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_1_1_一段攻击指令_后摇.asset",
+            "Routes": [
+                {
+                    "Priority": 2,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1_急冻.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 90,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_1_强化.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊技_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 30,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_2_0_后摇移动.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_慢跑起步.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "BackSwing",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        },
+                        {
+                            "Category": 20,
+                            "RequiredKey": 10,
+                            "Condition": 40,
+                            "Inverse": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_2_1_冲刺衔接.asset",
+            "Routes": [
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_冲刺.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "DashLink",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_3_0_默认闪避.asset",
+            "Routes": [
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_闪避_前_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 10,
+                            "Condition": 10,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_闪避_后_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 1,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_闪避_前_1.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_3_1_特殊冲刺起步_前.asset",
+            "Routes": [
+                {
+                    "Priority": 2,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_特殊冲刺起步_前.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 50,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 2,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_特殊冲刺起步_前.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Evade",
+                    "TriggerMode": 1,
+                    "RequiredType": 50,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 10,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_3_2_特殊冲刺起步_后.asset",
+            "Routes": [
+                {
+                    "Priority": 2,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_特殊冲刺起步_后.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashStart",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 50,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                },
+                {
+                    "Priority": 2,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_基础_特殊冲刺起步_后.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "DashStart",
+                    "TriggerMode": 1,
+                    "RequiredType": 10,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 10,
+                            "RequiredKey": 50,
+                            "Condition": 0,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_4_0_冲刺攻击.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_冲刺攻击.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_4_1_特殊冲刺攻击.asset",
+            "Routes": [
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_1_蓄力前摇.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_1_蓄力前摇.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 10,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 0,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_特殊冲刺攻击_1_蓄力前摇.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "Execute1",
+                    "TriggerMode": 1,
+                    "RequiredType": 20,
+                    "RequiredPhase": 30,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_6_切人_0_立即切出.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 20,
+                    "ExecuteActionPath": "",
+                    "RouteExecuteEvent": 10,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 0,
+                    "RequiredWindowTag": "SwitchCapture",
+                    "TriggerMode": 1,
+                    "RequiredType": 60,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                },
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_切人_切出.asset",
+                    "RouteExecuteEvent": 10,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 20,
+                    "RequiredWindowTag": "SwitchExecute",
+                    "TriggerMode": 1,
+                    "RequiredType": 60,
+                    "RequiredPhase": 0,
+                    "EventType": 20,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 40,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_6_切人_1_等待切出.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_切人_切出.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 10,
+                    "RequiredWindowTag": "SwitchExecute",
+                    "TriggerMode": 0,
+                    "RequiredType": 60,
+                    "RequiredPhase": 0,
+                    "EventType": 0,
+                    "ModifierCheckTiming": 10,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": [
+                        {
+                            "Category": 20,
+                            "RequiredKey": 0,
+                            "Condition": 40,
+                            "Inverse": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_6_切人_2_立即切入.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_切人_切入.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 20,
+                    "RequiredWindowTag": "SwitchExecute",
+                    "TriggerMode": 1,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 10,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        },
+        {
+            "AssetPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_指令集_7_自动衔接_霜降.asset",
+            "Routes": [
+                {
+                    "Priority": 20,
+                    "ExecuteType": 10,
+                    "ExecuteActionPath": "Assets/Resources/Serializations/ScriptableObjects/Action/艾莲/艾莲乔_攻击_普通攻击_4_霜降.asset",
+                    "RouteExecuteEvent": 0,
+                    "CrossfadeOverride": -1.0,
+                    "Category": 30,
+                    "RequiredWindowTag": "Buffer1",
+                    "TriggerMode": 1,
+                    "RequiredType": 0,
+                    "RequiredPhase": 0,
+                    "EventType": 10,
+                    "ModifierCheckTiming": 20,
+                    "AutoCheckTiming": 20,
+                    "Modifiers": []
+                }
+            ]
+        }
+    ]
+}

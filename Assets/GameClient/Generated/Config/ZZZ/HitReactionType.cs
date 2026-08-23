@@ -43,7 +43,8 @@ namespace cfg.ZZZ
         /// <summary>
         /// 击倒
         /// </summary>
-        KnockDown = 60,
+        Knockback = 60,
+        Knockdown=70,
     }
 
 } 

@@ -14,9 +14,7 @@ namespace Game.Logic
     public class CharacterCommand
     {
         public long Id;
-        public InputCommand Type;
-        public CommandPhase Phase;
-        public CommandPayload Payload;
+        public ICommandPayload Payload;
         public float Timestamp;
         public long BufferOrder;
         public bool IsConsumed;

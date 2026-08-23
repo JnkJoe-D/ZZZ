@@ -13,54 +13,65 @@ MonoBehaviour:
   m_Name: "\u5B89\u6BD4_\u6307\u4EE4\u96C6_3_0_\u9ED8\u8BA4\u95EA\u907F"
   m_EditorClassIdentifier: 
   Routes:
-  - Category: 0
-    RequiredWindowTag: Evade
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 50
-    RequiredPhase: 0
-    Modifier: 20
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 0a000000
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 8d11b40273ee32f4c932bde8f7a4f111, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
-  - Category: 0
-    RequiredWindowTag: Evade
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 50
-    RequiredPhase: 0
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500726
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: fc3b60a4b2622b4439f3f722ea4683ac, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
-  - Category: 0
-    RequiredWindowTag: Evade
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 50
-    RequiredPhase: 0
-    Modifier: 10
-    ModifierRequiredKey: 10
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500727
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 8d11b40273ee32f4c932bde8f7a4f111, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500728
+    ExtraConditions: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4681868330708500726
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindowTag: Evade
+        TriggerMode: 1
+        Modifiers:
+        - Category: 20
+          RequiredKey: 0
+          Condition: 10
+          Inverse: 0
+    - rid: 4681868330708500727
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindowTag: Evade
+        TriggerMode: 1
+        Modifiers: []
+    - rid: 4681868330708500728
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindowTag: Evade
+        TriggerMode: 1
+        Modifiers:
+        - Category: 10
+          RequiredKey: 10
+          Condition: 0
+          Inverse: 0

@@ -16,92 +16,85 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 1cdb988764ed48e48969372e0a0c874b, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: d4e5fdacdcd461f488a459594ed7ff26, type: 2}
-  EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   CompleteTransitCrossfade: -1
+  PlaybackSpeed: 1
   Routes:
-  - Category: 0
-    RequiredWindowTag: Buffer1
-    TriggerMode: 0
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: d7facff2f5fb88e40a89c9bf1f3451f6, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 1
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500688
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: d7facff2f5fb88e40a89c9bf1f3451f6, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 1
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500689
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 4c1affe96f0c8f64da3215e776ef416d, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500690
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 4c1affe96f0c8f64da3215e776ef416d, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500691
+    ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
-  PlaybackSpeed: 1
+  EnterState: 40
+  InheritMode: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4681868330708500688
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
+        Modifiers: []
+    - rid: 4681868330708500689
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []
+    - rid: 4681868330708500690
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []
+    - rid: 4681868330708500691
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []

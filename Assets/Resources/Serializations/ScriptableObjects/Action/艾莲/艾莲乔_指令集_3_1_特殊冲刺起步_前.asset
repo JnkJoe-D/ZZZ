@@ -13,38 +13,48 @@ MonoBehaviour:
   m_Name: "\u827E\u83B2\u4E54_\u6307\u4EE4\u96C6_3_1_\u7279\u6B8A\u51B2\u523A\u8D77\u6B65_\u524D"
   m_EditorClassIdentifier: 
   Routes:
-  - Category: 0
-    RequiredWindowTag: Evade
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 10
-    RequiredPhase: 0
-    Modifier: 10
-    ModifierRequiredKey: 50
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 252b76f192268094da0cf1c1619bd95a, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 2
-  - Category: 0
-    RequiredWindowTag: Evade
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 50
-    RequiredPhase: 30
-    Modifier: 10
-    ModifierRequiredKey: 10
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500679
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 252b76f192268094da0cf1c1619bd95a, type: 2}
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 2
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500680
+    ExtraConditions: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4681868330708500679
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 0
+        RequiredWindowTag: Evade
+        TriggerMode: 1
+        Modifiers:
+        - Category: 10
+          RequiredKey: 50
+          Condition: 0
+          Inverse: 0
+    - rid: 4681868330708500680
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 30
+        RequiredWindowTag: Evade
+        TriggerMode: 1
+        Modifiers:
+        - Category: 10
+          RequiredKey: 10
+          Condition: 0
+          Inverse: 0

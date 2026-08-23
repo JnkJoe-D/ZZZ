@@ -16,52 +16,29 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: c3e1c258e8c1c714797c53266c33a8b4, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 50ef0d4f591581a4fbdd9666e693bc27, type: 2}
-  EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   CompleteTransitCrossfade: -1
-  InheritMode: 0
+  PlaybackSpeed: 1
   Routes:
-  - Category: 0
-    RequiredWindowTag: Buffer1
-    TriggerMode: 0
-    ModifierCheckTiming: 20
-    AutoCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    AutoCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500744
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500745
+    ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
@@ -69,7 +46,24 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
   - {fileID: 11400000, guid: 36a2a976c94302b44afd0ccc5c5dd5d4, type: 2}
   - {fileID: 11400000, guid: 92b7f162e8e43ca4eb6e794b9131ff98, type: 2}
-  PlaybackSpeed: 1
+  EnterState: 40
+  InheritMode: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4681868330708500744
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
+        Modifiers: []
+    - rid: 4681868330708500745
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []

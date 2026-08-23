@@ -4,7 +4,8 @@ namespace Game.Logic.AI.BehaviorTree
     {
         HasTarget,
         DistanceToTarget,
-        AttackCooldownTimer
+        AttackCooldownTimer,
+        HitTriggerTimestamp
     }
 
     public static class BBKeyMapper

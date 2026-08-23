@@ -37,6 +37,9 @@
             "tracks": [
                 {
                     "rid": 1002
+                },
+                {
+                    "rid": 1003
                 }
             ]
         }
@@ -62,7 +65,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1003
+                            "rid": 1004
                         }
                     ],
                     "isMasterTrack": true,
@@ -96,7 +99,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1004
+                            "rid": 1005
                         }
                     ]
                 }
@@ -119,13 +122,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1005
+                            "rid": 1006
                         }
                     ]
                 }
             },
             {
                 "rid": 1003,
+                "type": {
+                    "class": "RouteWindowTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "4e908816-e344-4c20-879b-b79d3de621ac",
+                    "trackType": "RouteWindowTrack",
+                    "trackName": "输入派生窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1007
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1004,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -140,7 +166,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 40850
+                        "instanceID": 34022
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -160,7 +186,7 @@
                 }
             },
             {
-                "rid": 1004,
+                "rid": 1005,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -178,7 +204,7 @@
                 }
             },
             {
-                "rid": 1005,
+                "rid": 1006,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -193,6 +219,24 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "comboTag": "Execute1"
+                }
+            },
+            {
+                "rid": 1007,
+                "type": {
+                    "class": "RouteWindowClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "70eab6ec-defa-4335-9636-680a5b267de8",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 2.016666889190674,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "comboTag": "Hit"
                 }
             }
         ]

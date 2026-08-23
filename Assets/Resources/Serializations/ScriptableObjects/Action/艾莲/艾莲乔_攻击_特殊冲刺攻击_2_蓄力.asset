@@ -16,57 +16,51 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 28ce2fcef4b43fc408030871a26481e7, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: f86ea06f9f629b2488a804343b1d3ca9, type: 2}
-  EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   CompleteTransitCrossfade: -1
-  InheritMode: 0
+  PlaybackSpeed: 1
   Routes:
-  - Category: 0
-    RequiredWindowTag: Buffer1
-    TriggerMode: 0
-    ModifierCheckTiming: 0
-    AutoCheckTiming: 0
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: c8c607f6677b0e246bfffbdc684bf815, type: 2}
     ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: 0
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 0
-    AutoCheckTiming: 0
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500771
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: c8c607f6677b0e246bfffbdc684bf815, type: 2}
-    ValidateSkillRequirement: 0
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 0
     CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 4681868330708500772
+    ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
-  PlaybackSpeed: 1
+  EnterState: 40
+  InheritMode: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4681868330708500771
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
+        Modifiers: []
+    - rid: 4681868330708500772
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []

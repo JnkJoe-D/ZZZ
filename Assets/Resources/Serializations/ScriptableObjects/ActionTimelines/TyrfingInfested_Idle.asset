@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
-  m_Name: TyrfingInfested_Idle
+  m_Name: 
   m_EditorClassIdentifier: 
   duration: 2.016667
   isLoop: 1
@@ -23,25 +23,26 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868150004776961
+    - rid: 4681868330708500868
   - groupId: 7fd40c7e-a2bb-48d2-94b0-6209321b2259
     groupName: "\u4F4D\u79FB\u8FC7\u6EE4"
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868150004776965
+    - rid: 4681868330708500869
   - groupId: 05379216-66ca-48b1-92c3-531680524c71
     groupName: Route
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868286305501185
+    - rid: 4681868330708500870
+    - rid: 4681868330708500874
   references:
     version: 2
     RefIds:
-    - rid: 4681868150004776961
+    - rid: 4681868330708500868
       type: {class: AnimationTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: e4f686a6-caf0-4ce4-9270-837b656096ee
@@ -53,11 +54,37 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868150004776963
+        - rid: 4681868330708500871
         isMasterTrack: 1
         offsetPos: {x: 0, y: 0, z: 0}
         offsetRot: {x: 0, y: 0, z: 0}
-    - rid: 4681868150004776963
+    - rid: 4681868330708500869
+      type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 00640495-d883-44d1-9487-16c0f8224c0a
+        trackType: MotionWindowTrack
+        trackName: "\u52A8\u753B\u4F4D\u79FB\u7A97\u53E3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868330708500872
+    - rid: 4681868330708500870
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: e960b3d2-e002-40ec-8b7b-830cfaa73ad6
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868330708500873
+    - rid: 4681868330708500871
       type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 82a28dce-fb37-48d5-96e4-2e6152d3dbbe
@@ -80,20 +107,7 @@ MonoBehaviour:
           guid: 
           assetName: 
           assetPath: 
-    - rid: 4681868150004776965
-      type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        trackId: 00640495-d883-44d1-9487-16c0f8224c0a
-        trackType: MotionWindowTrack
-        trackName: "\u52A8\u753B\u4F4D\u79FB\u7A97\u53E3\u8F68\u9053"
-        isMuted: 0
-        isLocked: 0
-        isHidden: 0
-        isCollapsed: 0
-        isEnabled: 1
-        clips:
-        - rid: 4681868150004776966
-    - rid: 4681868150004776966
+    - rid: 4681868330708500872
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: c3b59524-5e9e-49a6-8a9c-7fc45b3fab78
@@ -104,10 +118,21 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 3
-    - rid: 4681868286305501185
+    - rid: 4681868330708500873
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 8e2adb73-c03b-4eaf-8981-422f535d73e7
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 2.016667
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Execute1
+    - rid: 4681868330708500874
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        trackId: e960b3d2-e002-40ec-8b7b-830cfaa73ad6
+        trackId: 4e908816-e344-4c20-879b-b79d3de621ac
         trackType: RouteWindowTrack
         trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3\u8F68\u9053"
         isMuted: 0
@@ -116,15 +141,15 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868286305501187
-    - rid: 4681868286305501187
+        - rid: 4681868330708500875
+    - rid: 4681868330708500875
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        clipId: 8e2adb73-c03b-4eaf-8981-422f535d73e7
+        clipId: 70eab6ec-defa-4335-9636-680a5b267de8
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: -0
+        startTime: 0
         duration: 2.016667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        comboTag: Hit

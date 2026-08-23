@@ -43,5 +43,19 @@ namespace Game.Logic
             if (hitAnimStay != null) yield return hitAnimStay;
             if (hitAnimKnockDown != null) yield return hitAnimKnockDown;
         }
+
+        public ActionConfigAsset GetHitAction(cfg.ZZZ.HitReactionType type)
+        {
+            return type switch
+            {
+                cfg.ZZZ.HitReactionType.Light => hitAnimLight,
+                cfg.ZZZ.HitReactionType.Heavy => hitAnimHeavy,
+                cfg.ZZZ.HitReactionType.Knockback => hitAnimKnowAway, // Note: Assuming KnowAway maps to Knockback/Launch
+                cfg.ZZZ.HitReactionType.Shake => hitAnimShake,
+                cfg.ZZZ.HitReactionType.Knockdown => hitAnimKnockDown,
+                // TODO: add other types if necessary
+                _ => hitAnimLight // Fallback
+            };
+        }
     }
 }

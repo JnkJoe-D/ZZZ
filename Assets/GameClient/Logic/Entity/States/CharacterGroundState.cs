@@ -23,8 +23,8 @@ namespace Game.Logic
 
         public GroundSubState CurrentSubState { get; private set; }
 
-        private IInputCommandHandler _defaultInputHandler;
-        public override IInputCommandHandler InputHandler => CurrentSubState?.InputHandler ?? _defaultInputHandler;
+        private IActionCommandHandler _defaultInputHandler;
+        public override IActionCommandHandler InputHandler => CurrentSubState?.InputHandler ?? _defaultInputHandler;
 
         public RoleEntity HostEntity => Entity;
         public FSMSystem<RoleEntity> HostMachine => Machine;

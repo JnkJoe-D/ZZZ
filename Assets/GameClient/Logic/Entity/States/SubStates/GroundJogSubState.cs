@@ -6,8 +6,8 @@ namespace Game.Logic
     public class GroundJogSubState : GroundSubState
     {
         private ActionRuntimeData _actionData;
-        private IInputCommandHandler _handler;
-        public override IInputCommandHandler InputHandler => _handler;
+        private IActionCommandHandler _handler;
+        public override IActionCommandHandler InputHandler => _handler;
 
         private float _stateTime;
 

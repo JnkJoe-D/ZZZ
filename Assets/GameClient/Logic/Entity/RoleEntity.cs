@@ -20,7 +20,6 @@ namespace Game.Logic
         private CharacterTeamContext _teamContext;
 
         public virtual IInputProvider InputProvider => TeamContext?.InputProvider ?? _inputProvider;
-        public override ITargetFinder TargetFinder => TeamContext?.TargetFinder ?? base.TargetFinder;
         public virtual ICameraController CameraController => _cameraController;
 
         public new RoleConfigAsset Config => (RoleConfigAsset)base.Config;
@@ -28,7 +27,6 @@ namespace Game.Logic
         public FSMSystem<RoleEntity> StateMachine { get; private set; }
         public FSMSystem<RoleEntity> Machine => StateMachine;
 
-        public ActionController ActionController { get; private set; }
         public bool IsControlActive { get; protected set; }
         public bool IsPresentationVisible { get; private set; } = true;
         public bool IsRuntimeInitialized { get; protected set; }
@@ -43,7 +41,7 @@ namespace Game.Logic
             _teamContext.InputProvider != null &&
             ReferenceEquals(InputProvider, _teamContext.InputProvider);
 
-        protected virtual IInputCommandHandler GetCurrentInputHandler() =>
+        protected virtual IActionCommandHandler GetCurrentInputHandler() =>
             (StateMachine?.CurrentState as CharacterStateBase)?.InputHandler ?? CharacterStateBase.InputHandlerStatic;
 
         protected override void Awake()
@@ -69,8 +67,8 @@ namespace Game.Logic
             if (cameraController == null) cameraController = gameObject.AddComponent<CharacterCameraController>();
             _cameraController = cameraController;
 
-            HitReactionModule = GetComponent<HitReactionModule>();
-            if (HitReactionModule == null) HitReactionModule = gameObject.AddComponent<HitReactionModule>();
+            HitReactionModule = GetComponent<RoleHitReactionModule>();
+            if (HitReactionModule == null) HitReactionModule = gameObject.AddComponent<RoleHitReactionModule>();
 
             CameraPointBinder cameraPointBinder = GetComponent<CameraPointBinder>();
             if (cameraPointBinder == null) cameraPointBinder = gameObject.AddComponent<CameraPointBinder>();
@@ -84,6 +82,7 @@ namespace Game.Logic
             var provider = new RoleStatusDataProvider(charId);
             StatusModule?.Init(this, provider, 1);
             
+            TargetFinder = TeamContext?.TargetFinder;
             if (CommandBuffer == null) CommandBuffer = new Game.Logic.CommandBuffer();
             if (ActionController == null) ActionController = new Game.Logic.RoleActionController(this);
             if (_inputEventAdapter == null) _inputEventAdapter = new CharacterInputEventAdapter(() => GetCurrentInputHandler());

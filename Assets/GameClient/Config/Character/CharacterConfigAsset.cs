@@ -43,14 +43,7 @@ namespace Game.Logic
 
         protected virtual void CollectActionConfigs(HashSet<ActionConfigAsset> collectedActions)
         {
-            if (hitReactionConfig != null)
-            {
-                foreach (ActionConfigAsset hitActionConfig in hitReactionConfig.GetAllActionConfigs())
-                {
-                    CollectActionRecursive(hitActionConfig, collectedActions);
-                }
-            }
-            
+            // 受击动作已全部加入 ActionRoute，只需遍历 ActionRoot 即可全量搜集
             if (ActionRoot != null)
             {
                 CollectActionRecursive(ActionRoot, collectedActions);

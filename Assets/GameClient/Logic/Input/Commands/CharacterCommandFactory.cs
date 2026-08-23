@@ -8,17 +8,17 @@ namespace Game.Logic
     {
         private static long _idCounter = 0;
 
-        public static CharacterCommand Create(InputCommand commandType, CommandPhase phase, IInputProvider provider)
+        public static CharacterCommand Create(HardwareInputType commandType, CommandPhase phase, IInputProvider provider)
         {
             Vector2 direction = provider?.GetMovementDirection() ?? Vector2.zero;
 
             return new CharacterCommand
             {
                 Id = ++_idCounter,
-                Type = commandType,
-                Phase = phase,
-                Payload = new CommandPayload
+                Payload = new InputPayload
                 {
+                    InputType = commandType,
+                    Phase = phase,
                     DirectionSnapshot = direction,
                     HasMovementInput = provider != null && provider.HasMovementInput()
                 },
@@ -26,16 +26,29 @@ namespace Game.Logic
                 IsConsumed = false
             };
         }
-        public static CharacterCommand Create(InputCommand commandType, CommandPhase phase, ActionConfigAsset actionAsset)
+
+        public static CharacterCommand CreateDirectAssetCommand(ActionConfigAsset actionAsset)
         {
             return new CharacterCommand
             {
                 Id = ++_idCounter,
-                Type = commandType,
-                Phase = phase,
-                Payload = new CommandPayload
+                Payload = new DirectAssetPayload
                 {
-                    AIActionAsset = actionAsset
+                    TargetAsset = actionAsset
+                },
+                Timestamp = Time.time,
+                IsConsumed = false
+            };
+        }
+
+        public static CharacterCommand CreateSystemEventCommand(RouteEventType eventType)
+        {
+            return new CharacterCommand
+            {
+                Id = ++_idCounter,
+                Payload = new SystemEventPayload
+                {
+                    EventType = eventType
                 },
                 Timestamp = Time.time,
                 IsConsumed = false

@@ -8,9 +8,9 @@ namespace Game.Logic
 {
     public class CharacterEvadeState : CharacterStateBase
     {
-        private IInputCommandHandler _inputHandler;
+        private IActionCommandHandler _inputHandler;
         private EvadeRuntimeData _evadeData;
-        public override IInputCommandHandler InputHandler => _inputHandler;
+        public override IActionCommandHandler InputHandler => _inputHandler;
 
         public override bool CanEnter()
         {

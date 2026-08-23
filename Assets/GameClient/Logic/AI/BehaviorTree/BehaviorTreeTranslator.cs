@@ -110,6 +110,9 @@ namespace Game.Logic.AI.BehaviorTree
                 case BBCheckStringData bbcString:
                     return new BlackboardCondition(BBKeyMapper.GetString(bbcString.key), bbcString.op, bbcString.value, bbcString.stopsOnChange, TranslateChild(data, bb, agent, map));
 
+                case BBTriggerData bbTrigger:
+                    return new NPBehave.BlackboardTrigger(BBKeyMapper.GetString(bbTrigger.key), bbTrigger.stopsOnChange, TranslateChild(data, bb, agent, map));
+
                 case BlackboardQueryData bbq:
                     return new BlackboardQuery(bbq.keys, bbq.stopsOnChange, () => true, TranslateChild(data, bb, agent, map));
 
@@ -180,6 +183,18 @@ namespace Game.Logic.AI.BehaviorTree
                             agent.CheckCommandFate,
                             agent.IsPlayingAction,
                             agent.StartAttackCooldown
+                        );
+                    }
+                    return new NPBehave.Action(() => { });
+
+                case MonsterHitData hitData:
+                    if (agent != null) {
+                        return new Game.Logic.AI.BehaviorTree.Extensions.MonsterHitTask(
+                            agent.TryGetHitAction,
+                            agent.TryPlayAction,
+                            agent.CheckCommandFate,
+                            agent.IsPlayingAction,
+                            agent.ClearHitStun
                         );
                     }
                     return new NPBehave.Action(() => { });

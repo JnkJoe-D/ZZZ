@@ -1,4 +1,5 @@
 using Game.Logic;
+using Game.Framework;
 using UnityEngine;
 
 namespace Game.Logic
@@ -8,17 +9,13 @@ namespace Game.Logic
         public new MonsterConfigAsset Config => (MonsterConfigAsset)base.Config;
         
         public Game.Logic.AI.BehaviorTree.BTRunner BTRunner { get; private set; }
-        public ActionController ActionController { get; private set; }
-        public override ITargetFinder TargetFinder => _targetFinder;
-        private MonsterTargetFinder _targetFinder;
-
         protected override void InitRequiredComponents()
         {
             CharacterMotor = GetComponent<CharacterMotor>();
             if (CharacterMotor == null) CharacterMotor = gameObject.AddComponent<CharacterMotor>();
 
-            HitReactionModule = GetComponent<HitReactionModule>();
-            if (HitReactionModule == null) HitReactionModule = gameObject.AddComponent<HitReactionModule>();
+            HitReactionModule = GetComponent<MonsterHitReactionModule>();
+            if (HitReactionModule == null) HitReactionModule = gameObject.AddComponent<MonsterHitReactionModule>();
 
             BTRunner = GetComponent<Game.Logic.AI.BehaviorTree.BTRunner>();
             if (BTRunner == null) BTRunner = gameObject.AddComponent<Game.Logic.AI.BehaviorTree.BTRunner>();
@@ -38,7 +35,7 @@ namespace Game.Logic
 
             if (config is MonsterConfigAsset monsterConfig)
             {
-                _targetFinder = new MonsterTargetFinder(monsterConfig.SensorConfig, transform);
+                TargetFinder = new MonsterTargetFinder(monsterConfig.SensorConfig, transform);
 
                 if (monsterConfig.ActionRoot != null)
                 {

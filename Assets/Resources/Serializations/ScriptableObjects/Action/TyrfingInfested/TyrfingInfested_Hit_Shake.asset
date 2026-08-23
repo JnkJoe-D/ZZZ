@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3290489fa39fab46a6c11cb5d221c9c, type: 3}
+  m_Name: TyrfingInfested_Hit_Shake
+  m_EditorClassIdentifier: 
+  ID: 200050
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 81b5d697ce971d447af0556fee50fa65, type: 3}
+  actionTimelineSO: {fileID: 11400000, guid: a2ee7f10f7200574fa30752b7b1797d9, type: 2}
+  CompleteMode: 0
+  CompleteAction: {fileID: 0}
+  CompleteTransitCrossfade: -1
+  PlaybackSpeed: 1
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: 0e40edc68cfa8304ea2c282e769cd6dd, type: 2}
+  - {fileID: 11400000, guid: b62a1c3d6ad4bd24fbc4f7a928479402, type: 2}
+  CanBeInterruptedByLightHit: 1
+  CanBeInterruptedByHeavyHit: 1
+  references:
+    version: 2
+    RefIds: []

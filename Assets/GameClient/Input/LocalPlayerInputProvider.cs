@@ -44,26 +44,26 @@ namespace Game.Input
 
         public bool IsHeld(int actionKey)
         {
-            if (actionKey == (int)InputCommand.Move)
+            if (actionKey == (int)HardwareInputType.Move)
             {
                 return HasMovementInput();
             }
 
             if (_input != null)
             {
-                switch ((InputCommand)actionKey)
+                switch ((HardwareInputType)actionKey)
                 {
-                    case InputCommand.BasicAttack:
+                    case HardwareInputType.BasicAttack:
                         return _input.GamePlay.LightAttack.IsPressed() || _heldActions.Contains(actionKey);
-                    case InputCommand.SpecialAttack:
+                    case HardwareInputType.SpecialAttack:
                         return _input.GamePlay.SpecialSkill.IsPressed() || _heldActions.Contains(actionKey);
-                    case InputCommand.Evade:
+                    case HardwareInputType.Evade:
                         return _input.GamePlay.Evade.IsPressed() || _heldActions.Contains(actionKey);
-                    case InputCommand.Ultimate:
+                    case HardwareInputType.Ultimate:
                         return _input.GamePlay.Ultimate.IsPressed() || _heldActions.Contains(actionKey);
-                    case InputCommand.Interact:
+                    case HardwareInputType.Interact:
                         return _input.GamePlay.Interact.IsPressed() || _heldActions.Contains(actionKey);
-                    case InputCommand.Switch:
+                    case HardwareInputType.Switch:
                         return _input.GamePlay.SwitchNext.IsPressed() || _input.GamePlay.SwitchPre.IsPressed() || _heldActions.Contains(actionKey);
                 }
             }
@@ -87,19 +87,19 @@ namespace Game.Input
             _input.GamePlay.Move.canceled += _ =>
             {
                 OnMoveCanceled?.Invoke();
-                _heldActions.Remove((int)InputCommand.Move);
+                _heldActions.Remove((int)HardwareInputType.Move);
             };
             _input.GamePlay.MoveHeld.performed += _ =>
             {
                 if (HasMovementInput())
                 {
                     OnMoveHeld?.Invoke();
-                    _heldActions.Add((int)InputCommand.Move);
+                    _heldActions.Add((int)HardwareInputType.Move);
                 }
             };
             _input.GamePlay.MoveHeld.canceled += _ =>
             {
-                _heldActions.Remove((int)InputCommand.Move);
+                _heldActions.Remove((int)HardwareInputType.Move);
             };
 
             // 闪避
@@ -108,16 +108,16 @@ namespace Game.Input
             _input.GamePlay.Evade.canceled += _ =>
             {
                 OnEvadeCanceled?.Invoke();
-                _heldActions.Remove((int)InputCommand.Evade); 
+                _heldActions.Remove((int)HardwareInputType.Evade); 
             };
             _input.GamePlay.EvadeHeld.performed += _ =>
             {
                 OnEvadeHeld?.Invoke();
-                _heldActions.Add((int)InputCommand.Evade);
+                _heldActions.Add((int)HardwareInputType.Evade);
             };
             _input.GamePlay.EvadeHeld.canceled += _ =>
             {
-                _heldActions.Remove((int)InputCommand.Evade);
+                _heldActions.Remove((int)HardwareInputType.Evade);
             };
 
             // 普通攻击
@@ -126,16 +126,16 @@ namespace Game.Input
             _input.GamePlay.LightAttack.canceled += _ =>
             {
                 OnBasicAttackCanceled?.Invoke();
-                _heldActions.Remove((int)InputCommand.BasicAttack);
+                _heldActions.Remove((int)HardwareInputType.BasicAttack);
             };
             _input.GamePlay.LightAttackHeld.performed += _ =>
             {
                 OnBasicAttackHeld?.Invoke();
-                _heldActions.Add((int)InputCommand.BasicAttack);
+                _heldActions.Add((int)HardwareInputType.BasicAttack);
             };
             _input.GamePlay.LightAttackHeld.canceled += _ =>
             {
-                _heldActions.Remove((int)InputCommand.BasicAttack);
+                _heldActions.Remove((int)HardwareInputType.BasicAttack);
             };
 
             // 特殊技
@@ -144,16 +144,16 @@ namespace Game.Input
             _input.GamePlay.SpecialSkill.canceled += _ =>
             {
                 OnSpecialAttackCanceled?.Invoke();
-                _heldActions.Remove((int)InputCommand.SpecialAttack);
+                _heldActions.Remove((int)HardwareInputType.SpecialAttack);
             };
             _input.GamePlay.SpecialSkillHeld.performed += _ =>
             {
                 OnSpecialAttackHeld?.Invoke();
-                _heldActions.Add((int)InputCommand.SpecialAttack);
+                _heldActions.Add((int)HardwareInputType.SpecialAttack);
             };
             _input.GamePlay.SpecialSkillHeld.canceled += _ =>
             {
-                _heldActions.Remove((int)InputCommand.SpecialAttack);
+                _heldActions.Remove((int)HardwareInputType.SpecialAttack);
             };
 
             _input.GamePlay.Ultimate.started += _ => OnUltimateStarted?.Invoke();

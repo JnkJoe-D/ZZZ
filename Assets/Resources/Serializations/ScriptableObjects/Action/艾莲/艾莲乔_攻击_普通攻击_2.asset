@@ -16,244 +16,229 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 95d12aae3dbcc6946b5b0dd8fec39a8e, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: a41f133bfbce5f943ae3b69f82437761, type: 2}
-  EnterState: 40
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   CompleteTransitCrossfade: -1
+  PlaybackSpeed: 1
   Routes:
-  - Category: 0
-    RequiredWindowTag: Buffer1
-    TriggerMode: 0
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: bf79bdbd2f9979243833bc15b8173f6c, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions:
-    - rid: 4681867898338935714
-    - rid: 4681867898338935715
     Priority: 130
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500718
+    ExtraConditions:
+    - rid: 4681868330708500856
+    - rid: 4681868330708500857
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: bf79bdbd2f9979243833bc15b8173f6c, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions:
-    - rid: 4681867898338935721
-    - rid: 4681867898338935722
     Priority: 130
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Buffer1
-    TriggerMode: 0
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500719
+    ExtraConditions:
+    - rid: 4681868330708500852
+    - rid: 4681868330708500853
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 78ad503c44b27044ba3d756ab31a4629, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions:
-    - rid: 4681867898338935718
-    - rid: 4681867898338935719
     Priority: 120
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500720
+    ExtraConditions:
+    - rid: 4681868330708500854
+    - rid: 4681868330708500855
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 78ad503c44b27044ba3d756ab31a4629, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions:
-    - rid: 4681867898338935723
-    - rid: 4681867898338935724
     Priority: 120
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Buffer1
-    TriggerMode: 0
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500721
+    ExtraConditions:
+    - rid: 4681868330708500859
+    - rid: 4681868330708500860
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: de326408d3de72044b10942ea69e532c, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions:
-    - rid: 4681867898338935725
     Priority: 110
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500722
+    ExtraConditions:
+    - rid: 4681868330708500863
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: de326408d3de72044b10942ea69e532c, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions:
-    - rid: 4681867898338935726
     Priority: 110
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Buffer1
-    TriggerMode: 0
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500723
+    ExtraConditions:
+    - rid: 4681868330708500864
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: da0510c11635c344b9deb4b34b9d1531, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 100
     CrossfadeOverride: -1
-  - Category: 0
-    RequiredWindowTag: Execute1
-    TriggerMode: 1
-    ModifierCheckTiming: 20
-    EventType: 0
-    RequiredType: 20
-    RequiredPhase: 0
-    Modifiers: []
-    Modifier: 0
-    ModifierRequiredKey: 0
-    InverseKeyStatus: 0
-    ModifierConditions: 
-    ExecuteType: 10
+    TriggerStrategy:
+      rid: 4681868330708500724
+    ExtraConditions: []
+  - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: da0510c11635c344b9deb4b34b9d1531, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    ExtraConditions: []
     Priority: 100
     CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500725
+    ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
-  PlaybackSpeed: 1
+  EnterState: 40
+  InheritMode: 0
   references:
     version: 2
     RefIds:
-    - rid: 4681867898338935714
+    - rid: 4681868330708500718
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
+        Modifiers: []
+    - rid: 4681868330708500719
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []
+    - rid: 4681868330708500720
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
+        Modifiers: []
+    - rid: 4681868330708500721
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []
+    - rid: 4681868330708500722
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
+        Modifiers: []
+    - rid: 4681868330708500723
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []
+    - rid: 4681868330708500724
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
+        Modifiers: []
+    - rid: 4681868330708500725
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Execute1
+        TriggerMode: 1
+        Modifiers: []
+    - rid: 4681868330708500852
+      type: {class: MovementDirectionCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        Direction: 0
+        AngleTolerance: 60
+        Inverse: 0
+    - rid: 4681868330708500853
       type: {class: TargetDistanceCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         Mode: 0
         DistanceThreshold: 2.5
         MaxDistance: 6
         TreatNoTargetAsMatch: 0
-    - rid: 4681867898338935715
+    - rid: 4681868330708500854
       type: {class: MovementDirectionCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         Direction: 0
         AngleTolerance: 60
         Inverse: 0
-    - rid: 4681867898338935718
+    - rid: 4681868330708500855
       type: {class: TargetDistanceCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
-        Mode: 2
+        Mode: 1
         DistanceThreshold: 2.5
-        MaxDistance: 5.5
+        MaxDistance: 6
         TreatNoTargetAsMatch: 0
-    - rid: 4681867898338935719
+    - rid: 4681868330708500856
       type: {class: MovementDirectionCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         Direction: 0
         AngleTolerance: 60
         Inverse: 0
-    - rid: 4681867898338935721
+    - rid: 4681868330708500857
       type: {class: TargetDistanceCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         Mode: 0
         DistanceThreshold: 2.5
         MaxDistance: 6
         TreatNoTargetAsMatch: 0
-    - rid: 4681867898338935722
+    - rid: 4681868330708500859
       type: {class: MovementDirectionCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         Direction: 0
         AngleTolerance: 60
         Inverse: 0
-    - rid: 4681867898338935723
+    - rid: 4681868330708500860
       type: {class: TargetDistanceCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
-        Mode: 2
+        Mode: 1
         DistanceThreshold: 2.5
-        MaxDistance: 5.5
-        TreatNoTargetAsMatch: 0
-    - rid: 4681867898338935724
-      type: {class: MovementDirectionCondition, ns: Game.Logic, asm: Assembly-CSharp}
-      data:
-        Direction: 0
-        AngleTolerance: 60
-        Inverse: 0
-    - rid: 4681867898338935725
-      type: {class: TargetDistanceCondition, ns: Game.Logic, asm: Assembly-CSharp}
-      data:
-        Mode: 0
-        DistanceThreshold: 6
         MaxDistance: 6
         TreatNoTargetAsMatch: 0
-    - rid: 4681867898338935726
+    - rid: 4681868330708500863
       type: {class: TargetDistanceCondition, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         Mode: 0
-        DistanceThreshold: 6
+        DistanceThreshold: 2.5
+        MaxDistance: 6
+        TreatNoTargetAsMatch: 0
+    - rid: 4681868330708500864
+      type: {class: TargetDistanceCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        Mode: 0
+        DistanceThreshold: 2.5
         MaxDistance: 6
         TreatNoTargetAsMatch: 0

@@ -10,20 +10,21 @@ namespace Game.Logic
 {
     public abstract class CharacterEntity : MonoBehaviour, IEventHandler
     {
-        protected ITargetFinder _targetFinder;
 
-        public virtual ITargetFinder TargetFinder => _targetFinder;
+        public virtual ITargetFinder TargetFinder { get; protected set; }
 
         public CharacterConfigAsset Config { get; private set; }
         public ICharacterMotor CharacterMotor { get; protected set; }
         public HitReactionModule HitReactionModule { get; protected set; }
         public FootIKModule FootIKModule { get; protected set; }
 
+        public virtual ActionController ActionController { get; protected set; }
+        public CommandBuffer CommandBuffer { get; protected set; }
         public ActionPlayer ActionPlayer { get; private set; }
         public SkillMotionWindowHandler MotionWindowHandler { get; private set; }
         public EntityDataModule DataModule { get; } = new EntityDataModule();
         public StatusModule StatusModule { get; private set; }
-        public CommandBuffer CommandBuffer { get; protected set; }
+
 
         protected virtual void Awake()
         {
@@ -86,11 +87,6 @@ namespace Game.Logic
         {
             StatusModule?.Clear();
             Game.Logic.ActionManager.Instance?.RemoveCache(this);
-        }
-
-        protected void SetTargetFinder(ITargetFinder targetFinder)
-        {
-            _targetFinder = targetFinder;
         }
     }
 }

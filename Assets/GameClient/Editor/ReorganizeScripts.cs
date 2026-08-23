@@ -81,7 +81,7 @@ public class ReorganizeScripts
         // Input
         Move("Assets/GameClient/Logic/Skill/Combo/CommandBuffer.cs", "Assets/GameClient/Logic/Input/CommandBuffer.cs");
         Move("Assets/GameClient/Logic/Character/BufferedInputType.cs", "Assets/GameClient/Logic/Input/BufferedInputType.cs");
-        Move("Assets/GameClient/Logic/Character/IInputCommandHandler.cs", "Assets/GameClient/Logic/Input/IInputCommandHandler.cs");
+        Move("Assets/GameClient/Logic/Character/IActionCommandHandler.cs", "Assets/GameClient/Logic/Input/IActionCommandHandler.cs");
         Move("Assets/GameClient/Logic/Character/Commands", "Assets/GameClient/Logic/Input/Commands");
 
         // Movement

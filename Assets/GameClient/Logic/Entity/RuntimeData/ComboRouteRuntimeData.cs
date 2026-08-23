@@ -7,21 +7,18 @@ namespace Game.Logic
     {
         public CommandRouteSource LastRouteSource { get; private set; }
         public string LastRouteTag { get; private set; }
-        public InputCommand LastResolvedCommandType { get; private set; }
-        public CommandPhase LastResolvedCommandPhase { get; private set; }
+        public ICommandPayload LastResolvedPayload { get; private set; }
         public int LastResolvedActionId { get; private set; } = -1;
 
         public void RecordResolvedRoute(
             CommandRouteSource routeSource,
             string routeTag,
-            InputCommand commandType,
-            CommandPhase commandPhase,
+            ICommandPayload payload,
             ActionConfigAsset action)
         {
             LastRouteSource = routeSource;
             LastRouteTag = routeTag;
-            LastResolvedCommandType = commandType;
-            LastResolvedCommandPhase = commandPhase;
+            LastResolvedPayload = payload;
             LastResolvedActionId = action != null ? action.ID : -1;
         }
 
@@ -29,8 +26,7 @@ namespace Game.Logic
         {
             LastRouteSource = CommandRouteSource.None;
             LastRouteTag = null;
-            LastResolvedCommandType = InputCommand.None;
-            LastResolvedCommandPhase = CommandPhase.Started;
+            LastResolvedPayload = null;
             LastResolvedActionId = -1;
         }
     }

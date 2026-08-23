@@ -51,17 +51,20 @@ namespace Game.Logic
 
         protected override void OnRouteEventCommit(ExecuteEvent routeExecuteEvent)
         {
-            Game.Framework.EventCenter.Publish(new ActionRouteExecuteEvent
+            if(routeExecuteEvent == ExecuteEvent.SwitchCaptureSucceed)
             {
-                SourceEntity = Role,
-                Event = routeExecuteEvent,
-                TargetSlotHint = -1
-            });
+                Game.Framework.EventCenter.Publish(new ActionRouteExecuteEvent
+                {
+                    SourceEntity = Role,
+                    Event = routeExecuteEvent,
+                    TargetSlotHint = -1
+                });
+            }
         }
 
-        protected override void RecordComboRoute(CommandRouteSource source, string tag, InputCommand type, CommandPhase phase, ActionConfigAsset action)
+        protected override void RecordComboRoute(CommandRouteSource source, string tag, ICommandPayload payload, ActionConfigAsset action)
         {
-            _comboData?.RecordResolvedRoute(source, tag, type, phase, action);
+            _comboData?.RecordResolvedRoute(source, tag, payload, action);
         }
     }
 }

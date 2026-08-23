@@ -5,8 +5,8 @@ namespace Game.Logic
 {
     public class GroundDashSubState : GroundSubState
     {
-        private IInputCommandHandler _handler;
-        public override IInputCommandHandler InputHandler => _handler;
+        private IActionCommandHandler _handler;
+        public override IActionCommandHandler InputHandler => _handler;
 
         public override void Initialize(CharacterGroundState context)
         {
