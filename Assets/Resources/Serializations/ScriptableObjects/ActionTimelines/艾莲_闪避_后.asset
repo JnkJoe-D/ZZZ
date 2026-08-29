@@ -45,9 +45,9 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069782421739
-    - rid: 4681868069782421740
     - rid: 4681868069782421741
+    - rid: 4681868069782421740
+    - rid: 4681868069782421739
     - rid: 4681868069782421742
     - rid: 4681868069782421743
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
@@ -246,7 +246,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 0.53333336
+        duration: 0.4166668
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: Execute1
@@ -256,8 +256,8 @@ MonoBehaviour:
         clipId: ac5012a8-53ae-4ec1-b8a6-35e6e5032ecf
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.53333336
-        duration: 5.1499996
+        startTime: 0.4166668
+        duration: 5.2666664
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: BackSwing
@@ -267,8 +267,8 @@ MonoBehaviour:
         clipId: 78219418-6f38-40df-989b-7f1d3bc60500
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.53333336
-        duration: 5.1499996
+        startTime: 0.4166667
+        duration: 5.2666664
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: Evade
@@ -278,8 +278,8 @@ MonoBehaviour:
         clipId: 5f9b3216-c296-41a6-9ba4-5634deb88c46
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 5.683333
+        startTime: 0.4166668
+        duration: 5.2666664
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: DashStart
@@ -316,3 +316,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
+        collisionMode: 0
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 4294967295

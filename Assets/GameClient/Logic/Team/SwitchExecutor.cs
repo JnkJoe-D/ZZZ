@@ -232,9 +232,7 @@ namespace Game.Logic
             // 4. 切出角色入队
             EnqueueSwitchOut(outgoing);
 
-            // 5. 尝试立即触发切出（通过事件路由 RouteEventType.SwitchOut）
-            //    如果切出角色当前动作有 SwitchOut 事件路由且窗口开放 → 立即播放切出动作
-            //    如果失败 → 由条件路由（ConditionCommand.SwitchOutPending）在后续帧/窗口中自然驱动
+            // 5. 尝试立即触发切出
             inEntity.ActionController?.TryTriggerEvent(RouteEventType.SwitchIn);
             bool resOut = outEntity.ActionController?.TryTriggerEvent(RouteEventType.SwitchOut) == true;
         }

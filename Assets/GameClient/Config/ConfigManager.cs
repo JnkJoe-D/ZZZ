@@ -13,7 +13,7 @@ namespace Game.Logic
 {
     /// <summary>
     /// 数据表及全局静态配置管理器
-    /// 全局SO全从这里拿，离散SO独自按需加载
+    /// 全局配置全从这里拿，离散配置独自按需加载
     /// </summary>
     public class ConfigManager : Singleton<ConfigManager>
     {

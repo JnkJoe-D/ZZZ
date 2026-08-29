@@ -10,7 +10,7 @@ public class Test_Switch : MonoBehaviour
     [Range(0f, 3.0f)]
     public float speedMultiplier = 1.0f; // 用于测试不同的播放速度
     private AnimComponent animComp;
-    private SkillRunner runner;
+    private ActionRunner runner;
     private ProcessContext context;
     private ActionTimeline timeline1;
     private ActionTimeline timeline2;
@@ -29,7 +29,7 @@ public class Test_Switch : MonoBehaviour
             // 2. 准备上下文
             context = new ProcessContext(gameObject, ATEditor.PlayMode.Runtime,
                 ATServiceFactory.ProvideService);
-            runner = new SkillRunner(ATEditor.PlayMode.Runtime);
+            runner = new ActionRunner(ATEditor.PlayMode.Runtime);
 
             timeline1 = SU.OpenFromJson(skillAsset1);
             timeline1.isLoop = true;

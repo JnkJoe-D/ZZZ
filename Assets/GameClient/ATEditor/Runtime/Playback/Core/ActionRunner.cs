@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace ATEditor
 {
     /// <summary>
-    /// 技能播放器核心：驱动 Process 生命周期的状态机
+    /// 动作播放器核心：驱动 Process 生命周期的状态机
     /// 纯 C# 类（不继承 MonoBehaviour），支持区间扫描、事件订阅、Seek、三层清理
     /// </summary>
-    public sealed class SkillRunner
+    public sealed class ActionRunner
     {
         /// <summary>
         /// 播放状态
@@ -108,7 +108,7 @@ namespace ATEditor
             public bool isActive;
         }
 
-        public SkillRunner(PlayMode mode)
+        public ActionRunner(PlayMode mode)
         {
             playMode = mode;
         }

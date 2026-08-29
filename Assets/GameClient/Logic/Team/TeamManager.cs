@@ -97,7 +97,6 @@ namespace Game.Logic
         public TeamManager()
         {
             _switchExecutor = new SwitchExecutor(this);
-            Initialize();
         }
 
         /// <summary>

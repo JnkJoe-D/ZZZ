@@ -32,5 +32,7 @@ namespace Game.Logic
         public Vector3 hitPoint;       // 近似碰撞点
         public Vector3 hitDirection;   // 攻击方向 (attacker → victim)
         public Vector3 reactionAxis;   // 受击保障轴：受击期间水平位移应优先沿这条轴退
+        
+        public bool IsParry;           // 标志此击是否为招架/弹刀攻击
     }
 }

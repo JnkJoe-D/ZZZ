@@ -39,6 +39,11 @@ namespace Game.Logic
 
         MotionWindowLocalDeltaFilterMode filterMode = MotionWindowLocalDeltaFilterMode.None;
         private MotionWindowVisualOffsetMode visualOffsetMode = MotionWindowVisualOffsetMode.None;
+        private RootMotionCollisionMode _collisionMode = RootMotionCollisionMode.DefaultSlide;
+        private LayerMask _obstacleMask = ~0;
+        
+        [SerializeField] private float _rootMotionSkin = 0.01f;
+
         private void Awake()
         {
             Transform[] allChildren = GetComponentsInChildren<Transform>(true);
@@ -169,8 +174,11 @@ namespace Game.Logic
             //尝试过滤XZ局部变化分量
             Vector3 filteredLocalDelta = ApplyMotionWindowFilter(rawLocalDelta);
             
-            //转回世界变化分量
-            Vector3 finalDelta = transform.TransformDirection(filteredLocalDelta) + verticalDelta;
+            //转回世界变化分量，并执行碰撞约束检测
+            Vector3 desiredWorldDelta = transform.TransformDirection(filteredLocalDelta);
+            Vector3 allowedWorldDelta = ResolveRootMotionCollision(desiredWorldDelta);
+
+            Vector3 finalDelta = allowedWorldDelta + verticalDelta;
             if (finalDelta.sqrMagnitude > 0.000001f)
             {
 
@@ -186,7 +194,7 @@ namespace Game.Logic
                 }
             }
     
-            //尝试应用视觉模型偏移
+            //尝试应用视觉模型偏移 (依然使用未经约束的 rawLocalDelta，以产生受到阻挡时挤压的视觉效果)
             ApplyVisualOffset(rawLocalDelta);
         }
 
@@ -212,6 +220,51 @@ namespace Game.Logic
             }
 
             return localDelta;
+        }
+
+        private Vector3 ResolveRootMotionCollision(Vector3 desiredWorldDelta)
+        {
+            if (_collisionMode == RootMotionCollisionMode.DefaultSlide ||
+                _collisionMode == RootMotionCollisionMode.IgnorePreCheck)
+            {
+                return desiredWorldDelta;
+            }
+
+            float distance = desiredWorldDelta.magnitude;
+            if (distance <= 0.000001f)
+                return Vector3.zero;
+
+            Vector3 direction = desiredWorldDelta / distance;
+
+            if (!CapsuleCastMotion(direction, distance, out RaycastHit hit))
+                return desiredWorldDelta;
+
+            float allowedDistance = Mathf.Max(0f, hit.distance - _rootMotionSkin);
+            return direction * allowedDistance;
+        }
+
+        private bool CapsuleCastMotion(Vector3 direction, float distance, out RaycastHit hit)
+        {
+            if (_cc == null)
+            {
+                hit = new RaycastHit();
+                return false;
+            }
+            GetCCCapsuleEndpoints(out Vector3 p1, out Vector3 p2, out float radius);
+            return Physics.CapsuleCast(p1, p2, radius, direction, out hit, distance,
+                _obstacleMask, QueryTriggerInteraction.Ignore);
+        }
+
+        private void GetCCCapsuleEndpoints(out Vector3 p1, out Vector3 p2, out float radius)
+        {
+            Vector3 center = transform.TransformPoint(_cc.center);
+            // 半径自适应：用 CC 的 radius 减去 skinWidth，确保不会因为贴合造成假阳性
+            radius = Mathf.Max(0.01f, _cc.radius - _cc.skinWidth);
+            float height = Mathf.Max(_cc.height, radius * 2f);
+            float halfH = Mathf.Max(0f, height * 0.5f - radius);
+            Vector3 up = transform.up;
+            p1 = center + up * halfH;
+            p2 = center - up * halfH;
         }
 
         private float _visualRecoverSpeed;
@@ -281,6 +334,14 @@ namespace Game.Logic
         public void SetFilterMode(MotionWindowLocalDeltaFilterMode filterMode)
         {
             this.filterMode = filterMode; 
+        }
+        public void SetCollisionMode(RootMotionCollisionMode mode)
+        {
+            _collisionMode = mode;
+        }
+        public void SetObstacleMask(LayerMask mask)
+        {
+            _obstacleMask = mask;
         }
         public void SetVisualOffsetMode(MotionWindowVisualOffsetMode visualOffsetMode)
         {

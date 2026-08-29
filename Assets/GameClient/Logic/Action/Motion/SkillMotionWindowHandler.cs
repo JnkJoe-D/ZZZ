@@ -21,6 +21,17 @@ namespace Game.Logic
             _entity.CharacterMotor?.SetFilterMode(MotionWindowLocalDeltaFilterMode.None);
         }
 
+        public void EnableCollisionMode(RootMotionCollisionMode mode, LayerMask obstacleMask)
+        {
+            _entity.CharacterMotor?.SetCollisionMode(mode);
+            _entity.CharacterMotor?.SetObstacleMask(obstacleMask);
+        }
+
+        public void DisableCollisionMode()
+        {
+            _entity.CharacterMotor?.SetCollisionMode(RootMotionCollisionMode.DefaultSlide);
+        }
+
         public void EnableVisualOffset(MotionWindowVisualOffsetMode offsetMode)
         {
             _entity.CharacterMotor?.SetVisualOffsetMode(offsetMode);

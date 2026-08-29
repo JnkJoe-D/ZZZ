@@ -14,6 +14,7 @@ namespace ATEditor
         public override void OnEnter()
         {
             _motionWindowHandler?.EnableLocalDeltaFilter(clip.localDeltaFilterMode);
+            _motionWindowHandler?.EnableCollisionMode(clip.collisionMode, clip.obstacleMask);
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
@@ -24,11 +25,13 @@ namespace ATEditor
         public override void OnExit()
         {
             _motionWindowHandler?.DisableLocalDeltaFilter();
+            _motionWindowHandler?.DisableCollisionMode();
         }
 
         public override void OnDisable()
         {
             _motionWindowHandler?.DisableLocalDeltaFilter();
+            _motionWindowHandler?.DisableCollisionMode();
         }
     }
 }

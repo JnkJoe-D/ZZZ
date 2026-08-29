@@ -19,6 +19,8 @@ namespace Game.Logic
         void ResetVisualOffset();
         void SetVisualRecover(bool active, float speed = 0f);
         void SetFilterMode(MotionWindowLocalDeltaFilterMode filterMode);
+        void SetCollisionMode(RootMotionCollisionMode mode);
+        void SetObstacleMask(LayerMask mask);
         void SetVisualOffsetMode(MotionWindowVisualOffsetMode visualOffsetMode);
         /// <summary>
         /// 设置角色朝向

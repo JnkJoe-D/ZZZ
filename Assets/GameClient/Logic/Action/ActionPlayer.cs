@@ -8,10 +8,10 @@ namespace Game.Logic
     /// 全局行为播放器，剥离状态机对 Timeline API 的直接依赖
     /// 统一管理 ActionConfigSO 的解析、方向校准、Runner 播放与停止
     /// </summary>
-    public class ActionPlayer : ISkillRunnerProvider
+    public class ActionPlayer : IActionRunnerProvider
     {
         private CharacterEntity _entity;
-        private SkillRunner _runner;
+        private ActionRunner _runner;
         private ProcessContext _context;
         
         public ActionConfigAsset CurrentAction { get; private set; }
@@ -99,7 +99,7 @@ namespace Game.Logic
             if (IsPlaying && _runner != null)
             {
                 _runner.Tick(deltaTime);
-                if (_runner.CurrentState == SkillRunner.State.None)
+                if (_runner.CurrentState == ActionRunner.State.None)
                 {
                     IsPlaying = false;
                 }
@@ -135,11 +135,18 @@ namespace Game.Logic
             SetPlaySpeed(baseSpeed * actionSpeed);
         }
 
-        SkillRunner ATEditor.ISkillRunnerProvider.GetRunner()
+        ActionRunner ATEditor.IActionRunnerProvider.GetRunner()
         {
             return _runner;
         }
         
+        public void RewindTo(float targetTime)
+        {
+            if (_runner != null)
+            {
+                _runner.Seek(targetTime, 0f);
+            }
+        }
 
 
         public void SendTimelineMessage(string message)

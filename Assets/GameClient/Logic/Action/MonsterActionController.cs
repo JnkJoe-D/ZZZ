@@ -4,7 +4,12 @@ namespace Game.Logic
     {
         private MonsterEntity Monster => (MonsterEntity)_entity;
 
-        public MonsterActionController(MonsterEntity entity) : base(entity)
+        public MonsterActionController(MonsterEntity entity, 
+                                       IRouteEventReceiver receiver = null,
+                                       ISkillCostHandler skillCostHandler = null) 
+            : base(entity, 
+                   receiver ?? new DefaultRouteEventReceiver(),
+                   skillCostHandler ?? new DefaultSkillCostHandler())
         {
         }
     }

@@ -375,6 +375,7 @@ MonoBehaviour:
             assetName: 
             assetPath: 
           hitEffectId: 1040004
+          interruptLevel: 1
     - rid: 4681868069779800769
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -386,6 +387,10 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
+        collisionMode: 1
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 1152
     - rid: 4681868069779800770
       type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:

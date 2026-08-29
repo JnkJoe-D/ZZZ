@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Game.Input;
-using Game.Logic;
 using Game.Framework;
 using UnityEngine;
+
 
 namespace Game.Logic
 {
@@ -72,7 +71,8 @@ namespace Game.Logic
         public HardwareInputType RequiredKey;
 
         [ShowIf("Category", ModifierCategory.Condition)]
-        public ConditionCommand Condition = ConditionCommand.None;
+        [SerializeReference, SubclassSelector]
+        public IRouteInputCondition InputCondition;
 
         public bool Inverse = false;
 
@@ -83,30 +83,16 @@ namespace Game.Logic
                 case ModifierCategory.None:
                     return true;
                 case ModifierCategory.Condition:
-                    bool conditionResult = CheckCondition(Condition, actor);
+                    bool conditionResult = InputCondition != null && InputCondition.Check(actor);
                     return Inverse ? !conditionResult : conditionResult;
                 case ModifierCategory.KeyState:
-                    if (actor?.InputProvider == null)
+                    if (actor == null || !actor.IsControlActive || actor.InputProvider == null)
                         return false;
                     bool isHeld = actor.InputProvider.IsHeld((int)RequiredKey);
                     return Inverse ? !isHeld : isHeld;
                 default:
                     return true;
             }
-        }
-
-        private bool CheckCondition(ConditionCommand condition, RoleEntity entity)
-        {
-            if (entity == null) return false;
-            return condition switch
-            {
-                ConditionCommand.None => true,
-                ConditionCommand.Move => entity.InputProvider != null && entity.InputProvider.HasMovementInput(),
-                ConditionCommand.ShortMove => entity.DataModule?.Get<ActionRuntimeData>() != null && entity.DataModule.Get<ActionRuntimeData>().IsShortMoveInput,
-                ConditionCommand.LostMove => entity.InputProvider != null && !entity.InputProvider.HasMovementInput(),
-                ConditionCommand.SwitchOutPending => entity.DataModule?.Get<SwitchRuntimeData>() != null && entity.DataModule.Get<SwitchRuntimeData>().IsSwitchOutPending,
-                _ => false
-            };
         }
     }
 
@@ -140,14 +126,14 @@ namespace Game.Logic
         [SerializeReference, SubclassSelector]
         public List<ITransitionCondition> ExtraConditions = new();
 
-        public bool Evaluate(CharacterCommand command, string windowTag, RoleEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
+        public bool Evaluate(CharacterCommand command, string windowTag, RoleEntity actor, ISkillCostHandler skillHandler, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
         {
             if (TriggerStrategy == null) return false;
 
             if (!TriggerStrategy.Evaluate(command, windowTag, actor, timing))
                 return false;
 
-            // 新增：如果这是由 DirectAsset 触发的，必须保证它请求的动作正是本路由指向的动作
+            //  如果这是由 DirectAsset 触发的，必须保证它请求的动作正是本路由指向的动作
             if (command != null && command.Payload is DirectAssetPayload directPayload)
             {
                 if (ExecuteType == ExecuteTarget.Action && ExecuteAction != null)
@@ -167,7 +153,7 @@ namespace Game.Logic
                 if (!conditionResult) return false;
             }
 
-            return CheckSkillRequire(actor);
+            return CheckSkillRequire(actor, skillHandler);
         }
 
         public bool IsInvalid()
@@ -184,51 +170,16 @@ namespace Game.Logic
 
 
 
-        public bool CheckSkillRequire(RoleEntity actor)
+        public bool CheckSkillRequire(RoleEntity actor, ISkillCostHandler skillHandler)
         {
             if (!ValidateSkillRequirement) return true;
-            if (ExecuteAction == null || ExecuteAction.ID <= 0) return true;
-            if (actor?.StatusModule?.Attributes == null) return true;
-            var skillConfig = ConfigManager.Instance.Tables.TbSkill.GetOrDefault(ExecuteAction.ID);
-            if (skillConfig == null) return true;
-
-            if (skillConfig.Condition != null)
-            {
-                foreach (var cond in skillConfig.Condition)
-                {
-                    float currentVal = actor.StatusModule.Attributes.GetCurrent((AttributeId)cond.AttrId);
-                    bool pass = cond.Op switch
-                    {
-                        cfg.ZZZ.CompareOp.GreaterEqual => currentVal >= cond.Value,
-                        cfg.ZZZ.CompareOp.Greater => currentVal > cond.Value,
-                        cfg.ZZZ.CompareOp.LessEqual => currentVal <= cond.Value,
-                        cfg.ZZZ.CompareOp.Less => currentVal < cond.Value,
-                        cfg.ZZZ.CompareOp.Equal => Mathf.Approximately(currentVal, cond.Value),
-                        _ => true
-                    };
-                    if (!pass) return false;
-                }
-            }
-            return true;
+            return skillHandler == null || skillHandler.CheckSkillRequirement(ExecuteAction, actor);
         }
 
-        public void ConsumeSkillCost(RoleEntity actor)
+        public void ConsumeSkillCost(RoleEntity actor, ISkillCostHandler skillHandler)
         {
             if (!ValidateSkillRequirement) return;
-            if (ExecuteAction == null || ExecuteAction.ID <= 0) return;
-            if (actor?.StatusModule?.Attributes == null) return;
-
-            var skillConfig = ConfigManager.Instance.Tables.TbSkill.GetOrDefault(ExecuteAction.ID);
-            if (skillConfig == null || skillConfig.Cost == null) return;
-
-            foreach (var cost in skillConfig.Cost)
-            {
-                if (cost.Amount > 0)
-                {
-                    actor.StatusModule.Attributes.Modify((AttributeId)cost.AttrId, -cost.Amount);
-                    Debug.Log($"<color=cyan>[SkillCost] {actor.name} 使用技能 {ExecuteAction.ID} 消耗了 {cost.Amount} 点 {cost.AttrId}</color>");
-                }
-            }
+            skillHandler?.ConsumeSkillCost(ExecuteAction, actor);
         }
     }
 }

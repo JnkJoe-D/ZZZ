@@ -439,7 +439,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.10000002384185791,
                     "animationClip": {
-                        "instanceID": 42518
+                        "instanceID": 34410
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -474,7 +474,7 @@
                     "blendInDuration": 0.10000002384185791,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 42520
+                        "instanceID": 34412
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -674,7 +674,8 @@
                                 "assetName": "",
                                 "assetPath": ""
                             },
-                            "hitEffectId": 1040011
+                            "hitEffectId": 1040011,
+                            "interruptLevel": 1
                         }
                     ]
                 }
@@ -770,7 +771,8 @@
                                 "assetName": "",
                                 "assetPath": ""
                             },
-                            "hitEffectId": 1040011
+                            "hitEffectId": 1040011,
+                            "interruptLevel": 1
                         }
                     ]
                 }
@@ -790,7 +792,12 @@
                     "duration": 6.766666889190674,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "localDeltaFilterMode": 1
+                    "localDeltaFilterMode": 1,
+                    "collisionMode": 1,
+                    "obstacleMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 1152
+                    }
                 }
             },
             {
@@ -805,12 +812,12 @@
                     "clipName": "旋转片段片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.20000000298023225,
+                    "duration": 0.01666666753590107,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "referenceDirection": 4,
                     "rotationMode": 1,
-                    "updateFrequency": 2,
+                    "updateFrequency": 0,
                     "localRotationOffset": {
                         "x": 0.0,
                         "y": 0.0,

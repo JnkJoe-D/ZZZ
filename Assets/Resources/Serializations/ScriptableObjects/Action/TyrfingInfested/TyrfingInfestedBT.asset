@@ -17,6 +17,23 @@ MonoBehaviour:
   child: {fileID: -3966464504077077270}
   targetState: 4
   stopsOnChange: 4
+--- !u!114 &-8079894145072692930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31d4fa159e249434483999b6da6dc368, type: 3}
+  m_Name: SequenceData
+  m_EditorClassIdentifier: 
+  guid: c75ce88d-96a6-4707-aac0-0402d093a0b7
+  position: {x: -1095.9998, y: 153}
+  children:
+  - {fileID: 1587910486470794608}
+  - {fileID: 4711883885704608540}
 --- !u!114 &-7016642917051295104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30,8 +47,8 @@ MonoBehaviour:
   m_Name: BBCheckBoolData
   m_EditorClassIdentifier: 
   guid: a29ad315-91a0-4639-8454-326d47d4d92d
-  position: {x: -599.99994, y: 272}
-  child: {fileID: -4647544194597694793}
+  position: {x: -572.0327, y: 73.147995}
+  child: {fileID: -4614315749638788050}
   key: 0
   op: 2
   value: 1
@@ -49,8 +66,9 @@ MonoBehaviour:
   m_Name: SelectorData
   m_EditorClassIdentifier: 
   guid: 64a3dc14-549f-4866-9895-666079f523e4
-  position: {x: -485.67398, y: 51.89061}
+  position: {x: -431.99997, y: -159.99998}
   children:
+  - {fileID: -2107329015780385624}
   - {fileID: -7016642917051295104}
   - {fileID: -3468546460667229551}
 --- !u!114 &-5343752128221874489
@@ -117,12 +135,27 @@ MonoBehaviour:
   m_Name: SelectorData
   m_EditorClassIdentifier: 
   guid: f1e81578-86e3-4c6e-876e-17b6a81db121
-  position: {x: -600, y: 389.645}
+  position: {x: -572.00006, y: 409.4143}
   children:
-  - {fileID: -2107329015780385624}
   - {fileID: -1355261618482291175}
   - {fileID: 8599744963547816208}
   - {fileID: -5343752128221874489}
+  - {fileID: -3652188599051905576}
+--- !u!114 &-4614315749638788050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1206496fbddf23249aec0921ef933f12, type: 3}
+  m_Name: SucceederData
+  m_EditorClassIdentifier: 
+  guid: 5c06dbba-358a-49e3-be12-8f6d9fff7e0b
+  position: {x: -572, y: 224.00253}
+  child: {fileID: -4647544194597694793}
 --- !u!114 &-3966464504077077270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,7 +202,7 @@ MonoBehaviour:
   m_Name: SequenceData
   m_EditorClassIdentifier: 
   guid: 5b40e3f2-b4c8-47f1-9eb2-ba0b9ff46f86
-  position: {x: -345.674, y: 161.8906}
+  position: {x: 178.66238, y: 116.779655}
   children:
   - {fileID: 4485541843019656748}
 --- !u!114 &-2107329015780385624
@@ -185,8 +218,8 @@ MonoBehaviour:
   m_Name: BBTriggerData
   m_EditorClassIdentifier: 
   guid: 8a497d31-1372-46cd-a26e-4f1d13c07503
-  position: {x: -1208.7157, y: 553.00006}
-  child: {fileID: 1587910486470794608}
+  position: {x: -1096.4772, y: -7.000023}
+  child: {fileID: -8079894145072692930}
   key: 3
   stopsOnChange: 4
 --- !u!114 &-1355261618482291175
@@ -222,7 +255,7 @@ MonoBehaviour:
   m_Name: RootData
   m_EditorClassIdentifier: 
   guid: a852f472-7b1a-4306-9243-48fe8f23cb21
-  position: {x: -477.67398, y: -213.10938}
+  position: {x: -432.00012, y: -399.831}
   child: {fileID: 1999599061708079839}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -268,6 +301,9 @@ MonoBehaviour:
   - {fileID: -4826393679529685260}
   - {fileID: -2107329015780385624}
   - {fileID: 1587910486470794608}
+  - {fileID: -4614315749638788050}
+  - {fileID: -8079894145072692930}
+  - {fileID: 4711883885704608540}
 --- !u!114 &41630509213224121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,7 +333,7 @@ MonoBehaviour:
   m_Name: MonsterHitData
   m_EditorClassIdentifier: 
   guid: c159cf7b-75cc-45ed-9972-eb07efdf0c86
-  position: {x: -1236.498, y: 712.99994}
+  position: {x: -1235.9998, y: 328.99988}
 --- !u!114 &1999599061708079839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,7 +347,7 @@ MonoBehaviour:
   m_Name: ServiceData
   m_EditorClassIdentifier: 
   guid: c5529749-728b-4d92-af68-8b2b3452ae6c
-  position: {x: -485.67398, y: -76.10938}
+  position: {x: -432.0003, y: -273.45926}
   child: {fileID: -6124572325404063387}
   interval: 0.5
   randomVariation: 0.05
@@ -427,9 +463,27 @@ MonoBehaviour:
   m_Name: PlayActionAndWaitData
   m_EditorClassIdentifier: 
   guid: 4d29bbf5-4c7d-4dbb-bd4d-c0264f81bd55
-  position: {x: -345.674, y: 281.8906}
+  position: {x: 178.66238, y: 236.7797}
   actionConfig: {fileID: 11400000, guid: a8ef118f0054c1f4f9794470564280dc, type: 2}
   stopAtEnd: 1
+--- !u!114 &4711883885704608540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55aef3233eed3494e8fdf6d6bde538bc, type: 3}
+  m_Name: WaitData
+  m_EditorClassIdentifier: 
+  guid: f5affa46-494e-45cd-8514-720353337e90
+  position: {x: -1025.9998, y: 328.99988}
+  seconds: 1
+  randomVariance: 0.05
+  readFromBlackboard: 0
+  blackboardKey: 
 --- !u!114 &5065235945335077857
 MonoBehaviour:
   m_ObjectHideFlags: 0

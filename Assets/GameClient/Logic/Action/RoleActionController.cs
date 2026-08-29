@@ -10,7 +10,12 @@ namespace Game.Logic
 
         private ComboRouteRuntimeData _comboData;
 
-        public RoleActionController(RoleEntity entity) : base(entity)
+        public RoleActionController(RoleEntity entity, 
+                                    IRouteEventReceiver receiver = null,
+                                    ISkillCostHandler skillCostHandler = null) 
+            : base(entity, 
+                   receiver ?? new DefaultRouteEventReceiver(),
+                   skillCostHandler ?? new DefaultSkillCostHandler())
         {
             _comboData = _entity.DataModule?.Get<ComboRouteRuntimeData>();
         }

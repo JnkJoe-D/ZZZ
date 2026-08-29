@@ -14,14 +14,6 @@ namespace Game.Logic
         Interact = 70
     }
 
-    public enum ConditionCommand
-    {
-        None = 0,
-        Move = 10,
-        LostMove = 20,
-        ShortMove = 30,
-        SwitchOutPending = 40
-    }
 
     public enum CommandPhase
     {

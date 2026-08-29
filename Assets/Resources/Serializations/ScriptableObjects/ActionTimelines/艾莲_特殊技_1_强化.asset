@@ -409,6 +409,7 @@ MonoBehaviour:
             assetName: 
             assetPath: 
           hitEffectId: 1040011
+          interruptLevel: 1
     - rid: 4681868069782421679
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -465,6 +466,7 @@ MonoBehaviour:
             assetName: 
             assetPath: 
           hitEffectId: 1040011
+          interruptLevel: 1
     - rid: 4681868069782421680
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -476,6 +478,10 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
+        collisionMode: 1
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 1152
     - rid: 4681868069782421681
       type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -483,12 +489,12 @@ MonoBehaviour:
         clipName: "\u65CB\u8F6C\u7247\u6BB5\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 0.2
+        duration: 0.016666668
         blendInDuration: 0
         blendOutDuration: 0
         referenceDirection: 4
         rotationMode: 1
-        updateFrequency: 2
+        updateFrequency: 0
         localRotationOffset: {x: 0, y: 0, z: 0}
     - rid: 4681868069782421682
       type: {class: CameraControlClip, ns: ATEditor, asm: Assembly-CSharp}

@@ -43,8 +43,11 @@ namespace cfg.ZZZ
         /// <summary>
         /// 击倒
         /// </summary>
-        Knockback = 60,
-        Knockdown=70,
+        KnockDown = 60,
+        /// <summary>
+        /// 被格挡
+        /// </summary>
+        Parried = 70,
     }
 
 } 

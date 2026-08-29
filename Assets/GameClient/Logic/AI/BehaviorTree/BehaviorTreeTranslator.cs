@@ -14,18 +14,24 @@ namespace Game.Logic.AI.BehaviorTree
     /// </summary>
     public static class BehaviorTreeTranslator
     {
-        public static TranslationResult Translate(BehaviorTreeAsset asset, Blackboard runtimeBlackboard, TreeActionAgent agent = null)
+        public static TranslationResult Translate(BehaviorTreeAsset asset, Blackboard runtimeBlackboard,Clock clock, TreeActionAgent agent)
         {
+            if (runtimeBlackboard == null || agent == null)
+            {
+                return null;
+            }
             var result = new TranslationResult();
             if (asset == null || asset.rootNode == null)
             {
                 return result;
             }
 
+            agent.Init(runtimeBlackboard);
+
             Node mainNode = TranslateNode(asset.rootNode, runtimeBlackboard, agent, result.GuidToNodeMap);
             if (mainNode != null)
             {
-                result.Root = new Root(runtimeBlackboard, mainNode);
+                result.Root = new Root(runtimeBlackboard,clock, mainNode);
             }
             return result;
         }

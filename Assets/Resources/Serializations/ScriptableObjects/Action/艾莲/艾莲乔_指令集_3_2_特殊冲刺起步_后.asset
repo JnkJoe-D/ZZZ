@@ -17,7 +17,7 @@ MonoBehaviour:
     ExecuteAction: {fileID: 11400000, guid: dcf47dcb1fb4536488a2e106ae70a30e, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    Priority: 2
+    Priority: 10
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500844
@@ -26,10 +26,19 @@ MonoBehaviour:
     ExecuteAction: {fileID: 11400000, guid: dcf47dcb1fb4536488a2e106ae70a30e, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    Priority: 2
+    Priority: 10
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500845
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: dcf47dcb1fb4536488a2e106ae70a30e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 10
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868465688018947
     ExtraConditions: []
   references:
     version: 2
@@ -54,6 +63,20 @@ MonoBehaviour:
         RequiredWindowTag: DashStart
         TriggerMode: 1
         Modifiers:
+        - Category: 10
+          RequiredKey: 50
+          Condition: 0
+          Inverse: 0
+    - rid: 4681868465688018947
+      type: {class: AutoTransitionTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        Timing: 10
+        RequiredWindowTag: DashStart
+        Modifiers:
+        - Category: 10
+          RequiredKey: 10
+          Condition: 0
+          Inverse: 0
         - Category: 10
           RequiredKey: 50
           Condition: 0

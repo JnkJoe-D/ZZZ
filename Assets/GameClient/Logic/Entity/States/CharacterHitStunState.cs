@@ -47,7 +47,7 @@ namespace Game.Logic
                     case cfg.ZZZ.HitReactionType.Launch:
                         hitAnim = Entity.Config.hitReactionConfig.hitAnimKnowAway;
                         break;
-                    case cfg.ZZZ.HitReactionType.Knockdown:
+                    case cfg.ZZZ.HitReactionType.KnockDown:
                         hitAnim = Entity.Config.hitReactionConfig.hitAnimKnockDown;
                         break;
                     case cfg.ZZZ.HitReactionType.Shake:

@@ -18,7 +18,7 @@ namespace Game.Logic
         // 缓存各角色的 Context
         private Dictionary<int, ProcessContext> _contextCache = new Dictionary<int, ProcessContext>();
         // 缓存各角色的 Runner
-        private Dictionary<int, SkillRunner> _runnerCache = new Dictionary<int, SkillRunner>();
+        private Dictionary<int, ActionRunner> _runnerCache = new Dictionary<int, ActionRunner>();
 
         public void Initialize() { }
 
@@ -144,12 +144,12 @@ namespace Game.Logic
             return ctx;
         }
 
-        public SkillRunner GetRunner(CharacterEntity entity)
+        public ActionRunner GetRunner(CharacterEntity entity)
         {
             int id = entity.GetInstanceID();
             if (!_runnerCache.TryGetValue(id, out var runner))
             {
-                runner = new SkillRunner(ATEditor.PlayMode.Runtime);
+                runner = new ActionRunner(ATEditor.PlayMode.Runtime);
                 _runnerCache[id] = runner;
             }
             return runner;

@@ -52,6 +52,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 4681868330708500797
       type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
       data:
@@ -81,4 +83,9 @@ MonoBehaviour:
       data:
         Timing: 0
         RequiredWindowTag: DashLink
-        Modifiers: []
+        Modifiers:
+        - Category: 10
+          RequiredKey: 10
+          InputCondition:
+            rid: -2
+          Inverse: 0

@@ -10,8 +10,8 @@ namespace ATEditor.Editor
     public partial class ATEditorWindow
     {
         // 预览播放器
-        private SkillRunner previewRunner;
-        public SkillRunner PreviewRunner => previewRunner;
+        private ActionRunner previewRunner;
+        public ActionRunner PreviewRunner => previewRunner;
         private double lastPreviewTime;
         private double accumulator; // 时间累积器，用于 Fixed ģʽ
         public GameObject prevoewTarget => state != null ? state.previewTarget : null;
@@ -53,8 +53,8 @@ namespace ATEditor.Editor
         /// <summary>
         /// 是否正在播放，供 Toolbar 使用。
         /// </summary>
-        public bool IsPlaying => previewRunner != null && previewRunner.CurrentState == SkillRunner.State.Playing;
-        public bool IsInPlayMode => previewRunner != null && (previewRunner.CurrentState != SkillRunner.State.None);
+        public bool IsPlaying => previewRunner != null && previewRunner.CurrentState == ActionRunner.State.Playing;
+        public bool IsInPlayMode => previewRunner != null && (previewRunner.CurrentState != ActionRunner.State.None);
         /// <summary>
         /// 初始化预览系统（圀OnEnable 咀previewTarget 变更时调用）
         /// </summary>
@@ -65,7 +65,7 @@ namespace ATEditor.Editor
                 StopPreview();
             }
 
-            previewRunner = new SkillRunner(PlayMode.EditorPreview);
+            previewRunner = new ActionRunner(PlayMode.EditorPreview);
             if (state != null)
             {
                 state.previewRunner = previewRunner;
@@ -167,7 +167,7 @@ namespace ATEditor.Editor
         private void UpdatePreview()
         {
             if (previewRunner == null) return;
-            if (previewRunner.CurrentState != SkillRunner.State.Playing) return;
+            if (previewRunner.CurrentState != ActionRunner.State.Playing) return;
 
             double now = EditorApplication.timeSinceStartup;
             float realDelta = Mathf.Min((float)(now - lastPreviewTime), 0.1f);
@@ -204,7 +204,7 @@ namespace ATEditor.Editor
             state.timeIndicator = previewRunner.CurrentTime;
 
             // 检查播放器是否在 Tick 后因到达末尾而回到 Idle
-            if (previewRunner.CurrentState == SkillRunner.State.None)
+            if (previewRunner.CurrentState == ActionRunner.State.None)
             {
                 RestorePreviewOriginPose();
                 state.isStopped = true;
@@ -218,7 +218,7 @@ namespace ATEditor.Editor
         public void SeekPreview(float time)
         {
             if (IsPlaying) PausePreview();
-            if (previewRunner == null || previewRunner.CurrentState == SkillRunner.State.None)
+            if (previewRunner == null || previewRunner.CurrentState == ActionRunner.State.None)
             {
                 // 如果是停止状态下拖动，激洀Process 但保持暂偀
                 EnsureRunnerActive();
@@ -238,7 +238,7 @@ namespace ATEditor.Editor
         private void EnsureRunnerActive()
         {
             if (previewRunner == null) InitPreview();
-            if (previewRunner.CurrentState == SkillRunner.State.None)
+            if (previewRunner.CurrentState == ActionRunner.State.None)
             {
                 StartPreview();
                 PausePreview();
@@ -267,7 +267,7 @@ namespace ATEditor.Editor
                 return;
             }
 
-            if (previewRunner.CurrentState == SkillRunner.State.None || state.isStopped)
+            if (previewRunner.CurrentState == ActionRunner.State.None || state.isStopped)
             {
                 float duration = state.currentTimeline.Duration;
                 float startPreviewTime;
@@ -284,7 +284,7 @@ namespace ATEditor.Editor
                 float startProgress = duration > Mathf.Epsilon ? startPreviewTime / duration : 0f;
                 StartPreview(startProgress);
             }
-            else if (previewRunner.CurrentState == SkillRunner.State.Paused)
+            else if (previewRunner.CurrentState == ActionRunner.State.Paused)
             {
                 ResumePreview();
             }

@@ -6,7 +6,7 @@ namespace Game.Logic
     {
         public float CurrentHitStunDuration { get; set; }
         public cfg.ZZZ.HitReactionType CurrentReactionType { get; set; }
-        public int HitTriggerTimestamp { get; set; }
+        public int HitTriggerTimestamp { get; set; } = -1;
         public Vector3 CurrentHitReactionAxis { get; private set; }
         public bool HasHitReactionAxis { get; private set; }
 

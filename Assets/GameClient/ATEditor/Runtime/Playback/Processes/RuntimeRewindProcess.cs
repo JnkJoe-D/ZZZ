@@ -56,7 +56,7 @@ namespace ATEditor
                 float targetTime = clip.StartTime + overshoot;
                 
                 // Request seek
-                var runnerService = context.UserData as ISkillRunnerProvider;
+                var runnerService = context.UserData as IActionRunnerProvider;
                 if (runnerService != null)
                 {
                     var runner = runnerService.GetRunner();
@@ -86,8 +86,8 @@ namespace ATEditor
     }
     
     // We need an interface to provide the runner to the process
-    public interface ISkillRunnerProvider
+    public interface IActionRunnerProvider
     {
-        SkillRunner GetRunner();
+        ActionRunner GetRunner();
     }
 }

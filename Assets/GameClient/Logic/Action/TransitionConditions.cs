@@ -210,5 +210,33 @@ namespace Game.Logic
             bool matched = history[1].ActionId == RequiredAction.ID;
             return Inverse ? !matched : matched;
         }
+    [Serializable]
+    public sealed class SwitchOutPendingCondition : ITransitionCondition
+    {
+        public bool Check(RoleEntity actor)
+        {
+            return actor?.DataModule?.Get<SwitchRuntimeData>() != null && actor.DataModule.Get<SwitchRuntimeData>().IsSwitchOutPending;
+        }
     }
+
+    [Serializable]
+    public sealed class CombatWarningCondition : ITransitionCondition
+    {
+        public ATEditor.WarningSignalType WarningType = ATEditor.WarningSignalType.Yellow_Parryable;
+
+        public bool Check(RoleEntity actor)
+        {
+            var marker = CombatWarningManager.GetValidWarning(actor, WarningType);
+            if (marker != null)
+            {
+                if (actor.DataModule?.Get<ActionRuntimeData>() != null)
+                {
+                    actor.DataModule.Get<ActionRuntimeData>().MatchedWarningMarker = marker;
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+}
 }

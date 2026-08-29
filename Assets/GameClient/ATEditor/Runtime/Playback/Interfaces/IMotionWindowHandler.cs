@@ -8,6 +8,9 @@ namespace ATEditor
         void EnableLocalDeltaFilter(MotionWindowLocalDeltaFilterMode filterMode);
         void DisableLocalDeltaFilter();
 
+        void EnableCollisionMode(RootMotionCollisionMode mode, LayerMask obstacleMask);
+        void DisableCollisionMode();
+
         void EnableVisualOffset(MotionWindowVisualOffsetMode offsetMode);
         void DisableVisualOffset();
 

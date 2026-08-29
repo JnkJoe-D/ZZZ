@@ -58,7 +58,7 @@ MonoBehaviour:
     - rid: 4681868102985318462
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -395,6 +395,7 @@ MonoBehaviour:
             assetName: 
             assetPath: 
           hitEffectId: 1040010
+          interruptLevel: 1
     - rid: 4681868102985318474
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -406,6 +407,10 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
+        collisionMode: 1
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 1152
     - rid: 4681868102985318475
       type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:

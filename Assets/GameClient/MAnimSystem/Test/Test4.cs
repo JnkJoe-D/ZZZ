@@ -24,7 +24,7 @@ namespace Game.MAnimSystem.Test
         public float playSpeed = 1f;
         
         private AnimComponent _animComponent;
-        private SkillRunner _runner;
+        private ActionRunner _runner;
         private ProcessContext _context;
         private int _currentIndex = 0;
         private float _timer = 0f;
@@ -104,7 +104,7 @@ namespace Game.MAnimSystem.Test
                         _runner.Stop();
                     }
 
-                    _runner = new SkillRunner(ATEditor.PlayMode.Runtime);
+                    _runner = new ActionRunner(ATEditor.PlayMode.Runtime);
 
                     // 如果动作配置了强制的过渡时间 (我们之前加的功能)，注给 Context
                     if (config.CompleteTransitCrossfade >= 0f)

@@ -35,5 +35,17 @@ MonoBehaviour:
         Modifiers:
         - Category: 20
           RequiredKey: 0
-          Condition: 20
+          InputCondition:
+            rid: 4681868508892233733
           Inverse: 0
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 4681868508892233734
+          Inverse: 0
+    - rid: 4681868508892233733
+      type: {class: ShortMoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data: 
+    - rid: 4681868508892233734
+      type: {class: LostMoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data: 

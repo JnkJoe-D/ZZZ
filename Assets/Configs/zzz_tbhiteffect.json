@@ -714,7 +714,7 @@
         "value": 20,
         "buff_id": 0,
         "chance": 1,
-        "hit_reaction": 0
+        "hit_reaction": 20
       },
       {
         "effect_type": 2,

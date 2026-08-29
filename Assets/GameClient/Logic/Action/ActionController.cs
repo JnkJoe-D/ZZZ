@@ -59,10 +59,16 @@ namespace Game.Logic
         public List<ExecutionRecord> ExecutionHistory { get; } = new();
 
         protected ActionRuntimeData _actionData;
+        protected IRouteEventReceiver _routeEventReceiver;
+        protected ISkillCostHandler _skillCostHandler;
 
-        public ActionController(CharacterEntity entity)
+        public ActionController(CharacterEntity entity, 
+                                IRouteEventReceiver routeEventReceiver = null,
+                                ISkillCostHandler skillCostHandler = null)
         {
             _entity = entity;
+            _routeEventReceiver = routeEventReceiver;
+            _skillCostHandler = skillCostHandler;
             _actionData = _entity.DataModule?.Get<ActionRuntimeData>();
         }
 
@@ -328,7 +334,7 @@ namespace Game.Logic
                 if (route == null) continue;
                 if (!route.IsInvalid()) continue;
 
-                if (!route.Evaluate(command, tag, GetRouteEvalActor(), timing)) 
+                if (!route.Evaluate(command, tag, GetRouteEvalActor(), _skillCostHandler, timing)) 
                     continue;
 
                 var c = new RouteCandidate
@@ -353,7 +359,7 @@ namespace Game.Logic
 
         private void Apply(RouteCandidate candidate)
         {
-            candidate.SourceRoute?.ConsumeSkillCost(GetRouteEvalActor());
+            candidate.SourceRoute?.ConsumeSkillCost(GetRouteEvalActor(), _skillCostHandler);
             float crossfade = candidate.SourceRoute?.CrossfadeOverride ?? -1f;
             Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag, crossfade);
         }
@@ -394,15 +400,7 @@ namespace Game.Logic
             {
                 RecordRoute(command?.Payload, null, source, tag, command?.Id ?? 0);
                 OnRouteEventCommit(routeExecuteEvent);
-
-                if (routeExecuteEvent == ExecuteEvent.TimelineRewind)
-                {
-                    _entity.ActionPlayer?.SendTimelineMessage(ExecuteEvent.TimelineRewind.ToString());
-                }
-                else if (routeExecuteEvent == ExecuteEvent.TimelineSkip)
-                {
-                    _entity.ActionPlayer?.SetTimelineFlag(ExecuteEvent.TimelineSkip.ToString());
-                }
+                _routeEventReceiver?.OnRouteEventExecuted(routeExecuteEvent, _entity);
             }
 
             return true;

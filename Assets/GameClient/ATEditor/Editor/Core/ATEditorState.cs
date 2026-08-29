@@ -162,7 +162,7 @@ namespace ATEditor.Editor
         /// <summary>
         /// 绑定的预览播放器实例（由 Window 注入，供 Drawer 获取上下文）
         /// </summary>
-        public SkillRunner previewRunner;
+        public ActionRunner previewRunner;
 
         /// <summary>
         /// 获取当前皀ProcessContext（用亀Drawer 请求底层服务＀

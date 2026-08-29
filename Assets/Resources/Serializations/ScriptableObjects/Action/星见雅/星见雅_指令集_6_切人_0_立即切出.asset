@@ -47,8 +47,4 @@ MonoBehaviour:
       data:
         EventType: 20
         RequiredWindowTag: SwitchExecute
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          Condition: 40
-          Inverse: 0
+        Modifiers: []

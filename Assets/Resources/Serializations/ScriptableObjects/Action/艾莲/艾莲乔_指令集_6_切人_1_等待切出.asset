@@ -20,12 +20,19 @@ MonoBehaviour:
     Priority: 20
     CrossfadeOverride: -1
     TriggerStrategy:
-      rid: 4681868330708500753
-    ExtraConditions: []
+      rid: 4681868508892233736
+    ExtraConditions:
+    - rid: 4681868492722143256
   references:
     version: 2
     RefIds:
-    - rid: 4681868330708500753
-      type: {class: DirectAssetTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+    - rid: 4681868492722143256
+      type: {class: PreviousActionCondition/SwitchOutPendingCondition, ns: Game.Logic,
+        asm: Assembly-CSharp}
+      data: 
+    - rid: 4681868508892233736
+      type: {class: AutoTransitionTrigger, ns: Game.Logic, asm: Assembly-CSharp}
       data:
+        Timing: 10
         RequiredWindowTag: SwitchExecute
+        Modifiers: []

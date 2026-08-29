@@ -23,7 +23,7 @@ MonoBehaviour:
   Routes:
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 0bfb17c4668d4454fb3567fcaa774a27, type: 2}
-    ValidateSkillRequirement: 0
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     Priority: 1
     CrossfadeOverride: -1
@@ -32,7 +32,7 @@ MonoBehaviour:
     ExtraConditions: []
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 0bfb17c4668d4454fb3567fcaa774a27, type: 2}
-    ValidateSkillRequirement: 0
+    ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     Priority: 1
     CrossfadeOverride: -1
@@ -44,6 +44,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
   - {fileID: 11400000, guid: 92b7f162e8e43ca4eb6e794b9131ff98, type: 2}
+  - {fileID: 11400000, guid: 36a2a976c94302b44afd0ccc5c5dd5d4, type: 2}
+  - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
   EnterState: 40
   InheritMode: 0
   references:

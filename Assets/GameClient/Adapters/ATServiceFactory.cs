@@ -95,6 +95,20 @@ namespace Game.Adapters
             {
                 return GetOrCreateCachedService(serviceType, owner, () => new ATPhysicsHandler(owner));
             }
+            if(serviceType == typeof(IAttackWarningHandler))
+            {
+                return GetOrCreateCachedService(serviceType, owner, () => {
+                    var entity = owner.GetComponent<CharacterEntity>();
+                    return entity != null ? new ATAttackWarningHandler(entity) : null;
+                });
+            }
+            if (serviceType == typeof(IAssistHandler))
+            {
+                return GetOrCreateCachedService(serviceType, owner, () => {
+                    var entity = owner.GetComponent<CharacterEntity>();
+                    return entity != null ? new ATAssistHandler(entity) : null;
+                });
+            }
 
             return null;
         }

@@ -107,6 +107,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
+  - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
   EnterState: 40
   InheritMode: 0
   references:

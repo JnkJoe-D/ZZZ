@@ -13,20 +13,27 @@ namespace Game.Logic.AI.BehaviorTree
         public Root RuntimeRoot => RuntimeTranslationResult?.Root;
         public BehaviorTree.TranslationResult RuntimeTranslationResult { get; private set; }
         public Blackboard RuntimeBlackboard => RuntimeRoot?.Blackboard;
+        private Clock _localClock;
+        private TreeActionAgent _agent;
 
         public void Init(BehaviorTree.BehaviorTreeAsset asset)
         {
+            _localClock = new Clock();
+
             treeAsset = asset;
-            var blackboard = new Blackboard(UnityContext.GetClock());
+            var blackboard = new Blackboard(_localClock);
             
             // 可以通过拓展将更多上下文信息注册到黑板，如 Owner (Entity) 等
-            blackboard.Set("GameObject", this.gameObject);
+            SetBB(blackboard);
+
+            // 手动强行刷新时钟，立刻消费掉刚刚挂起的所有初值valuechan事件！
+            _localClock.Update(0f);
 
             // 创建并传入动作代理类
             var monster = gameObject.GetComponent<MonsterEntity>();
-            var agent = new TreeActionAgent(monster);
+            _agent = new TreeActionAgent(monster);
             
-            RuntimeTranslationResult = BehaviorTree.BehaviorTreeTranslator.Translate(asset, blackboard, agent);
+            RuntimeTranslationResult = BehaviorTree.BehaviorTreeTranslator.Translate(asset, blackboard, _localClock, _agent);
 
 #if UNITY_EDITOR
             // 自动挂载 NPBehave 原生 Debugger 组件供调试参考
@@ -54,10 +61,22 @@ namespace Game.Logic.AI.BehaviorTree
                 RuntimeRoot.Stop();
             }
         }
-
+        void Update()
+        {
+            _localClock.Update(Time.deltaTime);
+        }
+        private void SetBB(Blackboard bb)
+        {
+            if (bb != null)
+            {
+                bb.Set("GameObject", this.gameObject);
+                bb.Set("HitTriggerTimestamp", -1);
+            }
+        }
         private void OnDestroy()
         {
             StopTree();
+            _agent?.Dispose();
         }
     }
 }

@@ -38,6 +38,14 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 4681868154359513090
+  - groupId: 48bd4221-439a-46f0-bbbe-7c608f53feea
+    groupName: Route
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868419696689152
+    - rid: 4681868419696689153
   references:
     version: 2
     RefIds:
@@ -101,7 +109,7 @@ MonoBehaviour:
         clipRef:
           guid: bbdd7cde32f1b904aae7542268cb541a
           assetName: TyrfingInfested_Ani_Attack_01
-          assetPath: Assets/Dependencies/Animation/TryfingInfested/Monster_TyrfingInfested.fbx
+          assetPath: Assets/Resources/Models/TyrfingInfested/Monster_TyrfingInfested.fbx
         maskRef:
           guid: 
           assetName: 
@@ -131,3 +139,51 @@ MonoBehaviour:
         rotationMode: 1
         updateFrequency: 2
         localRotationOffset: {x: 0, y: 0, z: 0}
+    - rid: 4681868419696689152
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 25cf60b2-da46-466c-b8f4-85d6add1d9c6
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868419696689154
+    - rid: 4681868419696689153
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 7259c095-ed14-4037-aeb4-3995e0fa8cef
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868419696689155
+    - rid: 4681868419696689154
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 795babcf-cde1-445a-b48b-6c05cc3c4105
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.8833334
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Execute1
+    - rid: 4681868419696689155
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 7ce32f5b-5558-4773-b99a-6c454745e34e
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.8833334
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Hit

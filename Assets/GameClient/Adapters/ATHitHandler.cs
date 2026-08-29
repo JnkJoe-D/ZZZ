@@ -205,8 +205,10 @@ namespace Game.Adapters
         /// <summary>修改任意属性</summary>
         private void ApplyModifyAttribute(CharacterEntity targetEntity, AttributeId attributeId, float delta)
         {
-            if (targetEntity.StatusModule?.Attributes == null) return;
-            if (!targetEntity.StatusModule.Attributes.Has(attributeId)) return;
+            if (targetEntity.StatusModule?.Attributes == null) 
+                return;
+            if (!targetEntity.StatusModule.Attributes.Has(attributeId)) 
+                return;
 
             targetEntity.StatusModule.Attributes.Modify(attributeId, delta);
         }

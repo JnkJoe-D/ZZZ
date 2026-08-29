@@ -9,7 +9,7 @@ public class Test_Audio : MonoBehaviour
     public TextAsset skillAsset; // 直接拖入 TextAsset 资源（编辑器专用）
     [Range(0f, 3.0f)]
     public float speedMultiplier = 1.0f; // 用于测试不同的播放速度
-    private SkillRunner runner;
+    private ActionRunner runner;
     private ProcessContext context;
     private ActionTimeline timeline;
     private float timer = 0f;
@@ -20,7 +20,7 @@ public class Test_Audio : MonoBehaviour
             // 2. 准备上下文
             context = new ProcessContext(gameObject, ATEditor.PlayMode.Runtime,
                 ATServiceFactory.ProvideService);
-            runner = new SkillRunner(ATEditor.PlayMode.Runtime);
+            runner = new ActionRunner(ATEditor.PlayMode.Runtime);
 
             // 4.反序列化
             timeline = SU.OpenFromJson(skillAsset);

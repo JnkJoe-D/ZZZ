@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e, type: 3}
   m_Name: "\u5B89\u6BD4"
   m_EditorClassIdentifier: 
-  ID: 0
+  ID: 1001
   Name: 
   Prefab: {fileID: 6866138656870126649, guid: 58a89a85b7ed98e4885d1ebbcd76228d, type: 3}
   GroundRadius: 0.3
@@ -21,11 +21,8 @@ MonoBehaviour:
   GroundLayer:
     serializedVersion: 2
     m_Bits: 256
-  ActionRoot: {fileID: 11400000, guid: 490fb4141147cbd489e6c3464b901b0b, type: 2}
-  ActionProLoadList:
-  - {fileID: 11400000, guid: 490fb4141147cbd489e6c3464b901b0b, type: 2}
-  BehaviorTreeGraph: {fileID: 0}
   hitReactionConfig: {fileID: 11400000, guid: 482c0f22a8a668540bb93f6822cb1e21, type: 2}
+  ActionRoot: {fileID: 11400000, guid: 490fb4141147cbd489e6c3464b901b0b, type: 2}
   UIConfig: {fileID: 11400000, guid: 99984aa8d8d8e5a468c5bd223c11d994, type: 2}
   JogShortInputThreshold: 0.2
   evadeLimitedTimes: 2

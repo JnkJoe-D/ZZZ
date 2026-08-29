@@ -79,7 +79,7 @@
         {
             "groupId": "2618bfdd-54e5-4e01-b001-9112a202093c",
             "groupName": "动画位移",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -413,7 +413,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.10000002384185791,
                     "animationClip": {
-                        "instanceID": 52888
+                        "instanceID": 34416
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -448,7 +448,7 @@
                     "blendInDuration": 0.10000002384185791,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 52890
+                        "instanceID": 34418
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -648,7 +648,8 @@
                                 "assetName": "",
                                 "assetPath": ""
                             },
-                            "hitEffectId": 1040010
+                            "hitEffectId": 1040010,
+                            "interruptLevel": 1
                         }
                     ]
                 }
@@ -668,7 +669,12 @@
                     "duration": 6.5,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "localDeltaFilterMode": 1
+                    "localDeltaFilterMode": 1,
+                    "collisionMode": 1,
+                    "obstacleMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 1152
+                    }
                 }
             },
             {

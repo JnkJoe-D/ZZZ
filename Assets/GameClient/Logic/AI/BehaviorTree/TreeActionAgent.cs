@@ -8,7 +8,7 @@ namespace Game.Logic.AI.BehaviorTree
     /// <summary>
     /// 行为树动作专属代理类，汇聚对 Entity 的各种快捷单帧操作
     /// </summary>
-    public class TreeActionAgent
+    public class TreeActionAgent : IDisposable
     {
         private MonsterEntity _owner;
 
@@ -16,6 +16,33 @@ namespace Game.Logic.AI.BehaviorTree
         public TreeActionAgent(MonsterEntity owner)
         {
             _owner = owner;
+            if (_owner != null && _owner.HitReactionModule is MonsterHitReactionModule hitModule)
+            {
+                hitModule.OnHitTimestampChanged += HandleHitTimestampChanged;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_owner != null && _owner.HitReactionModule is MonsterHitReactionModule hitModule)
+            {
+                hitModule.OnHitTimestampChanged -= HandleHitTimestampChanged;
+            }
+        }
+
+        private void HandleHitTimestampChanged()
+        {
+            if (_owner == null || _owner.BTRunner == null || _owner.BTRunner.RuntimeBlackboard == null) return;
+            var hitData = _owner.DataModule?.Get<HitReactionRuntimeData>();
+            if (hitData != null)
+            {
+                _owner.BTRunner.RuntimeBlackboard.Set("HitTriggerTimestamp", hitData.HitTriggerTimestamp);
+            }
+        }
+
+        public void Init(Blackboard bb)
+        {
+
         }
 
         /// <summary>
@@ -52,8 +79,6 @@ namespace Game.Logic.AI.BehaviorTree
             var beheaviorData = _owner.DataModule?.Get<MonSterBehaviorRuntimeData>();
             bb["CurrentAIState"] = beheaviorData?.CurrentState ?? MonsterAIState.Attack;
             bb["AttackCooldownTimer"] = beheaviorData?.AttackCooldownTimer ?? 0f;
-            var hitData = _owner.DataModule?.Get<HitReactionRuntimeData>();
-            bb["HitTriggerTimestamp"] = hitData?.HitTriggerTimestamp ?? 0f;
         }
         public bool IsPlayingAction(ActionConfigAsset actionConfig)
         {

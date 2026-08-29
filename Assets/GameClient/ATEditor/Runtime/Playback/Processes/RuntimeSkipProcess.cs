@@ -21,7 +21,7 @@ namespace ATEditor
             if (!hasCancelFlag)
             {
                 // 如果没有拦截标记，执行默认的跳跃（跳到片段的末尾时间）
-                var runnerProvider = context.UserData as ISkillRunnerProvider;
+                var runnerProvider = context.UserData as IActionRunnerProvider;
                 var runner = runnerProvider?.GetRunner();
 
                 if (runner != null)

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 0.4166667
+  duration: 1.6833334
   isLoop: 0
   beforePlayEvents: []
   onCompleteEvents: []
@@ -104,17 +104,17 @@ MonoBehaviour:
         clipName: "\u52A8\u753B\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 0.4166667
+        duration: 1.6833334
         blendInDuration: 0
         blendOutDuration: 0
-        animationClip: {fileID: -2199011050021399209, guid: bbdd7cde32f1b904aae7542268cb541a,
+        animationClip: {fileID: 4160167267010375861, guid: bbdd7cde32f1b904aae7542268cb541a,
           type: 3}
         playbackSpeed: 1
         layer: 0
         overrideMask: {fileID: 0}
         clipRef:
           guid: bbdd7cde32f1b904aae7542268cb541a
-          assetName: TyrfingInfested_Ani_Hit_Shake
+          assetName: TyrfingInfested_Ani_Hit_L_Front_Up
           assetPath: Assets/Resources/Models/TyrfingInfested/Monster_TyrfingInfested.fbx
         maskRef:
           guid: 
@@ -127,10 +127,10 @@ MonoBehaviour:
         clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 0.4166667
+        duration: 1.6833334
         blendInDuration: 0
         blendOutDuration: 0
-        localDeltaFilterMode: 3
+        localDeltaFilterMode: 1
     - rid: 4681868330708500882
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -138,7 +138,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 0.4166667
+        duration: 1.6833334
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: Execute1
@@ -149,7 +149,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 0.4166667
+        duration: 1.6833334
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: Hit

@@ -378,7 +378,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.16666674613952638,
                     "animationClip": {
-                        "instanceID": 88334
+                        "instanceID": 34788
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -413,7 +413,7 @@
                     "blendInDuration": 0.16666674613952638,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 88180
+                        "instanceID": 34790
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -613,7 +613,8 @@
                                 "assetName": "",
                                 "assetPath": ""
                             },
-                            "hitEffectId": 1040004
+                            "hitEffectId": 1040004,
+                            "interruptLevel": 1
                         }
                     ]
                 }
@@ -633,7 +634,12 @@
                     "duration": 4.233333587646484,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "localDeltaFilterMode": 1
+                    "localDeltaFilterMode": 1,
+                    "collisionMode": 1,
+                    "obstacleMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 1152
+                    }
                 }
             },
             {

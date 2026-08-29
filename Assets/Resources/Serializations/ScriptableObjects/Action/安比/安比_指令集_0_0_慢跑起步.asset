@@ -53,7 +53,8 @@ MonoBehaviour:
         Modifiers:
         - Category: 20
           RequiredKey: 0
-          Condition: 0
+          InputCondition:
+            rid: 4681868492722143257
           Inverse: 0
     - rid: 4681868330708500747
       type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
@@ -65,7 +66,8 @@ MonoBehaviour:
         Modifiers:
         - Category: 20
           RequiredKey: 0
-          Condition: 0
+          InputCondition:
+            rid: 4681868492722143259
           Inverse: 0
     - rid: 4681868330708500748
       type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
@@ -77,5 +79,15 @@ MonoBehaviour:
         Modifiers:
         - Category: 20
           RequiredKey: 0
-          Condition: 0
+          InputCondition:
+            rid: 4681868492722143258
           Inverse: 0
+    - rid: 4681868492722143257
+      type: {class: MoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data: 
+    - rid: 4681868492722143258
+      type: {class: MoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data: 
+    - rid: 4681868492722143259
+      type: {class: MoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data: 

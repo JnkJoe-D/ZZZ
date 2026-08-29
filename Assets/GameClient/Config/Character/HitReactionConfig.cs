@@ -50,9 +50,9 @@ namespace Game.Logic
             {
                 cfg.ZZZ.HitReactionType.Light => hitAnimLight,
                 cfg.ZZZ.HitReactionType.Heavy => hitAnimHeavy,
-                cfg.ZZZ.HitReactionType.Knockback => hitAnimKnowAway, // Note: Assuming KnowAway maps to Knockback/Launch
+                cfg.ZZZ.HitReactionType.Launch => hitAnimKnowAway, // Note: Assuming KnowAway maps to Knockback/Launch
                 cfg.ZZZ.HitReactionType.Shake => hitAnimShake,
-                cfg.ZZZ.HitReactionType.Knockdown => hitAnimKnockDown,
+                cfg.ZZZ.HitReactionType.KnockDown => hitAnimKnockDown,
                 // TODO: add other types if necessary
                 _ => hitAnimLight // Fallback
             };

@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using ATEditor;
 
@@ -38,6 +39,27 @@ namespace ATEditor.Editor
                 if (!string.IsNullOrEmpty(tip))
                 {
                     EditorGUILayout.HelpBox(tip, MessageType.Info);
+                }
+
+                EditorGUILayout.Space();
+                motionClip.collisionMode = (RootMotionCollisionMode)EditorGUILayout.EnumPopup("物理约束碰撞策略", motionClip.collisionMode);
+                
+                string collisionTip = motionClip.collisionMode switch
+                {
+                    RootMotionCollisionMode.DefaultSlide => "不进行碰撞预检测，完全交给 CharacterController 处理，允许沿碰撞面滑动。",
+                    RootMotionCollisionMode.StopAtObstacle => "沿运动方向进行预检测，遇到障碍物截断位移，不允许侧滑。",
+                    RootMotionCollisionMode.IgnorePreCheck => "忽略碰撞预检测。",
+                    _ => ""
+                };
+                if (!string.IsNullOrEmpty(collisionTip))
+                {
+                    EditorGUILayout.HelpBox(collisionTip, MessageType.Info);
+                }
+
+                if (motionClip.collisionMode == RootMotionCollisionMode.StopAtObstacle)
+                {
+                    int obsMask = EditorGUILayout.MaskField("障碍物阻挡层", InternalEditorUtility.LayerMaskToConcatenatedLayersMask(motionClip.obstacleMask), InternalEditorUtility.layers);
+                    motionClip.obstacleMask = InternalEditorUtility.ConcatenatedLayersMaskToLayerMask(obsMask);
                 }
 
                 EditorGUILayout.EndVertical();
