@@ -22,17 +22,16 @@ MonoBehaviour:
     TriggerStrategy:
       rid: 4681868508892233736
     ExtraConditions:
-    - rid: 4681868492722143256
+    - rid: 6379257713941807106
   references:
     version: 2
     RefIds:
-    - rid: 4681868492722143256
-      type: {class: PreviousActionCondition/SwitchOutPendingCondition, ns: Game.Logic,
-        asm: Assembly-CSharp}
-      data: 
     - rid: 4681868508892233736
       type: {class: AutoTransitionTrigger, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         Timing: 10
         RequiredWindowTag: SwitchExecute
         Modifiers: []
+    - rid: 6379257713941807106
+      type: {class: SwitchOutPendingCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data: 

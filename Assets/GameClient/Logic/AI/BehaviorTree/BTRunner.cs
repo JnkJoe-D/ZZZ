@@ -63,7 +63,7 @@ namespace Game.Logic.AI.BehaviorTree
         }
         void Update()
         {
-            _localClock.Update(Time.deltaTime);
+            _localClock?.Update(Time.deltaTime);
         }
         private void SetBB(Blackboard bb)
         {

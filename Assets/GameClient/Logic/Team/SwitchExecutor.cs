@@ -149,6 +149,21 @@ namespace Game.Logic
         /// </summary>
         private void OnActionRouteEvent(ActionRouteExecuteEvent evt)
         {
+            switch (evt.Event)
+            {
+                case ExecuteEvent.SwitchCaptureSucceed:
+                    HandleSwitchEvent(evt);
+                    break;
+                case ExecuteEvent.ParryAidStart:
+                    HandleParryAidEvent(evt);
+                    break;
+                default:    
+                    break;
+            }
+        }
+
+        private void HandleSwitchEvent(ActionRouteExecuteEvent evt)
+        {
             if (evt.Event != ExecuteEvent.SwitchCaptureSucceed) return;
             if (evt.SourceEntity == null) return;
 
@@ -159,6 +174,19 @@ namespace Game.Logic
             if (incoming == null || incoming == outgoing) return;
 
             ExecuteSwitch(outgoing, incoming);
+        }
+        private void HandleParryAidEvent(ActionRouteExecuteEvent evt)
+        {
+            if (evt.Event != ExecuteEvent.ParryAidStart) return;
+            if (evt.SourceEntity == null) return;
+
+            PartyMember outgoing = _manager.FindPartyMember(evt.SourceEntity);
+            if (outgoing == null) return;
+
+            PartyMember incoming = ResolveIncoming(outgoing, evt.TargetSlotHint);
+            if (incoming == null || incoming == outgoing) return;
+
+            ExecuteParryAid(outgoing, incoming);
         }
 
         /// <summary>
@@ -235,6 +263,38 @@ namespace Game.Logic
             // 5. 尝试立即触发切出
             inEntity.ActionController?.TryTriggerEvent(RouteEventType.SwitchIn);
             bool resOut = outEntity.ActionController?.TryTriggerEvent(RouteEventType.SwitchOut) == true;
+        }
+        private void ExecuteParryAid(PartyMember outgoing, PartyMember incoming)
+        {
+            Debug.Log($"[SwitchExecutor] ExecuteParryAid: {outgoing.Config?.Name} → {incoming.Config?.Name}");
+
+            RoleEntity outEntity = outgoing.Entity;
+            RoleEntity inEntity = incoming.Entity;
+
+            if (outEntity == null || inEntity == null) return;
+
+            // 如果 incoming 在切出队列中，取消其切出任务
+            TryCancelSwitchOut(incoming);
+
+            // 切断切出角色输入（不禁用共享 InputProvider，仅解绑事件适配器）
+            outEntity.SetControlActive(false, assignCameraTarget: false);
+
+            // 激活切入角色
+            Vector3 switchPos = outEntity.transform.position;
+            Quaternion switchRot = outEntity.transform.rotation;
+            _manager.ActivatePartyMember(incoming, switchPos, switchRot, assignCameraTarget: true);
+
+            // 直接禁用切出角色的碰撞体、渲染和控制（ParryAid 不播放切出动作）
+            outEntity.SetColliderActive(false);
+            outEntity.SetPresentationVisible(false);
+            outEntity.SetControlActive(false, assignCameraTarget: false);
+            if (outEntity.Config?.ActionRoot != null)
+            {
+                outEntity.ActionController?.PlayAction(outEntity.Config.ActionRoot);
+            }
+
+            // 触发切入角色的 ParryAidStart 事件
+            inEntity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidStart);
         }
 
         // ═══════════════════════════════════════════
@@ -431,13 +491,6 @@ namespace Game.Logic
             return null;
         }
 
-        // ─── 兼容旧接口（将逐步废弃） ───
 
-        /// <summary> [已废弃] 旧的准备切人接口，新架构由事件驱动。 </summary>
-        public bool PrepareSwitch(RoleEntity outgoingEntity)
-        {
-            Debug.LogWarning("[SwitchExecutor] PrepareSwitch 已废弃，切人应通过 ActionRouteExecuteEvent 驱动。");
-            return false;
-        }
     }
 }

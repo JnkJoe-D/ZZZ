@@ -623,5 +623,26 @@
     "desc": "",
     "condition": [],
     "cost": []
+  },
+  {
+    "id": 140340,
+    "name": "攻击_招架支援_Start",
+    "desc": "",
+    "condition": [],
+    "cost": []
+  },
+  {
+    "id": 140350,
+    "name": "攻击_招架支援_H",
+    "desc": "",
+    "condition": [],
+    "cost": []
+  },
+  {
+    "id": 140360,
+    "name": "攻击_招架支援_H_End",
+    "desc": "",
+    "condition": [],
+    "cost": []
   }
 ]

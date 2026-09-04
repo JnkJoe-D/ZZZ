@@ -38,6 +38,15 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 4681868154359513090
+  - groupId: 860a026c-6681-4d1c-9bc4-0753b5e4a690
+    groupName: "\u547D\u4E2D"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 6379257712028942354
+    - rid: 6379257712028942358
+    - rid: 6379257712028942355
   - groupId: 48bd4221-439a-46f0-bbbe-7c608f53feea
     groupName: Route
     isCollapsed: 0
@@ -125,6 +134,10 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
+        collisionMode: 0
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 4294967295
     - rid: 4681868154359513093
       type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -187,3 +200,228 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: Hit
+    - rid: 6379257712028942354
+      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 0375336a-cad1-43e7-aae8-657ce8a33c47
+        trackType: DamageTrack
+        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379257712028942357
+    - rid: 6379257712028942355
+      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: ec2a65ba-a7f6-4fa3-8b45-52c107499c07
+        trackType: EventTrack
+        trackName: "\u4E8B\u4EF6\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379257712028942356
+    - rid: 6379257712028942356
+      type: {class: AttackWarningClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 41440e9a-f2f0-4b58-a436-9fafb6f14784
+        clipName: "\u653B\u51FB\u9884\u8B66 (\u9EC4/\u7EA2\u5149)\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 1.0166667
+        blendInDuration: 0
+        blendOutDuration: 0
+        SignalType: 0
+        Weight: 0
+        DetectionRadius: 5
+        DetectionAngle: 180
+    - rid: 6379257712028942357
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 4f458405-9c31-442c-a646-242e12fbb51a
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.0166667
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 512
+        serializedHitLayerMask: 512
+        isSelfImpacted: 0
+        shape:
+          shapeType: 1
+          size: {x: 1, y: 1, z: 4}
+          radius: 2
+          height: 2
+          angle: 90
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 2}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 0
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1040000
+          interruptLevel: 1
+    - rid: 6379257712028942358
+      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 49499b5d-87a2-4b76-84ec-55d8ac235512
+        trackType: DamageTrack
+        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379257712028942359
+        - rid: 6379257712028942360
+    - rid: 6379257712028942359
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 7283831a-9866-43af-ab87-444dc959bf8d
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.1666667
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 512
+        serializedHitLayerMask: 512
+        isSelfImpacted: 0
+        shape:
+          shapeType: 1
+          size: {x: 1, y: 1, z: 4}
+          radius: 2
+          height: 2
+          angle: 90
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 2}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 0
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1040000
+          interruptLevel: 1
+    - rid: 6379257712028942360
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 715bdc72-5063-4d79-a410-0728e4cf3075
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.8333334
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 512
+        serializedHitLayerMask: 512
+        isSelfImpacted: 0
+        shape:
+          shapeType: 1
+          size: {x: 1, y: 1, z: 4}
+          radius: 2
+          height: 2
+          angle: 90
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 2}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 0
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1040000
+          interruptLevel: 1

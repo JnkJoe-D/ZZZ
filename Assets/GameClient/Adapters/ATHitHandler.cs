@@ -39,6 +39,46 @@ namespace Game.Adapters
                 {
                     if (victim == null || collider == null) return;
 
+                    var victimParryData = victim.DataModule?.Get<ParryRuntimeData>();
+                    if (victimParryData != null && victimParryData.IsParrying)
+                    {
+                        var warningMarker = CombatWarningManager.GetWarningByAttacker(attacker);
+                        var weight = warningMarker?.Weight ?? AttackWeight.Light_Interruptible;
+
+                        victimParryData.ParrySucceeded = true;
+                        victimParryData.LastParriedAttacker = attacker;
+                        victimParryData.LastParriedWeight = weight;
+
+                        var parryCtx = new HitContext
+                        {
+                            attacker = victim,
+                            victim = attacker,
+                            IsParry = true,
+                            interruptLevel = 999,
+                            reactionType = cfg.ZZZ.HitReactionType.Parried,
+                            hitDirection = (attacker.transform.position - victim.transform.position).normalized,
+                            enableHitStop = hitData.enableHitStop || true,
+                            hitStopDuration = hitData.hitStopDuration > 0 ? hitData.hitStopDuration : 0.12f,
+                            hitStopScale = 0f
+                        };
+                        parryCtx.reactionAxis = -parryCtx.hitDirection;
+
+                        if (weight == AttackWeight.Light_Interruptible)
+                        {
+                            attacker?.HitReactionModule?.ApplyVisualFeedback(parryCtx);
+                        }
+                        else
+                        {
+                            attacker?.HitReactionModule?.ApplyHitStopOnly(parryCtx);
+                            victim.HitReactionModule?.ApplyHitStopOnly(parryCtx);
+                        }
+
+                        // 触发招架支援成功事件
+                        victim.ActionController?.TryTriggerEvent(RouteEventType.ParryAidSucceed);
+
+                        return;
+                    }
+
                     // 计算碰撞点和攻击方向
                     Vector3 attackerPos = hitData.deployer != null ? hitData.deployer.transform.position : Vector3.zero;
                     Vector3 hitBoxPos = hitData.hitBoxCenter;

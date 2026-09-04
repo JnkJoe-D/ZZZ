@@ -32,7 +32,12 @@ namespace ATEditor.Editor
 
             if (!clip.detach && parent != null)
             {
-                spawnedInstance.transform.SetParent(parent, true);
+                // 不要使用 SetParent，因为 spawnedInstance 带有 HideAndDontSave 标记。
+                // 如果将其挂载到场景对象上，在退出 Play Mode（场景卸载）时，父节点会被销毁，
+                // 此时底层试图解绑 HideAndDontSave 的子节点会导致 t.GetParent() == nullptr 断言错误。
+                // 我们在 OnUpdate 中手动同步位置即可。
+                spawnedInstance.transform.position = pos;
+                spawnedInstance.transform.rotation = rot;
             }
         }
 
@@ -49,9 +54,9 @@ namespace ATEditor.Editor
             if (!clip.detach)
             {
                 GetMatrix(out Vector3 startPos, out Quaternion rot, out Transform parent);
-                // OnEnter 设置了 SetParent 所以大部分情况下位置会自动正确
-                // 但如果需要完全绝对同步绑定点，可以这里重新归位 localPosition = zero
-                spawnedInstance.transform.localPosition = Vector3.zero;
+                // 由于我们不再使用 SetParent，这里必须在每帧手动同步世界坐标和旋转
+                spawnedInstance.transform.position = startPos;
+                spawnedInstance.transform.rotation = rot;
             }
         }
 

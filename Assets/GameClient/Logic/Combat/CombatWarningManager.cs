@@ -121,5 +121,13 @@ namespace Game.Logic
             }
             return null;
         }
+
+#if UNITY_EDITOR
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void AutoClearOnDomainReload()
+        {
+            Clear();
+        }
+#endif
     }
 }

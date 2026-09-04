@@ -210,6 +210,7 @@ namespace Game.Logic
             bool matched = history[1].ActionId == RequiredAction.ID;
             return Inverse ? !matched : matched;
         }
+    }
     [Serializable]
     public sealed class SwitchOutPendingCondition : ITransitionCondition
     {
@@ -238,5 +239,20 @@ namespace Game.Logic
             return false;
         }
     }
-}
+
+    [Serializable]
+    [SubclassDisplayName("格挡成功 (ParrySucceeded)")]
+    public sealed class ParrySucceededCondition : ITransitionCondition
+    {
+        public bool Check(RoleEntity actor)
+        {
+            var parryData = actor?.DataModule?.Get<ParryRuntimeData>();
+            if (parryData != null && parryData.ParrySucceeded)
+            {
+                parryData.ParrySucceeded = false;
+                return true;
+            }
+            return false;
+        }
+    }
 }

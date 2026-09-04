@@ -8,7 +8,7 @@ namespace Game.Logic
                                        IRouteEventReceiver receiver = null,
                                        ISkillCostHandler skillCostHandler = null) 
             : base(entity, 
-                   receiver ?? new DefaultRouteEventReceiver(),
+                   receiver ?? new MonsterRouteEventReceiver(),
                    skillCostHandler ?? new DefaultSkillCostHandler())
         {
         }

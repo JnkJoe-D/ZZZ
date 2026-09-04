@@ -121,7 +121,10 @@ namespace Game.Pool
             }
             else
             {
-                instance.transform.SetParent(null);
+                if (instance.transform.parent != null)
+                {
+                    instance.transform.SetParent(null);
+                }
             }
 
             return instance;
@@ -151,7 +154,13 @@ namespace Game.Pool
             }
 
             instance.SetActive(false);
-            if (_poolRoot != null)
+            
+            bool isSafeToParent = true;
+#if UNITY_EDITOR
+            if (!Application.isPlaying) isSafeToParent = false;
+#endif
+
+            if (_poolRoot != null && isSafeToParent)
             {
                 instance.transform.SetParent(_poolRoot);
             }

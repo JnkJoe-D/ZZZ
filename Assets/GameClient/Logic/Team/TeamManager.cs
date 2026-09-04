@@ -780,23 +780,6 @@ namespace Game.Logic
                 }
             }
         }
-
-        /// <summary>
-        /// 进入换人行为过渡状态的回调入口（委托至 SwitchExecutor 异步检测）。
-        /// </summary>
-        public bool HandleSwitchStateEntered(RoleEntity outgoingEntity)
-        {
-            return _switchExecutor != null && _switchExecutor.PrepareSwitch(outgoingEntity);
-        }
-
-        /// <summary>
-        /// 准备切人。锁定当前主控角色的输入并估算切入点的物理可用性（委托至 SwitchExecutor）。
-        /// </summary>
-        public bool PrepareSwitch(RoleEntity outgoingEntity)
-        {
-            return _switchExecutor != null && _switchExecutor.PrepareSwitch(outgoingEntity);
-        }
-
         /// <summary>
         /// 响应 Timeline 切人关键帧动作过渡事件的转发分发接口（委托至 SwitchExecutor 状态机）。
         /// </summary>

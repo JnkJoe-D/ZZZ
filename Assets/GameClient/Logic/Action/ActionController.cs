@@ -112,7 +112,7 @@ namespace Game.Logic
 
             if (PlayAndTrack(action, crossfadeOverride, startTime))
             {
-                OnActionStateSwitch(action);
+                OnActionPlaySucceed(action);
                 return true;
             }
             return false;
@@ -399,7 +399,6 @@ namespace Game.Logic
             else if (executeType == ExecuteTarget.Event)
             {
                 RecordRoute(command?.Payload, null, source, tag, command?.Id ?? 0);
-                OnRouteEventCommit(routeExecuteEvent);
                 _routeEventReceiver?.OnRouteEventExecuted(routeExecuteEvent, _entity);
             }
 
@@ -543,8 +542,7 @@ namespace Game.Logic
         }
 
         protected virtual RoleEntity GetRouteEvalActor() => null;
-        protected virtual void OnActionStateSwitch(ActionConfigAsset action) { }
-        protected virtual void OnRouteEventCommit(ExecuteEvent routeExecuteEvent) { }
+        protected virtual void OnActionPlaySucceed(ActionConfigAsset action) { }
         protected virtual void RecordComboRoute(CommandRouteSource source, string tag, ICommandPayload payload, ActionConfigAsset action) { }
     }
 }

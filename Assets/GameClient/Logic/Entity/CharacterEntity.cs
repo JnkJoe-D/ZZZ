@@ -38,6 +38,7 @@ namespace Game.Logic
             if (MotionWindowHandler == null) MotionWindowHandler = new SkillMotionWindowHandler(this);
             DataModule[typeof(ActionRuntimeData)] ??= new ActionRuntimeData();
             DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
+            DataModule[typeof(ParryRuntimeData)] ??= new ParryRuntimeData();
             if (StatusModule == null) StatusModule = new StatusModule();
         }
 

@@ -84,6 +84,12 @@ namespace Game.Logic
             }
         }
 
+        public virtual void ApplyHitStopOnly(HitContext ctx)
+        {
+            if (_entity == null || !ctx.enableHitStop) return;
+            ApplyHitStop(ctx);
+        }
+
         protected abstract void OnInterrupted(HitContext ctx);
 
         protected virtual int GetCurrentResilience()

@@ -18,6 +18,7 @@ namespace Game.Logic
         Evade = 50,     // CharacterEvadeState
         Hit = 60,       // CharacterHitStunState
         Switch = 70,    // CharacterSwitchState
+        Parry = 80,     // CharacterParryState
     }
 
     /// <summary>

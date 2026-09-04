@@ -110,6 +110,14 @@ namespace Game.Adapters
                 });
             }
 
+            if (serviceType == typeof(IParryWindowHandler))
+            {
+                return GetOrCreateCachedService(serviceType, owner, () => {
+                    var entity = owner.GetComponent<CharacterEntity>();
+                    return entity != null ? new ATParryWindowHandler(entity) : null;
+                });
+            }
+
             return null;
         }
 
@@ -156,5 +164,13 @@ namespace Game.Adapters
 
             _staticCache.Clear();
         }
+
+#if UNITY_EDITOR
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void AutoClearOnDomainReload()
+        {
+            ClearAllStaticCaches();
+        }
+#endif
     }
 }

@@ -31,6 +31,16 @@ MonoBehaviour:
     TriggerStrategy:
       rid: 4681868330708500793
     ExtraConditions: []
+  - ExecuteType: 20
+    ExecuteAction: {fileID: 11400000, guid: 85088c53dc4eafa41aee57c6e4818b57, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 40
+    Priority: 40
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379257712028942389
+    ExtraConditions:
+    - rid: 6379257712028942390
   references:
     version: 2
     RefIds:
@@ -48,3 +58,15 @@ MonoBehaviour:
         EventType: 20
         RequiredWindowTag: SwitchExecute
         Modifiers: []
+    - rid: 6379257712028942389
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 60
+        RequiredPhase: 0
+        RequiredWindowTag: SwitchCapture
+        TriggerMode: 1
+        Modifiers: []
+    - rid: 6379257712028942390
+      type: {class: CombatWarningCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        WarningType: 0

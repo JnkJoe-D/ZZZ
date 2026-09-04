@@ -55,6 +55,12 @@ namespace ATEditor
         }
         public override void OnDisable()
         {
+            if (context != null && context.Owner != null && !context.Owner.gameObject.scene.isLoaded)
+            {
+                spawnedProjectile = null;
+                return;
+            }
+
             if (clip.destroyOnInterrupt && spawnedProjectile != null && context != null && context.IsInterrupted)
             {
                 spawnedProjectile.Recycle();

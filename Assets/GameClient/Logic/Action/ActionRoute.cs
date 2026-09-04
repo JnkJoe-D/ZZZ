@@ -20,6 +20,8 @@ namespace Game.Logic
         None = 0,
         SwitchIn = 10,
         SwitchOut = 20,
+        ParryAidStart = 30,
+        ParryAidSucceed = 40,
     }
 
     public enum ModifierCategory
@@ -56,10 +58,12 @@ namespace Game.Logic
     {
         None = 0,
         SwitchCaptureSucceed = 10,
-        [InspectorName("时间轴回卷 (TimelineRewind)")]
+        [InspectorName("时间轴回卷")]
         TimelineRewind = 20,
-        [InspectorName("设置时间轴跳跃标记 (TimelineSkip)")]
+        [InspectorName("设置时间轴跳跃标记")]
         TimelineSkip = 30,
+        [InspectorName("招架支援开始")]
+        ParryAidStart = 40,
     }
 
     [Serializable]

@@ -35,7 +35,10 @@ namespace Game.Adapters
             }
             else
             {
-                instance.transform.SetParent(null);
+                if (instance.transform.parent != null)
+                {
+                    instance.transform.SetParent(null);
+                }
             }
 
             return instance;
@@ -46,8 +49,13 @@ namespace Game.Adapters
             if (projectile is MonoBehaviour mono)
             {
                 GameObject obj = mono.gameObject;
+                if (obj == null || !obj.scene.isLoaded) return;
+
                 obj.SetActive(false);
-                obj.transform.SetParent(null); // 回池时脱离父节点，防止被带着跑
+                if (obj.transform.parent != null)
+                {
+                    obj.transform.SetParent(null); // 回池时脱离父节点，防止被带着跑
+                }
 
                 // 通过 GlobalPoolManager 统一归还
                 GlobalPoolManager.Return(obj);

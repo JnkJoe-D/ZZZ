@@ -22,6 +22,24 @@ MonoBehaviour:
     TriggerStrategy:
       rid: 4681868330708500773
     ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 707c8b93263ac3a42b3b0eb3d0c43782, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 40
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379257712028942363
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 1b3b3fd0bd5ddbe4383fe1a225823587, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 40
+    Priority: 40
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379257712028942388
+    ExtraConditions: []
   references:
     version: 2
     RefIds:
@@ -29,5 +47,17 @@ MonoBehaviour:
       type: {class: SystemEventTrigger, ns: Game.Logic, asm: Assembly-CSharp}
       data:
         EventType: 10
+        RequiredWindowTag: SwitchExecute
+        Modifiers: []
+    - rid: 6379257712028942363
+      type: {class: SystemEventTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        EventType: 40
+        RequiredWindowTag: Execute1
+        Modifiers: []
+    - rid: 6379257712028942388
+      type: {class: SystemEventTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        EventType: 30
         RequiredWindowTag: SwitchExecute
         Modifiers: []

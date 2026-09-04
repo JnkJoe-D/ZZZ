@@ -14,7 +14,7 @@ namespace Game.Logic
                                     IRouteEventReceiver receiver = null,
                                     ISkillCostHandler skillCostHandler = null) 
             : base(entity, 
-                   receiver ?? new DefaultRouteEventReceiver(),
+                   receiver ?? new RoleRouteEventReceiver(),
                    skillCostHandler ?? new DefaultSkillCostHandler())
         {
             _comboData = _entity.DataModule?.Get<ComboRouteRuntimeData>();
@@ -22,7 +22,7 @@ namespace Game.Logic
 
         protected override RoleEntity GetRouteEvalActor() => Role;
 
-        protected override void OnActionStateSwitch(ActionConfigAsset action)
+        protected override void OnActionPlaySucceed(ActionConfigAsset action)
         {
             if (Role.Machine == null) return;
             
@@ -50,20 +50,10 @@ namespace Game.Logic
                     case ActionState.Switch:
                         Role.Machine.ChangeState<CharacterSwitchState>();
                         break;
+                    case ActionState.Parry:
+                        Role.Machine.ChangeState<CharacterParryState>();
+                        break;
                 }
-            }
-        }
-
-        protected override void OnRouteEventCommit(ExecuteEvent routeExecuteEvent)
-        {
-            if(routeExecuteEvent == ExecuteEvent.SwitchCaptureSucceed)
-            {
-                Game.Framework.EventCenter.Publish(new ActionRouteExecuteEvent
-                {
-                    SourceEntity = Role,
-                    Event = routeExecuteEvent,
-                    TargetSlotHint = -1
-                });
             }
         }
 

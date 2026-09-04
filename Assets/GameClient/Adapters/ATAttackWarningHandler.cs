@@ -12,6 +12,7 @@ namespace Game.Logic
         }
         public void RegisterWarningMarker(WarningSignalType signalType, AttackWeight weight, float detectionRadius, float detectionAngle)
         {
+            UnityEngine.Debug.Log($"!!!!!!!!!!!!!!!!!!!RegisterWarningMarker: {signalType}, {weight}, {detectionRadius}, {detectionAngle}");
             AttackWarningMarker marker = new AttackWarningMarker
             {
                 Attacker = _entity,

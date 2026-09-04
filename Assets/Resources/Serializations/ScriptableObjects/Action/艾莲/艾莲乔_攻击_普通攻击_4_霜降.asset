@@ -20,25 +20,7 @@ MonoBehaviour:
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   CompleteTransitCrossfade: -1
   PlaybackSpeed: 1
-  Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: fcb197eb2c968364ebbcaad4e1421a4e, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
-    Priority: 0
-    CrossfadeOverride: 0
-    TriggerStrategy:
-      rid: 4681868330708500697
-    ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: fcb197eb2c968364ebbcaad4e1421a4e, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
-    Priority: 0
-    CrossfadeOverride: 0
-    TriggerStrategy:
-      rid: 4681868330708500698
-    ExtraConditions: []
+  Routes: []
   RouteSets:
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
@@ -49,20 +31,4 @@ MonoBehaviour:
   InheritMode: 10
   references:
     version: 2
-    RefIds:
-    - rid: 4681868330708500697
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 30
-        RequiredPhase: 0
-        RequiredWindowTag: Buffer1
-        TriggerMode: 0
-        Modifiers: []
-    - rid: 4681868330708500698
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 30
-        RequiredPhase: 0
-        RequiredWindowTag: Execute1
-        TriggerMode: 1
-        Modifiers: []
+    RefIds: []
