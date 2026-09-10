@@ -13,27 +13,15 @@ namespace Game.Camera
         private CinemachineVirtualCameraBase _virtualCamera;
 
         [SerializeField]
-        private string virtualCamName = "主相机";
-
-        [SerializeField]
         private Transform follow;
 
         [SerializeField]
         private Transform lookAt;
 
-        private Transform _mainCamTransform;
         private RoleEntity _entity;
         private CameraPointBinder _pointBinder;
         private bool _ownsVirtualCameraInstance;
         private CinemachineImpulseSource _impluseSource;
-
-        private void Awake()
-        {
-            if (UnityEngine.Camera.main != null)
-            {
-                _mainCamTransform = UnityEngine.Camera.main.transform;
-            }
-        }
 
         public void Init(RoleEntity entity)
         {
@@ -119,11 +107,14 @@ namespace Game.Camera
             RefreshVirtualCameraTargets();
         }
 
+        private Transform MainCamTransform => GameCameraManager.Instance?.MainCameraTransform ?? (UnityEngine.Camera.main != null ? UnityEngine.Camera.main.transform : null);
+
         public Vector3 GetForward()
         {
-            if (_mainCamTransform != null)
+            var camTrans = MainCamTransform;
+            if (camTrans != null)
             {
-                Vector3 forward = _mainCamTransform.forward;
+                Vector3 forward = camTrans.forward;
                 forward.y = 0f;
                 return forward.normalized;
             }
@@ -134,9 +125,10 @@ namespace Game.Camera
 
         public Vector3 GetRight()
         {
-            if (_mainCamTransform != null)
+            var camTrans = MainCamTransform;
+            if (camTrans != null)
             {
-                Vector3 right = _mainCamTransform.right;
+                Vector3 right = camTrans.right;
                 right.y = 0f;
                 return right.normalized;
             }

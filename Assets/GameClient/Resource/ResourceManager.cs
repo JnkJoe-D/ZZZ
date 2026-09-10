@@ -36,6 +36,41 @@ namespace Game.Resource
         private ResourcePackage _package;
         private ResourceConfig  _config;
 
+        // ── 句柄引用托管（防内存泄漏）────────────────────
+        private readonly System.Collections.Generic.Dictionary<int, HandleBase> _instanceToHandle = new();
+        private readonly System.Collections.Generic.Dictionary<string, HandleBase> _pathToHandle = new();
+        private readonly object _handleLock = new();
+
+        private void TrackHandle(string assetPath, HandleBase handle, UnityEngine.Object customObj = null)
+        {
+            if (handle == null || !handle.IsValid) return;
+            lock (_handleLock)
+            {
+                if (!string.IsNullOrEmpty(assetPath))
+                {
+                    _pathToHandle[assetPath] = handle;
+                }
+                if (customObj != null)
+                {
+                    _instanceToHandle[customObj.GetInstanceID()] = handle;
+                }
+                if (handle is AssetHandle assetHandle && assetHandle.AssetObject != null)
+                {
+                    _instanceToHandle[assetHandle.AssetObject.GetInstanceID()] = handle;
+                }
+                else if (handle is SubAssetsHandle subHandle && subHandle.SubAssetObjects != null)
+                {
+                    foreach (var sub in subHandle.SubAssetObjects)
+                    {
+                        if (sub != null)
+                        {
+                            _instanceToHandle[sub.GetInstanceID()] = handle;
+                        }
+                    }
+                }
+            }
+        }
+
         // ── 初始化状态 ──────────────────────────
         public bool IsInitialized { get; private set; }
 
@@ -226,6 +261,7 @@ namespace Game.Resource
                 EventCenter.Publish(new AssetLoadFailedEvent { AssetPath = assetPath, Error = handle.LastError });
                 return null;
             }
+            TrackHandle(assetPath, handle);
             return handle.AssetObject as T;
         }
 
@@ -244,6 +280,7 @@ namespace Game.Resource
                 return null;
             }
 
+            TrackHandle(assetPath, handle);
             var subAsset = handle.GetSubAssetObject<T>(subAssetName);
             if (subAsset == null)
             {
@@ -264,6 +301,7 @@ namespace Game.Resource
                 return null;
             }
 
+            TrackHandle(assetPath, handle);
             return handle.GetSubAssetObject<T>(subAssetName);
         }
 
@@ -295,6 +333,7 @@ namespace Game.Resource
                 yield break;
             }
 
+            TrackHandle(assetPath, handle);
             onComplete?.Invoke(handle.AssetObject as T);
         }
 
@@ -330,6 +369,7 @@ namespace Game.Resource
                 return null;
             }
 
+            TrackHandle(assetPath, handle);
             return handle.AssetObject as T;
         }
 
@@ -355,12 +395,17 @@ namespace Game.Resource
                 yield break;
             }
 
+            TrackHandle(assetPath, handle);
             var go = UnityEngine.Object.Instantiate(
                 handle.AssetObject as GameObject,
                 position ?? Vector3.zero,
                 rotation ?? Quaternion.identity,
                 parent
             );
+            if (go != null)
+            {
+                TrackHandle(null, handle, go);
+            }
             onComplete?.Invoke(go);
         }
 
@@ -401,11 +446,132 @@ namespace Game.Resource
         // ────────────────────────────────────────
 
         /// <summary>
+        /// 显式释放指定资源对象的句柄引用
+        /// </summary>
+        public void ReleaseAsset(UnityEngine.Object asset)
+        {
+            if (asset == null) return;
+            lock (_handleLock)
+            {
+                int id = asset.GetInstanceID();
+                if (_instanceToHandle.TryGetValue(id, out var handle))
+                {
+                    _instanceToHandle.Remove(id);
+                    if (handle != null && handle.IsValid)
+                    {
+                        var path = handle.GetAssetInfo()?.AssetPath;
+                        if (!string.IsNullOrEmpty(path) && _pathToHandle.TryGetValue(path, out var h) && h == handle)
+                        {
+                            _pathToHandle.Remove(path);
+                        }
+                        handle.Release();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 显式释放指定资源路径的句柄引用
+        /// </summary>
+        public void ReleaseAsset(string assetPath)
+        {
+            if (string.IsNullOrEmpty(assetPath)) return;
+            lock (_handleLock)
+            {
+                if (_pathToHandle.TryGetValue(assetPath, out var handle))
+                {
+                    _pathToHandle.Remove(assetPath);
+                    if (handle != null && handle.IsValid)
+                    {
+                        if (handle is AssetHandle assetHandle && assetHandle.AssetObject != null)
+                        {
+                            _instanceToHandle.Remove(assetHandle.AssetObject.GetInstanceID());
+                        }
+                        else if (handle is SubAssetsHandle subHandle && subHandle.SubAssetObjects != null)
+                        {
+                            foreach (var sub in subHandle.SubAssetObjects)
+                            {
+                                if (sub != null) _instanceToHandle.Remove(sub.GetInstanceID());
+                            }
+                        }
+                        handle.Release();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 释放由 InstantiateAsync 实例化的 GameObject，并释放其持有的资源句柄
+        /// </summary>
+        public void ReleaseInstance(GameObject instance)
+        {
+            if (instance == null) return;
+            ReleaseAsset(instance);
+            UnityEngine.Object.Destroy(instance);
+        }
+
+        /// <summary>
+        /// 释放所有已托管的资源句柄
+        /// </summary>
+        public void ReleaseAllAssets()
+        {
+            lock (_handleLock)
+            {
+                var releasedSet = new System.Collections.Generic.HashSet<HandleBase>();
+                foreach (var handle in _pathToHandle.Values)
+                {
+                    if (handle != null && handle.IsValid && releasedSet.Add(handle))
+                    {
+                        handle.Release();
+                    }
+                }
+                foreach (var handle in _instanceToHandle.Values)
+                {
+                    if (handle != null && handle.IsValid && releasedSet.Add(handle))
+                    {
+                        handle.Release();
+                    }
+                }
+                _pathToHandle.Clear();
+                _instanceToHandle.Clear();
+            }
+        }
+
+        /// <summary>
         /// 卸载一个资源包中的所有未使用资源（GC 风格）
         /// 建议在场景切换后调用
         /// </summary>
         public void UnloadUnused()
         {
+            lock (_handleLock)
+            {
+                var invalidInstances = new System.Collections.Generic.List<int>();
+                foreach (var kvp in _instanceToHandle)
+                {
+                    if (kvp.Value == null || !kvp.Value.IsValid)
+                    {
+                        invalidInstances.Add(kvp.Key);
+                    }
+                }
+                foreach (var id in invalidInstances)
+                {
+                    _instanceToHandle.Remove(id);
+                }
+
+                var invalidPaths = new System.Collections.Generic.List<string>();
+                foreach (var kvp in _pathToHandle)
+                {
+                    if (kvp.Value == null || !kvp.Value.IsValid)
+                    {
+                        invalidPaths.Add(kvp.Key);
+                    }
+                }
+                foreach (var path in invalidPaths)
+                {
+                    _pathToHandle.Remove(path);
+                }
+            }
+
             _package?.UnloadUnusedAssetsAsync();
         }
 
@@ -415,6 +581,7 @@ namespace Game.Resource
         public void Shutdown()
         {
             IsInitialized = false;
+            ReleaseAllAssets();
             YooAssets.Destroy();
             Debug.Log("[ResourceManager] 已关闭");
         }

@@ -115,7 +115,7 @@ namespace Game.Logic.Level
             
             if (wave.DelayBeforeWave > 0)
             {
-                yield return new WaitForSeconds(wave.DelayBeforeWave);
+                yield return new WaitForLogicSeconds(wave.DelayBeforeWave);
             }
 
             _currentAliveMonsters.Clear();

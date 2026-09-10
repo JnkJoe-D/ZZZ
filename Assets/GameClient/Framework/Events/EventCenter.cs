@@ -36,9 +36,10 @@ namespace Game.Framework
         private static readonly Dictionary<Type, HandlerList> _registry
             = new Dictionary<Type, HandlerList>();
 
-        // ── 延迟发布队列
+        // ── 延迟发布与修改队列
         private static readonly Queue<Action> _pendingEvents = new Queue<Action>();
-        private static bool _isPublishing = false;
+        private static readonly Queue<Action> _pendingModifications = new Queue<Action>();
+        private static int _publishDepth = 0;
 
         // ────────────────────────────────────────
         // 订阅 / 取消订阅
@@ -54,6 +55,12 @@ namespace Game.Framework
         {
             if (handler == null) return;
 
+            if (_publishDepth > 0)
+            {
+                _pendingModifications.Enqueue(() => Subscribe(handler, priority));
+                return;
+            }
+
             var type = typeof(T);
             if (!_registry.TryGetValue(type, out var list))
             {
@@ -64,9 +71,9 @@ namespace Game.Framework
             var typedList = (HandlerList<T>)list;
 
             // 重复订阅检测
-            foreach (var pair in typedList.Handlers)
+            for (int i = 0; i < typedList.Handlers.Count; i++)
             {
-                if (pair.handler == handler)
+                if (typedList.Handlers[i].handler == handler)
                 {
                     Debug.LogWarning($"[EventCenter] 重复订阅事件 {typeof(T).Name}，已忽略");
                     return;
@@ -86,6 +93,12 @@ namespace Game.Framework
         {
             if (handler == null) return;
 
+            if (_publishDepth > 0)
+            {
+                _pendingModifications.Enqueue(() => Unsubscribe(handler));
+                return;
+            }
+
             var type = typeof(T);
             if (!_registry.TryGetValue(type, out var list)) return;
 
@@ -98,7 +111,7 @@ namespace Game.Framework
         // ────────────────────────────────────────
 
         /// <summary>
-        /// 同步发布事件（立即调用所有订阅者）
+        /// 同步发布事件（立即调用所有订阅者，完全零堆分配）
         /// </summary>
         /// <typeparam name="T">事件类型</typeparam>
         /// <param name="evt">事件数据</param>
@@ -108,19 +121,17 @@ namespace Game.Framework
             if (!_registry.TryGetValue(type, out var list)) return;
 
             var typedList = (HandlerList<T>)list;
-            if (typedList.Handlers.Count == 0) return;
+            int count = typedList.Handlers.Count;
+            if (count == 0) return;
 
-            // 拷贝后迭代，防止在回调中 Subscribe/Unsubscribe 导致集合变化
-            var snapshot = typedList.Handlers.ToArray();
-
-            _isPublishing = true;
+            _publishDepth++;
             try
             {
-                foreach (var (_, handler) in snapshot)
+                for (int i = 0; i < count; i++)
                 {
                     try
                     {
-                        handler(evt);
+                        typedList.Handlers[i].handler?.Invoke(evt);
                     }
                     catch (Exception e)
                     {
@@ -130,10 +141,17 @@ namespace Game.Framework
             }
             finally
             {
-                _isPublishing = false;
+                _publishDepth--;
+                if (_publishDepth == 0)
+                {
+                    while (_pendingModifications.Count > 0)
+                    {
+                        _pendingModifications.Dequeue()?.Invoke();
+                    }
 
-                // 处理发布期间积压的延迟事件
-                FlushPending();
+                    // 处理发布期间积压的延迟事件
+                    FlushPending();
+                }
             }
         }
 
@@ -151,7 +169,7 @@ namespace Game.Framework
         /// </summary>
         public static void FlushPending()
         {
-            if (_isPublishing) return;
+            if (_publishDepth > 0) return;
 
             while (_pendingEvents.Count > 0)
             {
@@ -187,6 +205,8 @@ namespace Game.Framework
             }
             _registry.Clear();
             _pendingEvents.Clear();
+            _pendingModifications.Clear();
+            _publishDepth = 0;
         }
 
         // ────────────────────────────────────────

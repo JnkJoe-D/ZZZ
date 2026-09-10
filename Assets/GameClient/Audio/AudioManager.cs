@@ -43,7 +43,9 @@ namespace Game.Audio
             public AudioSource source;
             public AudioChannel channel;
             public bool isBorrowed;
+            public bool isPaused;
             public float playStartTime;
+            public Transform followTarget;
         }
 
         [SerializeField] private int _poolSizeUI = 5;
@@ -60,9 +62,31 @@ namespace Game.Audio
         private AudioSource _bgmSource;
         
         private readonly List<AudioSourceInfo> _activeInfos = new List<AudioSourceInfo>();
+        private readonly Stack<AudioSourceInfo> _infoPool = new Stack<AudioSourceInfo>(32);
         private int _nextId = 1;
         
         private bool _isSFXPaused = false;
+
+        private AudioSourceInfo AcquireInfo()
+        {
+            if (_infoPool.Count > 0)
+            {
+                return _infoPool.Pop();
+            }
+            return new AudioSourceInfo();
+        }
+
+        private void ReleaseInfo(AudioSourceInfo info)
+        {
+            if (info == null) return;
+            info.id = 0;
+            info.source = null;
+            info.isBorrowed = false;
+            info.isPaused = false;
+            info.playStartTime = 0f;
+            info.followTarget = null;
+            _infoPool.Push(info);
+        }
 
         public void Initialize()
         {
@@ -132,7 +156,6 @@ namespace Game.Audio
         {
             source.Stop();
             source.clip = null;
-            source.transform.SetParent(_audioRoot);
         }
 
         private ComponentPool<AudioSource> GetPoolByChannel(AudioChannel channel)
@@ -155,7 +178,14 @@ namespace Game.Audio
             if (source == null) return -1;
 
             int id = _nextId++;
-            var info = new AudioSourceInfo { id = id, source = source, channel = channel, isBorrowed = true, playStartTime = Time.time };
+            var info = AcquireInfo();
+            info.id = id;
+            info.source = source;
+            info.channel = channel;
+            info.isBorrowed = true;
+            info.isPaused = false;
+            info.playStartTime = Time.time;
+            info.followTarget = null;
             _activeInfos.Add(info);
 
             source.clip = clip;
@@ -175,14 +205,19 @@ namespace Game.Audio
                 source.ignoreListenerPause = false;
             }
 
-            if (args.spatialBlend > 0.01f && args.parent == null)
-            {
-                source.transform.position = args.position;
-            }
             if (args.parent != null)
             {
-                source.transform.SetParent(args.parent);
-                source.transform.localPosition = Vector3.zero;
+                info.followTarget = args.parent;
+                source.transform.position = args.parent.position;
+            }
+            else if (args.spatialBlend > 0.01f)
+            {
+                info.followTarget = null;
+                source.transform.position = args.position;
+            }
+            else
+            {
+                info.followTarget = null;
             }
 
             source.Play();
@@ -219,6 +254,7 @@ namespace Game.Audio
             var info = GetInfoById(soundId);
             if (info != null && info.source != null && info.source.isPlaying)
             {
+                info.isPaused = true;
                 info.source.Pause();
             }
         }
@@ -228,6 +264,7 @@ namespace Game.Audio
             var info = GetInfoById(soundId);
             if (info != null && info.source != null && !info.source.isPlaying)
             {
+                info.isPaused = false;
                 info.source.UnPause();
             }
         }
@@ -311,19 +348,28 @@ namespace Game.Audio
                 var pool = GetPoolByChannel(info.channel);
                 pool?.Return(info.source);
             }
-            info.isBorrowed = false;
-            info.id = 0;
             _activeInfos.Remove(info);
+            ReleaseInfo(info);
         }
 
         private void Update()
         {
-            // Auto-return finished sources
+            // Sync follow positions and auto-return finished sources
             for (int i = _activeInfos.Count - 1; i >= 0; i--)
             {
                 var info = _activeInfos[i];
-                if (info.isBorrowed && info.source != null && !info.source.isPlaying)
+                if (!info.isBorrowed || info.source == null) continue;
+
+                if (info.followTarget != null)
                 {
+                    info.source.transform.position = info.followTarget.position;
+                }
+
+                if (!info.source.isPlaying)
+                {
+                    // 若单体被主动暂停，不执行回收
+                    if (info.isPaused) continue;
+
                     // Check if it's actually finished or just paused
                     if (info.channel == AudioChannel.SFX && _isSFXPaused) continue;
                     
@@ -343,6 +389,13 @@ namespace Game.Audio
             
             _uiPool?.Dispose();
             _sfxPool?.Dispose();
+            _infoPool.Clear();
+        }
+
+        protected override void OnDestroy()
+        {
+            Shutdown();
+            base.OnDestroy();
         }
     }
 }

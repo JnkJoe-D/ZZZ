@@ -20,6 +20,9 @@ namespace Game.Logic
             BTRunner = GetComponent<Game.Logic.AI.BehaviorTree.BTRunner>();
             if (BTRunner == null) BTRunner = gameObject.AddComponent<Game.Logic.AI.BehaviorTree.BTRunner>();
 
+            LifecycleModule = GetComponent<MonsterLifecycleModule>();
+            if (LifecycleModule == null) LifecycleModule = gameObject.AddComponent<MonsterLifecycleModule>();
+
             // FootIKModule 如果需要的话也可以在这里挂载
             // FootIKModule = GetComponent<FootIKModule>();
             // if (FootIKModule == null) FootIKModule = gameObject.AddComponent<FootIKModule>();
@@ -52,6 +55,13 @@ namespace Game.Logic
 
         protected override void OnDestroy()
         {
+            base.OnDestroy();
+
+            if (BTRunner != null)
+            {
+                BTRunner.StopTree();
+            }
+            TargetFinder = null;
         }
 
         protected override void Update()

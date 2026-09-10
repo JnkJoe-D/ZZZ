@@ -42,6 +42,8 @@ namespace Game.Logic
             _mode = mode;
         }
 
+        private float CurrentLogicTime => TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+
         public void Push(CharacterCommand command)
         {
             if (command == null) return;
@@ -52,7 +54,7 @@ namespace Game.Logic
             }
 
             if (command.Timestamp <= 0f)
-                command.Timestamp = Time.time;
+                command.Timestamp = CurrentLogicTime;
 
             command.BufferOrder = ++_nextBufferOrder;
             _commands.Add(command);
@@ -60,22 +62,36 @@ namespace Game.Logic
 
         public void Tick()
         {
-            float currentTime = Time.time;
-            _commands.RemoveAll(cmd => currentTime - cmd.Timestamp > ExpirationTime || cmd.IsConsumed);
+            float currentTime = CurrentLogicTime;
+            for (int i = _commands.Count - 1; i >= 0; i--)
+            {
+                CharacterCommand cmd = _commands[i];
+                if (currentTime - cmd.Timestamp > ExpirationTime || cmd.IsConsumed)
+                {
+                    _commands.RemoveAt(i);
+                }
+            }
         }
 
-        public IEnumerable<CharacterCommand> GetUnconsumedCommands()
+        private readonly List<CharacterCommand> _unconsumedCommandsCache = new();
+
+        public List<CharacterCommand> GetUnconsumedCommands()
         {
-            foreach (CharacterCommand command in _commands)
+            _unconsumedCommandsCache.Clear();
+            for (int i = 0; i < _commands.Count; i++)
             {
-                if (!command.IsConsumed)
-                    yield return command;
+                if (!_commands[i].IsConsumed)
+                {
+                    _unconsumedCommandsCache.Add(_commands[i]);
+                }
             }
+            return _unconsumedCommandsCache;
         }
 
         public void Clear()
         {
             _commands.Clear();
+            _unconsumedCommandsCache.Clear();
         }
     }
 }

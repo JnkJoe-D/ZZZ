@@ -8,6 +8,8 @@ namespace ATEditor
     {
         private IHitHandler damageHandler;
         private Dictionary<Collider, float> hitRecords = new Dictionary<Collider, float>();
+        private static readonly Collider[] _hitBuffer = new Collider[64];
+        private readonly List<Collider> _cachedValidHits = new List<Collider>(16);
         private float lastCheckTime = -1f;
         private int currentHitCount = 0;
         private int timesChecked = 0;
@@ -82,36 +84,43 @@ namespace ATEditor
             // 使用用户配置的 LayerMask
             int layerMask = clip.hitLayerMask.value;
 
-            Collider[] hits = null;
+            int hitCount = 0;
 
             switch (shape.shapeType)
             {
                 case HitBoxType.Sphere:
-                    hits = Physics.OverlapSphere(center, shape.radius, layerMask);
+                    hitCount = Physics.OverlapSphereNonAlloc(center, shape.radius, _hitBuffer, layerMask);
                     break;
                 case HitBoxType.Sector:
                 case HitBoxType.Ring:
-                    hits = Physics.OverlapBox(center, new Vector3(shape.radius, shape.height / 2f, shape.radius), rotation, layerMask);
+                    hitCount = Physics.OverlapBoxNonAlloc(center, new Vector3(shape.radius, shape.height / 2f, shape.radius), _hitBuffer, rotation, layerMask);
                     break;
                 case HitBoxType.Box:
-                    hits = Physics.OverlapBox(center, shape.size / 2f, rotation, layerMask);
+                    hitCount = Physics.OverlapBoxNonAlloc(center, shape.size / 2f, _hitBuffer, rotation, layerMask);
                     break;
                 case HitBoxType.Capsule:
                     Vector3 up = rotation * Vector3.up;
                     float h = Mathf.Max(0, shape.height - shape.radius * 2);
                     Vector3 p1 = center - up * (h / 2);
                     Vector3 p2 = center + up * (h / 2);
-                    hits = Physics.OverlapCapsule(p1, p2, shape.radius, layerMask);
+                    hitCount = Physics.OverlapCapsuleNonAlloc(p1, p2, shape.radius, _hitBuffer, layerMask);
                     break;
             }
 
-            if (hits == null || hits.Length == 0) return;
+            if (hitCount == 0) return;
 
-            List<Collider> validHits = new List<Collider>();
-            foreach (var hit in hits)
+            _cachedValidHits.Clear();
+            for (int i = 0; i < hitCount; i++)
             {
-                // 自己免疫伤害
-                if (context.Owner != null && hit.gameObject == context.Owner &&!clip.isSelfImpacted) continue;
+                var hit = _hitBuffer[i];
+                if (hit == null) continue;
+
+                // 自己免疫伤害（排除挂载在骨骼或子节点上的 HurtBox 碰撞体）
+                if (context.Owner != null && !clip.isSelfImpacted)
+                {
+                    if (hit.gameObject == context.Owner || hit.transform.root == context.Owner.transform.root)
+                        continue;
+                }
 
                 // 冷却过滤
                 if (hitRecords.TryGetValue(hit, out float lastHitTime))
@@ -165,42 +174,45 @@ namespace ATEditor
                     }
                 }
 
-                validHits.Add(hit);
+                _cachedValidHits.Add(hit);
             }
+
+            // 清理全局静态缓冲区引用，防止 Unity 对象泄漏
+            System.Array.Clear(_hitBuffer, 0, hitCount);
 
             // 容量截断 / 排序
             if (clip.maxHitTargets > 0)
             {
                 if (clip.targetSortMode == TargetSortMode.Closest)
                 {
-                    validHits.Sort((a, b) => 
+                    _cachedValidHits.Sort((a, b) => 
                         Vector3.Distance(a.transform.position, center).CompareTo(Vector3.Distance(b.transform.position, center)));
                 }
                 else if (clip.targetSortMode == TargetSortMode.Random)
                 {
-                    for (int i = 0; i < validHits.Count; i++)
+                    for (int i = 0; i < _cachedValidHits.Count; i++)
                     {
-                        var temp = validHits[i];
-                        int randomIndex = Random.Range(i, validHits.Count);
-                        validHits[i] = validHits[randomIndex];
-                        validHits[randomIndex] = temp;
+                        var temp = _cachedValidHits[i];
+                        int randomIndex = Random.Range(i, _cachedValidHits.Count);
+                        _cachedValidHits[i] = _cachedValidHits[randomIndex];
+                        _cachedValidHits[randomIndex] = temp;
                     }
                 }
 
-                int takeCount = Mathf.Min(clip.maxHitTargets - currentHitCount, validHits.Count);
-                if (takeCount < validHits.Count)
+                int takeCount = Mathf.Min(clip.maxHitTargets - currentHitCount, _cachedValidHits.Count);
+                if (takeCount < _cachedValidHits.Count)
                 {
-                    validHits = validHits.GetRange(0, takeCount);
+                    _cachedValidHits.RemoveRange(takeCount, _cachedValidHits.Count - takeCount);
                 }
             }
 
-            if (validHits.Count > 0)
+            if (_cachedValidHits.Count > 0)
             {
-                foreach (var h in validHits)
+                foreach (var h in _cachedValidHits)
                 {
                     hitRecords[h] = Time.time;
                 }
-                currentHitCount += validHits.Count;
+                currentHitCount += _cachedValidHits.Count;
 
                 // ★ 根据当前检测轮次取对应的 DetectConfig
                 // 若 detects 数组长度不足，Clamp 到最后一条复用
@@ -215,7 +227,7 @@ namespace ATEditor
                 {
                     deployer = context.Owner,
                     hitBoxCenter = center,
-                    targetsCollilders = validHits.ToArray(),
+                    targetsCollilders = _cachedValidHits.ToArray(),
                     hitEffectId = detectConfig.hitEffectId,
                     interruptLevel = detectConfig.interruptLevel,
                     hitDirectionMode = clip.hitDirectionMode,
@@ -325,10 +337,12 @@ namespace ATEditor
         public override void OnExit()
         {
             hitRecords.Clear();
+            _cachedValidHits.Clear();
         }
         public override void OnDisable()
         {
             hitRecords.Clear();
+            _cachedValidHits.Clear();
         }
 
         public override void Reset()
@@ -336,6 +350,7 @@ namespace ATEditor
             base.Reset();
             damageHandler = null;
             hitRecords.Clear();
+            _cachedValidHits.Clear();
         }
     }
 }

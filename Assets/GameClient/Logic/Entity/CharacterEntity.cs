@@ -17,6 +17,8 @@ namespace Game.Logic
         public ICharacterMotor CharacterMotor { get; protected set; }
         public HitReactionModule HitReactionModule { get; protected set; }
         public FootIKModule FootIKModule { get; protected set; }
+        public ILifecycleModule LifecycleModule { get; protected set; }
+        public bool IsDead => LifecycleModule != null && LifecycleModule.IsDead;
 
         public virtual ActionController ActionController { get; protected set; }
         public CommandBuffer CommandBuffer { get; protected set; }
@@ -34,6 +36,14 @@ namespace Game.Logic
             }
             InitRequiredComponents();
 
+            if (LifecycleModule == null)
+            {
+                var lifecycle = GetComponent<EntityLifecycleModule>();
+                if (lifecycle == null) lifecycle = gameObject.AddComponent<EntityLifecycleModule>();
+                LifecycleModule = lifecycle;
+                lifecycle.Init(this);
+            }
+
             if (ActionPlayer == null) ActionPlayer = new ActionPlayer(this);
             if (MotionWindowHandler == null) MotionWindowHandler = new SkillMotionWindowHandler(this);
             DataModule[typeof(ActionRuntimeData)] ??= new ActionRuntimeData();
@@ -48,6 +58,7 @@ namespace Game.Logic
         {
             Config = config;
             
+            LifecycleModule?.Init(this);
             CharacterMotor?.Init(this);
             HitReactionModule?.Init(this);
             FootIKModule?.Init(this);
@@ -72,20 +83,32 @@ namespace Game.Logic
 
         protected virtual void Start()
         {
+            if (TimeManager.Instance != null)
+            {
+                TimeManager.Instance.OnGameplayLogicTick += OnLogicTick;
+            }
         }
 
         public virtual void OnActionTimelineEvent(string eventName, List<ATEventParam> parameters)
         {
         }
 
+        protected virtual void OnLogicTick(float logicDeltaTime)
+        {
+            ActionPlayer?.Tick(logicDeltaTime);
+            StatusModule?.Tick(logicDeltaTime);
+        }
+
         protected virtual void Update()
         {
-            ActionPlayer?.Tick(Time.deltaTime);
-            StatusModule?.Tick(Time.deltaTime);
         }
 
         protected virtual void OnDestroy()
         {
+            if (TimeManager.Instance != null)
+            {
+                TimeManager.Instance.OnGameplayLogicTick -= OnLogicTick;
+            }
             StatusModule?.Clear();
             Game.Logic.ActionManager.Instance?.RemoveCache(this);
         }

@@ -3,6 +3,7 @@ using UnityEngine;
 using ATEditor;
 using Game.Logic;
 using Game.VFX;
+using Game.Logic.Combat.Pipeline;
 
 namespace Game.Logic
 {
@@ -32,56 +33,78 @@ namespace Game.Logic
             _hitData = _entity.DataModule?.Get<HitReactionRuntimeData>();
         }
 
+        private float CurrentLogicTime => TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+
+        /// <summary>
+        /// 校验并记录受击时间（受击保护内置 CD）
+        /// </summary>
+        public virtual bool ValidateAndRecordHit(float currentTime)
+        {
+            if (currentTime - _lastHitTime < hitProtectionInterval)
+                return false;
+            _lastHitTime = currentTime;
+            return true;
+        }
+
+        /// <summary>
+        /// 由命中流水线（MotionAndActionPipe）驱动的打断切入钩子
+        /// </summary>
+        public virtual void TriggerInterruptedHook(HitPipelineContext ctx)
+        {
+            var legacyCtx = new HitContext
+            {
+                attacker = ctx.Attacker,
+                victim = ctx.Victim,
+                hitEffectId = ctx.HitEffectId,
+                interruptLevel = ctx.InterruptLevel,
+                reactionType = ctx.SelectedReactionType,
+                enableHitStop = ctx.EnableHitStop,
+                hitStopDuration = ctx.HitStopDuration,
+                hitStopScale = ctx.HitStopScale,
+                hitVFXPrefab = ctx.HitVFXPrefab,
+                hitVFXHeight = ctx.HitVFXHeight,
+                hitVFXScale = ctx.HitVFXScale,
+                hitVFXFollowTarget = ctx.HitVFXFollowTarget,
+                hitAudioClip = ctx.HitAudioClip,
+                hitStunDuration = ctx.HitStunDuration,
+                hitPoint = ctx.HitPoint,
+                hitDirection = ctx.HitDirection,
+                reactionAxis = ctx.ReactionAxis
+            };
+            OnInterrupted(legacyCtx);
+        }
+
         public virtual void ApplyVisualFeedback(HitContext ctx)
         {
-            if (_entity == null)
+            if (_entity == null) return;
+
+            var pipeline = HitPipeline.Default;
+            var pipeCtx = pipeline.AllocateContext();
+
+            pipeCtx.Attacker = ctx.attacker;
+            pipeCtx.Victim = _entity;
+            pipeCtx.HitPoint = ctx.hitPoint;
+            pipeCtx.HitDirection = ctx.hitDirection;
+            pipeCtx.ReactionAxis = ctx.reactionAxis;
+            pipeCtx.InterruptLevel = ctx.interruptLevel;
+            pipeCtx.SelectedReactionType = ctx.reactionType;
+            pipeCtx.EnableHitStop = ctx.enableHitStop;
+            pipeCtx.HitStopDuration = ctx.hitStopDuration;
+            pipeCtx.HitStopScale = ctx.hitStopScale;
+            pipeCtx.HitVFXPrefab = ctx.hitVFXPrefab;
+            pipeCtx.HitVFXScale = ctx.hitVFXScale;
+            pipeCtx.HitVFXHeight = ctx.hitVFXHeight;
+            pipeCtx.HitVFXFollowTarget = ctx.hitVFXFollowTarget;
+            pipeCtx.HitAudioClip = ctx.hitAudioClip;
+            pipeCtx.HitStunDuration = ctx.hitStunDuration;
+
+            if (ctx.IsParry)
             {
-                return;
+                pipeCtx.ResultFlags |= Combat.Pipeline.HitResultFlags.Parried;
             }
 
-            if (Time.time - _lastHitTime < hitProtectionInterval)
-            {
-                return;
-            }
-
-            // 1. 无敌判断
-            if (_entity.StatusModule != null && _entity.StatusModule.IsTagImmune("Invincible"))
-            {
-                return;
-            }
-
-            _lastHitTime = Time.time;
-
-            SpawnHitVFX(ctx);
-            PlayHitAudio(ctx);
-
-            if (ctx.enableHitStop)
-            {
-                ApplyHitStop(ctx);
-            }
-
-            if (_hitData != null)
-            {
-                _hitData.CurrentHitStunDuration = ctx.hitStunDuration;
-                _hitData.SetHitReactionAxis(ctx.reactionAxis);
-                _hitData.CurrentReactionType = ctx.reactionType;
-            }
-
-            // 2. 削韧与抗打断判定
-            int interruptLevel = ctx.interruptLevel;
-            int currentResilience = GetCurrentResilience();
-            
-            bool isInterrupted = interruptLevel >= currentResilience;
-
-            if (isInterrupted)
-            {
-                FaceAttackerBeforeHitAnimation(ctx);
-
-                if (ctx.reactionType != cfg.ZZZ.HitReactionType.None)
-                {
-                    OnInterrupted(ctx);
-                }
-            }
+            pipeline.Execute(pipeCtx);
+            pipeline.ReleaseContext(pipeCtx);
         }
 
         public virtual void ApplyHitStopOnly(HitContext ctx)
@@ -153,14 +176,11 @@ namespace Game.Logic
                 spawnRot = Quaternion.LookRotation(-camForward);
             }
 
-            GameObject vfx = VFXManager.Instance.Spawn(ctx.hitVFXPrefab, spawnPos, spawnRot);
+            Transform parent = ctx.hitVFXFollowTarget ? transform : null;
+            GameObject vfx = VFXManager.Instance.Spawn(ctx.hitVFXPrefab, spawnPos, spawnRot, parent);
             if (vfx != null)
             {
                 vfx.transform.localScale = ctx.hitVFXScale;
-                if (ctx.hitVFXFollowTarget)
-                {
-                    vfx.transform.SetParent(transform);
-                }
             }
 
             VFXManager.Instance.ReturnWhenDone(vfx);
@@ -207,24 +227,21 @@ namespace Game.Logic
             {
                 if (_entity == null) yield break;
                 hitAction?.Invoke(i, times);
-                yield return new WaitForSeconds(interval);
+                yield return new WaitForLogicSeconds(interval);
             }
         }
 
         private void ApplyHitStop(HitContext ctx)
         {
-            ctx.attacker?.ActionPlayer?.SetPlaySpeed(ctx.hitStopScale);
-            _entity.ActionPlayer?.SetPlaySpeed(ctx.hitStopScale);
-
-            StartCoroutine(RestoreAfterHitStop(ctx));
-        }
-
-        private IEnumerator RestoreAfterHitStop(HitContext ctx)
-        {
-            yield return new WaitForSecondsRealtime(ctx.hitStopDuration);
-
-            ctx.attacker?.ActionPlayer?.RestorePlaySpeed();
-            _entity.ActionPlayer?.RestorePlaySpeed();
+            if (TimeManager.Instance != null)
+            {
+                TimeManager.Instance.RegisterHitStop(ctx.attacker?.ActionPlayer, _entity?.ActionPlayer, ctx.hitStopDuration, ctx.hitStopScale);
+            }
+            else
+            {
+                ctx.attacker?.ActionPlayer?.SetPlaySpeed(ctx.hitStopScale);
+                _entity?.ActionPlayer?.SetPlaySpeed(ctx.hitStopScale);
+            }
         }
     }
 }

@@ -8,11 +8,17 @@ namespace Game.Logic
         public ATAttackWarningHandler(CharacterEntity entity)
         {
             _entity = entity;
-            _marker = new AttackWarningMarker();
+            _marker = null;
         }
         public void RegisterWarningMarker(WarningSignalType signalType, AttackWeight weight, float detectionRadius, float detectionAngle)
         {
             UnityEngine.Debug.Log($"!!!!!!!!!!!!!!!!!!!RegisterWarningMarker: {signalType}, {weight}, {detectionRadius}, {detectionAngle}");
+            if (_marker != null)
+            {
+                CombatWarningManager.Unregister(_marker);
+                _marker = null;
+            }
+
             AttackWarningMarker marker = new AttackWarningMarker
             {
                 Attacker = _entity,
@@ -21,7 +27,7 @@ namespace Game.Logic
                 DetectionRadius = detectionRadius,
                 DetectionAngle = detectionAngle
             };
-            if (CombatWarningManager.Register(_marker))
+            if (CombatWarningManager.Register(marker))
             {
                 _marker = marker;
             }

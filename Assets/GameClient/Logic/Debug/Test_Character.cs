@@ -29,15 +29,28 @@ namespace Game.Logic
 
         private void Start()
         {
+            var tm = TimeManager.Instance; // 初始化单例
             StartCoroutine(InitializeSequence());
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             Application.targetFrameRate = 60;
         }
 
+        private void Update()
+        {
+            TimeManager.Instance?.Update();
+            EventCenter.FlushPending();
+
+            if (Game.Camera.GameCameraManager.Instance != null)
+            {
+                float uiDelta = Time.unscaledDeltaTime * (TimeManager.Instance != null ? TimeManager.Instance.FinalUIScale : 1f);
+                Game.Camera.GameCameraManager.Instance.Update(uiDelta);
+            }
+        }
+
         private IEnumerator SpawnRoutine()
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForLogicSeconds(0.5f);
 
             IsSpawnCompleted = false;
             IsSpawnSucceeded = false;

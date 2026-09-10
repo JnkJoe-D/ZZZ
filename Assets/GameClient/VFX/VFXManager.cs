@@ -44,7 +44,7 @@ namespace Game.VFX
 
         private IEnumerator DelayReturnCoroutine(GameObject instance, float delay)
         {
-            yield return new WaitForSeconds(delay);
+            yield return new Game.Logic.WaitForGameSeconds(delay);
             if (instance != null)
             {
                 Return(instance);
@@ -75,8 +75,18 @@ namespace Game.VFX
             }
 
             // 等待所有粒子系统播放结束
+            float maxWaitTime = 15.0f; // 最大超时保护，防止包含循环粒子(Looping)的特效导致协程死循环泄漏
+            float elapsed = 0f;
+
             while (instance != null && instance.activeInHierarchy)
             {
+                elapsed += Time.deltaTime;
+                if (elapsed >= maxWaitTime)
+                {
+                    Debug.LogWarning($"[VFXManager] 特效 {instance.name} 播放超时({maxWaitTime}s)，强制停止并回收，防止死循环。");
+                    break;
+                }
+
                 bool allStopped = true;
                 for (int i = 0; i < particles.Length; i++)
                 {

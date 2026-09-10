@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Game.Pool
 {
@@ -125,6 +126,13 @@ namespace Game.Pool
                 {
                     instance.transform.SetParent(null);
                 }
+
+                // 确保脱离池根后的对象归入当前活动场景，避免漂留在 DontDestroyOnLoad 场景根层级
+                var activeScene = SceneManager.GetActiveScene();
+                if (activeScene.isLoaded && instance.scene != activeScene)
+                {
+                    SceneManager.MoveGameObjectToScene(instance, activeScene);
+                }
             }
 
             return instance;
@@ -146,6 +154,15 @@ namespace Game.Pool
 
             OnReturn?.Invoke(instance);
 
+#if UNITY_EDITOR
+            // 编辑器非播放状态（或正在退出PlayMode），直接销毁，严禁将未解绑/残留场景引用的对象推入 _inactive
+            if (!Application.isPlaying)
+            {
+                UnityEngine.Object.Destroy(instance);
+                return;
+            }
+#endif
+
             // 超过最大容量，直接销毁
             if (_config.maxSize > 0 && _inactive.Count >= _config.maxSize)
             {
@@ -154,16 +171,16 @@ namespace Game.Pool
             }
 
             instance.SetActive(false);
-            
-            bool isSafeToParent = true;
-#if UNITY_EDITOR
-            if (!Application.isPlaying) isSafeToParent = false;
-#endif
 
-            if (_poolRoot != null && isSafeToParent)
+            if (_poolRoot != null)
             {
                 instance.transform.SetParent(_poolRoot);
             }
+            else if (instance.transform.parent != null)
+            {
+                instance.transform.SetParent(null);
+            }
+
             _inactive.Push(instance);
         }
 

@@ -131,7 +131,7 @@ namespace Game.Logic
             CaptureToActiveWindows(command);
 
             // 无论怎样先做一次 Instant 评估，如果立即匹配成功就消费掉，不入缓冲区。
-            if (_activeRouteWindows.Count > 0 && !_isTransitioning)
+            if (!_isTransitioning)
             {
                 if (TryMatchInstant(command)) return;
             }
@@ -151,15 +151,28 @@ namespace Game.Logic
             RouteWindowData window = idx >= 0 ? _activeRouteWindows[idx] : null;
 
             List<CharacterCommand> captured = CollectCaptured(window);
+            ActionConfigAsset actionBefore = GetCurrentAction();
 
-            // 1. Auto Transitions OnExit
-            if (EvalAutoTransitions(comboTag, RouteSingleModifierCheckTiming.OnWindowExit)) return;
+            try
+            {
+                // 1. Auto Transitions OnExit
+                if (EvalAutoTransitions(comboTag, RouteSingleModifierCheckTiming.OnWindowExit)) return;
 
-            // 2. Buffer Commands
-            if (EvalBufferRoutes(comboTag, captured)) return;
-
-            if (idx >= 0)
-                _activeRouteWindows.RemoveAt(idx);
+                // 2. Buffer Commands
+                if (EvalBufferRoutes(comboTag, captured)) return;
+            }
+            finally
+            {
+                // 仅当动作没有发生迁移切换时才移除退出窗口；若已切换新动作，新动作在 0 帧初始化的同名窗口绝不可误删
+                if (GetCurrentAction() == actionBefore)
+                {
+                    int removeIdx = FindWindowIndex(comboTag);
+                    if (removeIdx >= 0)
+                    {
+                        _activeRouteWindows.RemoveAt(removeIdx);
+                    }
+                }
+            }
         }
 
         public bool TryTriggerEvent(RouteEventType eventType, string windowTag = null)
@@ -259,9 +272,21 @@ namespace Game.Logic
             action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
             if (_effectiveRoutes.Count == 0) return false;
 
-            foreach (RouteWindowData window in _activeRouteWindows)
+            if (_activeRouteWindows.Count > 0)
             {
-                if (TryResolve(command, window.Tag, RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
+                foreach (RouteWindowData window in _activeRouteWindows)
+                {
+                    if (TryResolve(command, window.Tag, RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
+                    {
+                        Apply(candidate);
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                // 空闲或未限制窗口状态（tag=""），以全局空闲窗尝试匹配
+                if (TryResolve(command, "", RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
                 {
                     Apply(candidate);
                     return true;

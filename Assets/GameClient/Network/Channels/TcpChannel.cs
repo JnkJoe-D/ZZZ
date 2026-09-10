@@ -45,11 +45,12 @@ namespace Game.Network
             public byte[] Payload;
         }
         private readonly ConcurrentQueue<ReceivedPacket> _receivedPackets = new();
+        private readonly ConcurrentQueue<string> _disconnectQueue = new();
 
         // ── 发送锁 ─────────────────────────────
         private readonly object _sendLock = new();
 
-        // ── 断线回调 ────────────────────────────
+        // ── 断线回调（保留兼容性）────────────
         public event Action<string> OnDisconnected;
 
         // ── 序列号管理 ──────────────────────────
@@ -219,6 +220,12 @@ namespace Game.Network
             return _receivedPackets.TryDequeue(out packet);
         }
 
+        /// <summary>尝试从队列中取出断线事件（主线程调用，保证线程安全）</summary>
+        public bool TryDequeueDisconnect(out string reason)
+        {
+            return _disconnectQueue.TryDequeue(out reason);
+        }
+
         // ────────────────────────────────────────
         // 断开与清理
         // ────────────────────────────────────────
@@ -228,12 +235,15 @@ namespace Game.Network
             if (!_isRunning) return;
             _isRunning = false;
             Debug.Log($"[TcpChannel] 断开: {reason}");
+            _disconnectQueue.Enqueue(reason);
+            // 兼容性触发（建议仅在单线程调试时使用，业务层请通过 NetworkManager 主线程派发）
             OnDisconnected?.Invoke(reason);
         }
 
         public void Disconnect()
         {
             _isRunning = false;
+            while (_disconnectQueue.TryDequeue(out _)) { }
             Cleanup();
             Debug.Log("[TcpChannel] 已主动断开");
         }

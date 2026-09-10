@@ -18,6 +18,9 @@ namespace Game.Logic.AI.BehaviorTree
 
         public void Init(BehaviorTree.BehaviorTreeAsset asset)
         {
+            _agent?.Dispose();
+            _agent = null;
+
             _localClock = new Clock();
 
             treeAsset = asset;
@@ -63,7 +66,18 @@ namespace Game.Logic.AI.BehaviorTree
         }
         void Update()
         {
-            _localClock?.Update(Time.deltaTime);
+            if (TimeManager.Instance != null)
+            {
+                float gameplayScale = TimeManager.Instance.FinalGameplayScale;
+                if (gameplayScale > 0f)
+                {
+                    _localClock?.Update(Time.deltaTime * gameplayScale);
+                }
+            }
+            else
+            {
+                _localClock?.Update(Time.deltaTime);
+            }
         }
         private void SetBB(Blackboard bb)
         {

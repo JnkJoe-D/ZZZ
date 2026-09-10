@@ -138,6 +138,9 @@ namespace Game.Logic
             // --- 标准重力与贴地物理运动学解算 ---
             if (_cc != null && _cc.enabled)
             {
+                float gameplayScale = TimeManager.Instance != null ? TimeManager.Instance.FinalGameplayScale : 1.0f;
+                float scaledDelta = Time.deltaTime * gameplayScale;
+
                 if (_cc.isGrounded)
                 {
                     // 接地且垂直速度向下时，保持持续向下的贴地吸附速度（-2.0f m/s），防止浮空与 isGrounded 判定抖动
@@ -146,13 +149,13 @@ namespace Game.Logic
                         _verticalVelocity = -2.0f;
                     }
                 }
-                else
+                else if (gameplayScale > 0f)
                 {
                     // 自由落体自由下落：v_y = v_0 + g * dt
-                    _verticalVelocity += (Gravity * GravityScale) * Time.deltaTime;
+                    _verticalVelocity += (Gravity * GravityScale) * scaledDelta;
                 }
 
-                deltaPosition.y += _verticalVelocity * Time.deltaTime;
+                deltaPosition.y += _verticalVelocity * scaledDelta;
             }
 
             ApplyRootMotion(deltaPosition);

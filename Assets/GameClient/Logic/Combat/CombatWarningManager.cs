@@ -23,6 +23,8 @@ namespace Game.Logic
         public bool IsTargetInArea(CharacterEntity target)
         {
             if (target == null || Attacker == null) return false;
+            if (!Attacker.gameObject.activeInHierarchy || (Attacker.ActionPlayer != null && !Attacker.ActionPlayer.IsPlaying))
+                return false;
 
             Vector3 dirToTarget = target.transform.position - Attacker.transform.position;
             // 距离检测
@@ -82,6 +84,12 @@ namespace Game.Logic
             for (int i = _activeMarkers.Count - 1; i >= 0; i--)
             {
                 var marker = _activeMarkers[i];
+                if (marker.Attacker == null || !marker.Attacker.gameObject.activeInHierarchy)
+                {
+                    _activeMarkers.RemoveAt(i);
+                    continue;
+                }
+
                 if (marker.SignalType == type && marker.IsTargetInArea(target))
                 {
                     return marker;
@@ -98,6 +106,12 @@ namespace Game.Logic
             for (int i = _activeMarkers.Count - 1; i >= 0; i--)
             {
                 var marker = _activeMarkers[i];
+                if (marker.Attacker == null || !marker.Attacker.gameObject.activeInHierarchy)
+                {
+                    _activeMarkers.RemoveAt(i);
+                    continue;
+                }
+
                 if (marker.IsTargetInArea(target))
                 {
                     return marker;
@@ -111,9 +125,17 @@ namespace Game.Logic
         /// </summary>
         public static AttackWarningMarker GetWarningByAttacker(CharacterEntity attacker)
         {
+            if (attacker == null) return null;
+
             for (int i = _activeMarkers.Count - 1; i >= 0; i--)
             {
                 var marker = _activeMarkers[i];
+                if (marker.Attacker == null || !marker.Attacker.gameObject.activeInHierarchy)
+                {
+                    _activeMarkers.RemoveAt(i);
+                    continue;
+                }
+
                 if (marker.Attacker == attacker)
                 {
                     return marker;

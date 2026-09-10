@@ -52,6 +52,16 @@ namespace Game.Logic
             return _immuneTags.Contains(tag);
         }
 
+        public void AddImmuneTag(string tag)
+        {
+            if (!string.IsNullOrEmpty(tag)) _immuneTags.Add(tag);
+        }
+
+        public void RemoveImmuneTag(string tag)
+        {
+            if (!string.IsNullOrEmpty(tag)) _immuneTags.Remove(tag);
+        }
+
         public bool IsBuffImmune(BuffDefAsset buffDef)
         {
             if (buffDef == null || buffDef.Tags == null || buffDef.Tags.Count == 0) return false;

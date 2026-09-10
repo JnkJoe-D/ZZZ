@@ -61,8 +61,8 @@ namespace Game.Network
             // 注册错误消息处理
             _dispatcher.Register<CommonResponse>(MsgId.Error, OnServerError);
 
-            // TCP 断线事件
-            _tcp.OnDisconnected += OnTcpDisconnected;
+            // 注意：TCP 断线事件由后台接收线程产生，改为在 Update() 中主线程安全出队派发，
+            // 不在此处直接绑定跨线程委托，彻底防止 Unity API 跨线程调用异常。
 
             // 重连回调
             _reconnect.OnReconnectSuccess += OnReconnectSuccess;
@@ -163,15 +163,23 @@ namespace Game.Network
         {
             float dt = Time.deltaTime;
 
+            // ── 处理 TCP 断线事件（主线程安全派发，防止跨线程触发 Unity API 异常）
+            while (_tcp != null && _tcp.TryDequeueDisconnect(out var disconnectReason))
+            {
+                OnTcpDisconnected(disconnectReason);
+            }
+
             // ── 驱动重连 ───────────────────────
             if (_reconnect.IsReconnecting)
             {
                 _reconnect.Update(dt);
-                return; // 重连中不处理其他消息
             }
 
             // ── 驱动心跳 ───────────────────────
-            _heartbeat?.Update(dt);
+            if (IsTcpConnected)
+            {
+                _heartbeat?.Update(dt);
+            }
 
             // ── 处理 TCP 消息（每帧最多处理 100 条，防卡主线程）
             int tcpCount = 0;

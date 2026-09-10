@@ -36,7 +36,16 @@ namespace Game.Logic
 
         public void Shutdown()
         {
-            ClearAllMonsters();
+            // 退出清理时直接销毁活跃怪物，避免先重挂到 _poolRoot 导致同帧双重销毁竞争
+            for (int i = _activeMonsters.Count - 1; i >= 0; i--)
+            {
+                var monster = _activeMonsters[i];
+                if (monster != null && monster.gameObject != null)
+                {
+                    Object.Destroy(monster.gameObject);
+                }
+            }
+            _activeMonsters.Clear();
             
             foreach (var pool in _pools.Values)
             {

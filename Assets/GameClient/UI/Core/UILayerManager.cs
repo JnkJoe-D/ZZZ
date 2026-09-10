@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -163,16 +164,22 @@ namespace Game.UI
             }
         }
 
+        private static readonly Dictionary<Type, UIPanelAttribute> _attrCache = new();
+
         /// <summary>
-        /// 通过反射获取模块的 UIPanelAttribute
+        /// 通过反射获取模块的 UIPanelAttribute（带缓存）
         /// </summary>
         internal static UIPanelAttribute GetPanelAttribute(UIModuleBase module)
         {
+            if (module == null) return null;
             var type = module.GetType();
+            if (_attrCache.TryGetValue(type, out var cached))
+                return cached;
+
             var attrs = type.GetCustomAttributes(typeof(UIPanelAttribute), false);
-            if (attrs.Length > 0)
-                return attrs[0] as UIPanelAttribute;
-            return null;
+            var attr = attrs.Length > 0 ? attrs[0] as UIPanelAttribute : null;
+            _attrCache[type] = attr;
+            return attr;
         }
     }
 }

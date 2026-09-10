@@ -41,18 +41,29 @@ namespace Game.Logic
             };
         }
 
+        // 按事件类型缓存轻量系统事件指令实例，避免重复堆分配
+        private static readonly System.Collections.Generic.Dictionary<RouteEventType, CharacterCommand> _cachedSystemEventCommands = new();
+
         public static CharacterCommand CreateSystemEventCommand(RouteEventType eventType)
         {
-            return new CharacterCommand
+            if (!_cachedSystemEventCommands.TryGetValue(eventType, out var cmd))
             {
-                Id = ++_idCounter,
-                Payload = new SystemEventPayload
+                cmd = new CharacterCommand
                 {
-                    EventType = eventType
-                },
-                Timestamp = Time.time,
-                IsConsumed = false
-            };
+                    Id = ++_idCounter,
+                    Payload = new SystemEventPayload { EventType = eventType },
+                    Timestamp = Time.time,
+                    IsConsumed = false
+                };
+                _cachedSystemEventCommands[eventType] = cmd;
+            }
+            else
+            {
+                cmd.Id = ++_idCounter;
+                cmd.Timestamp = Time.time;
+                cmd.IsConsumed = false;
+            }
+            return cmd;
         }
     }
 }

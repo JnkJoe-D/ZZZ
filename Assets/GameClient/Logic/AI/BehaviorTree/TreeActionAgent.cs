@@ -75,7 +75,9 @@ namespace Game.Logic.AI.BehaviorTree
         {
             var target = _owner.TargetFinder?.GetTarget();
             bb["HasTarget"] = target != null;
-            bb["DistanceToTarget"] = _owner.TargetFinder?.GetDistanceToTarget() ?? float.MaxValue;
+            bb["DistanceToTarget"] = (target != null && _owner != null)
+                ? Vector3.Distance(_owner.transform.position, target.position)
+                : float.MaxValue;
             var beheaviorData = _owner.DataModule?.Get<MonSterBehaviorRuntimeData>();
             bb["CurrentAIState"] = beheaviorData?.CurrentState ?? MonsterAIState.Attack;
             bb["AttackCooldownTimer"] = beheaviorData?.AttackCooldownTimer ?? 0f;

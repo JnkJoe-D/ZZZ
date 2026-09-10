@@ -10,8 +10,9 @@ namespace Game.FSM
     /// </summary>
     public class FSMManager : Game.Framework.MonoSingleton<FSMManager>
     {
-        private readonly List<System.Action<float>> _updateActions = new List<System.Action<float>>();
-        private readonly List<System.Action<float>> _fixedUpdateActions = new List<System.Action<float>>();
+        private readonly List<IFSMSystemRunner> _fsms = new List<IFSMSystemRunner>();
+        private readonly List<IFSMSystemRunner> _pendingRemoveFsms = new List<IFSMSystemRunner>();
+        private bool _isUpdating = false;
 
         public void Initialize()
         {
@@ -20,8 +21,8 @@ namespace Game.FSM
 
         public void Shutdown()
         {
-            _updateActions.Clear();
-            _fixedUpdateActions.Clear();
+            _fsms.Clear();
+            _pendingRemoveFsms.Clear();
             Debug.Log("[FSMManager] 已关闭");
         }
 
@@ -32,14 +33,7 @@ namespace Game.FSM
         public FSMSystem<T> CreateFSM<T>(T owner)
         {
             var fsm = new FSMSystem<T>(owner);
-
-            // 注册生命周期回调
-            System.Action<float> updateAction = dt => fsm.Update(dt);
-            System.Action<float> fixedUpdateAction = dt => fsm.FixedUpdate(dt);
-
-            _updateActions.Add(updateAction);
-            _fixedUpdateActions.Add(fixedUpdateAction);
-
+            _fsms.Add(fsm);
             return fsm;
         }
 
@@ -50,25 +44,48 @@ namespace Game.FSM
         {
             if (fsm == null) return;
             fsm.Destroy();
-            // 注意：真实工业项目需做移除操作，因匿名委托的缘故，这里为简化演示略去复杂的解绑定位
-            // 或改用接口遍历、ID句柄等方式注册
+
+            if (_isUpdating)
+            {
+                _pendingRemoveFsms.Add(fsm);
+            }
+            else
+            {
+                _fsms.Remove(fsm);
+            }
         }
 
         private void Update()
         {
             float dt = Time.deltaTime;
-            for (int i = 0; i < _updateActions.Count; i++)
+            _isUpdating = true;
+            try
             {
-                _updateActions[i]?.Invoke(dt);
+                for (int i = 0; i < _fsms.Count; i++)
+                {
+                    _fsms[i]?.Update(dt);
+                }
+            }
+            finally
+            {
+                _isUpdating = false;
+                if (_pendingRemoveFsms.Count > 0)
+                {
+                    for (int i = 0; i < _pendingRemoveFsms.Count; i++)
+                    {
+                        _fsms.Remove(_pendingRemoveFsms[i]);
+                    }
+                    _pendingRemoveFsms.Clear();
+                }
             }
         }
 
         private void FixedUpdate()
         {
             float fdt = Time.fixedDeltaTime;
-            for (int i = 0; i < _fixedUpdateActions.Count; i++)
+            for (int i = 0; i < _fsms.Count; i++)
             {
-                _fixedUpdateActions[i]?.Invoke(fdt);
+                _fsms[i]?.FixedUpdate(fdt);
             }
         }
     }

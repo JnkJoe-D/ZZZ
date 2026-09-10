@@ -24,6 +24,8 @@ namespace Game.UI
 
         // ── 已打开的模块缓存 ─────────────────────
         private readonly Dictionary<Type, UIModuleBase> _openModules = new();
+        private readonly HashSet<Type> _loadingModules = new();
+        private readonly HashSet<Type> _canceledOpenModules = new();
 
         // ── Attribute 缓存 ────────────────────────
         private readonly Dictionary<Type, UIPanelAttribute> _attrCache = new();
@@ -111,7 +113,16 @@ namespace Game.UI
                 return;
             }
 
+            // 如果该模块正处于异步加载中，避免重复开启协程，若曾标记取消则恢复
+            if (_loadingModules.Contains(moduleType))
+            {
+                _canceledOpenModules.Remove(moduleType);
+                return;
+            }
+
             // 首次打开 → 异步加载
+            _loadingModules.Add(moduleType);
+            _canceledOpenModules.Remove(moduleType);
             _coroutineHost.StartCoroutine(OpenRoutine(moduleType, data));
         }
 
@@ -120,6 +131,12 @@ namespace Game.UI
         /// </summary>
         public void Close(Type moduleType)
         {
+            // 若该面板正在加载中，标记取消加载，当异步完成后放弃实例化
+            if (_loadingModules.Contains(moduleType))
+            {
+                _canceledOpenModules.Add(moduleType);
+            }
+
             if (!_openModules.TryGetValue(moduleType, out var module)) return;
 
             var attr = GetAttribute(moduleType);
@@ -219,6 +236,8 @@ namespace Game.UI
 
         public void Shutdown()
         {
+            _loadingModules.Clear();
+            _canceledOpenModules.Clear();
             CloseAll();
             _stack.Clear();
             _layerManager.Clear();
@@ -242,12 +261,16 @@ namespace Game.UI
             var attr = GetAttribute(moduleType);
             if (attr == null)
             {
+                _loadingModules.Remove(moduleType);
+                _canceledOpenModules.Remove(moduleType);
                 Debug.LogError($"[UIManager] 模块 {moduleType.Name} 缺少 [UIPanel] Attribute！");
                 yield break;
             }
 
             if (string.IsNullOrEmpty(attr.ViewPrefab))
             {
+                _loadingModules.Remove(moduleType);
+                _canceledOpenModules.Remove(moduleType);
                 Debug.LogError($"[UIManager] 模块 {moduleType.Name} 的 ViewPrefab 路径为空！");
                 yield break;
             }
@@ -287,8 +310,19 @@ namespace Game.UI
                 );
             }
 
+            // 检查加载期间是否已被外部取消关闭
+            if (_canceledOpenModules.Contains(moduleType))
+            {
+                _loadingModules.Remove(moduleType);
+                _canceledOpenModules.Remove(moduleType);
+                Debug.Log($"[UIManager] 面板 {moduleType.Name} 在加载期间被取消，放弃实例化。");
+                yield break;
+            }
+
             if (prefab == null)
             {
+                _loadingModules.Remove(moduleType);
+                _canceledOpenModules.Remove(moduleType);
                 Debug.LogError($"[UIManager] 面板 Prefab 加载失败: {attr.ViewPrefab}");
                 yield break;
             }
@@ -301,6 +335,8 @@ namespace Game.UI
             var view = go.GetComponent<UIView>();
             if (view == null)
             {
+                _loadingModules.Remove(moduleType);
+                _canceledOpenModules.Remove(moduleType);
                 Debug.LogError($"[UIManager] Prefab 上未找到 UIView 组件: {attr.ViewPrefab}");
                 UnityEngine.Object.Destroy(go);
                 yield break;
@@ -310,6 +346,8 @@ namespace Game.UI
             var module = Activator.CreateInstance(moduleType) as UIModuleBase;
             if (module == null)
             {
+                _loadingModules.Remove(moduleType);
+                _canceledOpenModules.Remove(moduleType);
                 Debug.LogError($"[UIManager] 无法创建 Module 实例: {moduleType.Name}");
                 UnityEngine.Object.Destroy(go);
                 yield break;
@@ -318,6 +356,8 @@ namespace Game.UI
             // 5. 注入 View 并触发生命周期
             module.Internal_Create(view);
             _openModules[moduleType] = module;
+            _loadingModules.Remove(moduleType);
+            _canceledOpenModules.Remove(moduleType);
 
             // 6. 层级管理 (只有在 View 赋值后才能算出 SortingOrder)
             _layerManager.AddToLayer(attr.Layer, module);

@@ -22,6 +22,9 @@ namespace Game.Logic
         SwitchOut = 20,
         ParryAidStart = 30,
         ParryAidSucceed = 40,
+        EvasionAidStart = 50,
+        ChainAttack = 60,
+        QuickAid = 70,
     }
 
     public enum ModifierCategory
@@ -64,6 +67,12 @@ namespace Game.Logic
         TimelineSkip = 30,
         [InspectorName("招架支援开始")]
         ParryAidStart = 40,
+        [InspectorName("闪避支援开始")]
+        EvasionAidStart = 50,
+        [InspectorName("连携技开始")]
+        ChainAttackStart = 60,
+        [InspectorName("快速支援开始")]
+        QuickAidStart = 70,
     }
 
     [Serializable]

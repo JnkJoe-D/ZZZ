@@ -175,6 +175,16 @@ namespace Game.Input
             _input.Disable();
         }
 
+        private void OnDestroy()
+        {
+            if (_input != null)
+            {
+                _input.Disable();
+                _input.Dispose();
+                _input = null;
+            }
+        }
+
         private void Update()
         {
             // 每帧获取摇杆/WASD数据

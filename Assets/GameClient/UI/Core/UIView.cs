@@ -27,9 +27,21 @@ namespace Game.UI
                 return _canvas;
             }
         }
-        //
+        [SerializeField]
         private GameObject _view;
-        public GameObject View => _view??transform.Find("View").gameObject;
+
+        public GameObject View
+        {
+            get
+            {
+                if (_view == null)
+                {
+                    var viewTrans = transform.Find("View");
+                    _view = viewTrans != null ? viewTrans.gameObject : gameObject;
+                }
+                return _view;
+            }
+        }
 
         /// <summary>Canvas 的渲染排序</summary>
         public int SortingOrder

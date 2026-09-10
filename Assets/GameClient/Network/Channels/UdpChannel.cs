@@ -40,8 +40,8 @@ namespace Game.Network
         // ── 序列号 ─────────────────────────────
         private int _sendSequence;
 
-        // ── 最新帧号（丢弃旧帧） ───────────────
-        private int _latestReceivedFrame = -1;
+        // ── 最新序号（丢弃乱序旧包） ───────────────
+        private uint _latestReceivedSequence;
 
         // ────────────────────────────────────────
         // 连接
@@ -66,7 +66,7 @@ namespace Game.Network
 
             _isRunning    = true;
             _sendSequence = 0;
-            _latestReceivedFrame = -1;
+            _latestReceivedSequence = 0;
 
             _receiveThread = new Thread(ReceiveLoop)
             {
@@ -123,6 +123,13 @@ namespace Game.Network
                         continue;
                     }
 
+                    // ── 单调序号过滤：丢弃迟到的乱序旧包 ──
+                    if (_latestReceivedSequence > 0 && seq <= _latestReceivedSequence)
+                    {
+                        continue;
+                    }
+                    _latestReceivedSequence = seq;
+
                     _receivedPackets.Enqueue(new ReceivedPacket
                     {
                         MsgId    = msgId,
@@ -166,6 +173,8 @@ namespace Game.Network
             _isRunning = false;
             try { _udpClient?.Close(); } catch { }
             _udpClient = null;
+            _latestReceivedSequence = 0;
+            while (_receivedPackets.TryDequeue(out _)) { }
             Debug.Log("[UdpChannel] 已关闭");
         }
 

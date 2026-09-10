@@ -10,6 +10,7 @@ namespace ATEditor
     {
         private const float DefaultCharacterRadius = 0.5f;
         private const float DefaultCharacterHeight = 2.0f;
+        private static readonly Collider[] _cachedOverlapColliders = new Collider[32];
 
         /// <summary>
         /// 解算并校验最佳目标移动位置
@@ -438,24 +439,33 @@ namespace ATEditor
                 Vector3 pointBottom = centerWorld - Vector3.up * (halfHeight - safeRadius);
                 Vector3 pointTop = centerWorld + Vector3.up * (halfHeight - safeRadius);
 
-                Collider[] overlaps = Physics.OverlapCapsule(pointBottom, pointTop, safeRadius, obstacleLayers, QueryTriggerInteraction.Ignore);
-                if (overlaps != null && overlaps.Length > 0)
+                int hitCount = Physics.OverlapCapsuleNonAlloc(pointBottom, pointTop, safeRadius, _cachedOverlapColliders, obstacleLayers, QueryTriggerInteraction.Ignore);
+                if (hitCount > 0)
                 {
-                    for (int i = 0; i < overlaps.Length; i++)
+                    Transform selfRoot = selfCollider != null ? selfCollider.transform.root : null;
+                    Transform targetRoot = target != null ? target.root : null;
+
+                    for (int i = 0; i < hitCount; i++)
                     {
-                        var col = overlaps[i];
+                        var col = _cachedOverlapColliders[i];
                         if (col == null || col.isTrigger) continue;
 
                         // 忽略角色自身及其子物体的碰撞体
-                        if (selfCollider != null && (col == selfCollider || col.transform.IsChildOf(selfCollider.transform)))
+                        if (selfCollider != null)
                         {
-                            continue;
+                            if (col == selfCollider || (selfRoot != null && col.transform.root == selfRoot))
+                            {
+                                continue;
+                            }
                         }
 
                         // 忽略锁定目标及其子物体的碰撞体
-                        if (targetCollider != null && (col == targetCollider || col.transform.IsChildOf(targetCollider.transform)))
+                        if (targetCollider != null)
                         {
-                            continue;
+                            if (col == targetCollider || (targetRoot != null && col.transform.root == targetRoot))
+                            {
+                                continue;
+                            }
                         }
 
                         // 检测到地形/墙体/其他障碍物阻挡

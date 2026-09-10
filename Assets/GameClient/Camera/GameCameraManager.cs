@@ -14,6 +14,8 @@ namespace Game.Camera
 
         private CinemachineBlendDefinition _cachedDefaultBlend;
         private int _instantCutOverrideDepth;
+        private float _lastResolveCameraTime = -1f;
+        private const float ResolveCameraInterval = 1.0f; // 节流间隔：1 秒最多搜一次
 
         public void Initialize()
         {
@@ -31,7 +33,11 @@ namespace Game.Camera
         {
             if (MainCamera == null)
             {
-                ResolveMainCamera();
+                if (Time.unscaledTime - _lastResolveCameraTime >= ResolveCameraInterval)
+                {
+                    _lastResolveCameraTime = Time.unscaledTime;
+                    ResolveMainCamera();
+                }
             }
         }
 
@@ -41,6 +47,7 @@ namespace Game.Camera
             MainCamera = null;
             Brain = null;
             _instantCutOverrideDepth = 0;
+            _lastResolveCameraTime = -1f;
             Debug.Log("[GameCameraManager] Shutdown.");
         }
 

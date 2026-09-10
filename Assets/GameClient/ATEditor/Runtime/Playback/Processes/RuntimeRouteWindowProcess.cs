@@ -37,14 +37,8 @@ namespace ATEditor
 
         public override void Reset()
         {
-            base.Reset();
-            if (context != null && comboHandler != null && clip != null)
-            {
-                // Ensure the active tag is cleaned up even if playback is stopped mid-window.
-                comboHandler.OnComboWindowExit(clip.comboTag);
-            }
-
             comboHandler = null;
+            base.Reset();
         }
     }
 }

@@ -169,7 +169,10 @@ namespace Game.Logic
                 ctx.Clear();
                 _contextCache.Remove(id);
             }
-            ATServiceFactory.ClearAllStaticCaches(); 
+            if (entity.gameObject != null)
+            {
+                ATServiceFactory.RemoveStaticCaches(entity.gameObject);
+            }
         }
 
         public void Shutdown()

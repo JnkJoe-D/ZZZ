@@ -55,7 +55,8 @@ namespace Game.Logic
         {
             if (command == null || command.Payload is not DirectAssetPayload) return false;
             
-            if (!string.IsNullOrEmpty(RequiredWindowTag) && RequiredWindowTag != windowTag)
+            // 如果处于特定窗口中，需要校验窗口 Tag；若处于全局/空闲状态（windowTag == ""），允许直接切入
+            if (!string.IsNullOrEmpty(windowTag) && !string.IsNullOrEmpty(RequiredWindowTag) && RequiredWindowTag != windowTag)
                 return false;
 
             return true;

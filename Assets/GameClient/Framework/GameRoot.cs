@@ -63,12 +63,16 @@ namespace Game.Logic
         {
             if (!IsInitialized) return;
 
+            Game.Logic.TimeManager.Instance.Update();
+
             // 驱动延迟事件队列（每帧刷新一次）
             EventCenter.FlushPending();
 
             // 驱动网络管理器（主线程消息分发、心跳、重连）
             Game.Network.NetworkManager.Instance?.Update();
-            Game.Camera.GameCameraManager.Instance?.Update(Time.deltaTime);
+            
+            float uiDelta = Time.unscaledDeltaTime * Game.Logic.TimeManager.Instance.FinalUIScale;
+            Game.Camera.GameCameraManager.Instance?.Update(uiDelta);
 
             // TODO: 驱动其他子系统
             // _luaManager?.Update();
@@ -156,6 +160,10 @@ namespace Game.Logic
             Game.Logic.TeamManager.Instance.Initialize();
             Game.Logic.MonsterManager.Instance.Initialize();
 
+            // 核心修复：激活主逻辑循环驱动
+            IsInitialized = true;
+            Debug.Log("[GameRoot] ===== 核心子系统流水线就绪，主驱动循环已激活 =====");
+
             // 发布初始化完成事件，各系统可以订阅此事件做后置操作
             EventCenter.Publish(new GameInitializedEvent());
 
@@ -188,8 +196,7 @@ namespace Game.Logic
             Game.Camera.GameCameraManager.Instance?.Shutdown();
             SceneManager.Instance?.Shutdown();
             FSMManager.Instance?.Shutdown();
-            // AudioManager 没有提供Shutdown方法并且依靠自身MonoDestory管理释放因此不再调配
-            // _luaManager?.Dispose();
+            Game.Audio.AudioManager.Instance?.Shutdown();
             UIManager.Instance?.Shutdown();
             ResourceManager.Instance?.Shutdown();
             Game.Network.NetworkManager.Instance?.Shutdown();

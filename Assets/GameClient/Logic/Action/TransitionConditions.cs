@@ -38,7 +38,8 @@ namespace Game.Logic
                 return false;
             }
 
-            float elapsed = Time.time - actor.ActionPlayer.ActionStartTime;
+            float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+            float elapsed = currentTime - actor.ActionPlayer.ActionStartTime;
             return Mode == ComparisonMode.LessThan ? elapsed < Threshold : elapsed >= Threshold;
         }
     }

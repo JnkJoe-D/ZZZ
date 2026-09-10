@@ -29,6 +29,12 @@ namespace Game.MAnimSystem
     /// <summary>
     /// Core runtime animation entry for one character/object.
     /// Owns PlayableGraph and multiple AnimLayer instances.
+    /// <para>
+    /// 架构定位：属于渲染/表现层（Presentation Layer）。
+    /// 内部驱动使用渲染帧（Time.deltaTime）以保证高刷新率下的骨骼平滑插值；
+    /// 全局时间缩放（如顿帧、子弹时间、暂停）由逻辑层通过 ActionRunner / RuntimeAnimationProcess
+    /// 调用 SetLayerSpeed 实时同步，严禁在此处直接绑定核心战斗判定逻辑。
+    /// </para>
     /// </summary>
     public class AnimComponent : MonoBehaviour
     {

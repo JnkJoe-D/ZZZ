@@ -35,6 +35,7 @@ namespace Game.Logic
         }
 
         private readonly RoleTargetFinderCfg _config;
+        private static readonly Collider[] _overlapBuffer = new Collider[32];
 
         public RoleTargetFinder(RoleTargetFinderCfg config)
         {
@@ -48,16 +49,28 @@ namespace Game.Logic
 
             Transform center = activeEntity.transform;
 
-            Collider[] colliders = Physics.OverlapSphere(center.position, _config.SearchRadius, _config.SearchLayerMask);
+            int hitCount = Physics.OverlapSphereNonAlloc(center.position, _config.SearchRadius, _overlapBuffer, _config.SearchLayerMask);
             Transform bestTarget = null;
             int bestPriority = int.MaxValue;
             float closestSqrDist = float.MaxValue;
 
-            foreach (var col in colliders)
+            for (int i = 0; i < hitCount; i++)
             {
-                if (col.gameObject == center.gameObject) continue;
+                var col = _overlapBuffer[i];
+                if (col == null || col.gameObject == center.gameObject) continue;
 
-                int priority = _config.PriorityTags.IndexOf(col.tag);
+                int priority = -1;
+                if (_config.PriorityTags != null)
+                {
+                    for (int p = 0; p < _config.PriorityTags.Count; p++)
+                    {
+                        if (col.CompareTag(_config.PriorityTags[p]))
+                        {
+                            priority = p;
+                            break;
+                        }
+                    }
+                }
                 
                 // 如果对象的 Tag 不在优先级配置列表中，直接跳过
                 if (priority == -1)
@@ -80,6 +93,8 @@ namespace Game.Logic
                     closestSqrDist = sqrDist;
                 }
             }
+
+            Array.Clear(_overlapBuffer, 0, hitCount);
 
             return bestTarget;
         }
@@ -117,6 +132,8 @@ namespace Game.Logic
     {
         private readonly MonsterSensorConfig _config;
         private readonly Transform _ownerTransform;
+        private static readonly Collider[] _overlapBuffer = new Collider[16];
+        private static readonly int _localRoleLayerMask = LayerMask.GetMask("LocalRole");
         
         private Transform _currentTarget;
 
@@ -145,15 +162,15 @@ namespace Game.Logic
             Transform player = activeEntity.transform;
             */
 
-            // [测试环境] 改为广域搜索 (OverlapSphere)
+            // [测试环境] 改为广域搜索 (OverlapSphereNonAlloc)
             Transform player = null;
-            LayerMask localRoleMask = LayerMask.GetMask("LocalRole");
 
             float maxSearchRadius = _config.DetectionRadius;
-            Collider[] colliders = Physics.OverlapSphere(_ownerTransform.position, maxSearchRadius, localRoleMask);
-            foreach (var col in colliders)
+            int hitCount = Physics.OverlapSphereNonAlloc(_ownerTransform.position, maxSearchRadius, _overlapBuffer, _localRoleLayerMask);
+            for (int i = 0; i < hitCount; i++)
             {
-                if (col.CompareTag("LocalRole"))
+                var col = _overlapBuffer[i];
+                if (col != null && col.CompareTag("LocalRole"))
                 {
                     // 过滤掉未上场(后台Standby)的角色，防止索敌锁定在原地的隐形队友身上
                     var entity = col.GetComponentInParent<RoleEntity>();
@@ -166,6 +183,8 @@ namespace Game.Logic
                     break;
                 }
             }
+
+            Array.Clear(_overlapBuffer, 0, hitCount);
 
             if (player == null)
             {

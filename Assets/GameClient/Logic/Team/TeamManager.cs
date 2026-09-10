@@ -83,13 +83,17 @@ namespace Game.Logic
         public ITargetFinder TargetFinder { get; private set; }
 
         /// <summary> 当前被玩家直接操作并占有的主控角色 Entity。 </summary>
-        public RoleEntity LocalCharacter { get; private set; }
+        public RoleEntity LocalCharacter { get; internal set; }
+
+        /// <summary> 换人执行器微内核适配器。 </summary>
+        public SwitchExecutor SwitchExecutor => _switchExecutor;
 
         /// <summary> 队伍的实际成员数量。 </summary>
         public int PartySize => _partyMembers.Count;
 
         /// <summary> 当前正处于控制/激活状态下的角色插槽索引。 </summary>
         public int ActiveSlotIndex => _activeSlotIndex;
+        internal void SetActiveSlotIndex(int index) => _activeSlotIndex = index;
 
         /// <summary>
         /// 构造函数，创建换人执行器并执行基础系统初始化。
@@ -113,6 +117,10 @@ namespace Game.Logic
         public void Initialize()
         {
             EventCenter.Subscribe<CharacterTimelineEvent>(OnCharacterTimelineEvent);
+            if (TimeManager.Instance != null)
+            {
+                TimeManager.Instance.OnGameplayLogicTick += Update;
+            }
             Debug.Log("[TeamManager] Initialized.");
         }
 
@@ -121,6 +129,10 @@ namespace Game.Logic
         /// </summary>
         public void Shutdown()
         {
+            if (TimeManager.Instance != null)
+            {
+                TimeManager.Instance.OnGameplayLogicTick -= Update;
+            }
             EventCenter.Unsubscribe<CharacterTimelineEvent>(OnCharacterTimelineEvent);
             _switchExecutor?.Unsubscribe();
             UnpossessCurrentCharacter();
@@ -245,6 +257,7 @@ namespace Game.Logic
             
             // 安全复位纯 C# 切人执行器的过渡状态机
             _switchExecutor?.Reset();
+            CombatWarningManager.Clear();
             
             LocalCharacter = null;
             TargetFinder = null;
@@ -627,7 +640,7 @@ namespace Game.Logic
         /// <summary>
         /// 同步角色实体的空间三维坐标与旋转朝向。
         /// </summary>
-        private void SynchronizePartyMemberTransform(RoleEntity entity, Vector3 position, Quaternion rotation)
+        internal void SynchronizePartyMemberTransform(RoleEntity entity, Vector3 position, Quaternion rotation)
         {
             if (entity == null)
             {
@@ -646,6 +659,11 @@ namespace Game.Logic
             {
                 entity.transform.SetPositionAndRotation(position, rotation);
             }
+        }
+
+        internal void CalculateSafeSwitchInTransform(Transform originTransform, RoleEntity switchInEntity, out Vector3 targetPos, out Quaternion targetRot)
+        {
+            GetInvalidPosSwitchIn(originTransform, switchInEntity, out targetPos, out targetRot);
         }
 
         private void GetInvalidPosSwitchIn(Transform originTransform, RoleEntity switchInEntity, out Vector3 targetPos, out Quaternion targetRot)
@@ -706,6 +724,8 @@ namespace Game.Logic
             }
         }
 
+        private static readonly Collider[] _blockCheckBuffer = new Collider[1];
+
         private bool IsPositionBlocked(Vector3 pos, RoleEntity entity)
         {
             if (entity == null) return false;
@@ -739,9 +759,10 @@ namespace Game.Logic
             // 层级读取 _teamConfig.blockLayer 配置
             LayerMask mask = _teamConfig != null ? _teamConfig.blockLayer : (LayerMask)0;
 
-            // 通过 OverlapCapsule 投射胶囊体并检测是否有碰撞阻挡
-            Collider[] colliders = Physics.OverlapCapsule(pointBottom, pointTop, checkRadius, mask, QueryTriggerInteraction.Ignore);
-            return colliders != null && colliders.Length > 0;
+            // 通过 OverlapCapsuleNonAlloc 投射胶囊体并检测是否有碰撞阻挡
+            int hitCount = Physics.OverlapCapsuleNonAlloc(pointBottom, pointTop, checkRadius, _blockCheckBuffer, mask, QueryTriggerInteraction.Ignore);
+            _blockCheckBuffer[0] = null;
+            return hitCount > 0;
         }
 
         /// <summary>

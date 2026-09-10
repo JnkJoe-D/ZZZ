@@ -72,7 +72,7 @@ namespace Game.Logic
             _runner.Play(timeline, _context, startTime);
             CurrentAction = config;
             IsPlaying = true;
-            ActionStartTime = Time.time;
+            ActionStartTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
 
             _runner.OnComplete -= HandleRunnerComplete;
             _runner.OnComplete += HandleRunnerComplete;

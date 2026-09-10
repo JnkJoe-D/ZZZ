@@ -101,11 +101,29 @@ namespace ATEditor
         /// <summary>
         /// Process 实例与其运行状态的绑定
         /// </summary>
-        public struct ProcessInstance
+        public struct ProcessInstance : IEquatable<ProcessInstance>
         {
             public IProcess process;
             public ClipBase clip;
             public bool isActive;
+
+            public bool Equals(ProcessInstance other)
+            {
+                return ReferenceEquals(process, other.process) && ReferenceEquals(clip, other.clip);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is ProcessInstance other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(process, clip);
+            }
+
+            public static bool operator ==(ProcessInstance left, ProcessInstance right) => left.Equals(right);
+            public static bool operator !=(ProcessInstance left, ProcessInstance right) => !left.Equals(right);
         }
 
         public ActionRunner(PlayMode mode)
@@ -326,8 +344,8 @@ namespace ATEditor
                     inst.process.OnExit();
                     if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
                     
-                    inst.isActive = false;
                     activeProcesses.Remove(inst);
+                    inst.isActive = false;
                 }
 
                 processes[i] = inst;
@@ -482,6 +500,7 @@ namespace ATEditor
                     processes[i] = inst;
                 }
             }
+            activeProcesses.Clear();
         }
 
         private void DispatchTimelineEvents(IReadOnlyList<ActionTimelineEvent> timelineEvents)

@@ -36,16 +36,11 @@ namespace Game.Logic
                 entity.ActionPlayer?.SetTimelineFlag(ExecuteEvent.TimelineSkip.ToString());
                 return;
             }
-            if (routeExecuteEvent == ExecuteEvent.SwitchCaptureSucceed)
-            {
-                Game.Framework.EventCenter.Publish(new ActionRouteExecuteEvent
-                {
-                    SourceEntity = entity as RoleEntity,
-                    Event = routeExecuteEvent,
-                    TargetSlotHint = -1
-                });
-            }
-            if (routeExecuteEvent == ExecuteEvent.ParryAidStart)
+            if (routeExecuteEvent == ExecuteEvent.SwitchCaptureSucceed ||
+                routeExecuteEvent == ExecuteEvent.ParryAidStart ||
+                routeExecuteEvent == ExecuteEvent.EvasionAidStart ||
+                routeExecuteEvent == ExecuteEvent.ChainAttackStart ||
+                routeExecuteEvent == ExecuteEvent.QuickAidStart)
             {
                 Game.Framework.EventCenter.Publish(new ActionRouteExecuteEvent
                 {

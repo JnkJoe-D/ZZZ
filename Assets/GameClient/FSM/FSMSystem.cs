@@ -3,11 +3,18 @@ using UnityEngine;
 
 namespace Game.FSM
 {
+    public interface IFSMSystemRunner
+    {
+        void Update(float deltaTime);
+        void FixedUpdate(float fixedDeltaTime);
+        void Destroy();
+    }
+
     /// <summary>
     /// FSM 状态机系统泛型核心
     /// T 为该状态机的所有者类型（Owner）
     /// </summary>
-    public class FSMSystem<T>
+    public class FSMSystem<T> : IFSMSystemRunner
     {
         public T Owner { get; private set; }
         

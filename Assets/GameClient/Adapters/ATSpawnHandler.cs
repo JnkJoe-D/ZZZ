@@ -23,23 +23,10 @@ namespace Game.Adapters
         {
             if (prefab == null) return null;
 
-            // 通过 GlobalPoolManager 统一获取
-            var instance = GlobalPoolManager.Spawn(prefab, position, rotation);
-
-            instance.transform.SetPositionAndRotation(position, rotation);
+            // 通过 GlobalPoolManager 统一获取并设置父节点/场景归属
+            Transform targetParent = (!detach && parent != null) ? parent : null;
+            var instance = GlobalPoolManager.Spawn(prefab, position, rotation, targetParent);
             instance.SetActive(true);
-
-            if (!detach && parent != null)
-            {
-                instance.transform.SetParent(parent);
-            }
-            else
-            {
-                if (instance.transform.parent != null)
-                {
-                    instance.transform.SetParent(null);
-                }
-            }
 
             return instance;
         }
@@ -52,12 +39,8 @@ namespace Game.Adapters
                 if (obj == null || !obj.scene.isLoaded) return;
 
                 obj.SetActive(false);
-                if (obj.transform.parent != null)
-                {
-                    obj.transform.SetParent(null); // 回池时脱离父节点，防止被带着跑
-                }
 
-                // 通过 GlobalPoolManager 统一归还
+                // 通过 GlobalPoolManager 统一归还，由池内部统一安全挂回 _poolRoot
                 GlobalPoolManager.Return(obj);
             }
         }

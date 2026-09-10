@@ -72,6 +72,9 @@ namespace Game.Logic
 
             CameraPointBinder cameraPointBinder = GetComponent<CameraPointBinder>();
             if (cameraPointBinder == null) cameraPointBinder = gameObject.AddComponent<CameraPointBinder>();
+
+            LifecycleModule = GetComponent<EntityLifecycleModule>();
+            if (LifecycleModule == null) LifecycleModule = gameObject.AddComponent<EntityLifecycleModule>();
         }
 
         public override void Init(Game.Logic.CharacterConfigAsset config)

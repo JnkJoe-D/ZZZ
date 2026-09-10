@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Camera;
 using Game.Framework;
+using Game.Logic.Team.Pipeline;
 using UnityEngine;
 
 namespace Game.Logic
@@ -35,37 +36,40 @@ namespace Game.Logic
         /// <summary> 当前切出阶段。 </summary>
         public SwitchOutPhase Phase;
 
+        /// <summary> 退场生命周期管理策略。 </summary>
+        public OutgoingExitPolicy ExitPolicy;
+
         /// <summary>
         /// 创建任务时的激活版本号。
         /// 用于防腐校验：如果 Member.ActivationVersion 已变化，
         /// 说明该角色已被重新激活过，此任务应视为过期。
         /// </summary>
         public int CreationVersion;
+
+        /// <summary> 任务已流逝时间（秒）。 </summary>
+        public float ElapsedTime;
+
+        /// <summary> 退场最大保护超时（秒），超时仍未收到隐藏关键帧则强制完成退场。 </summary>
+        public const float MaxSwitchOutTimeout = 2.5f;
     }
 
     /// <summary>
-    /// 切人执行器 — 纯 C# 类。
+    /// 切人执行器微内核适配器。
     ///
     /// 职责：
-    ///   1. 订阅 ActionRouteExecuteEvent，响应 SwitchCaptureSucceed 事件
-    ///   2. 执行切入流程：断输入 → 激活切入角色 → 切相机 → 切出角色入队
-    ///   3. 管理切出任务队列：支持并行退场、取消/复活、状态机推进
-    ///   4. 监听 CharacterTimelineEvent，驱动切出动作的阶段过渡
-    ///
-    /// 设计要点：
-    ///   - 切出角色的退场由其自身 ActionController 的条件路由
-    ///     （ConditionCommand.SwitchOutPending）自然驱动，本类不主动干预
-    ///   - 切出动作的 Timeline 事件（SwitchOutDisableLogic / HideOutgoingRole）
-    ///     通过已有的 CharacterTimelineEvent 机制传入本类
+    ///   1. 订阅 ActionRouteExecuteEvent，解析切人请求并交由 SwitchPipeline 统一处理
+    ///   2. 管理切出任务队列：支持动作自动托管生命周期、时间轴事件兼容、取消/复活、超时兜底
+    ///   3. 监听 CharacterTimelineEvent，驱动存量切出动作的阶段过渡
     /// </summary>
     public class SwitchExecutor
     {
-        // ─── 常量：Timeline 事件名 ───
+        // ─── 常量：Timeline 事件名（存量兼容） ───
         private const string EventSwitchOutDisableLogic = "SwitchOutDisableLogic";
         private const string EventHideOutgoingRole = "HideOutgoingRole";
 
         // ─── 字段 ───
         private readonly TeamManager _manager;
+        private readonly SwitchPipeline _pipeline;
         private readonly List<SwitchOutTask> _switchOutQueue = new();
 
         /// <summary> 是否有正在进行中的切出任务。 </summary>
@@ -76,6 +80,7 @@ namespace Game.Logic
         public SwitchExecutor(TeamManager manager)
         {
             _manager = manager;
+            _pipeline = SwitchPipeline.Default;
             Subscribe();
         }
 
@@ -98,7 +103,7 @@ namespace Game.Logic
         }
 
         /// <summary>
-        /// 每帧更新，清理已完成/已取消的任务。
+        /// 每帧更新，清理已完成/已取消的任务，并驱动 AutoFollowThrough 自动退场。
         /// 由 TeamManager.Update 驱动。
         /// </summary>
         public void Update(float deltaTime)
@@ -111,6 +116,39 @@ namespace Game.Logic
                 if (task.Member.ActivationVersion != task.CreationVersion)
                 {
                     task.Phase = SwitchOutPhase.Cancelled;
+                }
+
+                if (task.Phase == SwitchOutPhase.Pending || task.Phase == SwitchOutPhase.PlayingExit)
+                {
+                    task.ElapsedTime += deltaTime;
+                    var entity = task.Member?.Entity;
+                    bool isActionPlaying = entity != null && entity.ActionPlayer != null && entity.ActionPlayer.IsPlaying;
+
+                    // 1. 动作自动托管策略（核心解决时间轴手动拼事件痛点）
+                    if (task.ExitPolicy == OutgoingExitPolicy.AutoFollowThrough)
+                    {
+                        // 阶段 A: 流逝过半(0.35s)或动作已停，自动关闭碰撞进入 PlayingExit
+                        if (task.Phase == SwitchOutPhase.Pending && (task.ElapsedTime >= 0.35f || !isActionPlaying))
+                        {
+                            task.Phase = SwitchOutPhase.PlayingExit;
+                            entity?.SetColliderActive(false);
+                            Debug.Log($"[SwitchExecutor] AutoFollowThrough: {task.Member?.Config?.Name} 自动禁用碰撞 -> PlayingExit");
+                        }
+
+                        // 阶段 B: 动作自然播放完毕，自动隐藏并完成退场
+                        if (task.Phase == SwitchOutPhase.PlayingExit && !isActionPlaying)
+                        {
+                            Debug.Log($"[SwitchExecutor] AutoFollowThrough: {task.Member?.Config?.Name} 动作自然播放完毕，自动完成退场");
+                            CompleteSwitchOut(task);
+                        }
+                    }
+
+                    // 2. 超时兜底防护
+                    if (task.ElapsedTime >= SwitchOutTask.MaxSwitchOutTimeout)
+                    {
+                        Debug.LogWarning($"[SwitchExecutor] Force completing switch-out due to timeout: {task.Member?.Config?.Name}");
+                        CompleteSwitchOut(task);
+                    }
                 }
 
                 if (task.Phase == SwitchOutPhase.Completed ||
@@ -140,59 +178,59 @@ namespace Game.Logic
         }
 
         // ═══════════════════════════════════════════
-        //  事件响应
+        //  事件响应与管线驱动入口
         // ═══════════════════════════════════════════
 
         /// <summary>
         /// ActionRouteExecuteEvent 的回调入口。
-        /// 仅处理 SwitchCaptureSucceed 事件。
         /// </summary>
         private void OnActionRouteEvent(ActionRouteExecuteEvent evt)
         {
             switch (evt.Event)
             {
                 case ExecuteEvent.SwitchCaptureSucceed:
-                    HandleSwitchEvent(evt);
+                    RequestSwitch(SwitchType.NormalSwitch, evt.SourceEntity, evt.TargetSlotHint);
                     break;
                 case ExecuteEvent.ParryAidStart:
-                    HandleParryAidEvent(evt);
+                    RequestSwitch(SwitchType.ParryAid, evt.SourceEntity, evt.TargetSlotHint);
                     break;
-                default:    
+                case ExecuteEvent.EvasionAidStart:
+                    RequestSwitch(SwitchType.EvasionAid, evt.SourceEntity, evt.TargetSlotHint);
+                    break;
+                case ExecuteEvent.ChainAttackStart:
+                    RequestSwitch(SwitchType.ChainAttack, evt.SourceEntity, evt.TargetSlotHint);
+                    break;
+                case ExecuteEvent.QuickAidStart:
+                    RequestSwitch(SwitchType.QuickAid, evt.SourceEntity, evt.TargetSlotHint);
+                    break;
+                default:
                     break;
             }
         }
 
-        private void HandleSwitchEvent(ActionRouteExecuteEvent evt)
+        /// <summary>
+        /// 发起切人请求（委托至 SwitchPipeline 流水线统一裁决调度）
+        /// </summary>
+        public void RequestSwitch(SwitchType type, RoleEntity sourceEntity, int slotHint = -1, ActionConfigAsset customAction = null)
         {
-            if (evt.Event != ExecuteEvent.SwitchCaptureSucceed) return;
-            if (evt.SourceEntity == null) return;
-
-            PartyMember outgoing = _manager.FindPartyMember(evt.SourceEntity);
+            if (sourceEntity == null) return;
+            PartyMember outgoing = _manager.FindPartyMember(sourceEntity);
             if (outgoing == null) return;
 
-            PartyMember incoming = ResolveIncoming(outgoing, evt.TargetSlotHint);
-            if (incoming == null || incoming == outgoing) return;
+            var ctx = _pipeline.AllocateContext();
+            ctx.Manager = _manager;
+            ctx.Type = type;
+            ctx.OutgoingMember = outgoing;
+            ctx.TargetSlotHint = slotHint;
+            ctx.CustomIncomingAction = customAction;
 
-            ExecuteSwitch(outgoing, incoming);
-        }
-        private void HandleParryAidEvent(ActionRouteExecuteEvent evt)
-        {
-            if (evt.Event != ExecuteEvent.ParryAidStart) return;
-            if (evt.SourceEntity == null) return;
-
-            PartyMember outgoing = _manager.FindPartyMember(evt.SourceEntity);
-            if (outgoing == null) return;
-
-            PartyMember incoming = ResolveIncoming(outgoing, evt.TargetSlotHint);
-            if (incoming == null || incoming == outgoing) return;
-
-            ExecuteParryAid(outgoing, incoming);
+            _pipeline.Execute(ctx);
+            _pipeline.ReleaseContext(ctx);
         }
 
         /// <summary>
-        /// Timeline 事件的回调入口。
+        /// Timeline 事件的回调入口（向下兼容存量配置了 SwitchOutDisableLogic / HideOutgoingRole 的动作）。
         /// 由 TeamManager.HandleTimelineEvent 转发。
-        /// 处理切出动作的阶段过渡事件。
         /// </summary>
         public bool HandleTimelineEvent(RoleEntity sourceEntity, string eventName)
         {
@@ -215,89 +253,6 @@ namespace Game.Logic
         }
 
         // ═══════════════════════════════════════════
-        //  切入执行
-        // ═══════════════════════════════════════════
-
-        /// <summary>
-        /// 执行一次完整的切人操作。
-        ///
-        /// 步骤：
-        ///   1. 如果 incoming 在切出队列中 → 取消其切出任务（复活）
-        ///   2. 切断切出角色的输入接收
-        ///   3. 激活切入角色（位置/朝向/控制权/相机/DebugHud）
-        ///   4. 将切出角色加入切出任务队列
-        /// </summary>
-        private void ExecuteSwitch(PartyMember outgoing, PartyMember incoming)
-        {
-            Debug.Log($"[SwitchExecutor] ExecuteSwitch: {outgoing.Config?.Name} → {incoming.Config?.Name}");
-
-            RoleEntity outEntity = outgoing.Entity;
-            RoleEntity inEntity = incoming.Entity;
-
-            if (outEntity == null || inEntity == null) return;
-
-            // 1. 如果 incoming 在切出队列中，取消其切出任务
-            TryCancelSwitchOut(incoming);
-
-            // 2. 切断切出角色输入（不禁用共享 InputProvider，仅解绑事件适配器）
-            outEntity.SetControlActive(false, assignCameraTarget: false);
-
-            // 3. 激活切入角色
-            //    ActivatePartyMember 内部完成：
-            //    - 位置/朝向同步
-            //    - SetPresentationVisible(true)
-            //    - SetControlActive(true) + BindInput
-            //    - SetCameraRigActive(true)
-            //    - GameCameraManager.SetTarget（通过 assignCameraTarget）
-            //    - TeamContext.SetActiveRole
-            //    - UpdatePartyDebugHudVisibility（同时隐藏切出角色的 HUD）
-            //    - ActivationVersion++
-            //    - LocalCharacter 赋值
-            Vector3 switchPos = outEntity.transform.position;
-            Quaternion switchRot = outEntity.transform.rotation;
-            _manager.ActivatePartyMember(incoming, switchPos, switchRot, assignCameraTarget: true);
-
-            // 4. 切出角色入队
-            EnqueueSwitchOut(outgoing);
-
-            // 5. 尝试立即触发切出
-            inEntity.ActionController?.TryTriggerEvent(RouteEventType.SwitchIn);
-            bool resOut = outEntity.ActionController?.TryTriggerEvent(RouteEventType.SwitchOut) == true;
-        }
-        private void ExecuteParryAid(PartyMember outgoing, PartyMember incoming)
-        {
-            Debug.Log($"[SwitchExecutor] ExecuteParryAid: {outgoing.Config?.Name} → {incoming.Config?.Name}");
-
-            RoleEntity outEntity = outgoing.Entity;
-            RoleEntity inEntity = incoming.Entity;
-
-            if (outEntity == null || inEntity == null) return;
-
-            // 如果 incoming 在切出队列中，取消其切出任务
-            TryCancelSwitchOut(incoming);
-
-            // 切断切出角色输入（不禁用共享 InputProvider，仅解绑事件适配器）
-            outEntity.SetControlActive(false, assignCameraTarget: false);
-
-            // 激活切入角色
-            Vector3 switchPos = outEntity.transform.position;
-            Quaternion switchRot = outEntity.transform.rotation;
-            _manager.ActivatePartyMember(incoming, switchPos, switchRot, assignCameraTarget: true);
-
-            // 直接禁用切出角色的碰撞体、渲染和控制（ParryAid 不播放切出动作）
-            outEntity.SetColliderActive(false);
-            outEntity.SetPresentationVisible(false);
-            outEntity.SetControlActive(false, assignCameraTarget: false);
-            if (outEntity.Config?.ActionRoot != null)
-            {
-                outEntity.ActionController?.PlayAction(outEntity.Config.ActionRoot);
-            }
-
-            // 触发切入角色的 ParryAidStart 事件
-            inEntity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidStart);
-        }
-
-        // ═══════════════════════════════════════════
         //  切出任务队列管理
         // ═══════════════════════════════════════════
 
@@ -306,7 +261,7 @@ namespace Game.Logic
         /// 设置 IsSwitchOutPending 标志，使角色自身路由系统
         /// （ConditionCommand.SwitchOutPending）能检测到并触发切出动作。
         /// </summary>
-        private void EnqueueSwitchOut(PartyMember member)
+        public void EnqueueSwitchOut(PartyMember member, OutgoingExitPolicy policy = OutgoingExitPolicy.AutoFollowThrough)
         {
             // 防止同一角色重复入队
             for (int i = 0; i < _switchOutQueue.Count; i++)
@@ -320,7 +275,7 @@ namespace Game.Logic
                 }
             }
 
-            if (member.Entity.DataModule != null)
+            if (member.Entity?.DataModule != null)
             {
                 var switchData = member.Entity.DataModule.Get<SwitchRuntimeData>();
                 if (switchData != null) switchData.IsSwitchOutPending = true;
@@ -330,10 +285,11 @@ namespace Game.Logic
             {
                 Member = member,
                 Phase = SwitchOutPhase.Pending,
+                ExitPolicy = policy,
                 CreationVersion = member.ActivationVersion
             });
 
-            Debug.Log($"[SwitchExecutor] Enqueued switch-out: {member.Config?.Name}, Version={member.ActivationVersion}");
+            Debug.Log($"[SwitchExecutor] Enqueued switch-out: {member.Config?.Name}, Policy={policy}, Version={member.ActivationVersion}");
         }
 
         /// <summary>
@@ -342,7 +298,7 @@ namespace Game.Logic
         ///   - Pending：直接取消，角色继续当前动作
         ///   - PlayingExit：中断切出动作，恢复碰撞体，播放 ActionRoot 重置
         /// </summary>
-        private bool TryCancelSwitchOut(PartyMember member)
+        public bool TryCancelSwitchOut(PartyMember member)
         {
             for (int i = 0; i < _switchOutQueue.Count; i++)
             {
@@ -380,7 +336,7 @@ namespace Game.Logic
         }
 
         /// <summary> 完成切出任务：隐藏渲染并转入 Standby 状态。 </summary>
-        private void CompleteSwitchOut(SwitchOutTask task)
+        public void CompleteSwitchOut(SwitchOutTask task)
         {
             task.Phase = SwitchOutPhase.Completed;
 
@@ -405,16 +361,9 @@ namespace Game.Logic
         }
 
         // ═══════════════════════════════════════════
-        //  Timeline 事件处理
+        //  Timeline 事件处理（存量兼容）
         // ═══════════════════════════════════════════
 
-        /// <summary>
-        /// 处理 "SwitchOutDisableLogic" 事件。
-        /// 切出动作开始播放后发送，标志角色正式进入退场阶段：
-        ///   - 阶段: Pending → PlayingExit
-        ///   - 禁用碰撞体（不可碰撞）
-        ///   - 角色仍然可见
-        /// </summary>
         private bool HandleSwitchOutDisableLogic(SwitchOutTask task)
         {
             if (task.Phase != SwitchOutPhase.Pending) return false;
@@ -426,12 +375,6 @@ namespace Game.Logic
             return true;
         }
 
-        /// <summary>
-        /// 处理 "HideOutgoingRole" 事件。
-        /// 切出动作即将结束时发送，执行最终的隐藏操作：
-        ///   - 隐藏渲染
-        ///   - 标记任务完成
-        /// </summary>
         private bool HandleHideOutgoingRole(SwitchOutTask task)
         {
             if (task.Phase != SwitchOutPhase.PlayingExit) return false;
@@ -444,38 +387,6 @@ namespace Game.Logic
         //  辅助方法
         // ═══════════════════════════════════════════
 
-        /// <summary>
-        /// 解析切入目标。
-        /// 优先使用 slotHint 指定的插槽，否则使用轮转规则（下一个插槽）。
-        /// 不会跳过在切出队列中的角色（切入时自动取消其切出任务）。
-        /// </summary>
-        private PartyMember ResolveIncoming(PartyMember outgoing, int slotHint)
-        {
-            IReadOnlyList<PartyMember> members = _manager.PartyMembers;
-            if (members.Count <= 1) return null;
-
-            // 优先使用提示插槽
-            if (slotHint >= 0 && slotHint < members.Count)
-            {
-                PartyMember hinted = members[slotHint];
-                if (hinted != outgoing && hinted.Entity != null)
-                    return hinted;
-            }
-
-            // 默认轮转：下一个插槽
-            int startIndex = (outgoing.SlotIndex + 1) % members.Count;
-            for (int attempt = 0; attempt < members.Count; attempt++)
-            {
-                int index = (startIndex + attempt) % members.Count;
-                PartyMember candidate = members[index];
-                if (candidate != outgoing && candidate.Entity != null)
-                    return candidate;
-            }
-
-            return null;
-        }
-
-        /// <summary> 根据角色实体查找其活跃的切出任务。 </summary>
         private SwitchOutTask FindActiveTask(RoleEntity entity)
         {
             for (int i = 0; i < _switchOutQueue.Count; i++)
@@ -490,7 +401,5 @@ namespace Game.Logic
             }
             return null;
         }
-
-
     }
 }

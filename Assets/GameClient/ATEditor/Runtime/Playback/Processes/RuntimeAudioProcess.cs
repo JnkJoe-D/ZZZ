@@ -67,18 +67,28 @@ namespace ATEditor{
 
         public override void OnExit()
         {
-            // if (playingSoundId != -1 && audioHandler != null)
-            // {
-            //     audioHandler.StopSound(playingSoundId);
-            //     playingSoundId = -1;
-            // }
+            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.loop)
+            {
+                audioHandler.StopSound(playingSoundId);
+                playingSoundId = -1;
+            }
         }
+
         public override void OnDisable()
         {
-            
+            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.loop)
+            {
+                audioHandler.StopSound(playingSoundId);
+                playingSoundId = -1;
+            }
         }
+
         public override void Reset()
         {
+            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.loop)
+            {
+                audioHandler.StopSound(playingSoundId);
+            }
             base.Reset();
             audioHandler = null;
             playingSoundId = -1;

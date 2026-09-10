@@ -73,13 +73,18 @@ namespace ATEditor
             if (context != null)
             {
                 var actor = context.GetService<IBoneGetter>();
-                parent = actor.GetBone(clip.bindPoint);
+                parent = actor?.GetBone(clip.bindPoint);
             }
 
             if (parent != null)
             {
                 pos = parent.position + parent.rotation * clip.positionOffset;
                 rot = parent.rotation * Quaternion.Euler(clip.rotationOffset);
+            }
+            else if (context?.Owner != null)
+            {
+                pos = context.Owner.transform.position + context.Owner.transform.rotation * clip.positionOffset;
+                rot = context.Owner.transform.rotation * Quaternion.Euler(clip.rotationOffset);
             }
             else
             {
