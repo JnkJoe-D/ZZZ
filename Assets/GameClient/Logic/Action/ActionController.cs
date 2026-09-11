@@ -18,31 +18,12 @@ namespace Game.Logic
     {
         // ─── 内部数据结构 ───
 
-        private struct RouteCandidate
-        {
-            public CharacterCommand Command;
-            public ActionConfigAsset NextAction;
-            public ExecuteEvent RouteExecuteEvent;
-            public ExecuteTarget ExecuteType;
-            public int Priority;
-            public string RouteTag;
-            public ActionRoute SourceRoute;
-        }
-
-        public struct ExecutionRecord
-        {
-            public long CommandId;
-            public CommandRouteSource Source;
-            public string RouteTag;
-            public int ActionId;
-            public string ActionName;
-            public float Timestamp;
-            public ActionConfigAsset Asset;
-        }
-
         public sealed class RouteWindowData
         {
             public string Tag;
+            public object Token;
+            public int Generation;
+            public ActionConfigAsset OwnerAction;
             public List<CharacterCommand> CapturedCommands = new();
         }
 
@@ -51,12 +32,14 @@ namespace Game.Logic
         protected readonly CharacterEntity _entity;
         private readonly List<RouteWindowData> _activeRouteWindows = new();
         private readonly List<ActionRoute> _effectiveRoutes = new();
+        private readonly CommandFateTracker _fateTracker = new();
 
+        private int _currentPlayGeneration;
         private bool _isTransitioning;
         private ActionConfigAsset _currentPlayingAction;
         public ActionConfigAsset CurrentPlayingAction => _currentPlayingAction;
     
-        public List<ExecutionRecord> ExecutionHistory { get; } = new();
+        public IReadOnlyList<ExecutionRecord> ExecutionHistory => _fateTracker.History;
 
         protected ActionRuntimeData _actionData;
         protected IRouteEventReceiver _routeEventReceiver;
@@ -87,8 +70,10 @@ namespace Game.Logic
             // 保证待机状态或 AI 指令能随时切入
             if (!_isTransitioning && _activeRouteWindows.Count == 0 && _entity.CommandBuffer != null)
             {
-                foreach (var cmd in _entity.CommandBuffer.GetUnconsumedCommands())
+                List<CharacterCommand> unconsumed = _entity.CommandBuffer.GetUnconsumedCommands();
+                for (int i = 0; i < unconsumed.Count; i++)
                 {
+                    CharacterCommand cmd = unconsumed[i];
                     ActionConfigAsset action = GetCurrentAction();
                     if (action == null) break;
 
@@ -96,7 +81,7 @@ namespace Game.Logic
                     if (_effectiveRoutes.Count == 0) continue;
 
                     // 将空闲状态视为一个全局的匹配窗（tag=""）
-                    if (TryResolve(cmd, "", RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
+                    if (RouteResolver.TryResolve(_effectiveRoutes, cmd, "", GetRouteEvalActor(), _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
                     {
                         Apply(candidate);
                         cmd.IsConsumed = true;
@@ -139,19 +124,36 @@ namespace Game.Logic
             _entity.CommandBuffer.Push(command);
         }
 
-        public void OnComboWindowEnter(string comboTag)
+        public void OnComboWindowEnter(string comboTag, object windowToken = null)
         {
-            _activeRouteWindows.Add(new RouteWindowData { Tag = comboTag });
+            if (string.IsNullOrEmpty(comboTag)) return;
+
+            _activeRouteWindows.Add(new RouteWindowData 
+            { 
+                Tag = comboTag,
+                Token = windowToken,
+                Generation = _currentPlayGeneration,
+                OwnerAction = _currentPlayingAction
+            });
             EvalAutoTransitions(comboTag, RouteSingleModifierCheckTiming.OnWindowEnter);
         }
 
-        public void OnComboWindowExit(string comboTag)
+        public void OnComboWindowExit(string comboTag, object windowToken = null)
         {
-            int idx = FindWindowIndex(comboTag);
-            RouteWindowData window = idx >= 0 ? _activeRouteWindows[idx] : null;
+            if (string.IsNullOrEmpty(comboTag)) return;
 
-            List<CharacterCommand> captured = CollectCaptured(window);
-            ActionConfigAsset actionBefore = GetCurrentAction();
+            // 优先通过 Token 精确匹配实例；若无 Token 则按当前代际查找
+            int idx = FindWindowIndex(comboTag, windowToken, _currentPlayGeneration);
+            if (idx < 0)
+            {
+                // 该退出事件属于已被打断/替换的旧动作代际，直接安全忽略，绝不误删当前动作的新窗口
+                return;
+            }
+
+            RouteWindowData window = _activeRouteWindows[idx];
+            int windowGeneration = window.Generation;
+            object targetToken = window.Token;
+            List<CharacterCommand> captured = window.CapturedCommands;
 
             try
             {
@@ -163,10 +165,10 @@ namespace Game.Logic
             }
             finally
             {
-                // 仅当动作没有发生迁移切换时才移除退出窗口；若已切换新动作，新动作在 0 帧初始化的同名窗口绝不可误删
-                if (GetCurrentAction() == actionBefore)
+                // 仅当动作未切入更新代际时，才移除本代际的该窗口
+                if (_currentPlayGeneration == windowGeneration)
                 {
-                    int removeIdx = FindWindowIndex(comboTag);
+                    int removeIdx = FindWindowIndex(comboTag, targetToken, windowGeneration);
                     if (removeIdx >= 0)
                     {
                         _activeRouteWindows.RemoveAt(removeIdx);
@@ -181,42 +183,41 @@ namespace Game.Logic
 
             var eventCommand = CharacterCommandFactory.CreateSystemEventCommand(eventType);
 
-            ActionConfigAsset action = GetCurrentAction();
+            // 1. 优先尝试当前动作路由
+            if (TryResolveAndCommitEvent(eventCommand, GetCurrentAction(), windowTag))
+                return true;
+
+            // 2. 回退尝试全局 ActionRoot 路由
+            ActionConfigAsset root = _entity.Config?.ActionRoot;
+            if (root != null && root != GetCurrentAction())
+            {
+                if (TryResolveAndCommitEvent(eventCommand, root, windowTag))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool TryResolveAndCommitEvent(CharacterCommand eventCommand, ActionConfigAsset action, string windowTag)
+        {
             if (action == null) return false;
 
             action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
-            
-            // 优先检查指定窗口或所有活跃窗口
+            if (_effectiveRoutes.Count == 0) return false;
+
+            RoleEntity actor = GetRouteEvalActor();
+
             if (!string.IsNullOrEmpty(windowTag))
             {
-                if (TryResolve(eventCommand, windowTag, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
+                if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, windowTag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
                     return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
             }
             else
             {
-                foreach (var w in _activeRouteWindows)
+                for (int i = 0; i < _activeRouteWindows.Count; i++)
                 {
-                    if (TryResolve(eventCommand, w.Tag, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
-                        return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
-                }
-            }
-
-            // 回退到根动作的路由
-            ActionConfigAsset root = _entity.Config?.ActionRoot;
-            if (root == null || root == action) return false;
-
-            root.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
-            
-            if (!string.IsNullOrEmpty(windowTag))
-            {
-                if (TryResolve(eventCommand, windowTag, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
-                    return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
-            }
-            else
-            {
-                foreach (var w in _activeRouteWindows)
-                {
-                    if (TryResolve(eventCommand, w.Tag, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
+                    RouteWindowData w = _activeRouteWindows[i];
+                    if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, w.Tag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
                         return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
                 }
             }
@@ -232,6 +233,7 @@ namespace Game.Logic
         {
             if (action == null || _entity.ActionPlayer == null) return false;
 
+            unchecked { _currentPlayGeneration++; }
             _activeRouteWindows.Clear();
 
             _currentPlayingAction = action;
@@ -272,11 +274,14 @@ namespace Game.Logic
             action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
             if (_effectiveRoutes.Count == 0) return false;
 
+            RoleEntity actor = GetRouteEvalActor();
+
             if (_activeRouteWindows.Count > 0)
             {
-                foreach (RouteWindowData window in _activeRouteWindows)
+                for (int i = 0; i < _activeRouteWindows.Count; i++)
                 {
-                    if (TryResolve(command, window.Tag, RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
+                    RouteWindowData window = _activeRouteWindows[i];
+                    if (RouteResolver.TryResolve(_effectiveRoutes, command, window.Tag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
                     {
                         Apply(candidate);
                         return true;
@@ -286,12 +291,13 @@ namespace Game.Logic
             else
             {
                 // 空闲或未限制窗口状态（tag=""），以全局空闲窗尝试匹配
-                if (TryResolve(command, "", RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
+                if (RouteResolver.TryResolve(_effectiveRoutes, command, "", actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
                 {
                     Apply(candidate);
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -305,13 +311,15 @@ namespace Game.Logic
             action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
             if (_effectiveRoutes.Count == 0) return false;
 
+            RoleEntity actor = GetRouteEvalActor();
             RouteCandidate best = default;
             bool found = false;
 
-            foreach (var cmd in commands)
+            for (int i = 0; i < commands.Count; i++)
             {
-                if (!TryResolve(cmd, tag, RouteSingleModifierCheckTiming.OnWindowExit, out var c)) continue;
-                if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
+                CharacterCommand cmd = commands[i];
+                if (!RouteResolver.TryResolve(_effectiveRoutes, cmd, tag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.OnWindowExit, out var c)) continue;
+                if (!found || RouteResolver.IsHigherPriority(c, best)) { best = c; found = true; }
             }
 
             if (found)
@@ -332,7 +340,7 @@ namespace Game.Logic
             action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
             if (_effectiveRoutes.Count == 0) return false;
 
-            if (TryResolve(null, tag, timing, out var candidate))
+            if (RouteResolver.TryResolve(_effectiveRoutes, null, tag, GetRouteEvalActor(), _skillCostHandler, timing, out var candidate))
             {
                 Apply(candidate);
                 return true;
@@ -342,40 +350,12 @@ namespace Game.Logic
 
         private void EvalAutoTransitionsPerFrame()
         {
-            foreach (RouteWindowData window in _activeRouteWindows)
+            for (int i = 0; i < _activeRouteWindows.Count; i++)
             {
+                RouteWindowData window = _activeRouteWindows[i];
                 if (EvalAutoTransitions(window.Tag, RouteSingleModifierCheckTiming.EveryFrameInWindow))
                     return;
             }
-        }
-
-        private bool TryResolve(CharacterCommand command, string tag, RouteSingleModifierCheckTiming timing, out RouteCandidate best)
-        {
-            best = default;
-            bool found = false;
-
-            foreach (ActionRoute route in _effectiveRoutes)
-            {
-                if (route == null) continue;
-                if (!route.IsInvalid()) continue;
-
-                if (!route.Evaluate(command, tag, GetRouteEvalActor(), _skillCostHandler, timing)) 
-                    continue;
-
-                var c = new RouteCandidate
-                {
-                    Command = command,
-                    NextAction = route.ExecuteAction,
-                    RouteExecuteEvent = route.RouteExecuteEvent,
-                    ExecuteType = route.ExecuteType,
-                    Priority = route.Priority,
-                    RouteTag = tag,
-                    SourceRoute = route
-                };
-
-                if (!found || IsHigherPriority(c, best)) { best = c; found = true; }
-            }
-            return found;
         }
 
         // ═══════════════════════════════════════════
@@ -440,7 +420,7 @@ namespace Game.Logic
             if (finished == null || _isTransitioning) return;
 
             finished.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
-            if (TryResolve(null, "", RouteSingleModifierCheckTiming.OnWindowExit, out var c))
+            if (RouteResolver.TryResolve(_effectiveRoutes, null, "", GetRouteEvalActor(), _skillCostHandler, RouteSingleModifierCheckTiming.OnWindowExit, out var c))
             {
                 Apply(c);
                 return;
@@ -466,17 +446,10 @@ namespace Game.Logic
             PlayAction(rootAction, -1f, overshoot);
         }
 
-        private static bool IsHigherPriority(RouteCandidate a, RouteCandidate b)
-        {
-            if (a.Priority != b.Priority) return a.Priority > b.Priority;
-            long orderA = a.Command?.BufferOrder ?? 0L;
-            long orderB = b.Command?.BufferOrder ?? 0L;
-            return orderA > orderB;
-        }
-
         private ActionConfigAsset GetCurrentAction()
         {
-            return _entity.ActionPlayer?.CurrentAction 
+            return _currentPlayingAction
+                ?? _entity.ActionPlayer?.CurrentAction 
                 ?? _actionData?.NextActionToCast 
                 ?? _entity.Config?.ActionRoot;
         }
@@ -484,46 +457,11 @@ namespace Game.Logic
         private void RecordRoute(ICommandPayload payload, ActionConfigAsset action, CommandRouteSource source, string tag, long commandId = 0)
         {
             RecordComboRoute(source, tag, payload, action);
-
-            ExecutionHistory.Insert(0, new ExecutionRecord
-            {
-                CommandId = commandId, Source = source,
-                RouteTag = tag, ActionId = action?.ID ?? -1, ActionName = action?.name, Timestamp = Time.time,
-                Asset = action
-            });
-            if (ExecutionHistory.Count > 10) ExecutionHistory.RemoveAt(10);
+            _fateTracker.Record(commandId, source, tag, action);
         }
 
-        public CommandFate CheckCommandFate(long commandId)
-        {
-            if (commandId <= 0) return CommandFate.Dropped;
-
-            foreach (var record in ExecutionHistory)
-            {
-                if (record.CommandId == commandId) return CommandFate.Executed;
-            }
-
-            if (_entity.CommandBuffer != null)
-            {
-                foreach (var cmd in _entity.CommandBuffer.GetUnconsumedCommands())
-                {
-                    if (cmd.Id == commandId && !cmd.IsConsumed) return CommandFate.Pending;
-                }
-            }
-
-            foreach (var window in _activeRouteWindows)
-            {
-                if (window.CapturedCommands != null)
-                {
-                    foreach (var cmd in window.CapturedCommands)
-                    {
-                        if (cmd.Id == commandId && !cmd.IsConsumed) return CommandFate.Pending;
-                    }
-                }
-            }
-
-            return CommandFate.Dropped;
-        }
+        public CommandFate CheckCommandFate(long commandId) =>
+            _fateTracker.CheckFate(commandId, _entity.CommandBuffer, _activeRouteWindows);
 
         private void PurgeActiveWindowMoveCommands()
         {
@@ -536,34 +474,39 @@ namespace Game.Logic
         private void CaptureToActiveWindows(CharacterCommand command)
         {
             if (command == null) return;
-            foreach (RouteWindowData w in _activeRouteWindows)
-                w.CapturedCommands.Add(CloneCommand(command));
+            for (int i = 0; i < _activeRouteWindows.Count; i++)
+            {
+                _activeRouteWindows[i].CapturedCommands.Add(command);
+            }
+        }
+
+        private int FindWindowIndex(string tag, object token = null, int generation = -1)
+        {
+            for (int i = _activeRouteWindows.Count - 1; i >= 0; i--)
+            {
+                RouteWindowData w = _activeRouteWindows[i];
+                if (w.Tag != tag) continue;
+
+                if (token != null)
+                {
+                    if (ReferenceEquals(w.Token, token)) return i;
+                    continue;
+                }
+
+                if (generation >= 0)
+                {
+                    if (w.Generation == generation) return i;
+                    continue;
+                }
+
+                return i;
+            }
+            return -1;
         }
 
         private int FindWindowIndex(string tag)
         {
-            for (int i = _activeRouteWindows.Count - 1; i >= 0; i--)
-                if (_activeRouteWindows[i].Tag == tag) return i;
-            return -1;
-        }
-
-        private List<CharacterCommand> CollectCaptured(RouteWindowData window)
-        {
-            List<CharacterCommand> result = new();
-            if (window != null)
-                foreach (var cmd in window.CapturedCommands) result.Add(CloneCommand(cmd));
-            return result;
-        }
-
-        private static CharacterCommand CloneCommand(CharacterCommand s)
-        {
-            return s == null ? null : new CharacterCommand
-            {
-                Id = s.Id,
-                Payload = s.Payload,
-                Timestamp = s.Timestamp, BufferOrder = s.BufferOrder,
-                IsConsumed = s.IsConsumed
-            };
+            return FindWindowIndex(tag, null, _currentPlayGeneration);
         }
 
         protected virtual RoleEntity GetRouteEvalActor() => null;

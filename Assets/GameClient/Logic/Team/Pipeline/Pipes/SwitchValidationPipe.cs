@@ -68,7 +68,7 @@ namespace Game.Logic.Team.Pipeline.Pipes
                     ctx.CamMode = CameraSwitchMode.InstantSnap;
                     ctx.TimeScale = 0.05f;
                     ctx.TimeScaleDuration = 0.12f;
-                    ctx.InvincibleDuration = 0.8f;
+                    ctx.InvincibleDuration = 0f;
                     break;
 
                 case SwitchType.EvasionAid:

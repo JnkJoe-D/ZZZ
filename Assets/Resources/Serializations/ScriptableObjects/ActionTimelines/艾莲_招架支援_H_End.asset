@@ -47,6 +47,7 @@ MonoBehaviour:
     tracks:
     - rid: 4681868069779800838
     - rid: 4681868069779800839
+    - rid: 6379257864831369248
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
     groupName: "\u547D\u4E2D"
     isCollapsed: 0
@@ -220,3 +221,27 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 4294967295
+    - rid: 6379257864831369248
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 5dd5dcdf-888d-42fd-aec2-bac1754b9564
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379257864831369249
+    - rid: 6379257864831369249
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: b27bbdd3-cd0b-48c8-917a-1247cd3ca2fa
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.4500003
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: BackSwing

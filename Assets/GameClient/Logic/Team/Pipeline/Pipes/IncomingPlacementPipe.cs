@@ -28,7 +28,31 @@ namespace Game.Logic.Team.Pipeline.Pipes
             Vector3 spawnPos = originPos;
             Quaternion spawnRot = originRot;
 
-            if (outEntity != null)
+            if (ctx.Type == SwitchType.ParryAid && ctx.WarningMarker != null && ctx.TargetAttacker != null)
+            {
+                // 招架支援专属身位裁决（方案 C）
+                bool alreadyInCoverage = ctx.WarningMarker.AllowInPlaceParry && ctx.WarningMarker.IsPositionInCoverage(originPos);
+
+                if (alreadyInCoverage)
+                {
+                    // 就地格挡：保持原身位，仅转向面向怪物
+                    spawnPos = originPos;
+                    Vector3 lookDir = ctx.TargetAttacker.transform.position - spawnPos;
+                    lookDir.y = 0f;
+                    spawnRot = lookDir.sqrMagnitude > 0.001f ? Quaternion.LookRotation(lookDir) : originRot;
+                    Debug.Log($"<color=cyan>[ParryAid] 角色已在攻击威胁覆盖域内，执行【就地格挡】，不发生位移</color>");
+                }
+                else
+                {
+                    // 远距切入：精准瞬移至怪物接刀身位（带探地贴合）
+                    spawnPos = ctx.WarningMarker.GetWorldClashPosition();
+                    Vector3 lookDir = ctx.TargetAttacker.transform.position - spawnPos;
+                    lookDir.y = 0f;
+                    spawnRot = lookDir.sqrMagnitude > 0.001f ? Quaternion.LookRotation(lookDir) : originRot;
+                    Debug.Log($"<color=green>[ParryAid] 角色在威胁覆盖域外，瞬移至【接刀锚点】: {spawnPos}</color>");
+                }
+            }
+            else if (outEntity != null)
             {
                 ctx.Manager.CalculateSafeSwitchInTransform(outEntity.transform, inEntity, out spawnPos, out spawnRot);
             }
@@ -47,6 +71,20 @@ namespace Game.Logic.Team.Pipeline.Pipes
             ctx.Manager.SynchronizePartyMemberTransform(inEntity, spawnPos, spawnRot);
             inEntity.ResetSwitchState();
             inEntity.SetPresentationVisible(true);
+
+            // 4. 注入战斗上下文目标与警示标记（供动作时间轴中的 MovementClip / CameraControlClip 读取）
+            if (ctx.TargetAttacker != null)
+            {
+                inEntity.SetCombatContextTarget(ctx.TargetAttacker);
+            }
+            if (ctx.WarningMarker != null && inEntity.DataModule != null)
+            {
+                var actionData = inEntity.DataModule.Get<ActionRuntimeData>();
+                if (actionData != null)
+                {
+                    actionData.MatchedWarningMarker = ctx.WarningMarker;
+                }
+            }
 
             Debug.Log($"<color=green>[SwitchPipeline] Incoming 安全落点同步完成: {inMember.Config?.Name} @ {spawnPos}</color>");
         }

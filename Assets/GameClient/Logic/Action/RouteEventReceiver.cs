@@ -42,11 +42,16 @@ namespace Game.Logic
                 routeExecuteEvent == ExecuteEvent.ChainAttackStart ||
                 routeExecuteEvent == ExecuteEvent.QuickAidStart)
             {
+                var actionData = entity.DataModule?.Get<ActionRuntimeData>();
+                var warningMarker = actionData?.MatchedWarningMarker;
+
                 Game.Framework.EventCenter.Publish(new ActionRouteExecuteEvent
                 {
                     SourceEntity = entity as RoleEntity,
                     Event = routeExecuteEvent,
-                    TargetSlotHint = -1
+                    TargetSlotHint = -1,
+                    WarningMarker = warningMarker,
+                    TargetAttacker = warningMarker?.Attacker
                 });
             }
         }

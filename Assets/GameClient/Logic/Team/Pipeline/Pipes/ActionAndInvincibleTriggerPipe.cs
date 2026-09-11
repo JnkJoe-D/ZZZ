@@ -17,6 +17,12 @@ namespace Game.Logic.Team.Pipeline.Pipes
 
             RoleEntity inEntity = ctx.IncomingEntity;
 
+            // 0. 确保战斗上下文目标注入
+            if (ctx.TargetAttacker != null)
+            {
+                inEntity.SetCombatContextTarget(ctx.TargetAttacker);
+            }
+
             // 1. 触发切入动作
             if (ctx.CustomIncomingAction != null)
             {

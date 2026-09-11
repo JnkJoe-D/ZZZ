@@ -69,15 +69,24 @@ namespace Game.Logic
                 _context.TransitionCrossfadeOverride = crossfadeOverride;
             }
 
-            _runner.Play(timeline, _context, startTime);
+            ActionRunner runner = _runner;
             CurrentAction = config;
             IsPlaying = true;
             ActionStartTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
 
-            _runner.OnComplete -= HandleRunnerComplete;
-            _runner.OnComplete += HandleRunnerComplete;
-            _runner.OnInterrupt -= HandleRunnerInterrupt;
-            _runner.OnInterrupt += HandleRunnerInterrupt;
+            runner.OnComplete -= HandleRunnerComplete;
+            runner.OnComplete += HandleRunnerComplete;
+            runner.OnInterrupt -= HandleRunnerInterrupt;
+            runner.OnInterrupt += HandleRunnerInterrupt;
+
+            runner.Play(timeline, _context, startTime);
+
+            // 防重入保护：如果在 runner.Play (如第 0 帧 Clip 的 OnEnter 自动过渡) 内部递归触发了新动作播放，
+            // 此时 _runner 与 CurrentAction 已被内层的全新动作接管，外层帧栈决不能再将其覆盖！
+            if (_runner != runner || CurrentAction != config)
+            {
+                return false;
+            }
 
             return true;
         }

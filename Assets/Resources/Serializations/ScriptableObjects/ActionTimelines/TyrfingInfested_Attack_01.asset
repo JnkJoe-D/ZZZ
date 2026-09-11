@@ -232,22 +232,33 @@ MonoBehaviour:
         clipId: 41440e9a-f2f0-4b58-a436-9fafb6f14784
         clipName: "\u653B\u51FB\u9884\u8B66 (\u9EC4/\u7EA2\u5149)\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 1.0166667
+        startTime: 0.3
+        duration: 0.7
         blendInDuration: 0
         blendOutDuration: 0
         SignalType: 0
-        Weight: 0
-        DetectionRadius: 5
-        DetectionAngle: 180
+        Weight: 1
+        CoverageShape:
+          shapeType: 1
+          size: {x: 2, y: 1, z: 4}
+          radius: 5
+          height: 2.5
+          angle: 120
+          innerRadius: 1
+        CoverageCenterOffset: {x: 0, y: 1, z: 2}
+        ClashPositionOffset: {x: 0, y: 0, z: 3}
+        AllowInPlaceParry: 1
+        ShowGizmos: 1
+        DetectionRadius: 30
+        DetectionAngle: 360
     - rid: 6379257712028942357
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 4f458405-9c31-442c-a646-242e12fbb51a
         clipName: "\u6253\u51FB\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.0166667
-        duration: 0.1
+        startTime: 1.0666667
+        duration: 0.016666668
         blendInDuration: 0
         blendOutDuration: 0
         detectFrequency: 0
@@ -263,7 +274,7 @@ MonoBehaviour:
         isSelfImpacted: 0
         shape:
           shapeType: 1
-          size: {x: 1, y: 1, z: 4}
+          size: {x: 2, y: 1, z: 4}
           radius: 2
           height: 2
           angle: 90
@@ -317,8 +328,8 @@ MonoBehaviour:
         clipId: 7283831a-9866-43af-ab87-444dc959bf8d
         clipName: "\u6253\u51FB\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.1666667
-        duration: 0.1
+        startTime: 1.1833334
+        duration: 0.016666668
         blendInDuration: 0
         blendOutDuration: 0
         detectFrequency: 0
@@ -334,7 +345,7 @@ MonoBehaviour:
         isSelfImpacted: 0
         shape:
           shapeType: 1
-          size: {x: 1, y: 1, z: 4}
+          size: {x: 2, y: 1, z: 4}
           radius: 2
           height: 2
           angle: 90
@@ -374,8 +385,8 @@ MonoBehaviour:
         clipId: 715bdc72-5063-4d79-a410-0728e4cf3075
         clipName: "\u6253\u51FB\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.8333334
-        duration: 0.1
+        startTime: 1.8833334
+        duration: 0.016666668
         blendInDuration: 0
         blendOutDuration: 0
         detectFrequency: 0
@@ -391,7 +402,7 @@ MonoBehaviour:
         isSelfImpacted: 0
         shape:
           shapeType: 1
-          size: {x: 1, y: 1, z: 4}
+          size: {x: 2, y: 1, z: 10}
           radius: 2
           height: 2
           angle: 90
@@ -399,7 +410,7 @@ MonoBehaviour:
         hitBoxFollowMode: 1
         bindPoint: 0
         customBoneName: 
-        positionOffset: {x: 0, y: 1, z: 2}
+        positionOffset: {x: 0, y: 1, z: 5}
         rotationOffset: {x: 0, y: 0, z: 0}
         detects:
         - hitMode: 0

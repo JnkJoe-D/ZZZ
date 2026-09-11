@@ -54,7 +54,6 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069779800842
     - rid: 6379257712028942346
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
@@ -150,18 +149,6 @@ MonoBehaviour:
         isEnabled: 1
         clips:
         - rid: 4681868069779800846
-    - rid: 4681868069779800842
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
-        trackType: DamageTrack
-        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
-        isMuted: 0
-        isLocked: 0
-        isHidden: 0
-        isCollapsed: 0
-        isEnabled: 1
-        clips: []
     - rid: 4681868069779800843
       type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -255,7 +242,7 @@ MonoBehaviour:
         clipName: "\u683C\u6321\u5224\u5B9A\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1
+        duration: 1.0333334
         blendInDuration: 0
         blendOutDuration: 0
     - rid: 6379257712028942366

@@ -27,6 +27,10 @@ namespace ATEditor
 
                 case CameraControlMode.Recenter:
                     _handler.StartRecenter(clip.recenterTarget, clip.smoothTime, clip.targetPitch, clip.disableInputDuringRecenter, clip.framingBiasAngle, clip.deadzoneAngle, clip.allowSoftInputInterrupt);
+                    if (clip.enableDistanceAndFovOverride)
+                    {
+                        _handler.SetCameraFOVAndDistance(clip.recenterFOV, clip.recenterDistance, clip.recenterFovBlendSpeed, clip.instantDistanceOnEnter);
+                    }
                     break;
 
                 case CameraControlMode.LookAtTarget:
@@ -70,6 +74,10 @@ namespace ATEditor
 
                 case CameraControlMode.Recenter:
                     _handler.StopRecenter(clip.unlockInputOnExit);
+                    if (clip.enableDistanceAndFovOverride && clip.recenterRestoreFovOnExit)
+                    {
+                        _handler.ResetCameraFOVAndDistance(clip.recenterRestoreSpeed > 0f ? clip.recenterRestoreSpeed : clip.recenterFovBlendSpeed);
+                    }
                     break;
 
                 case CameraControlMode.LookAtTarget:
@@ -99,6 +107,10 @@ namespace ATEditor
             else if (clip.controlMode == CameraControlMode.Recenter)
             {
                 _handler.StopRecenter(true);
+                if (clip.enableDistanceAndFovOverride && clip.recenterRestoreFovOnExit)
+                {
+                    _handler.ResetCameraFOVAndDistance(clip.recenterFovBlendSpeed);
+                }
             }
             else if (clip.controlMode == CameraControlMode.LookAtTarget && clip.restoreLookAtOnExit)
             {

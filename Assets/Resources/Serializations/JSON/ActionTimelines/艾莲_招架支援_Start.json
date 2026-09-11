@@ -70,9 +70,6 @@
             "tracks": [
                 {
                     "rid": 1007
-                },
-                {
-                    "rid": 1008
                 }
             ]
         },
@@ -84,13 +81,25 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1009
+                    "rid": 1008
                 }
             ]
         },
         {
             "groupId": "fe97c978-da0d-4d70-b973-9218b609c4bc",
             "groupName": "变换",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1009
+                }
+            ]
+        },
+        {
+            "groupId": "e8ee49c2-a789-49bb-abe0-4d1846231e65",
+            "groupName": "相机",
             "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
@@ -267,25 +276,6 @@
             {
                 "rid": 1007,
                 "type": {
-                    "class": "HitTrack",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "6c372d50-4b7d-4af7-992f-9aff4e5fa659",
-                    "trackType": "DamageTrack",
-                    "trackName": "命中判定轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": true,
-                    "clips": []
-                }
-            },
-            {
-                "rid": 1008,
-                "type": {
                     "class": "EventTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
@@ -307,7 +297,7 @@
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1008,
                 "type": {
                     "class": "MotionWindowTrack",
                     "ns": "ATEditor",
@@ -330,16 +320,39 @@
                 }
             },
             {
-                "rid": 1010,
+                "rid": 1009,
                 "type": {
-                    "class": "EventTrack",
+                    "class": "TransformTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "ae3f12fd-c019-45c1-aada-ac39e2b9e6e4",
-                    "trackType": "EventTrack",
-                    "trackName": "事件轨道",
+                    "trackId": "2622adc2-34f0-49b0-aeb0-5da10e5f2476",
+                    "trackType": "TransformTrack",
+                    "trackName": "变换轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": false,
+                    "clips": [
+                        {
+                            "rid": 1017
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1010,
+                "type": {
+                    "class": "CameraTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "13363eaa-44b8-4405-9cf7-65ca062f9914",
+                    "trackType": "CameraTrack",
+                    "trackName": "摄像机轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -347,7 +360,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1018
                         }
                     ]
                 }
@@ -368,7 +381,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 43206
+                        "instanceID": 34732
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -452,8 +465,8 @@
                     "clipId": "62c31550-0015-43ac-8303-bf471860ab36",
                     "clipName": "格挡判定窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.21666666865348817,
-                    "duration": 0.7833333015441895,
+                    "startTime": 0.0,
+                    "duration": 1.0,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0
                 }
@@ -484,19 +497,100 @@
             {
                 "rid": 1017,
                 "type": {
-                    "class": "AssistTeleportClip",
+                    "class": "MovementClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "d4a84abf-a3f5-471e-b549-fcecef82a7d7",
-                    "clipName": "招架/支援瞬移空间修正片段",
+                    "clipId": "a9d75ef3-b06c-46e2-8262-194372dd4756",
+                    "clipName": "移动片段",
                     "isEnabled": true,
                     "startTime": 0.0,
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "Description": "触发支援瞬移"
+                    "referenceDestination": 1,
+                    "referenceCoordinate": 0,
+                    "targetPosition": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "targetPositionEnum": 0,
+                    "targetBaseDirection": 1,
+                    "targetAnchor": 1,
+                    "selfAnchor": 1,
+                    "offsetRadius": 1.0,
+                    "angleOffset": 0.0,
+                    "displacementType": 0,
+                    "movementCurve": 0,
+                    "enablePositionValidation": true,
+                    "candidatePositions": [],
+                    "enableSmartRadialFallback": true,
+                    "fallbackAngleStep": 30.0,
+                    "maxFallbackAngle": 180.0,
+                    "obstacleLayers": {
+                        "serializedVersion": "2",
+                        "m_Bits": 1024
+                    },
+                    "groundLayers": {
+                        "serializedVersion": "2",
+                        "m_Bits": 256
+                    },
+                    "groundCheckDistance": 3.0,
+                    "requireGrounded": true,
+                    "faceTargetOnArrival": true,
+                    "serializedObstacleLayers": 1024,
+                    "serializedGroundLayers": 256
+                }
+            },
+            {
+                "rid": 1018,
+                "type": {
+                    "class": "CameraControlClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "6abf64f7-04f4-4e59-82d5-dd3a1b24554f",
+                    "clipName": "相机控制片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.5,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "controlMode": 1,
+                    "unlockOnExit": true,
+                    "lockYaw": true,
+                    "lockPitch": true,
+                    "recenterTarget": 0,
+                    "smoothTime": 0.10000000149011612,
+                    "targetPitch": -12.0,
+                    "framingBiasAngle": -30.0,
+                    "deadzoneAngle": 1.5,
+                    "allowSoftInputInterrupt": true,
+                    "disableInputDuringRecenter": false,
+                    "unlockInputOnExit": true,
+                    "enableDistanceAndFovOverride": true,
+                    "instantDistanceOnEnter": true,
+                    "recenterDistance": 1.7999999523162842,
+                    "recenterFOV": 45.0,
+                    "recenterFovBlendSpeed": 6.0,
+                    "recenterRestoreFovOnExit": true,
+                    "recenterRestoreSpeed": 2.0,
+                    "lookAtOffset": {
+                        "x": 0.0,
+                        "y": 1.2000000476837159,
+                        "z": 0.0
+                    },
+                    "trackSmoothSpeed": 8.0,
+                    "fallbackToCharacter": true,
+                    "restoreLookAtOnExit": true,
+                    "targetFOV": 45.0,
+                    "targetDistance": 3.5,
+                    "blendInSpeed": 5.0,
+                    "blendOutSpeed": 5.0,
+                    "restoreOnExit": true
                 }
             }
         ]

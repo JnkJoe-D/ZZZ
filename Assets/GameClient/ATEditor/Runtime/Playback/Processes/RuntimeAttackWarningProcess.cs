@@ -12,9 +12,9 @@ namespace ATEditor
 
         public override void OnEnter()
         {
-            if (_handler == null) return;
-            _handler.RegisterWarningMarker
-            (clip.SignalType, clip.Weight, clip.DetectionRadius, clip.DetectionAngle);
+            UnityEngine.Debug.Log($"<color=red>[RuntimeAttackWarningProcess] AttackWarning!!!!!!</color>");
+            if (_handler == null || clip == null) return;
+            _handler.RegisterWarningMarker(clip);
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)

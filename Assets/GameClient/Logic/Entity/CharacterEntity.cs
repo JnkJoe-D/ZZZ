@@ -13,6 +13,34 @@ namespace Game.Logic
 
         public virtual ITargetFinder TargetFinder { get; protected set; }
 
+        /// <summary>
+        /// 当前动作/战斗上下文关联的目标实体（如招架黄光攻击者、弹刀反击目标）。
+        /// 优先级高于常规 TargetFinder。
+        /// </summary>
+        public CharacterEntity CombatContextTarget { get; set; }
+
+        public void SetCombatContextTarget(CharacterEntity target)
+        {
+            CombatContextTarget = target;
+        }
+
+        public void ClearCombatContextTarget()
+        {
+            CombatContextTarget = null;
+        }
+
+        /// <summary>
+        /// 获取当前生效的目标 Transform：优先返回存活的 CombatContextTarget，无上下文目标时回退至 TargetFinder。
+        /// </summary>
+        public Transform GetEffectiveTarget()
+        {
+            if (CombatContextTarget != null && CombatContextTarget.gameObject.activeInHierarchy && !CombatContextTarget.IsDead)
+            {
+                return CombatContextTarget.transform;
+            }
+            return TargetFinder?.GetTarget();
+        }
+
         public CharacterConfigAsset Config { get; private set; }
         public ICharacterMotor CharacterMotor { get; protected set; }
         public HitReactionModule HitReactionModule { get; protected set; }

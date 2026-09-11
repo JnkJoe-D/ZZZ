@@ -54,7 +54,6 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 4681868069779800842
     - rid: 6379257712028942346
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
@@ -69,7 +68,14 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 6379257712028942339
+    - rid: 6379257864831369236
+  - groupId: e8ee49c2-a789-49bb-abe0-4d1846231e65
+    groupName: "\u76F8\u673A"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 6379257864831369241
   references:
     version: 2
     RefIds:
@@ -151,18 +157,6 @@ MonoBehaviour:
         isEnabled: 1
         clips:
         - rid: 4681868069779800846
-    - rid: 4681868069779800842
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
-        trackType: DamageTrack
-        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
-        isMuted: 0
-        isLocked: 0
-        isHidden: 0
-        isCollapsed: 0
-        isEnabled: 1
-        clips: []
     - rid: 4681868069779800843
       type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -236,30 +230,6 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 4294967295
-    - rid: 6379257712028942339
-      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        trackId: ae3f12fd-c019-45c1-aada-ac39e2b9e6e4
-        trackType: EventTrack
-        trackName: "\u4E8B\u4EF6\u8F68\u9053"
-        isMuted: 0
-        isLocked: 0
-        isHidden: 0
-        isCollapsed: 0
-        isEnabled: 1
-        clips:
-        - rid: 6379257712028942343
-    - rid: 6379257712028942343
-      type: {class: AssistTeleportClip, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        clipId: d4a84abf-a3f5-471e-b549-fcecef82a7d7
-        clipName: "\u62DB\u67B6/\u652F\u63F4\u77AC\u79FB\u7A7A\u95F4\u4FEE\u6B63\u7247\u6BB5"
-        isEnabled: 1
-        startTime: 0
-        duration: 0.1
-        blendInDuration: 0
-        blendOutDuration: 0
-        Description: "\u89E6\u53D1\u652F\u63F4\u77AC\u79FB"
     - rid: 6379257712028942346
       type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -279,8 +249,8 @@ MonoBehaviour:
         clipId: 62c31550-0015-43ac-8303-bf471860ab36
         clipName: "\u683C\u6321\u5224\u5B9A\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.21666667
-        duration: 0.7833333
+        startTime: 0
+        duration: 1
         blendInDuration: 0
         blendOutDuration: 0
     - rid: 6379257712028942364
@@ -307,3 +277,104 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         comboTag: SwitchExecute
+    - rid: 6379257864831369236
+      type: {class: TransformTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 2622adc2-34f0-49b0-aeb0-5da10e5f2476
+        trackType: TransformTrack
+        trackName: "\u53D8\u6362\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 0
+        clips:
+        - rid: 6379257864831369237
+    - rid: 6379257864831369237
+      type: {class: MovementClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: a9d75ef3-b06c-46e2-8262-194372dd4756
+        clipName: "\u79FB\u52A8\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        referenceDestination: 1
+        referenceCoordinate: 0
+        targetPosition: {x: 0, y: 0, z: 0}
+        targetPositionEnum: 0
+        targetBaseDirection: 1
+        targetAnchor: 1
+        selfAnchor: 1
+        offsetRadius: 1
+        angleOffset: 0
+        displacementType: 0
+        movementCurve: 0
+        enablePositionValidation: 1
+        candidatePositions: []
+        enableSmartRadialFallback: 1
+        fallbackAngleStep: 30
+        maxFallbackAngle: 180
+        obstacleLayers:
+          serializedVersion: 2
+          m_Bits: 1024
+        groundLayers:
+          serializedVersion: 2
+          m_Bits: 256
+        groundCheckDistance: 3
+        requireGrounded: 1
+        faceTargetOnArrival: 1
+        serializedObstacleLayers: 1024
+        serializedGroundLayers: 256
+    - rid: 6379257864831369241
+      type: {class: CameraTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 13363eaa-44b8-4405-9cf7-65ca062f9914
+        trackType: CameraTrack
+        trackName: "\u6444\u50CF\u673A\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379257864831369244
+    - rid: 6379257864831369244
+      type: {class: CameraControlClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 6abf64f7-04f4-4e59-82d5-dd3a1b24554f
+        clipName: "\u76F8\u673A\u63A7\u5236\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.5
+        blendInDuration: 0
+        blendOutDuration: 0
+        controlMode: 1
+        unlockOnExit: 1
+        lockYaw: 1
+        lockPitch: 1
+        recenterTarget: 0
+        smoothTime: 0.1
+        targetPitch: -12
+        framingBiasAngle: -30
+        deadzoneAngle: 1.5
+        allowSoftInputInterrupt: 1
+        disableInputDuringRecenter: 0
+        unlockInputOnExit: 1
+        enableDistanceAndFovOverride: 1
+        instantDistanceOnEnter: 1
+        recenterDistance: 1.8
+        recenterFOV: 45
+        recenterFovBlendSpeed: 6
+        recenterRestoreFovOnExit: 1
+        recenterRestoreSpeed: 2
+        lookAtOffset: {x: 0, y: 1.2, z: 0}
+        trackSmoothSpeed: 8
+        fallbackToCharacter: 1
+        restoreLookAtOnExit: 1
+        targetFOV: 45
+        targetDistance: 3.5
+        blendInSpeed: 5
+        blendOutSpeed: 5
+        restoreOnExit: 1

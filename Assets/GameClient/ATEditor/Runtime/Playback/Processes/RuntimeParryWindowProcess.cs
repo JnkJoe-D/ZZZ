@@ -12,7 +12,7 @@ namespace ATEditor
 
         public override void OnEnter()
         {
-            _handler?.SetParryWindowActive(true);
+            _handler?.OnParryWindowEnter();
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
@@ -21,12 +21,15 @@ namespace ATEditor
 
         public override void OnExit()
         {
-            _handler?.SetParryWindowActive(false);
+            // 自然离开时间区间：自然结束，注销契约并关闭窗口
+            _handler?.OnParryWindowExit(isInterrupted: false);
         }
 
         public override void OnDisable()
         {
-            _handler?.SetParryWindowActive(false);
+            bool isInterrupted = context != null && context.IsInterrupted;
+            // 若被路由切招打断，则标记 isInterrupted = true，Handler 绝不注销契约
+            _handler?.OnParryWindowExit(isInterrupted: isInterrupted);
         }
 
         public override void Reset()

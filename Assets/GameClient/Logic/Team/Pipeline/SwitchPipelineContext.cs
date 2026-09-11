@@ -32,6 +32,10 @@ namespace Game.Logic.Team.Pipeline
         // ── 动作重载 ──────────────────────────────
         public ActionConfigAsset CustomIncomingAction { get; set; }
 
+        // ── 战斗上下文关联目标 ────────────────────
+        public AttackWarningMarker WarningMarker { get; set; }
+        public CharacterEntity TargetAttacker { get; set; }
+
         // ── 控制流状态 ────────────────────────────
         public bool IsAborted { get; private set; }
         public string AbortReason { get; private set; }
@@ -66,6 +70,9 @@ namespace Game.Logic.Team.Pipeline
             InvincibleDuration = 0.5f;
 
             CustomIncomingAction = null;
+
+            WarningMarker = null;
+            TargetAttacker = null;
 
             IsAborted = false;
             AbortReason = null;

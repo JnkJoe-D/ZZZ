@@ -1,5 +1,3 @@
-using Game.Logic;
-
 namespace Game.Logic
 {
     public interface IActionCommandHandler
@@ -12,11 +10,14 @@ namespace Game.Logic
         public void Handle(CharacterCommand command) { }
     }
 
-    public abstract class ForwardingInputCommandHandler : IActionCommandHandler
+    /// <summary>
+    /// 标准动作指令处理器：直接将指令转发至角色的 ActionController 处理
+    /// </summary>
+    public class DefaultActionCommandHandler : IActionCommandHandler
     {
         protected readonly RoleEntity Entity;
 
-        protected ForwardingInputCommandHandler(RoleEntity entity)
+        public DefaultActionCommandHandler(RoleEntity entity)
         {
             Entity = entity;
         }
@@ -28,26 +29,28 @@ namespace Game.Logic
 
         public virtual void Handle(CharacterCommand command)
         {
-            if (command == null)
-            {
-                return;
-            }
-
+            if (command == null) return;
             Forward(command);
         }
     }
 
-    public sealed class DashInputCommandHandler : ForwardingInputCommandHandler
+    // ──────────────── 向后兼容过渡类 ────────────────
+    public abstract class ForwardingInputCommandHandler : DefaultActionCommandHandler
+    {
+        protected ForwardingInputCommandHandler(RoleEntity entity) : base(entity) { }
+    }
+
+    public sealed class DashInputCommandHandler : DefaultActionCommandHandler
     {
         public DashInputCommandHandler(RoleEntity entity) : base(entity) { }
     }
 
-    public sealed class ComboInputCommandHandler : ForwardingInputCommandHandler
+    public sealed class ComboInputCommandHandler : DefaultActionCommandHandler
     {
         public ComboInputCommandHandler(RoleEntity entity) : base(entity) { }
     }
 
-    public sealed class DefaultInputCommandHandler : ForwardingInputCommandHandler
+    public sealed class DefaultInputCommandHandler : DefaultActionCommandHandler
     {
         public DefaultInputCommandHandler(RoleEntity entity) : base(entity) { }
     }

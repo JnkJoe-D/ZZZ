@@ -70,6 +70,7 @@ namespace ATEditor
                 return startPos + moveDir * (clip.offsetRadius > 0 ? clip.offsetRadius : 2.0f);
             }
 
+
             float rTarget = transformHandler != null ? transformHandler.GetTargetRadius() : DefaultCharacterRadius;
             float rSelf = transformHandler != null ? transformHandler.GetRadius() : DefaultCharacterRadius;
             float hSelf = transformHandler != null ? transformHandler.GetHeight() : DefaultCharacterHeight;

@@ -22,6 +22,12 @@ namespace Game.Logic
         /// 为未来定向切人（如支援技指定角色）预留扩展。
         /// </summary>
         public int TargetSlotHint;
+
+        /// <summary> 触发此事件的危险警示标记（如招架黄光标记）。 </summary>
+        public AttackWarningMarker WarningMarker;
+
+        /// <summary> 关联的目标攻击者实体。 </summary>
+        public CharacterEntity TargetAttacker;
     }
 
     /// <summary>

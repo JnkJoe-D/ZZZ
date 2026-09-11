@@ -25,6 +25,8 @@ namespace Game.Logic
         public ActionConfigAsset hitAnimStay;
         [Tooltip("击倒")]
         public ActionConfigAsset hitAnimKnockDown;
+        [Tooltip("招架弹刀硬直")]
+        public ActionConfigAsset hitAnimParry;
 
         [Header("击退（接口占位）")]
         public float knockbackForce = 0f;
@@ -42,20 +44,27 @@ namespace Game.Logic
             if (hitAnimShake != null) yield return hitAnimShake;
             if (hitAnimStay != null) yield return hitAnimStay;
             if (hitAnimKnockDown != null) yield return hitAnimKnockDown;
+            if (hitAnimParry != null) yield return hitAnimParry;
         }
 
         public ActionConfigAsset GetHitAction(cfg.ZZZ.HitReactionType type)
         {
-            return type switch
+            ActionConfigAsset action = type switch
             {
                 cfg.ZZZ.HitReactionType.Light => hitAnimLight,
                 cfg.ZZZ.HitReactionType.Heavy => hitAnimHeavy,
                 cfg.ZZZ.HitReactionType.Launch => hitAnimKnowAway, // Note: Assuming KnowAway maps to Knockback/Launch
                 cfg.ZZZ.HitReactionType.Shake => hitAnimShake,
                 cfg.ZZZ.HitReactionType.KnockDown => hitAnimKnockDown,
-                // TODO: add other types if necessary
-                _ => hitAnimLight // Fallback
+                cfg.ZZZ.HitReactionType.Parried => hitAnimParry,
+                _ => null
             };
+
+            if (action == null)
+            {
+                Debug.LogWarning($"[HitReactionConfig] 角色资产 '{name}' 未配置受击类型 [{type}] 对应的受击动作资产 (HitAction)！不执行任何静默回退。");
+            }
+            return action;
         }
     }
 }

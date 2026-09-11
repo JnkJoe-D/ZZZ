@@ -192,16 +192,16 @@ namespace Game.Logic
                     RequestSwitch(SwitchType.NormalSwitch, evt.SourceEntity, evt.TargetSlotHint);
                     break;
                 case ExecuteEvent.ParryAidStart:
-                    RequestSwitch(SwitchType.ParryAid, evt.SourceEntity, evt.TargetSlotHint);
+                    RequestSwitch(SwitchType.ParryAid, evt.SourceEntity, evt.TargetSlotHint, targetAttacker: evt.TargetAttacker, warningMarker: evt.WarningMarker);
                     break;
                 case ExecuteEvent.EvasionAidStart:
-                    RequestSwitch(SwitchType.EvasionAid, evt.SourceEntity, evt.TargetSlotHint);
+                    RequestSwitch(SwitchType.EvasionAid, evt.SourceEntity, evt.TargetSlotHint, targetAttacker: evt.TargetAttacker, warningMarker: evt.WarningMarker);
                     break;
                 case ExecuteEvent.ChainAttackStart:
-                    RequestSwitch(SwitchType.ChainAttack, evt.SourceEntity, evt.TargetSlotHint);
+                    RequestSwitch(SwitchType.ChainAttack, evt.SourceEntity, evt.TargetSlotHint, targetAttacker: evt.TargetAttacker, warningMarker: evt.WarningMarker);
                     break;
                 case ExecuteEvent.QuickAidStart:
-                    RequestSwitch(SwitchType.QuickAid, evt.SourceEntity, evt.TargetSlotHint);
+                    RequestSwitch(SwitchType.QuickAid, evt.SourceEntity, evt.TargetSlotHint, targetAttacker: evt.TargetAttacker, warningMarker: evt.WarningMarker);
                     break;
                 default:
                     break;
@@ -211,7 +211,7 @@ namespace Game.Logic
         /// <summary>
         /// 发起切人请求（委托至 SwitchPipeline 流水线统一裁决调度）
         /// </summary>
-        public void RequestSwitch(SwitchType type, RoleEntity sourceEntity, int slotHint = -1, ActionConfigAsset customAction = null)
+        public void RequestSwitch(SwitchType type, RoleEntity sourceEntity, int slotHint = -1, ActionConfigAsset customAction = null, CharacterEntity targetAttacker = null, AttackWarningMarker warningMarker = null)
         {
             if (sourceEntity == null) return;
             PartyMember outgoing = _manager.FindPartyMember(sourceEntity);
@@ -223,6 +223,8 @@ namespace Game.Logic
             ctx.OutgoingMember = outgoing;
             ctx.TargetSlotHint = slotHint;
             ctx.CustomIncomingAction = customAction;
+            ctx.TargetAttacker = targetAttacker;
+            ctx.WarningMarker = warningMarker;
 
             _pipeline.Execute(ctx);
             _pipeline.ReleaseContext(ctx);
@@ -349,6 +351,7 @@ namespace Game.Logic
                 if (switchData != null) switchData.IsSwitchOutPending = false;
             }
             entity.SetPresentationVisible(false);
+            entity.SetColliderActive(false);
             entity.SetControlActive(false, assignCameraTarget: false);
 
             // 播放 ActionRoot 使角色回到待机循环（Standby 维护需要）

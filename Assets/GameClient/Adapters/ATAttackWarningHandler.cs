@@ -10,9 +10,35 @@ namespace Game.Logic
             _entity = entity;
             _marker = null;
         }
+        public void RegisterWarningMarker(AttackWarningClip clip)
+        {
+            if (clip == null) return;
+            if (_marker != null)
+            {
+                CombatWarningManager.Unregister(_marker);
+                _marker = null;
+            }
+
+            AttackWarningMarker marker = new AttackWarningMarker
+            {
+                Attacker = _entity,
+                SignalType = clip.SignalType,
+                Weight = clip.Weight,
+                DetectionRadius = clip.DetectionRadius > 0 ? clip.DetectionRadius : 10.0f,
+                DetectionAngle = clip.DetectionAngle > 0 ? clip.DetectionAngle : 180.0f,
+                CoverageShape = clip.CoverageShape,
+                CoverageCenterOffset = clip.CoverageCenterOffset,
+                ClashPositionOffset = clip.ClashPositionOffset,
+                AllowInPlaceParry = clip.AllowInPlaceParry
+            };
+            if (CombatWarningManager.Register(marker))
+            {
+                _marker = marker;
+            }
+        }
+
         public void RegisterWarningMarker(WarningSignalType signalType, AttackWeight weight, float detectionRadius, float detectionAngle)
         {
-            UnityEngine.Debug.Log($"!!!!!!!!!!!!!!!!!!!RegisterWarningMarker: {signalType}, {weight}, {detectionRadius}, {detectionAngle}");
             if (_marker != null)
             {
                 CombatWarningManager.Unregister(_marker);

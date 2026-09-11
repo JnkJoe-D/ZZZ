@@ -22,7 +22,7 @@ MonoBehaviour:
   PlaybackSpeed: 1
   Routes: []
   RouteSets: []
-  EnterState: 50
+  EnterState: 80
   InheritMode: 0
   references:
     version: 2

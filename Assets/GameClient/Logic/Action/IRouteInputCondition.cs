@@ -3,9 +3,11 @@ using UnityEngine;
 
 namespace Game.Logic
 {
-    public interface IRouteInputCondition
+    /// <summary>
+    /// 路由输入条件接口：继承自 ITransitionCondition 以实现全系统条件契约归一化。
+    /// </summary>
+    public interface IRouteInputCondition : ITransitionCondition
     {
-        bool Check(RoleEntity actor);
     }
 
     [Serializable]
@@ -24,6 +26,16 @@ namespace Game.Logic
         public bool Check(RoleEntity actor)
         {
             if (actor == null || !actor.IsControlActive) return false;
+
+            // 优先依据动作自身播放流逝时长进行高内聚的闭环计算
+            if (actor.ActionPlayer != null && actor.Config is RoleConfigAsset roleConfig)
+            {
+                float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+                float elapsed = currentTime - actor.ActionPlayer.ActionStartTime;
+                return elapsed <= roleConfig.JogShortInputThreshold;
+            }
+
+            // 兜底支持从 DataModule 获取
             return actor.DataModule?.Get<ActionRuntimeData>() != null && actor.DataModule.Get<ActionRuntimeData>().IsShortMoveInput;
         }
     }

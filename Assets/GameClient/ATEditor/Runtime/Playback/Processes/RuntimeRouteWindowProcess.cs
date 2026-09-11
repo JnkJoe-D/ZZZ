@@ -14,7 +14,7 @@ namespace ATEditor
         {
             if (comboHandler != null && clip != null)
             {
-                comboHandler.OnComboWindowEnter(clip.comboTag);
+                comboHandler.OnComboWindowEnter(clip.comboTag, this);
             }
         }
 
@@ -27,7 +27,7 @@ namespace ATEditor
         {
             if (comboHandler != null && clip != null)
             {
-                comboHandler.OnComboWindowExit(clip.comboTag);
+                comboHandler.OnComboWindowExit(clip.comboTag, this);
             }
         }
 

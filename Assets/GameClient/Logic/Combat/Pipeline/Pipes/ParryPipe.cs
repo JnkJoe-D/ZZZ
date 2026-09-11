@@ -19,13 +19,31 @@ namespace Game.Logic.Combat.Pipeline.Pipes
             var victimParryData = ctx.Victim.DataModule?.Get<ParryRuntimeData>();
             if (victimParryData == null || !victimParryData.IsParrying) return;
 
-            // 1. 获取攻击者危险警示重量
-            var warningMarker = CombatWarningManager.GetWarningByAttacker(ctx.Attacker);
-            var weight = warningMarker?.Weight ?? AttackWeight.Light_Interruptible;
+            // 0. 查询针对该攻击者的拼刀契约（契约生命周期由 ParryWindowClip 统一控制，此处不注销以支持多段判定）
+            var contract = ctx.Attacker != null ? CombatWarningManager.GetActiveContract(ctx.Attacker) : null;
+            if (contract != null && contract.ParryRole == ctx.Victim)
+            {
+                contract.IsResolved = true;
+            }
+
+            // 1. 获取攻击者危险警示重量（优先从契约或全局查找，杜绝静默回退）
+            var warningMarker = contract?.Marker ?? CombatWarningManager.GetWarningByAttacker(ctx.Attacker);
+            if (warningMarker == null)
+            {
+                Debug.LogError($"[ParryPipe] 招架异常：攻击者 [{ctx.Attacker?.name}] 在招架结算时未找到有效的预警上下文 (WarningMarker)，无法判定攻击重量！绝不静默假定为轻攻击。");
+                ctx.Abort("Parried but warning context missing", HitResultFlags.Parried);
+                return;
+            }
+
+            var weight = warningMarker.Weight;
 
             victimParryData.ParrySucceeded = true;
             victimParryData.LastParriedAttacker = ctx.Attacker;
             victimParryData.LastParriedWeight = weight;
+            if (ctx.Victim is RoleEntity roleVictim && ctx.Attacker != null)
+            {
+                roleVictim.SetCombatContextTarget(ctx.Attacker);
+            }
 
             // 2. 状态标记与顿帧配置
             ctx.ResultFlags |= HitResultFlags.Parried;

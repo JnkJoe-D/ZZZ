@@ -578,7 +578,7 @@ namespace Game.Camera
             {
                 case ATEditor.CameraRecenterTarget.CombatFraming:
                     // 智能战斗对峙构图：以角色与怪物的空间连线为中心，施加黄金分割侧向偏角
-                    Transform framingCombatTarget = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetTarget() : null;
+                    Transform framingCombatTarget = _entity != null ? _entity.GetEffectiveTarget() : null;
                     if (framingCombatTarget != null)
                     {
                         Vector3 toEnemy = framingCombatTarget.position - root.position;
@@ -628,7 +628,7 @@ namespace Game.Camera
 
                 case ATEditor.CameraRecenterTarget.TargetDirection:
                     // 直接正对目标：无侧向偏移的死锁正面视角
-                    Transform directCombatTarget = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetTarget() : null;
+                    Transform directCombatTarget = _entity != null ? _entity.GetEffectiveTarget() : null;
                     if (directCombatTarget != null)
                     {
                         Vector3 dir = directCombatTarget.position - root.position;
@@ -745,7 +745,7 @@ namespace Game.Camera
         {
             if (!_isLookAtActive || _virtualCamera == null) return;
 
-            Transform target = _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetTarget() : null;
+            Transform target = _entity != null ? _entity.GetEffectiveTarget() : null;
             if (target != null)
             {
                 Vector3 targetLookPos = target.position + _lookAtOffset;
@@ -793,7 +793,7 @@ namespace Game.Camera
             }
         }
 
-        public void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed)
+        public void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed, bool instant = false)
         {
             if (_virtualCamera == null) return;
 
@@ -815,6 +815,32 @@ namespace Game.Camera
             _targetDistance = targetDistance;
             _fovBlendSpeed = Mathf.Max(0.1f, speed);
             _isFovTransitionActive = true;
+
+            if (instant)
+            {
+                if (_virtualCamera is CinemachineVirtualCamera vcam)
+                {
+                    if (_targetFov > 0f)
+                    {
+                        vcam.m_Lens.FieldOfView = _targetFov;
+                    }
+                    if (_targetDistance > 0f)
+                    {
+                        var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
+                        if (transposer != null)
+                        {
+                            transposer.m_CameraDistance = _targetDistance;
+                        }
+                    }
+                }
+                else if (_virtualCamera is CinemachineFreeLook freeLook)
+                {
+                    if (_targetFov > 0f)
+                    {
+                        freeLook.m_Lens.FieldOfView = _targetFov;
+                    }
+                }
+            }
         }
 
         public void ResetCameraFOVAndDistance(float speed)

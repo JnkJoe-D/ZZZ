@@ -45,7 +45,7 @@ namespace Game.Camera
         void StartLookAtTarget(Vector3 offset, float smoothSpeed, bool fallbackToCharacter);
         void UpdateLookAtTarget(float deltaTime);
         void StopLookAtTarget(bool restore);
-        void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed);
+        void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed, bool instant = false);
         void ResetCameraFOVAndDistance(float speed);
     }
 }

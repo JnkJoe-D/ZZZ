@@ -133,10 +133,39 @@ namespace Game.Logic
         {
             return await SerializationUtility.OpenFromJsonAsync(config.TimelineAsset);
         }
+
+        /// <summary>
+        /// 卸载特定角色的动作 Timeline 缓存，支持按需内存释放
+        /// </summary>
+        public void UnloadCharacterActions(CharacterConfigAsset config)
+        {
+            if (config == null) return;
+            foreach (var actionConfig in config.GetAllActionConfigs())
+            {
+                if (actionConfig != null)
+                {
+                    _timelineCache.Remove(actionConfig.ID);
+                    _timelineLoadTasks.Remove(actionConfig.ID);
+                }
+            }
+        }
+
         public ProcessContext GetContext(CharacterEntity entity)
         {
+            if (entity == null) return null;
             int id = entity.GetInstanceID();
-            if (!_contextCache.TryGetValue(id, out var ctx))
+            if (_contextCache.TryGetValue(id, out var ctx))
+            {
+                // 若目标 GameObject 已被销毁，安全清空并释放残留引用
+                if (ctx.Owner == null || ctx.Owner.Equals(null))
+                {
+                    ctx.Clear();
+                    _contextCache.Remove(id);
+                    ctx = null;
+                }
+            }
+
+            if (ctx == null)
             {
                 ctx = new ProcessContext(entity.gameObject, ATEditor.PlayMode.Runtime, ATServiceFactory.ProvideService);
                 _contextCache[id] = ctx;
@@ -146,8 +175,20 @@ namespace Game.Logic
 
         public ActionRunner GetRunner(CharacterEntity entity)
         {
+            if (entity == null) return null;
             int id = entity.GetInstanceID();
-            if (!_runnerCache.TryGetValue(id, out var runner))
+            if (_runnerCache.TryGetValue(id, out var runner))
+            {
+                // 若角色底层已被销毁，安全停止并移除
+                if (entity.gameObject == null || entity.gameObject.Equals(null))
+                {
+                    runner.Stop();
+                    _runnerCache.Remove(id);
+                    runner = null;
+                }
+            }
+
+            if (runner == null)
             {
                 runner = new ActionRunner(ATEditor.PlayMode.Runtime);
                 _runnerCache[id] = runner;

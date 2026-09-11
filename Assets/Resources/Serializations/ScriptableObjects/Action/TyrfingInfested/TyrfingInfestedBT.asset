@@ -500,9 +500,9 @@ MonoBehaviour:
   position: {x: -131, y: 1071}
   walkF: {fileID: 11400000, guid: dcaf9d2d600272c408618d3c97ea4cbe, type: 2}
   walkB: {fileID: 11400000, guid: 8c977e69c5fffe5429f906cfe5c550bb, type: 2}
-  referenceDistance: 5
+  referenceDistance: 10
   strategy: 2
-  timeLimit: 3
+  timeLimit: 2
 --- !u!114 &7023013914001286781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -596,7 +596,7 @@ MonoBehaviour:
   m_Name: BBCheckFloatData
   m_EditorClassIdentifier: 
   guid: e90a129a-2500-425c-bf5f-2fd682d3363a
-  position: {x: -504.9999, y: 673}
+  position: {x: -505.00003, y: 673}
   child: {fileID: 2333842019682371689}
   key: 1
   op: 6

@@ -85,7 +85,7 @@ namespace Game.Logic
 
         [ShowIf("Category", ModifierCategory.Condition)]
         [SerializeReference, SubclassSelector]
-        public IRouteInputCondition InputCondition;
+        public ITransitionCondition InputCondition;
 
         public bool Inverse = false;
 
@@ -158,27 +158,26 @@ namespace Game.Logic
 
             if (ExtraConditions != null && ExtraConditions.Count > 0)
             {
-                bool conditionResult = CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor);
-                if (!conditionResult && ExecuteAction != null && ExecuteAction.Name.Contains("Attack"))
-                {
-                    Debug.Log($"<color=orange>[RouteTrace] {ExecuteAction.Name} 的 ExtraConditions 检查未通过！</color>");
-                }
-                if (!conditionResult) return false;
+                if (!CommandRouteEvaluator.MatchesConditions(ExtraConditions, actor))
+                    return false;
             }
 
             return CheckSkillRequire(actor, skillHandler);
         }
 
-        public bool IsInvalid()
+        /// <summary>
+        /// 校验当前路由配置是否有效（目标合法且不为空）。
+        /// </summary>
+        public bool IsValid()
         {
-            if(ExecuteType == ExecuteTarget.None
-            || (ExecuteType == ExecuteTarget.Action && ExecuteAction == null)
-            || (ExecuteType == ExecuteTarget.Event && RouteExecuteEvent == ExecuteEvent.None))
-            {
-                return false;
-            }
+            if (ExecuteType == ExecuteTarget.None) return false;
+            if (ExecuteType == ExecuteTarget.Action && ExecuteAction == null) return false;
+            if (ExecuteType == ExecuteTarget.Event && RouteExecuteEvent == ExecuteEvent.None) return false;
             return true;
         }
+
+        [Obsolete("Use IsValid() instead. Note that IsInvalid now correctly returns true when invalid.", false)]
+        public bool IsInvalid() => !IsValid();
 
 
 

@@ -111,6 +111,7 @@ namespace Game.Logic
                 StateMachine.AddState(new CharacterEvadeState());
                 StateMachine.AddState(new CharacterHitStunState());
                 StateMachine.AddState(new CharacterSwitchState());
+                StateMachine.AddState(new CharacterParryState());
             }
 
             if (Config.ActionRoot != null)
@@ -202,6 +203,8 @@ namespace Game.Logic
             base.OnDestroy();
             UnbindInput();
 
+            CombatWarningManager.UnregisterContractsByRole(this);
+
             if (FSMManager.Instance != null && StateMachine != null)
             {
                 FSMManager.Instance.DestroyFSM(StateMachine);
@@ -291,8 +294,8 @@ namespace Game.Logic
             {
                 if (pair.Key != null)
                 {
-                    // 保持碰撞体自身的启用状态与其初始状态一致
-                    pair.Key.enabled = pair.Value;
+                    // 根据 active 状态启用或禁用，恢复时遵循初始启用配置
+                    pair.Key.enabled = active && pair.Value;
                     // 设置排除层级
                     pair.Key.excludeLayers = excludeMask;
                 }

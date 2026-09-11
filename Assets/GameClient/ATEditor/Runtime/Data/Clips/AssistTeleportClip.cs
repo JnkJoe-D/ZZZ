@@ -4,7 +4,8 @@ using UnityEngine;
 namespace ATEditor
 {
     [Serializable]
-    [ClipDefinition(typeof(EventTrack), "招架/支援瞬移空间修正")]
+    [Obsolete("已废弃。请在 TransformTrack 上使用 MovementClip (配置 EnemyFront + Instant 瞬移) 代替。")]
+    [ClipDefinition(typeof(EventTrack), "招架/支援瞬移空间修正 (已废弃)")]
     public class AssistTeleportClip : ClipBase
     {
         [Tooltip("触发时会将角色瞬间拉至被匹配攻击预警者的身前")]

@@ -70,9 +70,6 @@
             "tracks": [
                 {
                     "rid": 1007
-                },
-                {
-                    "rid": 1008
                 }
             ]
         },
@@ -84,7 +81,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1009
+                    "rid": 1008
                 }
             ]
         },
@@ -118,7 +115,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1009
                         }
                     ],
                     "isMasterTrack": true,
@@ -209,7 +206,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1010
                         }
                     ]
                 }
@@ -232,7 +229,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1011
                         }
                     ]
                 }
@@ -255,32 +252,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1012
                         }
                     ]
                 }
             },
             {
                 "rid": 1007,
-                "type": {
-                    "class": "HitTrack",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "6c372d50-4b7d-4af7-992f-9aff4e5fa659",
-                    "trackType": "DamageTrack",
-                    "trackName": "命中判定轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": true,
-                    "clips": []
-                }
-            },
-            {
-                "rid": 1008,
                 "type": {
                     "class": "EventTrack",
                     "ns": "ATEditor",
@@ -297,13 +275,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1014
+                            "rid": 1013
                         }
                     ]
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1008,
                 "type": {
                     "class": "MotionWindowTrack",
                     "ns": "ATEditor",
@@ -320,13 +298,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1014
                         }
                     ]
                 }
             },
             {
-                "rid": 1010,
+                "rid": 1009,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -341,7 +319,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 43198
+                        "instanceID": 34736
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -361,7 +339,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1010,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -379,7 +357,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1011,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -397,7 +375,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1012,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -415,7 +393,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1013,
                 "type": {
                     "class": "ParryWindowClip",
                     "ns": "ATEditor",
@@ -426,13 +404,13 @@
                     "clipName": "格挡判定窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.0,
+                    "duration": 1.033333420753479,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1014,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",

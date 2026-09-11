@@ -103,6 +103,38 @@ namespace ATEditor
         [SkillProperty("退出片段时解锁输入")]
         [ShowIf("controlMode", CameraControlMode.Recenter)]
         public bool unlockInputOnExit = true;
+
+        [Header("回正伴随距离与变焦特写")]
+        [SkillProperty("启用伴随拉距/FOV")]
+        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        public bool enableDistanceAndFovOverride = false;
+
+        [SkillProperty("进入时距离瞬间拉近 (瞬切)")]
+        [ShowIf("enableDistanceAndFovOverride", true)]
+        [Tooltip("勾选后进入片段时瞬间将相机拉近至特写距离，提供强烈的拼刀打击冲击感")]
+        public bool instantDistanceOnEnter = true;
+
+        [SkillProperty("特写相机距离")]
+        [ShowIf("enableDistanceAndFovOverride", true)]
+        [Tooltip("<= 0 则保持当前距离，招架特写推荐拉近至 1.6f ~ 2.0f")]
+        public float recenterDistance = 1.8f;
+
+        [SkillProperty("特写 FOV")]
+        [ShowIf("enableDistanceAndFovOverride", true)]
+        public float recenterFOV = 45.0f;
+
+        [SkillProperty("拉近/拉远过渡速度")]
+        [ShowIf("enableDistanceAndFovOverride", true)]
+        public float recenterFovBlendSpeed = 6.0f;
+
+        [SkillProperty("退出片段时还原距离/FOV")]
+        [ShowIf("enableDistanceAndFovOverride", true)]
+        public bool recenterRestoreFovOnExit = true;
+
+        [SkillProperty("退出回调速度 (缓慢还原)")]
+        [ShowIf("enableDistanceAndFovOverride", true)]
+        [Tooltip("片段结束恢复原始距离与FOV的平滑速度，推荐 1.5 ~ 2.5f 缓慢平滑回调")]
+        public float recenterRestoreSpeed = 2.0f;
         #endregion
 
         #region 3. 注视目标参数 (LookAtTarget)
@@ -177,6 +209,13 @@ namespace ATEditor
                 allowSoftInputInterrupt = this.allowSoftInputInterrupt,
                 disableInputDuringRecenter = this.disableInputDuringRecenter,
                 unlockInputOnExit = this.unlockInputOnExit,
+                enableDistanceAndFovOverride = this.enableDistanceAndFovOverride,
+                instantDistanceOnEnter = this.instantDistanceOnEnter,
+                recenterDistance = this.recenterDistance,
+                recenterFOV = this.recenterFOV,
+                recenterFovBlendSpeed = this.recenterFovBlendSpeed,
+                recenterRestoreFovOnExit = this.recenterRestoreFovOnExit,
+                recenterRestoreSpeed = this.recenterRestoreSpeed,
                 // LookAt
                 lookAtOffset = this.lookAtOffset,
                 trackSmoothSpeed = this.trackSmoothSpeed,

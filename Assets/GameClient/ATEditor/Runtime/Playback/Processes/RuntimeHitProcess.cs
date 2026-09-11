@@ -206,6 +206,28 @@ namespace ATEditor
                 }
             }
 
+            // ★ 方案 D：检查是否存在针对此攻击者的确定性拼刀契约 (ParryClashContract)
+            if (context.Owner != null)
+            {
+                var attackerEntity = context.Owner.GetComponent<Game.Logic.CharacterEntity>();
+                if (attackerEntity != null)
+                {
+                    var contract = Game.Logic.CombatWarningManager.GetActiveContract(attackerEntity);
+                    if (contract != null && contract.IsValid && contract.ParryRole != null)
+                    {
+                        var parryData = contract.ParryRole.DataModule?.Get<Game.Logic.ParryRuntimeData>();
+                        if (parryData != null && parryData.IsParrying)
+                        {
+                            var roleCol = contract.ParryRole.GetComponent<Collider>();
+                            if (roleCol != null && !_cachedValidHits.Contains(roleCol))
+                            {
+                                _cachedValidHits.Add(roleCol);
+                            }
+                        }
+                    }
+                }
+            }
+
             if (_cachedValidHits.Count > 0)
             {
                 foreach (var h in _cachedValidHits)

@@ -111,13 +111,30 @@ namespace ATEditor.Editor
                         
                         if (controlClip.recenterTarget == CameraRecenterTarget.CombatFraming)
                         {
-                            controlClip.framingBiasAngle = EditorGUILayout.Slider(new GUIContent("对峙构图偏角", "负数使角色偏左下，怪物偏中右（推荐 -8°）；正数偏右下；0为居中。"), controlClip.framingBiasAngle, -30.0f, 30.0f);
+                            controlClip.framingBiasAngle = EditorGUILayout.Slider(new GUIContent("对峙构图偏角", "负数使角色偏左下，怪物偏中右（招架特写推荐 -45°）；正数偏右下（+45°）；0为居中。"), controlClip.framingBiasAngle, -90.0f, 90.0f);
                         }
 
                         controlClip.deadzoneAngle = EditorGUILayout.Slider(new GUIContent("角度死区", "偏差小于该死区时不触发微调，防止视觉抖动。推荐 1.5°。"), controlClip.deadzoneAngle, 0.1f, 5.0f);
                         controlClip.allowSoftInputInterrupt = EditorGUILayout.Toggle(new GUIContent("允许玩家软输入让权", "玩家在回正中滑动鼠标/摇杆时，自适应平滑让权给玩家，避免硬拔河。"), controlClip.allowSoftInputInterrupt);
                         controlClip.disableInputDuringRecenter = EditorGUILayout.Toggle(new GUIContent("回正期间强制禁用输入", "若勾选则完全锁死旋转输入直到回正结束。"), controlClip.disableInputDuringRecenter);
                         controlClip.unlockInputOnExit = EditorGUILayout.Toggle("退出片段时解锁输入", controlClip.unlockInputOnExit);
+
+                        EditorGUILayout.Space(4);
+                        controlClip.enableDistanceAndFovOverride = EditorGUILayout.Toggle(new GUIContent("启用伴随拉距/FOV", "勾选后在视角回正的同时调整相机距离与 FOV 特写，并在退出片段时平滑还原。"), controlClip.enableDistanceAndFovOverride);
+                        if (controlClip.enableDistanceAndFovOverride)
+                        {
+                            EditorGUI.indentLevel++;
+                            controlClip.instantDistanceOnEnter = EditorGUILayout.Toggle(new GUIContent("进入时瞬间拉近", "勾选后进入片段时瞬间将相机拉近至特写距离，提供强烈的拼刀打击冲击感。"), controlClip.instantDistanceOnEnter);
+                            controlClip.recenterDistance = EditorGUILayout.FloatField(new GUIContent("特写相机距离", "目标相机距离（米）。招架特写推荐拉近至 1.6m ~ 2.0m。"), controlClip.recenterDistance);
+                            controlClip.recenterFOV = EditorGUILayout.Slider(new GUIContent("特写 FOV", "特写视野 FOV（度）。默认 45°。"), controlClip.recenterFOV, 20.0f, 100.0f);
+                            controlClip.recenterFovBlendSpeed = EditorGUILayout.Slider(new GUIContent("过渡速度", "拉近/拉远过渡速度（未勾选瞬间拉近时生效）。"), controlClip.recenterFovBlendSpeed, 0.5f, 20.0f);
+                            controlClip.recenterRestoreFovOnExit = EditorGUILayout.Toggle("退出片段时还原距离/FOV", controlClip.recenterRestoreFovOnExit);
+                            if (controlClip.recenterRestoreFovOnExit)
+                            {
+                                controlClip.recenterRestoreSpeed = EditorGUILayout.Slider(new GUIContent("退出缓慢回调速度", "退出片段还原原始距离/FOV的平滑速度。推荐 1.5 ~ 2.5 缓慢平滑回调。"), controlClip.recenterRestoreSpeed, 0.5f, 10.0f);
+                            }
+                            EditorGUI.indentLevel--;
+                        }
                         break;
 
                     case CameraControlMode.LookAtTarget:

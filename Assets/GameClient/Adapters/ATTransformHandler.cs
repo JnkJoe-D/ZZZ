@@ -20,7 +20,20 @@ namespace Game.Adapters
 
         public void SetPosition(Vector3 position)
         {
-            _entity.transform.position = position;
+            if (_entity == null) return;
+
+            var cc = _entity.GetComponent<CharacterController>();
+            if (cc != null && cc.enabled)
+            {
+                cc.enabled = false;
+                _entity.transform.position = position;
+                cc.enabled = true;
+                Physics.SyncTransforms();
+            }
+            else
+            {
+                _entity.transform.position = position;
+            }
         }
 
         public Vector3 GetPosition()
@@ -30,7 +43,7 @@ namespace Game.Adapters
 
         public Transform GetTarget()
         {
-            return _entity.TargetFinder?.GetTarget();
+            return _entity != null ? _entity.GetEffectiveTarget() : null;
         }
 
         public float GetRadius()

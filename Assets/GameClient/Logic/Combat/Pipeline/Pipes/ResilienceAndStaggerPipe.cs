@@ -15,20 +15,7 @@ namespace Game.Logic.Combat.Pipeline.Pipes
         {
             if (ctx.IsAborted || ctx.Victim == null) return;
 
-            // 1. 评估配置中的最大受击反应级别
-            HitReactionType maxReaction = HitReactionType.None;
-            if (ctx.HitEffectConfig?.Effects != null)
-            {
-                foreach (var effect in ctx.HitEffectConfig.Effects)
-                {
-                    if (effect != null && effect.HitReaction > maxReaction)
-                    {
-                        maxReaction = effect.HitReaction;
-                    }
-                }
-            }
-
-            // 2. 霸体检测
+            // 1. 霸体检测
             bool isSuperArmor = false;
             if (ctx.Victim.HitReactionModule != null && ctx.Victim.HitReactionModule.isSuperArmor)
             {
@@ -46,7 +33,7 @@ namespace Game.Logic.Combat.Pipeline.Pipes
                 return;
             }
 
-            // 3. 韧性比对与打断决策
+            // 2. 韧性比对与打断决策
             int interruptLevel = ctx.InterruptLevel;
             int resilience = 1;
             if (ctx.Victim.StatusModule?.Attributes != null && ctx.Victim.StatusModule.Attributes.Has(AttributeId.BaseResilience))
@@ -59,7 +46,13 @@ namespace Game.Logic.Combat.Pipeline.Pipes
             if (isInterrupted)
             {
                 ctx.ResultFlags |= HitResultFlags.Interrupted;
-                ctx.SelectedReactionType = maxReaction;
+
+                // 若上下文中已有明确指定的硬直级别（如招架反击预设的 HitReactionType.Parried），完整保留！
+                if (ctx.SelectedReactionType == HitReactionType.None)
+                {
+                    // 仅当此前未设定反应类型时，默认保底为轻受击
+                    ctx.SelectedReactionType = HitReactionType.Light;
+                }
 
                 // 同步运行时受击数据
                 var hitData = ctx.Victim.DataModule?.Get<HitReactionRuntimeData>();
@@ -67,7 +60,7 @@ namespace Game.Logic.Combat.Pipeline.Pipes
                 {
                     hitData.CurrentHitStunDuration = ctx.HitStunDuration;
                     hitData.SetHitReactionAxis(ctx.ReactionAxis);
-                    hitData.CurrentReactionType = maxReaction;
+                    hitData.CurrentReactionType = ctx.SelectedReactionType;
                 }
             }
             else

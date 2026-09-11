@@ -91,9 +91,9 @@ namespace Game.Adapters
             _entity?.CameraController?.StopLookAtTarget(restore);
         }
 
-        public void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed)
+        public void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed, bool instant = false)
         {
-            _entity?.CameraController?.SetCameraFOVAndDistance(targetFOV, targetDistance, speed);
+            _entity?.CameraController?.SetCameraFOVAndDistance(targetFOV, targetDistance, speed, instant);
         }
 
         public void ResetCameraFOVAndDistance(float speed)
