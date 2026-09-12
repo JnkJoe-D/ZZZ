@@ -18,6 +18,7 @@ namespace Game.Logic
         
         // 当前场上处于活跃状态的怪物列表
         private readonly List<MonsterEntity> _activeMonsters = new List<MonsterEntity>();
+        public IReadOnlyList<MonsterEntity> ActiveMonsters => _activeMonsters;
         
         // 对象池在场景中的根节点，用于收纳失活的怪物
         private Transform _poolRoot;
@@ -119,6 +120,11 @@ namespace Game.Logic
 
             _activeMonsters.Add(entity);
 
+            if (TimeManager.Instance != null && TimeManager.Instance.IsBulletTimeActive)
+            {
+                entity.ApplyBulletTime(TimeManager.Instance.CurrentBulletTimeScale);
+            }
+
             // 兼容之前异步返回的设计需求（方便以后做按帧拆分出生特效等）
             await Task.Yield();
 
@@ -134,6 +140,7 @@ namespace Game.Logic
         {
             if (monster == null) return;
             
+            monster.ExitBulletTime();
             _activeMonsters.Remove(monster);
 
             if (monster.Config != null && monster.Config.Prefab != null)

@@ -228,6 +228,10 @@ namespace ATEditor.Editor
             {
                 newValue = DrawHitEffectIdSelector(name, (int)value);
             }
+            else if (field.Name == "buffId")
+            {
+                newValue = DrawBuffIdSelector(name, (int)value);
+            }
             else if (fieldType == typeof(int))
             {
                 newValue = EditorGUILayout.IntField(name, (int)value);
@@ -675,6 +679,88 @@ namespace ATEditor.Editor
             catch (Exception ex)
             {
                 Debug.LogError($"加载 HitEffect JSON 失败: {ex.Message}");
+            }
+        }
+
+        private static string[] _buffNames;
+        private static int[] _buffIds;
+
+        public static int DrawBuffIdSelector(string label, int currentValue)
+        {
+            if (_buffNames == null)
+            {
+                LoadBuffData();
+            }
+
+            if (_buffNames == null || _buffNames.Length == 0)
+            {
+                return EditorGUILayout.IntField(label, currentValue);
+            }
+
+            EditorGUILayout.BeginHorizontal();
+            int currentIndex = Array.IndexOf(_buffIds, currentValue);
+            if (currentIndex == -1) currentIndex = 0; // Fallback to 0 if not found
+
+            int newIndex = EditorGUILayout.Popup(label, currentIndex, _buffNames);
+            
+            if (GUILayout.Button("刷新", GUILayout.Width(40)))
+            {
+                LoadBuffData();
+            }
+            EditorGUILayout.EndHorizontal();
+
+            return _buffIds[newIndex];
+        }
+
+        public static void LoadBuffData()
+        {
+            string path = "Assets/Configs/zzz_tbbuff.json";
+            if (!System.IO.File.Exists(path))
+            {
+                _buffNames = new string[0];
+                _buffIds = new int[0];
+                return;
+            }
+            
+            try
+            {
+                var lines = System.IO.File.ReadAllLines(path);
+                var namesList = new System.Collections.Generic.List<string>();
+                var idsList = new System.Collections.Generic.List<int>();
+                
+                namesList.Add("无 (0)");
+                idsList.Add(0);
+
+                int currentId = 0;
+                foreach (var line in lines)
+                {
+                    if (line.Contains("\"id\":"))
+                    {
+                        string idStr = System.Text.RegularExpressions.Regex.Match(line, @"\d+").Value;
+                        if (int.TryParse(idStr, out int id))
+                        {
+                            currentId = id;
+                        }
+                    }
+                    else if (line.Contains("\"name\":"))
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(line, "\"name\"\\s*:\\s*\"(.*?)\"");
+                        if (match.Success && currentId != 0)
+                        {
+                            string nameStr = match.Groups[1].Value;
+                            namesList.Add($"[{currentId}] {nameStr}");
+                            idsList.Add(currentId);
+                            currentId = 0; // reset
+                        }
+                    }
+                }
+                
+                _buffNames = namesList.ToArray();
+                _buffIds = idsList.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"加载 Buff JSON 失败: {ex.Message}");
             }
         }
     }

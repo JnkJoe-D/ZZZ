@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using cfg.ZZZ;
 
 namespace Game.Logic
 {
@@ -14,7 +15,8 @@ namespace Game.Logic
 
     /// <summary>
     /// Buff 容器。管理一个 Entity 上所有活跃 Buff 的生命周期。
-    /// 异源共享叠加模式：同 BuffId 不区分施加者，共享叠层与持续时间。
+    /// 异源共享叠加模式：同 BuffId 共享叠层与持续时间。
+    /// 彻底基于 Luban cfg.ZZZ.Buff 配置原型与动态施加上下文 (BuffApplyContext) 驱动。
     /// </summary>
     public class BuffContainer
     {
@@ -30,22 +32,38 @@ namespace Game.Logic
         }
 
         /// <summary>
-        /// 施加一个 Buff。根据叠加规则处理已存在的同类 Buff。
+        /// 依据配置 ID 施加一个 Buff（自动检索 Luban 表）。
         /// </summary>
-        public BuffInstance AddBuff(BuffDefAsset definition, CharacterEntity source = null)
+        public BuffInstance AddBuff(int buffId, BuffApplyContext context = null)
+        {
+            var def = ConfigManager.Instance?.Tables?.TbBuff?.GetOrDefault(buffId);
+            if (def == null)
+            {
+                Debug.LogWarning($"[BuffContainer] 未找到 ID 为 {buffId} 的 Buff 配置！");
+                return null;
+            }
+            return AddBuff(def, context);
+        }
+
+        /// <summary>
+        /// 依据 Luban Buff 定义资产施加一个 Buff。
+        /// </summary>
+        public BuffInstance AddBuff(cfg.ZZZ.Buff definition, BuffApplyContext context = null)
         {
             if (definition == null) return null;
 
-            // 查找已存在的同 BuffId 实例
-            BuffInstance existing = FindBuff(definition.BuffId);
+            context ??= BuffApplyContext.Default;
+
+            // 查找已存在的同 Id 实例
+            BuffInstance existing = FindBuff(definition.Id);
 
             if (existing != null)
             {
-                return HandleExistingBuff(existing, definition, source);
+                return HandleExistingBuff(existing, definition, context);
             }
 
             // 新施加
-            return ApplyNewBuff(definition, source);
+            return ApplyNewBuff(definition, context);
         }
 
         /// <summary>按 BuffId 移除 Buff。</summary>
@@ -53,20 +71,13 @@ namespace Game.Logic
         {
             for (int i = _activeBuffs.Count - 1; i >= 0; i--)
             {
-                if (_activeBuffs[i].Definition.BuffId == buffId)
+                if (_activeBuffs[i].Definition.Id == buffId)
                 {
                     RemoveAtIndex(i, reason);
                     return true;
                 }
             }
             return false;
-        }
-
-        /// <summary>按定义移除 Buff。</summary>
-        public bool RemoveBuff(BuffDefAsset definition, BuffRemoveReason reason = BuffRemoveReason.Manual)
-        {
-            if (definition == null) return false;
-            return RemoveBuff(definition.BuffId, reason);
         }
 
         /// <summary>移除所有包含指定 Tag 的 Buff。</summary>
@@ -89,13 +100,6 @@ namespace Game.Logic
         public bool HasBuff(int buffId)
         {
             return FindBuff(buffId) != null;
-        }
-
-        /// <summary>是否拥有指定定义的 Buff。</summary>
-        public bool HasBuff(BuffDefAsset definition)
-        {
-            if (definition == null) return false;
-            return HasBuff(definition.BuffId);
         }
 
         /// <summary>获取指定 Buff 的当前叠加层数。不存在返回 0。</summary>
@@ -128,23 +132,11 @@ namespace Game.Logic
             {
                 BuffInstance buff = _activeBuffs[i];
 
-                // 驱动效果 Tick
-                if (buff.Definition.Effects != null)
-                {
-                    for (int j = 0; j < buff.Definition.Effects.Count; j++)
-                    {
-                        buff.Definition.Effects[j]?.OnTick(buff, _owner, deltaTime);
-                    }
-                }
+                buff.Tick(deltaTime, _owner);
 
-                // 更新持续时间
-                if (!buff.IsPermanent)
+                if (buff.IsExpired)
                 {
-                    buff.RemainingTime -= deltaTime;
-                    if (buff.IsExpired)
-                    {
-                        _pendingRemove.Add(buff);
-                    }
+                    _pendingRemove.Add(buff);
                 }
             }
 
@@ -170,13 +162,13 @@ namespace Game.Logic
             }
         }
 
-        // ────────────────── 内部 ──────────────────
+        // ────────────────── 内部实现 ──────────────────
 
         private BuffInstance FindBuff(int buffId)
         {
             for (int i = 0; i < _activeBuffs.Count; i++)
             {
-                if (_activeBuffs[i].Definition.BuffId == buffId)
+                if (_activeBuffs[i].Definition.Id == buffId)
                 {
                     return _activeBuffs[i];
                 }
@@ -184,11 +176,11 @@ namespace Game.Logic
             return null;
         }
 
-        private BuffInstance HandleExistingBuff(BuffInstance existing, BuffDefAsset definition, CharacterEntity source)
+        private BuffInstance HandleExistingBuff(BuffInstance existing, cfg.ZZZ.Buff definition, BuffApplyContext context)
         {
             switch (definition.StackBehavior)
             {
-                case StackBehavior.StackAndRefresh:
+                case BuffStackBehavior.RefreshDuration:
                     if (existing.TryStack())
                     {
                         existing.RefreshDuration();
@@ -201,38 +193,35 @@ namespace Game.Logic
                     }
                     return existing;
 
-                case StackBehavior.StackNoRefresh:
+                case BuffStackBehavior.NoRefresh:
                     if (existing.TryStack())
                     {
                         NotifyStack(existing);
                     }
                     return existing;
 
-                case StackBehavior.Reject:
+                case BuffStackBehavior.Reject:
                     // 已存在则拒绝
                     return existing;
 
-                case StackBehavior.Replace:
-                    RemoveBuff(existing.Definition.BuffId, BuffRemoveReason.Replaced);
-                    return ApplyNewBuff(definition, source);
+                case BuffStackBehavior.Replace:
+                    RemoveBuff(existing.Definition.Id, BuffRemoveReason.Replaced);
+                    return ApplyNewBuff(definition, context);
 
                 default:
                     return existing;
             }
         }
 
-        private BuffInstance ApplyNewBuff(BuffDefAsset definition, CharacterEntity source)
+        private BuffInstance ApplyNewBuff(cfg.ZZZ.Buff definition, BuffApplyContext context)
         {
-            BuffInstance buff = new BuffInstance(definition, source);
+            BuffInstance buff = new BuffInstance(definition, context);
             _activeBuffs.Add(buff);
 
             // 执行 OnApply
-            if (definition.Effects != null)
+            for (int i = 0; i < buff.ActiveEffects.Count; i++)
             {
-                for (int i = 0; i < definition.Effects.Count; i++)
-                {
-                    definition.Effects[i]?.OnApply(buff, _owner);
-                }
+                buff.ActiveEffects[i]?.OnApply(buff, _owner);
             }
 
             // 发布事件
@@ -251,12 +240,9 @@ namespace Game.Logic
             _activeBuffs.RemoveAt(index);
 
             // 执行 OnRemove
-            if (buff.Definition.Effects != null)
+            for (int i = 0; i < buff.ActiveEffects.Count; i++)
             {
-                for (int i = 0; i < buff.Definition.Effects.Count; i++)
-                {
-                    buff.Definition.Effects[i]?.OnRemove(buff, _owner);
-                }
+                buff.ActiveEffects[i]?.OnRemove(buff, _owner);
             }
 
             // 发布事件
@@ -270,10 +256,38 @@ namespace Game.Logic
 
         private void NotifyStack(BuffInstance buff)
         {
-            if (buff.Definition.Effects == null) return;
-            for (int i = 0; i < buff.Definition.Effects.Count; i++)
+            for (int i = 0; i < buff.ActiveEffects.Count; i++)
             {
-                buff.Definition.Effects[i]?.OnStack(buff, _owner, buff.CurrentStack);
+                buff.ActiveEffects[i]?.OnStack(buff, _owner, buff.CurrentStack);
+            }
+        }
+
+        /// <summary>
+        /// 收集当前实体身上所有生效的防御拦截器（零 GC 填充进传入的 buffer 列表中，并按优先级降序排列）。
+        /// </summary>
+        public void GetActiveDefenseModifiers(List<(IHitDefenseModifier Modifier, BuffInstance Buff)> buffer)
+        {
+            if (buffer == null) return;
+            buffer.Clear();
+
+            for (int i = 0; i < _activeBuffs.Count; i++)
+            {
+                var buff = _activeBuffs[i];
+                var effects = buff.ActiveEffects;
+                if (effects == null) continue;
+
+                for (int j = 0; j < effects.Count; j++)
+                {
+                    if (effects[j] is IHitDefenseModifier modifier)
+                    {
+                        buffer.Add((modifier, buff));
+                    }
+                }
+            }
+
+            if (buffer.Count > 1)
+            {
+                buffer.Sort((a, b) => b.Modifier.DefensePriority.CompareTo(a.Modifier.DefensePriority));
             }
         }
     }

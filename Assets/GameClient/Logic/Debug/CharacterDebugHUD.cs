@@ -274,7 +274,7 @@ namespace Game.Logic
                         GUILayout.Space(5);
                         foreach (var buff in buffs.ActiveBuffs)
                         {
-                            string buffName = buff.Definition != null ? buff.Definition.DisplayName : "Unknown";
+                            string buffName = buff.Definition != null ? buff.Definition.Name : "Unknown";
                             string timeStr = buff.IsPermanent ? "Permanent" : $"{buff.RemainingTime:F1}s";
                             DrawInfo($"+ [{buffName}]", $"Stack: {buff.CurrentStack} | {timeStr}", new Color(0.9f, 0.7f, 0.9f));
                         }

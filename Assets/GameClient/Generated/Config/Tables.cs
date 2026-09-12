@@ -31,6 +31,7 @@ public partial class Tables
     /// </summary>
     public ZZZ.TbCharacterSpecial TbCharacterSpecial {get; }
     public demo.Tbitem Tbitem {get; }
+    public ZZZ.TbBuff TbBuff {get; }
     public ZZZ.TbHitEffect TbHitEffect {get; }
     public ZZZ.TbSkill TbSkill {get; }
 
@@ -41,6 +42,7 @@ public partial class Tables
         TbCharacterElement = new ZZZ.TbCharacterElement(loader("zzz_tbcharacterelement"));
         TbCharacterSpecial = new ZZZ.TbCharacterSpecial(loader("zzz_tbcharacterspecial"));
         Tbitem = new demo.Tbitem(loader("demo_tbitem"));
+        TbBuff = new ZZZ.TbBuff(loader("zzz_tbbuff"));
         TbHitEffect = new ZZZ.TbHitEffect(loader("zzz_tbhiteffect"));
         TbSkill = new ZZZ.TbSkill(loader("zzz_tbskill"));
         ResolveRef();
@@ -53,6 +55,7 @@ public partial class Tables
         TbCharacterElement.ResolveRef(this);
         TbCharacterSpecial.ResolveRef(this);
         Tbitem.ResolveRef(this);
+        TbBuff.ResolveRef(this);
         TbHitEffect.ResolveRef(this);
         TbSkill.ResolveRef(this);
     }

@@ -35,6 +35,7 @@ namespace Game.Logic
             if (CommandBuffer == null) CommandBuffer = new CommandBuffer(BufferMode.SingleOverride);
             if (ActionController == null) ActionController = new MonsterActionController(this);
             DataModule[typeof(MonSterBehaviorRuntimeData)] ??= new MonSterBehaviorRuntimeData();
+            DataModule[typeof(TimeDilationRuntimeData)] ??= new TimeDilationRuntimeData();
 
             if (config is MonsterConfigAsset monsterConfig)
             {
@@ -53,9 +54,32 @@ namespace Game.Logic
             }
         }
 
+        /// <summary>
+        /// 应用子弹时间减速流速（仅更新数据模型并驱动动作播放器，实体保持零字段）
+        /// </summary>
+        public void ApplyBulletTime(float scale)
+        {
+            var timeData = DataModule.Get<TimeDilationRuntimeData>();
+            timeData?.ApplyBulletTime(scale);
+            ActionPlayer?.SetPlaySpeed(scale);
+        }
+
+        /// <summary>
+        /// 解除子弹时间（打醒恢复或倒计时结束）
+        /// </summary>
+        public void ExitBulletTime()
+        {
+            var timeData = DataModule.Get<TimeDilationRuntimeData>();
+            timeData?.ExitBulletTime();
+            ActionPlayer?.RestorePlaySpeed();
+        }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();
+
+            ExitBulletTime();
+            DataModule.Get<TimeDilationRuntimeData>()?.Reset();
 
             if (BTRunner != null)
             {
@@ -67,8 +91,10 @@ namespace Game.Logic
         protected override void Update()
         {
             base.Update();
-            ActionController?.Update(Time.deltaTime);
-            DataModule.Get<MonSterBehaviorRuntimeData>()?.Update(Time.deltaTime);
+            var timeData = DataModule.Get<TimeDilationRuntimeData>();
+            float dt = Time.deltaTime * (timeData != null ? timeData.TimeScale : 1.0f);
+            ActionController?.Update(dt);
+            DataModule.Get<MonSterBehaviorRuntimeData>()?.Update(dt);
         }
     }
 }

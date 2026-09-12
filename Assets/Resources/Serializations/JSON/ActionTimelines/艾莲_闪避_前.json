@@ -1,4 +1,5 @@
 {
+    "duration": 3.8500001430511476,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -101,6 +102,18 @@
                     "rid": 1011
                 }
             ]
+        },
+        {
+            "groupId": "7f4dee44-365d-4c24-bc13-2467e727ec2f",
+            "groupName": "Buff",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1012
+                }
+            ]
         }
     ],
     "references": {
@@ -124,7 +137,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1013
                         }
                     ],
                     "isMasterTrack": true,
@@ -215,10 +228,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1014
                         },
                         {
-                            "rid": 1014
+                            "rid": 1015
                         }
                     ]
                 }
@@ -241,7 +254,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1016
                         }
                     ]
                 }
@@ -264,7 +277,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1017
                         }
                     ]
                 }
@@ -287,7 +300,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1018
                         }
                     ]
                 }
@@ -310,7 +323,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1018
+                            "rid": 1019
                         }
                     ]
                 }
@@ -352,7 +365,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1019
+                            "rid": 1020
                         }
                     ]
                 }
@@ -379,6 +392,29 @@
             {
                 "rid": 1012,
                 "type": {
+                    "class": "StatusTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "fcd2c095-c3c6-478d-9742-4952bb28088e",
+                    "trackType": "StatusTrack",
+                    "trackName": "状态增益轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1021
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1013,
+                "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
@@ -392,7 +428,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 42180
+                        "instanceID": 34418
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -402,7 +438,7 @@
                     "clipRef": {
                         "guid": "769312a99595bf44f83906711cfb6784",
                         "assetName": "Avatar_Female_Size02_Ellen_Ani_Evade_Front",
-                        "assetPath": "Assets/Dependencies/Animation/EllenJoe/Avatar_Female_Size02_Ellen_Ani.fbx"
+                        "assetPath": "Assets/Dependencies/Animation/Ellen/Avatar_Female_Size02_Ellen_Ani.fbx"
                     },
                     "maskRef": {
                         "guid": "",
@@ -412,7 +448,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1014,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -430,7 +466,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1015,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -448,7 +484,7 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1016,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -466,7 +502,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1017,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -484,7 +520,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1018,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -502,7 +538,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1019,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -520,7 +556,7 @@
                 }
             },
             {
-                "rid": 1019,
+                "rid": 1020,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -534,7 +570,31 @@
                     "duration": 3.8499999046325685,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "localDeltaFilterMode": 1
+                    "localDeltaFilterMode": 1,
+                    "collisionMode": 0,
+                    "obstacleMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 4294967295
+                    }
+                }
+            },
+            {
+                "rid": 1021,
+                "type": {
+                    "class": "BuffClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "616aeff3-d273-40c5-a6ef-8fc7d66cd3b6",
+                    "clipName": "增益状态 (Buff)片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.46666663885116579,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "buffId": 9001,
+                    "lifetimeMode": 0
                 }
             }
         ]

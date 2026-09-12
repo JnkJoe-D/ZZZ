@@ -51,7 +51,7 @@ namespace Game.Adapters
                 _currentContract = new ParryClashContract
                 {
                     Attacker = marker.Attacker,
-                    ParryRole = _entity as RoleEntity,
+                    ParryRole = _entity,
                     Marker = marker,
                     ExpireTime = Time.time + 5.0f,
                     IsResolved = false

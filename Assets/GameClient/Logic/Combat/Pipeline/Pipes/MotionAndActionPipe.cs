@@ -37,31 +37,30 @@ namespace Game.Logic.Combat.Pipeline.Pipes
                 }
             }
 
-            // 2. 动作切入与行为树通知
+            // 2. 纯领域驱动的时间膨胀打醒（零 is 判断）：
+            // 只要实体处于子弹时间中，且本次受击确实导致其动作被打断（Interrupted），方才打醒！
+            if (ctx.ResultFlags.HasFlag(HitResultFlags.Interrupted))
+            {
+                var timeData = ctx.Victim.DataModule?.Get<TimeDilationRuntimeData>();
+                if (timeData != null && timeData.IsInBulletTime)
+                {
+                    timeData.ExitBulletTime();
+                    ctx.Victim.ActionPlayer?.RestorePlaySpeed();
+                }
+            }
+
+            // 3. 若动作未被打断（霸体生效 SuperArmor），绝不切入受击动作
+            if (!ctx.ResultFlags.HasFlag(HitResultFlags.Interrupted)) return;
+
+            // 4. 受击动作切入与反馈：统一委托给多态契约 HitReactionModule，彻底消灭类型探测！
             if (ctx.SelectedReactionType != HitReactionType.None)
             {
-                // 主角实体：通过状态机注入受击动作指令
-                if (ctx.Victim is RoleEntity role)
+                var hitData = ctx.Victim.DataModule?.Get<HitReactionRuntimeData>();
+                if (hitData != null)
                 {
-                    var hitAction = role.Config?.hitReactionConfig?.GetHitAction(ctx.SelectedReactionType);
-                    if (hitAction != null && role.ActionController != null)
-                    {
-                        var hitCommand = CharacterCommandFactory.CreateDirectAssetCommand(hitAction);
-                        role.ActionController.OnInput(hitCommand);
-                    }
-                }
-                // 怪物实体：通过黑板时间戳驱动行为树受击分支（MonsterHitTask）
-                else if (ctx.Victim is MonsterEntity monster)
-                {
-                    var hitData = monster.DataModule?.Get<HitReactionRuntimeData>();
-                    if (hitData != null)
-                    {
-                        hitData.HitTriggerTimestamp = Time.frameCount;
-                        hitData.CurrentReactionType = ctx.SelectedReactionType;
-                    }
+                    hitData.CurrentReactionType = ctx.SelectedReactionType;
                 }
 
-                // 兼容外部派生钩子
                 ctx.Victim.HitReactionModule?.TriggerInterruptedHook(ctx);
             }
         }

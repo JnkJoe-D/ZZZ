@@ -13,7 +13,6 @@ namespace Game.Logic
     {
         public CharacterEntity Attacker;
         public WarningSignalType SignalType;
-        public AttackWeight Weight;
         public float DetectionRadius;
         public float DetectionAngle;
 
@@ -140,7 +139,7 @@ namespace Game.Logic
     public class ParryClashContract
     {
         public CharacterEntity Attacker;     // 攻击方（怪物）
-        public RoleEntity ParryRole;         // 防守招架方（玩家切入角色）
+        public CharacterEntity ParryRole;    // 防守招架方（玩家切入角色）
         public AttackWarningMarker Marker;   // 关联的预警数据
         public float ExpireTime;             // 契约超时失效时间点
         public bool IsResolved;              // 是否已至少完成一次拼刀命中
@@ -160,12 +159,49 @@ namespace Game.Logic
     {
         private static readonly List<AttackWarningMarker> _activeMarkers = new List<AttackWarningMarker>();
         private static readonly List<ParryClashContract> _activeContracts = new List<ParryClashContract>();
+        private static readonly Dictionary<CharacterEntity, AttackThreatSession> _activeThreatSessions = new();
+
+        public static AttackThreatSession GetActiveThreatSession(CharacterEntity attacker)
+        {
+            if (attacker == null) return null;
+            if (_activeThreatSessions.TryGetValue(attacker, out var session))
+            {
+                if (!attacker.gameObject.activeInHierarchy || attacker.IsDead)
+                {
+                    _activeThreatSessions.Remove(attacker);
+                    AttackThreatSession.Release(session);
+                    return null;
+                }
+                return session;
+            }
+            return null;
+        }
+
+        public static void CloseThreatSession(CharacterEntity attacker)
+        {
+            if (attacker == null) return;
+            if (_activeThreatSessions.TryGetValue(attacker, out var session))
+            {
+                session.Close();
+                // 保持 session 在字典中（维持 IsClosed = true），供同次挥刀动作后半程物理帧免伤识别
+                // 只有当实体开启下一次出招注册新预警、死亡或场景清理时，才真正 Release 回收入池
+            }
+        }
 
         public static bool Register(AttackWarningMarker marker)
         {
             if (marker != null && !_activeMarkers.Contains(marker))
             {
                 _activeMarkers.Add(marker);
+                if (marker.Attacker != null)
+                {
+                    if (_activeThreatSessions.TryGetValue(marker.Attacker, out var oldSession))
+                    {
+                        AttackThreatSession.Release(oldSession);
+                    }
+                    var session = AttackThreatSession.Allocate(marker.Attacker, marker);
+                    _activeThreatSessions[marker.Attacker] = session;
+                }
                 return true;
             }
             return false;
@@ -176,6 +212,8 @@ namespace Game.Logic
             if (marker != null)
             {
                 _activeMarkers.Remove(marker);
+                // 核心纠偏：预警 Clip 离开是正常的生理时钟（在攻击判定帧之前结束），
+                // 绝不在此销毁 AttackThreatSession，因为挥刀判定正在进行或正要来临！
             }
         }
 
@@ -249,6 +287,11 @@ namespace Game.Logic
         {
             _activeMarkers.Clear();
             _activeContracts.Clear();
+            foreach (var kvp in _activeThreatSessions)
+            {
+                AttackThreatSession.Release(kvp.Value);
+            }
+            _activeThreatSessions.Clear();
         }
 
         /// <summary>

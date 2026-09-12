@@ -4,7 +4,7 @@ using cfg.ZZZ;
 namespace Game.Logic.Combat.Pipeline.Pipes
 {
     /// <summary>
-    /// 削韧、霸体与受击硬直判定过滤器
+    /// 削韧、霸体与受击硬直判定过滤器 (基于 Luban 技能表数据驱动)
     /// </summary>
     public class ResilienceAndStaggerPipe : IHitPipe
     {
@@ -15,7 +15,7 @@ namespace Game.Logic.Combat.Pipeline.Pipes
         {
             if (ctx.IsAborted || ctx.Victim == null) return;
 
-            // 1. 霸体检测
+            // 1. 绝对霸体免疫检测（受击模块标志位或 SuperArmor 状态标签）
             bool isSuperArmor = false;
             if (ctx.Victim.HitReactionModule != null && ctx.Victim.HitReactionModule.isSuperArmor)
             {
@@ -33,24 +33,23 @@ namespace Game.Logic.Combat.Pipeline.Pipes
                 return;
             }
 
-            // 2. 韧性比对与打断决策
+            // 2. 纯数据驱动打断力与总韧性裁决
+            // 攻击方打断等级：严格由攻击方当前出招配置提供，未配表或找不到严格为 0，绝不擅自篡改为 1
             int interruptLevel = ctx.InterruptLevel;
-            int resilience = 1;
-            if (ctx.Victim.StatusModule?.Attributes != null && ctx.Victim.StatusModule.Attributes.Has(AttributeId.BaseResilience))
-            {
-                resilience = Mathf.RoundToInt(ctx.Victim.StatusModule.Attributes.GetCurrent(AttributeId.BaseResilience));
-            }
-            ctx.TargetResilience = resilience;
 
-            bool isInterrupted = interruptLevel >= resilience;
+            // 受击方总韧性：基础韧性 + Buff属性加成 + 当前出招动作Luban韧性加成
+            int totalResilience = ActionResilienceHelper.GetTotalResilience(ctx.Victim);
+            ctx.TargetResilience = totalResilience;
+
+            // 只有打断等级 > 0 且大于等于受击方总韧性时，才产生动作打断
+            bool isInterrupted = interruptLevel > 0 && interruptLevel >= totalResilience;
             if (isInterrupted)
             {
                 ctx.ResultFlags |= HitResultFlags.Interrupted;
 
-                // 若上下文中已有明确指定的硬直级别（如招架反击预设的 HitReactionType.Parried），完整保留！
+                // 若上下文中已有明确指定的硬直级别（如招架反击预设的 HitReactionType.Parried），完整保留
                 if (ctx.SelectedReactionType == HitReactionType.None)
                 {
-                    // 仅当此前未设定反应类型时，默认保底为轻受击
                     ctx.SelectedReactionType = HitReactionType.Light;
                 }
 
@@ -65,6 +64,8 @@ namespace Game.Logic.Combat.Pipeline.Pipes
             }
             else
             {
+                // 未被打断：霸体硬抗，只受伤害/顿帧，不进入受击动作/硬直
+                ctx.ResultFlags |= HitResultFlags.SuperArmor;
                 ctx.SelectedReactionType = HitReactionType.None;
             }
         }

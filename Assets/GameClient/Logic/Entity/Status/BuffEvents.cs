@@ -13,7 +13,7 @@ namespace Game.Logic
     public struct BuffRemovedEvent : IGameEvent
     {
         public CharacterEntity Target;
-        public BuffDefAsset Definition;
+        public cfg.ZZZ.Buff Definition;
         public BuffRemoveReason Reason;
     }
 }

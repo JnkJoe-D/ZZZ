@@ -1,0 +1,50 @@
+[
+  {
+    "id": 9000,
+    "name": "无敌",
+    "desc": "",
+    "icon": "",
+    "tags": [],
+    "lifetime_type": 0,
+    "base_duration": -1,
+    "max_stack": 1,
+    "stack_behavior": 20,
+    "charge_count": 0,
+    "effects": [
+      {
+        "effect_type": 20,
+        "trigger_event": 0,
+        "attr_id": 0,
+        "param_int1": 0,
+        "param_float1": 0,
+        "param_float2": 0,
+        "param_bool1": false,
+        "param_str1": ""
+      }
+    ]
+  },
+  {
+    "id": 9001,
+    "name": "极限闪避",
+    "desc": "",
+    "icon": "",
+    "tags": [],
+    "lifetime_type": 0,
+    "base_duration": -1,
+    "max_stack": 1,
+    "stack_behavior": 20,
+    "charge_count": 0,
+    "effects": [
+      {
+        "effect_type": 10,
+        "trigger_event": 0,
+        "attr_id": 0,
+        "param_int1": 0,
+        "param_float1": 0.1,
+        "param_float2": 5,
+        "param_bool1": true,
+        "param_str1": ""
+      }
+    ]
+  }
+]

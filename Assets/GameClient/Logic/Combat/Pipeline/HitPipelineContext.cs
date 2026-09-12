@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using ATEditor;
 using cfg.ZZZ;
+using Game.Logic;
 
 namespace Game.Logic.Combat.Pipeline
 {
@@ -27,6 +28,7 @@ namespace Game.Logic.Combat.Pipeline
         public float FinalDamage { get; set; }
         public float FinalDazeAmount { get; set; }
         public HitReactionType SelectedReactionType { get; set; }
+        public AttackThreatSession ThreatSession { get; set; }
         public int InterruptLevel { get; set; }
         public int TargetResilience { get; set; }
 
@@ -78,6 +80,7 @@ namespace Game.Logic.Combat.Pipeline
             FinalDamage = 0f;
             FinalDazeAmount = 0f;
             SelectedReactionType = HitReactionType.None;
+            ThreatSession = null;
             InterruptLevel = 0;
             TargetResilience = 0;
 

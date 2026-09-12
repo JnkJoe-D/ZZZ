@@ -12,6 +12,8 @@ namespace Game.Adapters
     /// </summary>
     public class ATHitHandler : IHitHandler
     {
+        private static readonly HashSet<CharacterEntity> _processedVictimsCache = new(8);
+
         public void OnHitDetect(HitData hitData)
         {
             if (hitData.targetsCollilders == null || hitData.targetsCollilders.Length == 0) return;
@@ -27,17 +29,23 @@ namespace Game.Adapters
                 attacker = hitData.deployer.GetComponent<CharacterEntity>();
             }
 
-            var processedVictims = new HashSet<CharacterEntity>();
-
-            foreach (var collider in hitData.targetsCollilders)
+            _processedVictimsCache.Clear();
+            try
             {
-                if (collider == null) continue;
+                var threatSession = attacker != null ? CombatWarningManager.GetActiveThreatSession(attacker) : null;
 
-                var victim = collider.GetComponentInParent<CharacterEntity>();
-                if (victim == null) continue;
+                foreach (var collider in hitData.targetsCollilders)
+                {
+                    if (collider == null) continue;
 
-                // 防止同一个实体身上的多个 Collider 被同时打中导致触发多次重复命中
-                if (!processedVictims.Add(victim)) continue;
+                    var victim = collider.GetComponentInParent<CharacterEntity>();
+                    if (victim == null) continue;
+
+                    // 防止同一个实体身上的多个 Collider 被同时打中导致触发多次重复命中
+                    if (!_processedVictimsCache.Add(victim)) continue;
+
+                    // 检查该受击者是否已在此攻击威胁会话中被豁免（例如已触发极限闪避）
+                    if (threatSession != null && threatSession.HasResolvedFor(victim)) continue;
 
                 // 计算碰撞点和攻击方向
                 Vector3 attackerPos = hitData.deployer != null ? hitData.deployer.transform.position : Vector3.zero;
@@ -80,12 +88,13 @@ namespace Game.Adapters
                 ctx.HitCollider = collider;
                 ctx.RawHitData = hitData;
                 ctx.HitEffectConfig = hitEffectConfig;
+                ctx.ThreatSession = threatSession;
 
                 ctx.HitPoint = hitPoint;
                 ctx.HitDirection = hitDirection;
                 ctx.ReactionAxis = -hitDirection;
 
-                ctx.InterruptLevel = hitData.interruptLevel;
+                ctx.InterruptLevel = ActionResilienceHelper.GetInterruptLevel(attacker);
                 ctx.EnableHitStop = hitData.enableHitStop;
                 ctx.HitStopDuration = hitData.hitStopDuration;
                 ctx.HitStopScale = hitData.hitStopScale;
@@ -111,6 +120,11 @@ namespace Game.Adapters
                     pipeline.Execute(ctx);
                     pipeline.ReleaseContext(ctx);
                 }
+            }
+            }
+            finally
+            {
+                _processedVictimsCache.Clear();
             }
         }
     }

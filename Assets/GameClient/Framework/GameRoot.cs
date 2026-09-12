@@ -200,6 +200,7 @@ namespace Game.Logic
             UIManager.Instance?.Shutdown();
             ResourceManager.Instance?.Shutdown();
             Game.Network.NetworkManager.Instance?.Shutdown();
+            Game.Logic.TimeManager.Instance?.ResetToNormal();
             EventCenter.ClearAll();
             GlobalPoolManager.DisposeAll();
 

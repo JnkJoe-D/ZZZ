@@ -218,7 +218,7 @@ namespace ATEditor
                         var parryData = contract.ParryRole.DataModule?.Get<Game.Logic.ParryRuntimeData>();
                         if (parryData != null && parryData.IsParrying)
                         {
-                            var roleCol = contract.ParryRole.GetComponent<Collider>();
+                            var roleCol = contract.ParryRole.GetComponent<Collider>() ?? contract.ParryRole.GetComponentInChildren<Collider>();
                             if (roleCol != null && !_cachedValidHits.Contains(roleCol))
                             {
                                 _cachedValidHits.Add(roleCol);

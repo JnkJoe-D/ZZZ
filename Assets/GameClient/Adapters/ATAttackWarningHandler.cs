@@ -23,7 +23,6 @@ namespace Game.Logic
             {
                 Attacker = _entity,
                 SignalType = clip.SignalType,
-                Weight = clip.Weight,
                 DetectionRadius = clip.DetectionRadius > 0 ? clip.DetectionRadius : 10.0f,
                 DetectionAngle = clip.DetectionAngle > 0 ? clip.DetectionAngle : 180.0f,
                 CoverageShape = clip.CoverageShape,
@@ -37,7 +36,7 @@ namespace Game.Logic
             }
         }
 
-        public void RegisterWarningMarker(WarningSignalType signalType, AttackWeight weight, float detectionRadius, float detectionAngle)
+        public void RegisterWarningMarker(WarningSignalType signalType, float detectionRadius, float detectionAngle)
         {
             if (_marker != null)
             {
@@ -49,7 +48,6 @@ namespace Game.Logic
             {
                 Attacker = _entity,
                 SignalType = signalType,
-                Weight = weight,
                 DetectionRadius = detectionRadius,
                 DetectionAngle = detectionAngle
             };

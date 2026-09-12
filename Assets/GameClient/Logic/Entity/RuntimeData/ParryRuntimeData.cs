@@ -5,7 +5,6 @@ namespace Game.Logic
         public bool IsParrying { get; set; }
         public bool ParrySucceeded { get; set; }
         public CharacterEntity LastParriedAttacker { get; set; }
-        public ATEditor.AttackWeight LastParriedWeight { get; set; }
 
         public void Reset()
         {

@@ -9,11 +9,6 @@ namespace ATEditor
         Red_Unparryable   // 不可招架（仅限闪避）
     }
 
-    public enum AttackWeight
-    {
-        Light_Interruptible,  // 轻攻击，被弹刀会打断
-        Heavy_Uninterruptible // 重攻击，被弹刀只顿帧，不打断
-    }
     [Serializable]
     [ClipDefinition(typeof(EventTrack), "攻击预警 (黄/红光)")]
     public class AttackWarningClip : ClipBase
@@ -21,9 +16,6 @@ namespace ATEditor
         [Header("Warning Type")]
         [Tooltip("黄光表示可被弹刀/招架，红光表示不可弹刀只能闪避")]
         public WarningSignalType SignalType = WarningSignalType.Yellow_Parryable;
-
-        [Tooltip("轻攻击(可被打断) 还是 重攻击(只能局部顿帧)")]
-        public AttackWeight Weight = AttackWeight.Light_Interruptible;
 
         [Header("Coverage Area (威胁覆盖域)")]
         [Tooltip("用于判定玩家是否已经处于本次攻击危险区内。若在区域内则就地招架；若在外部则瞬移至接刀点。")]
@@ -66,7 +58,6 @@ namespace ATEditor
                 duration = this.duration,
                 isEnabled = this.isEnabled,
                 SignalType = this.SignalType,
-                Weight = this.Weight,
                 CoverageShape = this.CoverageShape?.Clone() ?? new HitBoxShape { shapeType = HitBoxType.Sector, radius = 5.0f, angle = 120.0f, height = 2.5f },
                 CoverageCenterOffset = this.CoverageCenterOffset,
                 ClashPositionOffset = this.ClashPositionOffset,

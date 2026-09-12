@@ -10,12 +10,7 @@ namespace Game.Logic
     [CreateAssetMenu(fileName = "MonsterActionConfigAsset", menuName = "Config/Action/Monster Action Config")]
     public class MonsterActionConfigAsset : ActionConfigAsset
     {
-        [Header("怪物特定动作参数")]
-        [Tooltip("该动作是否可以被轻受击打断")]
-        public bool CanBeInterruptedByLightHit = true;
-        
-        [Tooltip("该动作是否可以被重受击打断")]
-        public bool CanBeInterruptedByHeavyHit = true;
+        // 怪物特定动作参数未来若有可在此扩展，打断力与抗打断韧性统一由 Luban 技能表驱动
 
     }
 }

@@ -256,4 +256,31 @@ namespace Game.Logic
             return false;
         }
     }
+
+    [Serializable]
+    [SubclassDisplayName("是否处于子弹时间 (IsInBulletTime)")]
+    public sealed class IsInBulletTimeCondition : ITransitionCondition
+    {
+        [Tooltip("反转结果：勾选后表示'不在子弹时间中为真'")]
+        public bool Inverse = false;
+
+        [Tooltip("是否必须由当前角色自身触发")]
+        public bool RequireSelfInstigated = true;
+
+        public bool Check(RoleEntity actor)
+        {
+            var tm = TimeManager.Instance;
+            if (tm == null) return Inverse;
+
+            bool isActive = tm.IsBulletTimeActive;
+
+            // 若要求必须自身触发，比对 Instigator
+            if (isActive && RequireSelfInstigated && actor != null)
+            {
+                isActive = (tm.BulletTimeInstigator == actor);
+            }
+
+            return Inverse ? !isActive : isActive;
+        }
+    }
 }

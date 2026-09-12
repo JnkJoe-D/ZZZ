@@ -28,7 +28,6 @@ namespace Game.Logic
         public FSMSystem<RoleEntity> Machine => StateMachine;
 
         public bool IsControlActive { get; protected set; }
-        public bool IsPresentationVisible { get; private set; } = true;
         public bool IsRuntimeInitialized { get; protected set; }
 
         protected virtual bool AutoBindInputOnStart => false;

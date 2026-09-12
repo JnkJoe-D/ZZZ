@@ -10,6 +10,8 @@ namespace Game.Logic.Combat.Pipeline.Pipes
         public string PipeName => "ProtectionPipe";
         public int Priority => 100;
 
+        private readonly System.Collections.Generic.List<(IHitDefenseModifier Modifier, BuffInstance Buff)> _defenseBuffer = new(8);
+
         public void Process(HitPipelineContext ctx)
         {
             if (ctx.Victim == null || ctx.Victim.IsDead)
@@ -18,21 +20,36 @@ namespace Game.Logic.Combat.Pipeline.Pipes
                 return;
             }
 
-            // 0. 后台退场角色保护（防止已隐形退场的角色被范围判定误伤）
-            if (ctx.Victim is RoleEntity roleVictim && !roleVictim.IsPresentationVisible)
+            // 0. 后台退场实体保护（防止已隐形退场的实体被范围判定误伤）
+            if (!ctx.Victim.IsPresentationVisible)
             {
-                ctx.Abort("Victim is a retired background role", HitResultFlags.Protected);
+                ctx.Abort("Victim is invisible in background", HitResultFlags.Protected);
                 return;
             }
 
-            // 1. 无敌状态检测（StatusModule 标签免疫）
+            // 1. 统一多态防御策略自解析 (0 if-else)：
+            // 调度受击者身上所有生效的防御拦截器（按 Priority 降序执行：极限闪避 300 > 招架 200 > 纯无敌 50）
+            if (ctx.Victim.StatusModule?.Buffs != null)
+            {
+                ctx.Victim.StatusModule.Buffs.GetActiveDefenseModifiers(_defenseBuffer);
+                for (int i = 0; i < _defenseBuffer.Count; i++)
+                {
+                    var (modifier, buff) = _defenseBuffer[i];
+                    if (modifier.TryInterceptHit(ctx, buff))
+                    {
+                        // 拦截生效，直接退出受击管线（已被 Abort 短路）
+                        return;
+                    }
+                }
+            }
+
+            // 兼容性保底：旧标签免疫系统 (若外部仅调用了 AddImmuneTag("Invincible"))
             if (ctx.Victim.StatusModule != null && ctx.Victim.StatusModule.IsTagImmune("Invincible"))
             {
-                // 若受击者当前处于招架窗口中，放行给 ParryPipe 判定，不因被动无敌吞噬主动招架
                 var parryData = ctx.Victim.DataModule?.Get<ParryRuntimeData>();
                 if (parryData == null || !parryData.IsParrying)
                 {
-                    ctx.Abort("Victim is Invincible", HitResultFlags.Invincible);
+                    ctx.Abort("Victim is Invincible (Tag)", HitResultFlags.Invincible);
                     return;
                 }
             }

@@ -118,6 +118,14 @@ namespace Game.Adapters
                 });
             }
 
+            if (serviceType == typeof(IBuffHandler))
+            {
+                return GetOrCreateCachedService(serviceType, owner, () => {
+                    var entity = owner.GetComponent<CharacterEntity>();
+                    return entity != null ? new ATBuffHandler(entity) : null;
+                });
+            }
+
             return null;
         }
 

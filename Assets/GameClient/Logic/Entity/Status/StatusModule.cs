@@ -62,7 +62,7 @@ namespace Game.Logic
             if (!string.IsNullOrEmpty(tag)) _immuneTags.Remove(tag);
         }
 
-        public bool IsBuffImmune(BuffDefAsset buffDef)
+        public bool IsBuffImmune(cfg.ZZZ.Buff buffDef)
         {
             if (buffDef == null || buffDef.Tags == null || buffDef.Tags.Count == 0) return false;
 
@@ -74,6 +74,12 @@ namespace Game.Logic
                 }
             }
             return false;
+        }
+
+        public bool IsBuffImmune(int buffId)
+        {
+            var def = ConfigManager.Instance?.Tables?.TbBuff?.GetOrDefault(buffId);
+            return def != null && IsBuffImmune(def);
         }
 
         public float GetEXSpecialAttackCost(int skillId)

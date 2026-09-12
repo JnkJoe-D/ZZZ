@@ -67,8 +67,9 @@ namespace ATEditor
         [SkillProperty("命中效果 ID")]
         public int hitEffectId = 0;
 
-        [SkillProperty("打断等级")]
-        public int interruptLevel = 1;
+        [Obsolete("打断等级已统一由 Luban 技能表 (TbSkill.Resilience.InterruptLevel) 驱动，此字段废弃")]
+        [HideInInspector]
+        public int interruptLevel = 0;
 
         public DetectConfig Clone()
         {

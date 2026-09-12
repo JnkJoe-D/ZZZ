@@ -22,6 +22,7 @@ public sealed partial class Skill : Luban.BeanBase
         { if(!_buf["desc"].IsString) { throw new SerializationException(); }  Desc = _buf["desc"]; }
         { var __json0 = _buf["condition"]; if(!__json0.IsArray) { throw new SerializationException(); } Condition = new System.Collections.Generic.List<ZZZ.AttributeCondition>(__json0.Count); foreach(JSONNode __e0 in __json0.Children) { ZZZ.AttributeCondition __v0;  { if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = global::cfg.ZZZ.AttributeCondition.DeserializeAttributeCondition(__e0);  }  Condition.Add(__v0); }   }
         { var __json0 = _buf["cost"]; if(!__json0.IsArray) { throw new SerializationException(); } Cost = new System.Collections.Generic.List<ZZZ.AttributeCost>(__json0.Count); foreach(JSONNode __e0 in __json0.Children) { ZZZ.AttributeCost __v0;  { if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = global::cfg.ZZZ.AttributeCost.DeserializeAttributeCost(__e0);  }  Cost.Add(__v0); }   }
+        { if(!_buf["resilience"].IsObject) { throw new SerializationException(); }  Resilience = global::cfg.ZZZ.ActionResilience.DeserializeActionResilience(_buf["resilience"]);  }
     }
 
     public static Skill DeserializeSkill(JSONNode _buf)
@@ -49,6 +50,10 @@ public sealed partial class Skill : Luban.BeanBase
     /// 技能消耗
     /// </summary>
     public readonly System.Collections.Generic.List<ZZZ.AttributeCost> Cost;
+    /// <summary>
+    /// 韧性
+    /// </summary>
+    public readonly ZZZ.ActionResilience Resilience;
    
     public const int __ID__ = -1855166371;
     public override int GetTypeId() => __ID__;
@@ -57,6 +62,7 @@ public sealed partial class Skill : Luban.BeanBase
     {
         foreach (var _e in Condition) { _e?.ResolveRef(tables); }
         foreach (var _e in Cost) { _e?.ResolveRef(tables); }
+        Resilience?.ResolveRef(tables);
     }
 
     public override string ToString()
@@ -67,6 +73,7 @@ public sealed partial class Skill : Luban.BeanBase
         + "desc:" + Desc + ","
         + "condition:" + Luban.StringUtil.CollectionToString(Condition) + ","
         + "cost:" + Luban.StringUtil.CollectionToString(Cost) + ","
+        + "resilience:" + Resilience + ","
         + "}";
     }
 }

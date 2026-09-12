@@ -1,27 +1,30 @@
 using System;
 using UnityEngine;
+using cfg.ZZZ;
 
 namespace Game.Logic
 {
     /// <summary>
     /// 修改属性效果。施加时添加修改器，移除时自动撤销。
+    /// 由 Luban 的 BuffEffectData (EffectType = ModifyAttribute) 驱动。
     /// 用于实现攻击力+20%、最大HP+500 等。
     /// </summary>
-    [Serializable]
-    [SubclassDisplayName("属性修改效果 (ModifyAttribute)")]
+    [BuffEffectBinding(BuffEffectType.ModifyAttribute)]
     public class ModifyAttributeEffect : IBuffEffect
     {
-        [Tooltip("要修改的目标属性。")]
-        public AttributeId TargetAttribute;
+        public AttributeId TargetAttribute { get; }
+        public ModifierOp Operation { get; }
+        public float Value { get; }
+        public bool ScaleWithStack { get; }
 
-        [Tooltip("修改器运算类型。")]
-        public ModifierOp Operation = ModifierOp.Flat;
-
-        [Tooltip("修改值。Flat 模式为绝对值；Percent 模式为百分比 (0.2 = +20%)。")]
-        public float Value;
-
-        [Tooltip("是否按叠加层数倍增效果。")]
-        public bool ScaleWithStack = true;
+        public ModifyAttributeEffect(BuffEffectData cfg, BuffApplyContext ctx = null)
+        {
+            TargetAttribute = (AttributeId)cfg.AttrId;
+            Operation = (ModifierOp)cfg.ParamInt1;
+            float multiplier = ctx != null ? ctx.ValueMultiplier : 1f;
+            Value = cfg.ParamFloat1 * multiplier;
+            ScaleWithStack = cfg.ParamBool1;
+        }
 
         public void OnApply(BuffInstance buff, CharacterEntity target)
         {
@@ -71,23 +74,28 @@ namespace Game.Logic
     }
 
     /// <summary>
-    /// 持续伤害 (DoT) 效果。每秒对目标造成固定伤害。
-    /// 用于实现灼烧、中毒等。
+    /// 持续伤害 (DoT) 效果。
+    /// 由 Luban 的 BuffEffectData (EffectType = DamageOverTime) 驱动。
+    /// 用于实现灼烧、中毒、感电等。
     /// </summary>
-    [Serializable]
-    [SubclassDisplayName("持续伤害 DoT (DamageOverTime)")]
+    [BuffEffectBinding(BuffEffectType.DamageOverTime)]
     public class DamageOverTimeEffect : IBuffEffect
     {
-        [Tooltip("每秒伤害量。")]
-        public float DamagePerSecond = 10f;
-
-        [Tooltip("伤害的目标属性（通常为 HP）。")]
-        public AttributeId TargetAttribute = AttributeId.HP;
-
-        [Tooltip("是否按叠加层数倍增伤害。")]
-        public bool ScaleWithStack = true;
+        public float DamagePerSecond { get; }
+        public AttributeId TargetAttribute { get; }
+        public float TickInterval { get; }
+        public bool ScaleWithStack { get; }
 
         private float _tickAccumulator;
+
+        public DamageOverTimeEffect(BuffEffectData effectCfg, BuffApplyContext ctx = null)
+        {
+            float multiplier = ctx != null ? ctx.ValueMultiplier : 1f;
+            DamagePerSecond = effectCfg.ParamFloat1 * multiplier;
+            TickInterval = effectCfg.ParamFloat2 > 0f ? effectCfg.ParamFloat2 : 1f;
+            TargetAttribute = effectCfg.AttrId != global::cfg.ZZZ.AttributeId.None ? (AttributeId)effectCfg.AttrId : AttributeId.HP;
+            ScaleWithStack = effectCfg.ParamBool1;
+        }
 
         public void OnApply(BuffInstance buff, CharacterEntity target)
         {
@@ -98,59 +106,13 @@ namespace Game.Logic
         {
             _tickAccumulator += deltaTime;
 
-            // 每秒结算一次
-            if (_tickAccumulator >= 1f)
+            if (_tickAccumulator >= TickInterval)
             {
-                _tickAccumulator -= 1f;
+                _tickAccumulator -= TickInterval;
 
                 float damage = ScaleWithStack ? DamagePerSecond * buff.CurrentStack : DamagePerSecond;
-                target?.StatusModule?.Attributes?.Modify(TargetAttribute, -damage);
-            }
-        }
-
-        public void OnStack(BuffInstance buff, CharacterEntity target, int newStack)
-        {
-            // 伤害在 Tick 中按层数计算，无需额外处理
-        }
-
-        public void OnRemove(BuffInstance buff, CharacterEntity target)
-        {
-            _tickAccumulator = 0f;
-        }
-    }
-
-    /// <summary>
-    /// 持续治疗 (HoT) 效果。每秒对目标回复固定生命值。
-    /// </summary>
-    [Serializable]
-    [SubclassDisplayName("持续治疗 HoT (HealOverTime)")]
-    public class HealOverTimeEffect : IBuffEffect
-    {
-        [Tooltip("每秒回复量。")]
-        public float HealPerSecond = 10f;
-
-        [Tooltip("回复的目标属性（通常为 HP）。")]
-        public AttributeId TargetAttribute = AttributeId.HP;
-
-        public bool ScaleWithStack = true;
-
-        private float _tickAccumulator;
-
-        public void OnApply(BuffInstance buff, CharacterEntity target)
-        {
-            _tickAccumulator = 0f;
-        }
-
-        public void OnTick(BuffInstance buff, CharacterEntity target, float deltaTime)
-        {
-            _tickAccumulator += deltaTime;
-
-            if (_tickAccumulator >= 1f)
-            {
-                _tickAccumulator -= 1f;
-
-                float heal = ScaleWithStack ? HealPerSecond * buff.CurrentStack : HealPerSecond;
-                target?.StatusModule?.Attributes?.Modify(TargetAttribute, +heal);
+                float intervalDamage = damage * TickInterval;
+                target?.StatusModule?.Attributes?.Modify(TargetAttribute, -intervalDamage);
             }
         }
 
@@ -163,23 +125,71 @@ namespace Game.Logic
     }
 
     /// <summary>
-    /// 属性计数器效果。用于实现角色独有仪表（如命中累积计数）。
-    /// 此效果本身不自动累积——需要外部逻辑（如 HitImpact）主动调用 Modify。
-    /// 它的作用是在 Buff 施加时确保目标属性存在并初始化。
+    /// 持续治疗 (HoT) 效果。
+    /// 由 Luban 的 BuffEffectData (EffectType = HealOverTime) 驱动。
     /// </summary>
-    [Serializable]
-    [SubclassDisplayName("专属机制计数器 (AttributeCounter)")]
-    public class AttributeCounterEffect : IBuffEffect
+    [BuffEffectBinding(BuffEffectType.HealOverTime)]
+    public class HealOverTimeEffect : IBuffEffect
     {
-        [Tooltip("计数器对应的属性 ID。")]
-        public AttributeId CounterAttribute;
+        public float HealPerSecond { get; }
+        public AttributeId TargetAttribute { get; }
+        public float TickInterval { get; }
+        public bool ScaleWithStack { get; }
 
-        [Tooltip("Buff 移除时是否清零计数器。")]
-        public bool ResetOnRemove = true;
+        private float _tickAccumulator;
+
+        public HealOverTimeEffect(BuffEffectData effectCfg, BuffApplyContext ctx = null)
+        {
+            float multiplier = ctx != null ? ctx.ValueMultiplier : 1f;
+            HealPerSecond = effectCfg.ParamFloat1 * multiplier;
+            TickInterval = effectCfg.ParamFloat2 > 0f ? effectCfg.ParamFloat2 : 1f;
+            TargetAttribute = effectCfg.AttrId != global::cfg.ZZZ.AttributeId.None ? (AttributeId)effectCfg.AttrId : AttributeId.HP;
+            ScaleWithStack = effectCfg.ParamBool1;
+        }
 
         public void OnApply(BuffInstance buff, CharacterEntity target)
         {
-            // 确保属性存在
+            _tickAccumulator = 0f;
+        }
+
+        public void OnTick(BuffInstance buff, CharacterEntity target, float deltaTime)
+        {
+            _tickAccumulator += deltaTime;
+
+            if (_tickAccumulator >= TickInterval)
+            {
+                _tickAccumulator -= TickInterval;
+
+                float heal = ScaleWithStack ? HealPerSecond * buff.CurrentStack : HealPerSecond;
+                float intervalHeal = heal * TickInterval;
+                target?.StatusModule?.Attributes?.Modify(TargetAttribute, +intervalHeal);
+            }
+        }
+
+        public void OnStack(BuffInstance buff, CharacterEntity target, int newStack) { }
+
+        public void OnRemove(BuffInstance buff, CharacterEntity target)
+        {
+            _tickAccumulator = 0f;
+        }
+    }
+
+    /// <summary>
+    /// 专属机制计数器效果。
+    /// </summary>
+    public class AttributeCounterEffect : IBuffEffect
+    {
+        public AttributeId CounterAttribute { get; }
+        public bool ResetOnRemove { get; }
+
+        public AttributeCounterEffect(BuffEffectData cfg)
+        {
+            CounterAttribute = (AttributeId)cfg.AttrId;
+            ResetOnRemove = cfg.ParamBool1;
+        }
+
+        public void OnApply(BuffInstance buff, CharacterEntity target)
+        {
             var attrSet = target?.StatusModule?.Attributes;
             if (attrSet == null) return;
 
@@ -190,7 +200,6 @@ namespace Game.Logic
         }
 
         public void OnTick(BuffInstance buff, CharacterEntity target, float deltaTime) { }
-
         public void OnStack(BuffInstance buff, CharacterEntity target, int newStack) { }
 
         public void OnRemove(BuffInstance buff, CharacterEntity target)

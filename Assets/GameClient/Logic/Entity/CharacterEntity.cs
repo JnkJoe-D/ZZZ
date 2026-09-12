@@ -47,6 +47,7 @@ namespace Game.Logic
         public FootIKModule FootIKModule { get; protected set; }
         public ILifecycleModule LifecycleModule { get; protected set; }
         public bool IsDead => LifecycleModule != null && LifecycleModule.IsDead;
+        public virtual bool IsPresentationVisible { get; protected set; } = true;
 
         public virtual ActionController ActionController { get; protected set; }
         public CommandBuffer CommandBuffer { get; protected set; }

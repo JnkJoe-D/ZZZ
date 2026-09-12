@@ -1,8 +1,8 @@
 namespace Game.Logic
 {
     /// <summary>
-    /// Buff 效果接口。每种 Buff 行为实现此接口。
-    /// 使用 [SerializeReference] 在 BuffDefAsset 的 Effects 列表中多态序列化。
+    /// Buff 效果接口。每种具体的 Buff 行为实现此接口。
+    /// 由 Luban 配置的 BuffEffectData 驱动，在运行时由 BuffEffectRegistry 动态构建执行。
     /// </summary>
     public interface IBuffEffect
     {

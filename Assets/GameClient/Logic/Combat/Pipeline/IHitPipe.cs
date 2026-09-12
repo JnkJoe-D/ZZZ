@@ -17,6 +17,7 @@ namespace Game.Logic.Combat.Pipeline
         SuperArmor      = 1 << 5, // 处于霸体状态
         Interrupted     = 1 << 6, // 动作/行为被打断
         HitStopApplied  = 1 << 7, // 顿帧已施加
+        Evaded          = 1 << 8, // 极限闪避拦截成功
     }
 
     /// <summary>

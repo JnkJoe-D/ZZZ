@@ -117,9 +117,137 @@ namespace Game.Logic
             _activeHitStops.Clear();
         }
 
+        // ─── 子弹时间（Bullet Time）集中管理 ───
+        private class BulletTimeSession
+        {
+            public CharacterEntity Instigator;
+            public float TargetScale;
+            public float RemainingDuration;
+            public float TotalDuration;
+            public bool SmoothRecover;
+        }
+
+        private BulletTimeSession _activeBulletTime;
+
+        /// <summary>当前全局是否正处于玩法子弹时间中（单一真理源）</summary>
+        public bool IsBulletTimeActive => _activeBulletTime != null && _activeBulletTime.RemainingDuration > 0f;
+
+        /// <summary>当前正在生效的怪物子弹时间流速</summary>
+        public float CurrentBulletTimeScale => _activeBulletTime != null ? _activeBulletTime.TargetScale : 1.0f;
+
+        /// <summary>触发本次子弹时间的发起者实体</summary>
+        public CharacterEntity BulletTimeInstigator => _activeBulletTime?.Instigator;
+
+        /// <summary>
+        /// 触发定向怪物子弹时间（玩家角色 100% 保持全速，仅场上活跃怪物进入慢动作）
+        /// </summary>
+        /// <param name="scale">时间流速（如 0.1 表示 10% 速度）</param>
+        /// <param name="duration">持续真实物理秒数</param>
+        /// <param name="instigator">触发者角色（玩家），绝不减速</param>
+        /// <param name="smoothRecover">是否在末段平滑缓出恢复</param>
+        public void TriggerBulletTime(float scale, float duration, CharacterEntity instigator = null, bool smoothRecover = true)
+        {
+            if (duration <= 0f) return;
+
+            float targetScale = Mathf.Clamp(scale, 0.01f, 1.0f);
+            _activeBulletTime = new BulletTimeSession
+            {
+                Instigator = instigator,
+                TargetScale = targetScale,
+                RemainingDuration = duration,
+                TotalDuration = duration,
+                SmoothRecover = smoothRecover
+            };
+
+            // 定向通知场上所有活跃怪物进入慢动作（过滤触发者自身）
+            var monsters = MonsterManager.Instance?.ActiveMonsters;
+            if (monsters != null)
+            {
+                for (int i = 0; i < monsters.Count; i++)
+                {
+                    var monster = monsters[i];
+                    if (monster != null && monster != instigator && monster.gameObject.activeInHierarchy)
+                    {
+                        monster.ApplyBulletTime(targetScale);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 强制清除当前子弹时间并将所有处于子弹时间的怪物立即恢复正常时速
+        /// </summary>
+        public void ClearBulletTime()
+        {
+            if (_activeBulletTime != null)
+            {
+                _activeBulletTime = null;
+                RestoreAllMonstersFromBulletTime();
+            }
+        }
+
+        private void RestoreAllMonstersFromBulletTime()
+        {
+            var monsters = MonsterManager.Instance?.ActiveMonsters;
+            if (monsters != null)
+            {
+                for (int i = 0; i < monsters.Count; i++)
+                {
+                    var monster = monsters[i];
+                    if (monster != null)
+                    {
+                        monster.ExitBulletTime();
+                    }
+                }
+            }
+        }
+
+        private void TickBulletTime(float unscaledDelta)
+        {
+            if (_activeBulletTime == null) return;
+
+            _activeBulletTime.RemainingDuration -= unscaledDelta;
+            if (_activeBulletTime.RemainingDuration <= 0f)
+            {
+                _activeBulletTime = null;
+                RestoreAllMonstersFromBulletTime();
+            }
+            else if (_activeBulletTime.SmoothRecover)
+            {
+                // 后 35% 时间平滑缓出插值恢复至 1.0
+                float recoverThreshold = _activeBulletTime.TotalDuration * 0.35f;
+                if (_activeBulletTime.RemainingDuration < recoverThreshold && recoverThreshold > 0.001f)
+                {
+                    float t = 1.0f - (_activeBulletTime.RemainingDuration / recoverThreshold);
+                    float lerpedScale = Mathf.Lerp(_activeBulletTime.TargetScale, 1.0f, t);
+
+                    var monsters = MonsterManager.Instance?.ActiveMonsters;
+                    if (monsters != null)
+                    {
+                        for (int i = 0; i < monsters.Count; i++)
+                        {
+                            var monster = monsters[i];
+                            if (monster != null && monster.gameObject.activeInHierarchy)
+                            {
+                                var timeData = monster.DataModule?.Get<TimeDilationRuntimeData>();
+                                // 只对仍处于子弹时间内的怪物插值，已受击打醒的怪物保持 1.0x 绝不回退
+                                if (timeData != null && timeData.IsInBulletTime)
+                                {
+                                    monster.ApplyBulletTime(lerpedScale);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public void Update()
         {
             float unscaledDelta = Time.unscaledDeltaTime;
+
+            // 驱动全局玩法子弹时间倒计时与缓动恢复
+            TickBulletTime(unscaledDelta);
 
             // 1. UI及渲染层帧更新（受 UI 缩放影响）
             float uiDelta = unscaledDelta * FinalUIScale;
@@ -158,5 +286,18 @@ namespace Game.Logic
         
         public void PauseGameplay() => GameplayTimeScale = 0f;
         public void ResumeGameplay() => GameplayTimeScale = 1.0f;
+
+        /// <summary>
+        /// 重置所有时钟会话与流速为正常状态 (1.0f)，用于场景切换、系统停机或测试重置
+        /// </summary>
+        public void ResetToNormal()
+        {
+            ClearAllHitStops();
+            ClearBulletTime();
+            GlobalTimeScale = 1.0f;
+            GameplayTimeScale = 1.0f;
+            UITimeScale = 1.0f;
+            Time.timeScale = 1.0f;
+        }
     }
 }

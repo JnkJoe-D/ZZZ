@@ -98,6 +98,18 @@
             "isEnabled": true,
             "isLocked": false,
             "tracks": []
+        },
+        {
+            "groupId": "68c1c23f-4d31-4a91-b2c9-f46b15ef7c95",
+            "groupName": "Buff",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1011
+                }
+            ]
         }
     ],
     "references": {
@@ -121,7 +133,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ],
                     "isMasterTrack": true,
@@ -212,7 +224,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1013
                         }
                     ]
                 }
@@ -235,7 +247,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1014
                         }
                     ]
                 }
@@ -258,10 +270,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1014
+                            "rid": 1015
                         },
                         {
-                            "rid": 1015
+                            "rid": 1016
                         }
                     ]
                 }
@@ -284,7 +296,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1017
                         }
                     ]
                 }
@@ -307,7 +319,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1018
                         }
                     ]
                 }
@@ -349,13 +361,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1018
+                            "rid": 1019
                         }
                     ]
                 }
             },
             {
                 "rid": 1011,
+                "type": {
+                    "class": "StatusTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "33825b50-768b-4625-b93e-6ca53933f60b",
+                    "trackType": "StatusTrack",
+                    "trackName": "状态增益轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1020
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1012,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -370,7 +405,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34430
+                        "instanceID": 34494
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -390,7 +425,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1013,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -408,7 +443,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1014,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -426,7 +461,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1015,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -444,7 +479,7 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1016,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -462,7 +497,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1017,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -480,7 +515,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1018,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -498,7 +533,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1019,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -518,6 +553,25 @@
                         "serializedVersion": "2",
                         "m_Bits": 4294967295
                     }
+                }
+            },
+            {
+                "rid": 1020,
+                "type": {
+                    "class": "BuffClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "a4cc9725-45f5-461c-b256-cf8146143cdb",
+                    "clipName": "增益状态 (Buff)片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.41666680574417117,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "buffId": 9001,
+                    "lifetimeMode": 0
                 }
             }
         ]

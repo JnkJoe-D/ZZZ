@@ -33,7 +33,6 @@ namespace ATEditor.Editor
             {
                 EditorGUILayout.BeginVertical("box");
                 warningClip.SignalType = (WarningSignalType)EditorGUILayout.EnumPopup("预警类型 (Signal Type)", warningClip.SignalType);
-                warningClip.Weight = (AttackWeight)EditorGUILayout.EnumPopup("攻击权重 (Weight)", warningClip.Weight);
                 warningClip.DetectionRadius = EditorGUILayout.Slider("预警感应距离 (Detection Radius)", warningClip.DetectionRadius > 0 ? warningClip.DetectionRadius : 10f, 2f, 30f);
                 warningClip.DetectionAngle = EditorGUILayout.Slider("预警感应角度 (Detection Angle)", warningClip.DetectionAngle > 0 ? warningClip.DetectionAngle : 180f, 10f, 360f);
                 warningClip.ShowGizmos = EditorGUILayout.Toggle("视口显示辅助线框 (Show Gizmos)", warningClip.ShowGizmos);

@@ -71,6 +71,13 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 4681868069782421726
+  - groupId: 7f4dee44-365d-4c24-bc13-2467e727ec2f
+    groupName: Buff
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 6379257891250765829
   references:
     version: 2
     RefIds:
@@ -329,3 +336,32 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
+        collisionMode: 0
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 4294967295
+    - rid: 6379257891250765829
+      type: {class: StatusTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: fcd2c095-c3c6-478d-9742-4952bb28088e
+        trackType: StatusTrack
+        trackName: "\u72B6\u6001\u589E\u76CA\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379257891250765830
+    - rid: 6379257891250765830
+      type: {class: BuffClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 616aeff3-d273-40c5-a6ef-8fc7d66cd3b6
+        clipName: "\u589E\u76CA\u72B6\u6001 (Buff)\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.46666664
+        blendInDuration: 0
+        blendOutDuration: 0
+        buffId: 9001
+        lifetimeMode: 0
