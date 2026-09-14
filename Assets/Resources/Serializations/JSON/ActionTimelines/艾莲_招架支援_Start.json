@@ -381,7 +381,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34732
+                        "instanceID": 34536
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -415,7 +415,7 @@
                     "duration": 4.1666669845581059,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "comboTag": "Execute1"
+                    "comboTag": "Execute2"
                 }
             },
             {
@@ -468,7 +468,11 @@
                     "startTime": 0.0,
                     "duration": 1.0,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0
+                    "blendOutDuration": 0.0,
+                    "hitEffectId": 1040016,
+                    "hitStopDuration": 0.10000000149011612,
+                    "heavyHitEffectId": 1040017,
+                    "heavyHitStopDuration": 0.20000000298023225
                 }
             },
             {

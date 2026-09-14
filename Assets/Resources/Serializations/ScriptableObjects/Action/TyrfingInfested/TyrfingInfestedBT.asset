@@ -214,14 +214,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7de9a7e4fb0d4a4cbdaf2986316d42c, type: 3}
-  m_Name: BBTriggerData
+  m_Script: {fileID: 11500000, guid: 2d3aa85b6a3eab64aba291315ca8c23c, type: 3}
+  m_Name: BBCheckStateData
   m_EditorClassIdentifier: 
   guid: 8a497d31-1372-46cd-a26e-4f1d13c07503
   position: {x: -1096.4772, y: -7.000023}
   child: {fileID: -8079894145072692930}
-  key: 3
-  stopsOnChange: 4
+  targetState: 5
+  stopsOnChange: 2
 --- !u!114 &-1355261618482291175
 MonoBehaviour:
   m_ObjectHideFlags: 0

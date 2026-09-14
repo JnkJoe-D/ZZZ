@@ -69,6 +69,16 @@ namespace Game.Framework
         Experience,
     }
 
+    /// <summary>
+    /// 队伍支援点数变化事件
+    /// 当全队共享的支援点数发生消耗、恢复或重置时触发，供 UI (如 SkillKey 切人圆弧) 监听
+    /// </summary>
+    public struct AssistPointsChangedEvent : IGameEvent
+    {
+        public int CurrentPoints;
+        public int MaxPoints;
+    }
+
     // ============================================================
     // 网络相关事件
     // ============================================================

@@ -16,6 +16,8 @@ namespace Game.Logic
         public int hitEffectId;
         public int interruptLevel;
         public cfg.ZZZ.HitReactionType reactionType;
+        public ActionConfigAsset resolvedHitAction;
+        public bool requireFaceAttacker;
 
         // --- 打击反馈参数（源自 DetectConfig → HitData） ---
         public bool enableHitStop;

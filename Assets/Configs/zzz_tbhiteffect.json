@@ -896,5 +896,39 @@
         "hit_reaction": 0
       }
     ]
+  },
+  {
+    "id": 1040016,
+    "name": "艾莲_招架_轻",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 2,
+        "attr_id": 310,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 70
+      }
+    ]
+  },
+  {
+    "id": 1040017,
+    "name": "艾莲_招架_重",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 2,
+        "attr_id": 310,
+        "value": 40,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 70
+      }
+    ]
   }
 ]

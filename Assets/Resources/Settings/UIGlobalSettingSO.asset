@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f7311d9a2464736bb6a9386c91e23da, type: 3}
+  m_Name: UIGlobalSettingSO
+  m_EditorClassIdentifier: 
+  KeyBindingConfig: {fileID: 11400000, guid: 49bf97825bb64c638be6e355912443bb, type: 2}
+  HudDefaultScale: 1

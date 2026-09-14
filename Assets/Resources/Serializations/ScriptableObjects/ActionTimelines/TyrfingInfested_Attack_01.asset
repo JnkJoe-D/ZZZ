@@ -237,7 +237,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         SignalType: 0
-        Weight: 1
+        ParryWeight: 2
         CoverageShape:
           shapeType: 1
           size: {x: 2, y: 1, z: 4}

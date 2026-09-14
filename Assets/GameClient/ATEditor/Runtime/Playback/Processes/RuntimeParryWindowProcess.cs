@@ -12,7 +12,11 @@ namespace ATEditor
 
         public override void OnEnter()
         {
-            _handler?.OnParryWindowEnter();
+            _handler?.OnParryWindowEnter(
+                clip != null ? clip.hitEffectId : 0, 
+                clip != null ? clip.hitStopDuration : 0.1f,
+                clip != null ? clip.heavyHitEffectId : 0,
+                clip != null ? clip.heavyHitStopDuration : 0f);
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)

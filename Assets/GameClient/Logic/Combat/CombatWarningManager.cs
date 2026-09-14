@@ -13,6 +13,7 @@ namespace Game.Logic
     {
         public CharacterEntity Attacker;
         public WarningSignalType SignalType;
+        public ParryWeight ParryWeight = ParryWeight.Heavy;
         public float DetectionRadius;
         public float DetectionAngle;
 
@@ -32,8 +33,8 @@ namespace Game.Logic
                 return false;
 
             Vector3 dirToTarget = target.transform.position - Attacker.transform.position;
-            // 距离检测：严格从配置的 DetectionRadius 读取（若未配置或 <= 0 则回退至默认 10.0f）
-            float validRadius = DetectionRadius > 0 ? DetectionRadius : 10.0f;
+            // 距离检测：严格从配置的 DetectionRadius 读取（若未配置或 <= 0 则回退至默认常量）
+            float validRadius = DetectionRadius > 0 ? DetectionRadius : CombatWarningManager.DefaultDetectionRadius;
             if (dirToTarget.sqrMagnitude > validRadius * validRadius)
                 return false;
 
@@ -42,7 +43,7 @@ namespace Game.Logic
             Vector3 attackerForward = Attacker.transform.forward;
             attackerForward.y = 0;
 
-            float validAngle = DetectionAngle > 0 ? DetectionAngle : 180.0f;
+            float validAngle = DetectionAngle > 0 ? DetectionAngle : CombatWarningManager.DefaultDetectionAngle;
             float angle = Vector3.Angle(attackerForward, dirToTarget);
             if (angle > validAngle * 0.5f)
                 return false;
@@ -143,12 +144,15 @@ namespace Game.Logic
         public AttackWarningMarker Marker;   // 关联的预警数据
         public float ExpireTime;             // 契约超时失效时间点
         public bool IsResolved;              // 是否已至少完成一次拼刀命中
+        public int ParryHitEffectId;         // 招架成功反制时施加给攻击者的命中效果 ID
+        public float HitStopDuration = 0.1f; // 招架顿帧时长 (来自时间轴 ParryWindowClip)
 
-        public bool IsValid => Time.time <= ExpireTime &&
-                               Attacker != null &&
-                               Attacker.gameObject.activeInHierarchy &&
-                               ParryRole != null &&
-                               ParryRole.gameObject.activeInHierarchy;
+        public bool IsValid => 
+            (TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time) <= ExpireTime &&
+            Attacker != null &&
+            Attacker.gameObject.activeInHierarchy &&
+            ParryRole != null &&
+            ParryRole.gameObject.activeInHierarchy;
     }
 
     /// <summary>
@@ -157,6 +161,10 @@ namespace Game.Logic
     /// </summary>
     public static class CombatWarningManager
     {
+        public const float DefaultContractTimeout = 5.0f;
+        public const float DefaultDetectionRadius = 10.0f;
+        public const float DefaultDetectionAngle = 180.0f;
+
         private static readonly List<AttackWarningMarker> _activeMarkers = new List<AttackWarningMarker>();
         private static readonly List<ParryClashContract> _activeContracts = new List<ParryClashContract>();
         private static readonly Dictionary<CharacterEntity, AttackThreatSession> _activeThreatSessions = new();

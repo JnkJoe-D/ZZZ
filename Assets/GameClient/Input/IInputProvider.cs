@@ -56,6 +56,8 @@ namespace Game.Input
         event Action OnMovePerformed;
         event Action OnMoveCanceled;
         event Action OnMoveHeld;
+        /// <summary>移动输入彻底归零时触发 (从 >0 归为 0 的瞬间边沿触发)</summary>
+        event Action OnMovementZero;
 
         /// <summary>闪避触发</summary>
         event Action OnEvadeStarted;

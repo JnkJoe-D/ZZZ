@@ -12,6 +12,7 @@ namespace Game.Logic.AI.BehaviorTree.Extensions
         private Func<long, CommandFate> _checkCommandFate;
         private Func<ActionConfigAsset, bool> _isPlayingAction;
         private Action<float> _startCooldown;
+        private Func<bool> _isInterruptedByHit;
 
         private long _commandId;
         private TaskState _internalState;
@@ -21,13 +22,15 @@ namespace Game.Logic.AI.BehaviorTree.Extensions
             TryPlayActionDelegate tryPlayAction,
             Func<long, CommandFate> checkCommandFate,
             Func<ActionConfigAsset, bool> isPlayingAction,
-            Action<float> startCooldown) : base("MonsterAttackTask")
+            Action<float> startCooldown,
+            Func<bool> isInterruptedByHit = null) : base("MonsterAttackTask")
         {
             _data = data;
             _tryPlayAction = tryPlayAction;
             _checkCommandFate = checkCommandFate;
             _isPlayingAction = isPlayingAction;
             _startCooldown = startCooldown;
+            _isInterruptedByHit = isInterruptedByHit;
         }
 
         protected override void DoStart()
@@ -71,8 +74,16 @@ namespace Game.Logic.AI.BehaviorTree.Extensions
                 // 一旦在播放状态且 currentaction != action，代表当前攻击动作已结束或路由到了其他动作
                 if (!_isPlayingAction(_data.action))
                 {
-                    Debug.Log($"Action {_data.action.name} has finished for monster attack");
-                    StopAndReturn(true); // 动作结束，开启冷却并返回成功
+                    if (_isInterruptedByHit != null && _isInterruptedByHit())
+                    {
+                        Debug.Log($"<color=yellow>[MonsterAttackTask] Action {_data.action.name} was interrupted by hit reaction.</color>");
+                    }
+                    else
+                    {
+                        Debug.Log($"Action {_data.action.name} has finished for monster attack");
+                    }
+
+                    StopAndReturn(true); // 无论正常结束还是受击打断，均返回 true，防止 Selector 顺序执行后续周旋分支覆盖受击状态
                 }
             }
         }

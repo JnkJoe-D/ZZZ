@@ -188,7 +188,8 @@ namespace Game.Logic.AI.BehaviorTree
                             agent.TryPlayAction,
                             agent.CheckCommandFate,
                             agent.IsPlayingAction,
-                            agent.StartAttackCooldown
+                            agent.StartAttackCooldown,
+                            agent.IsInHitStun
                         );
                     }
                     return new NPBehave.Action(() => { });

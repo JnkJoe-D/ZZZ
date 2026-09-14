@@ -203,7 +203,7 @@ MonoBehaviour:
         duration: 4.166667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        comboTag: Execute2
     - rid: 4681868069779800846
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -244,10 +244,10 @@ MonoBehaviour:
         clips:
         - rid: 6379257712028942348
     - rid: 6379257712028942348
-      type: {class: ParryWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: ParryCaptureClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: 62c31550-0015-43ac-8303-bf471860ab36
-        clipName: "\u683C\u6321\u5224\u5B9A\u7A97\u53E3\u7247\u6BB5"
+        clipName: "招架捕获窗口"
         isEnabled: 1
         startTime: 0
         duration: 1

@@ -283,4 +283,19 @@ namespace Game.Logic
             return Inverse ? !isActive : isActive;
         }
     }
+
+    [Serializable]
+    [SubclassDisplayName("招架强度条件 (ParryWeight)")]
+    public sealed class ParryWeightCondition : ITransitionCondition
+    {
+        [Tooltip("期望匹配的招架强度级别")]
+        public ATEditor.ParryWeight ExpectedWeight = ATEditor.ParryWeight.Heavy;
+
+        public bool Check(RoleEntity actor)
+        {
+            var parryData = actor?.DataModule?.Get<ParryRuntimeData>();
+            if (parryData == null) return false;
+            return parryData.LastParryWeight == ExpectedWeight;
+        }
+    }
 }

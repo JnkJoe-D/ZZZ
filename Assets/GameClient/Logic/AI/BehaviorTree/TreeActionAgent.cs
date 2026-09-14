@@ -46,12 +46,36 @@ namespace Game.Logic.AI.BehaviorTree
         }
 
         /// <summary>
+        /// 检查当前怪物是否处于受击硬直状态。
+        /// </summary>
+        public bool IsInHitStun()
+        {
+            if (_owner == null || _owner.DataModule == null) return false;
+            var hitData = _owner.DataModule.Get<HitReactionRuntimeData>();
+            if (hitData != null && hitData.InHitReaction) return true;
+            var aiData = _owner.DataModule.Get<MonSterBehaviorRuntimeData>();
+            if (aiData != null && aiData.CurrentState == MonsterAIState.HitStun) return true;
+            return false;
+        }
+
+        /// <summary>
         /// 单帧尝试播放 Action。
         /// </summary>
         public bool TryPlayAction(ActionConfigAsset actionConfig, out long commandId)
         {
             commandId = 0;
-            if (_owner == null || _owner.ActionController == null) return false;
+            if (_owner == null || _owner.ActionController == null || actionConfig == null) return false;
+
+            // 受击硬直保护锁：若实体正处于受击状态，除当前被裁决的受击动作本身外，拒绝任何常规 AI 动作抢占播放
+            var hitData = _owner.DataModule?.Get<HitReactionRuntimeData>();
+            if (hitData != null && hitData.InHitReaction)
+            {
+                // 仅允许播放已裁决的受击动作，禁止常规 AI 动作（如周旋、追逐、攻击）打断受击动作
+                if (hitData.ResolvedHitAction != null && actionConfig != hitData.ResolvedHitAction)
+                {
+                    return false;
+                }
+            }
             
             var command = CharacterCommandFactory.CreateDirectAssetCommand(actionConfig);
             commandId = command.Id;
@@ -118,6 +142,13 @@ namespace Game.Logic.AI.BehaviorTree
             var hitData = _owner.DataModule.Get<HitReactionRuntimeData>();
             if (hitData == null) return false;
 
+            // 优先使用流水线已经裁决出的多向受击动作
+            if (hitData.ResolvedHitAction != null)
+            {
+                hitAction = hitData.ResolvedHitAction;
+                return true;
+            }
+
             hitAction = _owner.Config.hitReactionConfig.GetHitAction(hitData.CurrentReactionType);
             return hitAction != null;
         }
@@ -128,6 +159,13 @@ namespace Game.Logic.AI.BehaviorTree
             if (hitData != null)
             {
                 hitData.CurrentHitStunDuration = 0f;
+                hitData.InHitReaction = false;
+            }
+
+            var aiData = _owner?.DataModule?.Get<MonSterBehaviorRuntimeData>();
+            if (aiData != null && aiData.CurrentState == MonsterAIState.HitStun)
+            {
+                aiData.ChangeState(MonsterAIState.Adjust);
             }
         }
 

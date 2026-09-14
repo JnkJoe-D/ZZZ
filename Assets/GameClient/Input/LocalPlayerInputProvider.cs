@@ -17,6 +17,7 @@ namespace Game.Input
         public event Action OnMovePerformed;
         public event Action OnMoveCanceled;
         public event Action OnMoveHeld;
+        public event Action OnMovementZero;
 
         public event Action OnEvadeStarted;
         public event Action OnEvadePerformed;
@@ -189,7 +190,15 @@ namespace Game.Input
         {
             // 每帧获取摇杆/WASD数据
             _lastMoveInput = _currentMoveInput;
-            _currentMoveInput = _input.GamePlay.Move.ReadValue<Vector2>();
+            _currentMoveInput = _input != null ? _input.GamePlay.Move.ReadValue<Vector2>() : Vector2.zero;
+
+            // 检测移动输入从有到无、彻底归零的瞬间边沿 (Falling Edge)
+            bool hadInput = _lastMoveInput.sqrMagnitude > 0.01f;
+            bool hasInput = _currentMoveInput.sqrMagnitude > 0.01f;
+            if (hadInput && !hasInput)
+            {
+                OnMovementZero?.Invoke();
+            }
         }
 
         // ==========================================

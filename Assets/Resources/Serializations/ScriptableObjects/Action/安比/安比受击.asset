@@ -12,9 +12,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc907aef54d1b934298be1107be47939, type: 3}
   m_Name: "\u5B89\u6BD4\u53D7\u51FB"
   m_EditorClassIdentifier: 
-  hitAnimLight: {fileID: 11400000, guid: 18e84538401590849943ceac83c41f04, type: 2}
-  hitAnimHeavy: {fileID: 0}
-  hitAnimKnowAway: {fileID: 0}
+  reactionEntries:
+  - reactionType: 20
+    turnaroundPolicy: 0
+    frontAction: {fileID: 11400000, guid: 18e84538401590849943ceac83c41f04, type: 2}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 0
+  - reactionType: 30
+    turnaroundPolicy: 0
+    frontAction: {fileID: 11400000, guid: 06cc0451d76cb7d44a14e8f2b2fe3f08, type: 2}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 0
+  - reactionType: 50
+    turnaroundPolicy: 0
+    frontAction: {fileID: 0}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 30
   knockbackForce: 0
   launchForce: 0
   superArmorThreshold: 0
+  hitAnimLight: {fileID: 11400000, guid: 18e84538401590849943ceac83c41f04, type: 2}
+  hitAnimHeavy: {fileID: 11400000, guid: 06cc0451d76cb7d44a14e8f2b2fe3f08, type: 2}
+  hitAnimKnowAway: {fileID: 0}
+  hitAnimShake: {fileID: 0}
+  hitAnimStay: {fileID: 0}
+  hitAnimKnockDown: {fileID: 0}
+  hitAnimParry: {fileID: 0}

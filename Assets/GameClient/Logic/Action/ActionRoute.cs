@@ -25,6 +25,7 @@ namespace Game.Logic
         EvasionAidStart = 50,
         ChainAttack = 60,
         QuickAid = 70,
+        MoveStop = 80,
     }
 
     public enum ModifierCategory

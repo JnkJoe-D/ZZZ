@@ -4700,7 +4700,6 @@ MonoBehaviour:
   _virtualCameraPrefab: {fileID: 6600116627084618121, guid: eefc9c6130678ee44a5750a6b7eb4797,
     type: 3}
   _virtualCamera: {fileID: 0}
-  virtualCamName: "\u4E3B\u76F8\u673A"
   follow: {fileID: 5682943192197801065}
   lookAt: {fileID: 5682943192197801065}
 --- !u!143 &8738403362999709464
@@ -7002,7 +7001,7 @@ SkinnedMeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8482271641140652759}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

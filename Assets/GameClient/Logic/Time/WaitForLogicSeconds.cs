@@ -8,9 +8,17 @@ namespace Game.Logic
         
         public WaitForLogicSeconds(float seconds)
         {
-            _waitTime = TimeManager.Instance.GameplayTime + seconds;
+            float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+            _waitTime = currentTime + seconds;
         }
 
-        public override bool keepWaiting => TimeManager.Instance.GameplayTime < _waitTime;
+        public override bool keepWaiting
+        {
+            get
+            {
+                float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+                return currentTime < _waitTime;
+            }
+        }
     }
 }

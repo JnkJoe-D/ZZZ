@@ -48,6 +48,7 @@ namespace Game.Logic.Combat.Pipeline
                 // 只要受击者还存在引用（即使已死亡），依然可执行鞭尸表现或打击特效
                 if (ctx.Victim == null) break;
 
+                ctx.ResetPerHitState();
                 ctx.CurrentHitIndex = i;
                 ctx.TotalHitCount = totalHits;
 
@@ -55,7 +56,11 @@ namespace Game.Logic.Combat.Pipeline
 
                 if (i < totalHits - 1)
                 {
-                    yield return new WaitForLogicSeconds(interval);
+                    float targetTime = (TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time) + interval;
+                    while ((TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time) < targetTime)
+                    {
+                        yield return null;
+                    }
                 }
             }
 

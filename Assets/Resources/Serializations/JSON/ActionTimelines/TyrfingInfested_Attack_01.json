@@ -291,7 +291,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34558
+                        "instanceID": 34408
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -665,7 +665,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "SignalType": 0,
-                    "Weight": 1,
+                    "ParryWeight": 2,
                     "CoverageShape": {
                         "shapeType": 1,
                         "size": {

@@ -26,12 +26,10 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500843
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: SystemEventTrigger, ns: Game.Logic, asm: Assembly-CSharp}
       data:
-        RequiredInput: 10
-        RequiredPhase: 20
+        EventType: 80
         RequiredWindowTag: Execute1
-        TriggerMode: 1
         Modifiers:
         - Category: 20
           RequiredKey: 0

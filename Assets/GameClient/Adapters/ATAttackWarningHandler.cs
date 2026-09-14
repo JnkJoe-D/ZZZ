@@ -23,6 +23,7 @@ namespace Game.Logic
             {
                 Attacker = _entity,
                 SignalType = clip.SignalType,
+                ParryWeight = clip.ParryWeight,
                 DetectionRadius = clip.DetectionRadius > 0 ? clip.DetectionRadius : 10.0f,
                 DetectionAngle = clip.DetectionAngle > 0 ? clip.DetectionAngle : 180.0f,
                 CoverageShape = clip.CoverageShape,

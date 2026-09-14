@@ -31,6 +31,7 @@ namespace Game.Logic
         public override void Init(Game.Logic.CharacterConfigAsset config)
         {
             base.Init(config);
+            AttributeResolver = new MonsterAttributeResolver(this);
             
             if (CommandBuffer == null) CommandBuffer = new CommandBuffer(BufferMode.SingleOverride);
             if (ActionController == null) ActionController = new MonsterActionController(this);
@@ -39,6 +40,22 @@ namespace Game.Logic
 
             if (config is MonsterConfigAsset monsterConfig)
             {
+                if (StatusModule != null)
+                {
+                    StatusModule.Attributes.Init(this);
+                    StatusModule.Buffs.Init(this);
+                    // 怪物失衡属性注册（过渡期保底 100f，将来统一由 Luban 怪物配表及 MonsterAttributeResolver 驱动）
+                    const float defaultMaxDaze = 100f;
+                    if (!StatusModule.Attributes.Has(AttributeId.MaxDaze))
+                    {
+                        StatusModule.Attributes.Register(new AttributeInstance(AttributeId.MaxDaze, defaultMaxDaze, 0f, float.MaxValue));
+                    }
+                    if (!StatusModule.Attributes.Has(AttributeId.Daze))
+                    {
+                        StatusModule.Attributes.Register(new AttributeInstance(AttributeId.Daze, 0f, 0f, defaultMaxDaze));
+                    }
+                }
+
                 TargetFinder = new MonsterTargetFinder(monsterConfig.SensorConfig, transform);
 
                 if (monsterConfig.ActionRoot != null)

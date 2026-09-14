@@ -54,16 +54,16 @@ namespace Game.Logic.Combat.Pipeline.Pipes
                 }
             }
 
-            // 2. 受击保护内置 CD（防止同帧/短时间内连续被高频物理重复命中）
-            float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
-            if (ctx.Victim.HitReactionModule != null)
-            {
-                if (!ctx.Victim.HitReactionModule.ValidateAndRecordHit(currentTime))
-                {
-                    ctx.Abort("Hit in Protection Interval", HitResultFlags.Protected);
-                    return;
-                }
-            }
+            // 2. 受击保护内置 CD（已根据测试需求停用，避免隐藏时间间隔阻断单段检测多段受击）
+            // float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+            // if (ctx.Victim.HitReactionModule != null)
+            // {
+            //     if (!ctx.Victim.HitReactionModule.ValidateAndRecordHit(currentTime))
+            //     {
+            //         ctx.Abort("Hit in Protection Interval", HitResultFlags.Protected);
+            //         return;
+            //     }
+            // }
         }
     }
 }

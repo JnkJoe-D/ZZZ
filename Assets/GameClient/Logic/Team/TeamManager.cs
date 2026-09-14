@@ -868,5 +868,85 @@ namespace Game.Logic
             return null;
         }
     }
+
+    /// <summary>
+    /// 小队全局共享战斗运行时数据（支援点数等）
+    /// </summary>
+    public class TeamRuntimeData
+    {
+        private static TeamRuntimeData _instance;
+        public static TeamRuntimeData Instance => _instance ??= new TeamRuntimeData();
+
+        public int CurrentAssistPoints { get; private set; } = 6;
+        public int MaxAssistPoints { get; set; } = 6;
+
+        public event System.Action<int, int> OnAssistPointsChanged;
+
+        public void SetAssistPoints(int points)
+        {
+            int old = CurrentAssistPoints;
+            CurrentAssistPoints = Mathf.Clamp(points, 0, MaxAssistPoints);
+            if (old != CurrentAssistPoints)
+            {
+                OnAssistPointsChanged?.Invoke(CurrentAssistPoints, MaxAssistPoints);
+                EventCenter.Publish(new AssistPointsChangedEvent
+                {
+                    CurrentPoints = CurrentAssistPoints,
+                    MaxPoints = MaxAssistPoints
+                });
+            }
+        }
+
+        public bool ModifyAssistPoints(int delta)
+        {
+            if (delta < 0 && CurrentAssistPoints + delta < 0)
+            {
+                return false;
+            }
+            SetAssistPoints(CurrentAssistPoints + delta);
+            return true;
+        }
+
+        public bool HasAssistPoints(int required)
+        {
+            return CurrentAssistPoints >= required;
+        }
+
+        /// <summary>
+        /// 统一的小队属性读取接口
+        /// </summary>
+        public float GetAttribute(AttributeId attrId)
+        {
+            return attrId switch
+            {
+                AttributeId.AssistPoint => CurrentAssistPoints,
+                _ => 0f
+            };
+        }
+
+        /// <summary>
+        /// 统一的小队属性修改接口
+        /// </summary>
+        public void ModifyAttribute(AttributeId attrId, float delta)
+        {
+            if (attrId == AttributeId.AssistPoint)
+            {
+                ModifyAssistPoints((int)delta);
+            }
+        }
+
+        /// <summary>
+        /// 统一的小队属性存在性检查
+        /// </summary>
+        public bool HasAttribute(AttributeId attrId)
+        {
+            return attrId == AttributeId.AssistPoint;
+        }
+
+        public void Reset()
+        {
+            CurrentAssistPoints = MaxAssistPoints;
+        }
+    }
 }
 

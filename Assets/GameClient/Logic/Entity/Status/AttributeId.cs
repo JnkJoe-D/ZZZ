@@ -72,6 +72,13 @@ namespace Game.Logic
         /// <summary>基础抗打断</summary>
         BaseResilience = 290,
 
+        /// <summary>支援点数 (全队共享)</summary>
+        AssistPoint = 300,
+        /// <summary>失衡值</summary>
+        Daze = 310,
+        /// <summary>最大失衡值</summary>
+        MaxDaze = 320,
+
         /// <summary>急冻充能 (艾莲专属)</summary>
         Ellen_FlashFreeze = 2000,
         /// <summary>电荷值 (安比专属)</summary>

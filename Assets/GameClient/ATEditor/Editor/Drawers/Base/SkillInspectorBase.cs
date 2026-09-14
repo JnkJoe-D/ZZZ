@@ -224,7 +224,7 @@ namespace ATEditor.Editor
 
             EditorGUI.BeginChangeCheck();
 
-            if (field.Name == "hitEffectId")
+            if (field.Name == "hitEffectId" || field.Name == "heavyHitEffectId")
             {
                 newValue = DrawHitEffectIdSelector(name, (int)value);
             }

@@ -72,7 +72,11 @@ namespace ATEditor
 
         private void DoHitCheck()
         {
-            if (damageHandler == null) return;
+            if (damageHandler == null)
+            {
+                Debug.LogWarning($"[HitProcess] DoHitCheck ABORT: damageHandler is NULL! Owner: {context.Owner?.name}");
+                return;
+            }
             if (clip.maxHitTargets > 0 && currentHitCount >= clip.maxHitTargets) return;
 
             Vector3 center;
@@ -119,13 +123,18 @@ namespace ATEditor
                 if (context.Owner != null && !clip.isSelfImpacted)
                 {
                     if (hit.gameObject == context.Owner || hit.transform.root == context.Owner.transform.root)
+                    {
                         continue;
+                    }
                 }
 
                 // 冷却过滤
                 if (hitRecords.TryGetValue(hit, out float lastHitTime))
                 {
-                    if (clip.detectFrequency == Frequency.Once) continue;
+                    if (clip.detectFrequency == Frequency.Once)
+                    {
+                        continue;
+                    }
                 }
 
                 // 圆柱体相关的过滤逻辑 (高度剔除、平面剔除)
@@ -146,7 +155,9 @@ namespace ATEditor
                     float shapeHalfHeight = shape.height / 2f;
                     
                     if (boundMinY > shapeHalfHeight || boundMaxY < -shapeHalfHeight)
+                    {
                         continue;
+                    }
 
                     // 2. 局部 2D 平面 (XZ平面) 的距离判断
                     Vector2 localPos2D = new Vector2(localCenter.x, localCenter.z);
@@ -154,7 +165,9 @@ namespace ATEditor
 
                     // 外圈剔除
                     if (dist2D - targetRadius > shape.radius)
+                    {
                         continue;
+                    }
 
                     if (shape.shapeType == HitBoxType.Sector)
                     {
@@ -164,7 +177,9 @@ namespace ATEditor
                             float angleTolerance = Mathf.Asin(Mathf.Clamp01(targetRadius / dist2D)) * Mathf.Rad2Deg;
                             
                             if (angle2D - angleTolerance > shape.angle / 2f)
+                            {
                                 continue;
+                            }
                         }
                     }
                     else if (shape.shapeType == HitBoxType.Ring)

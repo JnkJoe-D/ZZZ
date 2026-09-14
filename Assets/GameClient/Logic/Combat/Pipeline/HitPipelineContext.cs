@@ -26,8 +26,9 @@ namespace Game.Logic.Combat.Pipeline
 
         // ── 规则仲裁与数值输出 ────────────
         public float FinalDamage { get; set; }
-        public float FinalDazeAmount { get; set; }
         public HitReactionType SelectedReactionType { get; set; }
+        public ActionConfigAsset ResolvedHitAction { get; set; }
+        public bool RequireFaceAttacker { get; set; }
         public AttackThreatSession ThreatSession { get; set; }
         public int InterruptLevel { get; set; }
         public int TargetResilience { get; set; }
@@ -78,8 +79,9 @@ namespace Game.Logic.Combat.Pipeline
             ReactionAxis = Vector3.back;
 
             FinalDamage = 0f;
-            FinalDazeAmount = 0f;
             SelectedReactionType = HitReactionType.None;
+            ResolvedHitAction = null;
+            RequireFaceAttacker = false;
             ThreatSession = null;
             InterruptLevel = 0;
             TargetResilience = 0;
@@ -100,6 +102,20 @@ namespace Game.Logic.Combat.Pipeline
             ResultFlags = HitResultFlags.None;
             IsAborted = false;
             AbortReason = null;
+        }
+
+        /// <summary>
+        /// 多段打击中重置单段的临时裁决与输出状态，保留基础攻击与受击输入数据
+        /// </summary>
+        public void ResetPerHitState()
+        {
+            IsAborted = false;
+            AbortReason = null;
+            ResultFlags = HitResultFlags.None;
+            FinalDamage = 0f;
+            SelectedReactionType = HitReactionType.None;
+            ResolvedHitAction = null;
+            RequireFaceAttacker = false;
         }
     }
 }

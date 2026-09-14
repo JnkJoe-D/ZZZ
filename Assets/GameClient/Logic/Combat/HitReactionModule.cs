@@ -69,7 +69,9 @@ namespace Game.Logic
                 hitStunDuration = ctx.HitStunDuration,
                 hitPoint = ctx.HitPoint,
                 hitDirection = ctx.HitDirection,
-                reactionAxis = ctx.ReactionAxis
+                reactionAxis = ctx.ReactionAxis,
+                resolvedHitAction = ctx.ResolvedHitAction,
+                requireFaceAttacker = ctx.RequireFaceAttacker
             };
             OnInterrupted(legacyCtx);
         }

@@ -55,6 +55,7 @@ namespace Game.Logic
         public SkillMotionWindowHandler MotionWindowHandler { get; private set; }
         public EntityDataModule DataModule { get; } = new EntityDataModule();
         public StatusModule StatusModule { get; private set; }
+        public virtual IAttributeResolver AttributeResolver { get; protected set; }
 
 
         protected virtual void Awake()
@@ -79,6 +80,7 @@ namespace Game.Logic
             DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
             DataModule[typeof(ParryRuntimeData)] ??= new ParryRuntimeData();
             if (StatusModule == null) StatusModule = new StatusModule();
+            if (AttributeResolver == null) AttributeResolver = new EntityAttributeResolver(this);
         }
 
         protected abstract void InitRequiredComponents();

@@ -953,10 +953,22 @@
   },
   {
     "id": 140350,
-    "name": "攻击_招架支援_H",
+    "name": "攻击_招架支援_轻",
     "desc": "",
-    "condition": [],
-    "cost": [],
+    "condition": [
+      {
+        "attr_id": 300,
+        "op": 0,
+        "value": 1
+      }
+    ],
+    "cost": [
+      {
+        "attr_id": 300,
+        "cost_type": 0,
+        "amount": 1
+      }
+    ],
     "resilience": {
       "interrupt_level": 5,
       "resilience_bonus": 99
@@ -964,13 +976,58 @@
   },
   {
     "id": 140360,
-    "name": "攻击_招架支援_H_End",
+    "name": "攻击_招架支援_轻_End",
     "desc": "",
     "condition": [],
     "cost": [],
     "resilience": {
       "interrupt_level": 0,
       "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 140370,
+    "name": "攻击_招架支援_重",
+    "desc": "",
+    "condition": [
+      {
+        "attr_id": 300,
+        "op": 0,
+        "value": 2
+      }
+    ],
+    "cost": [
+      {
+        "attr_id": 300,
+        "cost_type": 0,
+        "amount": 2
+      }
+    ],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 99
+    }
+  },
+  {
+    "id": 140380,
+    "name": "攻击_招架支援_重_End",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 140390,
+    "name": "攻击_招架反击",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 99
     }
   },
   {

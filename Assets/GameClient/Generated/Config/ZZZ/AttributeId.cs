@@ -137,6 +137,18 @@ namespace cfg.ZZZ
         /// </summary>
         BaseResilience = 290,
         /// <summary>
+        /// 支援点数
+        /// </summary>
+        AssistPoint = 300,
+        /// <summary>
+        /// 失衡值
+        /// </summary>
+        Daze = 310,
+        /// <summary>
+        /// 最大失衡值
+        /// </summary>
+        MaxDaze = 320,
+        /// <summary>
         /// 急冻充能
         /// </summary>
         Ellen_FlashFreeze = 2000,

@@ -17,10 +17,16 @@ namespace Game.Adapters
         public void OnHitDetect(HitData hitData)
         {
             if (hitData.targetsCollilders == null || hitData.targetsCollilders.Length == 0) return;
-            if (hitData.hitEffectId <= 0) return;
+            if (hitData.hitEffectId <= 0)
+            {
+                return;
+            }
 
-            var hitEffectConfig = ConfigManager.Instance.Tables.TbHitEffect.GetOrDefault(hitData.hitEffectId);
-            if (hitEffectConfig == null || hitEffectConfig.Effects == null) return;
+            var hitEffectConfig = ConfigManager.Instance?.Tables?.TbHitEffect?.GetOrDefault(hitData.hitEffectId);
+            if (hitEffectConfig == null || hitEffectConfig.Effects == null)
+            {
+                return;
+            }
 
             // 获取攻击者实体
             CharacterEntity attacker = null;

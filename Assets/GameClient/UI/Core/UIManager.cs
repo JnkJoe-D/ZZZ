@@ -36,6 +36,21 @@ namespace Game.UI
         // ── UI 根节点 ────────────────────────────
         private Transform _uiRoot;
 
+        // ── 全局 UI 总配置 ───────────────────────
+        private UIGlobalSettingAsset _settings;
+        public UIGlobalSettingAsset Settings
+        {
+            get
+            {
+                if (_settings == null && Game.Logic.ConfigManager.Instance != null)
+                {
+                    _settings = Game.Logic.ConfigManager.Instance.GetConfigSO<UIGlobalSettingAsset>();
+                }
+                return _settings;
+            }
+            set => _settings = value;
+        }
+
         // ────────────────────────────────────────
         // 初始化
         // ────────────────────────────────────────

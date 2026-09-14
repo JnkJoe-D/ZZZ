@@ -1,0 +1,491 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2a8f491c944485590924c5e3d7491bb, type: 3}
+  m_Name: KeyBindingDisplayConfig
+  m_EditorClassIdentifier: 
+  _items:
+  - Path: <Mouse>/leftButton
+    DisplayText: 鼠标左键
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Mouse>/rightButton
+    DisplayText: 鼠标右键
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Mouse>/middleButton
+    DisplayText: 鼠标中键
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Mouse>/forwardButton
+    DisplayText: 鼠标侧键向前
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Mouse>/backButton
+    DisplayText: 鼠标侧键向后
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Mouse>/press
+    DisplayText: 鼠标点击
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Mouse>/scroll/up
+    DisplayText: 滚轮向上
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Mouse>/scroll/down
+    DisplayText: 滚轮向下
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/a
+    DisplayText: A
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/b
+    DisplayText: B
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/c
+    DisplayText: C
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/d
+    DisplayText: D
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/e
+    DisplayText: E
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f
+    DisplayText: F
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/g
+    DisplayText: G
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/h
+    DisplayText: H
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/i
+    DisplayText: I
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/j
+    DisplayText: J
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/k
+    DisplayText: K
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/l
+    DisplayText: L
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/m
+    DisplayText: M
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/n
+    DisplayText: N
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/o
+    DisplayText: O
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/p
+    DisplayText: P
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/q
+    DisplayText: Q
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/r
+    DisplayText: R
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/s
+    DisplayText: S
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/t
+    DisplayText: T
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/u
+    DisplayText: U
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/v
+    DisplayText: V
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/w
+    DisplayText: W
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/x
+    DisplayText: X
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/y
+    DisplayText: Y
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/z
+    DisplayText: Z
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/0
+    DisplayText: 0
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit0
+    DisplayText: 0
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/1
+    DisplayText: 1
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit1
+    DisplayText: 1
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/2
+    DisplayText: 2
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit2
+    DisplayText: 2
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/3
+    DisplayText: 3
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit3
+    DisplayText: 3
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/4
+    DisplayText: 4
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit4
+    DisplayText: 4
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/5
+    DisplayText: 5
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit5
+    DisplayText: 5
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/6
+    DisplayText: 6
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit6
+    DisplayText: 6
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/7
+    DisplayText: 7
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit7
+    DisplayText: 7
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/8
+    DisplayText: 8
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit8
+    DisplayText: 8
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/9
+    DisplayText: 9
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/digit9
+    DisplayText: 9
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad0
+    DisplayText: 小键盘0
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad1
+    DisplayText: 小键盘1
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad2
+    DisplayText: 小键盘2
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad3
+    DisplayText: 小键盘3
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad4
+    DisplayText: 小键盘4
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad5
+    DisplayText: 小键盘5
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad6
+    DisplayText: 小键盘6
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad7
+    DisplayText: 小键盘7
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad8
+    DisplayText: 小键盘8
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpad9
+    DisplayText: 小键盘9
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpadPeriod
+    DisplayText: 小键盘.
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpadDivide
+    DisplayText: 小键盘/
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpadMultiply
+    DisplayText: 小键盘*
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpadMinus
+    DisplayText: 小键盘-
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpadPlus
+    DisplayText: 小键盘+
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/numpadEnter
+    DisplayText: 小键盘回车
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/space
+    DisplayText: 空格
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/leftShift
+    DisplayText: Shift
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/rightShift
+    DisplayText: 右Shift
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/shift
+    DisplayText: Shift
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/leftCtrl
+    DisplayText: Ctrl
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/rightCtrl
+    DisplayText: 右Ctrl
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/ctrl
+    DisplayText: Ctrl
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/leftAlt
+    DisplayText: Alt
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/rightAlt
+    DisplayText: 右Alt
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/alt
+    DisplayText: Alt
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/tab
+    DisplayText: Tab
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/capsLock
+    DisplayText: 大写锁定
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/enter
+    DisplayText: 回车
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/escape
+    DisplayText: Esc
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/backspace
+    DisplayText: 退格
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/delete
+    DisplayText: Delete
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/insert
+    DisplayText: Insert
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/home
+    DisplayText: Home
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/end
+    DisplayText: End
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/pageUp
+    DisplayText: PageUp
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/pageDown
+    DisplayText: PageDown
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/upArrow
+    DisplayText: ↑
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/downArrow
+    DisplayText: ↓
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/leftArrow
+    DisplayText: ←
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/rightArrow
+    DisplayText: →
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f1
+    DisplayText: F1
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f2
+    DisplayText: F2
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f3
+    DisplayText: F3
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f4
+    DisplayText: F4
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f5
+    DisplayText: F5
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f6
+    DisplayText: F6
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f7
+    DisplayText: F7
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f8
+    DisplayText: F8
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f9
+    DisplayText: F9
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f10
+    DisplayText: F10
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f11
+    DisplayText: F11
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Keyboard>/f12
+    DisplayText: F12
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/buttonSouth
+    DisplayText: A
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/buttonEast
+    DisplayText: B
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/buttonWest
+    DisplayText: X
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/buttonNorth
+    DisplayText: Y
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/leftShoulder
+    DisplayText: LB
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/rightShoulder
+    DisplayText: RB
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/leftTrigger
+    DisplayText: LT
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/rightTrigger
+    DisplayText: RT
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/dpad/up
+    DisplayText: 十字键↑
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/dpad/down
+    DisplayText: 十字键↓
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/dpad/left
+    DisplayText: 十字键←
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}
+  - Path: <Gamepad>/dpad/right
+    DisplayText: 十字键→
+    KeyIcon: {fileID: 0}
+    KeyPressedIcon: {fileID: 0}

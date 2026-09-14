@@ -210,7 +210,10 @@ namespace Game.Logic
             if (!string.IsNullOrEmpty(windowTag))
             {
                 if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, windowTag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
-                    return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
+                {
+                    Apply(candidate);
+                    return true;
+                }
             }
             else
             {
@@ -218,7 +221,10 @@ namespace Game.Logic
                 {
                     RouteWindowData w = _activeRouteWindows[i];
                     if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, w.Tag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
-                        return Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag);
+                    {
+                        Apply(candidate);
+                        return true;
+                    }
                 }
             }
 

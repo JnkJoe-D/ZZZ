@@ -445,7 +445,7 @@ MonoBehaviour:
         rotationOffset: {x: 0, y: 0, z: 0}
         detects:
         - hitMode: 1
-          multiHitCount: 6
+          multiHitCount: 3
           multiHitDuration: 0.5
           enableHitStop: 1
           hitStopDuration: 0.1
@@ -518,6 +518,13 @@ MonoBehaviour:
         allowSoftInputInterrupt: 1
         disableInputDuringRecenter: 1
         unlockInputOnExit: 1
+        enableDistanceAndFovOverride: 0
+        instantDistanceOnEnter: 1
+        recenterDistance: 1.8
+        recenterFOV: 45
+        recenterFovBlendSpeed: 6
+        recenterRestoreFovOnExit: 1
+        recenterRestoreSpeed: 2
         lookAtOffset: {x: 0, y: 1.2, z: 0}
         trackSmoothSpeed: 8
         fallbackToCharacter: 1

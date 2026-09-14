@@ -10,6 +10,7 @@ namespace Game.Logic
         Adjust,     // 周旋（目标较近，技能冷却中）
         Attack,     // 攻击
         HitStun,    // 受击硬直
+        Daze,       // 失衡瘫痪
         Dead        // 死亡
     }
 

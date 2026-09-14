@@ -191,10 +191,10 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 3.4500003
+        duration: 1
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        comboTag: Execute2
     - rid: 4681868069779800846
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:

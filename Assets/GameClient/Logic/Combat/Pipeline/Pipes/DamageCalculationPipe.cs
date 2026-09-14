@@ -79,8 +79,7 @@ namespace Game.Logic.Combat.Pipeline.Pipes
                 attributes.Modify(AttributeId.HP, -damage);
                 ctx.ResultFlags |= HitResultFlags.Damaged;
 
-                Debug.Log($"<color=yellow>[HitPipeline] {ctx.Attacker?.name} → {target.name} | " +
-                          $"DMG:{damage:F0} (Base:{baseDamage}) | HP:{attributes.GetCurrent(AttributeId.HP):F0}</color>");
+                Debug.Log($"<color=orange>[HitPipeline] 命中成功: {ctx.Attacker?.name} → {target.name} | 造成伤害: {damage:F0} (基础: {baseDamage}) | 目标剩余HP: {attributes.GetCurrent(AttributeId.HP):F0}</color>");
 
                 // 致死判定与通用生命周期结算
                 if (attributes.GetCurrent(AttributeId.HP) <= 0f && !target.IsDead)

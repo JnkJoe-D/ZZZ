@@ -46,6 +46,7 @@ namespace Game.Logic
         protected override void Awake()
         {
             base.Awake();
+            AttributeResolver = new RoleAttributeResolver(this);
             if (CommandBuffer == null) CommandBuffer = new Game.Logic.CommandBuffer();
             if (ActionController == null) ActionController = new Game.Logic.RoleActionController(this);
             if (_inputEventAdapter == null) _inputEventAdapter = new CharacterInputEventAdapter(() => GetCurrentInputHandler());

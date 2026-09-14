@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
   m_Name: "\u827E\u83B2\u4E54_\u62DB\u67B6\u652F\u63F4_H"
   m_EditorClassIdentifier: 
-  ID: 140350
+  ID: 140370
   Name: 
   TimelineAsset: {fileID: 4900000, guid: b0b067f9bf1e0194082b9088f140e669, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 5ea1bbdaae7de5242b8111e03e20e90f, type: 2}
@@ -20,10 +20,37 @@ MonoBehaviour:
   CompleteAction: {fileID: 11400000, guid: 59f872c6312363e47832f53d982df54e, type: 2}
   CompleteTransitCrossfade: 0.2
   PlaybackSpeed: 1
-  Routes: []
-  RouteSets: []
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 75d5d2e02e522bb458935d010fa285c3, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 10
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379257910440230920
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 75d5d2e02e522bb458935d010fa285c3, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 10
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379257910440230920
+    ExtraConditions: []
+  RouteSets:
+  - {fileID: 11400000, guid: 7e8de92d536a7334c911573d54926b7e, type: 2}
   EnterState: 80
   InheritMode: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 6379257910440230920
+      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
+        Modifiers: []

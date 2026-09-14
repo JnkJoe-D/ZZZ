@@ -93,6 +93,7 @@ namespace Game.Logic
             else
             {
                 UIManager.Instance.Open<Game.UI.Modules.RoleStatus.StatusPanelModule>();
+                UIManager.Instance.Open<SkillKeyModule>();
             }
         }
 
