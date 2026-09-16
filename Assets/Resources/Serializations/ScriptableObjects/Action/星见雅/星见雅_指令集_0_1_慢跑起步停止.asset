@@ -26,7 +26,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500829
-      type: {class: SystemEventTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         EventType: 80
         RequiredWindowTag: Execute1
@@ -42,8 +42,8 @@ MonoBehaviour:
             rid: 4681868508892233734
           Inverse: 0
     - rid: 4681868508892233733
-      type: {class: ShortMoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: ShortMoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data: 
     - rid: 4681868508892233734
-      type: {class: LostMoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: LostMoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data: 

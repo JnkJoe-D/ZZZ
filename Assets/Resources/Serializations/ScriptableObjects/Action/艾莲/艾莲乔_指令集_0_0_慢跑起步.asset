@@ -44,7 +44,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500681
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 10
         RequiredPhase: 0
@@ -57,7 +57,7 @@ MonoBehaviour:
             rid: 4681868492722143251
           Inverse: 0
     - rid: 4681868330708500682
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 10
         RequiredPhase: 10
@@ -70,7 +70,7 @@ MonoBehaviour:
             rid: 4681868492722143252
           Inverse: 0
     - rid: 4681868330708500683
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 10
         RequiredPhase: 30
@@ -83,11 +83,11 @@ MonoBehaviour:
             rid: 4681868492722143253
           Inverse: 0
     - rid: 4681868492722143251
-      type: {class: MoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data: 
     - rid: 4681868492722143252
-      type: {class: MoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data: 
     - rid: 4681868492722143253
-      type: {class: MoveInputCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data: 

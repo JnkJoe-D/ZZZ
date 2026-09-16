@@ -7201,9 +7201,25 @@ MonoBehaviour:
   m_ExcludedPropertiesInInspector:
   - m_Script
   m_LockStageInInspector: 
+  m_ValidatingStreamVersion: 20170927
+  m_OnValidateCalled: 1
   m_StreamingVersion: 20170927
   m_Priority: 10
+  m_ActivationId: 0
   m_StandbyUpdate: 2
+  <mExtensions>k__BackingField: []
+  <PreviousStateIsValid>k__BackingField: 0
+  m_WasStarted: 0
+  mSlaveStatusUpdated: 0
+  m_parentVcam: {fileID: 0}
+  m_QueuePriority: 2147483647
+  m_blendStartPosition: 0
+  m_CachedFollowTarget: {fileID: 0}
+  m_CachedFollowTargetVcam: {fileID: 0}
+  m_CachedLookAtTarget: {fileID: 0}
+  m_CachedLookAtTargetVcam: {fileID: 0}
+  <FollowTargetChanged>k__BackingField: 1
+  <LookAtTargetChanged>k__BackingField: 1
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
   m_ShowDebugText: 0
@@ -7218,13 +7234,31 @@ MonoBehaviour:
     m_Style: 1
     m_Time: 0.5
     m_CustomCurve:
-      serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
   m_CustomBlends: {fileID: 0}
   m_ParentHash: []
+  m_NextStateToken: 1
+  m_RequestSequence: 0
+  m_HasManualState: 0
+  m_ManualState: 
+  m_ManualStateHash: 0
+  mActivationTime: 0
+  mActiveInstruction:
+    m_State: 
+    m_FullHash: 0
+    m_VirtualCamera: {fileID: 0}
+    m_ActivateAfter: 0
+    m_MinDuration: 0
+  mPendingActivationTime: 0
+  mPendingInstruction:
+    m_State: 
+    m_FullHash: 0
+    m_VirtualCamera: {fileID: 0}
+    m_ActivateAfter: 0
+    m_MinDuration: 0
 --- !u!4 &1529469195
 Transform:
   m_ObjectHideFlags: 0

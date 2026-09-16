@@ -1,0 +1,87 @@
+namespace Game.GamePlay
+{
+    /// <summary>
+    /// 角色属性枚举定义（与 Luban 生成表 cfg.ZZZ.AttributeId 数值与命名 100% 保持一致）。
+    /// </summary>
+    public enum AttributeId
+    {
+        /// <summary>无</summary>
+        None = 0,
+
+        /// <summary>生命值</summary>
+        HP = 10,
+        /// <summary>最大生命值</summary>
+        MaxHp = 20,
+        /// <summary>攻击力</summary>
+        ATK = 30,
+        /// <summary>防御力</summary>
+        DEF = 40,
+        /// <summary>冲击力</summary>
+        Impact = 50,
+        /// <summary>失衡易伤倍率</summary>
+        StunDmgMultiplier = 60,
+        /// <summary>暴击率</summary>
+        CritRate = 70,
+        /// <summary>暴击伤害</summary>
+        CritDmg = 80,
+        /// <summary>穿透率</summary>
+        PenRate = 90,
+        /// <summary>穿透值</summary>
+        PenValue = 100,
+
+        /// <summary>当前能量值</summary>
+        Energy = 110,
+        /// <summary>能量上限</summary>
+        MaxEnergy = 120,
+        /// <summary>能量自动回复 (点/秒)</summary>
+        EnergyRegen = 130,
+        /// <summary>能量获得效率 (%)</summary>
+        EnergyGenRate = 140,
+        /// <summary>喧响值</summary>
+        Decibel = 150,
+        /// <summary>喧响值获取效率 (%)</summary>
+        DecibelGenRate = 160,
+
+        /// <summary>异常掌控</summary>
+        AnomalyMastery = 170,
+        /// <summary>异常精通</summary>
+        AnomalyProficiency = 180,
+
+        /// <summary>物理伤害加成</summary>
+        PhysicalDmgBonus = 190,
+        /// <summary>火属性伤害加成</summary>
+        FireDmgBonus = 200,
+        /// <summary>冰属性伤害加成</summary>
+        IceDmgBonus = 210,
+        /// <summary>电属性伤害加成</summary>
+        ElectricDmgBonus = 220,
+        /// <summary>以太属性伤害加成</summary>
+        EtherDmgBonus = 230,
+
+        /// <summary>物理抗性</summary>
+        PhysicalRes = 240,
+        /// <summary>火属性抗性</summary>
+        FireRes = 250,
+        /// <summary>冰属性抗性</summary>
+        IceRes = 260,
+        /// <summary>电属性抗性</summary>
+        ElectricRes = 270,
+        /// <summary>以太属性抗性</summary>
+        EtherRes = 280,
+        
+        /// <summary>基础抗打断</summary>
+        BaseResilience = 290,
+
+        /// <summary>支援点数 (全队共享)</summary>
+        AssistPoint = 300,
+        /// <summary>失衡值</summary>
+        Daze = 310,
+        /// <summary>最大失衡值</summary>
+        MaxDaze = 320,
+
+        /// <summary>急冻充能 (艾莲专属)</summary>
+        Ellen_FlashFreeze = 2000,
+        /// <summary>电荷值 (安比专属)</summary>
+        Anbi_Voltage = 2010,
+    }
+}

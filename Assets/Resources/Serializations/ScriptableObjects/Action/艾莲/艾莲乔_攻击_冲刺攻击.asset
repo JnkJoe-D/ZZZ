@@ -42,7 +42,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500796
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 20
         RequiredPhase: 0

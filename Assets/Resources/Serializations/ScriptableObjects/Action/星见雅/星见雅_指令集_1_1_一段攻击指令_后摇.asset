@@ -44,7 +44,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500805
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 20
         RequiredPhase: 0
@@ -52,7 +52,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500806
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 40
         RequiredPhase: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500807
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 30
         RequiredPhase: 0

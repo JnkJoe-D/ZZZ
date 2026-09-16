@@ -53,7 +53,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500810
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 10
         RequiredPhase: 0
@@ -61,7 +61,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500811
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 10
         RequiredPhase: 10
@@ -69,7 +69,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500812
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 10
         RequiredPhase: 30
@@ -77,7 +77,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868465688018946
-      type: {class: AutoTransitionTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         Timing: 10
         RequiredWindowTag: BackSwing

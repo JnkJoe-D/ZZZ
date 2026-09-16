@@ -40,14 +40,14 @@ MonoBehaviour:
       rid: 6379257910440230920
     ExtraConditions: []
   RouteSets:
-  - {fileID: 11400000, guid: 7e8de92d536a7334c911573d54926b7e, type: 2}
+  - {fileID: 11400000, guid: 40165cfc780333c41a67a3da30539e85, type: 2}
   EnterState: 80
   InheritMode: 0
   references:
     version: 2
     RefIds:
     - rid: 6379257910440230920
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 20
         RequiredPhase: 0

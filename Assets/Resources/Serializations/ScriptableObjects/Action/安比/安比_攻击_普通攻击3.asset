@@ -87,7 +87,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500837
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 20
         RequiredPhase: 0
@@ -95,7 +95,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500838
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 20
         RequiredPhase: 20
@@ -107,7 +107,7 @@ MonoBehaviour:
           Condition: 0
           Inverse: 1
     - rid: 4681868330708500839
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 20
         RequiredPhase: 10
@@ -115,7 +115,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500840
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 20
         RequiredPhase: 30
@@ -123,11 +123,11 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500841
-      type: {class: DirectAssetTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredWindowTag: Execute1
     - rid: 4681868330708500842
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 20
         RequiredPhase: 30

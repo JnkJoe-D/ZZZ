@@ -26,7 +26,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500846
-      type: {class: AutoTransitionTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         Timing: 20
         RequiredWindowTag: Buffer1

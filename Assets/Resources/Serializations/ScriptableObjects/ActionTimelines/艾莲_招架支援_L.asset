@@ -51,7 +51,7 @@ MonoBehaviour:
     - rid: 6379257712028942366
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
-    isCollapsed: 0
+    isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -70,6 +70,13 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks: []
+  - groupId: 55db9612-7c89-4be6-ad14-5d87873ddea0
+    groupName: Buff
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 6379257937949097990
   references:
     version: 2
     RefIds:
@@ -334,3 +341,28 @@ MonoBehaviour:
         duration: 0.6833334
         blendInDuration: 0
         blendOutDuration: 0
+    - rid: 6379257937949097990
+      type: {class: StatusTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 916280d9-4886-409b-92a7-19727e4a045c
+        trackType: StatusTrack
+        trackName: "\u72B6\u6001\u589E\u76CA\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379257937949097991
+    - rid: 6379257937949097991
+      type: {class: BuffClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 8ad5909c-0aaa-41b7-ab59-494fd067eae4
+        clipName: "\u589E\u76CA\u72B6\u6001 (Buff)\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.6833334
+        blendInDuration: 0
+        blendOutDuration: 0
+        buffId: 9000
+        lifetimeMode: 0

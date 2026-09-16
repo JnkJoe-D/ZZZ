@@ -161,11 +161,9 @@ GameObject:
   m_Component:
   - component: {fileID: 698655420775552168}
   - component: {fileID: 6243078450822283002}
-  - component: {fileID: 8717186626199199666}
   - component: {fileID: 6056880341719223153}
   - component: {fileID: 5676480737903684531}
   - component: {fileID: 5212579164651099048}
-  - component: {fileID: -8304208924223634905}
   - component: {fileID: 4803342663615244949}
   m_Layer: 11
   m_Name: "\u7B2C\u4E09\u4EBA\u79F0\u76F8\u673A"
@@ -229,55 +227,6 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 6514370390682094403}
---- !u!114 &8717186626199199666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6600116627084618121}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 761613a4d7c77cf49b5cb7faedc6d64d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UpwardDistance: 2.3
-  NormalDistance: 2.5
-  DownwardDistance: 2.3
-  Damping: 5
-  TransitionCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -1
-      value: -1
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &6056880341719223153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,29 +333,6 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: 0, y: 0.5, z: 0}
---- !u!114 &-8304208924223634905
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6600116627084618121}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54f1921a0551a0f44a240080a7af2810, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Basis: {fileID: 0}
-  TrackerTarget: {fileID: 0}
-  RotationSensitivity: 1
-  MaxTiltAngle: 30
-  InvertRotation: 0
-  PositionSensitivity: 1.5
-  MaxPositionYOffset: 2
-  InvertPosition: 0
-  HeightThreshold: 0.5
-  OnlyTrackUpward: 1
-  SmoothTime: 0.1
 --- !u!114 &4803342663615244949
 MonoBehaviour:
   m_ObjectHideFlags: 0

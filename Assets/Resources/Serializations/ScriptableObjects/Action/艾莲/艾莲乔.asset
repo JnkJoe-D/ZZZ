@@ -27,3 +27,8 @@ MonoBehaviour:
   JogShortInputThreshold: 0.2
   evadeLimitedTimes: 2
   evadeCoolDown: 1
+  SupportConfig:
+    SupportType: 0
+    ParryLightAction: {fileID: 11400000, guid: 3f24b8923a1c49b8a8b1c4e9d0a1b2c3, type: 2}
+    ParryHeavyAction: {fileID: 11400000, guid: 707c8b93263ac3a42b3b0eb3d0c43782, type: 2}
+    EvasionAidAction: {fileID: 0}

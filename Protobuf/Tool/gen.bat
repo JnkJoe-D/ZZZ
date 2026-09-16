@@ -9,8 +9,8 @@ cd /d "%~dp0"
 :: ---------------------------------------------
 set PROTOC=".\bin\protoc.exe"
 set INCLUDE_DIR=".\include"
-set PROTO_DIR="..\..\Assets\GameClient\Network\Proto"
-set OUT_DIR="..\..\Assets\GameClient\Network\Protocol"
+set PROTO_DIR="..\..\Assets\GameClient\Generate\Network\Proto"
+set OUT_DIR="..\..\Assets\GameClient\Generate\Network\Protocol"
 
 echo ===================================================
 echo   [Protobuf 编译器] 开始生成 C# 协议代码...
@@ -48,6 +48,6 @@ for %%f in ("%PROTO_DIR%\*.proto") do (
 
 echo ===================================================
 echo   恭喜！编译完成！共成功处理了 %count% 个协议文件。
-echo   生成路径: Assets/GameClient/Network/Protocol
+echo   生成路径: Assets/GameClient/Generate/Network/Protocol
 echo ===================================================
 pause

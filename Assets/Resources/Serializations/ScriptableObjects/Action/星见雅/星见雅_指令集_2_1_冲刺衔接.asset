@@ -55,7 +55,7 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4681868330708500797
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 10
         RequiredPhase: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500798
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 10
         RequiredPhase: 10
@@ -71,7 +71,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500799
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 10
         RequiredPhase: 30
@@ -79,7 +79,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500849
-      type: {class: AutoTransitionTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         Timing: 0
         RequiredWindowTag: DashLink

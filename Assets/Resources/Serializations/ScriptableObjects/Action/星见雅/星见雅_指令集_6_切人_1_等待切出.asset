@@ -27,11 +27,11 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868508892233737
-      type: {class: AutoTransitionTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         Timing: 10
         RequiredWindowTag: SwitchExecute
         Modifiers: []
     - rid: 6379257713941807105
-      type: {class: SwitchOutPendingCondition, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: SwitchOutPendingCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data: 

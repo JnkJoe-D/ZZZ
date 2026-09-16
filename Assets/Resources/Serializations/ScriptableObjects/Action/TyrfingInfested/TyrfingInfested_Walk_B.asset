@@ -24,8 +24,8 @@ MonoBehaviour:
   RouteSets:
   - {fileID: 11400000, guid: 0e40edc68cfa8304ea2c282e769cd6dd, type: 2}
   - {fileID: 11400000, guid: b62a1c3d6ad4bd24fbc4f7a928479402, type: 2}
-  CanBeInterruptedByLightHit: 1
-  CanBeInterruptedByHeavyHit: 1
+  - {fileID: 11400000, guid: acfaa0f4da4a2194099e77fcedb69830, type: 2}
+  - {fileID: 11400000, guid: a6f4997b6b302c64b9424978655b8a15, type: 2}
   references:
     version: 2
     RefIds: []

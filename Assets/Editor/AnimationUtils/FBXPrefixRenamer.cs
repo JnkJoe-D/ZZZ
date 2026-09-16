@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 
-namespace GameClient.Editor.Utils
+namespace Game.Editor.Tools
 {
     public class FBXPrefixRenamer : EditorWindow
     {

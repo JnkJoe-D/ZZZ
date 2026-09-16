@@ -35,7 +35,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500782
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 60
         RequiredPhase: 0
@@ -43,7 +43,7 @@ MonoBehaviour:
         TriggerMode: 1
         Modifiers: []
     - rid: 4681868330708500783
-      type: {class: SystemEventTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         EventType: 20
         RequiredWindowTag: SwitchExecute

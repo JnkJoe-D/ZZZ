@@ -47,6 +47,7 @@ MonoBehaviour:
     - rid: 6379257712028942354
     - rid: 6379257712028942358
     - rid: 6379257712028942355
+    - rid: 6379257937949097996
   - groupId: 48bd4221-439a-46f0-bbbe-7c608f53feea
     groupName: Route
     isCollapsed: 0
@@ -436,3 +437,26 @@ MonoBehaviour:
             assetPath: 
           hitEffectId: 1040000
           interruptLevel: 1
+    - rid: 6379257937949097996
+      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: c0dfb225-2d31-482b-a2d3-94932f56e984
+        trackType: EventTrack
+        trackName: "\u4E8B\u4EF6\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379257937949097998
+    - rid: 6379257937949097998
+      type: {class: ParryContractClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 9ffb73b7-d655-4b1c-8db9-b64aa5442f02
+        clipName: "\u62FC\u5200\u5951\u7EA6\u751F\u547D\u5468\u671F\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.3
+        duration: 1.6000001
+        blendInDuration: 0
+        blendOutDuration: 0

@@ -28,7 +28,7 @@ MonoBehaviour:
     Priority: 0
     CrossfadeOverride: 0
     TriggerStrategy:
-      rid: 4681868330708500768
+      rid: 6379257983390711809
     ExtraConditions: []
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 0bfb17c4668d4454fb3567fcaa774a27, type: 2}
@@ -37,7 +37,7 @@ MonoBehaviour:
     Priority: 0
     CrossfadeOverride: 0
     TriggerStrategy:
-      rid: 4681868330708500769
+      rid: 6379257983390711808
     ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
@@ -50,19 +50,19 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 4681868330708500768
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 20
-        RequiredPhase: 0
-        RequiredWindowTag: Buffer1
-        TriggerMode: 0
-        Modifiers: []
-    - rid: 4681868330708500769
-      type: {class: IntentCommandTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+    - rid: 6379257983390711808
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredInput: 20
         RequiredPhase: 0
         RequiredWindowTag: Execute1
         TriggerMode: 1
+        Modifiers: []
+    - rid: 6379257983390711809
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindowTag: Buffer1
+        TriggerMode: 0
         Modifiers: []

@@ -26,7 +26,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4681868330708500836
-      type: {class: SystemEventTrigger, ns: Game.Logic, asm: Assembly-CSharp}
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         EventType: 10
         RequiredWindowTag: SwitchExecute

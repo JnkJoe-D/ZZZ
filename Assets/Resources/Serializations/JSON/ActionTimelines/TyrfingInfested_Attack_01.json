@@ -55,6 +55,9 @@
                 },
                 {
                     "rid": 1005
+                },
+                {
+                    "rid": 1006
                 }
             ]
         },
@@ -66,10 +69,10 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1006
+                    "rid": 1007
                 },
                 {
-                    "rid": 1007
+                    "rid": 1008
                 }
             ]
         }
@@ -95,7 +98,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1008
+                            "rid": 1009
                         }
                     ],
                     "isMasterTrack": true,
@@ -129,7 +132,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1009
+                            "rid": 1010
                         }
                     ]
                 }
@@ -152,7 +155,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1010
+                            "rid": 1011
                         }
                     ]
                 }
@@ -175,7 +178,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ]
                 }
@@ -198,10 +201,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1013
                         },
                         {
-                            "rid": 1013
+                            "rid": 1014
                         }
                     ]
                 }
@@ -224,13 +227,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1014
+                            "rid": 1015
                         }
                     ]
                 }
             },
             {
                 "rid": 1006,
+                "type": {
+                    "class": "EventTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "c0dfb225-2d31-482b-a2d3-94932f56e984",
+                    "trackType": "EventTrack",
+                    "trackName": "事件轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1016
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1007,
                 "type": {
                     "class": "RouteWindowTrack",
                     "ns": "ATEditor",
@@ -247,13 +273,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1017
                         }
                     ]
                 }
             },
             {
-                "rid": 1007,
+                "rid": 1008,
                 "type": {
                     "class": "RouteWindowTrack",
                     "ns": "ATEditor",
@@ -270,13 +296,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1018
                         }
                     ]
                 }
             },
             {
-                "rid": 1008,
+                "rid": 1009,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -291,7 +317,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34408
+                        "instanceID": 34418
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -311,7 +337,7 @@
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1010,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -334,7 +360,7 @@
                 }
             },
             {
-                "rid": 1010,
+                "rid": 1011,
                 "type": {
                     "class": "RotationClip",
                     "ns": "ATEditor",
@@ -359,7 +385,7 @@
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1012,
                 "type": {
                     "class": "HitClip",
                     "ns": "ATEditor",
@@ -456,7 +482,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1013,
                 "type": {
                     "class": "HitClip",
                     "ns": "ATEditor",
@@ -553,7 +579,7 @@
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1014,
                 "type": {
                     "class": "HitClip",
                     "ns": "ATEditor",
@@ -650,7 +676,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1015,
                 "type": {
                     "class": "AttackWarningClip",
                     "ns": "ATEditor",
@@ -695,7 +721,24 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1016,
+                "type": {
+                    "class": "ParryContractClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "9ffb73b7-d655-4b1c-8db9-b64aa5442f02",
+                    "clipName": "拼刀契约生命周期片段",
+                    "isEnabled": true,
+                    "startTime": 0.30000001192092898,
+                    "duration": 1.6000001430511475,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0
+                }
+            },
+            {
+                "rid": 1017,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -713,7 +756,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1018,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
