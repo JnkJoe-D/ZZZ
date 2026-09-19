@@ -9,7 +9,9 @@ namespace Game.GamePlay
         NextActionEffectiveRange,
         HitTriggerTimestamp,
         InHitReaction,
-        IsStunned
+        IsStunned,
+        IsInRange,
+        IsSelfControl
     }
 
     public static class BBKeyMapper

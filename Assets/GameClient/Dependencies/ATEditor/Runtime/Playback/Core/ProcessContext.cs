@@ -43,7 +43,24 @@ namespace ATEditor
         /// 可选扩展数据（外部注入业务相关对象）
         /// </summary>
         public object UserData { get; set; }
-        public float GlobalPlaySpeed { get; set; } = 1f; // 全局播放速度控制
+        private float _globalPlaySpeed = 1f;
+        /// <summary>
+        /// 全局播放速度变更事件（供动画、特效等需要即时响应顿帧/慢动作的表现层 Process 订阅）
+        /// </summary>
+        public event System.Action<float> OnGlobalSpeedChanged;
+
+        public float GlobalPlaySpeed
+        {
+            get => _globalPlaySpeed;
+            set
+            {
+                if (!Mathf.Approximately(_globalPlaySpeed, value))
+                {
+                    _globalPlaySpeed = value;
+                    OnGlobalSpeedChanged?.Invoke(_globalPlaySpeed);
+                }
+            }
+        }
         public float CurrentTime { get; set; } = 0f; // 当前时间轴时间
         
         /// <summary>

@@ -85,6 +85,9 @@ namespace Game.GamePlay
         [Tooltip("转向策略")]
         public HitTurnaroundPolicy turnaroundPolicy = HitTurnaroundPolicy.AutoByAvailability;
 
+        [Tooltip("覆盖受击硬直时长 (秒)。若 <= 0 则回退使用全局 defaultHitStunDuration")]
+        public float overrideHitStunDuration = -1f;
+
         [Header("基础方向动作插槽")]
         [Tooltip("正面受击动作 (核心必填，作为保底动作)")]
         public ActionConfigAsset frontAction;
@@ -145,6 +148,23 @@ namespace Game.GamePlay
 
         [Tooltip("霸体阈值")]
         public float superArmorThreshold = 0f;
+
+        [Header("受击硬直参数")]
+        [Tooltip("全局默认受击硬直保底时长 (秒)。当动作较短或需要额外硬直对峙时生效。")]
+        public float defaultHitStunDuration = 0.5f;
+
+        /// <summary>
+        /// 获取指定受击类型的目标硬直时长 (秒)
+        /// </summary>
+        public float GetHitStunDuration(HitReactionType type)
+        {
+            InitializeCache();
+            if (_entryMap != null && _entryMap.TryGetValue(type, out var entry) && entry.overrideHitStunDuration > 0f)
+            {
+                return entry.overrideHitStunDuration;
+            }
+            return defaultHitStunDuration > 0f ? defaultHitStunDuration : 0.5f;
+        }
 
         [Header("兼容旧版本单一字段（自动迁移）")]
         [HideInInspector] public ActionConfigAsset hitAnimLight;

@@ -85,10 +85,7 @@ namespace ATEditor.Editor
         
         public void DoGUI()
         {
-
-            
             ActionTimeline timeline = state.currentTimeline;
-            if (timeline == null) return;
             
             Event evt = Event.current;
             
@@ -179,14 +176,22 @@ namespace ATEditor.Editor
         private void DrawTrackListInGroup(ref float virtualY, float scrollOffset, float viewportHeight, float width)
         {
             ActionTimeline timeline = state.currentTimeline;
-            if (timeline == null) return;
-
-            if (timeline.Groups != null)
+            if (timeline == null || timeline.Groups == null || timeline.Groups.Count == 0)
             {
-                for (int i = 0; i < timeline.Groups.Count; i++)
+                GUIStyle hintStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel)
                 {
-                    DrawGroup(timeline.Groups[i], ref virtualY, scrollOffset, viewportHeight, 0);
-                }
+                    alignment = TextAnchor.MiddleCenter,
+                    wordWrap = true,
+                    fontSize = 11,
+                    normal = { textColor = new Color(0.6f, 0.6f, 0.6f, 0.8f) }
+                };
+                GUI.Label(new Rect(10, 20, width - 20, 60), "暂无轨道\n请打开动作资产\n或点击右上角 '+' 新建分组", hintStyle);
+                return;
+            }
+
+            for (int i = 0; i < timeline.Groups.Count; i++)
+            {
+                DrawGroup(timeline.Groups[i], ref virtualY, scrollOffset, viewportHeight, 0);
             }
         }
 
@@ -363,6 +368,11 @@ namespace ATEditor.Editor
         private void CreateNewGroup()
         {
             ActionTimeline timeline = state.currentTimeline;
+            if (timeline == null)
+            {
+                window.ResetToBlankTimeline();
+                timeline = state.currentTimeline;
+            }
             if (timeline == null) return;
 
             window.RecordUndo("添加分组");

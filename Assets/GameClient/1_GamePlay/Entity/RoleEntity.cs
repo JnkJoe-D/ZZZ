@@ -1,117 +1,85 @@
-using System.Collections.Generic;
 using Game.Framework;
-using Game.GamePlay;
 using ATEditor;
 using UnityEngine;
 
 namespace Game.GamePlay
 {
+    /// <summary>
+    /// 玩家角色实体聚合根。
+    /// 纯领域组合根：仅负责子系统组件（表现、输入、状态机、数据）的装配与生命周期分发，
+    /// 绝无任何中间人透传、输入适配细节或跨层全局相机调度。
+    /// </summary>
     public class RoleEntity : CharacterEntity
     {
-        private CharacterInputEventAdapter _inputEventAdapter;
-        protected bool _isInputBound;
-        private IInputProvider _boundInputProvider;
-        private IInputProvider _inputProvider;
-        private readonly Dictionary<Renderer, bool> _rendererVisibleStates = new();
-        private readonly Dictionary<Collider, bool> _colliderEnabledStates = new();
-
-        private ICameraController _cameraController;
-        private RoleTeamContext _teamContext;
-
-        public virtual IInputProvider InputProvider => TeamContext?.InputProvider ?? _inputProvider;
-        public virtual ICameraController CameraController => _cameraController;
-
         public new RoleConfigAsset Config => (RoleConfigAsset)base.Config;
 
+        // ── 内部装配的核心模块与组件 ──
+        public IRolePresentation Presentation { get; private set; }
+        public RoleInputAdapterModule InputAdapter { get; private set; }
         public FSMSystem<RoleEntity> StateMachine { get; private set; }
-        public FSMSystem<RoleEntity> Machine => StateMachine;
+        public RoleTeamContext TeamContext { get; private set; }
 
-        public bool IsControlActive { get; protected set; }
-        public bool IsRuntimeInitialized { get; protected set; }
+        public IInputProvider InputProvider => InputAdapter?.BoundInputProvider ?? TeamContext?.InputProvider;
+        public ICameraController CameraController => Presentation?.CameraController;
+        public bool IsControlActive { get; private set; }
+        public bool IsRuntimeInitialized { get; private set; }
 
-        protected virtual bool AutoBindInputOnStart => false;
-        protected bool AutoAssignCameraOnStart => false;
-
-        protected RoleTeamContext TeamContext => _teamContext;
-
-        private bool UsesSharedInputProvider =>
-            _teamContext != null &&
-            _teamContext.InputProvider != null &&
-            ReferenceEquals(InputProvider, _teamContext.InputProvider);
-
-        protected virtual IActionCommandHandler GetCurrentInputHandler() =>
-            (StateMachine?.CurrentState as CharacterStateBase)?.InputHandler ?? CharacterStateBase.InputHandlerStatic;
+        public void BindPresentation(IRolePresentation presentation)
+        {
+            Presentation = presentation;
+            Presentation?.OnComponentInit(this);
+        }
 
         protected override void Awake()
         {
             base.Awake();
+
             AttributeResolver = new RoleAttributeResolver(this);
-            if (CommandBuffer == null) CommandBuffer = new Game.GamePlay.CommandBuffer();
-            if (ActionController == null) ActionController = new Game.GamePlay.RoleActionController(this);
-            if (_inputEventAdapter == null) _inputEventAdapter = new CharacterInputEventAdapter(() => GetCurrentInputHandler());
-            
+            CommandBuffer ??= new CommandBuffer();
+            ActionController ??= new RoleActionController(this);
+
+            InputAdapter = new RoleInputAdapterModule();
+            InputAdapter.Initialize(this);
+
+            // 统一单处初始化运行时数据
             DataModule[typeof(EvadeRuntimeData)] ??= new EvadeRuntimeData();
             DataModule[typeof(ComboRouteRuntimeData)] ??= new ComboRouteRuntimeData();
             DataModule[typeof(SwitchRuntimeData)] ??= new SwitchRuntimeData();
-            
-            CachePresentationState();
         }
 
         protected override void InitRequiredComponents()
         {
-            CharacterMotor = GetComponent<CharacterMotor>();
-            if (CharacterMotor == null) CharacterMotor = gameObject.AddComponent<CharacterMotor>();
+            MovementComponent = GetComponent<MovementComponent>() 
+                ?? gameObject.AddComponent<MovementComponent>();
 
-            CharacterCameraController cameraController = GetComponent<CharacterCameraController>();
-            if (cameraController == null) cameraController = gameObject.AddComponent<CharacterCameraController>();
-            _cameraController = cameraController;
+            HitReactionComponent = GetComponent<RoleHitReactionComponent>() 
+                ?? gameObject.AddComponent<RoleHitReactionComponent>();
 
-            HitReactionModule = GetComponent<RoleHitReactionModule>();
-            if (HitReactionModule == null) HitReactionModule = gameObject.AddComponent<RoleHitReactionModule>();
+            LifecycleComponent = GetComponent<LifecycleComponent>() 
+                ?? gameObject.AddComponent<LifecycleComponent>();
 
-            CameraPointBinder cameraPointBinder = GetComponent<CameraPointBinder>();
-            if (cameraPointBinder == null) cameraPointBinder = gameObject.AddComponent<CameraPointBinder>();
-
-            LifecycleModule = GetComponent<EntityLifecycleModule>();
-            if (LifecycleModule == null) LifecycleModule = gameObject.AddComponent<EntityLifecycleModule>();
+            Presentation = GetComponent<IRolePresentation>();
+            if (Presentation == null)
+            {
+                Presentation = RolePresentationRegistry.Bind(gameObject, this);
+            }
+            Presentation?.OnComponentInit(this);
         }
 
-        public override void Init(Game.GamePlay.CharacterConfigAsset config)
+        public override void Init(CharacterConfigAsset config)
         {
             base.Init(config);
-            CameraController?.Init(this);
             var charId = (cfg.ZZZ.CharacterId)config.ID;
-            var provider = new RoleStatusDataProvider(charId);
-            StatusModule?.Init(this, provider, 1);
+            StatusModule?.Init(this, new RoleStatusDataProvider(charId), 1);
             
             TargetFinder = TeamContext?.TargetFinder;
-            if (CommandBuffer == null) CommandBuffer = new Game.GamePlay.CommandBuffer();
-            if (ActionController == null) ActionController = new Game.GamePlay.RoleActionController(this);
-            if (_inputEventAdapter == null) _inputEventAdapter = new CharacterInputEventAdapter(() => GetCurrentInputHandler());
-
-            DataModule[typeof(EvadeRuntimeData)] ??= new EvadeRuntimeData();
-            DataModule[typeof(ComboRouteRuntimeData)] ??= new ComboRouteRuntimeData();
-            DataModule[typeof(SwitchRuntimeData)] ??= new SwitchRuntimeData();
+            TargetFinder?.Initialize(this);
         }
 
-        public virtual void EnsureRuntimeInitialized()
+        public void EnsureRuntimeInitialized()
         {
-            if (IsRuntimeInitialized || Config == null)
-            {
-                return;
-            }
-
-            FSMManager fsmMgr = FSMManager.Instance;
-            if (fsmMgr != null)
-            {
-                StateMachine = fsmMgr.CreateFSM<RoleEntity>(this);
-                StateMachine.AddState(new CharacterGroundState());
-                StateMachine.AddState(new CharacterSkillState());
-                StateMachine.AddState(new CharacterEvadeState());
-                StateMachine.AddState(new CharacterHitStunState());
-                StateMachine.AddState(new CharacterSwitchState());
-                StateMachine.AddState(new CharacterParryState());
-            }
+            if (IsRuntimeInitialized || Config == null) return;
+            StateMachine = RoleFSMBuilder.Build(this);
 
             if (Config.ActionRoot != null)
             {
@@ -129,250 +97,39 @@ namespace Game.GamePlay
         {
             base.Start();
             EnsureRuntimeInitialized();
-
-            if (AutoBindInputOnStart)
-            {
-                BindInput();
-                IsControlActive = true;
-            }
-
-            if (AutoAssignCameraOnStart)
-            {
-                GameCameraManager.Instance?.SetTarget(transform);
-                CameraController?.EnableInput(true);
-                CameraController?.SetCameraActive(true);
-            }
         }
 
-        protected override void Update()
+        protected override void OnSubLogicTick(float logicDeltaTime)
         {
-            base.Update();
-            ActionController?.Update(Time.deltaTime);
-            DataModule.Get<EvadeRuntimeData>()?.Update(Time.deltaTime);
+            base.OnSubLogicTick(logicDeltaTime);
+            DataModule.Get<EvadeRuntimeData>()?.Tick(logicDeltaTime);
+            StateMachine?.Update(logicDeltaTime);
         }
 
-        protected virtual void ActivateControl(bool assignCameraTarget)
+        public void AssignTeamContext(RoleTeamContext teamContext)
+        {
+            TeamContext = teamContext;
+            TargetFinder = teamContext?.TargetFinder;
+            TargetFinder?.Initialize(this);
+            InputAdapter?.UpdateTeamContext(teamContext);
+        }
+
+        public void SetControlActive(bool active)
         {
             EnsureRuntimeInitialized();
-
-            if (InputProvider is Behaviour inputBehaviour)
-            {
-                inputBehaviour.enabled = true;
-            }
-
-            BindInput();
-            IsControlActive = true;
-
-            CameraController?.SetCameraActive(true);
-            CameraController?.EnableInput(true);
-
-            if (assignCameraTarget)
-            {
-                GameCameraManager.Instance?.SetTarget(transform);
-            }
-        }
-
-        protected virtual void DeactivateControl()
-        {
-            UnbindInput();
-            IsControlActive = false;
-
-            CameraController?.EnableInput(false);
-
-            if (!UsesSharedInputProvider && InputProvider is Behaviour inputBehaviour)
-            {
-                inputBehaviour.enabled = false;
-            }
-        }
-
-        public virtual void SetControlActive(bool active, bool assignCameraTarget = true)
-        {
-            if (active)
-            {
-                ActivateControl(assignCameraTarget);
-            }
-            else
-            {
-                DeactivateControl();
-            }
+            IsControlActive = active;
+            InputAdapter?.SetInputActive(active);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            UnbindInput();
-
+            InputAdapter?.Dispose();
+            InputAdapter = null;
             CombatWarningManager.UnregisterContractsByRole(this);
 
-            if (FSMManager.Instance != null && StateMachine != null)
-            {
-                FSMManager.Instance.DestroyFSM(StateMachine);
-                StateMachine = null;
-            }
-        }
-
-        public override void OnActionTimelineEvent(string eventName, List<ATEventParam> parameters)
-        {
-            Game.Framework.EventCenter.Publish(new CharacterTimelineEvent
-            {
-                SourceEntity = this,
-                EventName = eventName,
-                Parameters = parameters
-            });
-        }
-
-        public void AssignTeamContext(RoleTeamContext teamContext)
-        {
-            IInputProvider previousProvider = InputProvider;
-            bool wasInputBound = _isInputBound;
-            if (wasInputBound)
-            {
-                UnbindInput();
-            }
-
-            _teamContext = teamContext;
-
-            IInputProvider currentProvider = InputProvider;
-            if (!ReferenceEquals(previousProvider, currentProvider))
-            {
-                DisableReplacedInputProvider(previousProvider, currentProvider);
-            }
-
-            if (wasInputBound)
-            {
-                BindInput();
-            }
-        }
-
-        private static void DisableReplacedInputProvider(IInputProvider previousProvider, IInputProvider currentProvider)
-        {
-            if (previousProvider == null || ReferenceEquals(previousProvider, currentProvider))
-            {
-                return;
-            }
-
-            if (previousProvider is Behaviour previousBehaviour)
-            {
-                previousBehaviour.enabled = false;
-            }
-        }
-
-        public void ResetSwitchState()
-        {
-            CommandBuffer?.Clear();
-        }
-
-        public void SetCameraRigActive(bool active)
-        {
-            CameraController?.SetCameraActive(active);
-            CameraController?.EnableInput(active && IsControlActive);
-        }
-
-        public void SetPresentationVisible(bool visible)
-        {
-            IsPresentationVisible = visible;
-
-            foreach (KeyValuePair<Renderer, bool> pair in _rendererVisibleStates)
-            {
-                if (pair.Key != null)
-                {
-                    pair.Key.enabled = visible && pair.Value;
-                }
-            }
-        }
-
-        public void SetColliderActive(bool active)
-        {
-            LayerMask excludeMask = 0;
-            if (!active)
-            {
-                excludeMask = LayerMask.GetMask("LocalRole", "Character", "CharHit");
-            }
-
-            foreach (KeyValuePair<Collider, bool> pair in _colliderEnabledStates)
-            {
-                if (pair.Key != null)
-                {
-                    // 根据 active 状态启用或禁用，恢复时遵循初始启用配置
-                    pair.Key.enabled = active && pair.Value;
-                    // 设置排除层级
-                    pair.Key.excludeLayers = excludeMask;
-                }
-            }
-        }
-
-        protected void BindInput()
-        {
-            IInputProvider provider = InputProvider;
-            if (provider == null)
-            {
-                return;
-            }
-
-            if (_isInputBound)
-            {
-                if (ReferenceEquals(_boundInputProvider, provider))
-                {
-                    return;
-                }
-
-                _inputEventAdapter?.Unbind(_boundInputProvider);
-                _isInputBound = false;
-                _boundInputProvider = null;
-            }
-
-            _inputEventAdapter?.Bind(provider);
-            _boundInputProvider = provider;
-            _isInputBound = true;
-        }
-
-        protected void UnbindInput()
-        {
-            if (!_isInputBound)
-            {
-                return;
-            }
-
-            _inputEventAdapter?.Unbind(_boundInputProvider);
-            _boundInputProvider = null;
-            _isInputBound = false;
-        }
-
-        protected void SetInputProvider(IInputProvider inputProvider)
-        {
-            if (_isInputBound)
-            {
-                UnbindInput();
-                _inputProvider = inputProvider;
-                BindInput();
-            }
-            else
-            {
-                _inputProvider = inputProvider;
-            }
-        }
-
-        private void CachePresentationState()
-        {
-            _rendererVisibleStates.Clear();
-            Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
-            foreach (Renderer r in renderers)
-            {
-                if (r != null)
-                {
-                    _rendererVisibleStates[r] = r.enabled;
-                }
-            }
-
-            _colliderEnabledStates.Clear();
-            Collider[] colliders = GetComponentsInChildren<Collider>(true);
-            foreach (Collider c in colliders)
-            {
-                if (c != null)
-                {
-                    _colliderEnabledStates[c] = c.enabled;
-                }
-            }
+            StateMachine?.Destroy();
+            StateMachine = null;
         }
     }
 }

@@ -58,6 +58,8 @@ namespace Game.GamePlay
         event Action OnMoveHeld;
         /// <summary>移动输入彻底归零时触发 (从 >0 归为 0 的瞬间边沿触发)</summary>
         event Action OnMovementZero;
+        /// <summary>原始物理移动输入归零时立即触发 (无阻尼，专供短输入/起步即时停止)</summary>
+        event Action OnRawMovementZero;
 
         /// <summary>闪避触发</summary>
         event Action OnEvadeStarted;

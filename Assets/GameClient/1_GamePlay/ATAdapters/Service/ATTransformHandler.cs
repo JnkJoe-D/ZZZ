@@ -14,7 +14,7 @@ namespace Game.GamePlay
 
         public void Move(Vector3 delta)
         {
-            _entity.CharacterMotor?.Move(delta);
+            _entity.MovementComponent?.Move(delta);
         }
 
         public void SetPosition(Vector3 position)
@@ -42,13 +42,12 @@ namespace Game.GamePlay
 
         public Transform GetTarget()
         {
-            return _entity != null ? _entity.GetEffectiveTarget() : null;
+            return _entity != null && _entity.TargetFinder != null ? _entity.TargetFinder.GetEffectiveTarget() : null;
         }
 
         public float GetRadius()
         {
-            var cc = _entity.GetComponent<CharacterController>();
-            return cc != null ? cc.radius + cc.skinWidth : 0.5f;
+            return _entity != null && _entity.MovementComponent != null ? _entity.MovementComponent.CharacterRadius : 0.5f;
         }
 
         public float GetTargetRadius()
@@ -112,9 +111,10 @@ namespace Game.GamePlay
 
         public void RotateTowards(Quaternion targetRotation, float speed)
         {
-            // 优先使用 CharacterMotor 的 TurnSpeed 如果 speed 为默认
-            float finalSpeed = speed > 0 ? speed : (_entity.CharacterMotor as CharacterMotor)?.TurnSpeed ?? 15f;
-            _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, targetRotation, Time.deltaTime * finalSpeed);
+            // 优先使用 MovementComponent 的 TurnSpeed 如果 speed 为默认
+            float finalSpeed = speed > 0 ? speed : (_entity.MovementComponent)?.TurnSpeed ?? 15f;
+            float dt = _entity != null && _entity.Clock != null ? _entity.Clock.DeltaTime : Time.deltaTime;
+            _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, targetRotation, dt * finalSpeed);
         }
 
         public Quaternion GetRotation()
@@ -124,32 +124,33 @@ namespace Game.GamePlay
 
         public void RotateTo(Vector3 worldDirection, float speed = -1f, Vector3 localOffset = default)
         {
-            _entity.CharacterMotor?.RotateTo(worldDirection, speed, localOffset);
+            float dt = _entity != null && _entity.Clock != null ? _entity.Clock.DeltaTime : Time.deltaTime;
+            _entity.MovementComponent?.RotateTo(worldDirection, speed, localOffset, dt);
         }
 
         public void RotateToImmediately(Vector3 worldDirection, Vector3 localOffset = default)
         {
-            _entity.CharacterMotor?.RotateToImmediately(worldDirection, localOffset);
+            _entity.MovementComponent?.RotateToImmediately(worldDirection, localOffset);
         }
 
         public void FaceTo(Vector3 direction, float speed = -1f, Vector3 localOffset = default)
         {
-            _entity.CharacterMotor?.FaceTo(direction, speed, localOffset);
+            _entity.MovementComponent?.FaceTo(direction, speed, localOffset);
         }
 
         public void FaceToImmediately(Vector3 direction, Vector3 localOffset = default)
         {
-            _entity.CharacterMotor?.FaceToImmediately(direction, localOffset);
+            _entity.MovementComponent?.FaceToImmediately(direction, localOffset);
         }
 
         public void FaceToTarget(Transform target, float speed = -1f, Vector3 localOffset = default)
         {
-            _entity.CharacterMotor?.FaceToTarget(target, speed, localOffset);
+            _entity.MovementComponent?.FaceToTarget(target, speed, localOffset);
         }
 
         public void FaceToTargetImmediately(Transform target, Vector3 localOffset = default)
         {
-            _entity.CharacterMotor?.FaceToTargetImmediately(target, localOffset);
+            _entity.MovementComponent?.FaceToTargetImmediately(target, localOffset);
         }
 
         public Vector3 GetInputDirection(bool withCamera)
@@ -159,9 +160,9 @@ namespace Game.GamePlay
                 Vector2 input = role.InputProvider.GetMovementDirection();
                 if (input.sqrMagnitude < 0.001f) return Vector3.zero;
 
-                if (withCamera && role.CharacterMotor != null)
+                if (withCamera && role.MovementComponent != null)
                 {
-                    return role.CharacterMotor.CalculateWorldDirection(input);
+                    return role.MovementComponent.CalculateWorldDirection(input);
                 }
 
                 return new Vector3(input.x, 0, input.y).normalized;

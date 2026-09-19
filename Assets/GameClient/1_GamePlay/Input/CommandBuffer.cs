@@ -42,7 +42,7 @@ namespace Game.GamePlay
             _mode = mode;
         }
 
-        private float CurrentLogicTime => TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+        private float CurrentLogicTime => Time.time;
 
         public void Push(CharacterCommand command)
         {

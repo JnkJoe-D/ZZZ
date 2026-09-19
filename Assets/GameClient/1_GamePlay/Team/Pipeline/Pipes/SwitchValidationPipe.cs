@@ -13,11 +13,27 @@ namespace Game.GamePlay
         public string PipeName => "SwitchValidationPipe";
         public int Priority => 100;
 
+        /// <summary>
+        /// 换人请求最小防抖冷却间隔（秒），防止物理按键抖动或极端微秒级连跳切人。
+        /// </summary>
+        public const float SwitchDebounceCooldown = 0.2f;
+
+        private float _lastSwitchTime = -1f;
+
+        public void ResetCooldown() => _lastSwitchTime = -1f;
+
         public void Process(SwitchPipelineContext ctx)
         {
             if (ctx.Manager == null)
             {
                 ctx.Abort("TeamManager is null");
+                return;
+            }
+
+            // 0. 换人防抖冷却校验
+            if (_lastSwitchTime >= 0f && Time.time - _lastSwitchTime < SwitchDebounceCooldown)
+            {
+                ctx.Abort($"切人请求过于频繁，处于防抖冷却中 (冷却间隔: {SwitchDebounceCooldown}s)");
                 return;
             }
 
@@ -45,7 +61,7 @@ namespace Game.GamePlay
                 return;
             }
 
-            if (ctx.IncomingEntity.IsDead)
+            if (ctx.IncomingEntity.LifecycleComponent.IsDead)
             {
                 ctx.Abort("IncomingEntity is already dead");
                 return;
@@ -87,7 +103,10 @@ namespace Game.GamePlay
                 }
             }
 
-            // 2. 根据切人类型初始化默认策略与时空参数（若外部未特化指定）
+            // 2. 校验完全通过，记录本次切换成功时间戳
+            _lastSwitchTime = Time.time;
+
+            // 3. 根据切人类型初始化默认策略与时空参数（若外部未特化指定）
             ConfigureDefaults(ctx);
         }
 

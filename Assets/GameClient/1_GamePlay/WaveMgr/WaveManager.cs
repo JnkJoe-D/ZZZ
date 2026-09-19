@@ -50,6 +50,29 @@ namespace Game.GamePlay
         private bool _isSpawning = false;
         private bool _isFinished = false;
 
+        private void OnEnable()
+        {
+            EventCenter.Subscribe<EntityDiedEvent>(OnEntityDied);
+        }
+
+        private void OnDisable()
+        {
+            EventCenter.Unsubscribe<EntityDiedEvent>(OnEntityDied);
+        }
+
+        private void OnEntityDied(EntityDiedEvent evt)
+        {
+            if (evt.Victim is MonsterEntity monster && _currentAliveMonsters.Remove(monster))
+            {
+                // 如果当前波次所有怪物均已死亡且不在生成中，则推进至下一波
+                if (!_isSpawning && !_isFinished && _currentAliveMonsters.Count == 0)
+                {
+                    GLog.Info(LogTags.Monster, $"第 {_currentWaveIndex} 波怪物已全灭，准备下一波...");
+                    SpawnNextWave();
+                }
+            }
+        }
+
         private void Start()
         {
             if (AutoStart)
@@ -149,6 +172,7 @@ namespace Game.GamePlay
             GLog.Info(LogTags.Monster, $"第 {_currentWaveIndex} 波怪物已生成，共 {_currentAliveMonsters.Count} 只。");
         }
 
+#if UNITY_EDITOR
         private void Update()
         {
             // ===== Debug: F1 手动刷怪 =====
@@ -156,28 +180,8 @@ namespace Game.GamePlay
             {
                 SpawnTestMonster();
             }
-
-            // 如果还在生成过程中，或者已经结束了，就不检查死亡条件
-            if (_isSpawning || _isFinished || _currentAliveMonsters.Count == 0) return;
-            
-            // 轮询检查怪物的存活状态 (轻量级做法：检查是否被回收入池而失活)
-            // 在完整的框架中，可以通过监听 MonsterManager 派发的 EntityDiedEvent 来做
-            for (int i = _currentAliveMonsters.Count - 1; i >= 0; i--)
-            {
-                var monster = _currentAliveMonsters[i];
-                if (monster == null || !monster.gameObject.activeInHierarchy)
-                {
-                    _currentAliveMonsters.RemoveAt(i);
-                }
-            }
-
-            // 当前波次的怪物被清理干净了
-            if (_currentAliveMonsters.Count == 0)
-            {
-                GLog.Info(LogTags.Monster, $"第 {_currentWaveIndex} 波怪物已全灭，准备下一波...");
-                SpawnNextWave();
-            }
         }
+#endif
 
         private async void SpawnTestMonster()
         {

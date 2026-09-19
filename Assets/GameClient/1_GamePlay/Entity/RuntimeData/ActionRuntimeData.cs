@@ -1,21 +1,16 @@
-using Game.GamePlay;
-
 namespace Game.GamePlay
 {
-    public class ActionRuntimeData : IEntityRuntimeData
+    public class ActionRuntimeData : EntityRuntimeDataBase
     {
-        public ActionState TargetGroundSubState { get; set; } = ActionState.Idle;
-        public ActionConfigAsset NextActionToCast { get; set; }
-        public bool IsShortMoveInput { get; set; }
-        
-        public AttackWarningMarker MatchedWarningMarker { get; set; }
+        public ActionState TargetGroundSubState => Get<ActionState>(nameof(TargetGroundSubState), ActionState.Idle);
+        public ActionConfigAsset NextActionToCast => Get<ActionConfigAsset>(nameof(NextActionToCast));
+        public bool IsShortMoveInput => Get<bool>(nameof(IsShortMoveInput));
+        public AttackWarningMarker MatchedWarningMarker => Get<AttackWarningMarker>(nameof(MatchedWarningMarker));
 
-        public void Reset()
+        public override void Reset()
         {
-            TargetGroundSubState = ActionState.Idle;
-            NextActionToCast = null;
-            IsShortMoveInput = false;
-            MatchedWarningMarker = null;
+            base.Reset();
+            Set(nameof(TargetGroundSubState), ActionState.Idle);
         }
     }
 }

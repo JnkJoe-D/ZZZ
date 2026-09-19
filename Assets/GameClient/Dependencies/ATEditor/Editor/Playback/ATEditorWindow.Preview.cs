@@ -78,6 +78,38 @@ namespace ATEditor.Editor
         }
 
         /// <summary>
+        /// 彻底清理场景中所有由 ATEditor 创建的预览对象实例
+        /// </summary>
+        public void DestroyAllPreviewTargets()
+        {
+            if (state != null)
+            {
+                if (state.previewTarget != null)
+                {
+                    Object.DestroyImmediate(state.previewTarget);
+                    state.previewTarget = null;
+                }
+                state.initialAutoPreviewTarget = null;
+                state.hasPreviewOriginPose = false;
+                state.previewOriginTarget = null;
+            }
+
+            // 兜底：扫描场景根节点中所有以 [ATEditor_Preview]_ 开头的对象并清理
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (scene.isLoaded)
+            {
+                var roots = scene.GetRootGameObjects();
+                foreach (var root in roots)
+                {
+                    if (root != null && root.name.StartsWith("[ATEditor_Preview]_"))
+                    {
+                        Object.DestroyImmediate(root);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// 释放预览系统（在 OnDisable 中调用）
         /// </summary>
         private void DisposePreview()
@@ -87,15 +119,148 @@ namespace ATEditor.Editor
             previewRunner = null;
             EditorVFXManager.Instance.Dispose();
             
-            // 删除打开时记录的初始预览目标
-            if (state != null && state.initialAutoPreviewTarget != null)
-            {
-                Object.DestroyImmediate(state.initialAutoPreviewTarget);
-                state.initialAutoPreviewTarget = null;
-            }
+            // 彻底销毁场景中的所有预览实例
+            DestroyAllPreviewTargets();
 
             // 向外部层抛出主动销毁指令，清理那些跨程序集缓存的重对象
             ATEditorGlobalSettings.OnEditorDispose?.Invoke();
+        }
+
+        /// <summary>
+        /// 确保当前工作区的预览对象已生成在场景中（T-Pose）
+        /// </summary>
+        public void EnsureWorkspacePreviewTarget(bool forceRecreate = false)
+        {
+            if (state == null) return;
+
+            var ws = state.ActiveWorkspace;
+            if (ws == null)
+            {
+                DestroyAllPreviewTargets();
+                return;
+            }
+
+            string expectedName = $"[ATEditor_Preview]_{ws.Id}";
+
+            // 如果需要强制重新创建（例如修改了 Prefab 或坐标旋转配置）
+            if (forceRecreate)
+            {
+                DestroyAllPreviewTargets();
+            }
+
+            // 检查当前已有引用是否合法
+            if (state.previewTarget != null)
+            {
+                if (state.previewTarget.name == expectedName)
+                {
+                    // 已是匹配的预览对象，预热上下文
+                    if (previewRunner != null)
+                    {
+                        var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview);
+                        previewRunner.PrewarmContext(ctx);
+                    }
+                    return;
+                }
+                else
+                {
+                    // 引用的是旧工作区对象，清理之
+                    DestroyAllPreviewTargets();
+                }
+            }
+
+            // 检查场景中是否已存在同名对象
+            GameObject existing = GameObject.Find(expectedName);
+            if (existing != null)
+            {
+                state.previewTarget = existing;
+                state.initialAutoPreviewTarget = existing;
+                if (previewRunner != null)
+                {
+                    var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview);
+                    previewRunner.PrewarmContext(ctx);
+                }
+                return;
+            }
+
+            // 若场景中没有，且工作区配置了 Prefab，则实例化新对象
+            if (ws.PreviewPrefab != null)
+            {
+                // 先清理可能残留在场景中的其他预览对象
+                DestroyAllPreviewTargets();
+
+                GameObject instance = Object.Instantiate(ws.PreviewPrefab, ws.SpawnPosition, Quaternion.Euler(ws.SpawnRotationEuler));
+                instance.name = expectedName;
+                instance.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
+                state.previewTarget = instance;
+                state.initialAutoPreviewTarget = instance;
+
+                if (previewRunner != null)
+                {
+                    var ctx = new ProcessContext(state.previewTarget, PlayMode.EditorPreview);
+                    previewRunner.PrewarmContext(ctx);
+                }
+                SceneView.RepaintAll();
+            }
+            else
+            {
+                // 工作区未配置 Prefab，清理预览引用
+                state.previewTarget = null;
+                state.initialAutoPreviewTarget = null;
+            }
+        }
+
+        /// <summary>
+        /// 切换角色工作区（毫秒级热替换，确定性生命周期闭环）
+        /// </summary>
+        public void SwitchWorkspace(string newWorkspaceId, bool promptSave = true)
+        {
+            if (state == null) return;
+
+            var db = ATEditorWorkspaceDatabase.Instance;
+            var targetWs = db.GetWorkspaceById(newWorkspaceId);
+            if (targetWs == null) return;
+
+            // 1. 未保存修改提示与校验
+            if (promptSave && state.currentTimeline != null && EditorUtility.IsDirty(state.currentTimeline))
+            {
+                int choice = EditorUtility.DisplayDialogComplex(
+                    "保存当前动作",
+                    $"动作 '{state.currentTimeline.name}' 存在未保存的修改，是否在切换工作区前保存？",
+                    "保存",
+                    "不保存",
+                    "取消切换");
+
+                if (choice == 0) // 保存
+                {
+                    toolbarView?.SaveCurrentTimeline();
+                }
+                else if (choice == 2) // 取消切换
+                {
+                    return;
+                }
+            }
+
+            // 2. 彻底停止播放并关闭/卸载当前动作资产
+            Stop();
+            state.isStopped = true;
+            state.timeIndicator = 0f;
+            state.currentFilePath = null;
+            ResetToBlankTimeline();
+
+            // 3. 更新工作区 ID
+            state.ActiveWorkspaceId = newWorkspaceId;
+
+            // 4. 清理旧实例与动效缓存
+            EditorAnimationUtils.DisposeAll();
+            DestroyAllPreviewTargets();
+
+            // 5. 实例化新工作区的 PreviewPrefab (默认 T-Pose)
+            EnsureWorkspacePreviewTarget(forceRecreate: true);
+
+            // 6. 重建预览系统与上下文
+            InitPreview();
+            Repaint();
+            SceneView.RepaintAll();
         }
 
         /// <summary>

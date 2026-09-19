@@ -156,7 +156,7 @@ namespace Game.GamePlay
                 GUILayout.Label("CHARACTER DEBUG HUD", titleStyle);
                 GUILayout.Space(10);
 
-                var machine = targetEntity.Machine;
+                var machine = targetEntity.StateMachine;
                 if (machine != null)
                 {
                     DrawInfo("Current State", machine.CurrentState?.GetType().Name ?? "None");

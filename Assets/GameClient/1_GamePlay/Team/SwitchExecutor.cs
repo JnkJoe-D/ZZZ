@@ -130,7 +130,7 @@ namespace Game.GamePlay
                         if (task.Phase == SwitchOutPhase.Pending && (task.ElapsedTime >= 0.35f || !isActionPlaying))
                         {
                             task.Phase = SwitchOutPhase.PlayingExit;
-                            entity?.SetColliderActive(false);
+                            entity?.Presentation?.SetColliderActive(false);
                             GLog.Info(LogTags.Team, $"AutoFollowThrough: {task.Member?.Config?.Name} 自动禁用碰撞 -> PlayingExit");
                         }
 
@@ -282,7 +282,7 @@ namespace Game.GamePlay
             if (member.Entity?.DataModule != null)
             {
                 var switchData = member.Entity.DataModule.Get<SwitchRuntimeData>();
-                if (switchData != null) switchData.IsSwitchOutPending = true;
+                if (switchData != null) switchData.Set(nameof(switchData.IsSwitchOutPending), true);
             }
 
             _switchOutQueue.Add(new SwitchOutTask
@@ -318,13 +318,13 @@ namespace Game.GamePlay
                 if (member.Entity.DataModule != null)
                 {
                     var switchData = member.Entity.DataModule.Get<SwitchRuntimeData>();
-                    if (switchData != null) switchData.IsSwitchOutPending = false;
+                    if (switchData != null) switchData.Set(nameof(switchData.IsSwitchOutPending), false);
                 }
 
                 if (wasPlayingExit)
                 {
                     // 恢复碰撞体（PlayingExit 阶段已禁用）
-                    member.Entity.SetColliderActive(true);
+                    member.Entity.Presentation?.SetColliderActive(true);
 
                     // 中断切出动作，回到根动作
                     if (member.Entity.Config?.ActionRoot != null)
@@ -350,11 +350,11 @@ namespace Game.GamePlay
             if (entity.DataModule != null)
             {
                 var switchData = entity.DataModule.Get<SwitchRuntimeData>();
-                if (switchData != null) switchData.IsSwitchOutPending = false;
+                if (switchData != null) switchData.Set(nameof(switchData.IsSwitchOutPending), false);
             }
-            entity.SetPresentationVisible(false);
-            entity.SetColliderActive(false);
-            entity.SetControlActive(false, assignCameraTarget: false);
+            entity.Presentation?.SetPresentationVisible(false);
+            entity.Presentation?.SetColliderActive(false);
+            entity.SetControlActive(false);
 
             // 播放 ActionRoot 使角色回到待机循环（Standby 维护需要）
             if (entity.Config?.ActionRoot != null)
@@ -374,7 +374,7 @@ namespace Game.GamePlay
             if (task.Phase != SwitchOutPhase.Pending) return false;
 
             task.Phase = SwitchOutPhase.PlayingExit;
-            task.Member.Entity?.SetColliderActive(false);
+            task.Member.Entity?.Presentation?.SetColliderActive(false);
 
             GLog.Info(LogTags.Team, $"SwitchOutDisableLogic: {task.Member.Config?.Name} → PlayingExit");
             return true;

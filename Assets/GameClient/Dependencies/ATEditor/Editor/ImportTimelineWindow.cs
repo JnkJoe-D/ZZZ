@@ -6,21 +6,32 @@ using System.Collections.Generic;
 
 namespace ATEditor.Editor
 {
+    /// <summary>
+    /// 动作时间轴导入窗口（支持分类/工作区树状分级检索）
+    /// </summary>
     public class ImportTimelineWindow : EditorWindow
     {
         private int selectedTab = 0;
         private string[] tabs = new string[] { "从 Asset(SO) 导入", "从 JSON 导入" };
 
         private string searchString = "";
+        private string rootSoDir;
+        private string rootJsonDir;
+
+        // 当前选中的工作区
+        private string selectedWorkspaceId;
+        private ATWorkspaceDefinition selectedWorkspace;
+
         private string[] allJsonPaths = new string[0];
         private string[] allSOPaths = new string[0];
         private List<string> filteredJsonPaths = new List<string>();
         private List<string> filteredSOPaths = new List<string>();
 
         private string preferredSelectedFileName;
-        
         private Action<ActionTimeline, string> onTimelineSelected;
-        private Vector2 scrollPos;
+
+        private Vector2 leftScrollPos;
+        private Vector2 rightScrollPos;
         private int selectedIndex = -1;
         private int lastHoveredIndex = -1;
         private bool needsScrollToSelection = true;
@@ -60,10 +71,12 @@ namespace ATEditor.Editor
         public static void Show(string soDir, string jsonDir, Action<ActionTimeline, string> onSelected, string initialSelectedPath = null)
         {
             var window = GetWindow<ImportTimelineWindow>(true, "导入 ActionTimeline", true);
-            window.minSize = new Vector2(350, 450);
+            window.minSize = new Vector2(650, 480);
             window.titleContent = new GUIContent("Import Timeline");
             window.onTimelineSelected = onSelected;
-            
+            window.rootSoDir = soDir;
+            window.rootJsonDir = jsonDir;
+
             if (!string.IsNullOrEmpty(initialSelectedPath))
             {
                 window.preferredSelectedFileName = Path.GetFileNameWithoutExtension(initialSelectedPath);
@@ -74,27 +87,52 @@ namespace ATEditor.Editor
                 window.preferredSelectedFileName = null;
             }
 
+            // 初始化默认选中当前激活的工作区
+            var db = ATEditorWorkspaceDatabase.Instance;
+            string currentActiveId = EditorPrefs.GetString("ATEditor_ActiveWorkspaceId", "Player_Ellen");
+            var targetWs = db.GetWorkspaceById(currentActiveId);
+            if (targetWs == null && db.Workspaces.Count > 0)
+            {
+                targetWs = db.Workspaces[0];
+            }
+
+            window.SelectWorkspace(targetWs);
             window.needsScrollToSelection = true;
-            window.LoadFiles(soDir, jsonDir);
             window.ShowUtility();
         }
 
-        private void LoadFiles(string soDir, string jsonDir)
+        private void SelectWorkspace(ATWorkspaceDefinition ws)
         {
-            if (Directory.Exists(soDir))
+            selectedWorkspace = ws;
+            selectedWorkspaceId = ws?.Id;
+            LoadFilesForCurrentWorkspace();
+        }
+
+        private void LoadFilesForCurrentWorkspace()
+        {
+            allSOPaths = new string[0];
+            allJsonPaths = new string[0];
+
+            if (selectedWorkspace != null && !string.IsNullOrEmpty(selectedWorkspace.FolderName))
             {
-                allSOPaths = Directory.GetFiles(soDir, "*.asset", SearchOption.TopDirectoryOnly);
+                string soFolder = Path.Combine(rootSoDir, selectedWorkspace.FolderName).Replace("\\", "/");
+                string jsonFolder = Path.Combine(rootJsonDir, selectedWorkspace.FolderName).Replace("\\", "/");
+
+                if (Directory.Exists(soFolder))
+                {
+                    allSOPaths = Directory.GetFiles(soFolder, "*.asset", SearchOption.AllDirectories);
+                }
+                if (Directory.Exists(jsonFolder))
+                {
+                    allJsonPaths = Directory.GetFiles(jsonFolder, "*.json", SearchOption.AllDirectories);
+                }
             }
-            if (Directory.Exists(jsonDir))
-            {
-                allJsonPaths = Directory.GetFiles(jsonDir, "*.json", SearchOption.TopDirectoryOnly);
-            }
+
             FilterFiles();
         }
 
         private void FilterFiles()
         {
-            // 保存当前的选中名字，用于跨 Tab 同步
             List<string> currentFiltered = selectedTab == 0 ? filteredSOPaths : filteredJsonPaths;
             if (selectedIndex >= 0 && selectedIndex < currentFiltered.Count)
             {
@@ -126,10 +164,75 @@ namespace ATEditor.Editor
 
         private void OnGUI()
         {
+            EditorGUILayout.BeginHorizontal();
+
+            // 1. 左栏：分类与工作区选择器 (180px)
+            DrawLeftWorkspacePanel();
+
+            // 分割线
+            GUILayout.Box("", GUILayout.Width(1), GUILayout.ExpandHeight(true));
+
+            // 2. 右栏：文件列表与搜索
+            DrawRightFileListPanel();
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawLeftWorkspacePanel()
+        {
+            EditorGUILayout.BeginVertical(GUILayout.Width(180));
+
+            EditorGUILayout.Space(4);
+            EditorGUILayout.LabelField("角色工作区", EditorStyles.boldLabel);
+            EditorGUILayout.Space(2);
+
+            leftScrollPos = EditorGUILayout.BeginScrollView(leftScrollPos, EditorStyles.helpBox);
+
+            var db = ATEditorWorkspaceDatabase.Instance;
+            var categories = db.GetCategories();
+
+            foreach (var category in categories)
+            {
+                var list = db.GetWorkspacesByCategory(category);
+                if (list.Count == 0 && category != "Player" && category != "Monster" && category != "Common") continue;
+
+                EditorGUILayout.LabelField($"▾ {category}", EditorStyles.boldLabel);
+
+                foreach (var ws in list)
+                {
+                    bool isSelected = selectedWorkspace != null && selectedWorkspace.Id == ws.Id;
+                    GUIStyle style = isSelected ? new GUIStyle("SelectionRect") : EditorStyles.label;
+
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Space(10);
+
+                    string label = string.IsNullOrEmpty(ws.DisplayName) ? ws.Id : ws.DisplayName;
+                    if (GUILayout.Button(label, style, GUILayout.Height(20)))
+                    {
+                        if (selectedWorkspace?.Id != ws.Id)
+                        {
+                            SelectWorkspace(ws);
+                            GUI.FocusControl(null);
+                        }
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+
+                EditorGUILayout.Space(2);
+            }
+
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawRightFileListPanel()
+        {
+            EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+
+            // 1. 顶部 Tab 切换
             int currentTab = GUILayout.Toolbar(selectedTab, tabs);
             if (currentTab != selectedTab)
             {
-                // Tab 切换时同步选中项的名字，以实现跨类型高亮定位
                 List<string> oldFiltered = selectedTab == 0 ? filteredSOPaths : filteredJsonPaths;
                 if (selectedIndex >= 0 && selectedIndex < oldFiltered.Count)
                 {
@@ -139,11 +242,13 @@ namespace ATEditor.Editor
                 selectedTab = currentTab;
                 needsScrollToSelection = true;
                 TrySelectFileName(preferredSelectedFileName);
-                GUI.FocusControl(null); // 取消搜索框焦点等
+                GUI.FocusControl(null);
             }
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(2);
 
             DrawCommonListArea();
+
+            EditorGUILayout.EndVertical();
         }
 
         private void DrawCommonListArea()
@@ -175,9 +280,10 @@ namespace ATEditor.Editor
             }
             EditorGUILayout.EndHorizontal();
 
-            // 2. 标签页切换 (资产 / 场景)
+            // 2. 状态与提示栏
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
-            GUILayout.Toggle(true, "Files", EditorStyles.toolbarButton, GUILayout.Width(60));
+            string wsName = selectedWorkspace != null ? selectedWorkspace.DisplayName : "未选定工作区";
+            GUILayout.Label($"工作区: {wsName} (共 {activePaths.Count} 个动作)", EditorStyles.miniLabel);
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
 
@@ -186,22 +292,28 @@ namespace ATEditor.Editor
             // 3. 列表展示区域
             if (needsScrollToSelection && selectedIndex >= 0 && activePaths.Count > 0)
             {
-                float itemY = selectedIndex * 18;
-                float scrollViewHeight = position.height - 80;
-                scrollPos.y = Mathf.Max(0, itemY - scrollViewHeight / 2);
+                float itemY = selectedIndex * 20;
+                float scrollViewHeight = position.height - 110;
+                rightScrollPos.y = Mathf.Max(0, itemY - scrollViewHeight / 2);
                 needsScrollToSelection = false;
             }
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+            rightScrollPos = EditorGUILayout.BeginScrollView(rightScrollPos);
             
             int currentHoveredIndex = -1;
             Vector2 mousePos = Event.current.mousePosition;
+
+            if (activePaths.Count == 0)
+            {
+                EditorGUILayout.Space(20);
+                EditorGUILayout.HelpBox("当前工作区目录下未找到动作资产。\n保存或导出新时间轴时，将自动归档至该工作区子目录。", MessageType.Info);
+            }
 
             for (int i = 0; i < activePaths.Count; i++)
             {
                 string filePath = activePaths[i];
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
                 
-                Rect rowRect = EditorGUILayout.GetControlRect(false, 18);
+                Rect rowRect = EditorGUILayout.GetControlRect(false, 20);
                 bool isHovered = rowRect.Contains(mousePos);
                 if (isHovered)
                 {
@@ -243,7 +355,6 @@ namespace ATEditor.Editor
             }
             EditorGUILayout.EndScrollView();
 
-            // 仅在鼠标移动且悬停项发生变化时触发重绘（零静态能耗开销）
             if (Event.current.type == EventType.MouseMove && currentHoveredIndex != lastHoveredIndex)
             {
                 lastHoveredIndex = currentHoveredIndex;
@@ -255,7 +366,7 @@ namespace ATEditor.Editor
             if (selectedIndex >= 0 && selectedIndex < activePaths.Count)
             {
                 string selPath = activePaths[selectedIndex];
-                GUILayout.Label(Path.GetFileNameWithoutExtension(selPath), GUILayout.Width(150));
+                GUILayout.Label(Path.GetFileNameWithoutExtension(selPath), GUILayout.Width(160));
                 GUILayout.FlexibleSpace();
                 GUIStyle pathStyle = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = Color.gray } };
                 string displayPath = selPath.Replace("\\", "/");
@@ -263,7 +374,7 @@ namespace ATEditor.Editor
             }
             else
             {
-                GUILayout.Label("None");
+                GUILayout.Label("未选中资产");
             }
             EditorGUILayout.EndHorizontal();
         }

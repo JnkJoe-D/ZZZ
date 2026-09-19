@@ -143,6 +143,7 @@ namespace Game.App
             GLog.Info(LogTags.GameRoot, "[9/11] Input ... OK");
 
             GameCameraManager.Instance.Initialize();
+            Game.Presentation.TeamCameraPresenter.Instance.Initialize();
 
             Game.GamePlay.TeamManager.Instance.Initialize();
             Game.GamePlay.MonsterManager.Instance.Initialize();

@@ -10,9 +10,6 @@ namespace Game.GamePlay
 
     public class CharacterGroundState : CharacterStateBase
     {
-        public float JogSpeed = 5.0f;
-        public float DashSpeed = 20.0f;
-
         public PlayerLocomotionBlackboard Blackboard { get; private set; } = new PlayerLocomotionBlackboard();
 
         public GroundIdleSubState IdleState { get; private set; }
@@ -55,7 +52,7 @@ namespace Game.GamePlay
             if (_actionData != null)
             {
                 targetState = _actionData.TargetGroundSubState;
-                _actionData.TargetGroundSubState = ActionState.Idle; // 消费请求
+                _actionData.Set(nameof(_actionData.TargetGroundSubState), ActionState.Idle); // 消费请求
             }
 
             if (targetState == ActionState.Dash)

@@ -6,17 +6,24 @@ using System;
 namespace Game.GamePlay 
 {
     /// <summary>
-    /// 行为树动作专属代理类，汇聚对 Entity 的各种快捷单帧操作
+    /// 行为树动作专属代理类，汇聚对 Entity 的各种快捷单帧操作与战术上下文桥接。
     /// </summary>
     public class TreeActionAgent : IDisposable
     {
         private MonsterEntity _owner;
 
+        /// <summary>
+        /// 实体战术上下文引用（行为树 Tasks 通过此属性声明策略与意图）
+        /// </summary>
+        public MonsterTacticalContext Context => _owner?.TacticalContext;
+
+        public MonsterEntity Owner => _owner;
+
         // BTRunner 初始化时创建该类，传入自己所绑定的 Entity
         public TreeActionAgent(MonsterEntity owner)
         {
             _owner = owner;
-            if (_owner != null && _owner.HitReactionModule is MonsterHitReactionModule hitModule)
+            if (_owner != null && _owner.HitReactionComponent is MonsterHitReactionComponent hitModule)
             {
                 hitModule.OnHitTimestampChanged += HandleHitTimestampChanged;
             }
@@ -24,7 +31,7 @@ namespace Game.GamePlay
 
         public void Dispose()
         {
-            if (_owner != null && _owner.HitReactionModule is MonsterHitReactionModule hitModule)
+            if (_owner != null && _owner.HitReactionComponent is MonsterHitReactionComponent hitModule)
             {
                 hitModule.OnHitTimestampChanged -= HandleHitTimestampChanged;
             }
@@ -36,13 +43,12 @@ namespace Game.GamePlay
             var hitData = _owner.DataModule?.Get<HitReactionRuntimeData>();
             if (hitData != null)
             {
-                _owner.BTRunner.RuntimeBlackboard.Set("HitTriggerTimestamp", hitData.HitTriggerTimestamp);
+                _owner.BTRunner.RuntimeBlackboard.Set(BBKeyMapper.GetString(BBKey.HitTriggerTimestamp), hitData.HitTriggerTimestamp);
             }
         }
 
         public void Init(Blackboard bb)
         {
-
         }
 
         /// <summary>
@@ -100,8 +106,8 @@ namespace Game.GamePlay
 
         /// <summary>
         /// 检查当前动作控制器是否正在播放该移动意图对应的动作。
-        /// 尤其针对 Run：无论是起步 RunStart 还是自动过渡后的 RunLoop，均视为正在奔跑，禁止重头重播！
         /// </summary>
+        [Obsolete("微观步态已下放至 MonsterStateBase 状态机自决策，此方法保留仅供向下兼容")]
         public bool IsPlayingLocomotionIntent(MonsterLocomotionIntent intent)
         {
             var config = LocomotionConfig;
@@ -122,8 +128,9 @@ namespace Game.GamePlay
         }
 
         /// <summary>
-        /// 核心决策接口：仅当移动决策改变（或动作异常脱落）时才下发动作指令。
+        /// 核心决策接口（已由 MonsterTacticalContext 与 FSM 接管，保留供旧节点过渡）
         /// </summary>
+        [Obsolete("请使用 Context.Strategy / TargetRadius 替代直接设置动作意图")]
         public bool SetLocomotionIntent(MonsterLocomotionIntent newIntent)
         {
             if (newIntent == MonsterLocomotionIntent.None)
@@ -132,7 +139,6 @@ namespace Game.GamePlay
                 return true;
             }
 
-            // 1. 决策未改变：检查底层当前是否仍处于对应动作，若是直接维持，绝不重复发送指令！
             if (_currentLocomotionIntent == newIntent)
             {
                 if (IsPlayingLocomotionIntent(newIntent))
@@ -141,7 +147,6 @@ namespace Game.GamePlay
                 }
             }
 
-            // 2. 决策发生改变，执行对应动作切换
             _currentLocomotionIntent = newIntent;
             long cmdId;
             return newIntent switch
@@ -162,7 +167,6 @@ namespace Game.GamePlay
             var config = LocomotionConfig;
             if (config == null) return false;
 
-            // 优先播 RunStart，若无则播 RunLoop
             ActionConfigAsset runAction = config.RunStart != null ? config.RunStart : config.RunLoop;
             if (runAction == null) return false;
 
@@ -200,19 +204,21 @@ namespace Game.GamePlay
 
         public void ServiceUpdate(Blackboard bb)
         {
-            var target = _owner.TargetFinder?.GetTarget();
-            bb["HasTarget"] = target != null;
-            bb["DistanceToTarget"] = (target != null && _owner != null)
+            var target = _owner?.TargetFinder?.GetTarget();
+            bb[BBKeyMapper.GetString(BBKey.HasTarget)] = target != null;
+            bb[BBKeyMapper.GetString(BBKey.DistanceToTarget)] = (target != null && _owner != null)
                 ? Vector3.Distance(_owner.transform.position, target.position)
                 : float.MaxValue;
-            var beheaviorData = _owner.DataModule?.Get<MonSterBehaviorRuntimeData>();
+            var beheaviorData = _owner?.DataModule?.Get<MonSterBehaviorRuntimeData>();
             float cd = beheaviorData?.AttackCooldownTimer ?? 0f;
-            bb["AttackCooldownTimer"] = cd;
-            bb["AttackIntervalTimer"] = cd;
+            bb[BBKeyMapper.GetString(BBKey.AttackCooldownTimer)] = cd;
+            bb[BBKeyMapper.GetString(BBKey.AttackIntervalTimer)] = cd;
 
-            var hitData = _owner.DataModule?.Get<HitReactionRuntimeData>();
-            bb["InHitReaction"] = hitData != null && hitData.InHitReaction;
-            bb["IsStunned"] = false;
+            var hitData = _owner?.DataModule?.Get<HitReactionRuntimeData>();
+            bb[BBKeyMapper.GetString(BBKey.InHitReaction)] = hitData != null && hitData.InHitReaction;
+            bb[BBKeyMapper.GetString(BBKey.IsStunned)] = false;
+            bb[BBKeyMapper.GetString(BBKey.IsInRange)] = Context?.IsInRange ?? false;
+            bb[BBKeyMapper.GetString(BBKey.IsSelfControl)] = _owner?.IsSelfControl ?? false;
         }
 
         public bool IsPlayingAction(ActionConfigAsset actionConfig)

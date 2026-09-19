@@ -30,7 +30,7 @@ namespace Game.GamePlay
                 var parryData = _entity.DataModule.Get<ParryRuntimeData>();
                 if (parryData != null)
                 {
-                    parryData.ClashHandler = this;
+                    parryData.Set(nameof(parryData.ClashHandler), (IParryClashHandler)this);
                 }
             }
         }
@@ -175,34 +175,27 @@ namespace Game.GamePlay
                 }
             }
 
-            // 4. 驱动攻击者受击动作与深度顿帧反馈 (通过标准命中受击管线)
-            var parryCtx = new HitContext
-            {
-                attacker = _entity,
-                victim = ctx.Attacker,
-                IsParry = true,
-                hitEffectId = effectId,
-                interruptLevel = canInterruptMonster ? parryInterruptLevel : 0,
-                reactionType = reactionType,
-                hitDirection = (ctx.Attacker.transform.position - _entity.transform.position).normalized,
-                enableHitStop = true,
-                hitStopDuration = hitStopDuration,
-                hitStopScale = 0f
-            };
-            parryCtx.reactionAxis = -parryCtx.hitDirection;
-            ctx.Attacker.HitReactionModule?.ApplyVisualFeedback(parryCtx);
+            // 4. 驱动攻击者受击动作与深度顿帧反馈 (直接通过标准命中受击管线 HitPipeline，不通过表现组件反向中继)
+            var pipeline = HitPipeline.Default;
+            var pipeCtx = pipeline.AllocateContext();
+            pipeCtx.Attacker = _entity;
+            pipeCtx.Victim = ctx.Attacker;
+            pipeCtx.HitPoint = ctx.Attacker != null ? ctx.Attacker.transform.position : Vector3.zero;
+            Vector3 hitDir = ctx.Attacker != null ? (ctx.Attacker.transform.position - _entity.transform.position).normalized : Vector3.forward;
+            pipeCtx.HitDirection = hitDir;
+            pipeCtx.ReactionAxis = -hitDir;
+            pipeCtx.InterruptLevel = canInterruptMonster ? parryInterruptLevel : 0;
+            pipeCtx.SelectedReactionType = reactionType;
+            pipeCtx.EnableHitStop = true;
+            pipeCtx.HitStopDuration = hitStopDuration;
+            pipeCtx.HitStopScale = 0f;
+            pipeCtx.ResultFlags |= HitResultFlags.Parried;
 
-            // 5. 防守方自身顿帧
-            var selfCtx = new HitContext
-            {
-                attacker = ctx.Attacker,
-                victim = _entity,
-                IsParry = true,
-                enableHitStop = true,
-                hitStopDuration = hitStopDuration,
-                hitStopScale = 0f
-            };
-            _entity.HitReactionModule?.ApplyHitStopOnly(selfCtx);
+            pipeline.Execute(pipeCtx);
+            pipeline.ReleaseContext(pipeCtx);
+
+            // 5. 防守方自身顿帧 (通过领域事件请求时间系统调度)
+            EventCenter.Publish(new HitStopRequestEvent(_entity?.Clock, null, hitStopDuration, 0f));
         }
 
         #endregion
@@ -241,16 +234,14 @@ namespace Game.GamePlay
                 var parryData = _entity.DataModule.Get<ParryRuntimeData>();
                 if (parryData != null)
                 {
-                    parryData.IsParrying = isParrying;
-                    parryData.ClashHandler = this;
+                    parryData.Set(nameof(parryData.IsParrying), isParrying);
+                    parryData.Set(nameof(parryData.ClashHandler), (IParryClashHandler)this);
                 }
             }
         }
 
         private void EnsureClashContract(int hitEffectId, float hitStopDuration, int heavyHitEffectId, float heavyHitStopDuration)
         {
-            float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
-
             AttackWarningMarker marker = null;
             var actionData = _entity?.DataModule?.Get<ActionRuntimeData>();
             if (actionData != null && actionData.MatchedWarningMarker != null)
@@ -272,7 +263,6 @@ namespace Game.GamePlay
                 int finalEffectId = (isHeavy && heavyHitEffectId > 0) ? heavyHitEffectId : hitEffectId;
                 float finalHitStop = (isHeavy && heavyHitStopDuration > 0f) ? heavyHitStopDuration : hitStopDuration;
 
-                _currentContract.ExpireTime = currentTime + CombatWarningManager.DefaultContractTimeout;
                 _currentContract.HitStopDuration = finalHitStop;
                 if (finalEffectId > 0) _currentContract.ParryHitEffectId = finalEffectId;
                 return;
@@ -289,7 +279,6 @@ namespace Game.GamePlay
                     Attacker = marker.Attacker,
                     ParryRole = _entity,
                     Marker = marker,
-                    ExpireTime = currentTime + CombatWarningManager.DefaultContractTimeout,
                     IsResolved = false,
                     ParryHitEffectId = finalEffectId,
                     HitStopDuration = finalHitStop

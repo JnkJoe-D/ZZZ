@@ -24,8 +24,7 @@ namespace Game.Framework
         public IFSMState<T> NextState { get; private set; }
         private readonly Dictionary<System.Type, IFSMState<T>> _stateCache = new Dictionary<System.Type, IFSMState<T>>();
 
-        // 内部构造，外部由 FSMManager 创建
-        internal FSMSystem(T owner)
+        public FSMSystem(T owner)
         {
             Owner = owner;
         }

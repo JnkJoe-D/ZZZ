@@ -11,6 +11,15 @@ namespace Game.GamePlay
         [Header("Ground Jog (Player)")]
         public float JogShortInputThreshold = 0.2f;
 
+        [Header("Movement Feel & Damping (移动手感与阻尼配置)")]
+        [Tooltip("松开移动按键后，移动向量平滑归零的阻尼衰减时长（秒）。\n0 表示按键松开瞬时归零（硬性切断）；>0 则平滑过渡归零（推荐 0.06~0.08s），模拟摇杆回弹与身体物理惯性。")]
+        [Range(0f, 0.3f)]
+        public float MoveInputDecelerationDuration = 0.08f;
+
+        [Tooltip("松开移动按键后，触发 MoveStop（切入刹车/停止动作）的确认容差延迟（秒）。\n在此时间内若重新按下移动方向，将自动撤销停止意图并无缝继续奔跑，防止快速微调方向或小碎步频繁误触发刹车动作（推荐 0.10~0.15s）。")]
+        [Range(0f, 0.3f)]
+        public float MoveStopDelay = 0.12f;
+
         [Header("Evade (Player)")]
         public int evadeLimitedTimes = 2;
         public float evadeCoolDown = 1f;

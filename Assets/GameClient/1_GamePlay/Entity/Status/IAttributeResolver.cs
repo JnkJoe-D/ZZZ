@@ -130,6 +130,24 @@ namespace Game.GamePlay
     {
         public MonsterAttributeResolver(MonsterEntity monster) : base(monster)
         {
+            InitializeMonsterAttributes(monster);
+        }
+
+        private void InitializeMonsterAttributes(MonsterEntity monster)
+        {
+            if (monster?.StatusModule == null) return;
+            monster.StatusModule.Attributes.Init(monster);
+            monster.StatusModule.Buffs.Init(monster);
+
+            const float defaultMaxDaze = 100f;
+            if (!monster.StatusModule.Attributes.Has(AttributeId.MaxDaze))
+            {
+                monster.StatusModule.Attributes.Register(new AttributeInstance(AttributeId.MaxDaze, defaultMaxDaze, 0f, float.MaxValue));
+            }
+            if (!monster.StatusModule.Attributes.Has(AttributeId.Daze))
+            {
+                monster.StatusModule.Attributes.Register(new AttributeInstance(AttributeId.Daze, 0f, 0f, defaultMaxDaze));
+            }
         }
 
         public override float GetAttribute(AttributeId attrId)

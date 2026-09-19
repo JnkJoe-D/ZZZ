@@ -5,16 +5,33 @@ namespace Game.GamePlay
 {
     /// <summary>
     /// 轻量级行为树运行组件，负责在运行时加载和管理 NPBehave 行为树实例。
+    /// 实现 IEntityComponent 契约，由实体统一驱动生命周期。
     /// </summary>
-    public class BTRunner : MonoBehaviour
+    public class BTRunner : MonoBehaviour, IEntityComponent
     {
         public BehaviorTreeAsset treeAsset;
 
+        public CharacterEntity OwnerEntity { get; private set; }
         public Root RuntimeRoot => RuntimeTranslationResult?.Root;
         public TranslationResult RuntimeTranslationResult { get; private set; }
         public Blackboard RuntimeBlackboard => RuntimeRoot?.Blackboard;
         private Clock _localClock;
         private TreeActionAgent _agent;
+
+        public void OnComponentInit(CharacterEntity owner)
+        {
+            OwnerEntity = owner;
+        }
+
+        public void OnComponentSpawn()
+        {
+            StartTree();
+        }
+
+        public void OnComponentDespawn()
+        {
+            StopTree();
+        }
 
         public void Init(BehaviorTreeAsset asset)
         {
@@ -64,20 +81,12 @@ namespace Game.GamePlay
                 RuntimeRoot.Stop();
             }
         }
-        void Update()
+        /// <summary>
+        /// 由 MonsterEntity 在 OnSubLogicTick 中自顶向下显式单向驱动
+        /// </summary>
+        public void OnLogicTick(float logicDeltaTime)
         {
-            if (TimeManager.Instance != null)
-            {
-                float gameplayScale = TimeManager.Instance.FinalGameplayScale;
-                if (gameplayScale > 0f)
-                {
-                    _localClock?.Update(Time.deltaTime * gameplayScale);
-                }
-            }
-            else
-            {
-                _localClock?.Update(Time.deltaTime);
-            }
+            _localClock?.Update(logicDeltaTime);
         }
         private void SetBB(Blackboard bb)
         {

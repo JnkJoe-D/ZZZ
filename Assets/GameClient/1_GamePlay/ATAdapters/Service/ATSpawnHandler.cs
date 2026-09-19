@@ -6,15 +6,31 @@ namespace Game.GamePlay
 {
     /// <summary>
     /// Spawn 处理器
-    /// 实现 ISkillSpawnHandler 接口，使用 GlobalPoolManager 管理 Spawn 对象
+    /// 实现 ISkillSpawnHandler 接口，使用 GlobalPoolManager 管理 Spawn 对象，
+    /// 并为生成的投掷物自动注入创建者实体的时钟。
     /// </summary>
     public class ATSpawnHandler : ISpawnHandler
     {
+        private readonly CharacterEntity _owner;
+
+        public ATSpawnHandler(CharacterEntity owner = null)
+        {
+            _owner = owner;
+        }
+
         public IProjectileHandler Spawn(SpawnData data)
         {
             var obj = SpawnObject(data.configPrefab, data.position, data.rotation, data.detach, data.parent);
             if (obj == null) return null;
             IProjectileHandler sp = obj.GetComponent<ATProjectileHandler>() ?? obj.AddComponent<ATProjectileHandler>();
+            if (sp is ATProjectileHandler projHandler)
+            {
+                projHandler.Initialize(data, this, _owner?.Clock);
+            }
+            else
+            {
+                sp.Initialize(data, this);
+            }
             return sp;
         }
 

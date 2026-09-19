@@ -25,7 +25,7 @@ MonoBehaviour:
     ExecuteAction: {fileID: 11400000, guid: 4c1affe96f0c8f64da3215e776ef416d, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    Priority: 0
+    Priority: 20
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500675
@@ -34,7 +34,7 @@ MonoBehaviour:
     ExecuteAction: {fileID: 11400000, guid: 4c1affe96f0c8f64da3215e776ef416d, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
-    Priority: 0
+    Priority: 20
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500676

@@ -2,18 +2,18 @@ using UnityEngine;
 
 namespace Game.GamePlay
 {
-    public class HitReactionRuntimeData : IEntityRuntimeData
+    public class HitReactionRuntimeData : EntityRuntimeDataBase
     {
-        public float CurrentHitStunDuration { get; set; }
-        public cfg.ZZZ.HitReactionType CurrentReactionType { get; set; }
-        public ActionConfigAsset ResolvedHitAction { get; set; }
-        public bool RequireFaceAttacker { get; set; }
-        public int HitTriggerTimestamp { get; set; } = -1;
+        public bool InHitReaction => Get<bool>(nameof(InHitReaction));
+        public float CurrentHitStunDuration => Get<float>(nameof(CurrentHitStunDuration));
+        public cfg.ZZZ.HitReactionType CurrentReactionType => Get<cfg.ZZZ.HitReactionType>(nameof(CurrentReactionType));
+        public ActionConfigAsset ResolvedHitAction => Get<ActionConfigAsset>(nameof(ResolvedHitAction));
+        public bool RequireFaceAttacker => Get<bool>(nameof(RequireFaceAttacker));
+        public int HitTriggerTimestamp => Get<int>(nameof(HitTriggerTimestamp), -1);
+        public int HitSequenceId => Get<int>(nameof(HitSequenceId), 0);
+
         public Vector3 CurrentHitReactionAxis { get; private set; }
         public bool HasHitReactionAxis { get; private set; }
-
-        public bool InHitReaction { get; set; }
-        public int HitSequenceId { get; set; }
 
         public void SetHitReactionAxis(Vector3 axis)
         {
@@ -33,13 +33,9 @@ namespace Game.GamePlay
             HasHitReactionAxis = false;
         }
 
-        public void Reset()
+        public override void Reset()
         {
-            CurrentHitStunDuration = 0f;
-            ResolvedHitAction = null;
-            RequireFaceAttacker = false;
-            InHitReaction = false;
-            HitSequenceId = 0;
+            base.Reset();
             ClearHitReactionAxis();
         }
     }

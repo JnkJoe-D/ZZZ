@@ -1,20 +1,17 @@
 namespace Game.GamePlay
 {
-    public class ParryRuntimeData : IEntityRuntimeData
+    public class ParryRuntimeData : EntityRuntimeDataBase
     {
-        public bool IsParrying { get; set; }
-        public bool ParrySucceeded { get; set; }
-        public CharacterEntity LastParriedAttacker { get; set; }
-        public ATEditor.ParryWeight LastParryWeight { get; set; } = ATEditor.ParryWeight.Heavy;
-        public IParryClashHandler ClashHandler { get; set; }
+        public bool IsParrying => Get<bool>(nameof(IsParrying));
+        public bool ParrySucceeded => Get<bool>(nameof(ParrySucceeded));
+        public CharacterEntity LastParriedAttacker => Get<CharacterEntity>(nameof(LastParriedAttacker));
+        public ATEditor.ParryWeight LastParryWeight => Get<ATEditor.ParryWeight>(nameof(LastParryWeight), ATEditor.ParryWeight.Heavy);
+        public IParryClashHandler ClashHandler => Get<IParryClashHandler>(nameof(ClashHandler));
 
-        public void Reset()
+        public override void Reset()
         {
-            IsParrying = false;
-            ParrySucceeded = false;
-            LastParriedAttacker = null;
-            LastParryWeight = ATEditor.ParryWeight.Heavy;
-            ClashHandler = null;
+            base.Reset();
+            Set(nameof(LastParryWeight), ATEditor.ParryWeight.Heavy);
         }
     }
 }

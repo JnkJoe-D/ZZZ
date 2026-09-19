@@ -14,7 +14,7 @@ namespace Game.GamePlay
 
         public void Process(HitPipelineContext ctx)
         {
-            if (ctx.IsAborted || ctx.Victim == null || ctx.Victim.IsDead) return;
+            if (ctx.IsAborted || ctx.Victim == null || ctx.Victim.LifecycleComponent.IsDead) return;
             if (!ctx.ResultFlags.HasFlag(HitResultFlags.Interrupted)) return;
 
             // 1. 攻击袭来方向向量（面向受击方向上下文，水平投射）
@@ -39,15 +39,7 @@ namespace Game.GamePlay
                 verticalAngle = Vector3.Angle(Vector3.up, -ctx.HitDirection) - 90f;
             }
 
-            // 3. 纯领域驱动的时间膨胀打醒（零 is 判断）：实体动作确实被打断时，退出子弹时间
-            var timeData = ctx.Victim.DataModule?.Get<TimeDilationRuntimeData>();
-            if (timeData != null && timeData.IsInBulletTime)
-            {
-                timeData.ExitBulletTime();
-                ctx.Victim.ActionPlayer?.RestorePlaySpeed();
-            }
-
-            // 4. 受击动作多向细分与自适应转向决策
+            // 3. 受击动作多向细分与自适应转向决策
             ActionConfigAsset resolvedAction = null;
             bool needFaceAttacker = false;
 
@@ -65,12 +57,12 @@ namespace Game.GamePlay
             ctx.ResolvedHitAction = resolvedAction;
             ctx.RequireFaceAttacker = needFaceAttacker;
 
-            // 5. 受控物理转向：仅在裁决明确需要转向时，精准面向受击方向上下文（绝不硬编码 180°）
+            // 4. 受控物理转向：仅在裁决明确需要转向时，精准面向受击方向上下文（绝不硬编码 180°）
             if (needFaceAttacker && faceDir.sqrMagnitude > 0.0001f)
             {
-                if (ctx.Victim.CharacterMotor != null)
+                if (ctx.Victim.MovementComponent != null)
                 {
-                    ctx.Victim.CharacterMotor.FaceToImmediately(faceDir.normalized);
+                    ctx.Victim.MovementComponent.FaceToImmediately(faceDir.normalized);
                 }
                 else
                 {
@@ -78,20 +70,23 @@ namespace Game.GamePlay
                 }
             }
 
-            // 6. 状态数据同步与打断钩子切入
+            // 5. 状态数据同步、领域事件发布与打断钩子切入（仅在被打断裁决通过且确实存在受击表现时触发）
             if (ctx.SelectedReactionType != HitReactionType.None)
             {
+                // 受击打断事实发布 (Domain Event)：通知事件总线实体产生打断，由时间管理器等系统内部内聚自闭合响应（如打醒并解除子弹时间）
+                EventCenter.Publish(new EntityHitInterruptedEvent(ctx.Attacker, ctx.Victim, ctx.SelectedReactionType));
+
                 var hitData = ctx.Victim.DataModule?.Get<HitReactionRuntimeData>();
                 if (hitData != null)
                 {
-                    hitData.CurrentReactionType = ctx.SelectedReactionType;
-                    hitData.ResolvedHitAction = resolvedAction;
-                    hitData.RequireFaceAttacker = needFaceAttacker;
+                    hitData.Set(nameof(hitData.CurrentReactionType), ctx.SelectedReactionType);
+                    hitData.Set(nameof(hitData.ResolvedHitAction), resolvedAction);
+                    hitData.Set(nameof(hitData.RequireFaceAttacker), needFaceAttacker);
                 }
 
                 GLog.Info(LogTags.Combat, $"受击表现: {ctx.Victim.name} | 类型: {ctx.SelectedReactionType} | 动作: {resolvedAction?.name ?? "None"} | 转向: {needFaceAttacker} (角:{signedHorizontalAngle:F1}°) | 攻击来源: {ctx.Attacker?.name}");
 
-                ctx.Victim.HitReactionModule?.TriggerInterruptedHook(ctx);
+                ctx.Victim.HitReactionComponent?.TriggerInterruptedHook(ctx);
             }
         }
     }

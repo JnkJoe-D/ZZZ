@@ -29,6 +29,7 @@ namespace Game.GamePlay
             provider.OnMoveCanceled += HandleMoveCanceled;
             provider.OnMoveHeld += HandleMoveHeld;
             provider.OnMovementZero += HandleMovementZero;
+            provider.OnRawMovementZero += HandleRawMovementZero;
 
             provider.OnBasicAttackStarted += HandleBasicAttackStarted;
             provider.OnBasicAttackPerformed += HandleBasicAttackPerformed;
@@ -64,6 +65,7 @@ namespace Game.GamePlay
             provider.OnMoveCanceled -= HandleMoveCanceled;
             provider.OnMoveHeld -= HandleMoveHeld;
             provider.OnMovementZero -= HandleMovementZero;
+            provider.OnRawMovementZero -= HandleRawMovementZero;
 
             provider.OnBasicAttackStarted -= HandleBasicAttackStarted;
             provider.OnBasicAttackPerformed -= HandleBasicAttackPerformed;
@@ -105,6 +107,7 @@ namespace Game.GamePlay
         private void HandleMoveCanceled() => Dispatch(HardwareInputType.Move, CommandPhase.Canceled);
         private void HandleMoveHeld() => Dispatch(HardwareInputType.Move, CommandPhase.Held);
         private void HandleMovementZero() => CurrentHandler.Handle(CharacterCommandFactory.CreateSystemEventCommand(RouteEventType.MoveStop));
+        private void HandleRawMovementZero() => CurrentHandler.Handle(CharacterCommandFactory.CreateSystemEventCommand(RouteEventType.JogStartStop));
 
         private void HandleBasicAttackStarted() => Dispatch(HardwareInputType.BasicAttack, CommandPhase.Started);
         private void HandleBasicAttackPerformed() => Dispatch(HardwareInputType.BasicAttack, CommandPhase.Performed);

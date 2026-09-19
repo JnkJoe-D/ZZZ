@@ -18,6 +18,8 @@ namespace Game.GamePlay
         ChainAttack = 60,
         QuickAid = 70,
         MoveStop = 80,
+        [InspectorName("慢跑起步停止 / 短移动停止 (无阻尼即时触发)")]
+        JogStartStop = 85,
     }
 
     public enum ModifierCategory

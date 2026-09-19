@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reactionEntries:
   - reactionType: 20
-    turnaroundPolicy: 0
+    turnaroundPolicy: 1
+    overrideHitStunDuration: -1
     frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
     backAction: {fileID: 0}
     leftAction: {fileID: 0}
@@ -26,6 +27,7 @@ MonoBehaviour:
     fallbackType: 0
   - reactionType: 30
     turnaroundPolicy: 0
+    overrideHitStunDuration: -1
     frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
     backAction: {fileID: 0}
     leftAction: {fileID: 0}
@@ -37,6 +39,7 @@ MonoBehaviour:
     fallbackType: 0
   - reactionType: 50
     turnaroundPolicy: 0
+    overrideHitStunDuration: -1
     frontAction: {fileID: 0}
     backAction: {fileID: 0}
     leftAction: {fileID: 0}
@@ -48,6 +51,7 @@ MonoBehaviour:
     fallbackType: 30
   - reactionType: 10
     turnaroundPolicy: 2
+    overrideHitStunDuration: -1
     frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
     backAction: {fileID: 0}
     leftAction: {fileID: 0}
@@ -59,6 +63,7 @@ MonoBehaviour:
     fallbackType: 0
   - reactionType: 40
     turnaroundPolicy: 2
+    overrideHitStunDuration: -1
     frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
     backAction: {fileID: 0}
     leftAction: {fileID: 0}
@@ -70,6 +75,7 @@ MonoBehaviour:
     fallbackType: 0
   - reactionType: 60
     turnaroundPolicy: 0
+    overrideHitStunDuration: -1
     frontAction: {fileID: 0}
     backAction: {fileID: 0}
     leftAction: {fileID: 0}
@@ -81,6 +87,7 @@ MonoBehaviour:
     fallbackType: 30
   - reactionType: 70
     turnaroundPolicy: 2
+    overrideHitStunDuration: -1
     frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
     backAction: {fileID: 0}
     leftAction: {fileID: 0}
@@ -93,6 +100,7 @@ MonoBehaviour:
   knockbackForce: 0
   launchForce: 0
   superArmorThreshold: 0
+  defaultHitStunDuration: 0.5
   hitAnimLight: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
   hitAnimHeavy: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
   hitAnimKnowAway: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}

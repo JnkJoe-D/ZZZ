@@ -15,22 +15,25 @@ namespace Game.GamePlay
         {
             if (ctx.IsAborted) return;
 
-            // 1. 时钟调度：招架顿帧与全局缓速
-            if (ctx.TimeScaleDuration > 0f && TimeManager.Instance != null)
+            // 1. 时钟调度：招架顿帧与全局缓速 (通过领域事件解耦驱动)
+            if (ctx.TimeScaleDuration > 0f)
             {
                 if (ctx.Type == SwitchType.ParryAid)
                 {
-                    TimeManager.Instance.RegisterHitStop(
-                        ctx.OutgoingEntity?.ActionPlayer,
-                        ctx.IncomingEntity?.ActionPlayer,
+                    EventCenter.Publish(new HitStopRequestEvent(
+                        ctx.OutgoingEntity?.Clock,
+                        ctx.IncomingEntity?.Clock,
                         ctx.TimeScaleDuration,
-                        ctx.TimeScale);
+                        ctx.TimeScale));
                 }
                 else if (ctx.Type == SwitchType.EvasionAid || ctx.Type == SwitchType.ChainAttack)
                 {
-                    // 闪避支援 / 连携技：局部顿帧与慢动作
-                    ctx.OutgoingEntity?.ActionPlayer?.SetPlaySpeed(ctx.TimeScale);
-                    ctx.IncomingEntity?.ActionPlayer?.SetPlaySpeed(1.0f); // 切入角色保持全速飒爽突入
+                    // 闪避支援 / 连携技：通过时钟调度切出角色慢动作
+                    EventCenter.Publish(new HitStopRequestEvent(
+                        ctx.OutgoingEntity?.Clock,
+                        null,
+                        ctx.TimeScaleDuration,
+                        ctx.TimeScale));
                 }
             }
 

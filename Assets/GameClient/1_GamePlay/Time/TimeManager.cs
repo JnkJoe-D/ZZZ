@@ -7,8 +7,8 @@ namespace Game.GamePlay
 {
     /// <summary>
     /// 业务层玩法时间管理器。
-    /// 继承自框架层通用时钟管理器 FrameworkTimeManager，专注管理与战斗实体强绑定的
-    /// 顿帧（Hit-Stop）与子弹时间（Bullet-Time）高阶玩法机制。
+    /// 继承自 FrameworkTimeManager，装配玩法专属分块时钟（RoleClock, MonsterClock, EnvironmentClock），
+    /// 提供纯粹的子弹时间与受击顿帧（Hit-Stop）时钟调度服务。
     /// </summary>
     public class TimeManager : FrameworkTimeManager
     {
@@ -26,17 +26,96 @@ namespace Game.GamePlay
             }
         }
 
+        // ─── 玩法阵营分块时钟（挂载在 GameplayClock 下） ───
+        public TimeClock RoleClock { get; private set; }
+        public TimeClock MonsterClock { get; private set; }
+        public TimeClock EnvironmentClock { get; private set; }
+
+        public float MonsterTimeScale
+        {
+            get => MonsterClock != null ? MonsterClock.LocalScale : 1.0f;
+            set { if (MonsterClock != null) MonsterClock.LocalScale = value; }
+        }
+
+        public float RoleTimeScale
+        {
+            get => RoleClock != null ? RoleClock.LocalScale : 1.0f;
+            set { if (RoleClock != null) RoleClock.LocalScale = value; }
+        }
+
         public TimeManager()
         {
             _instance = this;
             FrameworkTimeManager.Instance = this;
+
+            RoleClock = new TimeClock("Role", GameplayClock);
+            MonsterClock = new TimeClock("Monster", GameplayClock);
+            EnvironmentClock = new TimeClock("Environment", GameplayClock);
+
+            SubscribeEvents();
         }
 
-        // ─── 顿帧（Hit-Stop）集中管理 ───
+        private void SubscribeEvents()
+        {
+            EventCenter.Subscribe<EntityHitInterruptedEvent>(OnEntityHitInterrupted);
+            EventCenter.Subscribe<PerfectEvadeTriggeredEvent>(OnPerfectEvadeTriggered);
+            EventCenter.Subscribe<HitStopRequestEvent>(OnHitStopRequested);
+        }
+
+        // ─── 管理器生命周期装配入口 (Assembler API) ───
+
+        /// <summary>
+        /// 供 TeamCharacterSpawner / TeamManager 在生成角色时装配时钟树
+        /// </summary>
+        public void RegisterRoleClock(TimeClock clock)
+        {
+            if (clock != null && RoleClock != null)
+            {
+                RoleClock.AddChild(clock);
+            }
+        }
+
+        /// <summary>
+        /// 供 MonsterManager 在怪物出池时装配时钟树
+        /// </summary>
+        public void RegisterMonsterClock(TimeClock clock)
+        {
+            if (clock != null && MonsterClock != null)
+            {
+                MonsterClock.AddChild(clock);
+            }
+        }
+
+        // ─── 领域事件闭环响应（私有内聚裁决） ───
+
+        private void OnEntityHitInterrupted(EntityHitInterruptedEvent evt)
+        {
+            if (_activeBulletTime == null || _activeBulletTime.RemainingDuration <= 0f) return;
+
+            bool isTargetUnderBulletTime = (evt.Victim != null && evt.Victim.Clock != null && evt.Victim.Clock.Parent == MonsterClock)
+                                           || evt.Victim is MonsterEntity;
+            if (isTargetUnderBulletTime)
+            {
+                GLog.Info(LogTags.Combat, $"[TimeManager] 监听到怪物 {evt.Victim.name} 受击打断，自发触发打醒并解除子弹时间！");
+                ClearBulletTime();
+            }
+        }
+
+        private void OnPerfectEvadeTriggered(PerfectEvadeTriggeredEvent evt)
+        {
+            GLog.Info(LogTags.Combat, $"[TimeManager] 监听到极限闪避触发事件，实体 {evt.Evader?.name} 触发子弹时间 ({evt.Duration}s @ {evt.Scale}x)");
+            TriggerBulletTime(evt.Scale, evt.Duration, evt.Evader, evt.SmoothRecover);
+        }
+
+        private void OnHitStopRequested(HitStopRequestEvent evt)
+        {
+            RegisterHitStop(evt.AttackerClock, evt.VictimClock, evt.Duration, evt.Scale);
+        }
+
+        // ─── 受击顿帧（Hit-Stop）调度 ───
         private class HitStopSession
         {
-            public ActionPlayer Attacker;
-            public ActionPlayer Victim;
+            public TimeClock Clock;
             public float RemainingTime;
             public int SessionId;
         }
@@ -45,60 +124,76 @@ namespace Game.GamePlay
         private int _hitStopSessionCounter = 0;
 
         /// <summary>
-        /// 全局注册一次受击顿帧（Hit-Stop），由全局逻辑时钟驱动恢复，彻底规避受击者失活/销毁导致的协程中断
+        /// 全局注册实体时钟的受击顿帧（Hit-Stop）。
+        /// 顿帧期间将目标时钟的 LocalScale 设为 0 (完全定格)，倒计时结束后自动还原为 1.0f。
+        /// 在父节点处于子弹时间 (如 0.1x) 时，顿帧结束会自动链式恢复为 0.1x，零互斥状态覆盖。
         /// </summary>
-        public int RegisterHitStop(ActionPlayer attacker, ActionPlayer victim, float duration, float scale)
+        public int RegisterHitStop(TimeClock attackerClock, TimeClock victimClock, float duration, float scale = 0f)
         {
             if (duration <= 0f) return -1;
 
             _hitStopSessionCounter++;
             int sessionId = _hitStopSessionCounter;
 
-            attacker?.SetPlaySpeed(scale);
-            victim?.SetPlaySpeed(scale);
-
-            _activeHitStops.Add(new HitStopSession
+            if (attackerClock != null)
             {
-                Attacker = attacker,
-                Victim = victim,
-                RemainingTime = duration,
-                SessionId = sessionId
-            });
+                attackerClock.LocalScale = scale;
+                _activeHitStops.Add(new HitStopSession
+                {
+                    Clock = attackerClock,
+                    RemainingTime = duration,
+                    SessionId = sessionId
+                });
+            }
+
+            if (victimClock != null && victimClock != attackerClock)
+            {
+                victimClock.LocalScale = scale;
+                _activeHitStops.Add(new HitStopSession
+                {
+                    Clock = victimClock,
+                    RemainingTime = duration,
+                    SessionId = sessionId
+                });
+            }
 
             return sessionId;
         }
 
-        private void TickHitStops(float deltaTime)
+        /// <summary>
+        /// 单时钟简易顿帧接口
+        /// </summary>
+        public int RegisterHitStop(TimeClock targetClock, float duration, float scale = 0f)
+        {
+            return RegisterHitStop(targetClock, null, duration, scale);
+        }
+
+        private void TickHitStops(float realDeltaTime)
         {
             for (int i = _activeHitStops.Count - 1; i >= 0; i--)
             {
                 var session = _activeHitStops[i];
-                session.RemainingTime -= deltaTime;
+                session.RemainingTime -= realDeltaTime;
 
                 if (session.RemainingTime <= 0f)
                 {
-                    bool hasOtherAttackerSession = false;
-                    bool hasOtherVictimSession = false;
-
-                    for (int j = 0; j < _activeHitStops.Count; j++)
-                    {
-                        if (j == i) continue;
-                        if (session.Attacker != null && (_activeHitStops[j].Attacker == session.Attacker || _activeHitStops[j].Victim == session.Attacker))
-                            hasOtherAttackerSession = true;
-                        if (session.Victim != null && (_activeHitStops[j].Attacker == session.Victim || _activeHitStops[j].Victim == session.Victim))
-                            hasOtherVictimSession = true;
-                    }
-
+                    var targetClock = session.Clock;
                     _activeHitStops.RemoveAt(i);
 
-                    if (!hasOtherAttackerSession)
+                    // 检查该时钟是否还有其他未完成的顿帧会话
+                    bool hasOtherSession = false;
+                    for (int j = 0; j < _activeHitStops.Count; j++)
                     {
-                        session.Attacker?.RestorePlaySpeed();
+                        if (_activeHitStops[j].Clock == targetClock)
+                        {
+                            hasOtherSession = true;
+                            break;
+                        }
                     }
 
-                    if (!hasOtherVictimSession)
+                    if (!hasOtherSession && targetClock != null)
                     {
-                        session.Victim?.RestorePlaySpeed();
+                        targetClock.LocalScale = 1.0f; // 自然恢复！在子弹时间下，有效流速自动变回 0.1x
                     }
                 }
             }
@@ -108,8 +203,10 @@ namespace Game.GamePlay
         {
             for (int i = 0; i < _activeHitStops.Count; i++)
             {
-                _activeHitStops[i].Attacker?.RestorePlaySpeed();
-                _activeHitStops[i].Victim?.RestorePlaySpeed();
+                if (_activeHitStops[i].Clock != null)
+                {
+                    _activeHitStops[i].Clock.LocalScale = 1.0f;
+                }
             }
             _activeHitStops.Clear();
         }
@@ -126,27 +223,21 @@ namespace Game.GamePlay
 
         private BulletTimeSession _activeBulletTime;
 
-        /// <summary>当前全局是否正处于玩法子弹时间中（单一真理源）</summary>
         public bool IsBulletTimeActive => _activeBulletTime != null && _activeBulletTime.RemainingDuration > 0f;
-
-        /// <summary>当前正在生效的怪物子弹时间流速</summary>
-        public float CurrentBulletTimeScale => _activeBulletTime != null ? _activeBulletTime.TargetScale : 1.0f;
-
-        /// <summary>触发本次子弹时间的发起者实体</summary>
+        public float CurrentBulletTimeScale => MonsterClock != null ? MonsterClock.EffectiveScale : 1.0f;
         public CharacterEntity BulletTimeInstigator => _activeBulletTime?.Instigator;
 
         /// <summary>
-        /// 触发定向怪物子弹时间（玩家角色 100% 保持全速，仅场上活跃怪物进入慢动作）
+        /// 触发定向怪物子弹时间（仅修改 MonsterClock，玩家角色 100% 保持全速）
+        /// 全场所有挂载在 MonsterClock 下的怪物时钟瞬间自动级联减速，动态生成的新怪天然继承！
         /// </summary>
-        /// <param name="scale">时间流速（如 0.1 表示 10% 速度）</param>
-        /// <param name="duration">持续真实物理秒数</param>
-        /// <param name="instigator">触发者角色（玩家），绝不减速</param>
-        /// <param name="smoothRecover">是否在末段平滑缓出恢复</param>
         public void TriggerBulletTime(float scale, float duration, CharacterEntity instigator = null, bool smoothRecover = true)
         {
             if (duration <= 0f) return;
 
-            float targetScale = Mathf.Clamp(scale, 0.01f, 1.0f);
+            float targetScale = Mathf.Clamp(scale, 0.001f, 1.0f);
+            MonsterClock.LocalScale = targetScale; // 一行核心驱动全场怪物！
+
             _activeBulletTime = new BulletTimeSession
             {
                 Instigator = instigator,
@@ -155,47 +246,14 @@ namespace Game.GamePlay
                 TotalDuration = duration,
                 SmoothRecover = smoothRecover
             };
-
-            // 定向通知场上所有活跃怪物进入慢动作（过滤触发者自身）
-            var monsters = MonsterManager.Instance?.ActiveMonsters;
-            if (monsters != null)
-            {
-                for (int i = 0; i < monsters.Count; i++)
-                {
-                    var monster = monsters[i];
-                    if (monster != null && monster != instigator && monster.gameObject.activeInHierarchy)
-                    {
-                        monster.ApplyBulletTime(targetScale);
-                    }
-                }
-            }
         }
 
-        /// <summary>
-        /// 强制清除当前子弹时间并将所有处于子弹时间的怪物立即恢复正常时速
-        /// </summary>
         public void ClearBulletTime()
         {
             if (_activeBulletTime != null)
             {
                 _activeBulletTime = null;
-                RestoreAllMonstersFromBulletTime();
-            }
-        }
-
-        private void RestoreAllMonstersFromBulletTime()
-        {
-            var monsters = MonsterManager.Instance?.ActiveMonsters;
-            if (monsters != null)
-            {
-                for (int i = 0; i < monsters.Count; i++)
-                {
-                    var monster = monsters[i];
-                    if (monster != null)
-                    {
-                        monster.ExitBulletTime();
-                    }
-                }
+                if (MonsterClock != null) MonsterClock.LocalScale = 1.0f;
             }
         }
 
@@ -206,8 +264,7 @@ namespace Game.GamePlay
             _activeBulletTime.RemainingDuration -= unscaledDelta;
             if (_activeBulletTime.RemainingDuration <= 0f)
             {
-                _activeBulletTime = null;
-                RestoreAllMonstersFromBulletTime();
+                ClearBulletTime();
             }
             else if (_activeBulletTime.SmoothRecover)
             {
@@ -216,48 +273,27 @@ namespace Game.GamePlay
                 if (_activeBulletTime.RemainingDuration < recoverThreshold && recoverThreshold > 0.001f)
                 {
                     float t = 1.0f - (_activeBulletTime.RemainingDuration / recoverThreshold);
-                    float lerpedScale = Mathf.Lerp(_activeBulletTime.TargetScale, 1.0f, t);
-
-                    var monsters = MonsterManager.Instance?.ActiveMonsters;
-                    if (monsters != null)
-                    {
-                        for (int i = 0; i < monsters.Count; i++)
-                        {
-                            var monster = monsters[i];
-                            if (monster != null && monster.gameObject.activeInHierarchy)
-                            {
-                                var timeData = monster.DataModule?.Get<TimeDilationRuntimeData>();
-                                // 只对仍处于子弹时间内的怪物插值，已受击打醒的怪物保持 1.0x 绝不回退
-                                if (timeData != null && timeData.IsInBulletTime)
-                                {
-                                    monster.ApplyBulletTime(lerpedScale);
-                                }
-                            }
-                        }
-                    }
+                    MonsterClock.LocalScale = Mathf.Lerp(_activeBulletTime.TargetScale, 1.0f, t);
                 }
             }
         }
 
         protected override void OnBeforeUpdate(float unscaledDelta)
         {
-            // 驱动全局玩法子弹时间倒计时与缓动恢复
+            // 顿帧使用不受时间缩放影响的物理真实时间倒计时，确保视觉定格时长真实可靠
+            TickHitStops(unscaledDelta);
+
+            // 驱动全局怪物子弹时间倒计时与缓动恢复
             TickBulletTime(unscaledDelta);
         }
 
-        protected override void OnBeforeLogicStep(float logicDelta)
-        {
-            // 驱动受击顿帧倒计时
-            TickHitStops(logicDelta);
-        }
-
-        /// <summary>
-        /// 重置所有时钟会话与流速为正常状态 (1.0f)，用于场景切换、系统停机或测试重置
-        /// </summary>
         public override void ResetToNormal()
         {
             ClearAllHitStops();
             ClearBulletTime();
+            if (RoleClock != null) RoleClock.LocalScale = 1.0f;
+            if (MonsterClock != null) MonsterClock.LocalScale = 1.0f;
+            if (EnvironmentClock != null) EnvironmentClock.LocalScale = 1.0f;
             base.ResetToNormal();
         }
     }

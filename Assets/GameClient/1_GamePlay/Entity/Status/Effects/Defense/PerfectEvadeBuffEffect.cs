@@ -61,16 +61,26 @@ namespace Game.GamePlay
             ctx.ResultFlags |= HitResultFlags.Evaded;
             ctx.Abort("Perfect Evaded by Target", HitResultFlags.Evaded);
 
-            // 2. 触发玩法全局子弹时间（UI 保持独立全速；激活 TimeManager.IsBulletTimeActive 并记录触发者）
-            if (TimeManager.Instance != null && BulletTimeDuration > 0f)
+            // 2. 设置闪避反击窗口，并广播极限闪避事件（由时间管理器等订阅者内聚自发开启子弹时间）
+            if (BulletTimeDuration > 0f)
             {
-                TimeManager.Instance.TriggerBulletTime(BulletTimeScale, BulletTimeDuration, ctx.Victim, SmoothRecover);
+                if (ctx.Victim?.DataModule?.Get<EvadeRuntimeData>() != null)
+                {
+                    ctx.Victim.DataModule.Get<EvadeRuntimeData>().BulletTimeWindowTimer = BulletTimeDuration;
+                }
+
+                EventCenter.Publish(new PerfectEvadeTriggeredEvent(
+                    ctx.Victim,
+                    ctx.Attacker,
+                    BulletTimeScale,
+                    BulletTimeDuration,
+                    SmoothRecover));
             }
 
             // 3. 锁定目标朝向（供后续按键派生闪避反击时精准校准攻击方向）
             if (ctx.Victim != null && ctx.Attacker != null)
             {
-                ctx.Victim.SetCombatContextTarget(ctx.Attacker);
+                ctx.Victim.TargetFinder?.SetCombatContextTarget(ctx.Attacker);
             }
 
             // 4. 【绝不主动派发路由事件】角色平滑完成当前的闪避滑步动作！

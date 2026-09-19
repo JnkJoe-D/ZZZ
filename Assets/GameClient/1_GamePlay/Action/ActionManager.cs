@@ -14,10 +14,6 @@ namespace Game.GamePlay
         // 缓存解析过的 JSON 数据 -> 成为 Timeline
         private Dictionary<int, ActionTimeline> _timelineCache = new Dictionary<int, ActionTimeline>();
         private readonly Dictionary<int, Task<ActionTimeline>> _timelineLoadTasks = new Dictionary<int, Task<ActionTimeline>>();
-        // 缓存各角色的 Context
-        private Dictionary<int, ProcessContext> _contextCache = new Dictionary<int, ProcessContext>();
-        // 缓存各角色的 Runner
-        private Dictionary<int, ActionRunner> _runnerCache = new Dictionary<int, ActionRunner>();
 
         public void Initialize() { }
 
@@ -149,67 +145,12 @@ namespace Game.GamePlay
             }
         }
 
-        public ProcessContext GetContext(CharacterEntity entity)
-        {
-            if (entity == null) return null;
-            int id = entity.GetInstanceID();
-            if (_contextCache.TryGetValue(id, out var ctx))
-            {
-                // 若目标 GameObject 已被销毁，安全清空并释放残留引用
-                if (ctx.Owner == null || ctx.Owner.Equals(null))
-                {
-                    ctx.Clear();
-                    _contextCache.Remove(id);
-                    ctx = null;
-                }
-            }
-
-            if (ctx == null)
-            {
-                ctx = new ProcessContext(entity.gameObject, ATEditor.PlayMode.Runtime, ATServiceFactory.ProvideService);
-                _contextCache[id] = ctx;
-            }
-            return ctx;
-        }
-
-        public ActionRunner GetRunner(CharacterEntity entity)
-        {
-            if (entity == null) return null;
-            int id = entity.GetInstanceID();
-            if (_runnerCache.TryGetValue(id, out var runner))
-            {
-                // 若角色底层已被销毁，安全停止并移除
-                if (entity.gameObject == null || entity.gameObject.Equals(null))
-                {
-                    runner.Stop();
-                    _runnerCache.Remove(id);
-                    runner = null;
-                }
-            }
-
-            if (runner == null)
-            {
-                runner = new ActionRunner(ATEditor.PlayMode.Runtime);
-                _runnerCache[id] = runner;
-            }
-            return runner;
-        }
-
+        /// <summary>
+        /// 实体清理时的安全钩子，清理静态静态服务缓存
+        /// </summary>
         public void RemoveCache(CharacterEntity entity)
         {
-            if(entity == null) return;
-            int id = entity.GetInstanceID();
-            if (_runnerCache.TryGetValue(id, out var runner))
-            {
-                runner.Stop();
-                _runnerCache.Remove(id);
-            }
-            if (_contextCache.TryGetValue(id, out var ctx))
-            {
-                ctx.Clear();
-                _contextCache.Remove(id);
-            }
-            if (entity.gameObject != null)
+            if (entity != null && entity.gameObject != null)
             {
                 ATServiceFactory.RemoveStaticCaches(entity.gameObject);
             }
@@ -217,10 +158,6 @@ namespace Game.GamePlay
 
         public void Shutdown()
         {
-            foreach (var runner in _runnerCache.Values) runner.Stop();
-            foreach (var ctx in _contextCache.Values) ctx.Clear();
-            _runnerCache.Clear();
-            _contextCache.Clear();
             _timelineCache.Clear();
             _timelineLoadTasks.Clear();
         }

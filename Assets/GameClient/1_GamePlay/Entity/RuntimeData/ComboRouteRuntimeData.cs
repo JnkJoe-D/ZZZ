@@ -2,7 +2,7 @@
 
 namespace Game.GamePlay
 {
-    public class ComboRouteRuntimeData : IEntityRuntimeData
+    public class ComboRouteRuntimeData : EntityRuntimeDataBase
     {
         public CommandRouteSource LastRouteSource { get; private set; }
         public string LastRouteTag { get; private set; }
@@ -21,8 +21,9 @@ namespace Game.GamePlay
             LastResolvedActionId = action != null ? action.ID : -1;
         }
 
-        public void Reset()
+        public override void Reset()
         {
+            base.Reset();
             LastRouteSource = CommandRouteSource.None;
             LastRouteTag = null;
             LastResolvedPayload = null;

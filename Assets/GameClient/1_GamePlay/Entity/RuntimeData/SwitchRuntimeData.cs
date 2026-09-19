@@ -1,12 +1,7 @@
 namespace Game.GamePlay
 {
-    public class SwitchRuntimeData : IEntityRuntimeData
+    public class SwitchRuntimeData : EntityRuntimeDataBase
     {
-        public bool IsSwitchOutPending { get; set; }
-
-        public void Reset()
-        {
-            IsSwitchOutPending = false;
-        }
+        public bool IsSwitchOutPending => Get<bool>(nameof(IsSwitchOutPending));
     }
 }

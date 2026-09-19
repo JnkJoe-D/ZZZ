@@ -30,7 +30,8 @@ namespace Game.GamePlay
             // 优先依据动作自身播放流逝时长进行高内聚的闭环计算
             if (actor.ActionPlayer != null && actor.Config is RoleConfigAsset roleConfig)
             {
-                float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+                // 输入相关的时间判定，使用 Time.time 作为参考
+                float currentTime = Time.time;
                 float elapsed = currentTime - actor.ActionPlayer.ActionStartTime;
                 return elapsed <= roleConfig.JogShortInputThreshold;
             }

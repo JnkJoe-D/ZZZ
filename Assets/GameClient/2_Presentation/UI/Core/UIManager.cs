@@ -42,9 +42,9 @@ namespace Game.UI
         {
             get
             {
-                if (_settings == null && Game.GamePlay.ConfigManager.Instance != null)
+                if (_settings == null && Game.Framework.ResourceManager.Instance != null)
                 {
-                    _settings = Game.GamePlay.ConfigManager.Instance.GetConfigSO<UIGlobalSettingAsset>();
+                    _settings = Game.Framework.ResourceManager.Instance.LoadAsset<UIGlobalSettingAsset>("Assets/Resources/Settings/UIGlobalSettingSO.asset");
                 }
                 return _settings;
             }

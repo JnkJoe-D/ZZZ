@@ -2,10 +2,20 @@ using Game.GamePlay;
 
 namespace Game.GamePlay
 {
-    public class EvadeRuntimeData : IEntityRuntimeData
+    public class EvadeRuntimeData : EntityRuntimeDataBase
     {
         public int EvadeCount { get; private set; }
         public float EvadeTimer { get; private set; }
+
+        /// <summary>
+        /// 是否处于极限闪避触发的子弹时间反击判定窗口期内（数据驱动单一真理源）
+        /// </summary>
+        public bool IsInBulletTimeWindow => BulletTimeWindowTimer > 0f;
+
+        /// <summary>
+        /// 子弹时间反击窗口剩余倒计时
+        /// </summary>
+        public float BulletTimeWindowTimer { get; set; }
 
         public void Update(float deltaTime)
         {
@@ -18,7 +28,18 @@ namespace Game.GamePlay
                     EvadeTimer = 0f;
                 }
             }
+
+            if (BulletTimeWindowTimer > 0f)
+            {
+                BulletTimeWindowTimer -= deltaTime;
+                if (BulletTimeWindowTimer <= 0f)
+                {
+                    BulletTimeWindowTimer = 0f;
+                }
+            }
         }
+
+        public void Tick(float deltaTime) => Update(deltaTime);
 
         public bool CanEvade(CharacterConfigAsset config)
         {
@@ -46,10 +67,12 @@ namespace Game.GamePlay
             }
         }
 
-        public void Reset()
+        public override void Reset()
         {
+            base.Reset();
             EvadeCount = 0;
             EvadeTimer = 0f;
+            BulletTimeWindowTimer = 0f;
         }
     }
 }

@@ -1,117 +1,102 @@
-using Game.GamePlay;
 using Game.Framework;
 using UnityEngine;
 
 namespace Game.GamePlay
 {
+    /// <summary>
+    /// 怪物实体聚合根。
+    /// 仅负责各子系统组件/模块的初始化装配与生命周期中继，不包含特定战斗/AI业务逻辑。
+    /// </summary>
     public class MonsterEntity : CharacterEntity
     {
         public new MonsterConfigAsset Config => (MonsterConfigAsset)base.Config;
-        
+
         public BTRunner BTRunner { get; private set; }
+        public FSMSystem<MonsterEntity> StateMachine { get; private set; }
+        public MonsterTacticalContext TacticalContext { get; private set; }
+        public MonsterBrainCoordinator BrainCoordinator { get; private set; }
+
+        public bool IsSelfControl => BrainCoordinator?.IsSelfControl ?? false;
+
         protected override void InitRequiredComponents()
         {
-            CharacterMotor = GetComponent<CharacterMotor>();
-            if (CharacterMotor == null) CharacterMotor = gameObject.AddComponent<CharacterMotor>();
+            MovementComponent = GetComponent<MovementComponent>()
+                ?? gameObject.AddComponent<MovementComponent>();
 
-            HitReactionModule = GetComponent<MonsterHitReactionModule>();
-            if (HitReactionModule == null) HitReactionModule = gameObject.AddComponent<MonsterHitReactionModule>();
+            HitReactionComponent = GetComponent<MonsterHitReactionComponent>()
+                ?? gameObject.AddComponent<MonsterHitReactionComponent>();
 
-            BTRunner = GetComponent<BTRunner>();
-            if (BTRunner == null) BTRunner = gameObject.AddComponent<BTRunner>();
+            BTRunner = GetComponent<BTRunner>() ?? gameObject.AddComponent<BTRunner>();
+            BTRunner.OnComponentInit(this);
 
-            LifecycleModule = GetComponent<MonsterLifecycleModule>();
-            if (LifecycleModule == null) LifecycleModule = gameObject.AddComponent<MonsterLifecycleModule>();
-
-            // FootIKModule 如果需要的话也可以在这里挂载
-            // FootIKModule = GetComponent<FootIKModule>();
-            // if (FootIKModule == null) FootIKModule = gameObject.AddComponent<FootIKModule>();
+            LifecycleComponent = GetComponent<MonsterLifecycleComponent>()
+                ?? gameObject.AddComponent<MonsterLifecycleComponent>();
         }
 
-        public override void Init(Game.GamePlay.CharacterConfigAsset config)
+        public override void Init(CharacterConfigAsset config)
         {
             base.Init(config);
+            var monsterConfig = (MonsterConfigAsset)config;
+
             AttributeResolver = new MonsterAttributeResolver(this);
-            
-            if (CommandBuffer == null) CommandBuffer = new CommandBuffer(BufferMode.SingleOverride);
-            if (ActionController == null) ActionController = new MonsterActionController(this);
+            CommandBuffer ??= new CommandBuffer(BufferMode.SingleOverride);
+            ActionController ??= new MonsterActionController(this);
+
+            // 1. 注册运行时状态数据容器
             DataModule[typeof(MonSterBehaviorRuntimeData)] ??= new MonSterBehaviorRuntimeData();
-            DataModule[typeof(TimeDilationRuntimeData)] ??= new TimeDilationRuntimeData();
+            DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
 
-            if (config is MonsterConfigAsset monsterConfig)
+            // 2. 组装大脑协同器与传感器
+            BrainCoordinator = new MonsterBrainCoordinator();
+            BrainCoordinator.Initialize(this);
+
+            TargetFinder = new MonsterTargetFinder(monsterConfig.SensorConfig, transform);
+            TargetFinder.Initialize(this);
+            TacticalContext = new MonsterTacticalContext { LocomotionConfig = monsterConfig.locomotionConfig };
+
+            // 3. 构建状态机与行为树
+            StateMachine = MonsterFSMBuilder.Build(this);
+
+            if (monsterConfig.ActionRoot != null)
+                ActionController.PlayAction(monsterConfig.ActionRoot);
+
+            if (monsterConfig.BehaviorTree != null && BTRunner != null)
             {
-                if (StatusModule != null)
-                {
-                    StatusModule.Attributes.Init(this);
-                    StatusModule.Buffs.Init(this);
-                    // 怪物失衡属性注册（过渡期保底 100f，将来统一由 Luban 怪物配表及 MonsterAttributeResolver 驱动）
-                    const float defaultMaxDaze = 100f;
-                    if (!StatusModule.Attributes.Has(AttributeId.MaxDaze))
-                    {
-                        StatusModule.Attributes.Register(new AttributeInstance(AttributeId.MaxDaze, defaultMaxDaze, 0f, float.MaxValue));
-                    }
-                    if (!StatusModule.Attributes.Has(AttributeId.Daze))
-                    {
-                        StatusModule.Attributes.Register(new AttributeInstance(AttributeId.Daze, 0f, 0f, defaultMaxDaze));
-                    }
-                }
-
-                TargetFinder = new MonsterTargetFinder(monsterConfig.SensorConfig, transform);
-
-                if (monsterConfig.ActionRoot != null)
-                {
-                    ActionController.PlayAction(monsterConfig.ActionRoot);
-                }
-
-                if (monsterConfig.BehaviorTree != null && BTRunner != null)
-                {
-                    BTRunner.Init(monsterConfig.BehaviorTree);
-                    BTRunner.StartTree();
-                }
+                BTRunner.Init(monsterConfig.BehaviorTree);
+                BTRunner.StartTree();
+                BrainCoordinator.SyncBlackboardSelfControl();
             }
         }
 
-        /// <summary>
-        /// 应用子弹时间减速流速（仅更新数据模型并驱动动作播放器，实体保持零字段）
-        /// </summary>
-        public void ApplyBulletTime(float scale)
+        protected override void OnSubLogicTick(float scaledDeltaTime)
         {
-            var timeData = DataModule.Get<TimeDilationRuntimeData>();
-            timeData?.ApplyBulletTime(scale);
-            ActionPlayer?.SetPlaySpeed(scale);
-        }
-
-        /// <summary>
-        /// 解除子弹时间（打醒恢复或倒计时结束）
-        /// </summary>
-        public void ExitBulletTime()
-        {
-            var timeData = DataModule.Get<TimeDilationRuntimeData>();
-            timeData?.ExitBulletTime();
-            ActionPlayer?.RestorePlaySpeed();
+            base.OnSubLogicTick(scaledDeltaTime);
+            DataModule.Get<MonSterBehaviorRuntimeData>()?.Tick(scaledDeltaTime);
+            (HitReactionComponent as MonsterHitReactionComponent)?.OnLogicTick(scaledDeltaTime);
+            BrainCoordinator?.OnLogicTick(scaledDeltaTime);
+            BTRunner?.OnLogicTick(scaledDeltaTime);
+            StateMachine?.Update(scaledDeltaTime);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
-            ExitBulletTime();
-            DataModule.Get<TimeDilationRuntimeData>()?.Reset();
+            BrainCoordinator?.Dispose();
+            BrainCoordinator = null;
 
             if (BTRunner != null)
             {
                 BTRunner.StopTree();
             }
-            TargetFinder = null;
-        }
 
-        protected override void Update()
-        {
-            base.Update();
-            var timeData = DataModule.Get<TimeDilationRuntimeData>();
-            float dt = Time.deltaTime * (timeData != null ? timeData.TimeScale : 1.0f);
-            ActionController?.Update(dt);
-            DataModule.Get<MonSterBehaviorRuntimeData>()?.Update(dt);
+            StateMachine?.Destroy();
+            StateMachine = null;
+
+            TacticalContext?.Reset();
+            TacticalContext = null;
+            TargetFinder?.Dispose();
+            TargetFinder = null;
         }
     }
 }

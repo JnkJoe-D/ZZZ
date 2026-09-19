@@ -15,16 +15,8 @@ namespace Game.GamePlay
         {
             if (ctx.IsAborted || ctx.Victim == null) return;
 
-            // 1. 绝对霸体免疫检测（受击模块标志位或 SuperArmor 状态标签）
-            bool isSuperArmor = false;
-            if (ctx.Victim.HitReactionModule != null && ctx.Victim.HitReactionModule.isSuperArmor)
-            {
-                isSuperArmor = true;
-            }
-            if (ctx.Victim.StatusModule != null && ctx.Victim.StatusModule.IsTagImmune("SuperArmor"))
-            {
-                isSuperArmor = true;
-            }
+            // 1. 绝对霸体免疫检测（统一由 StatusModule 状态标签权威判定）
+            bool isSuperArmor = ctx.Victim.StatusModule != null && ctx.Victim.StatusModule.IsTagImmune("SuperArmor");
 
             if (isSuperArmor)
             {
@@ -57,9 +49,9 @@ namespace Game.GamePlay
                 var hitData = ctx.Victim.DataModule?.Get<HitReactionRuntimeData>();
                 if (hitData != null)
                 {
-                    hitData.CurrentHitStunDuration = ctx.HitStunDuration;
+                    hitData.Set(nameof(hitData.CurrentHitStunDuration), ctx.HitStunDuration);
                     hitData.SetHitReactionAxis(ctx.ReactionAxis);
-                    hitData.CurrentReactionType = ctx.SelectedReactionType;
+                    hitData.Set(nameof(hitData.CurrentReactionType), ctx.SelectedReactionType);
                 }
             }
             else

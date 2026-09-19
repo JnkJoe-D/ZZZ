@@ -50,8 +50,6 @@ namespace Game.GamePlay
             if (globalAudioConfig != null) _SOConfigBanks[typeof(GlobalAudioConfigAsset)] = globalAudioConfig;
             var actionAudioConfig = await Game.Framework.ResourceManager.Instance.LoadAssetAsync<CommonActionAudioAsset>("Assets/Resources/Settings/CommonActionAudioSO.asset");
             if (actionAudioConfig != null) _SOConfigBanks[typeof(CommonActionAudioAsset)] = actionAudioConfig;
-            var uiGlobalSetting = await Game.Framework.ResourceManager.Instance.LoadAssetAsync<Game.UI.UIGlobalSettingAsset>("Assets/Resources/Settings/UIGlobalSettingSO.asset");
-            if (uiGlobalSetting != null) _SOConfigBanks[typeof(Game.UI.UIGlobalSettingAsset)] = uiGlobalSetting;
             
             // 为了避免编译警告，此处添加一个空等待以确保异步签名正确
             await Task.Yield();

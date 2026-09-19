@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3290489fa39fab46a6c11cb5d221c9c, type: 3}
   m_Name: TyrfingInfested_Attack_01
   m_EditorClassIdentifier: 
-  ID: 200040
+  ID: 200050
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 64a3d08fdf82fdf48afd0dc47b039b28, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 8b0f1a44c1110e940b2045667a7840e5, type: 2}

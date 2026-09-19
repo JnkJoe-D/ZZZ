@@ -28,17 +28,10 @@ namespace Game.GamePlay
 
             bool hasMovementInput = provider.HasMovementInput();
 
-            // if (!hasMovementInput)
-            // {
-            //     _ctx.Blackboard.IsFromDash = true;
-            //     ChangeState(_ctx.StopState);
-            //     return;
-            // }
-
             Vector2 currentInput = provider.GetMovementDirection();
             Vector2 lastInput = provider.GetLastMovementDirection();
 
-            _ctx.HostEntity.CharacterMotor?.FaceTo(currentInput);
+            _ctx.HostEntity.MovementComponent?.FaceTo(currentInput);
         }
 
         public override void OnExit()

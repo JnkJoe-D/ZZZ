@@ -10,7 +10,7 @@ namespace Game.GamePlay
     /// - Controller 不再区分路由是 Command 还是 Event，统一封装进 CharacterCommand (Command Envelope)。
     /// - 评估时调用唯一入口 route.Evaluate(command, windowTag, actor, timing)。
     /// </summary>
-    public class ActionController : IRouteWindowHandler
+    public class ActionController : IRouteWindowHandler, IEntityController
     {
         // ─── 内部数据结构 ───
 
@@ -51,13 +51,22 @@ namespace Game.GamePlay
             _actionData = _entity.DataModule?.Get<ActionRuntimeData>();
         }
 
+        public void Initialize(CharacterEntity owner) { }
+
+        public void ResetController()
+        {
+            _activeRouteWindows.Clear();
+            _effectiveRoutes.Clear();
+            _isTransitioning = false;
+        }
+
         public ISkillCostHandler SkillCostHandler => _skillCostHandler;
 
         // ═══════════════════════════════════════════
         //  公共接口
         // ═══════════════════════════════════════════
 
-        public void Update(float deltaTime)
+        public void OnLogicTick(float logicDeltaTime)
         {
             _entity.CommandBuffer?.Tick();
 
@@ -88,6 +97,9 @@ namespace Game.GamePlay
                 }
             }
         }
+
+        [System.Obsolete("Update 已过时，请统一使用 OnLogicTick")]
+        public void Update(float deltaTime) => OnLogicTick(deltaTime);
 
         public bool PlayAction(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
         {
@@ -242,7 +254,7 @@ namespace Game.GamePlay
 
             _currentPlayingAction = action;
             if (_actionData != null)
-                _actionData.NextActionToCast = action;
+                _actionData.Set(nameof(_actionData.NextActionToCast), action);
 
             _entity.ActionPlayer.OnActionComplete -= HandleActionComplete;
 
@@ -396,7 +408,7 @@ namespace Game.GamePlay
                     _activeRouteWindows.Clear();
                     _entity.CommandBuffer?.Clear();
 
-                    if (_actionData != null) _actionData.NextActionToCast = nextAction;
+                    if (_actionData != null) _actionData.Set(nameof(_actionData.NextActionToCast), nextAction);
                     RecordRoute(command?.Payload, nextAction, source, tag, command?.Id ?? 0);
                     PlayAction(nextAction, crossfadeOverride);
                 }
@@ -418,8 +430,6 @@ namespace Game.GamePlay
         {
             ActionConfigAsset finished = _currentPlayingAction;
             _currentPlayingAction = null;
-            
-            float overshoot = _entity.ActionPlayer != null ? _entity.ActionPlayer.OvershootTime : 0f;
 
             if (finished == null || _isTransitioning) return;
 
@@ -436,7 +446,7 @@ namespace Game.GamePlay
                     if (finished.CompleteAction != null)
                     {
                         RecordRoute(null, finished.CompleteAction, CommandRouteSource.ActionComplete, "TransitToAction");
-                        PlayAction(finished.CompleteAction, finished.CompleteTransitCrossfade, overshoot);
+                        PlayAction(finished.CompleteAction, finished.CompleteTransitCrossfade);
                         return;
                     }
                     break;
@@ -447,7 +457,7 @@ namespace Game.GamePlay
 
             ActionConfigAsset rootAction = _entity.Config?.ActionRoot;
             RecordRoute(null, rootAction, CommandRouteSource.ActionComplete, "RootFallback");
-            PlayAction(rootAction, -1f, overshoot);
+            PlayAction(rootAction, -1f);
         }
 
         private ActionConfigAsset GetCurrentAction()

@@ -79,6 +79,9 @@ namespace ATEditor
                 fileName = Path.GetFileNameWithoutExtension(fileName);
             }
 
+            if (!Directory.Exists(jsonDir)) Directory.CreateDirectory(jsonDir);
+            if (!Directory.Exists(assetDir)) Directory.CreateDirectory(assetDir);
+
             string jsonPath = Path.Combine(jsonDir, fileName + ".json").Replace("\\", "/");
             string assetPath = Path.Combine(assetDir, fileName + ".asset").Replace("\\", "/");
 

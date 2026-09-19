@@ -68,22 +68,22 @@ namespace Game.GamePlay
             }
 
             inEntity.EnsureRuntimeInitialized();
-            inEntity.SetColliderActive(true);
+            inEntity.Presentation?.SetColliderActive(true);
             ctx.Manager.SynchronizePartyMemberTransform(inEntity, spawnPos, spawnRot);
-            inEntity.ResetSwitchState();
-            inEntity.SetPresentationVisible(true);
+            inEntity.CommandBuffer?.Clear();
+            inEntity.Presentation?.SetPresentationVisible(true);
 
             // 4. 注入战斗上下文目标与警示标记（供动作时间轴中的 MovementClip / CameraControlClip 读取）
             if (ctx.TargetAttacker != null)
             {
-                inEntity.SetCombatContextTarget(ctx.TargetAttacker);
+                inEntity.TargetFinder?.SetCombatContextTarget(ctx.TargetAttacker);
             }
             if (ctx.WarningMarker != null && inEntity.DataModule != null)
             {
                 var actionData = inEntity.DataModule.Get<ActionRuntimeData>();
                 if (actionData != null)
                 {
-                    actionData.MatchedWarningMarker = ctx.WarningMarker;
+                    actionData.Set(nameof(actionData.MatchedWarningMarker), ctx.WarningMarker);
                 }
             }
 

@@ -37,8 +37,8 @@ namespace Game.GamePlay
             {
                 return false;
             }
-
-            float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+            // 输入相关的时间判定，使用 Time.time 作为参考
+            float currentTime = Time.time;
             float elapsed = currentTime - actor.ActionPlayer.ActionStartTime;
             return Mode == ComparisonMode.LessThan ? elapsed < Threshold : elapsed >= Threshold;
         }
@@ -258,7 +258,7 @@ namespace Game.GamePlay
 
             if (actor.DataModule?.Get<ActionRuntimeData>() != null)
             {
-                actor.DataModule.Get<ActionRuntimeData>().MatchedWarningMarker = marker;
+                actor.DataModule.Get<ActionRuntimeData>().Set(nameof(ActionRuntimeData.MatchedWarningMarker), marker);
             }
             return true;
         }
@@ -273,7 +273,7 @@ namespace Game.GamePlay
             var parryData = actor?.DataModule?.Get<ParryRuntimeData>();
             if (parryData != null && parryData.ParrySucceeded)
             {
-                parryData.ParrySucceeded = false;
+                parryData.Set(nameof(parryData.ParrySucceeded), false);
                 return true;
             }
             return false;
@@ -292,16 +292,8 @@ namespace Game.GamePlay
 
         public bool Check(RoleEntity actor)
         {
-            var tm = TimeManager.Instance;
-            if (tm == null) return Inverse;
-
-            bool isActive = tm.IsBulletTimeActive;
-
-            // 若要求必须自身触发，比对 Instigator
-            if (isActive && RequireSelfInstigated && actor != null)
-            {
-                isActive = (tm.BulletTimeInstigator == actor);
-            }
+            var evadeData = actor?.DataModule?.Get<EvadeRuntimeData>();
+            bool isActive = evadeData != null && evadeData.IsInBulletTimeWindow;
 
             return Inverse ? !isActive : isActive;
         }

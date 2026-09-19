@@ -36,6 +36,17 @@ namespace Game.GamePlay
     [CreateAssetMenu(fileName = "MonsterLocomotionConfig", menuName = "Config/Role/Monster Locomotion Config")]
     public class MonsterLocomotionConfig : GameConfigAsset
     {
+        [Header("步态阈值配置")]
+        [Tooltip("奔跑逼近与缓步前压的距离差值阈值（米）。当目标距离与攻击射程之差大于此值时奔跑，小于等于此值时前压慢走")]
+        public float runThresholdRadius = 4.0f;
+
+        [Header("环绕对峙换向配置")]
+        [Tooltip("环绕横移随机换向最小间隔（秒）")]
+        public float minStrafeInterval = 2.0f;
+
+        [Tooltip("环绕横移随机换向最大间隔（秒）")]
+        public float maxStrafeInterval = 4.0f;
+
         [Header("奔跑动作表现 (Run)")]
         [Tooltip("奔跑起步/冲刺动作")]
         public ActionConfigAsset RunStart;

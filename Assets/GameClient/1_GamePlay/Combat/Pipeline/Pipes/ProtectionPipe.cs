@@ -14,16 +14,9 @@ namespace Game.GamePlay
 
         public void Process(HitPipelineContext ctx)
         {
-            if (ctx.Victim == null || ctx.Victim.IsDead)
+            if (ctx.Victim == null || ctx.Victim.LifecycleComponent.IsDead)
             {
                 ctx.Abort("Victim is null or already dead");
-                return;
-            }
-
-            // 0. 后台退场实体保护（防止已隐形退场的实体被范围判定误伤）
-            if (!ctx.Victim.IsPresentationVisible)
-            {
-                ctx.Abort("Victim is invisible in background", HitResultFlags.Protected);
                 return;
             }
 
@@ -56,9 +49,9 @@ namespace Game.GamePlay
 
             // 2. 受击保护内置 CD（已根据测试需求停用，避免隐藏时间间隔阻断单段检测多段受击）
             // float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
-            // if (ctx.Victim.HitReactionModule != null)
+            // if (ctx.Victim.HitReactionComponent != null)
             // {
-            //     if (!ctx.Victim.HitReactionModule.ValidateAndRecordHit(currentTime))
+            //     if (!ctx.Victim.HitReactionComponent.ValidateAndRecordHit(currentTime))
             //     {
             //         ctx.Abort("Hit in Protection Interval", HitResultFlags.Protected);
             //         return;

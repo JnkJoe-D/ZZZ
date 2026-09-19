@@ -35,36 +35,58 @@ namespace Game.GamePlay
             float duration,
             int totalHits)
         {
-            if (totalHits <= 1 || duration <= 0f)
+            try
             {
-                pipeline.Execute(ctx);
-                pipeline.ReleaseContext(ctx);
-                yield break;
-            }
-
-            float interval = duration / totalHits;
-            for (int i = 0; i < totalHits; i++)
-            {
-                // 只要受击者还存在引用（即使已死亡），依然可执行鞭尸表现或打击特效
-                if (ctx.Victim == null) break;
-
-                ctx.ResetPerHitState();
-                ctx.CurrentHitIndex = i;
-                ctx.TotalHitCount = totalHits;
-
-                pipeline.Execute(ctx);
-
-                if (i < totalHits - 1)
+                if (totalHits <= 1 || duration <= 0f)
                 {
-                    float targetTime = (TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time) + interval;
-                    while ((TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time) < targetTime)
+                    pipeline.Execute(ctx);
+                    yield break;
+                }
+
+                float interval = duration / totalHits;
+                for (int i = 0; i < totalHits; i++)
+                {
+                    // 若攻击者已被销毁或死亡，多段打击立即熔断终止
+                    if (ctx.Attacker == null || ctx.Attacker.LifecycleComponent == null || ctx.Attacker.LifecycleComponent.IsDead)
                     {
-                        yield return null;
+                        yield break;
+                    }
+
+                    // 只要受击者还存在引用（即使已死亡），依然可执行鞭尸表现或打击特效
+                    if (ctx.Victim == null)
+                    {
+                        yield break;
+                    }
+
+                    ctx.ResetPerHitState();
+                    ctx.CurrentHitIndex = i;
+                    ctx.TotalHitCount = totalHits;
+
+                    pipeline.Execute(ctx);
+
+                    if (i < totalHits - 1)
+                    {
+                        float elapsed = 0f;
+                        while (elapsed < interval)
+                        {
+                            yield return null;
+                            if (ctx.Attacker == null || ctx.Attacker.LifecycleComponent == null || ctx.Attacker.LifecycleComponent.IsDead)
+                            {
+                                yield break;
+                            }
+
+                            float dt = ctx.Attacker.Clock != null
+                                ? ctx.Attacker.Clock.DeltaTime
+                                : Time.deltaTime;
+                            elapsed += dt;
+                        }
                     }
                 }
             }
-
-            pipeline.ReleaseContext(ctx);
+            finally
+            {
+                pipeline.ReleaseContext(ctx);
+            }
         }
     }
 }

@@ -20,19 +20,19 @@ namespace Game.GamePlay
             PartyMember outMember = ctx.OutgoingMember;
 
             // 1. 切断切出角色的玩家控制输入
-            outEntity.SetControlActive(false, assignCameraTarget: false);
+            outEntity.SetControlActive(false);
 
             // 2. 根据退场策略调度生命周期
             if (ctx.ExitPolicy == OutgoingExitPolicy.Immediate)
             {
                 // 即时退场模式（招架支援/闪避支援）：立即关闭碰撞、隐藏模型、转入待机
-                outEntity.SetColliderActive(false);
-                outEntity.SetPresentationVisible(false);
+                outEntity.Presentation?.SetColliderActive(false);
+                outEntity.Presentation?.SetPresentationVisible(false);
 
                 if (outEntity.DataModule != null)
                 {
                     var switchData = outEntity.DataModule.Get<SwitchRuntimeData>();
-                    if (switchData != null) switchData.IsSwitchOutPending = false;
+                    if (switchData != null) switchData.Set(nameof(switchData.IsSwitchOutPending), false);
                 }
 
                 if (outEntity.Config?.ActionRoot != null)

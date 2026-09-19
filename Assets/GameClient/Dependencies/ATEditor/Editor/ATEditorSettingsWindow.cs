@@ -113,18 +113,10 @@ namespace ATEditor.Editor
             EditorGUILayout.HelpBox("一键同步会自动检索源目录中的文件，并在目标目录中更新或创建对应文件，不涉及删除，绝对安全。", MessageType.Info);
 
             EditorGUILayout.Space();
-            GUILayout.Label(Lan.SettingsDefaultPreviewTargetLabel, EditorStyles.boldLabel);
-            EditorGUI.BeginChangeCheck();
-            GameObject currentPrefab = null;
-            if (!string.IsNullOrEmpty(_state.DefaultPreviewCharacterPath))
+            GUILayout.Label("角色工作区管理", EditorStyles.boldLabel);
+            if (GUILayout.Button("打开工作区管理器 (配置角色/模型/子目录)", GUILayout.Height(28)))
             {
-                currentPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_state.DefaultPreviewCharacterPath);
-            }
-            GameObject newPrefab = (GameObject)EditorGUILayout.ObjectField(currentPrefab, typeof(GameObject), false);
-            if (EditorGUI.EndChangeCheck())
-            {
-                _state.DefaultPreviewCharacterPath = newPrefab != null ? AssetDatabase.GetAssetPath(newPrefab) : "";
-                _onSettingsChanged?.Invoke();
+                ATWorkspaceManagerWindow.OpenWindow();
             }
 
             // 语言选择

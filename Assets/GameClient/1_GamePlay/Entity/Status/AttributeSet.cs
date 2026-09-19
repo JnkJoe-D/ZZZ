@@ -21,6 +21,8 @@ namespace Game.GamePlay
             { AttributeId.MaxEnergy, AttributeId.Energy },
         };
 
+        public event Action<AttributeId, float, float> OnAttributeChanged;
+
         public void Init(CharacterEntity owner)
         {
             _owner = owner;
@@ -178,6 +180,8 @@ namespace Game.GamePlay
                 NewValue = newValue,
                 MaxValue = maxValue
             });
+
+            OnAttributeChanged?.Invoke(id, oldValue, newValue);
         }
 
         private static StatType MapToStatType(AttributeId id)

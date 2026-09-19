@@ -20,6 +20,11 @@ namespace Game.GamePlay
         private readonly List<MonsterEntity> _activeMonsters = new List<MonsterEntity>();
         public IReadOnlyList<MonsterEntity> ActiveMonsters => _activeMonsters;
         
+        // 待延迟入池的怪物倒计时字典（由受控逻辑 Tick 驱动）
+        private readonly Dictionary<MonsterEntity, float> _pendingRecycleMonsters = new Dictionary<MonsterEntity, float>();
+        private readonly List<MonsterEntity> _recycleBuffer = new List<MonsterEntity>();
+        private readonly List<MonsterEntity> _recycleKeysBuffer = new List<MonsterEntity>();
+
         // 对象池在场景中的根节点，用于收纳失活的怪物
         private Transform _poolRoot;
 
@@ -33,10 +38,27 @@ namespace Game.GamePlay
                 Object.DontDestroyOnLoad(rootObj);
                 _poolRoot = rootObj.transform;
             }
+
+            if (TimeManager.Instance != null)
+            {
+                TimeManager.Instance.OnGameplayLogicTick += OnGameplayLogicTick;
+            }
+
+            EventCenter.Subscribe<EntityDiedEvent>(OnEntityDied);
         }
 
         public void Shutdown()
         {
+            EventCenter.Unsubscribe<EntityDiedEvent>(OnEntityDied);
+
+            if (TimeManager.Instance != null)
+            {
+                TimeManager.Instance.OnGameplayLogicTick -= OnGameplayLogicTick;
+            }
+
+            _pendingRecycleMonsters.Clear();
+            _recycleBuffer.Clear();
+
             // 退出清理时直接销毁活跃怪物，避免先重挂到 _poolRoot 导致同帧双重销毁竞争
             for (int i = _activeMonsters.Count - 1; i >= 0; i--)
             {
@@ -58,6 +80,75 @@ namespace Game.GamePlay
             {
                 Object.Destroy(_poolRoot.gameObject);
                 _poolRoot = null;
+            }
+        }
+
+        private void OnEntityDied(EntityDiedEvent evt)
+        {
+            if (evt.Victim is MonsterEntity monster && _activeMonsters.Contains(monster))
+            {
+                float delay = (monster.LifecycleComponent as MonsterLifecycleComponent)?.recycleDelay ?? 0.5f;
+                if (delay <= 0f)
+                {
+                    RecycleMonster(monster);
+                }
+                else
+                {
+                    _pendingRecycleMonsters[monster] = delay;
+                }
+            }
+        }
+
+        private void OnGameplayLogicTick(float logicDeltaTime)
+        {
+            for (int i = 0; i < _activeMonsters.Count; i++)
+            {
+                var monster = _activeMonsters[i];
+                if (monster != null && monster.gameObject != null && monster.gameObject.activeInHierarchy)
+                {
+                    monster.OnLogicTick(logicDeltaTime);
+                }
+            }
+
+            // 统筹处理死亡怪物的延时入池倒计时（受受控玩法时钟步长驱动，暂停或子弹时间下完全同步）
+            if (_pendingRecycleMonsters.Count > 0)
+            {
+                _recycleBuffer.Clear();
+                _recycleKeysBuffer.Clear();
+                foreach (var k in _pendingRecycleMonsters.Keys)
+                {
+                    _recycleKeysBuffer.Add(k);
+                }
+                for (int i = 0; i < _recycleKeysBuffer.Count; i++)
+                {
+                    var m = _recycleKeysBuffer[i];
+                    if (m == null || m.gameObject == null)
+                    {
+                        _recycleBuffer.Add(m);
+                        continue;
+                    }
+
+                    float remaining = _pendingRecycleMonsters[m] - logicDeltaTime;
+                    if (remaining <= 0f)
+                    {
+                        _recycleBuffer.Add(m);
+                    }
+                    else
+                    {
+                        _pendingRecycleMonsters[m] = remaining;
+                    }
+                }
+
+                for (int i = 0; i < _recycleBuffer.Count; i++)
+                {
+                    var m = _recycleBuffer[i];
+                    _pendingRecycleMonsters.Remove(m);
+                    if (m != null)
+                    {
+                        RecycleMonster(m);
+                    }
+                }
+                _recycleBuffer.Clear();
             }
         }
 
@@ -118,12 +209,10 @@ namespace Game.GamePlay
             // 2. 执行黑盒初始化：实体内部自行完成专属雷达创建、黑板注册、树的重启等操作。
             entity.Init(config);
 
-            _activeMonsters.Add(entity);
+            // 3. 显式时钟生命周期装配：出池挂载至怪物时钟通道
+            TimeManager.Instance?.RegisterMonsterClock(entity.Clock);
 
-            if (TimeManager.Instance != null && TimeManager.Instance.IsBulletTimeActive)
-            {
-                entity.ApplyBulletTime(TimeManager.Instance.CurrentBulletTimeScale);
-            }
+            _activeMonsters.Add(entity);
 
             // 兼容之前异步返回的设计需求（方便以后做按帧拆分出生特效等）
             await Task.Yield();
@@ -140,7 +229,8 @@ namespace Game.GamePlay
         {
             if (monster == null) return;
             
-            monster.ExitBulletTime();
+            _pendingRecycleMonsters.Remove(monster);
+            monster.Clock?.Detach();
             _activeMonsters.Remove(monster);
 
             if (monster.Config != null && monster.Config.Prefab != null)

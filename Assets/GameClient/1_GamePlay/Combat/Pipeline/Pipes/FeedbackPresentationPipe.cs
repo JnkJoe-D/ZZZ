@@ -20,23 +20,15 @@ namespace Game.GamePlay
 
             if (ctx.Victim == null) return;
 
-            // 1. 受击顿帧（通过全局主时钟调度）
+            // 1. 受击顿帧（通过领域事件驱动时间系统调度实体私有时钟）
             if (ctx.EnableHitStop)
             {
-                if (TimeManager.Instance != null)
-                {
-                    TimeManager.Instance.RegisterHitStop(
-                        ctx.Attacker?.ActionPlayer,
-                        ctx.Victim?.ActionPlayer,
-                        ctx.HitStopDuration,
-                        ctx.HitStopScale);
-                    ctx.ResultFlags |= HitResultFlags.HitStopApplied;
-                }
-                else
-                {
-                    ctx.Attacker?.ActionPlayer?.SetPlaySpeed(ctx.HitStopScale);
-                    ctx.Victim?.ActionPlayer?.SetPlaySpeed(ctx.HitStopScale);
-                }
+                EventCenter.Publish(new HitStopRequestEvent(
+                    ctx.Attacker?.Clock,
+                    ctx.Victim?.Clock,
+                    ctx.HitStopDuration,
+                    ctx.HitStopScale));
+                ctx.ResultFlags |= HitResultFlags.HitStopApplied;
             }
 
             // 2. 打击火花特效（面向主相机平面广告牌对齐）

@@ -77,26 +77,63 @@ namespace ATEditor.Editor
         private const string PREF_SNAP_ENABLED = "SkillEditor_SnapEnabled";
         private const string PREF_FRAME_RATE = "SkillEditor_FrameRate";
         private const string PREF_TIME_STEP_MODE = "SkillEditor_TimeStepMode";
-        private const string PREF_DEFAULT_PREVIEW_TARGET = "SkillEditor_DefaultPreviewTarget";
+        private const string PREF_ACTIVE_WORKSPACE_ID = "ATEditor_ActiveWorkspaceId";
         private const string PREF_DEFAULT_JSON_DIR = "SkillEditor_DefaultJsonDir";
         private const string PREF_DEFAULT_ASSET_DIR = "SkillEditor_DefaultAssetDir";
         
         public string DefaultJsonDirectory
         {
-            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_JSON_DIR, Application.dataPath);
+            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_JSON_DIR, "Assets/Resources/Serializations/JSON/ActionTimelines");
             set => UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_JSON_DIR, value);
         }
 
         public string DefaultAssetDirectory
         {
-            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_ASSET_DIR, Application.dataPath);
+            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_ASSET_DIR, "Assets/Resources/Serializations/ScriptableObjects/ActionTimelines");
             set => UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_ASSET_DIR, value);
         }
 
-        public string DefaultPreviewCharacterPath
+        public string ActiveWorkspaceId
         {
-            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_PREVIEW_TARGET, "Assets/ATEditor/Editor/Resources/DefaultPreviewCharacter.prefab");
-            set => UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_PREVIEW_TARGET, value);
+            get => UnityEditor.EditorPrefs.GetString(PREF_ACTIVE_WORKSPACE_ID, "Player_Ellen");
+            set => UnityEditor.EditorPrefs.SetString(PREF_ACTIVE_WORKSPACE_ID, value);
+        }
+
+        public ATWorkspaceDefinition ActiveWorkspace
+        {
+            get
+            {
+                var db = ATEditorWorkspaceDatabase.Instance;
+                var ws = db.GetWorkspaceById(ActiveWorkspaceId);
+                if (ws == null && db.Workspaces.Count > 0)
+                {
+                    ws = db.Workspaces[0];
+                    ActiveWorkspaceId = ws.Id;
+                }
+                return ws;
+            }
+        }
+
+        public string GetActiveWorkspaceAssetDirectory()
+        {
+            string root = DefaultAssetDirectory;
+            var ws = ActiveWorkspace;
+            if (ws != null && !string.IsNullOrEmpty(ws.FolderName))
+            {
+                return System.IO.Path.Combine(root, ws.FolderName).Replace("\\", "/");
+            }
+            return root;
+        }
+
+        public string GetActiveWorkspaceJsonDirectory()
+        {
+            string root = DefaultJsonDirectory;
+            var ws = ActiveWorkspace;
+            if (ws != null && !string.IsNullOrEmpty(ws.FolderName))
+            {
+                return System.IO.Path.Combine(root, ws.FolderName).Replace("\\", "/");
+            }
+            return root;
         }
 
         public string Language

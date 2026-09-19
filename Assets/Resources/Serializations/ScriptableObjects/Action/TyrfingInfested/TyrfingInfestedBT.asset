@@ -1,5 +1,111 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8170295703514271999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08cc54e931537e48859ab1d56ffa68e, type: 3}
+  m_Name: WaitUntilStoppedData
+  m_EditorClassIdentifier: 
+  guid: a2a796fe-3ba2-4e94-b486-b7d1c79482f8
+  position: {x: 205, y: 310}
+  successWhenStopped: 0
+--- !u!114 &-7204024587018398188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997044e8aa3df384b8b9d6435dc9dbb5, type: 3}
+  m_Name: RootData
+  m_EditorClassIdentifier: 
+  guid: root-node-guid-0001
+  position: {x: 563.8236, y: -368.07828}
+  child: {fileID: 1999599061708079822}
+--- !u!114 &-7016642917051295104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f03ec7d01794bda4393631e6fff16b6d, type: 3}
+  m_Name: BBCheckBoolData
+  m_EditorClassIdentifier: 
+  guid: bbcheck-has-target-0003
+  position: {x: 492.99988, y: -80.34065}
+  child: {fileID: -6124572325404063387}
+  key: 0
+  op: 2
+  value: 1
+  stopsOnChange: 3
+--- !u!114 &-6124572325404063387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f840b8f77f260f34db9bdd7e819f5440, type: 3}
+  m_Name: SelectorData
+  m_EditorClassIdentifier: 
+  guid: root-selector-0004
+  position: {x: 543.68146, y: 20.000023}
+  children:
+  - {fileID: -2287995687045240616}
+  - {fileID: -5343752128221874489}
+  - {fileID: 3000000000000000002}
+--- !u!114 &-5343752128221874489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf09575bda0e5724688f8b209b4577a9, type: 3}
+  m_Name: BBCheckFloatData
+  m_EditorClassIdentifier: 
+  guid: bbcheck-cd-0005
+  position: {x: 493, y: 193}
+  child: {fileID: 3000000000000000001}
+  key: 3
+  op: 6
+  value: 0
+  tolerance: 0.0001
+  stopsOnChange: 4
+--- !u!114 &-2287995687045240616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f03ec7d01794bda4393631e6fff16b6d, type: 3}
+  m_Name: BBCheckBoolData
+  m_EditorClassIdentifier: 
+  guid: 19c2cf95-c403-4649-a10f-e226304d3bd6
+  position: {x: 219, y: 178}
+  child: {fileID: -8170295703514271999}
+  key: 9
+  op: 2
+  value: 0
+  stopsOnChange: 4
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21,21 +127,8 @@ MonoBehaviour:
   - {fileID: -5343752128221874489}
   - {fileID: 3000000000000000001}
   - {fileID: 3000000000000000002}
---- !u!114 &-7204024587018398188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 997044e8aa3df384b8b9d6435dc9dbb5, type: 3}
-  m_Name: RootData
-  m_EditorClassIdentifier: 
-  guid: root-node-guid-0001
-  position: {x: 0, y: 0}
-  child: {fileID: 1999599061708079822}
+  - {fileID: -2287995687045240616}
+  - {fileID: -8170295703514271999}
 --- !u!114 &1999599061708079822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,66 +142,10 @@ MonoBehaviour:
   m_Name: ServiceData
   m_EditorClassIdentifier: 
   guid: service-node-guid-0002
-  position: {x: 200, y: 0}
+  position: {x: 562.99976, y: -229.37471}
   child: {fileID: -7016642917051295104}
   interval: 0.1
   randomVariation: 0.02
---- !u!114 &-7016642917051295104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f03ec7d01794bda4393631e6fff16b6d, type: 3}
-  m_Name: BBCheckBoolData
-  m_EditorClassIdentifier: 
-  guid: bbcheck-has-target-0003
-  position: {x: 400, y: 0}
-  child: {fileID: -6124572325404063387}
-  key: 0
-  op: 2
-  value: 1
-  stopsOnChange: 3
---- !u!114 &-6124572325404063387
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f840b8f77f260f34db9bdd7e819f5440, type: 3}
-  m_Name: SelectorData
-  m_EditorClassIdentifier: 
-  guid: root-selector-0004
-  position: {x: 600, y: 0}
-  children:
-  - {fileID: -5343752128221874489}
-  - {fileID: 3000000000000000002}
---- !u!114 &-5343752128221874489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf09575bda0e5724688f8b209b4577a9, type: 3}
-  m_Name: BBCheckFloatData
-  m_EditorClassIdentifier: 
-  guid: bbcheck-cd-0005
-  position: {x: 800, y: -100}
-  child: {fileID: 3000000000000000001}
-  key: 3
-  op: 6
-  value: 0
-  tolerance: 0.0001
-  stopsOnChange: 4
 --- !u!114 &3000000000000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,7 +159,7 @@ MonoBehaviour:
   m_Name: MonsterAttackSequenceData
   m_EditorClassIdentifier: 
   guid: attack-seq-0006
-  position: {x: 1000, y: -100}
+  position: {x: 471, y: 328.4}
   sequence:
   - action: {fileID: 11400000, guid: 0c41747f46b9f8643ab55ac8d733b3a1, type: 2}
     effectiveRange: 3.5
@@ -141,5 +178,5 @@ MonoBehaviour:
   m_Name: MonsterCoolingStrafeData
   m_EditorClassIdentifier: 
   guid: cooling-strafe-0007
-  position: {x: 800, y: 100}
+  position: {x: 762, y: 138}
   strafeDuration: 2

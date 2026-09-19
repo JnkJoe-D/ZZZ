@@ -70,26 +70,28 @@ namespace ATEditor.Editor
             // 播放控制组（保持原有 toolbarButton 样式）
             DrawTransportControls();
             
-            GUILayout.Space(16);
-
-            // 文件操作组 - 使用圆角按钮 + 间距
-            DrawRoundedButton("导入", 80, OnImport);
             GUILayout.Space(4);
-            DrawRoundedButton("导出/另存", 80, OnExportDual);
-            GUILayout.Space(4);
-            DrawRoundedButton(Lan.Save, 60, OnSaveDual);
-            GUILayout.Space(8);
-            DrawRoundedButton(Lan.Settings, 56, OnSettings);
 
-            GUILayout.Space(8);
+            // 归一化文件操作下拉菜单（左边界紧挨播放栏右边界）
+            DrawFileMenuDropdown();
 
-            // 预览角色选择器（移除"预览角色："文本标签，直接显示 ObjectField）
-            DrawPreviewTargetSelector();
+            GUILayout.Space(6);
+
+            // 角色工作区选择器
+            DrawWorkspaceSelector();
 
             GUILayout.FlexibleSpace();
 
             // 视口控制 (右侧) - 文件名 Toggle + 缩放复原按钮
-            string displayName = string.IsNullOrEmpty(state.currentFilePath) ? "未保存" : System.IO.Path.GetFileName(state.currentFilePath);
+            string displayName;
+            if (state.currentTimeline == null)
+            {
+                displayName = "未打开动作";
+            }
+            else
+            {
+                displayName = string.IsNullOrEmpty(state.currentFilePath) ? "未保存" : System.IO.Path.GetFileName(state.currentFilePath);
+            }
             bool isSelected = GUILayout.Toggle(state.isTimelineSelected, displayName, RoundedToggleStyle, GUILayout.Width(120));
             if (isSelected && !state.isTimelineSelected)
             {
@@ -110,15 +112,21 @@ namespace ATEditor.Editor
         }
 
         /// <summary>
-        /// 绘制圆角按钮（带悬停色差）
+        /// 绘制归一化文件菜单下拉按钮（包含：导入、导出/另存、保存、设置）
         /// </summary>
-        private void DrawRoundedButton(string label, float width, System.Action onClick)
+        private void DrawFileMenuDropdown()
         {
             var oldBg = GUI.backgroundColor;
-            GUI.backgroundColor = new Color(0.85f, 0.85f, 0.85f, 1f);
-            if (GUILayout.Button(label, RoundedButtonStyle, GUILayout.Width(width)))
+            GUI.backgroundColor = new Color(0.92f, 0.92f, 0.92f, 1f);
+            if (EditorGUILayout.DropdownButton(new GUIContent("文件"), FocusType.Passive, EditorStyles.toolbarDropDown, GUILayout.Width(56)))
             {
-                onClick?.Invoke();
+                GenericMenu menu = new GenericMenu();
+                menu.AddItem(new GUIContent("导入..."), false, OnImport);
+                menu.AddItem(new GUIContent("导出..."), false, OnExportDual);
+                menu.AddItem(new GUIContent(Lan.Save), false, OnSaveDual);
+                menu.AddSeparator("");
+                menu.AddItem(new GUIContent(Lan.Settings + "..."), false, OnSettings);
+                menu.ShowAsContext();
             }
             GUI.backgroundColor = oldBg;
         }
@@ -213,7 +221,15 @@ namespace ATEditor.Editor
             {
                 if (newTimeline != null)
                 {
-                    // 只要导入的是 Asset，立马克隆一份切断与底层 AssetDatabase 的联系，用克隆体作为编辑器上下文
+                    // 1. 检查并对齐资产所属工作区
+                    var db = ATEditorWorkspaceDatabase.Instance;
+                    var matchedWs = db.GetWorkspaceByAssetPath(path);
+                    if (matchedWs != null && matchedWs.Id != state.ActiveWorkspaceId)
+                    {
+                        state.ActiveWorkspaceId = matchedWs.Id;
+                    }
+
+                    // 2. 只要导入的是 Asset，立马克隆一份切断与底层 AssetDatabase 的联系，用克隆体作为编辑器上下文
                     // 这样所有的修改都只在内存里，直到保存时才覆盖目标文件
                     if (AssetDatabase.Contains(newTimeline))
                     {
@@ -225,11 +241,17 @@ namespace ATEditor.Editor
                     window.SetCurrentTimeline(newTimeline);
                     state.RebuildTrackCache();
                     state.currentFilePath = path; // 记录路径
-                    // 重置先前的播放状态
+
+                    // 3. 确保当前工作区预览对象生成并预热
+                    window.EnsureWorkspacePreviewTarget();
+                    window.InitPreview();
+
+                    // 4. 重置先前的播放状态
                     state.isStopped = true;
                     state.timeIndicator = 0f;
                     window.Stop(); // 确保触发窗口级的停止逻辑
                     events.OnRepaintRequest?.Invoke();
+                    window.Repaint();
                 }
             }, state.currentFilePath);
         }
@@ -238,20 +260,34 @@ namespace ATEditor.Editor
         {
             if (state.currentTimeline == null) return;
             
-            // 弹出个窗口只是为了取个名字，这里默认导向 JSON 目录
-            string path = EditorUtility.SaveFilePanel(Lan.ExportPanelTitle, state.DefaultJsonDirectory, "未命名", "json");
+            string targetJsonDir = state.GetActiveWorkspaceJsonDirectory();
+            string targetAssetDir = state.GetActiveWorkspaceAssetDirectory();
+
+            if (!System.IO.Directory.Exists(targetJsonDir)) System.IO.Directory.CreateDirectory(targetJsonDir);
+            if (!System.IO.Directory.Exists(targetAssetDir)) System.IO.Directory.CreateDirectory(targetAssetDir);
+
+            string defaultName = string.IsNullOrEmpty(state.currentTimeline.name) ? "未命名" : state.currentTimeline.name;
+            string path = EditorUtility.SaveFilePanel(Lan.ExportPanelTitle, targetJsonDir, defaultName, "json");
             
             if (!string.IsNullOrEmpty(path))
             {
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+                string selectedDir = System.IO.Path.GetDirectoryName(path).Replace("\\", "/");
                 
-                // 由于 currentTimeline 始终是内存独立的 Clone，直接改名并保存即可
                 state.currentTimeline.name = fileName; 
 
-                SerializationUtility.SaveDual(state.currentTimeline, state.DefaultJsonDirectory, state.DefaultAssetDirectory, fileName);
+                // 检查是否保存到了另一个工作区
+                CheckAndHandleCrossWorkspaceSave(selectedDir);
+
+                SerializationUtility.SaveDual(state.currentTimeline, selectedDir, targetAssetDir, fileName);
                 state.currentFilePath = path; // 记录最新路径
                 AssetDatabase.Refresh();
             }
+        }
+
+        public void SaveCurrentTimeline()
+        {
+            OnSaveDual();
         }
 
         private void OnSaveDual()
@@ -262,7 +298,10 @@ namespace ATEditor.Editor
             if (!string.IsNullOrEmpty(state.currentFilePath))
             {
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(state.currentFilePath);
-                SerializationUtility.SaveDual(state.currentTimeline, state.DefaultJsonDirectory, state.DefaultAssetDirectory, fileName);
+                string jsonDir = System.IO.Path.GetDirectoryName(state.currentFilePath).Replace("\\", "/");
+                string assetDir = state.GetActiveWorkspaceAssetDirectory();
+
+                SerializationUtility.SaveDual(state.currentTimeline, jsonDir, assetDir, fileName);
                 AssetDatabase.Refresh();
             }
             else
@@ -272,67 +311,100 @@ namespace ATEditor.Editor
             }
         }
 
+        private void CheckAndHandleCrossWorkspaceSave(string savedJsonDir)
+        {
+            var db = ATEditorWorkspaceDatabase.Instance;
+            foreach (var ws in db.Workspaces)
+            {
+                if (ws.Id == state.ActiveWorkspaceId) continue;
+
+                string wsJsonDir = System.IO.Path.Combine(state.DefaultJsonDirectory, ws.FolderName).Replace("\\", "/");
+                if (string.Equals(savedJsonDir.Trim('/'), wsJsonDir.Trim('/'), System.StringComparison.OrdinalIgnoreCase))
+                {
+                    bool switchWs = EditorUtility.DisplayDialog(
+                        "跨工作区保存提示",
+                        $"检测到文件保存到了 [{ws.DisplayName}] 工作区目录。\n是否同时将当前编辑器工作区切换为 [{ws.DisplayName}]？",
+                        "切换工作区",
+                        "保持当前工作区");
+
+                    if (switchWs)
+                    {
+                        window.SwitchWorkspace(ws.Id, false);
+                    }
+                    break;
+                }
+            }
+        }
+
         private void OnSettings()
         {
             ATEditorSettingsWindow.Show(state, () => {
-                // 当设置变更时，请求重绘
                 events.OnRepaintRequest?.Invoke();
             });
         }
 
         /// <summary>
-        /// 绘制预览角色选择器（移除"预览角色："文本标签）
+        /// 绘制角色工作区选择器下拉框
         /// </summary>
-        private void DrawPreviewTargetSelector()
+        private void DrawWorkspaceSelector()
         {
-            EditorGUI.BeginChangeCheck();
-            state.previewTarget = (GameObject)EditorGUILayout.ObjectField(
-                state.previewTarget, typeof(GameObject), true, GUILayout.Width(130));
-            
-            if (EditorGUI.EndChangeCheck())
-            {
-                // 当目标改变时，强制重建上下文，供 Drawer 静态预览使用
-                window.InitPreview();
-                SceneView.RepaintAll();
-            }
-        }
+            var ws = state.ActiveWorkspace;
+            string display = ws != null ? $"{ws.Category} / {ws.DisplayName}" : "选择工作区";
 
-        /// <summary>
-        /// 从 Editor/Resources 加载默认角色并实例化到场景
-        /// </summary>
-        public void CreateDefaultPreviewCharacter()
-        {
-            GameObject target = GameObject.Find("DefaultPreviewCharacter");
-            if(target!=null)
+            var oldBg = GUI.backgroundColor;
+            GUI.backgroundColor = new Color(0.9f, 0.95f, 1f, 1f);
+            if (EditorGUILayout.DropdownButton(new GUIContent($"📁 {display}"), FocusType.Keyboard, EditorStyles.toolbarDropDown, GUILayout.Width(180)))
             {
-                state.previewTarget = target;
-                state.initialAutoPreviewTarget = target; // 记录为初始寻找到的目标
-                return;
+                GenericMenu menu = new GenericMenu();
+                var db = ATEditorWorkspaceDatabase.Instance;
+                var categories = db.GetCategories();
+
+                foreach (var category in categories)
+                {
+                    var workspaces = db.GetWorkspacesByCategory(category);
+                    foreach (var w in workspaces)
+                    {
+                        bool isCurrent = ws != null && ws.Id == w.Id;
+                        string menuPath = $"{w.Category}/{w.DisplayName}";
+                        string id = w.Id;
+                        menu.AddItem(new GUIContent(menuPath), isCurrent, () =>
+                        {
+                            window.SwitchWorkspace(id, true);
+                        });
+                    }
+                }
+
+                menu.AddSeparator("");
+                menu.AddItem(new GUIContent("⚙ 工作区管理器..."), false, () =>
+                {
+                    ATWorkspaceManagerWindow.OpenWindow();
+                });
+                menu.AddItem(new GUIContent("＋ 新建工作区..."), false, () =>
+                {
+                    ATWorkspaceManagerWindow.OpenForNewWorkspace();
+                });
+
+                menu.ShowAsContext();
             }
-            target = AssetDatabase.LoadAssetAtPath<GameObject>(
-                    state.DefaultPreviewCharacterPath);
-            if (target != null)
-            {
-                state.previewTarget = Object.Instantiate(target);
-                state.previewTarget.name = "DefaultPreviewCharacter";
-                // 记录为初始自动创建的目标
-                state.initialAutoPreviewTarget = state.previewTarget;
-            }
-            else
-            {
-                ATLog.Warning($"默认预览角色 Prefab 未找到: {state.DefaultPreviewCharacterPath}");
-            }
+            GUI.backgroundColor = oldBg;
         }
 
         #endregion
+
         private bool CheckTarget()
         {
             if (state.previewTarget == null)
             {
-                ATLog.Warning(Lan.PreviewTargetWarning);
-                CreateDefaultPreviewCharacter();
+                window.EnsureWorkspacePreviewTarget();
             }
-            return state.previewTarget != null;
+            if (state.previewTarget == null)
+            {
+                var ws = state.ActiveWorkspace;
+                string wsName = ws != null ? ws.DisplayName : "当前工作区";
+                EditorUtility.DisplayDialog("缺少预览对象", $"工作区 '{wsName}' 尚未配置或生成预览 Prefab。\n请在工作区管理中配置'绑定预览 Prefab'。", "确定");
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -1,208 +1,34 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.GamePlay
 {
     /// <summary>
-    /// 索敌接口，解耦实体与具体的索敌实现。
+    /// 索敌与目标仲裁接口，继承 IEntityModule 规范领域模块生命周期。
+    /// 内聚常规索敌目标、临时战斗上下文目标（招架/弹刀反击）及最终有效目标仲裁。
     /// </summary>
-    public interface ITargetFinder
+    public interface ITargetFinder : IEntityModule
     {
         /// <summary>
-        /// 获取当前的索敌目标。
+        /// 当前动作/战斗上下文关联的临时交互目标实体（如招架黄光攻击者、弹刀反击目标）。
+        /// 优先级高于常规索敌目标。
         /// </summary>
+        CharacterEntity CombatContextTarget { get; set; }
+
+        /// <summary> 设置当前战斗上下文目标 </summary>
+        void SetCombatContextTarget(CharacterEntity target);
+
+        /// <summary> 清空当前战斗上下文目标 </summary>
+        void ClearCombatContextTarget();
+
+        /// <summary> 获取常规索敌目标 </summary>
         Transform GetTarget();
+
+        /// <summary> 获取至常规目标的距离 </summary>
         float GetDistanceToTarget();
-    }
 
-    /// <summary>
-    /// 玩家角色专用的索敌实现，使用球形范围检测并根据权重/距离筛选目标。
-    /// </summary>
-    public class RoleTargetFinder : ITargetFinder
-    {
-        [Serializable]
-        public class RoleTargetFinderCfg
-        {
-            [Tooltip("搜索半径")]
-            public float SearchRadius = 15f;
-            
-            [Tooltip("搜索的层级过滤")]
-            public LayerMask SearchLayerMask = -1; // 默认 All
-            
-            [Tooltip("优先级标签，越靠前获取时优先级越高")]
-            public List<string> PriorityTags = new List<string> { "Enemy", "Monster" };
-        }
-
-        private readonly RoleTargetFinderCfg _config;
-        private static readonly Collider[] _overlapBuffer = new Collider[32];
-
-        public RoleTargetFinder(RoleTargetFinderCfg config)
-        {
-            _config = config ?? new RoleTargetFinderCfg();
-        }
-
-        public Transform GetTarget()
-        {
-            var activeEntity = TeamManager.Instance?.LocalCharacter;
-            if (activeEntity == null) return null;
-
-            Transform center = activeEntity.transform;
-
-            int hitCount = Physics.OverlapSphereNonAlloc(center.position, _config.SearchRadius, _overlapBuffer, _config.SearchLayerMask);
-            Transform bestTarget = null;
-            int bestPriority = int.MaxValue;
-            float closestSqrDist = float.MaxValue;
-
-            for (int i = 0; i < hitCount; i++)
-            {
-                var col = _overlapBuffer[i];
-                if (col == null || col.gameObject == center.gameObject) continue;
-
-                int priority = -1;
-                if (_config.PriorityTags != null)
-                {
-                    for (int p = 0; p < _config.PriorityTags.Count; p++)
-                    {
-                        if (col.CompareTag(_config.PriorityTags[p]))
-                        {
-                            priority = p;
-                            break;
-                        }
-                    }
-                }
-                
-                // 如果对象的 Tag 不在优先级配置列表中，直接跳过
-                if (priority == -1)
-                {
-                    continue;
-                }
-
-                float sqrDist = (col.transform.position - center.position).sqrMagnitude;
-
-                // 优先级数值越小越优先（索引靠前）
-                if (priority < bestPriority)
-                {
-                    bestPriority = priority;
-                    bestTarget = col.transform;
-                    closestSqrDist = sqrDist;
-                }
-                else if (priority == bestPriority && sqrDist < closestSqrDist) // 同等优先级取距离最近
-                {
-                    bestTarget = col.transform;
-                    closestSqrDist = sqrDist;
-                }
-            }
-
-            Array.Clear(_overlapBuffer, 0, hitCount);
-
-            return bestTarget;
-        }
-
-        public float GetDistanceToTarget()
-        {
-            var target = GetTarget();
-            var activeEntity = TeamManager.Instance?.LocalCharacter;
-            if (target == null || activeEntity == null) return -1f;
-
-            return Vector3.Distance(activeEntity.transform.position, target.position);
-        }
-    }
-
-    [Serializable]
-    public class MonsterSensorConfig
-    {
-        [Tooltip("索敌/目标感知最大半径 (r1)")]
-        public float DetectionRadius = 50f;
-
-        [Tooltip("Run与Walk切换阈值距离 (r2)：当逼近缺口 > r2 时使用 Run，<= r2 时使用 Walk")]
-        public float RunThresholdRadius = 4.0f;
-
-        [Tooltip("全局统一攻击节奏间隔 (秒)：一套攻击序列打完后的攻防转换呼吸期")]
-        public float AttackInterval = 2.5f;
-    }
-
-    /// <summary>
-    /// 怪物专用的轻量级索敌实现，利用状态机迟滞机制（Hysteresis），时间复杂度 O(1)。
-    /// </summary>
-    public class MonsterTargetFinder : ITargetFinder
-    {
-        private readonly MonsterSensorConfig _config;
-        private readonly Transform _ownerTransform;
-        private static readonly Collider[] _overlapBuffer = new Collider[16];
-        private static readonly int _localRoleLayerMask = LayerMask.GetMask("LocalRole");
-        
-        private Transform _currentTarget;
-
-        public MonsterTargetFinder(MonsterSensorConfig config, Transform ownerTransform)
-        {
-            _config = config ?? new MonsterSensorConfig();
-            _ownerTransform = ownerTransform;
-        }
-
-        public Transform GetTarget()
-        {
-            if (_ownerTransform == null) return null;
-
-            // [测试环境] 暂时注释掉基于 TeamManager 的索敌逻辑
-            /*
-            if (TeamManager.Instance == null) return null;
-            
-            // 获取当前上场的玩家角色
-            var activeEntity = TeamManager.Instance.LocalCharacter;
-            if (activeEntity == null) 
-            {
-                _currentTarget = null;
-                return null;
-            }
-
-            Transform player = activeEntity.transform;
-            */
-
-            // [测试环境] 改为广域搜索 (OverlapSphereNonAlloc)
-            Transform player = null;
-
-            float maxSearchRadius = _config.DetectionRadius;
-            int hitCount = Physics.OverlapSphereNonAlloc(_ownerTransform.position, maxSearchRadius, _overlapBuffer, _localRoleLayerMask);
-            for (int i = 0; i < hitCount; i++)
-            {
-                var col = _overlapBuffer[i];
-                if (col != null && col.CompareTag("LocalRole"))
-                {
-                    // 过滤掉未上场(后台Standby)的角色，防止索敌锁定在原地的隐形队友身上
-                    var entity = col.GetComponentInParent<RoleEntity>();
-                    if (entity != null && !entity.IsControlActive)
-                    {
-                        continue;
-                    }
-
-                    player = col.transform;
-                    break;
-                }
-            }
-
-            Array.Clear(_overlapBuffer, 0, hitCount);
-
-            if (player == null)
-            {
-                _currentTarget = null;
-                return null;
-            }
-
-            float distanceSqr = (player.position - _ownerTransform.position).sqrMagnitude;
-            
-            _currentTarget = distanceSqr <= _config.DetectionRadius * _config.DetectionRadius
-            ?player:null;
-
-            return _currentTarget;
-        }
-
-        public float GetDistanceToTarget()
-        {
-            var target = GetTarget();
-            if (target == null || _ownerTransform == null) return -1f;
-
-            return Vector3.Distance(_ownerTransform.position, target.position);
-        }
+        /// <summary>
+        /// 获取当前生效的目标 Transform：优先返回存活的 CombatContextTarget，无上下文目标时回退至常规索敌目标。
+        /// </summary>
+        Transform GetEffectiveTarget();
     }
 }

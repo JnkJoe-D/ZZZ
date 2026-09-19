@@ -1,37 +1,61 @@
-using Game.Framework;
-using Game.GamePlay;
 using ATEditor;
+using Game.Framework;
 using UnityEngine;
 
 namespace Game.GamePlay
 {
-    /// <summary>
-    /// 全局行为播放器，剥离状态机对 Timeline API 的直接依赖
-    /// 统一管理 ActionConfigSO 的解析、方向校准、Runner 播放与停止
-    /// </summary>
     public class ActionPlayer : IActionRunnerProvider
     {
-        private CharacterEntity _entity;
+        private readonly CharacterEntity _entity;
         private ActionRunner _runner;
         private ProcessContext _context;
-        
+
         public ActionConfigAsset CurrentAction { get; private set; }
         public bool IsPlaying { get; private set; }
-
-        /// <summary>
-        /// 当前动作开始播放的 Time.time 时间戳。
-        /// 用于 TimeSinceActionStartCondition 等计算动作已播放时长。
-        /// </summary>
         public float ActionStartTime { get; private set; }
-        public float CurrentTime => _runner != null ? _runner.CurrentTime : 0f;
-        public float OvershootTime => _runner != null ? _runner.OvershootTime : 0f;
 
+        public float CurrentTime => _runner != null ? _runner.CurrentTime : 0f;
+        public float Duration => _runner != null && _runner.Timeline != null ? _runner.Timeline.Duration : 0f;
+        public float NormalizedTime => Duration > 0f ? Mathf.Clamp01(CurrentTime / Duration) : 0f;
+
+        public event System.Action OnActionStart;
         public event System.Action OnActionComplete;
         public event System.Action OnActionInterrupt;
+
+        private float _externalTimeScale = 1.0f;
 
         public ActionPlayer(CharacterEntity entity)
         {
             _entity = entity;
+            EnsureRuntimeContext();
+        }
+
+        private void EnsureRuntimeContext()
+        {
+            if (_context == null && _entity != null && _entity.gameObject != null)
+            {
+                _context = new ProcessContext(_entity.gameObject, ATEditor.PlayMode.Runtime, ATServiceFactory.ProvideService);
+                _context.UserData = this;
+                _runner = new ActionRunner(ATEditor.PlayMode.Runtime);
+            }
+        }
+
+        /// <summary>
+        /// 被动接收外部时钟树推送的最终有效流速（如子弹时间、顿帧等），纯粹应用，零业务计算
+        /// </summary>
+        public void SetExternalTimeScale(float effectiveScale)
+        {
+            _externalTimeScale = effectiveScale;
+            ApplyEffectivePlaySpeed();
+        }
+
+        private void ApplyEffectivePlaySpeed()
+        {
+            if (_context != null)
+            {
+                float actionSpeed = CurrentAction != null ? CurrentAction.PlaybackSpeed : 1.0f;
+                _context.GlobalPlaySpeed = actionSpeed * _externalTimeScale;
+            }
         }
 
         public bool PlayAction(ActionConfigAsset config, float crossfadeOverride = -1f, float startTime = 0f)
@@ -42,7 +66,7 @@ namespace Game.GamePlay
                 return false;
             }
 
-            // 先验证 Timeline 可用性，避免在确认前就清理旧动作
+            // 先验证 Timeline 可用性（纯只读静态资产查询），避免在确认前就清理旧动作
             var timeline = Game.GamePlay.ActionManager.Instance.GetOrLoadTimeline(config);
             if (timeline == null)
             {
@@ -50,22 +74,15 @@ namespace Game.GamePlay
                 return false;
             }
 
-            // Timeline 验证通过，此时才安全地清理旧 Runner
+            // Timeline 验证通过，此时才安全地清理旧动作
             StopAction();
 
+            EnsureRuntimeContext();
 
+            // 继承当前已经生效的外部有效时钟流速（子弹时间从第 0 帧自动继承）
+            ApplyEffectivePlaySpeed();
 
-            // 从管理器索要新 Runner, Context
-            _runner = Game.GamePlay.ActionManager.Instance.GetRunner(_entity);
-            _context = Game.GamePlay.ActionManager.Instance.GetContext(_entity);
-            
-            // Register self as ISkillRunnerProvider
-            _context.UserData = this;
-
-            // 默认恢复全局速度（基础速度 * 当前动作配置速度）
-            float baseSpeed = 1.0f; // 如果有角色全局攻速Buff，可以从 _entity 获取并相乘
-            _context.GlobalPlaySpeed = baseSpeed * config.PlaybackSpeed;
-            if (crossfadeOverride >= 0f)
+            if (crossfadeOverride >= 0f && _context != null)
             {
                 _context.TransitionCrossfadeOverride = crossfadeOverride;
             }
@@ -73,14 +90,17 @@ namespace Game.GamePlay
             ActionRunner runner = _runner;
             CurrentAction = config;
             IsPlaying = true;
-            ActionStartTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
+            ActionStartTime = Time.time; // 输入相关的时间判定，使用 Time.time 作为参考
 
-            runner.OnComplete -= HandleRunnerComplete;
-            runner.OnComplete += HandleRunnerComplete;
-            runner.OnInterrupt -= HandleRunnerInterrupt;
-            runner.OnInterrupt += HandleRunnerInterrupt;
+            if (runner != null)
+            {
+                runner.OnComplete -= HandleRunnerComplete;
+                runner.OnComplete += HandleRunnerComplete;
+                runner.OnInterrupt -= HandleRunnerInterrupt;
+                runner.OnInterrupt += HandleRunnerInterrupt;
 
-            runner.Play(timeline, _context, startTime);
+                runner.Play(timeline, _context, startTime);
+            }
 
             // 防重入保护：如果在 runner.Play (如第 0 帧 Clip 的 OnEnter 自动过渡) 内部递归触发了新动作播放，
             // 此时 _runner 与 CurrentAction 已被内层的全新动作接管，外层帧栈决不能再将其覆盖！
@@ -118,16 +138,32 @@ namespace Game.GamePlay
 
         public void StopAction()
         {
-            if (_runner != null)
+            if (_runner != null && IsPlaying)
             {
                 _runner.OnComplete -= HandleRunnerComplete;
                 _runner.OnInterrupt -= HandleRunnerInterrupt;
                 _runner.Stop();
-                _runner = null;
+
+                //如果之前处于播放状态，主动派发打断事件
+                IsPlaying = false;
+                OnActionInterrupt?.Invoke();
             }
             IsPlaying = false;
             CurrentAction = null;
             ActionStartTime = 0f;
+        }
+
+        public void Dispose()
+        {
+            StopAction();
+            if (_runner != null)
+            {
+                _runner.OnComplete -= HandleRunnerComplete;
+                _runner.OnInterrupt -= HandleRunnerInterrupt;
+                _runner = null;
+            }
+            _context?.Clear();
+            _context = null;
         }
 
         public void SetPlaySpeed(float speed)
@@ -136,13 +172,6 @@ namespace Game.GamePlay
             {
                 _context.GlobalPlaySpeed = speed;
             }
-        }
-
-        public void RestorePlaySpeed()
-        {
-            float baseSpeed = 1.0f; // 同上，如果有全局攻速Buff加成
-            float actionSpeed = CurrentAction != null ? CurrentAction.PlaybackSpeed : 1.0f;
-            SetPlaySpeed(baseSpeed * actionSpeed);
         }
 
         ActionRunner ATEditor.IActionRunnerProvider.GetRunner()
@@ -157,7 +186,6 @@ namespace Game.GamePlay
                 _runner.Seek(targetTime, 0f);
             }
         }
-
 
         public void SendTimelineMessage(string message)
         {

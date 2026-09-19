@@ -22,7 +22,7 @@ namespace Game.GamePlay
 
         protected override void OnActionPlaySucceed(ActionConfigAsset action)
         {
-            if (Role.Machine == null) return;
+            if (Role.StateMachine == null) return;
             
             if (action is RoleActionConfigAsset roleAction)
             {
@@ -33,23 +33,23 @@ namespace Game.GamePlay
                     case ActionState.Dash:
                     case ActionState.Stop:
                         if (_actionData != null)
-                            _actionData.TargetGroundSubState = roleAction.EnterState;
-                        Role.Machine.ChangeState<CharacterGroundState>();
+                            _actionData.Set(nameof(_actionData.TargetGroundSubState), roleAction.EnterState);
+                        Role.StateMachine.ChangeState<CharacterGroundState>();
                         break;
                     case ActionState.Skill:
-                        Role.Machine.ChangeState<CharacterSkillState>();
+                        Role.StateMachine.ChangeState<CharacterSkillState>();
                         break;
                     case ActionState.Evade:
-                        Role.Machine.ChangeState<CharacterEvadeState>();
+                        Role.StateMachine.ChangeState<CharacterEvadeState>();
                         break;
                     case ActionState.Hit:
-                        Role.Machine.ChangeState<CharacterHitStunState>();
+                        Role.StateMachine.ChangeState<CharacterHitStunState>();
                         break;
                     case ActionState.Switch:
-                        Role.Machine.ChangeState<CharacterSwitchState>();
+                        Role.StateMachine.ChangeState<CharacterSwitchState>();
                         break;
                     case ActionState.Parry:
-                        Role.Machine.ChangeState<CharacterParryState>();
+                        Role.StateMachine.ChangeState<CharacterParryState>();
                         break;
                 }
             }

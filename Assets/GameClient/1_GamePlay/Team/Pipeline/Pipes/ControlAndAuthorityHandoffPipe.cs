@@ -23,11 +23,12 @@ namespace Game.GamePlay
             ctx.Manager.AssignTeamContext(inEntity);
 
             // 2. 启用切入角色的主控相机 Rig 与上下文
-            inEntity.SetCameraRigActive(true);
+            inEntity.Presentation?.SetCameraActive(true);
             ctx.Manager.TeamContext?.SetActiveRole(inEntity);
 
-            // 3. 挂载玩家输入提供器并接管控制权
-            inEntity.SetControlActive(true, assignCameraTarget: true);
+            // 3. 挂载玩家输入提供器、切换主镜头目标并接管控制权
+            GameCameraManager.Instance?.SetTarget(inEntity.transform);
+            inEntity.SetControlActive(true);
 
             // 4. 更新调试 HUD
             ctx.Manager.UpdatePartyDebugHudVisibility(inEntity);

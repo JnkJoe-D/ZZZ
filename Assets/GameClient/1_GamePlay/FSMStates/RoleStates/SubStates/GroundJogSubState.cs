@@ -20,15 +20,8 @@ namespace Game.GamePlay
 
         public override void OnEnter()
         {
-            if (_actionData != null) _actionData.IsShortMoveInput = true;
+            if (_actionData != null) _actionData.Set(nameof(_actionData.IsShortMoveInput), true);
             _stateTime = 0f;
-
-            // var config = _ctx.HostEntity.Config;
-            // if (config != null)
-            // {
-            //     var startAction = config.JogStartConfig != null ? config.JogStartConfig : config.JogConfig;
-            //     _ctx.HostEntity.ActionController.PlayAction(startAction);
-            // }
         }
 
         public override void OnUpdate(float deltaTime)
@@ -39,23 +32,16 @@ namespace Game.GamePlay
                 return;
             }
 
-            // if (!provider.HasMovementInput())
-            // {
-            //     _ctx.Blackboard.IsFromDash = false;
-            //     ChangeState(_ctx.StopState);
-            //     return;
-            // }
-
             _stateTime += deltaTime;
 
             var config = _ctx.HostEntity.Config as RoleConfigAsset;
             if (config != null && _actionData != null)
             {
-                _actionData.IsShortMoveInput = _stateTime <= config.JogShortInputThreshold;
+                _actionData.Set(nameof(_actionData.IsShortMoveInput), _stateTime <= config.JogShortInputThreshold);
             }
 
             Vector2 inputDir = provider.GetMovementDirection();
-            _ctx.HostEntity.CharacterMotor?.FaceTo(inputDir);
+            _ctx.HostEntity.MovementComponent?.FaceTo(inputDir);
         }
 
         public override void OnExit()

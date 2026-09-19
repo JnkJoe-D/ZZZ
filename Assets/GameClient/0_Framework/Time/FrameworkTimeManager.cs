@@ -5,7 +5,8 @@ namespace Game.Framework
 {
     /// <summary>
     /// 框架层通用时钟管理器基类。
-    /// 提供多层级时间流速缩放、UI/玩法时钟累加驱动、固定逻辑步长 Tick 广播以及协程等待基础。
+    /// 基于层次化时钟树（Hierarchical TimeClock），提供多层级时间流速缩放、UI/玩法时钟累加驱动、
+    /// 固定逻辑步长 Tick 广播以及协程等待基础。
     /// </summary>
     public class FrameworkTimeManager : ITimeService
     {
@@ -16,13 +17,32 @@ namespace Game.Framework
             protected set => _instance = value;
         }
 
-        // ─── 时间缩放层级（乘法关系） ───
-        public float GlobalTimeScale { get; set; } = 1.0f;     // 全局时停 / 慢动作
-        public float GameplayTimeScale { get; set; } = 1.0f;   // 游戏玩法时停
-        public float UITimeScale { get; set; } = 1.0f;         // UI面板独立缩放
+        // ─── 核心层次化时钟树拓扑 ───
+        public TimeClock RootClock { get; private set; }
+        public TimeClock GameplayClock { get; private set; }
+        public TimeClock UIClock { get; private set; }
 
-        public float FinalGameplayScale => GlobalTimeScale * GameplayTimeScale;
-        public float FinalUIScale => GlobalTimeScale * UITimeScale;
+        // ─── ITimeService 接口契约实现（属性门面映射） ───
+        public float GlobalTimeScale
+        {
+            get => RootClock != null ? RootClock.LocalScale : 1.0f;
+            set { if (RootClock != null) RootClock.LocalScale = value; }
+        }
+
+        public float GameplayTimeScale
+        {
+            get => GameplayClock != null ? GameplayClock.LocalScale : 1.0f;
+            set { if (GameplayClock != null) GameplayClock.LocalScale = value; }
+        }
+
+        public float UITimeScale
+        {
+            get => UIClock != null ? UIClock.LocalScale : 1.0f;
+            set { if (UIClock != null) UIClock.LocalScale = value; }
+        }
+
+        public float FinalGameplayScale => GameplayClock != null ? GameplayClock.EffectiveScale : 1.0f;
+        public float FinalUIScale => UIClock != null ? UIClock.EffectiveScale : 1.0f;
 
         // ─── 逻辑帧配置 ───
         public int TargetLogicFrameRate { get; set; } = 60;
@@ -45,18 +65,31 @@ namespace Game.Framework
         /// </summary>
         public event Action<float> OnUIRenderTick;
 
+        public FrameworkTimeManager()
+        {
+            Instance = this;
+            InitializeClockTree();
+        }
+
+        private void InitializeClockTree()
+        {
+            RootClock = new TimeClock("Root");
+            GameplayClock = new TimeClock("Gameplay", RootClock);
+            UIClock = new TimeClock("UI", RootClock);
+        }
+
         public virtual void Update()
         {
             float unscaledDelta = Time.unscaledDeltaTime;
 
             OnBeforeUpdate(unscaledDelta);
 
-            // 1. UI及渲染层帧更新（受 UI 缩放影响）
+            // 1. UI 及渲染层帧更新（受 UIClock.EffectiveScale 影响）
             float uiDelta = unscaledDelta * FinalUIScale;
             UITime += uiDelta;
             OnUIRenderTick?.Invoke(uiDelta);
 
-            // 2. 玩法逻辑层固定步长更新（受 Gameplay 缩放影响）
+            // 2. 玩法逻辑层固定步长更新（受 GameplayClock.EffectiveScale 影响）
             float gameplayUnscaledDelta = unscaledDelta * FinalGameplayScale;
             _gameplayAccumulator += gameplayUnscaledDelta;
 
@@ -86,12 +119,12 @@ namespace Game.Framework
         }
 
         /// <summary>
-        /// 在每帧主时钟推进前调用，供派生类扩展（如子弹时间计时）
+        /// 在每帧主时钟推进前调用，供派生类扩展（如顿帧/子弹时间计时）
         /// </summary>
         protected virtual void OnBeforeUpdate(float unscaledDelta) { }
 
         /// <summary>
-        /// 在每个固定逻辑步长派发前调用，供派生类扩展（如顿帧 Tick）
+        /// 在每个固定逻辑步长派发前调用，供派生类扩展
         /// </summary>
         protected virtual void OnBeforeLogicStep(float logicDelta) { }
 
@@ -103,9 +136,9 @@ namespace Game.Framework
         /// </summary>
         public virtual void ResetToNormal()
         {
-            GlobalTimeScale = 1.0f;
-            GameplayTimeScale = 1.0f;
-            UITimeScale = 1.0f;
+            if (RootClock != null) RootClock.LocalScale = 1.0f;
+            if (GameplayClock != null) GameplayClock.LocalScale = 1.0f;
+            if (UIClock != null) UIClock.LocalScale = 1.0f;
             Time.timeScale = 1.0f;
         }
     }

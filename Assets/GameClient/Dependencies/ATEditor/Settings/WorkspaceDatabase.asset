@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50cc26a705f419c41b42a9c39ee69cac, type: 3}
+  m_Name: WorkspaceDatabase
+  m_EditorClassIdentifier: 
+  categories:
+  - None
+  - Player
+  - Monster
+  - NPC
+  - Common
+  workspaces:
+  - Id: Player_Ellen
+    Category: Player
+    DisplayName: "\u827E\u83B2 (Ellen)"
+    FolderName: Player/Ellen
+    PreviewPrefab: {fileID: 5158763610275107262, guid: 1f300285bcdc3454fbb8009c7f2ebf82,
+      type: 3}
+    SpawnPosition: {x: 0, y: 0, z: 0}
+    SpawnRotationEuler: {x: 0, y: 0, z: 0}
+  - Id: Player_Anby
+    Category: Player
+    DisplayName: "\u5B89\u6BD4 (Anby)"
+    FolderName: Player/Anby
+    PreviewPrefab: {fileID: 6866138656870126649, guid: 58a89a85b7ed98e4885d1ebbcd76228d,
+      type: 3}
+    SpawnPosition: {x: 0, y: 0, z: 0}
+    SpawnRotationEuler: {x: 0, y: 0, z: 0}
+  - Id: Player_HoshimiMiyabi
+    Category: Player
+    DisplayName: "\u661F\u89C1\u96C5 (Unagi)"
+    FolderName: Player/Unagi
+    PreviewPrefab: {fileID: 5207641375562360989, guid: 1e1583ff6f2508d45ae6203b9784d3e8,
+      type: 3}
+    SpawnPosition: {x: 0, y: 0, z: 0}
+    SpawnRotationEuler: {x: 0, y: 0, z: 0}
+  - Id: Monster_TyrfingInfested
+    Category: Monster
+    DisplayName: "\u4FB5\u8680\u63D0\u5C14\u950B (TyrfingInfested)"
+    FolderName: Monster/TyrfingInfested
+    PreviewPrefab: {fileID: 8612589450643552581, guid: 80ad4626c1b004645a3ecbc09f764e4f,
+      type: 3}
+    SpawnPosition: {x: 0, y: 0, z: 0}
+    SpawnRotationEuler: {x: 0, y: 0, z: 0}
+  - Id: Common_Shared
+    Category: Common
+    DisplayName: "\u901A\u7528\u6A21\u677F (Common)"
+    FolderName: Common
+    PreviewPrefab: {fileID: 0}
+    SpawnPosition: {x: 0, y: 0, z: 0}
+    SpawnRotationEuler: {x: 0, y: 0, z: 0}
+  - Id: Player_Unagi
+    Category: Player
+    DisplayName: "\u65B0\u89D2\u8272"
+    FolderName: Player/QingYi
+    PreviewPrefab: {fileID: 0}
+    SpawnPosition: {x: 0, y: 0, z: 0}
+    SpawnRotationEuler: {x: 0, y: 0, z: 0}

@@ -4,34 +4,39 @@ using UnityEngine;
 namespace Game.GamePlay
 {
     /// <summary>
-    /// 客户端输入全局管理器
-    /// 负责统筹 Input Actions 生命期，并控制 Action Map 的挂起和恢复（如打开 UI 时屏蔽底层操作）
-    /// 挂靠于 GameRoot 下
+    /// 客户端输入全局管理器。
+    /// 统筹玩家输入状态，控制游戏输入与 UI 层的挂起/恢复（如打开全屏 UI 时屏蔽角色操作与运镜）。
+    /// 挂靠于 GameRoot 下。
     /// </summary>
-    public class InputManager : Game.Framework.Singleton<InputManager>
+    public class InputManager : Singleton<InputManager>
     {
-        // 此处先不直接绑定特定的强类型 PlayerInputActions，
-        // 而是提供一个标准的初始化和禁用/启用口子。
-        // （待后续 Unity Editor 中生成具体的 PlayerInputActions 脚本后注入或在此处 new 出）
-        // private PlayerInputActions _inputActions;
-        
+        public bool IsPlayerInputEnabled { get; private set; } = true;
+
         public void Initialize()
         {
-            // TODO: 等待 PlayerInputActions 脚本生成后取消注释
-            // _inputActions = new PlayerInputActions();
-            // _inputActions.Enable();
-            
+            IsPlayerInputEnabled = true;
             GLog.Info(LogTags.Input, "初始化完成");
         }
 
         public void Shutdown()
         {
-            // if (_inputActions != null)
-            // {
-            //     _inputActions.Disable();
-            //     _inputActions = null;
-            // }
+            IsPlayerInputEnabled = false;
             GLog.Info(LogTags.Input, "已关闭");
+        }
+
+        /// <summary>
+        /// 统一设置玩法/战斗角色输入总开关。
+        /// </summary>
+        public void SetGameplayInputActive(bool active)
+        {
+            if (IsPlayerInputEnabled == active)
+            {
+                return;
+            }
+
+            IsPlayerInputEnabled = active;
+            TeamManager.Instance?.SetInputEnable(active);
+            GLog.Info(LogTags.Input, $"玩法输入已{(active ? "启用" : "禁用")}");
         }
 
         /// <summary>
@@ -39,9 +44,7 @@ namespace Game.GamePlay
         /// </summary>
         public void EnablePlayerInput()
         {
-            // _inputActions?.Player.Enable();
-            // _inputActions?.UI.Disable();
-            GLog.Info(LogTags.Input, "玩家输入已启用");
+            SetGameplayInputActive(true);
         }
 
         /// <summary>
@@ -49,11 +52,7 @@ namespace Game.GamePlay
         /// </summary>
         public void EnableUIInput()
         {
-            // _inputActions?.Player.Disable();
-            // _inputActions?.UI.Enable();
-            GLog.Info(LogTags.Input, "玩家输入已禁用，切换至 UI 层");
+            SetGameplayInputActive(false);
         }
-        
-        // public PlayerInputActions Actions => _inputActions;
     }
 }

@@ -83,6 +83,17 @@ namespace ATEditor
             }
 
             SyncSpeed(context.GlobalPlaySpeed);
+
+            if (context != null)
+            {
+                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+                context.OnGlobalSpeedChanged += HandleGlobalSpeedChanged;
+            }
+        }
+
+        private void HandleGlobalSpeedChanged(float newGlobalSpeed)
+        {
+            SyncSpeed(newGlobalSpeed);
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
@@ -117,6 +128,10 @@ namespace ATEditor
         public override void Reset()
         {
             base.Reset();
+            if (context != null)
+            {
+                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+            }
             particleInfos = null;
             vfxInstance = null;
             vfxHanlder = null;
@@ -126,6 +141,11 @@ namespace ATEditor
 
         private void HandleVFXRelease()
         {
+            if (context != null)
+            {
+                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+            }
+
             if (vfxInstance == null || _returnQueued) return;
 
             _returnQueued = true;

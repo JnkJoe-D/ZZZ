@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ATEditor;
+using Game.Framework;
 
 namespace Game.GamePlay
 {
@@ -135,20 +136,18 @@ namespace Game.GamePlay
     }
 
     /// <summary>
-    /// 招架对峙确定性拼刀契约（方案 D）
+    /// 招架对峙确定性拼刀契约
     /// </summary>
     public class ParryClashContract
     {
         public CharacterEntity Attacker;     // 攻击方（怪物）
         public CharacterEntity ParryRole;    // 防守招架方（玩家切入角色）
         public AttackWarningMarker Marker;   // 关联的预警数据
-        public float ExpireTime;             // 契约超时失效时间点
         public bool IsResolved;              // 是否已至少完成一次拼刀命中
         public int ParryHitEffectId;         // 招架成功反制时施加给攻击者的命中效果 ID
         public float HitStopDuration = 0.1f; // 招架顿帧时长 (来自时间轴 ParryWindowClip)
 
         public bool IsValid => 
-            (TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time) <= ExpireTime &&
             Attacker != null &&
             Attacker.gameObject.activeInHierarchy &&
             ParryRole != null &&
@@ -161,7 +160,6 @@ namespace Game.GamePlay
     /// </summary>
     public static class CombatWarningManager
     {
-        public const float DefaultContractTimeout = 5.0f;
         public const float DefaultDetectionRadius = 10.0f;
         public const float DefaultDetectionAngle = 180.0f;
 
@@ -174,7 +172,7 @@ namespace Game.GamePlay
             if (attacker == null) return null;
             if (_activeThreatSessions.TryGetValue(attacker, out var session))
             {
-                if (!attacker.gameObject.activeInHierarchy || attacker.IsDead)
+                if (!attacker.gameObject.activeInHierarchy || attacker.LifecycleComponent.IsDead)
                 {
                     _activeThreatSessions.Remove(attacker);
                     AttackThreatSession.Release(session);
@@ -381,6 +379,48 @@ namespace Game.GamePlay
                 }
             }
             return null;
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void InitEventSubscription()
+        {
+            EventCenter.Subscribe<EntityDiedEvent>(OnEntityDied);
+        }
+
+        private static void OnEntityDied(EntityDiedEvent evt)
+        {
+            if (evt.Victim != null)
+            {
+                HandleEntityRemoved(evt.Victim);
+            }
+        }
+
+        /// <summary>
+        /// 当实体死亡或被销毁时，主动自闭环清理与其关联的 Marker、Contract 与 ThreatSession
+        /// </summary>
+        public static void HandleEntityRemoved(CharacterEntity entity)
+        {
+            if (entity == null) return;
+
+            // 1. 清理该实体作为攻击方的预警标记
+            for (int i = _activeMarkers.Count - 1; i >= 0; i--)
+            {
+                if (_activeMarkers[i].Attacker == entity)
+                {
+                    _activeMarkers.RemoveAt(i);
+                }
+            }
+
+            // 2. 清理该实体相关的拼刀契约 (无论是攻击方还是防守招架方)
+            UnregisterContractsByAttacker(entity);
+            UnregisterContractsByRole(entity);
+
+            // 3. 清理该实体对应的威胁会话并回收入池
+            if (_activeThreatSessions.TryGetValue(entity, out var session))
+            {
+                _activeThreatSessions.Remove(entity);
+                AttackThreatSession.Release(session);
+            }
         }
 
 #if UNITY_EDITOR

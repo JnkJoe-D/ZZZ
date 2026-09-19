@@ -55,7 +55,10 @@ namespace Game.GamePlay
             }
             if (serviceType == typeof(ISpawnHandler))
             {
-                return new ATSpawnHandler();
+                return GetOrCreateCachedService(serviceType, owner, () => {
+                    var entity = owner != null ? owner.GetComponent<CharacterEntity>() : null;
+                    return new ATSpawnHandler(entity);
+                });
             }
             if (serviceType == typeof(ICameraHandler))
             {
@@ -70,8 +73,10 @@ namespace Game.GamePlay
             }
             if (serviceType == typeof(IEventHandler))
             {
-                var ownerHandler = owner != null ? owner.GetComponent<IEventHandler>() : null;
-                return GetOrCreateCachedService(serviceType, owner ,() => ownerHandler);
+                return GetOrCreateCachedService(serviceType, owner, () => {
+                    var entity = owner != null ? owner.GetComponent<CharacterEntity>() : null;
+                    return entity != null ? new ATEventHandler(entity) : null;
+                });
             }
 
             if (serviceType == typeof(IRouteWindowHandler))

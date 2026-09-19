@@ -18,6 +18,7 @@ namespace Game.GamePlay
         public event Action OnMoveCanceled;
         public event Action OnMoveHeld;
         public event Action OnMovementZero;
+        public event Action OnRawMovementZero;
 
         public event Action OnEvadeStarted;
         public event Action OnEvadePerformed;
@@ -40,8 +41,19 @@ namespace Game.GamePlay
 
         private PlayerControl _input;
         private Vector2 _currentMoveInput;
-        private Vector2 _lastMoveInput;
+        private Vector2 _lastRawMoveInput;
+        private Vector2 _smoothedMoveInput;
+        private Vector2 _smoothMoveVelocity;
+        private RoleConfigAsset _cachedRoleConfig;
         private readonly HashSet<int> _heldActions = new();
+
+        /// <summary>
+        /// 绑定当前出场角色的配置，用于动态获取手感衰减阻尼参数
+        /// </summary>
+        public void SetRoleConfig(RoleConfigAsset config)
+        {
+            _cachedRoleConfig = config;
+        }
 
         public bool IsHeld(int actionKey)
         {
@@ -82,13 +94,43 @@ namespace Game.GamePlay
         {
             _input = new PlayerControl();
 
-            // 订阅瞬发与持续事件
-            _input.GamePlay.Move.started += _ => OnMoveStarted?.Invoke();
-            _input.GamePlay.Move.performed += _ => OnMovePerformed?.Invoke();
+            // 订阅瞬发与持续事件（并在事件回调触发的第一瞬间立即更新输入向量，保证后续路由校验即时命中）
+            _input.GamePlay.Move.started += ctx =>
+            {
+                Vector2 val = ctx.ReadValue<Vector2>();
+                if (val.sqrMagnitude > 0.01f)
+                {
+                    _currentMoveInput = val;
+                    _smoothedMoveInput = val;
+                    _smoothMoveVelocity = Vector2.zero;
+                    _lastRawMoveInput = val;
+                }
+                OnMoveStarted?.Invoke();
+            };
+
+            _input.GamePlay.Move.performed += ctx =>
+            {
+                Vector2 val = ctx.ReadValue<Vector2>();
+                _currentMoveInput = val;
+                if (val.sqrMagnitude > 0.01f)
+                {
+                    _smoothedMoveInput = val;
+                    _smoothMoveVelocity = Vector2.zero;
+                    _lastRawMoveInput = val;
+                }
+                OnMovePerformed?.Invoke();
+            };
+
             _input.GamePlay.Move.canceled += _ =>
             {
                 OnMoveCanceled?.Invoke();
                 _heldActions.Remove((int)HardwareInputType.Move);
+                _currentMoveInput = Vector2.zero;
+                if (_lastRawMoveInput.sqrMagnitude > 0.01f)
+                {
+                    _lastRawMoveInput = Vector2.zero;
+                    OnRawMovementZero?.Invoke();
+                }
             };
             _input.GamePlay.MoveHeld.performed += _ =>
             {
@@ -172,7 +214,9 @@ namespace Game.GamePlay
         {
             _heldActions.Clear();
             _currentMoveInput = Vector2.zero;
-            _lastMoveInput = Vector2.zero;
+            _lastRawMoveInput = Vector2.zero;
+            _smoothedMoveInput = Vector2.zero;
+            _smoothMoveVelocity = Vector2.zero;
             _input.Disable();
         }
 
@@ -188,15 +232,48 @@ namespace Game.GamePlay
 
         private void Update()
         {
-            // 每帧获取摇杆/WASD数据
-            _lastMoveInput = _currentMoveInput;
+            // 1. 每帧获取物理原始输入
             _currentMoveInput = _input != null ? _input.GamePlay.Move.ReadValue<Vector2>() : Vector2.zero;
 
-            // 检测移动输入从有到无、彻底归零的瞬间边沿 (Falling Edge)
-            bool hadInput = _lastMoveInput.sqrMagnitude > 0.01f;
-            bool hasInput = _currentMoveInput.sqrMagnitude > 0.01f;
-            if (hadInput && !hasInput)
+            // 2. 原始物理输入边沿检测 (从有到无瞬间立即触发 OnRawMovementZero，无阻尼)
+            bool hadRawInput = _lastRawMoveInput.sqrMagnitude > 0.01f;
+            bool hasRawInput = _currentMoveInput.sqrMagnitude > 0.01f;
+            _lastRawMoveInput = _currentMoveInput;
+
+            if (hadRawInput && !hasRawInput)
             {
+                OnRawMovementZero?.Invoke();
+            }
+
+            // 3. 从 RoleConfigAsset 读取衰减阻尼时长（默认 0.08s）
+            float decelDuration = _cachedRoleConfig != null ? _cachedRoleConfig.MoveInputDecelerationDuration : 0.08f;
+            float dt = Time.unscaledDeltaTime;
+
+            bool hadSmoothedInput = _smoothedMoveInput.sqrMagnitude > 0.001f;
+
+            if (hasRawInput)
+            {
+                // 按下时：零延迟、无增量阻尼，立即 100% 响应物理输入
+                _smoothedMoveInput = _currentMoveInput;
+                _smoothMoveVelocity = Vector2.zero;
+            }
+            else if (hadSmoothedInput && decelDuration > 0f)
+            {
+                // 松开时：纯衰减阻尼保护（防止切换前后左右按键时的空窗期误停下，进而导致重新起步）
+                _smoothedMoveInput = Vector2.SmoothDamp(_smoothedMoveInput, Vector2.zero, ref _smoothMoveVelocity, decelDuration, float.MaxValue, dt);
+                if (_smoothedMoveInput.sqrMagnitude < 0.001f)
+                {
+                    _smoothedMoveInput = Vector2.zero;
+                    _smoothMoveVelocity = Vector2.zero;
+                    // 仅在衰减彻底归零时，才触发停下动作
+                    OnMovementZero?.Invoke();
+                }
+            }
+            else if (hadSmoothedInput)
+            {
+                // 无阻尼配置时立即归零并触发停下
+                _smoothedMoveInput = Vector2.zero;
+                _smoothMoveVelocity = Vector2.zero;
                 OnMovementZero?.Invoke();
             }
         }
@@ -207,17 +284,17 @@ namespace Game.GamePlay
         
         public Vector2 GetMovementDirection()
         {
-            return _input?.GamePlay.Move.ReadValue<Vector2>() ?? Vector2.zero;
+            return _smoothedMoveInput;
         }
 
         public Vector2 GetLastMovementDirection()
         {
-            return _lastMoveInput;
+            return _smoothedMoveInput;
         }
 
         public bool HasMovementInput()
         {
-            return GetMovementDirection().sqrMagnitude > 0.01f;
+            return _smoothedMoveInput.sqrMagnitude > 0.001f;
         }
     }
 }

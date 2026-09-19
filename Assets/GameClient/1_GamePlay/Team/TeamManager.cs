@@ -4,7 +4,6 @@ using cfg;
 using Cinemachine;
 using Game.Framework;
 using Game.GamePlay;
-
 using UnityEngine;
 
 namespace Game.GamePlay
@@ -51,11 +50,11 @@ namespace Game.GamePlay
         /// <summary> 小队运行时共享的逻辑上下文，控制小队内的状态同步与通信。 </summary>
         private RoleTeamContext _teamContext;
 
-        /// <summary> 换人过程中多角色共享的虚拟相机 GameObject 实例。 </summary>
-        private GameObject _sharedPartyCameraInstance;
+        /// <summary> 角色生成装配工厂服务。 </summary>
+        private readonly TeamCharacterSpawner _spawner = new();
 
-        /// <summary> 队伍共享虚拟相机的 Cinemachine 组件接口，用于接管镜头控制。 </summary>
-        private CinemachineVirtualCameraBase _sharedPartyVirtualCamera;
+        /// <summary> 换人空间坐标解算与防卡死避障服务。 </summary>
+        private readonly TeamPlacementService _placementService = new();
 
         /// <summary> 当前正处于控制/激活状态下的角色插槽索引。 </summary>
         private int _activeSlotIndex = -1;
@@ -72,14 +71,11 @@ namespace Game.GamePlay
         /// <summary> 暴露当前生效的队伍全局配置。 </summary>
         public TeamConfigAsset TeamConfig => _teamConfig;
 
-        /// <summary> 获取是否已配置并挂载了共享的队伍虚拟相机。 </summary>
-        public bool HasSharedPartyCamera => _sharedPartyVirtualCamera != null;
-
         /// <summary> 获取当前小队的运行时逻辑上下文。 </summary>
         public RoleTeamContext TeamContext => _teamContext;
 
         /// <summary> 队伍共享的索敌组件。 </summary>
-        public ITargetFinder TargetFinder { get; private set; }
+        public ITargetFinder TargetFinder => _teamContext?.TargetFinder;
 
         /// <summary> 当前被玩家直接操作并占有的主控角色 Entity。 </summary>
         public RoleEntity LocalCharacter { get; internal set; }
@@ -138,12 +134,20 @@ namespace Game.GamePlay
         }
 
         /// <summary>
-        /// 轮询更新，负责驱动非主控角色的挂机/待机动作状态维持。
+        /// 轮询更新，负责单向驱动小队角色的逻辑 Tick 以及换人执行器状态。
         /// </summary>
         public void Update(float deltaTime)
         {
             _switchExecutor?.Update(deltaTime);
 
+            for (int i = 0; i < _partyMembers.Count; i++)
+            {
+                var member = _partyMembers[i];
+                if (member != null && member.Entity != null && member.Entity.gameObject.activeInHierarchy)
+                {
+                    member.Entity.OnLogicTick(deltaTime);
+                }
+            }
         }
 
         /// <summary>
@@ -192,11 +196,11 @@ namespace Game.GamePlay
 
             // 清理旧的角色和相机器件
             UnpossessCurrentCharacter();
-            DestroySharedPartyCamera();
             CreateTeamContext(null, spawnPos, spawnRot);
+            EventCenter.Publish(new PartyCreatedEvent { TeamConfig = null, TeamContext = _teamContext });
 
             // 加载角色 Prefab 预制件
-            GameObject prefab = await ResolveCharacterPrefabAsync(config, characterPrefabPath);
+            GameObject prefab = await _spawner.ResolveCharacterPrefabAsync(config, characterPrefabPath);
             if (prefab == null)
             {
                 GLog.Error(LogTags.Team, $"Failed to resolve prefab for '{config.Name}'.");
@@ -204,17 +208,16 @@ namespace Game.GamePlay
             }
 
             // 预载动作数据
-            if (ActionManager.Instance != null)
-            {
-                await ActionManager.Instance.PreloadCharacterActionsAsync(config);
-            }
+            await _spawner.PreloadPartyActionsAsync(new[] { config });
 
             // 实例化运行时 Entity
-            RoleEntity entity = SpawnRoleEntity(config, prefab, spawnPos, spawnRot);
+            RoleEntity entity = _spawner.SpawnRoleEntity(config, prefab, spawnPos, spawnRot, _teamContext);
             if (entity == null)
             {
                 return null;
             }
+
+            EventCenter.Publish(new PartyMemberSpawnedEvent { Entity = entity });
 
             // 包装小队成员并存入索引 0 的默认插槽
             PartyMember member = new PartyMember
@@ -243,14 +246,13 @@ namespace Game.GamePlay
                     continue;
                 }
 
-                // 卸载动作缓存并物理销毁 GameObject 实例
-                ActionManager.Instance?.RemoveCache(member.Entity);
+                // 物理销毁 GameObject 实例（动作上下文已在 Entity.OnDestroy 中自动释放）
                 Object.Destroy(member.Entity.gameObject);
             }
 
             _partyMembers.Clear();
             _teamConfig = null;
-            DestroySharedPartyCamera();
+            EventCenter.Publish(new PartyDestroyedEvent());
             DestroyTeamContext();
             _activeSlotIndex = -1;
             
@@ -259,7 +261,6 @@ namespace Game.GamePlay
             CombatWarningManager.Clear();
             
             LocalCharacter = null;
-            TargetFinder = null;
             GameCameraManager.Instance?.SetTarget(null);
         }
 
@@ -270,7 +271,11 @@ namespace Game.GamePlay
         {
             if (LocalCharacter != null)
             {
-                LocalCharacter.SetControlActive(enable, assignCameraTarget: enable);
+                LocalCharacter.SetControlActive(enable);
+                if (enable)
+                {
+                    GameCameraManager.Instance?.SetTarget(LocalCharacter.transform);
+                }
             }
         }
 
@@ -295,9 +300,6 @@ namespace Game.GamePlay
 
             _teamConfig = teamConfig;
 
-            // 初始化队伍共享的索敌组件
-            TargetFinder = new RoleTargetFinder(teamConfig.TargetSearchConfig);
-
             // 限制最多加载并生成 3 名编队成员
             List<CharacterConfigAsset> runtimeMembers = new List<CharacterConfigAsset>(3);
             for (int i = 0; i < members.Count && runtimeMembers.Count < 3; i++)
@@ -313,38 +315,31 @@ namespace Game.GamePlay
                 return null;
             }
 
-            // 建立小队逻辑上下文及共享虚拟相机
+            // 建立小队逻辑上下文并发布小队创建事件
             CreateTeamContext(teamConfig, spawnPos, spawnRot);
-            CreateSharedPartyCamera(teamConfig);
+            EventCenter.Publish(new PartyCreatedEvent { TeamConfig = teamConfig, TeamContext = _teamContext });
 
             // 并行并发预载动作包以防在战斗中切人发生 IO 顿卡
-            if (ActionManager.Instance != null)
-            {
-                List<Task> preloadTasks = new List<Task>(runtimeMembers.Count);
-                foreach (CharacterConfigAsset config in runtimeMembers)
-                {
-                    preloadTasks.Add(ActionManager.Instance.PreloadCharacterActionsAsync(config));
-                }
-
-                await Task.WhenAll(preloadTasks);
-            }
+            await _spawner.PreloadPartyActionsAsync(runtimeMembers);
 
             // 串行生成所有角色的实例化 Entity 实例
             for (int i = 0; i < runtimeMembers.Count; i++)
             {
                 CharacterConfigAsset config = runtimeMembers[i];
-                GameObject prefab = await ResolveCharacterPrefabAsync(config, null);
+                GameObject prefab = await _spawner.ResolveCharacterPrefabAsync(config, null);
                 if (prefab == null)
                 {
                     GLog.Error(LogTags.Team, $"Missing CharacterPrefab on '{config.Name}'.");
                     continue;
                 }
 
-                RoleEntity entity = SpawnRoleEntity(config, prefab, spawnPos, spawnRot);
+                RoleEntity entity = _spawner.SpawnRoleEntity(config, prefab, spawnPos, spawnRot, _teamContext);
                 if (entity == null)
                 {
                     continue;
                 }
+
+                EventCenter.Publish(new PartyMemberSpawnedEvent { Entity = entity });
 
                 _partyMembers.Add(new PartyMember
                 {
@@ -375,103 +370,6 @@ namespace Game.GamePlay
         }
 
         /// <summary>
-        /// 物理生成并实例化角色的 RoleEntity。
-        /// 挂载并关联小队相机和队伍全局逻辑上下文，并重置控制激活标志。
-        /// </summary>
-        private RoleEntity SpawnRoleEntity(
-            CharacterConfigAsset config,
-            GameObject prefab,
-            Vector3 spawnPos,
-            Quaternion spawnRot)
-        {
-            GameObject characterGo = Object.Instantiate(prefab, spawnPos, spawnRot);
-            
-            RoleEntity entity = characterGo.GetComponent<RoleEntity>();
-            if (entity == null)
-            {
-                entity = characterGo.AddComponent<RoleEntity>();
-            }
-
-            AssignSharedPartyCamera(entity);
-            AssignTeamContext(entity);
-            entity.Init(config);
-            entity.EnsureRuntimeInitialized();
-            if (!HasSharedPartyCamera)
-            {
-                entity.SetCameraRigActive(false);
-            }
-            entity.SetControlActive(false, assignCameraTarget: false);
-            entity.ResetSwitchState();
-            return entity;
-        }
-
-        /// <summary>
-        /// 异步解析并载入配置的角色 Prefab，支持路径重写。
-        /// </summary>
-        private async Task<GameObject> ResolveCharacterPrefabAsync(CharacterConfigAsset config, string prefabPathOverride)
-        {
-            if (config != null && config.Prefab != null)
-            {
-                return config.Prefab;
-            }
-
-            if (!string.IsNullOrEmpty(prefabPathOverride))
-            {
-                return await ResourceManager.Instance.LoadAssetAsync<GameObject>(prefabPathOverride);
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// 实例化并建立共享的编队相机实例。如果 Context 自身已携带共享相机则直接复用。
-        /// </summary>
-        private void CreateSharedPartyCamera(TeamConfigAsset teamConfig)
-        {
-            DestroySharedPartyCamera();
-
-            if (_teamContext?.SharedVirtualCamera != null)
-            {
-                _sharedPartyVirtualCamera = _teamContext.SharedVirtualCamera;
-                _sharedPartyVirtualCamera.gameObject.SetActive(false);
-                return;
-            }
-
-            if (teamConfig == null || teamConfig.CameraPrefab == null)
-            {
-                return;
-            }
-
-            _sharedPartyCameraInstance = Object.Instantiate(teamConfig.CameraPrefab);
-            _sharedPartyVirtualCamera = _sharedPartyCameraInstance.GetComponent<CinemachineVirtualCameraBase>()
-                ?? _sharedPartyCameraInstance.GetComponentInChildren<CinemachineVirtualCameraBase>(true);
-
-            if (_sharedPartyVirtualCamera == null)
-            {
-                GLog.Warning(LogTags.Team, "Party camera prefab does not contain a CinemachineVirtualCameraBase.");
-                Object.Destroy(_sharedPartyCameraInstance);
-                _sharedPartyCameraInstance = null;
-                return;
-            }
-
-            _sharedPartyCameraInstance.SetActive(false);
-        }
-
-        /// <summary>
-        /// 销毁运行时生成的共享虚拟相机实例，释放内存占用。
-        /// </summary>
-        private void DestroySharedPartyCamera()
-        {
-            _sharedPartyVirtualCamera = null;
-
-            if (_sharedPartyCameraInstance != null)
-            {
-                Object.Destroy(_sharedPartyCameraInstance);
-                _sharedPartyCameraInstance = null;
-            }
-        }
-
-        /// <summary>
         /// 创建或实例化小队的核心逻辑上下文组件及其承载的 GameObject 容器。
         /// </summary>
         private void CreateTeamContext(TeamConfigAsset teamConfig, Vector3 spawnPos, Quaternion spawnRot)
@@ -490,7 +388,7 @@ namespace Game.GamePlay
                 _teamContext = _teamInstance.AddComponent<RoleTeamContext>();
             }
 
-            _teamContext.Initialize();
+            _teamContext.Initialize(teamConfig?.TargetSearchConfig);
         }
 
         /// <summary>
@@ -525,14 +423,9 @@ namespace Game.GamePlay
         /// </summary>
         internal void AssignSharedPartyCamera(RoleEntity entity)
         {
-            if (entity == null || _sharedPartyVirtualCamera == null)
+            if (entity != null)
             {
-                return;
-            }
-
-            if (entity.CameraController is CharacterCameraController characterCameraController)
-            {
-                characterCameraController.AssignVirtualCamera(_sharedPartyVirtualCamera);
+                EventCenter.Publish(new PartyMemberSpawnedEvent { Entity = entity });
             }
         }
 
@@ -561,11 +454,11 @@ namespace Game.GamePlay
             RoleEntity outgoing = _teamContext?.ActiveRole;
             if (outgoing != null && outgoing != entity)
             {
-                GetInvalidPosSwitchIn(outgoing.transform, entity, out spawnPos, out spawnRot);
+                _placementService.ResolveSwitchInPlacement(outgoing.transform, entity, _teamConfig, out spawnPos, out spawnRot);
             }
             else
             {
-                GetInvalidPosItself(position, rotation, entity, out spawnPos, out spawnRot);
+                _placementService.ResolvePlacementAtPosition(position, rotation, entity, _teamConfig, out spawnPos, out spawnRot);
             }
 
             SynchronizePartyMemberTransform(entity, spawnPos, spawnRot);
@@ -576,13 +469,17 @@ namespace Game.GamePlay
             }
 
             entity.EnsureRuntimeInitialized();
-            entity.SetColliderActive(true);
+            entity.Presentation?.SetColliderActive(true);
             SynchronizePartyMemberTransform(entity, spawnPos, spawnRot);
-            entity.ResetSwitchState();
-            entity.SetPresentationVisible(true);
-            entity.SetCameraRigActive(true);
+            entity.CommandBuffer?.Clear();
+            entity.Presentation?.SetPresentationVisible(true);
+            entity.Presentation?.SetCameraActive(true);
             _teamContext?.SetActiveRole(entity);
-            entity.SetControlActive(true, assignCameraTarget);
+            if (assignCameraTarget)
+            {
+                GameCameraManager.Instance?.SetTarget(entity.transform);
+            }
+            entity.SetControlActive(true);
             UpdatePartyDebugHudVisibility(entity);
             member.ActivationVersion++;
             
@@ -620,14 +517,11 @@ namespace Game.GamePlay
             }
 
             entity.EnsureRuntimeInitialized();
-            entity.SetControlActive(false, assignCameraTarget: false);
-            if (!HasSharedPartyCamera)
-            {
-                entity.SetCameraRigActive(false);
-            }
-            entity.ResetSwitchState();
-            entity.SetPresentationVisible(false);
-            entity.SetColliderActive(false);
+            entity.SetControlActive(false);
+            entity.Presentation?.SetCameraActive(false);
+            entity.CommandBuffer?.Clear();
+            entity.Presentation?.SetPresentationVisible(false);
+            entity.Presentation?.SetColliderActive(false);
             SetDebugHudVisible(entity, false);
             if (entity.Config?.ActionRoot != null &&
                 (entity.ActionPlayer?.CurrentAction != entity.Config.ActionRoot || entity.ActionPlayer?.IsPlaying != true))
@@ -662,106 +556,7 @@ namespace Game.GamePlay
 
         internal void CalculateSafeSwitchInTransform(Transform originTransform, RoleEntity switchInEntity, out Vector3 targetPos, out Quaternion targetRot)
         {
-            GetInvalidPosSwitchIn(originTransform, switchInEntity, out targetPos, out targetRot);
-        }
-
-        private void GetInvalidPosSwitchIn(Transform originTransform, RoleEntity switchInEntity, out Vector3 targetPos, out Quaternion targetRot)
-        {
-            Vector3 originPos = originTransform.position;
-            Quaternion originRot = originTransform.rotation;
-
-            // 1. 优先依次检测配置的偏移量位置，寻找首选且无阻挡的切入点
-            var offsets = _teamConfig != null ? _teamConfig.SwitchInOffset : null;
-            if (offsets != null)
-            {
-                for (int i = 0; i < offsets.Count; ++i)
-                {
-                    Vector3 testPos = originTransform.TransformPoint(offsets[i]);
-                    if (!IsPositionBlocked(testPos, switchInEntity))
-                    {
-                        targetPos = testPos;
-                        targetRot = originRot;
-                        return;
-                    }
-                }
-            }
-
-            // 2. 如果配置的所有偏移点都被阻挡，再用原点位置进行无阻挡检测和首要兜底
-            if (!IsPositionBlocked(originPos, switchInEntity))
-            {
-                targetPos = originPos;
-                targetRot = originRot;
-                return;
-            }
-
-            // 3. 若全部候选位置都被阻挡，则绝对兜底回到原点位置
-            targetPos = originPos;
-            targetRot = originRot;
-        }
-
-        private void GetInvalidPosItself(Vector3 position, Quaternion rotation, RoleEntity switchInEntity, out Vector3 targetPos, out Quaternion targetRot)
-        {
-            targetPos = position;
-            targetRot = rotation;
-
-            // 如果没有 outgoing（如初始化时），仅对目标点本身做防夹阻挡检测
-            if (IsPositionBlocked(position, switchInEntity))
-            {
-                var offsets = _teamConfig != null ? _teamConfig.SwitchInOffset : null;
-                if (offsets != null)
-                {
-                    for (int i = 0; i < offsets.Count; ++i)
-                    {
-                        Vector3 testPos = position + rotation * offsets[i];
-                        if (!IsPositionBlocked(testPos, switchInEntity))
-                        {
-                            targetPos = testPos;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        private static readonly Collider[] _blockCheckBuffer = new Collider[1];
-
-        private bool IsPositionBlocked(Vector3 pos, RoleEntity entity)
-        {
-            if (entity == null) return false;
-
-            // 获取角色的真实碰撞半径（含 skinWidth）
-            float radius = entity.GetCharcterRadius();
-            
-            // 投射胶囊体的半径是碰撞半径乘 _teamConfig.blockRadiusMultipier 系数
-            float checkRadius = radius * (_teamConfig != null ? _teamConfig.blockRadiusMultipier : 1.0f);
-
-            // 获取角色高度（用于确定胶囊体的顶部和底部球心）
-            float height = 2.0f;
-            var cc = entity.GetComponent<CharacterController>();
-            if (cc != null)
-            {
-                height = cc.height;
-            }
-            else
-            {
-                var capsule = entity.GetComponent<CapsuleCollider>();
-                if (capsule != null)
-                {
-                    height = capsule.height;
-                }
-            }
-
-            // 胶囊体在 pos 位置对应的底部和顶部球心
-            Vector3 pointBottom = pos + Vector3.up * checkRadius;
-            Vector3 pointTop = pos + Vector3.up * Mathf.Max(height - checkRadius, checkRadius);
-
-            // 层级读取 _teamConfig.blockLayer 配置
-            LayerMask mask = _teamConfig != null ? _teamConfig.blockLayer : (LayerMask)0;
-
-            // 通过 OverlapCapsuleNonAlloc 投射胶囊体并检测是否有碰撞阻挡
-            int hitCount = Physics.OverlapCapsuleNonAlloc(pointBottom, pointTop, checkRadius, _blockCheckBuffer, mask, QueryTriggerInteraction.Ignore);
-            _blockCheckBuffer[0] = null;
-            return hitCount > 0;
+            _placementService.ResolveSwitchInPlacement(originTransform, switchInEntity, _teamConfig, out targetPos, out targetRot);
         }
 
         /// <summary>
@@ -819,7 +614,6 @@ namespace Game.GamePlay
                 if (entity == null ||
                     ReferenceEquals(entity, LocalCharacter) ||
                     entity.IsControlActive ||
-                    entity.IsPresentationVisible ||
                     entity.Config?.ActionRoot == null)
                 {
                     continue;
@@ -878,7 +672,7 @@ namespace Game.GamePlay
             {
                 int index = (startIndex + attempt) % _partyMembers.Count;
                 PartyMember candidate = _partyMembers[index];
-                if (candidate != current && candidate.Entity != null && !candidate.Entity.IsDead)
+                if (candidate != current && candidate.Entity != null && !candidate.Entity.LifecycleComponent.IsDead)
                     return candidate;
             }
             return null;

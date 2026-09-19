@@ -1,59 +1,31 @@
 using System.Collections.Generic;
 using MAnimSystem;
 using ATEditor;
+using Game.Framework;
 using UnityEngine;
 
 namespace Game.GamePlay
 {
-    public abstract class CharacterEntity : MonoBehaviour, IEventHandler
+    public abstract class CharacterEntity : MonoBehaviour, ILogicTickable
     {
-
-        public virtual ITargetFinder TargetFinder { get; protected set; }
-
-        /// <summary>
-        /// 当前动作/战斗上下文关联的目标实体（如招架黄光攻击者、弹刀反击目标）。
-        /// 优先级高于常规 TargetFinder。
-        /// </summary>
-        public CharacterEntity CombatContextTarget { get; set; }
-
-        public void SetCombatContextTarget(CharacterEntity target)
-        {
-            CombatContextTarget = target;
-        }
-
-        public void ClearCombatContextTarget()
-        {
-            CombatContextTarget = null;
-        }
-
-        /// <summary>
-        /// 获取当前生效的目标 Transform：优先返回存活的 CombatContextTarget，无上下文目标时回退至 TargetFinder。
-        /// </summary>
-        public Transform GetEffectiveTarget()
-        {
-            if (CombatContextTarget != null && CombatContextTarget.gameObject.activeInHierarchy && !CombatContextTarget.IsDead)
-            {
-                return CombatContextTarget.transform;
-            }
-            return TargetFinder?.GetTarget();
-        }
-
         public CharacterConfigAsset Config { get; private set; }
-        public ICharacterMotor CharacterMotor { get; protected set; }
-        public HitReactionModule HitReactionModule { get; protected set; }
-        public FootIKModule FootIKModule { get; protected set; }
-        public ILifecycleModule LifecycleModule { get; protected set; }
-        public bool IsDead => LifecycleModule != null && LifecycleModule.IsDead;
-        public virtual bool IsPresentationVisible { get; protected set; } = true;
+
+        public IMovementComponent MovementComponent { get; protected set; }
+        public HitReactionComponent HitReactionComponent { get; protected set; }
+        public ILifecycleComponent LifecycleComponent { get; protected set; }
+        public bool IsDead => LifecycleComponent != null && LifecycleComponent.IsDead;
 
         public virtual ActionController ActionController { get; protected set; }
         public CommandBuffer CommandBuffer { get; protected set; }
         public ActionPlayer ActionPlayer { get; private set; }
         public ATMotionWindowHandler MotionWindowHandler { get; private set; }
+        public virtual ITargetFinder TargetFinder { get; protected set; }
         public EntityDataModule DataModule { get; } = new EntityDataModule();
         public StatusModule StatusModule { get; private set; }
         public virtual IAttributeResolver AttributeResolver { get; protected set; }
 
+        /// <summary>实体专属层次化时钟叶子节点（单一真理源）</summary>
+        public TimeClock Clock { get; private set; }
 
         protected virtual void Awake()
         {
@@ -63,21 +35,52 @@ namespace Game.GamePlay
             }
             InitRequiredComponents();
 
-            if (LifecycleModule == null)
+            if (LifecycleComponent == null)
             {
-                var lifecycle = GetComponent<EntityLifecycleModule>();
-                if (lifecycle == null) lifecycle = gameObject.AddComponent<EntityLifecycleModule>();
-                LifecycleModule = lifecycle;
+                var lifecycle = GetComponent<LifecycleComponent>();
+                if (lifecycle == null) lifecycle = gameObject.AddComponent<LifecycleComponent>();
+                LifecycleComponent = lifecycle;
                 lifecycle.Init(this);
             }
 
-            if (ActionPlayer == null) ActionPlayer = new ActionPlayer(this);
-            if (MotionWindowHandler == null) MotionWindowHandler = new ATMotionWindowHandler(this);
+            // 初始化实体专属时钟节点，并监听有效流速变更
+            Clock = new TimeClock(gameObject.name);
+            Clock.OnEffectiveScaleChanged += HandleClockEffectiveScaleChanged;
+
             DataModule[typeof(ActionRuntimeData)] ??= new ActionRuntimeData();
             DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
             DataModule[typeof(ParryRuntimeData)] ??= new ParryRuntimeData();
+
+            if (ActionPlayer == null) ActionPlayer = new ActionPlayer(this);
+            ActionPlayer.SetExternalTimeScale(Clock.EffectiveScale);
+
+            if (MotionWindowHandler == null) MotionWindowHandler = new ATMotionWindowHandler(this);
             if (StatusModule == null) StatusModule = new StatusModule();
             if (AttributeResolver == null) AttributeResolver = new EntityAttributeResolver(this);
+        }
+
+        private void HandleClockEffectiveScaleChanged(float effectiveScale)
+        {
+            ActionPlayer?.SetExternalTimeScale(effectiveScale);
+        }
+
+        /// <summary>
+        /// 供生成器或管理器（TeamCharacterSpawner / MonsterManager）进行时钟树装配
+        /// </summary>
+        public void AttachToClock(TimeClock parentClock)
+        {
+            if (parentClock != null && Clock != null)
+            {
+                parentClock.AddChild(Clock);
+            }
+        }
+
+        /// <summary>
+        /// 解除时钟树挂载，恢复为独立根节点
+        /// </summary>
+        public void DetachFromClock()
+        {
+            Clock?.Detach();
         }
 
         protected abstract void InitRequiredComponents();
@@ -86,45 +89,32 @@ namespace Game.GamePlay
         {
             Config = config;
             
-            LifecycleModule?.Init(this);
-            CharacterMotor?.Init(this);
-            HitReactionModule?.Init(this);
-            FootIKModule?.Init(this);
-        }
-
-        public float GetCharcterRadius()
-        {
-            var cc = GetComponent<CharacterController>();
-            if (cc != null)
-            {
-                return cc.radius + cc.skinWidth;
-            }
-
-            var capsule = GetComponent<CapsuleCollider>();
-            if (capsule != null)
-            {
-                return capsule.radius;
-            }
-
-            return 0.5f; // 默认值
+            LifecycleComponent?.Init(this);
+            MovementComponent?.Init(this);
+            HitReactionComponent?.Init(this);
         }
 
         protected virtual void Start()
         {
-            if (TimeManager.Instance != null)
-            {
-                TimeManager.Instance.OnGameplayLogicTick += OnLogicTick;
-            }
         }
 
-        public virtual void OnActionTimelineEvent(string eventName, List<ATEventParam> parameters)
+        public virtual void OnLogicTick(float logicDeltaTime)
         {
+            // 1. 推进实体自身专属时钟节点（维护本地时间戳与 DeltaTime）
+            Clock?.Advance(logicDeltaTime);
+
+            // 2. 计算经实体层级时钟（子弹时间/顿帧）缩放后的有效逻辑步长
+            float scaledDt = logicDeltaTime * (Clock != null ? Clock.EffectiveScale : 1.0f);
+
+            // 3. 将缩放后的步长自顶向下单向传递给各领域子系统
+            ActionController?.OnLogicTick(scaledDt);
+            ActionPlayer?.Tick(scaledDt);
+            StatusModule?.Tick(scaledDt);
+            OnSubLogicTick(scaledDt);
         }
 
-        protected virtual void OnLogicTick(float logicDeltaTime)
+        protected virtual void OnSubLogicTick(float scaledDeltaTime)
         {
-            ActionPlayer?.Tick(logicDeltaTime);
-            StatusModule?.Tick(logicDeltaTime);
         }
 
         protected virtual void Update()
@@ -133,12 +123,9 @@ namespace Game.GamePlay
 
         protected virtual void OnDestroy()
         {
-            if (TimeManager.Instance != null)
-            {
-                TimeManager.Instance.OnGameplayLogicTick -= OnLogicTick;
-            }
+            Clock?.Detach();
+            ActionPlayer?.Dispose();
             StatusModule?.Clear();
-            Game.GamePlay.ActionManager.Instance?.RemoveCache(this);
         }
     }
 }

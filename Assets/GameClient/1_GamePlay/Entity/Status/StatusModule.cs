@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.GamePlay
 {
-    public class StatusModule
+    public class StatusModule : IEntityModule
     {
         public AttributeSet Attributes { get; } = new();
         public BuffContainer Buffs { get; } = new();
@@ -11,6 +11,22 @@ namespace Game.GamePlay
         private CharacterEntity _owner;
         private readonly HashSet<string> _immuneTags = new();
         private IStatusDataProvider _dataProvider;
+
+        public void Initialize(CharacterEntity owner)
+        {
+            Init(owner, null, 1);
+        }
+
+        public void OnLogicTick(float logicDeltaTime)
+        {
+            Tick(logicDeltaTime);
+        }
+
+        public void Dispose()
+        {
+            Clear();
+            _owner = null;
+        }
 
         public void Init(CharacterEntity owner, IStatusDataProvider dataProvider, int level = 1)
         {

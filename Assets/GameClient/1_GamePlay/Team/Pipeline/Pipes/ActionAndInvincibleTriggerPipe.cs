@@ -21,7 +21,7 @@ namespace Game.GamePlay
             // 0. 确保战斗上下文目标注入
             if (ctx.TargetAttacker != null)
             {
-                inEntity.SetCombatContextTarget(ctx.TargetAttacker);
+                inEntity.TargetFinder?.SetCombatContextTarget(ctx.TargetAttacker);
             }
 
             // 1. 触发切入动作

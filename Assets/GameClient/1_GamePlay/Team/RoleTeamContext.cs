@@ -10,25 +10,44 @@ namespace Game.GamePlay
         private MonoBehaviour inputProviderComponent;
         [SerializeField]
         private CinemachineVirtualCameraBase sharedVirtualCamera;
-
         private RoleEntity _activeRole;
+        private RoleTargetFinder _targetFinder;
 
         public IInputProvider InputProvider { get; private set; }
-        public ITargetFinder TargetFinder => TeamManager.Instance?.TargetFinder;
+        public ITargetFinder TargetFinder => _targetFinder;
         public CinemachineVirtualCameraBase SharedVirtualCamera => sharedVirtualCamera;
         public RoleEntity ActiveRole => _activeRole;
 
-        public void Initialize()
+        public void Initialize(RoleTargetFinder.RoleTargetFinderCfg targetConfig = null)
         {
             ResolveInputProvider();
-
             ResolveSharedVirtualCamera();
+            _targetFinder = new RoleTargetFinder(targetConfig);
+            if (_activeRole != null)
+            {
+                _targetFinder.Initialize(_activeRole);
+                if (InputProvider is LocalPlayerInputProvider localInput)
+                {
+                    localInput.SetRoleConfig(_activeRole.Config);
+                }
+            }
         }
 
         public void SetActiveRole(RoleEntity activeRole)
         {
             _activeRole = activeRole;
+            _targetFinder?.Initialize(activeRole);
+            if (InputProvider is LocalPlayerInputProvider localInput)
+            {
+                localInput.SetRoleConfig(activeRole?.Config);
+            }
             SyncTransformToActiveRole();
+        }
+
+        private void OnDestroy()
+        {
+            _targetFinder?.Dispose();
+            _targetFinder = null;
         }
 
         private void LateUpdate()

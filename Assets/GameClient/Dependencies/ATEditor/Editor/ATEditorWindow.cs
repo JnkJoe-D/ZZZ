@@ -63,15 +63,30 @@ namespace ATEditor.Editor
                 var window = GetWindow<ATEditorWindow>();
                 if (window != null && window.state != null)
                 {
-                    window.SetCurrentTimeline(timeline);
                     string path = AssetDatabase.GetAssetPath(timeline);
+
+                    // 1. 检查并对齐资产所属的工作区
+                    var db = ATEditorWorkspaceDatabase.Instance;
+                    var matchedWs = db.GetWorkspaceByAssetPath(path);
+                    if (matchedWs != null && matchedWs.Id != window.state.ActiveWorkspaceId)
+                    {
+                        window.state.ActiveWorkspaceId = matchedWs.Id;
+                    }
+
+                    // 2. 加载 timeline
+                    window.SetCurrentTimeline(timeline);
                     window.state.currentFilePath = path;
                     
-                    // 重置先前的播放状态
+                    // 3. 确保当前工作区的预览对象已就绪 (T-Pose) 并预热
+                    window.EnsureWorkspacePreviewTarget();
+                    window.InitPreview();
+
+                    // 4. 重置先前的播放状态
                     window.state.isStopped = true;
                     window.state.timeIndicator = 0f;
                     window.Stop();
                     window.events.OnRepaintRequest?.Invoke();
+                    window.Repaint();
                 }
                 return true;
             }
@@ -98,21 +113,20 @@ namespace ATEditor.Editor
             // 订阅选中变更事件，同步到原生 Inspector
             events.OnSelectionChanged += SyncSelectionToInspector;
 
-            // 3. 数据初始匀
-            state.currentTimeline = ScriptableObject.CreateInstance<ActionTimeline>();
-            state.currentTimeline.hideFlags = HideFlags.HideAndDontSave;
+            // 3. 数据初始化（确保拥有合法的空动作，避免出现未打开资产时的空白断层）
+            ResetToBlankTimeline();
             
             // 绑定 Undo 回调
             Undo.undoRedoPerformed += OnUndoRedo;
             
+            // 监听运行模式切换（防止从运行模式切回时当前 Timeline 被销毁导致视图空白）
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            
             // 初始化轨道ID
             InitializeTrackIds();
 
-            // 如果没有预览目标，自动加载默认目标
-            if (state.previewTarget == null)
-            {
-                toolbarView.CreateDefaultPreviewCharacter();
-            }
+            // 自动根据当前工作区加载预览目标 (T-Pose)
+            EnsureWorkspacePreviewTarget();
 
             // 初始化预览播放器 (如果在上面赋予了新的 previewTarget，这里会被正确注入)
             InitPreview();
@@ -131,6 +145,9 @@ namespace ATEditor.Editor
 
             // 解绑 Undo 回调
             Undo.undoRedoPerformed -= OnUndoRedo;
+
+            // 解绑运行模式切换回调
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 
             // 清理 Inspector 选中状态，防止残留包装对象
             if (Selection.activeObject is ClipObject || Selection.activeObject is TrackObject || Selection.activeObject is GroupObject)
@@ -436,6 +453,43 @@ namespace ATEditor.Editor
             InitializeTrackIds();
             
             Repaint();
+        }
+
+        /// <summary>
+        /// 重置为一个全新的空白时间轴
+        /// </summary>
+        public void ResetToBlankTimeline()
+        {
+            var empty = ScriptableObject.CreateInstance<ActionTimeline>();
+            empty.hideFlags = HideFlags.HideAndDontSave;
+            empty.name = "未命名动作";
+            empty.Groups.Clear();
+            SetCurrentTimeline(empty);
+            if (state != null)
+            {
+                state.currentFilePath = null;
+                state.timeIndicator = 0f;
+            }
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange change)
+        {
+            if (change == PlayModeStateChange.ExitingEditMode)
+            {
+                // 即将进入运行模式：彻底销毁预览对象，避免污染游戏运行场景
+                DestroyAllPreviewTargets();
+            }
+            else if (change == PlayModeStateChange.EnteredEditMode)
+            {
+                // 退出运行模式回到编辑模式：自动恢复时间轴与预览模型
+                if (state == null || state.currentTimeline == null)
+                {
+                    ResetToBlankTimeline();
+                }
+                EnsureWorkspacePreviewTarget();
+                InitPreview();
+                Repaint();
+            }
         }
 
         /// <summary>

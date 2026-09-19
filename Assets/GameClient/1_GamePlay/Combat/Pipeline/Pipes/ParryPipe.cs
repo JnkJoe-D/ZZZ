@@ -48,15 +48,15 @@ namespace Game.GamePlay
                 contract.IsResolved = true;
             }
 
-            victimParryData.ParrySucceeded = true;
-            victimParryData.LastParriedAttacker = ctx.Attacker;
+            victimParryData.Set(nameof(victimParryData.ParrySucceeded), true);
+            victimParryData.Set(nameof(victimParryData.LastParriedAttacker), ctx.Attacker);
             if (ctx.Victim != null && ctx.Attacker != null)
             {
-                ctx.Victim.SetCombatContextTarget(ctx.Attacker);
+                ctx.Victim.TargetFinder?.SetCombatContextTarget(ctx.Attacker);
             }
 
             ParryWeight parryWeight = contract?.Marker != null ? contract.Marker.ParryWeight : ParryWeight.Heavy;
-            victimParryData.LastParryWeight = parryWeight;
+            victimParryData.Set(nameof(victimParryData.LastParryWeight), parryWeight);
 
             // 1. 构造本次捕获到的招架命中上下文
             var clashCtx = new ParryClashContext

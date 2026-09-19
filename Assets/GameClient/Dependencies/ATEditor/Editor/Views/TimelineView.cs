@@ -175,16 +175,24 @@ namespace ATEditor.Editor
         /// </summary>
         private void DrawTracksArea(Rect rect)
         {
+            // 恒定绘制轨道底色背景，防止关闭动作或退出运行模式时出现白色/透明断层
+            EditorGUI.DrawRect(new Rect(0, 0, rect.width, rect.height), new Color(0.1607843f, 0.1607843f, 0.1607843f));
+
             ActionTimeline timeline = state.currentTimeline;
-            if (timeline == null) return;
-
-
-
+            if (timeline == null || timeline.Groups == null || timeline.Groups.Count == 0)
+            {
+                GUIStyle watermarkStyle = new GUIStyle(EditorStyles.boldLabel)
+                {
+                    fontSize = 14,
+                    alignment = TextAnchor.MiddleCenter,
+                    normal = { textColor = new Color(0.5f, 0.5f, 0.5f, 0.5f) }
+                };
+                GUI.Label(new Rect(0, 0, rect.width, rect.height), "暂无打开的时间轴 / 点击工具栏导入或新建", watermarkStyle);
+                return;
+            }
 
             float yOffset = 0;
             int trackIndex = 0;
-
-            EditorGUI.DrawRect(new Rect(0, 0, rect.width, rect.height), new Color(0.1607843f, 0.1607843f, 0.1607843f));
 
             float maxEndTime = 0;
             if (timeline.Groups != null)

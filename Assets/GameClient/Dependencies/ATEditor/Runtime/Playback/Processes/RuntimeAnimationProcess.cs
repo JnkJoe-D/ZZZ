@@ -45,6 +45,17 @@ namespace ATEditor
             }
             //这里的update频率比monoupdate低，所以在onenter先同步一次播放速度，确保动画按预期速度开始播放
             animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.GlobalPlaySpeed);
+
+            if (context != null)
+            {
+                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+                context.OnGlobalSpeedChanged += HandleGlobalSpeedChanged;
+            }
+        }
+
+        private void HandleGlobalSpeedChanged(float newGlobalSpeed)
+        {
+            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * newGlobalSpeed);
         }
 
         public override void OnSeek(float targetTime)
@@ -71,6 +82,11 @@ namespace ATEditor
         }
         public override void OnExit()
         {
+            if (context != null)
+            {
+                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+            }
+
             if (clip.overrideMask != null)
             {
                 context.PopLayerMask((int)clip.layer, clip.overrideMask);
@@ -78,6 +94,11 @@ namespace ATEditor
         }
         public override void OnDisable()
         {
+            if (context != null)
+            {
+                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+            }
+
             if (clip.overrideMask != null)
             {
                 context.PopLayerMask((int)clip.layer, clip.overrideMask);
@@ -86,6 +107,10 @@ namespace ATEditor
         public override void Reset()
         {
             base.Reset();
+            if (context != null)
+            {
+                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+            }
             animHandler = null;
         }
     }

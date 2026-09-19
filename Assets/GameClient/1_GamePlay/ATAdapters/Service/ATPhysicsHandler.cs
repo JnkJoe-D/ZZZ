@@ -9,7 +9,7 @@ namespace Game.GamePlay
     public class ATPhysicsHandler : IPhysicsHandler
     {
         private readonly CharacterEntity entity;
-        private readonly CharacterMotor movementController;
+        private readonly MovementComponent movementController;
         private readonly CharacterController cc;
         private readonly Collider col;
 
@@ -18,7 +18,7 @@ namespace Game.GamePlay
             if (owner != null)
             {
                 entity = owner.GetComponent<CharacterEntity>();
-                movementController = owner.GetComponent<CharacterMotor>();
+                movementController = owner.GetComponent<MovementComponent>();
                 cc = owner.GetComponent<CharacterController>();
                 col = owner.GetComponent<Collider>();
             }
@@ -29,7 +29,7 @@ namespace Game.GamePlay
             this.entity = entity;
             if (entity != null)
             {
-                movementController = entity.GetComponent<CharacterMotor>();
+                movementController = entity.GetComponent<MovementComponent>();
                 cc = entity.GetComponent<CharacterController>();
                 col = entity.GetComponent<Collider>();
             }
