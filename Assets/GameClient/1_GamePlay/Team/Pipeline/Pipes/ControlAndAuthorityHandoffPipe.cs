@@ -43,7 +43,7 @@ namespace Game.GamePlay
 
             if (oldSlotIndex != ctx.Manager.ActiveSlotIndex)
             {
-                EventCenter.Publish(new ActiveCharacterChangedEvent
+                EventCenter.Publish(new ActiveRoleChangedEvent
                 {
                     OldSlotIndex = oldSlotIndex,
                     NewSlotIndex = ctx.Manager.ActiveSlotIndex,

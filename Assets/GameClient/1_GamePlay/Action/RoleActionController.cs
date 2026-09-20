@@ -8,13 +8,11 @@ namespace Game.GamePlay
 
         private ComboRouteRuntimeData _comboData;
 
-        public RoleActionController(RoleEntity entity, 
-                                    IRouteEventReceiver receiver = null,
-                                    ISkillCostHandler skillCostHandler = null) 
-            : base(entity, 
-                   receiver ?? new RoleRouteEventReceiver(),
-                   skillCostHandler ?? new DefaultSkillCostHandler())
+        public override void Initialize(CharacterEntity owner)
         {
+            base.Initialize(owner);
+            _routeEventReceiver ??= new RoleRouteEventReceiver();
+            _skillCostHandler ??= new DefaultSkillCostHandler();
             _comboData = _entity.DataModule?.Get<ComboRouteRuntimeData>();
         }
 

@@ -106,8 +106,8 @@ namespace Game.GamePlay
         private void HandleMovePerformed() => Dispatch(HardwareInputType.Move, CommandPhase.Performed);
         private void HandleMoveCanceled() => Dispatch(HardwareInputType.Move, CommandPhase.Canceled);
         private void HandleMoveHeld() => Dispatch(HardwareInputType.Move, CommandPhase.Held);
-        private void HandleMovementZero() => CurrentHandler.Handle(CharacterCommandFactory.CreateSystemEventCommand(RouteEventType.MoveStop));
-        private void HandleRawMovementZero() => CurrentHandler.Handle(CharacterCommandFactory.CreateSystemEventCommand(RouteEventType.JogStartStop));
+        private void HandleMovementZero() => CurrentHandler.Handle(CharacterCommandFactory.CreateSystemEventCommand(RouteEventType.LostMoveInput));
+        private void HandleRawMovementZero() => CurrentHandler.Handle(CharacterCommandFactory.CreateSystemEventCommand(RouteEventType.LostMoveInputRaw));
 
         private void HandleBasicAttackStarted() => Dispatch(HardwareInputType.BasicAttack, CommandPhase.Started);
         private void HandleBasicAttackPerformed() => Dispatch(HardwareInputType.BasicAttack, CommandPhase.Performed);

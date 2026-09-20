@@ -44,7 +44,7 @@ namespace Game.GamePlay
     /// <summary>
     /// 当玩家当前控制（激活）的角色发生改变时广播
     /// </summary>
-    public struct ActiveCharacterChangedEvent : IGameEvent
+    public struct ActiveRoleChangedEvent : IGameEvent
     {
         public int OldSlotIndex;
         public int NewSlotIndex;

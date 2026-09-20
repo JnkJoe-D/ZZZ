@@ -14,30 +14,7 @@ namespace Game.GamePlay
         public void Process(SwitchPipelineContext ctx)
         {
             if (ctx.IsAborted) return;
-
-            // 1. 时钟调度：招架顿帧与全局缓速 (通过领域事件解耦驱动)
-            if (ctx.TimeScaleDuration > 0f)
-            {
-                if (ctx.Type == SwitchType.ParryAid)
-                {
-                    EventCenter.Publish(new HitStopRequestEvent(
-                        ctx.OutgoingEntity?.Clock,
-                        ctx.IncomingEntity?.Clock,
-                        ctx.TimeScaleDuration,
-                        ctx.TimeScale));
-                }
-                else if (ctx.Type == SwitchType.EvasionAid || ctx.Type == SwitchType.ChainAttack)
-                {
-                    // 闪避支援 / 连携技：通过时钟调度切出角色慢动作
-                    EventCenter.Publish(new HitStopRequestEvent(
-                        ctx.OutgoingEntity?.Clock,
-                        null,
-                        ctx.TimeScaleDuration,
-                        ctx.TimeScale));
-                }
-            }
-
-            // 2. 相机策略处理
+            // 相机策略处理
             if (ctx.IncomingEntity != null)
             {
                 var cameraManager = GameCameraManager.Instance;

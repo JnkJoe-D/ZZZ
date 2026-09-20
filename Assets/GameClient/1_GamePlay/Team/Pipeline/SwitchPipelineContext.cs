@@ -29,9 +29,6 @@ namespace Game.GamePlay
         public float TimeScaleDuration { get; set; } = 0f;
         public float InvincibleDuration { get; set; } = 0.5f;
 
-        // ── 动作重载 ──────────────────────────────
-        public ActionConfigAsset CustomIncomingAction { get; set; }
-
         // ── 战斗上下文关联目标 ────────────────────
         public AttackWarningMarker WarningMarker { get; set; }
         public CharacterEntity TargetAttacker { get; set; }
@@ -63,13 +60,11 @@ namespace Game.GamePlay
             SpawnPosition = Vector3.zero;
             SpawnRotation = Quaternion.identity;
 
-            ExitPolicy = OutgoingExitPolicy.AutoFollowThrough;
+            ExitPolicy = OutgoingExitPolicy.AutoByRoute;
             CamMode = CameraSwitchMode.SmoothFollow;
             TimeScale = 1.0f;
             TimeScaleDuration = 0f;
             InvincibleDuration = 0.5f;
-
-            CustomIncomingAction = null;
 
             WarningMarker = null;
             TargetAttacker = null;

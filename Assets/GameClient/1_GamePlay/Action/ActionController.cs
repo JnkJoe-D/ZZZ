@@ -25,7 +25,7 @@ namespace Game.GamePlay
 
         // ─── 字段 ───
 
-        protected readonly CharacterEntity _entity;
+        protected CharacterEntity _entity;
         private readonly List<RouteWindowData> _activeRouteWindows = new();
         private readonly List<ActionRoute> _effectiveRoutes = new();
         private readonly CommandFateTracker _fateTracker = new();
@@ -41,17 +41,11 @@ namespace Game.GamePlay
         protected IRouteEventReceiver _routeEventReceiver;
         protected ISkillCostHandler _skillCostHandler;
 
-        public ActionController(CharacterEntity entity, 
-                                IRouteEventReceiver routeEventReceiver = null,
-                                ISkillCostHandler skillCostHandler = null)
+        public virtual void Initialize(CharacterEntity owner)
         {
-            _entity = entity;
-            _routeEventReceiver = routeEventReceiver;
-            _skillCostHandler = skillCostHandler;
+            _entity = owner;
             _actionData = _entity.DataModule?.Get<ActionRuntimeData>();
         }
-
-        public void Initialize(CharacterEntity owner) { }
 
         public void ResetController()
         {
@@ -66,7 +60,7 @@ namespace Game.GamePlay
         //  公共接口
         // ═══════════════════════════════════════════
 
-        public void OnLogicTick(float logicDeltaTime)
+        public void LogicTick(float logicDeltaTime)
         {
             _entity.CommandBuffer?.Tick();
 
@@ -99,7 +93,7 @@ namespace Game.GamePlay
         }
 
         [System.Obsolete("Update 已过时，请统一使用 OnLogicTick")]
-        public void Update(float deltaTime) => OnLogicTick(deltaTime);
+        public void Update(float deltaTime) => LogicTick(deltaTime);
 
         public bool PlayAction(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
         {
@@ -271,9 +265,6 @@ namespace Game.GamePlay
 
             _entity.ActionPlayer.OnActionComplete -= HandleActionComplete;
             _entity.ActionPlayer.OnActionComplete += HandleActionComplete;
-
-            if (_entity.Config != null)
-                _entity.ActionPlayer.SetPlaySpeed(action.PlaybackSpeed);
 
             return true;
         }

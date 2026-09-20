@@ -29,11 +29,11 @@ namespace Game.GamePlay
                 outEntity.Presentation?.SetColliderActive(false);
                 outEntity.Presentation?.SetPresentationVisible(false);
 
-                if (outEntity.DataModule != null)
-                {
-                    var switchData = outEntity.DataModule.Get<SwitchRuntimeData>();
-                    if (switchData != null) switchData.Set(nameof(switchData.IsSwitchOutPending), false);
-                }
+                // if (outEntity.DataModule != null)
+                // {
+                //     var switchData = outEntity.DataModule.Get<SwitchRuntimeData>();
+                //     if (switchData != null) switchData.Set(nameof(switchData.IsSwitchOutPending), false);
+                // }
 
                 if (outEntity.Config?.ActionRoot != null)
                 {

@@ -64,18 +64,18 @@ namespace Game.GamePlay
             if (nextMember?.Entity == null) return false;
 
             RoleEntity incomingRole = nextMember.Entity;
-            if (incomingRole.Config is not RoleConfigAsset roleConfig || roleConfig.SupportConfig == null)
+            if (incomingRole.Config is not RoleConfigAsset roleConfig || roleConfig.AssistConfig == null)
                 return false;
 
-            var supportCfg = roleConfig.SupportConfig;
-            ActionConfigAsset targetAction = null;
-            if (supportCfg.SupportType == RoleSupportType.ParryAid)
+            var assistCfg = roleConfig.AssistConfig;
+            ActionConfigAsset targetAction;
+            if (assistCfg.SupportType == RoleAssistType.ParryAid)
             {
-                targetAction = (weight == ParryWeight.Heavy) ? supportCfg.ParryHeavyAction : supportCfg.ParryLightAction;
+                targetAction = weight == ParryWeight.Light ? assistCfg.ParryLAction : assistCfg.ParryHAction;
             }
             else // EvasionAid
             {
-                targetAction = supportCfg.EvasionAidAction;
+                targetAction = assistCfg.EvasionAidAction;
             }
 
             if (targetAction == null) return false;

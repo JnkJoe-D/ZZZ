@@ -45,7 +45,7 @@ namespace Game.GamePlay
         {
             if (config is RoleConfigAsset roleConfig)
             {
-                if (EvadeCount >= roleConfig.evadeLimitedTimes && EvadeTimer > 0f)
+                if (EvadeCount >= roleConfig.EvadeConfig.LimitedTimes && EvadeTimer > 0f)
                 {
                     return false;
                 }
@@ -58,7 +58,7 @@ namespace Game.GamePlay
             if (config is RoleConfigAsset roleConfig)
             {
                 EvadeCount++;
-                EvadeTimer = roleConfig.evadeCoolDown;
+                EvadeTimer = roleConfig.EvadeConfig.CoolDown;
             }
             else
             {

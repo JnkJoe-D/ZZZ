@@ -34,10 +34,10 @@ namespace Game.GamePlay
 
             _stateTime += deltaTime;
 
-            var config = _ctx.HostEntity.Config as RoleConfigAsset;
+            var config = _ctx.HostEntity.Config;
             if (config != null && _actionData != null)
             {
-                _actionData.Set(nameof(_actionData.IsShortMoveInput), _stateTime <= config.JogShortInputThreshold);
+                _actionData.Set(nameof(_actionData.IsShortMoveInput), _stateTime <= config.InputConfig.MoveShortInputThreshold);
             }
 
             Vector2 inputDir = provider.GetMovementDirection();
@@ -48,7 +48,7 @@ namespace Game.GamePlay
         {
             if (_ctx.HostEntity.Config is RoleConfigAsset roleConfig)
             {
-                _ctx.Blackboard.IsShortJog = _stateTime <= roleConfig.JogShortInputThreshold;
+                _ctx.Blackboard.IsShortJog = _stateTime <= roleConfig.InputConfig.MoveShortInputThreshold;
             }
         }
     }

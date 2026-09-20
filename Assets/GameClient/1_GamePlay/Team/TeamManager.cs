@@ -489,7 +489,7 @@ namespace Game.GamePlay
 
             if (oldSlotIndex != _activeSlotIndex)
             {
-                EventCenter.Publish(new ActiveCharacterChangedEvent 
+                EventCenter.Publish(new ActiveRoleChangedEvent 
                 {
                     OldSlotIndex = oldSlotIndex,
                     NewSlotIndex = _activeSlotIndex,
@@ -601,42 +601,6 @@ namespace Game.GamePlay
         public bool HandleTimelineEvent(RoleEntity sourceEntity, string eventName)
         {
             return _switchExecutor != null && _switchExecutor.HandleTimelineEvent(sourceEntity, eventName);
-        }
-
-        /// <summary>
-        /// 维持非主控处于备用（Standby）状态的各角色的挂机闲置循环动作。
-        /// </summary>
-        private void MaintainStandbyIdleActions()
-        {
-            for (int i = 0; i < _partyMembers.Count; i++)
-            {
-                RoleEntity entity = _partyMembers[i]?.Entity;
-                if (entity == null ||
-                    ReferenceEquals(entity, LocalCharacter) ||
-                    entity.IsControlActive ||
-                    entity.Config?.ActionRoot == null)
-                {
-                    continue;
-                }
-
-                // 跳过正在切出队列中的角色，避免干扰其退场流程
-                if (_switchExecutor != null && _switchExecutor.IsInSwitchOutQueue(entity))
-                {
-                    continue;
-                }
-
-                if (entity.ActionPlayer == null)
-                {
-                    continue;
-                }
-
-                if (entity.ActionPlayer.CurrentAction == entity.Config.ActionRoot && entity.ActionPlayer.IsPlaying)
-                {
-                    continue;
-                }
-
-                entity.ActionController?.PlayAction(entity.Config.ActionRoot);
-            }
         }
 
         /// <summary>

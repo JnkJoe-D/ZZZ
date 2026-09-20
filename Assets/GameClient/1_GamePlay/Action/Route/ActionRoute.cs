@@ -8,18 +8,28 @@ namespace Game.GamePlay
 {
     public enum RouteEventType
     {
+        [InspectorName("无")]
         None = 0,
+        [InspectorName("切入")]
         SwitchIn = 10,
+        [InspectorName("切出")]
         SwitchOut = 20,
+        [InspectorName("开始招架支援")]
         ParryAidStart = 30,
+        [InspectorName("招架支援成功")]
         ParryAidSucceed = 40,
+        [InspectorName(" 无点数避险切入")]
         FallbackEvasionIn = 35,
+        [InspectorName("开始闪避支援")]
         EvasionAidStart = 50,
+        [InspectorName("开始连携技")]
         ChainAttack = 60,
+        [InspectorName("快速支援")]
         QuickAid = 70,
-        MoveStop = 80,
-        [InspectorName("慢跑起步停止 / 短移动停止 (无阻尼即时触发)")]
-        JogStartStop = 85,
+        [InspectorName("移动输入归零(阻尼)")]
+        LostMoveInput = 80,
+        [InspectorName("移动输入归零")]
+        LostMoveInputRaw = 85,
     }
 
     public enum ModifierCategory
@@ -71,7 +81,7 @@ namespace Game.GamePlay
 
         [ShowIf("Category", ModifierCategory.Condition)]
         [SerializeReference, SubclassSelector]
-        public ITransitionCondition InputCondition;
+        public IRawInputCondition InputCondition;
 
         public bool Inverse = false;
 

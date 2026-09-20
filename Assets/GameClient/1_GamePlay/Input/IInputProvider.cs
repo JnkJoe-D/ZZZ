@@ -26,9 +26,14 @@ namespace Game.GamePlay
         Vector2 GetLastMovementDirection();
 
         /// <summary>
-        /// 是否有移动意图
+        /// 是否有有效移动输入
         /// </summary>
-        bool HasMovementInput();
+        bool HasMoveInput();
+        /// <summary>
+        /// 是否有原始移动输入
+        /// </summary>
+        /// <returns></returns>
+        bool HasRawMoveInput();
 
         // ==========================================
         // Held 状态查询（物理按键持有状态，输入层维护，共享且唯一）

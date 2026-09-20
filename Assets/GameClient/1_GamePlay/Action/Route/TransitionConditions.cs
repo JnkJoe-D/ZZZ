@@ -5,28 +5,27 @@ using UnityEngine;
 
 namespace Game.GamePlay
 {
+    public enum ComparisonMode
+    {
+        LessThan,
+        GreaterThanOrEqual
+    }
     [Serializable]
+    [SubclassDisplayName("是否有移动输入(阻尼)")]
     public sealed class HasMovementInputCondition : ITransitionCondition
     {
         public bool Expected = true;
 
         public bool Check(RoleEntity actor)
         {
-            bool hasMovementInput = actor?.InputProvider != null && actor.InputProvider.HasMovementInput();
+            bool hasMovementInput = actor?.InputProvider != null && actor.InputProvider.HasMoveInput();
             return hasMovementInput == Expected;
         }
     }
-
-    public enum ComparisonMode
-    {
-        LessThan,
-        GreaterThanOrEqual
-    }
-
     [Serializable]
+    [SubclassDisplayName("动作开始后经过时间")]
     public sealed class TimeSinceActionStartCondition : ITransitionCondition
     {
-        [Tooltip("Seconds since the current action started.")]
         public float Threshold = 0.2f;
 
         public ComparisonMode Mode = ComparisonMode.LessThan;
@@ -126,13 +125,13 @@ namespace Game.GamePlay
 
     public enum MovementDirectionType
     {
-        [InspectorName("后拉/后退 (Backward)")]
+        [InspectorName("后退")]
         Backward = 0,
-        [InspectorName("推前/前进 (Forward)")]
+        [InspectorName("前进")]
         Forward = 1,
-        [InspectorName("左向 (Left)")]
+        [InspectorName("左向")]
         Left = 2,
-        [InspectorName("右向 (Right)")]
+        [InspectorName("右向")]
         Right = 3,
     }
 
@@ -141,7 +140,7 @@ namespace Game.GamePlay
     /// 例如：后拉摇杆 (S 键) 派生后撤投刀 (Back)。
     /// </summary>
     [Serializable]
-    [SubclassDisplayName("移动输入方向条件 (MovementDirection)")]
+    [SubclassDisplayName("移动输入方向条件")]
     public sealed class MovementDirectionCondition : ITransitionCondition
     {
         [Tooltip("期望的移动输入方向。")]
@@ -188,7 +187,7 @@ namespace Game.GamePlay
     /// 从而防止动作B在其他情况下也派生动作C。
     /// </summary>
     [Serializable]
-    [SubclassDisplayName("前置动作条件 (PreviousAction)")]
+    [SubclassDisplayName("前置动作条件")]
     public sealed class PreviousActionCondition : ITransitionCondition
     {
         [Tooltip("要求上一个执行的动作必须是这个。")]
@@ -213,6 +212,7 @@ namespace Game.GamePlay
         }
     }
     [Serializable]
+    [SubclassDisplayName("正在等待切出")]
     public sealed class SwitchOutPendingCondition : ITransitionCondition
     {
         public bool Check(RoleEntity actor)
@@ -222,7 +222,7 @@ namespace Game.GamePlay
     }
 
     [Serializable]
-    [SubclassDisplayName("战斗预警判定 (CombatWarningCondition)")]
+    [SubclassDisplayName("战斗预警判定")]
     public sealed class CombatWarningCondition : ITransitionCondition
     {
         [Tooltip("预警信号类型：Yellow_Parryable (黄光可招架) / Red_Unparryable (红光不可招架)")]
@@ -265,23 +265,7 @@ namespace Game.GamePlay
     }
 
     [Serializable]
-    [SubclassDisplayName("格挡成功 (ParrySucceeded)")]
-    public sealed class ParrySucceededCondition : ITransitionCondition
-    {
-        public bool Check(RoleEntity actor)
-        {
-            var parryData = actor?.DataModule?.Get<ParryRuntimeData>();
-            if (parryData != null && parryData.ParrySucceeded)
-            {
-                parryData.Set(nameof(parryData.ParrySucceeded), false);
-                return true;
-            }
-            return false;
-        }
-    }
-
-    [Serializable]
-    [SubclassDisplayName("是否处于子弹时间 (IsInBulletTime)")]
+    [SubclassDisplayName("是否处于极限视界")]
     public sealed class IsInBulletTimeCondition : ITransitionCondition
     {
         [Tooltip("反转结果：勾选后表示'不在子弹时间中为真'")]
@@ -300,7 +284,7 @@ namespace Game.GamePlay
     }
 
     [Serializable]
-    [SubclassDisplayName("招架强度条件 (ParryWeight)")]
+    [SubclassDisplayName("招架强度")]
     public sealed class ParryWeightCondition : ITransitionCondition
     {
         [Tooltip("期望匹配的招架强度级别")]
@@ -310,6 +294,8 @@ namespace Game.GamePlay
         {
             var parryData = actor?.DataModule?.Get<ParryRuntimeData>();
             if (parryData == null) return false;
+            if (!parryData.ParrySucceeded) return false; // 确保只在招架成功后才匹配，避免在非招架情况下触发路由
+            parryData.Set(nameof(parryData.ParrySucceeded), false); // 只要检查过一次就清掉，避免重复触发
             return parryData.LastParryWeight == ExpectedWeight;
         }
     }

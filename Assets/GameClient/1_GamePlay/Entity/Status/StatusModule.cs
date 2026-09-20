@@ -17,7 +17,7 @@ namespace Game.GamePlay
             Init(owner, null, 1);
         }
 
-        public void OnLogicTick(float logicDeltaTime)
+        public void LogicTick(float logicDeltaTime)
         {
             Tick(logicDeltaTime);
         }
@@ -49,7 +49,7 @@ namespace Game.GamePlay
             }
         }
 
-        public void Tick(float deltaTime)
+        private void Tick(float deltaTime)
         {
             Attributes.Tick(deltaTime);
             Buffs.Tick(deltaTime);

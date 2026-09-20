@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Game.GamePlay
 {
-    public class ActionPlayer : IActionRunnerProvider
+    public class ActionPlayer : IActionRunnerProvider,IEntityModule
     {
-        private readonly CharacterEntity _entity;
+        private CharacterEntity _entity;
         private ActionRunner _runner;
         private ProcessContext _context;
 
@@ -24,10 +24,15 @@ namespace Game.GamePlay
 
         private float _externalTimeScale = 1.0f;
 
-        public ActionPlayer(CharacterEntity entity)
+        public void Initialize(CharacterEntity owner)
         {
-            _entity = entity;
+            _entity = owner;
             EnsureRuntimeContext();
+            SetExternalTimeScale(_entity.Clock.EffectiveScale);
+        }
+        public void LogicTick(float logicDeltaTime)
+        {
+            Tick(logicDeltaTime);
         }
 
         private void EnsureRuntimeContext()
@@ -41,20 +46,14 @@ namespace Game.GamePlay
         }
 
         /// <summary>
-        /// 被动接收外部时钟树推送的最终有效流速（如子弹时间、顿帧等），纯粹应用，零业务计算
+        /// 被动接收外部时钟树推送的最终有效流速（如子弹时间、顿帧等），同步表现层播放速度
         /// </summary>
         public void SetExternalTimeScale(float effectiveScale)
         {
             _externalTimeScale = effectiveScale;
-            ApplyEffectivePlaySpeed();
-        }
-
-        private void ApplyEffectivePlaySpeed()
-        {
             if (_context != null)
             {
-                float actionSpeed = CurrentAction != null ? CurrentAction.PlaybackSpeed : 1.0f;
-                _context.GlobalPlaySpeed = actionSpeed * _externalTimeScale;
+                _context.PresentationPlaySpeed = effectiveScale;
             }
         }
 
@@ -79,8 +78,11 @@ namespace Game.GamePlay
 
             EnsureRuntimeContext();
 
-            // 继承当前已经生效的外部有效时钟流速（子弹时间从第 0 帧自动继承）
-            ApplyEffectivePlaySpeed();
+            // 继承当前已经生效的外部有效时钟流速（子弹时间/顿帧从第 0 帧自动继承）
+            if (_context != null)
+            {
+                _context.PresentationPlaySpeed = _externalTimeScale;
+            }
 
             if (crossfadeOverride >= 0f && _context != null)
             {
@@ -124,7 +126,7 @@ namespace Game.GamePlay
             OnActionInterrupt?.Invoke();
         }
 
-        public void Tick(float deltaTime)
+        private void Tick(float deltaTime)
         {
             if (IsPlaying && _runner != null)
             {
@@ -155,6 +157,7 @@ namespace Game.GamePlay
 
         public void Dispose()
         {
+            _entity = null;
             StopAction();
             if (_runner != null)
             {
@@ -164,14 +167,6 @@ namespace Game.GamePlay
             }
             _context?.Clear();
             _context = null;
-        }
-
-        public void SetPlaySpeed(float speed)
-        {
-            if (_context != null)
-            {
-                _context.GlobalPlaySpeed = speed;
-            }
         }
 
         ActionRunner ATEditor.IActionRunnerProvider.GetRunner()

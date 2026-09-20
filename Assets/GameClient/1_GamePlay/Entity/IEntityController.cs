@@ -7,7 +7,16 @@ namespace Game.GamePlay
     public interface IEntityController
     {
         void Initialize(CharacterEntity owner);
-        void OnLogicTick(float logicDeltaTime);
+        void LogicTick(float logicDeltaTime);
         void ResetController();
+    }
+    public static class EntityControllerFactory
+    {
+        public static T Create<T>(CharacterEntity owner) where T : IEntityController, new()
+        {
+            var controller = new T();
+            controller.Initialize(owner);
+            return controller;
+        }
     }
 }

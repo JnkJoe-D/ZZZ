@@ -144,8 +144,6 @@ namespace Game.GamePlay
         public CharacterEntity ParryRole;    // 防守招架方（玩家切入角色）
         public AttackWarningMarker Marker;   // 关联的预警数据
         public bool IsResolved;              // 是否已至少完成一次拼刀命中
-        public int ParryHitEffectId;         // 招架成功反制时施加给攻击者的命中效果 ID
-        public float HitStopDuration = 0.1f; // 招架顿帧时长 (来自时间轴 ParryWindowClip)
 
         public bool IsValid => 
             Attacker != null &&

@@ -60,7 +60,7 @@ public class Test_Anim : MonoBehaviour
         {
             if (runner != null)
             {
-                context.GlobalPlaySpeed = speedMultiplier; // 动态调整全局播放速度
+                context.PresentationPlaySpeed = speedMultiplier; // 动态调整表现播放速度
                 timer += Time.deltaTime;
                 float step = 1f / 30f;
 
@@ -68,7 +68,7 @@ public class Test_Anim : MonoBehaviour
                 while (timer >= step)
                 {
                     timer -= step; // <--- 关键：减去步长，保留余数 (0.04 - 0.0333 = 0.0067)
-                    runner.Tick(step);
+                    runner.Tick(step * speedMultiplier);
                 }
             }
         }

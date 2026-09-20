@@ -115,7 +115,7 @@ namespace Game.GamePlay
             switch (ctx.Type)
             {
                 case SwitchType.NormalSwitch:
-                    ctx.ExitPolicy = OutgoingExitPolicy.AutoFollowThrough;
+                    ctx.ExitPolicy = OutgoingExitPolicy.AutoByRoute;
                     ctx.CamMode = CameraSwitchMode.SmoothFollow;
                     ctx.InvincibleDuration = 0.3f;
                     break;
@@ -145,7 +145,7 @@ namespace Game.GamePlay
                     break;
 
                 case SwitchType.ChainAttack:
-                    ctx.ExitPolicy = OutgoingExitPolicy.AutoFollowThrough;
+                    ctx.ExitPolicy = OutgoingExitPolicy.AutoByRoute;
                     ctx.CamMode = CameraSwitchMode.CinematicQTE;
                     ctx.TimeScale = 0.0f;
                     ctx.TimeScaleDuration = 0.3f;
@@ -153,7 +153,7 @@ namespace Game.GamePlay
                     break;
 
                 case SwitchType.QuickAid:
-                    ctx.ExitPolicy = OutgoingExitPolicy.AutoFollowThrough;
+                    ctx.ExitPolicy = OutgoingExitPolicy.AutoByRoute;
                     ctx.CamMode = CameraSwitchMode.InstantSnap;
                     ctx.TimeScale = 0.2f;
                     ctx.TimeScaleDuration = 0.4f;

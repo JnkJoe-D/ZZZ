@@ -36,10 +36,9 @@ namespace Game.GamePlay
 
             AttributeResolver = new RoleAttributeResolver(this);
             CommandBuffer ??= new CommandBuffer();
-            ActionController ??= new RoleActionController(this);
+            ActionController ??= EntityControllerFactory.Create<RoleActionController>(this);
 
-            InputAdapter = new RoleInputAdapterModule();
-            InputAdapter.Initialize(this);
+            InputAdapter ??= EntityModuleFactory.Create<RoleInputAdapterModule>(this); 
 
             // 统一单处初始化运行时数据
             DataModule[typeof(EvadeRuntimeData)] ??= new EvadeRuntimeData();

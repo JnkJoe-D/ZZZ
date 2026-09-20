@@ -27,8 +27,7 @@ namespace Game.GamePlay
     }
 
     /// <summary>
-    /// 指令缓冲区：纯缓冲池，仅存储有时效性的瞬时指令。
-    /// Held 状态跟踪已移至输入层（IInputProvider），此处不再维护。
+    /// 指令缓冲区：纯缓冲池，存储有时效性的指令。
     /// </summary>
     public class CommandBuffer
     {

@@ -123,30 +123,15 @@ namespace Game.GamePlay
                     var entity = task.Member?.Entity;
                     bool isActionPlaying = entity != null && entity.ActionPlayer != null && entity.ActionPlayer.IsPlaying;
 
-                    // 1. 动作自动托管策略（核心解决时间轴手动拼事件痛点）
-                    if (task.ExitPolicy == OutgoingExitPolicy.AutoFollowThrough)
+                    // 1. 动作自动托管策略
+                    if (task.ExitPolicy == OutgoingExitPolicy.AutoByRoute)
                     {
-                        // 阶段 A: 流逝过半(0.35s)或动作已停，自动关闭碰撞进入 PlayingExit
-                        if (task.Phase == SwitchOutPhase.Pending && (task.ElapsedTime >= 0.35f || !isActionPlaying))
-                        {
-                            task.Phase = SwitchOutPhase.PlayingExit;
-                            entity?.Presentation?.SetColliderActive(false);
-                            GLog.Info(LogTags.Team, $"AutoFollowThrough: {task.Member?.Config?.Name} 自动禁用碰撞 -> PlayingExit");
-                        }
-
-                        // 阶段 B: 动作自然播放完毕，自动隐藏并完成退场
+                        // 动作自然播放完毕，自动隐藏并完成退场
                         if (task.Phase == SwitchOutPhase.PlayingExit && !isActionPlaying)
                         {
                             GLog.Info(LogTags.Team, $"AutoFollowThrough: {task.Member?.Config?.Name} 动作自然播放完毕，自动完成退场");
                             CompleteSwitchOut(task);
                         }
-                    }
-
-                    // 2. 超时兜底防护
-                    if (task.ElapsedTime >= SwitchOutTask.MaxSwitchOutTimeout)
-                    {
-                        GLog.Warning(LogTags.Team, $"Force completing switch-out due to timeout: {task.Member?.Config?.Name}");
-                        CompleteSwitchOut(task);
                     }
                 }
 
@@ -213,7 +198,7 @@ namespace Game.GamePlay
         /// <summary>
         /// 发起切人请求（委托至 SwitchPipeline 流水线统一裁决调度）
         /// </summary>
-        public void RequestSwitch(SwitchType type, RoleEntity sourceEntity, int slotHint = -1, ActionConfigAsset customAction = null, CharacterEntity targetAttacker = null, AttackWarningMarker warningMarker = null)
+        public void RequestSwitch(SwitchType type, RoleEntity sourceEntity, int slotHint = -1, CharacterEntity targetAttacker = null, AttackWarningMarker warningMarker = null)
         {
             if (sourceEntity == null) return;
             PartyMember outgoing = _manager.FindPartyMember(sourceEntity);
@@ -224,7 +209,6 @@ namespace Game.GamePlay
             ctx.Type = type;
             ctx.OutgoingMember = outgoing;
             ctx.TargetSlotHint = slotHint;
-            ctx.CustomIncomingAction = customAction;
             ctx.TargetAttacker = targetAttacker;
             ctx.WarningMarker = warningMarker;
 
@@ -265,7 +249,7 @@ namespace Game.GamePlay
         /// 设置 IsSwitchOutPending 标志，使角色自身路由系统
         /// （ConditionCommand.SwitchOutPending）能检测到并触发切出动作。
         /// </summary>
-        public void EnqueueSwitchOut(PartyMember member, OutgoingExitPolicy policy = OutgoingExitPolicy.AutoFollowThrough)
+        public void EnqueueSwitchOut(PartyMember member, OutgoingExitPolicy policy = OutgoingExitPolicy.AutoByRoute)
         {
             // 防止同一角色重复入队
             for (int i = 0; i < _switchOutQueue.Count; i++)
@@ -326,8 +310,10 @@ namespace Game.GamePlay
                     // 恢复碰撞体（PlayingExit 阶段已禁用）
                     member.Entity.Presentation?.SetColliderActive(true);
 
-                    // 中断切出动作，回到根动作
-                    if (member.Entity.Config?.ActionRoot != null)
+                    // 中断切出动作，回到根动作，时序在切入动作裁决前
+                    // 如果切出动作没配转窗口不同切入动作的窗口的话，需要先转到根动作保证切入动作能顺利切入
+                    // 如果配了的话，此处可以不转到根动作后续管线也能顺利切换切入动作
+                 if (member.Entity.Config?.ActionRoot != null)
                     {
                         member.Entity.ActionController?.PlayAction(member.Entity.Config.ActionRoot);
                     }

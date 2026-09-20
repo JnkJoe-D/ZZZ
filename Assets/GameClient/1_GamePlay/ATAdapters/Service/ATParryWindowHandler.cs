@@ -14,7 +14,6 @@ namespace Game.GamePlay
         private readonly CharacterEntity _entity;
         private ParryClashContract _currentContract;
 
-        private ParryExecuteClip _activeExecuteClip;
         private ParryClashContext _pendingClashContext;
 
         public ATParryWindowHandler(CharacterEntity entity)
@@ -43,7 +42,7 @@ namespace Game.GamePlay
         public void OnCaptureWindowEnter()
         {
             SetIsParrying(true);
-            EnsureClashContract(hitEffectId: 0, hitStopDuration: 0.1f, heavyHitEffectId: 0, heavyHitStopDuration: 0f);
+            EnsureClashContract();
         }
 
         /// <summary>
@@ -53,8 +52,8 @@ namespace Game.GamePlay
         {
             SetIsParrying(false);
 
-            // 打断时不注销契约，保持多段连招交接保护；仅在自然结束且无活跃执行窗时注销契约
-            if (!isInterrupted && _activeExecuteClip == null)
+            // 打断时不注销契约，保持切人后动作交接保护；仅在自然结束时注销契约
+            if (!isInterrupted)
             {
                 CleanContracts();
             }
@@ -63,16 +62,14 @@ namespace Game.GamePlay
         /// <summary>
         /// 执行窗口激活 (ParryExecuteClip 进入)
         /// </summary>
-        public void OnExecuteWindowEnter(ParryExecuteClip clip)
+        public void OnExecuteWindowEnter(int hitEffectId, float hitStopDuration)
         {
-            _activeExecuteClip = clip;
-
             // 若有暂存的未消费招架命中上下文 (从 招架_Start 遗留)，同帧立即消费执行！
             if (_pendingClashContext != null && !_pendingClashContext.IsConsumed)
             {
                 var ctx = _pendingClashContext;
                 _pendingClashContext = null;
-                ExecuteClash(ctx, clip);
+                ExecuteClash(ctx, hitEffectId, hitStopDuration);
             }
         }
 
@@ -81,7 +78,6 @@ namespace Game.GamePlay
         /// </summary>
         public void OnExecuteWindowExit()
         {
-            _activeExecuteClip = null;
             CleanContracts();
         }
 
@@ -96,37 +92,23 @@ namespace Game.GamePlay
         {
             if (ctx == null) return;
 
-            // 1. 暂存最新的招架命中上下文（供切入的新动作或后续执行窗消费）
+            // 1. 暂存最新的招架命中上下文（供切入的新动作执行窗消费）
             _pendingClashContext = ctx;
 
-            // 2. 优先尝试触发动作路由（无论是 招架_Start -> 招架_L/H，还是 招架_H -> 招架_H 连续重招架动作刷新）
-            bool routed = _entity.ActionController != null 
-                       && _entity.ActionController.TryTriggerEvent(RouteEventType.ParryAidSucceed);
-
-            // 3. 若路由成功，新动作的 ParryExecuteClip.OnEnter 会立即消费 _pendingClashContext 并执行 ExecuteClash；
-            // 若未能成功路由（如当前动作未配置招架路由、或不在路由窗口内），且当前已有活跃的 ExecuteClip，则作为保底原地执行
-            if (!routed && _activeExecuteClip != null && _pendingClashContext != null && !_pendingClashContext.IsConsumed)
-            {
-                var pending = _pendingClashContext;
-                _pendingClashContext = null;
-                ExecuteClash(pending, _activeExecuteClip);
-            }
+            // 2. 触发动作路由（由路由根据预警重量等条件切入对应轻/重招架动作）
+            _entity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidSucceed);
         }
 
         /// <summary>
         /// 招架反制效果核心执行方法
         /// </summary>
-        public void ExecuteClash(ParryClashContext ctx, ParryExecuteClip clip)
+        public void ExecuteClash(ParryClashContext ctx, int hitEffectId, float hitStopDuration)
         {
             if (ctx == null || ctx.Attacker == null || _entity == null) return;
             ctx.IsConsumed = true;
 
-            // 1. 获取反制参数：优先根据招架权重选择 L/H 特效与顿帧
-            bool isHeavy = ctx.Marker != null && ctx.Marker.ParryWeight == ATEditor.ParryWeight.Heavy;
-            int effectId = (isHeavy && clip.heavyHitEffectId > 0) ? clip.heavyHitEffectId : clip.hitEffectId;
-            float hitStopDuration = (isHeavy && clip.heavyHitStopDuration > 0f) ? clip.heavyHitStopDuration : clip.hitStopDuration;
-
-            var hitEffectCfg = ConfigManager.Instance?.Tables?.TbHitEffect?.GetOrDefault(effectId);
+            // 1. 获取反制配置 (由具体动作时间轴 ParryExecuteClip 传入的 hitEffectId 驱动)
+            var hitEffectCfg = ConfigManager.Instance?.Tables?.TbHitEffect?.GetOrDefault(hitEffectId);
             var mainEffect = hitEffectCfg?.Effects != null && hitEffectCfg.Effects.Count > 0 ? hitEffectCfg.Effects[0] : null;
 
             // 2. 纯数据驱动打断裁决：防守方当前真实动作打断力 vs 攻击方 (怪物) 韧性
@@ -193,34 +175,6 @@ namespace Game.GamePlay
 
             pipeline.Execute(pipeCtx);
             pipeline.ReleaseContext(pipeCtx);
-
-            // 5. 防守方自身顿帧 (通过领域事件请求时间系统调度)
-            EventCenter.Publish(new HitStopRequestEvent(_entity?.Clock, null, hitStopDuration, 0f));
-        }
-
-        #endregion
-
-        #region Backward Compatibility (Legacy ParryWindowClip)
-
-        public void OnParryWindowEnter(
-            int hitEffectId = 0, 
-            float hitStopDuration = 0.1f, 
-            int heavyHitEffectId = 0, 
-            float heavyHitStopDuration = 0f)
-        {
-            SetIsParrying(true);
-            EnsureClashContract(hitEffectId, hitStopDuration, heavyHitEffectId, heavyHitStopDuration);
-        }
-
-        public void OnParryWindowExit(bool isInterrupted)
-        {
-            OnCaptureWindowExit(isInterrupted);
-        }
-
-        public void SetParryWindowActive(bool active)
-        {
-            if (active) OnCaptureWindowEnter();
-            else OnCaptureWindowExit(isInterrupted: false);
         }
 
         #endregion
@@ -240,7 +194,7 @@ namespace Game.GamePlay
             }
         }
 
-        private void EnsureClashContract(int hitEffectId, float hitStopDuration, int heavyHitEffectId, float heavyHitStopDuration)
+        private void EnsureClashContract()
         {
             AttackWarningMarker marker = null;
             var actionData = _entity?.DataModule?.Get<ActionRuntimeData>();
@@ -248,40 +202,22 @@ namespace Game.GamePlay
             {
                 marker = actionData.MatchedWarningMarker;
             }
-            else if (_entity != null)
-            {
-                marker = CombatWarningManager.GetValidWarning(_entity, WarningSignalType.Yellow_Parryable);
-            }
 
             var existingContract = CombatWarningManager.GetActiveContractByRole(_entity);
             if (existingContract != null && existingContract.IsValid)
             {
                 _currentContract = existingContract;
-                if (marker == null) marker = existingContract.Marker;
-
-                bool isHeavy = marker != null && marker.ParryWeight == ATEditor.ParryWeight.Heavy;
-                int finalEffectId = (isHeavy && heavyHitEffectId > 0) ? heavyHitEffectId : hitEffectId;
-                float finalHitStop = (isHeavy && heavyHitStopDuration > 0f) ? heavyHitStopDuration : hitStopDuration;
-
-                _currentContract.HitStopDuration = finalHitStop;
-                if (finalEffectId > 0) _currentContract.ParryHitEffectId = finalEffectId;
                 return;
             }
 
             if (marker != null && marker.Attacker != null && marker.Attacker.gameObject.activeInHierarchy)
             {
-                bool isHeavy = marker.ParryWeight == ATEditor.ParryWeight.Heavy;
-                int finalEffectId = (isHeavy && heavyHitEffectId > 0) ? heavyHitEffectId : hitEffectId;
-                float finalHitStop = (isHeavy && heavyHitStopDuration > 0f) ? heavyHitStopDuration : hitStopDuration;
-
                 _currentContract = new ParryClashContract
                 {
                     Attacker = marker.Attacker,
                     ParryRole = _entity,
                     Marker = marker,
-                    IsResolved = false,
-                    ParryHitEffectId = finalEffectId,
-                    HitStopDuration = finalHitStop
+                    IsResolved = false
                 };
                 CombatWarningManager.RegisterContract(_currentContract);
             }

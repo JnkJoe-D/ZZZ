@@ -51,11 +51,9 @@ namespace Game.GamePlay
             DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
             DataModule[typeof(ParryRuntimeData)] ??= new ParryRuntimeData();
 
-            if (ActionPlayer == null) ActionPlayer = new ActionPlayer(this);
-            ActionPlayer.SetExternalTimeScale(Clock.EffectiveScale);
-
+            if (ActionPlayer == null) ActionPlayer = EntityModuleFactory.Create<ActionPlayer>(this);
+            if (StatusModule == null) StatusModule = EntityModuleFactory.Create<StatusModule>(this);
             if (MotionWindowHandler == null) MotionWindowHandler = new ATMotionWindowHandler(this);
-            if (StatusModule == null) StatusModule = new StatusModule();
             if (AttributeResolver == null) AttributeResolver = new EntityAttributeResolver(this);
         }
 
@@ -107,9 +105,9 @@ namespace Game.GamePlay
             float scaledDt = logicDeltaTime * (Clock != null ? Clock.EffectiveScale : 1.0f);
 
             // 3. 将缩放后的步长自顶向下单向传递给各领域子系统
-            ActionController?.OnLogicTick(scaledDt);
-            ActionPlayer?.Tick(scaledDt);
-            StatusModule?.Tick(scaledDt);
+            ActionController?.LogicTick(scaledDt);
+            ActionPlayer?.LogicTick(scaledDt);
+            StatusModule?.LogicTick(scaledDt);
             OnSubLogicTick(scaledDt);
         }
 

@@ -65,9 +65,7 @@ namespace Game.GamePlay
                 Victim = ctx.Victim,
                 Marker = contract?.Marker,
                 HitPoint = ctx.HitPoint,
-                HitDirection = ctx.HitDirection,
-                ParryHitEffectId = contract != null ? contract.ParryHitEffectId : 0,
-                HitStopDuration = contract != null && contract.HitStopDuration > 0f ? contract.HitStopDuration : 0.1f
+                HitDirection = ctx.HitDirection
             };
 
             // 2. 移交 ClashHandler 进行分发（跨动作存取 + 秒切，或同动作内即时消费）

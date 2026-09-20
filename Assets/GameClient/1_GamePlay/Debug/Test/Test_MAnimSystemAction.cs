@@ -69,10 +69,10 @@ namespace Game.GamePlay
             if (_runner == null || _animComponent == null || actions.Count == 0) return;
 
             // 应用播放速度
-            _context.GlobalPlaySpeed = playSpeed;
+            _context.PresentationPlaySpeed = playSpeed;
 
             // 推进时间轴
-            _runner.Tick(Time.deltaTime);
+            _runner.Tick(Time.deltaTime * playSpeed);
             _timer += Time.deltaTime * playSpeed;
 
             // 无论动作底层是不是勾选了 isLoop，只要播放满了一个周期的时间，就强制切下一个

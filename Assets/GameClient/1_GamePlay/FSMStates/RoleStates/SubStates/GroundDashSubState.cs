@@ -26,7 +26,7 @@ namespace Game.GamePlay
                 return;
             }
 
-            bool hasMovementInput = provider.HasMovementInput();
+            bool hasMovementInput = provider.HasMoveInput();
 
             Vector2 currentInput = provider.GetMovementDirection();
             Vector2 lastInput = provider.GetLastMovementDirection();

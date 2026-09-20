@@ -40,7 +40,7 @@ namespace Game.GamePlay
 
             AttributeResolver = new MonsterAttributeResolver(this);
             CommandBuffer ??= new CommandBuffer(BufferMode.SingleOverride);
-            ActionController ??= new MonsterActionController(this);
+            ActionController ??= EntityControllerFactory.Create<ActionController>(this);
 
             // 1. 注册运行时状态数据容器
             DataModule[typeof(MonSterBehaviorRuntimeData)] ??= new MonSterBehaviorRuntimeData();
@@ -73,7 +73,7 @@ namespace Game.GamePlay
             base.OnSubLogicTick(scaledDeltaTime);
             DataModule.Get<MonSterBehaviorRuntimeData>()?.Tick(scaledDeltaTime);
             (HitReactionComponent as MonsterHitReactionComponent)?.OnLogicTick(scaledDeltaTime);
-            BrainCoordinator?.OnLogicTick(scaledDeltaTime);
+            BrainCoordinator?.LogicTick(scaledDeltaTime);
             BTRunner?.OnLogicTick(scaledDeltaTime);
             StateMachine?.Update(scaledDeltaTime);
         }

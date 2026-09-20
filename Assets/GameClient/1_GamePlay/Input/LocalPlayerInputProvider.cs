@@ -59,7 +59,7 @@ namespace Game.GamePlay
         {
             if (actionKey == (int)HardwareInputType.Move)
             {
-                return HasMovementInput();
+                return HasMoveInput();
             }
 
             if (_input != null)
@@ -134,7 +134,7 @@ namespace Game.GamePlay
             };
             _input.GamePlay.MoveHeld.performed += _ =>
             {
-                if (HasMovementInput())
+                if (HasMoveInput())
                 {
                     OnMoveHeld?.Invoke();
                     _heldActions.Add((int)HardwareInputType.Move);
@@ -246,7 +246,7 @@ namespace Game.GamePlay
             }
 
             // 3. 从 RoleConfigAsset 读取衰减阻尼时长（默认 0.08s）
-            float decelDuration = _cachedRoleConfig != null ? _cachedRoleConfig.MoveInputDecelerationDuration : 0.08f;
+            float decelDuration = _cachedRoleConfig != null ? _cachedRoleConfig.InputConfig.MoveInputDecelerationDuration : 0.08f;
             float dt = Time.unscaledDeltaTime;
 
             bool hadSmoothedInput = _smoothedMoveInput.sqrMagnitude > 0.001f;
@@ -292,9 +292,13 @@ namespace Game.GamePlay
             return _smoothedMoveInput;
         }
 
-        public bool HasMovementInput()
+        public bool HasMoveInput()
         {
             return _smoothedMoveInput.sqrMagnitude > 0.001f;
+        }
+        public bool HasRawMoveInput()
+        {
+            return _currentMoveInput.sqrMagnitude > 0.001f;
         }
     }
 }

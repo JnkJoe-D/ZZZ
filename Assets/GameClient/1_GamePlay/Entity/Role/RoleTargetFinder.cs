@@ -40,7 +40,7 @@ namespace Game.GamePlay
             _owner = owner;
         }
 
-        public void OnLogicTick(float logicDeltaTime)
+        public void LogicTick(float logicDeltaTime)
         {
         }
 

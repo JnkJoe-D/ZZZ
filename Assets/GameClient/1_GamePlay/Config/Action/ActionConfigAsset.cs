@@ -73,13 +73,6 @@ namespace Game.GamePlay
         [Tooltip("-1表示使用下个动作自身设定的混合时间，>=0则强制覆盖混合时间。")]
         public float CompleteTransitCrossfade = -1f;
 
-        // ── 速度配置 ────────────────────────────
-        [Header("速度配置")]
-
-
-        [Tooltip("播放速度")]
-        [Range(0f,10f)]
-        public float PlaybackSpeed = 1f;
 
 
         [Header("派生路由 (Action Routes)")]

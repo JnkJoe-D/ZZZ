@@ -18,7 +18,7 @@ namespace Game.GamePlay
                     InputType = commandType,
                     Phase = phase,
                     DirectionSnapshot = direction,
-                    HasMovementInput = provider != null && provider.HasMovementInput()
+                    HasMovementInput = provider != null && provider.HasMoveInput()
                 },
                 Timestamp = Time.time,
                 IsConsumed = false

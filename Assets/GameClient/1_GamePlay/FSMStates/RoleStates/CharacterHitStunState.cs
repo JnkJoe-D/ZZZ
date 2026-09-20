@@ -73,8 +73,6 @@ namespace Game.GamePlay
 
         public override void OnExit()
         {
-            // 确保受击结束后恢�?ActionPlayer 速度
-            Entity.ActionPlayer?.SetPlaySpeed(1f);
             _hitData?.ClearHitReactionAxis();
         }
     }

@@ -84,7 +84,7 @@ namespace Game.GamePlay
             }
         }
 
-        public void OnLogicTick(float logicDeltaTime)
+        public void LogicTick(float logicDeltaTime)
         {
             bool current = IsSelfControl;
             if (current != _lastSelfControlState)

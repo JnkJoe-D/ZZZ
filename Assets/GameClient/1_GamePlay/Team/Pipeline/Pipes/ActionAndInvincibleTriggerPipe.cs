@@ -24,58 +24,35 @@ namespace Game.GamePlay
                 inEntity.TargetFinder?.SetCombatContextTarget(ctx.TargetAttacker);
             }
 
-            // 1. 触发切入动作
-            if (ctx.CustomIncomingAction != null)
+            // 1. 触发切入动作触发源路由事件
+            switch (ctx.Type)
             {
-                inEntity.ActionController?.PlayAction(ctx.CustomIncomingAction);
-                GLog.Info(LogTags.Team, $"播放自定义切入动作: {ctx.CustomIncomingAction.name}");
+                case SwitchType.NormalSwitch:
+                    inEntity.ActionController?.TryTriggerEvent(RouteEventType.SwitchIn);
+                    break;
+
+                case SwitchType.ParryAid:
+                    inEntity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidStart);
+                    break;
+
+                case SwitchType.FallbackEvasion:
+                    inEntity.ActionController?.TryTriggerEvent(RouteEventType.FallbackEvasionIn);
+                    break;
+
+                case SwitchType.EvasionAid:
+                    inEntity.ActionController?.TryTriggerEvent(RouteEventType.EvasionAidStart);
+                    break;
+
+                case SwitchType.ChainAttack:
+                    inEntity.ActionController?.TryTriggerEvent(RouteEventType.ChainAttack);
+                    break;
+
+                case SwitchType.QuickAid:
+                    inEntity.ActionController?.TryTriggerEvent(RouteEventType.QuickAid);
+                    break;
             }
-            else
-            {
-                switch (ctx.Type)
-                {
-                    case SwitchType.NormalSwitch:
-                        inEntity.ActionController?.TryTriggerEvent(RouteEventType.SwitchIn);
-                        break;
+            GLog.Info(LogTags.Team, $"触发切入事件: {ctx.Type}");
 
-                    case SwitchType.ParryAid:
-                        inEntity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidStart);
-                        break;
-
-                    case SwitchType.FallbackEvasion:
-                        inEntity.ActionController?.TryTriggerEvent(RouteEventType.FallbackEvasionIn);
-                        break;
-
-                    case SwitchType.EvasionAid:
-                        inEntity.ActionController?.TryTriggerEvent(RouteEventType.EvasionAidStart);
-                        break;
-
-                    case SwitchType.ChainAttack:
-                        inEntity.ActionController?.TryTriggerEvent(RouteEventType.ChainAttack);
-                        break;
-
-                    case SwitchType.QuickAid:
-                        inEntity.ActionController?.TryTriggerEvent(RouteEventType.QuickAid);
-                        break;
-                }
-                GLog.Info(LogTags.Team, $"触发切入事件: {ctx.Type}");
-            }
-
-            // 2. 切入保护：赋予短暂起手无敌帧（防止刚切入同帧受击暴毙）
-            if (ctx.InvincibleDuration > 0f && inEntity.StatusModule != null)
-            {
-                inEntity.StatusModule.AddImmuneTag("Invincible");
-                inEntity.StartCoroutine(RemoveInvincibleRoutine(inEntity, ctx.InvincibleDuration));
-            }
-        }
-
-        private IEnumerator RemoveInvincibleRoutine(RoleEntity entity, float duration)
-        {
-            yield return new WaitForSeconds(duration);
-            if (entity != null && entity.StatusModule != null)
-            {
-                entity.StatusModule.RemoveImmuneTag("Invincible");
-            }
         }
     }
 }

@@ -10,8 +10,6 @@ namespace Game.GamePlay
         public AttackWarningMarker Marker;
         public Vector3 HitPoint;
         public Vector3 HitDirection;
-        public int ParryHitEffectId;
-        public float HitStopDuration;
         public bool IsConsumed;
     }
 

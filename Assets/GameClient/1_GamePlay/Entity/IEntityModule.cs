@@ -10,9 +10,18 @@ namespace Game.GamePlay
         void Initialize(CharacterEntity owner);
 
         /// <summary> 受控 60Hz 逻辑步长更新（若不需要时钟驱动可留空） </summary>
-        void OnLogicTick(float logicDeltaTime);
+        void LogicTick(float logicDeltaTime);
 
         /// <summary> 模块清理与内存解绑 </summary>
         void Dispose();
+    }
+    public static class EntityModuleFactory
+    {
+        public static T Create<T>(CharacterEntity owner) where T : IEntityModule, new()
+        {
+            var module = new T();
+            module.Initialize(owner);
+            return module;
+        }
     }
 }

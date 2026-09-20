@@ -139,7 +139,7 @@ namespace Game.GamePlay
             }
         }
 
-        public void OnLogicTick(float logicDeltaTime) { }
+        public void LogicTick(float logicDeltaTime) { }
 
         public void Dispose()
         {

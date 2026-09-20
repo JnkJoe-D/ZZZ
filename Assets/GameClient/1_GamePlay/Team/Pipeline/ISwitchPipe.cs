@@ -32,11 +32,8 @@ namespace Game.GamePlay
         /// <summary> 即时模式：切入瞬间立即关闭碰撞、隐藏渲染、转入 Standby 待机（如招架/闪避支援） </summary>
         Immediate = 0,
 
-        /// <summary> 动作自动托管模式：自动根据动作播放进度关闭碰撞与隐藏模型，免手配时间轴事件 </summary>
-        AutoFollowThrough = 10,
-
-        /// <summary> 显式时间轴事件模式：向下兼容老动作配置中的 SwitchOutDisableLogic 与 HideOutgoingRole </summary>
-        TimelineExplicit = 20
+        /// <summary> 动作自动托管模式：由路由根据实时条件切换动作 </summary>
+        AutoByRoute = 10,
     }
 
     /// <summary>
