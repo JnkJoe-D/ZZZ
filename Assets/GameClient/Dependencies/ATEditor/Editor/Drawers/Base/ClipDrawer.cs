@@ -4,7 +4,7 @@ using ATEditor;
 
 namespace ATEditor.Editor
 {
-    public class ClipDrawer : SkillInspectorBase
+    public class ClipDrawer : ActionInspectorBase
     {
         public virtual void DrawInspector(ClipBase clip)
         {
@@ -37,7 +37,7 @@ namespace ATEditor.Editor
         {
             if (EditorWindow.HasOpenInstances<ATEditorWindow>())
             {
-                var window = EditorWindow.GetWindow<ATEditorWindow>(false, "技能编辑器", false);
+                var window = EditorWindow.GetWindow<ATEditorWindow>(false, "动作时间轴编辑器", false);
                 if (window != null)
                 {
                     var timeline = window.GetCurrentTimeline();

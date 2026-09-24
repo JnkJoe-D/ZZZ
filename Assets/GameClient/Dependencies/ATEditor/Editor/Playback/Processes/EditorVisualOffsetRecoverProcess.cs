@@ -23,7 +23,7 @@ namespace ATEditor.Editor
 
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
 
         }

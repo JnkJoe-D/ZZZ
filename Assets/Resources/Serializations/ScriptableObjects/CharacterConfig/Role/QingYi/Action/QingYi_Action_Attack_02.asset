@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
+  m_Name: QingYi_Action_Attack_02
+  m_EditorClassIdentifier: 
+  ID: 141110
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 7e41fc52bb9ddc0428489ee2f598717f, type: 3}
+  actionTimelineSO: {fileID: 11400000, guid: 4778452fb574b174d98f51b552fa5d93, type: 2}
+  CompleteMode: 0
+  CompleteAction: {fileID: 0}
+  CompleteTransitCrossfade: -1
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 3d36c0b053663af4e9a797eacca762ec, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379258097012572299
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 3d36c0b053663af4e9a797eacca762ec, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379258097012572298
+    ExtraConditions: []
+  RouteSets:
+  - {fileID: 11400000, guid: 6af555797470828449f67cb37cdedf6f, type: 2}
+  - {fileID: 11400000, guid: 49f91d2a59c73d84ba596930fac286ff, type: 2}
+  - {fileID: 11400000, guid: bb67c86673c0e944fb34dbb2fd7108e8, type: 2}
+  - {fileID: 11400000, guid: 6df26ea99b1e2ca49bf26e877d51e953, type: 2}
+  - {fileID: 11400000, guid: 6b54149973a433c4797b504474e39a9c, type: 2}
+  - {fileID: 11400000, guid: 1079305e8d007e04a96d5d337f6c425a, type: 2}
+  - {fileID: 11400000, guid: 807b3fb8d499de04d949afb8e12911e8, type: 2}
+  EnterState: 40
+  InheritMode: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 6379258097012572298
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916853
+        RequiredWindowTag: Execute1
+        Modifiers: []
+    - rid: 6379258097012572299
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916852
+        RequiredWindowTag: Buffer1
+        Modifiers: []
+    - rid: 6379258143149916852
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer1
+    - rid: 6379258143149916853
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1

@@ -1,0 +1,19 @@
+# Top-most EditorConfig file
+root = true
+
+# Default charset for all files: UTF-8
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = false
+
+# C# source files
+[*.cs]
+indent_style = space
+indent_size = 4
+
+# Configuration & data files
+[*.{json,xml,md,txt,yaml,yml,shader,cginc,hlsl}]
+indent_style = space
+indent_size = 4

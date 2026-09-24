@@ -373,7 +373,7 @@ namespace Game.Presentation
                 if (role != null && role.StateMachine != null && role.StateMachine.CurrentState != null)
                 {
                     System.Type stateType = role.StateMachine.CurrentState.GetType();
-                    if (stateType != typeof(CharacterGroundState))
+                    if (stateType != typeof(RoleGroundState))
                     {
                         isSkillOrAction = true;
                     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ATEditor.Editor
 {
-    public class TrackDrawer : SkillInspectorBase
+    public class TrackDrawer : ActionInspectorBase
     {
         // 保持 DrawInspector(TrackBase track) 签名，但内部调用 base
         public virtual void DrawInspector(TrackBase track)

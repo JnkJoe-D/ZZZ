@@ -35,7 +35,7 @@ namespace Game.GamePlay
             base.Awake();
 
             AttributeResolver = new RoleAttributeResolver(this);
-            CommandBuffer ??= new CommandBuffer();
+            RouteArbitrator ??= new RouteArbitrator();
             ActionController ??= EntityControllerFactory.Create<RoleActionController>(this);
 
             InputAdapter ??= EntityModuleFactory.Create<RoleInputAdapterModule>(this); 
@@ -86,7 +86,7 @@ namespace Game.GamePlay
             }
             else
             {
-                StateMachine?.ChangeState<CharacterGroundState>();
+                StateMachine?.ChangeState<RoleGroundState>();
             }
 
             IsRuntimeInitialized = true;

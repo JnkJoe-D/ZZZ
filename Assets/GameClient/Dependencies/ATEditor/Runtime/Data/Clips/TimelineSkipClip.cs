@@ -7,7 +7,7 @@ namespace ATEditor
     [ClipDefinition(typeof(TimelineSkipTrack), "跳跃片段")]
     public class TimelineSkipClip : ClipBase
     {
-        [SkillProperty("跳跃条件 (TimelineSkip)")]
+        [ActionProperty("跳跃条件 (TimelineSkip)")]
         [Tooltip("如果 ProcessContext.Flags 中包含该标记，则【取消跳跃】（即有标记不跳，没标记跳）")]
         public string CancelFlag = "TimelineSkip";
 

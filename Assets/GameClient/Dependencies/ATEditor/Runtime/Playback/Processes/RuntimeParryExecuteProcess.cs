@@ -14,7 +14,7 @@ namespace ATEditor
         {
             if (clip != null)
             {
-                _handler?.OnExecuteWindowEnter(clip);
+                _handler?.OnExecuteWindowEnter(clip.hitEffectId, clip.hitStopDuration);
             }
         }
 
@@ -27,7 +27,7 @@ namespace ATEditor
             _handler?.OnExecuteWindowExit();
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
         }
 

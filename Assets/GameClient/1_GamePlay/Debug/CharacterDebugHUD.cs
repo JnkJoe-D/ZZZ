@@ -192,23 +192,6 @@ namespace Game.GamePlay
                         : $"{comboData.LastRouteTag ?? "-"} / {comboData.LastResolvedActionId}",
                     new Color(0.85f, 0.85f, 0.85f));
 
-                GUILayout.Space(15);
-                GUILayout.Label("COMMAND BUFFER", titleStyle);
-                if (targetEntity.CommandBuffer != null)
-                {
-                    var commands = targetEntity.CommandBuffer.GetUnconsumedCommands();
-                    if (!commands.Any())
-                    {
-                        GUILayout.Label("  (Empty)", historyStyle);
-                    }
-                    else
-                    {
-                        foreach (CharacterCommand command in commands)
-                        {
-                            DrawInfo($"> {command.Payload}", $"{(Time.time - command.Timestamp):F2}s ago", Color.yellow);
-                        }
-                    }
-                }
 
                 GUILayout.Space(15);
                 GUILayout.Label("EXECUTION HISTORY (Latest 10)", titleStyle);
@@ -307,12 +290,12 @@ namespace Game.GamePlay
 
         private static string GetGroundSubStateLabel(object currentState)
         {
-            if (currentState is not CharacterGroundState groundState)
+            if (currentState is not RoleGroundState groundState)
             {
                 return "-";
             }
 
-            GroundSubState subState = groundState.CurrentSubState;
+            RoleSubState subState = groundState.CurrentSubState;
             return subState != null ? subState.GetType().Name : "None";
         }
 

@@ -24,9 +24,9 @@ namespace Game.GamePlay
             }
         }
 
-        protected override void HandleDeath(HitContext? ctx)
+        protected override void HandleDeath(CharacterEntity attacker)
         {
-            base.HandleDeath(ctx);
+            base.HandleDeath(attacker);
 
             if (_entity is MonsterEntity monster)
             {

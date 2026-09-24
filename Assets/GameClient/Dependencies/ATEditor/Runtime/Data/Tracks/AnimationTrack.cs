@@ -15,7 +15,7 @@ namespace ATEditor
         /// <summary>
         /// 是否主轨道，主轨道用于播放，其他轨道仅供预览和编辑
         /// </summary>
-        [SkillProperty("主轨道")]
+        [ActionProperty("主轨道")]
         public bool isMasterTrack  = false; 
         public UnityEngine.Vector3 offsetPos; // 预览时重置角色位置
         public UnityEngine.Vector3 offsetRot; // 预览时重置角色旋转

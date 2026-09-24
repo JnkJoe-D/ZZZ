@@ -8,6 +8,11 @@ namespace Game.UI
     {
         public StatusPanelModel Model { get; set; }
 
+        // 槽位根节点（用于按角色数量整体显隐 1、2、3 号位 UI）
+        public GameObject RoleSlot01 { get; private set; }
+        public GameObject RoleSlot02 { get; private set; }
+        public GameObject RoleSlot03 { get; private set; }
+
         // 自动生成的UI组件字段
         public Image Content {get;private set;}
         public Image Role01 {get;private set;}
@@ -34,6 +39,14 @@ namespace Game.UI
 
         private void BindUIComponents()
         {
+            // 绑定槽位根节点
+            Transform slot01 = transform.Find("View/Content/Role01");
+            RoleSlot01 = slot01 != null ? slot01.gameObject : null;
+            Transform slot02 = transform.Find("View/Content/Role02");
+            RoleSlot02 = slot02 != null ? slot02.gameObject : null;
+            Transform slot03 = transform.Find("View/Content/Role03");
+            RoleSlot03 = slot03 != null ? slot03.gameObject : null;
+
             // 自动绑定UI组件
             Content = transform.Find("View/Content").GetComponent<Image>();
             Role01 = transform.Find("View/Content/Role01/Role01").GetComponent<Image>();
@@ -57,6 +70,47 @@ namespace Game.UI
             SPFill03 = transform.Find("View/Content/Role03/SPFill03").GetComponent<Image>();
             SPPointGray03 = transform.Find("View/Content/Role03/SPFill03/SPPointGray03").GetComponent<Image>();
             SPPoint03 = transform.Find("View/Content/Role03/SPFill03/SPPoint03").GetComponent<Image>();
+        }
+
+        /// <summary>
+        /// 获取指定视图槽位的根节点 GameObject（0 -> 1号位, 1 -> 2号位, 2 -> 3号位）。
+        /// </summary>
+        public GameObject GetRoleSlot(int slotIndex)
+        {
+            switch (slotIndex)
+            {
+                case 0: return RoleSlot01;
+                case 1: return RoleSlot02;
+                case 2: return RoleSlot03;
+                default: return null;
+            }
+        }
+
+        /// <summary>
+        /// 设置指定视图槽位的显隐状态。
+        /// </summary>
+        public void SetSlotVisible(int slotIndex, bool isVisible)
+        {
+            GameObject slot = GetRoleSlot(slotIndex);
+            if (slot != null && slot.activeSelf != isVisible)
+            {
+                slot.SetActive(isVisible);
+            }
+        }
+
+        /// <summary>
+        /// 按照当前小队实际角色数量批量更新卡槽显隐。
+        /// 例如 visibleCount = 1: 显示 1 号位，隐藏 2、3 号位；
+        /// 例如 visibleCount = 2: 显示 1、2 号位，隐藏 3 号位；
+        /// 例如 visibleCount = 3: 显示全部卡槽；
+        /// 例如 visibleCount = 0: 隐藏全部卡槽。
+        /// </summary>
+        public void UpdateSlotsVisibility(int visibleCount)
+        {
+            for (int i = 0; i < StatusPanelModel.MaxSlots; i++)
+            {
+                SetSlotVisible(i, i < visibleCount);
+            }
         }
 
         public override void OnInit()

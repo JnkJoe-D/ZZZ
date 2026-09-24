@@ -166,62 +166,17 @@ namespace Game.GamePlay
             return defaultHitStunDuration > 0f ? defaultHitStunDuration : 0.5f;
         }
 
-        [Header("兼容旧版本单一字段（自动迁移）")]
-        [HideInInspector] public ActionConfigAsset hitAnimLight;
-        [HideInInspector] public ActionConfigAsset hitAnimHeavy;
-        [HideInInspector] public ActionConfigAsset hitAnimKnowAway;
-        [HideInInspector] public ActionConfigAsset hitAnimShake;
-        [HideInInspector] public ActionConfigAsset hitAnimStay;
-        [HideInInspector] public ActionConfigAsset hitAnimKnockDown;
-        [HideInInspector] public ActionConfigAsset hitAnimParry;
-
         [NonSerialized]
         private Dictionary<HitReactionType, HitReactionTypeEntry> _entryMap;
 
         private void OnEnable()
         {
             _entryMap = null;
-            MigrateLegacyFieldsIfNeeded();
         }
 
         private void OnValidate()
         {
             _entryMap = null;
-            MigrateLegacyFieldsIfNeeded();
-        }
-
-        /// <summary>
-        /// 将旧的单一字段无损迁移至新的分组列表中
-        /// </summary>
-        private void MigrateLegacyFieldsIfNeeded()
-        {
-            if (reactionEntries == null)
-            {
-                reactionEntries = new List<HitReactionTypeEntry>();
-            }
-
-            // 若 reactionEntries 为空且旧字段有值，执行自动迁移
-            if (reactionEntries.Count == 0)
-            {
-                AddLegacyEntryIfNotNull(HitReactionType.Light, hitAnimLight);
-                AddLegacyEntryIfNotNull(HitReactionType.Heavy, hitAnimHeavy);
-                AddLegacyEntryIfNotNull(HitReactionType.Launch, hitAnimKnowAway);
-                AddLegacyEntryIfNotNull(HitReactionType.Shake, hitAnimShake, HitTurnaroundPolicy.NeverTurn);
-                AddLegacyEntryIfNotNull(HitReactionType.Stay, hitAnimStay, HitTurnaroundPolicy.NeverTurn);
-                AddLegacyEntryIfNotNull(HitReactionType.KnockDown, hitAnimKnockDown);
-                AddLegacyEntryIfNotNull(HitReactionType.Parried, hitAnimParry);
-            }
-        }
-
-        private void AddLegacyEntryIfNotNull(HitReactionType type, ActionConfigAsset action, HitTurnaroundPolicy policy = HitTurnaroundPolicy.AutoByAvailability)
-        {
-            if (action == null) return;
-            reactionEntries.Add(new HitReactionTypeEntry
-            {
-                reactionType = type,
-                turnaroundPolicy = policy,
-                frontAction = action
-            });
         }
 
         public void InitializeCache()
@@ -287,14 +242,6 @@ namespace Game.GamePlay
                 if (autoFallback != HitReactionType.None && autoFallback != requestType && _entryMap.ContainsKey(autoFallback))
                 {
                     return TryResolveHitAction(autoFallback, signedHorizontalAngle, verticalAngle, out resolvedAction, out needFaceAttacker);
-                }
-
-                // 尝试从旧字段保底兜底
-                resolvedAction = GetLegacyActionFallback(requestType);
-                if (resolvedAction != null)
-                {
-                    needFaceAttacker = Mathf.Abs(signedHorizontalAngle) > 90f;
-                    return true;
                 }
 
                 return false;
@@ -374,33 +321,6 @@ namespace Game.GamePlay
             return entry.frontAction ?? entry.backAction;
         }
 
-        private ActionConfigAsset GetLegacyActionFallback(HitReactionType type)
-        {
-            return type switch
-            {
-                HitReactionType.Light => hitAnimLight,
-                HitReactionType.Heavy => hitAnimHeavy,
-                HitReactionType.Launch => hitAnimKnowAway,
-                HitReactionType.Shake => hitAnimShake,
-                HitReactionType.Stay => hitAnimStay,
-                HitReactionType.KnockDown => hitAnimKnockDown,
-                HitReactionType.Parried => hitAnimParry,
-                _ => null
-            };
-        }
-
-        /// <summary>
-        /// 兼容旧版调用（默认 0 度正面）
-        /// </summary>
-        public ActionConfigAsset GetHitAction(HitReactionType type)
-        {
-            if (TryResolveHitAction(type, 0f, 0f, out var action, out _))
-            {
-                return action;
-            }
-            return null;
-        }
-
         /// <summary>
         /// 便捷带方向查询重载
         /// </summary>
@@ -431,15 +351,6 @@ namespace Game.GamePlay
                     }
                 }
             }
-
-            // 兼容旧字段
-            if (hitAnimLight != null && yielded.Add(hitAnimLight)) yield return hitAnimLight;
-            if (hitAnimHeavy != null && yielded.Add(hitAnimHeavy)) yield return hitAnimHeavy;
-            if (hitAnimKnowAway != null && yielded.Add(hitAnimKnowAway)) yield return hitAnimKnowAway;
-            if (hitAnimShake != null && yielded.Add(hitAnimShake)) yield return hitAnimShake;
-            if (hitAnimStay != null && yielded.Add(hitAnimStay)) yield return hitAnimStay;
-            if (hitAnimKnockDown != null && yielded.Add(hitAnimKnockDown)) yield return hitAnimKnockDown;
-            if (hitAnimParry != null && yielded.Add(hitAnimParry)) yield return hitAnimParry;
         }
     }
 }

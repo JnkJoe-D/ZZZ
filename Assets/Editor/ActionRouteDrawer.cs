@@ -1,22 +1,27 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using System.Reflection;
 using Game.Framework;
 using Game.Editor.Framework;
 using Game.GamePlay;
+
 namespace Game.Editor.ActionConfig
 {
     /// <summary>
     /// ActionRoute 的自定义属性绘制器。
     /// 采用自动迭代模式：新增字段时无需修改此 Drawer。
     /// 仅对需要特殊渲染的字段（RequiredWindowTag）进行覆盖。
+    /// 支持怪物路由中的非法输入条件检测与一键自愈修复。
     /// </summary>
     [CustomPropertyDrawer(typeof(ActionRoute))]
     public sealed class ActionRouteDrawer : PropertyDrawer
     {
         private const float LineGap = 2f;
+        private const float WarningBoxHeight = 36f;
+        private const float CleanButtonHeight = 20f;
 
         // 需要特殊渲染的字段名称集合
         private static readonly HashSet<string> CustomDrawnFields = new() { "RequiredWindowTag" };
@@ -35,6 +40,19 @@ namespace Game.Editor.ActionConfig
             }
 
             EditorGUI.indentLevel++;
+
+            // ── 怪物路由合规性检测与修复 ──
+            if (HasMonsterRouteWarning(property, out string warningMsg))
+            {
+                Rect warnRect = NextRect(ref position, WarningBoxHeight);
+                EditorGUI.HelpBox(warnRect, warningMsg, MessageType.Warning);
+
+                Rect btnRect = NextRect(ref position, CleanButtonHeight);
+                if (GUI.Button(btnRect, "一键清理怪物非法输入条件与角色条件", EditorStyles.miniButton))
+                {
+                    CleanInvalidMonsterConditions(property);
+                }
+            }
 
             // ── 自动迭代所有子属性 ──
             SerializedProperty endProperty = property.GetEndProperty();
@@ -73,6 +91,12 @@ namespace Game.Editor.ActionConfig
 
             float height = EditorGUIUtility.singleLineHeight + LineGap; // Foldout header
 
+            // 怪物非法输入警告高度
+            if (HasMonsterRouteWarning(property, out _))
+            {
+                height += WarningBoxHeight + CleanButtonHeight + (LineGap * 2f);
+            }
+
             // 自动迭代计算高度
             SerializedProperty endProperty = property.GetEndProperty();
             SerializedProperty iter = property.Copy();
@@ -102,10 +126,19 @@ namespace Game.Editor.ActionConfig
             }
 
             SerializedProperty triggerProp = property.FindPropertyRelative("TriggerStrategy");
-            string tag = triggerProp?.FindPropertyRelative("RequiredWindowTag")?.stringValue;
-            if (string.IsNullOrEmpty(tag))
+            string tag = "-";
+            if (triggerProp != null)
             {
-                tag = property.FindPropertyRelative("RequiredWindowTag")?.stringValue;
+                SerializedProperty windowProp = triggerProp.FindPropertyRelative("RequiredWindow");
+                if (windowProp != null && windowProp.managedReferenceValue is ATEditor.RouteWindow rw && !string.IsNullOrEmpty(rw.Tag))
+                {
+                    tag = rw.EditorLabel;
+                }
+                else
+                {
+                    string legacyTag = triggerProp.FindPropertyRelative("RequiredWindowTag")?.stringValue;
+                    if (!string.IsNullOrEmpty(legacyTag)) tag = legacyTag;
+                }
             }
             
             string targetName = "None";
@@ -140,7 +173,12 @@ namespace Game.Editor.ActionConfig
                 targetName = executeAction?.objectReferenceValue != null ? executeAction.objectReferenceValue.name : "None";
             }
             
-            return new GUIContent($"{category} / {tag ?? "-"} -> {targetName}");
+            if (HasMonsterRouteWarning(property, out _))
+            {
+                return new GUIContent($"⚠️ [非法输入配置] {category} / {tag} -> {targetName}");
+            }
+
+            return new GUIContent($"{category} / {tag} -> {targetName}");
         }
 
         // ────────────────── 特殊字段渲染 ──────────────────
@@ -268,6 +306,136 @@ namespace Game.Editor.ActionConfig
             Rect rect = new Rect(position.x, position.y, position.width, height);
             position.y += height + LineGap;
             return rect;
+        }
+
+        private static Rect NextRect(ref Rect position, float height)
+        {
+            Rect rect = new Rect(position.x, position.y, position.width, height);
+            position.y += height + LineGap;
+            return rect;
+        }
+
+        // ────────────────── 怪物路由合规性校验与自愈 ──────────────────
+
+        private static bool HasMonsterRouteWarning(SerializedProperty property, out string warningMsg)
+        {
+            warningMsg = null;
+            if (property.serializedObject.targetObject is not MonsterActionConfigAsset)
+            {
+                return false;
+            }
+
+            SerializedProperty triggerProp = property.FindPropertyRelative("TriggerStrategy");
+            if (triggerProp != null)
+            {
+                string triggerTypeName = triggerProp.managedReferenceFullTypename;
+                if (!string.IsNullOrEmpty(triggerTypeName) && triggerTypeName.Contains(nameof(IntentCommandTrigger)))
+                {
+                    warningMsg = "【非法配置】怪物路由配置了按键输入触发器 (IntentCommandTrigger)，怪物无法响应硬件输入！";
+                    return true;
+                }
+
+                SerializedProperty modifiersProp = triggerProp.FindPropertyRelative("Modifiers");
+                if (modifiersProp != null && modifiersProp.arraySize > 0)
+                {
+                    warningMsg = "【非法配置】怪物路由触发器中配置了输入修饰符 (Modifiers)，怪物没有输入组件，该条件在运行时将恒为 false！";
+                    return true;
+                }
+            }
+
+            SerializedProperty extraProp = property.FindPropertyRelative("ExtraConditions");
+            if (extraProp != null && extraProp.isArray)
+            {
+                for (int i = 0; i < extraProp.arraySize; i++)
+                {
+                    var elem = extraProp.GetArrayElementAtIndex(i);
+                    string fullTypeName = elem.managedReferenceFullTypename;
+                    if (!string.IsNullOrEmpty(fullTypeName))
+                    {
+                        Type t = GetTypeFromManagedReferenceFullTypename(fullTypeName);
+                        if (t != null && typeof(RoleConditionBase).IsAssignableFrom(t))
+                        {
+                            warningMsg = $"【非法配置】怪物路由中配置了角色专属条件 ({t.Name})，怪物无法满足此条件！";
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static Type GetTypeFromManagedReferenceFullTypename(string fullTypeName)
+        {
+            int splitIndex = fullTypeName.IndexOf(' ');
+            if (splitIndex < 0) return Type.GetType(fullTypeName);
+
+            string assemblyName = fullTypeName.Substring(0, splitIndex);
+            string realTypeName = fullTypeName.Substring(splitIndex + 1);
+
+            Type type = Type.GetType($"{realTypeName}, {assemblyName}");
+            if (type == null)
+            {
+                type = AppDomain.CurrentDomain.GetAssemblies()
+                    .Select(a => a.GetType(realTypeName))
+                    .FirstOrDefault(t => t != null);
+            }
+            return type;
+        }
+
+        private static void CleanInvalidMonsterConditions(SerializedProperty property)
+        {
+            var targetObjs = property.serializedObject.targetObjects;
+            if (targetObjs != null && targetObjs.Length > 0)
+            {
+                Undo.RecordObjects(targetObjs, "Clean Invalid Monster Conditions");
+            }
+
+            SerializedProperty triggerProp = property.FindPropertyRelative("TriggerStrategy");
+            if (triggerProp != null)
+            {
+                string triggerTypeName = triggerProp.managedReferenceFullTypename;
+                if (!string.IsNullOrEmpty(triggerTypeName) && triggerTypeName.Contains(nameof(IntentCommandTrigger)))
+                {
+                    triggerProp.managedReferenceValue = null;
+                }
+                else
+                {
+                    SerializedProperty modifiersProp = triggerProp.FindPropertyRelative("Modifiers");
+                    if (modifiersProp != null && modifiersProp.arraySize > 0)
+                    {
+                        modifiersProp.ClearArray();
+                    }
+                }
+            }
+
+            SerializedProperty extraProp = property.FindPropertyRelative("ExtraConditions");
+            if (extraProp != null && extraProp.isArray)
+            {
+                for (int i = extraProp.arraySize - 1; i >= 0; i--)
+                {
+                    var elem = extraProp.GetArrayElementAtIndex(i);
+                    string fullTypeName = elem.managedReferenceFullTypename;
+                    if (!string.IsNullOrEmpty(fullTypeName))
+                    {
+                        Type t = GetTypeFromManagedReferenceFullTypename(fullTypeName);
+                        if (t != null && typeof(RoleConditionBase).IsAssignableFrom(t))
+                        {
+                            extraProp.DeleteArrayElementAtIndex(i);
+                        }
+                    }
+                }
+            }
+
+            property.serializedObject.ApplyModifiedProperties();
+
+            if (targetObjs != null)
+            {
+                foreach (var obj in targetObjs)
+                {
+                    if (obj != null) EditorUtility.SetDirty(obj);
+                }
+            }
         }
     }
 }

@@ -64,7 +64,7 @@ namespace ATEditor.Editor
         {
             CleanUpInstance();
         }
-        public override void OnDisable()
+        public override void OnStop()
         {
             CleanUpInstance();
         }

@@ -35,7 +35,6 @@ namespace ATEditor
         /// 当前播放时间（秒）
         /// </summary>
         public float CurrentTime { get; private set; }
-        private float previousTime;
 
         /// <summary>
         /// 当前播放的时间轴
@@ -213,7 +212,7 @@ namespace ATEditor
         public void Stop()
         {
             if (CurrentState == State.None) return;
-            FullCleanup();
+            InterruptCleanup();
             CurrentState = State.None;
             ClearEvents();
         }
@@ -288,9 +287,6 @@ namespace ATEditor
 
         /// <summary>
         /// 每帧驱动（由外部调用）
-        /// 编辑器预览：由 EditorApplication.update 传入 editorDelta 或 1/frameRate
-        /// 运行时：由 SkillLifecycleManager.Update 传入 Time.deltaTime
-        /// 帧同步：由逻辑帧回调传入 fixedDelta
         /// </summary>
         public void Tick(float deltaTime)
         {
@@ -301,11 +297,9 @@ namespace ATEditor
             {
                 var actingTimeline = Timeline; // 保存当前正在运行的时间轴，以检测运行中是否切招
 
-            float speed = context.GlobalPlaySpeed;
-            CurrentTime += deltaTime * speed;
+            CurrentTime += deltaTime;
             context.CurrentTime = CurrentTime;
-            bool isReversing = CurrentTime - previousTime < 0 && speed < 0;
-            previousTime = CurrentTime;
+            bool isReversing = deltaTime < 0;
             // 区间扫描
             for (int i = 0; i < processes.Count; i++)
             {
@@ -356,8 +350,8 @@ namespace ATEditor
 
             OnTick?.Invoke(CurrentTime);
 
-            // 播放结束检测
-            if (Timeline != null && !_pendingSeekTime.HasValue && 
+            // 播放结束检测（首帧 Tick(0f) 探测时绝不应触发结束判定）
+            if (Math.Abs(deltaTime) > 0.00001f && Timeline != null && !_pendingSeekTime.HasValue && 
             ((!isReversing && CurrentTime >= Timeline.Duration)||(isReversing && CurrentTime <= 0f)))
             {
                 OvershootTime = !isReversing ? CurrentTime - Timeline.Duration : CurrentTime;
@@ -378,7 +372,7 @@ namespace ATEditor
                 else
                 {
                     ActionTimeline completedTimeline = Timeline;
-                    FullCleanup();
+                    CompleteCleanup();
                     CurrentState = State.None;
                     DispatchTimelineEvents(completedTimeline?.onCompleteEvents);
                     if (CurrentState != State.None || Timeline != completedTimeline)
@@ -416,7 +410,7 @@ namespace ATEditor
                 context.IsInterrupted = true;
             }
             OnInterrupt?.Invoke();
-            FullCleanup();
+            InterruptCleanup();
             ClearEvents();
             CurrentState = State.None;
         }
@@ -453,27 +447,26 @@ namespace ATEditor
         }
 
         /// <summary>
-        /// 完整清理（三层 + 池归还）
-        /// 级别 1: OnExit（实例级）→ 级别 2: OnDisable（进程级）→ 归还池 → 级别 3: SystemCleanup
+        /// 自然播放完毕时的清理（仅正常退出，绝不调用 OnStop）
         /// </summary>
-        private void FullCleanup()
+        private void CompleteCleanup()
         {
-            // 级别 1: 实例级清理 (仅在自然退出时触发，此处为硬清理，直接跳过 OnExit)
-            // foreach (var inst in processes)
-            // {
-            //     if (inst.isActive)
-            //     {
-            //         inst.process.OnExit();
-            //     }
-            // }
-
-            // 级别 2: 进程级清理
-            foreach (var inst in processes)
+            // 级别 1: 实例级清理（补全压轴仍在激活状态的片段的 OnExit）
+            for (int i = 0; i < processes.Count; i++)
             {
-                inst.process.OnDisable();
+                var inst = processes[i];
+                if (inst.isActive)
+                {
+                    inst.process.OnExit();
+                    inst.isActive = false;
+                    processes[i] = inst;
+                }
             }
 
-            // 归还对象池
+            // 级别 2: 系统级清理（此时所有 Process 字段依然完整有效）
+            context?.ExecuteCleanups();
+
+            // 级别 3: 归还对象池（清洗入池，切断外部强引用）
             foreach (var inst in processes)
             {
                 ProcessFactory.Return(inst.process);
@@ -481,8 +474,30 @@ namespace ATEditor
 
             processes.Clear();
             activeProcesses.Clear();
-            // 级别 3: 系统级清理
+        }
+
+        /// <summary>
+        /// 中断 / 强制停止时的清理（仅触发 OnStop，绝不调用 OnExit）
+        /// </summary>
+        private void InterruptCleanup()
+        {
+            // 级别 1: 进程级清理（打断/停止）
+            foreach (var inst in processes)
+            {
+                inst.process.OnStop();
+            }
+
+            // 级别 2: 系统级清理（此时所有 Process 字段依然完整有效）
             context?.ExecuteCleanups();
+
+            // 级别 3: 归还对象池（清洗入池，切断外部强引用）
+            foreach (var inst in processes)
+            {
+                ProcessFactory.Return(inst.process);
+            }
+
+            processes.Clear();
+            activeProcesses.Clear();
         }
 
         /// <summary>

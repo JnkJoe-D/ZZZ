@@ -10,10 +10,10 @@ namespace ATEditor
     [ClipDefinition(typeof(CameraTrack), "相机脉冲")]
     public class CameraImpluseClip : ClipBase
     {
-        [SkillProperty("冲击力")]
+        [ActionProperty("冲击力")]
         public Vector3 velocity = Vector3.zero;
 
-        [SkillProperty("强度系数")]
+        [ActionProperty("强度系数")]
         public float force = 0.1f;
 
         public CameraImpluseClip()

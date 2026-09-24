@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ATEditor;
 
@@ -17,15 +18,16 @@ namespace Game.GamePlay
         public sealed class RouteWindowData
         {
             public string Tag;
-            public object Token;
-            public int Generation;
             public ActionConfigAsset OwnerAction;
-            public List<CharacterCommand> CapturedCommands = new();
+            public RouteWindow Window;
+            public IRouteWindowProcesser Processer;
         }
 
         // ─── 字段 ───
 
         protected CharacterEntity _entity;
+        public ActionPlayer ActionPlayer { get; private set; }
+
         private readonly List<RouteWindowData> _activeRouteWindows = new();
         private readonly List<ActionRoute> _effectiveRoutes = new();
         private readonly CommandFateTracker _fateTracker = new();
@@ -45,11 +47,23 @@ namespace Game.GamePlay
         {
             _entity = owner;
             _actionData = _entity.DataModule?.Get<ActionRuntimeData>();
+            if (ActionPlayer == null && _entity != null)
+            {
+                ActionPlayer = EntityModuleFactory.Create<ActionPlayer>(_entity);
+            }
         }
 
         public void ResetController()
         {
-            _activeRouteWindows.Clear();
+            if (_activeRouteWindows.Count > 0)
+            {
+                WindowProcessContext ctx = CreateContext();
+                for (int i = 0; i < _activeRouteWindows.Count; i++)
+                {
+                    _activeRouteWindows[i].Processer?.OnDisable(ctx);
+                }
+                _activeRouteWindows.Clear();
+            }
             _effectiveRoutes.Clear();
             _isTransitioning = false;
         }
@@ -62,38 +76,19 @@ namespace Game.GamePlay
 
         public void LogicTick(float logicDeltaTime)
         {
-            _entity.CommandBuffer?.Tick();
+            // 1. 先推进 ActionPlayer（时间轴）：
+            //    时间轴前进驱动各个活跃的 RuntimeRouteWindowProcess，
+            //    主动触发 OnWindowEnter / OnWindowProcess / OnWindowExit / OnWindowDisable
+            ActionPlayer?.LogicTick(logicDeltaTime);
 
-            // 评估当前活跃窗口的自动过渡 (AutoTransition) 或 Condition
-            EvalAutoTransitionsPerFrame();
-
-            // 兜底评估：当没有任何活跃窗口时（如 Idle 状态），或对于缓冲中未被消费的指令
-            // 保证待机状态或 AI 指令能随时切入
-            if (!_isTransitioning && _activeRouteWindows.Count == 0 && _entity.CommandBuffer != null)
+            // 2. 帧末路由统一仲裁：取本帧所有到期或即时窗口提交的最高优先级候选（0 帧时滞！）
+            if (!_isTransitioning && _entity.RouteArbitrator != null
+                && _entity.RouteArbitrator.TryResolveBest(out var best))
             {
-                List<CharacterCommand> unconsumed = _entity.CommandBuffer.GetUnconsumedCommands();
-                for (int i = 0; i < unconsumed.Count; i++)
-                {
-                    CharacterCommand cmd = unconsumed[i];
-                    ActionConfigAsset action = GetCurrentAction();
-                    if (action == null) break;
-
-                    action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
-                    if (_effectiveRoutes.Count == 0) continue;
-
-                    // 将空闲状态视为一个全局的匹配窗（tag=""）
-                    if (RouteResolver.TryResolve(_effectiveRoutes, cmd, "", GetRouteEvalActor(), _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
-                    {
-                        Apply(candidate);
-                        cmd.IsConsumed = true;
-                        break;
-                    }
-                }
+                Apply(best);
+                return;
             }
         }
-
-        [System.Obsolete("Update 已过时，请统一使用 OnLogicTick")]
-        public void Update(float deltaTime) => LogicTick(deltaTime);
 
         public bool PlayAction(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
         {
@@ -109,111 +104,114 @@ namespace Game.GamePlay
 
         public void OnInput(CharacterCommand command)
         {
-            if (_entity.CommandBuffer == null || command == null) return;
+            if (command == null || _isTransitioning) return;
 
-            // 清理旧 Move Canceled
-            if (command.Payload is InputPayload p && p.InputType == HardwareInputType.Move && p.Phase == CommandPhase.Canceled)
+            // 瞬时广播给所有活跃窗口进行前置评估，不进行多余的物理指令存储与生命周期维持
+            if (_activeRouteWindows.Count > 0)
             {
-                PurgeActiveWindowMoveCommands();
+                WindowProcessContext ctx = CreateContext();
+                for (int i = 0; i < _activeRouteWindows.Count; i++)
+                    _activeRouteWindows[i].Processer?.OnCommandReceived(command, ctx);
             }
-
-            CaptureToActiveWindows(command);
-
-            // 无论怎样先做一次 Instant 评估，如果立即匹配成功就消费掉，不入缓冲区。
-            if (!_isTransitioning)
-            {
-                if (TryMatchInstant(command)) return;
-            }
-
-            _entity.CommandBuffer.Push(command);
         }
 
-        public void OnComboWindowEnter(string comboTag, object windowToken = null)
+        public void OnWindowEnter(RouteWindow routeWindow)
         {
-            if (string.IsNullOrEmpty(comboTag)) return;
+            if (routeWindow == null || !routeWindow.IsValid) return;
 
-            _activeRouteWindows.Add(new RouteWindowData 
-            { 
-                Tag = comboTag,
-                Token = windowToken,
-                Generation = _currentPlayGeneration,
-                OwnerAction = _currentPlayingAction
-            });
-            EvalAutoTransitions(comboTag, RouteSingleModifierCheckTiming.OnWindowEnter);
+            RouteWindowData windowData = ResolveRouteWindow(routeWindow);
+            if (windowData == null) return;
+            _activeRouteWindows.Add(windowData);
+            windowData.Processer?.OnEnter(CreateContext());
         }
 
-        public void OnComboWindowExit(string comboTag, object windowToken = null)
+        public void OnWindowProcess(RouteWindow routeWindow)
         {
-            if (string.IsNullOrEmpty(comboTag)) return;
+            if (_isTransitioning || routeWindow == null) return;
+            RouteWindowData data = FindActiveWindowData(routeWindow);
+            data?.Processer?.OnFrameProcess(CreateContext());
+        }
 
-            // 优先通过 Token 精确匹配实例；若无 Token 则按当前代际查找
-            int idx = FindWindowIndex(comboTag, windowToken, _currentPlayGeneration);
-            if (idx < 0)
+        public void OnWindowExit(RouteWindow routeWindow)
+        {
+            if (routeWindow == null) return;
+
+            for (int i = _activeRouteWindows.Count - 1; i >= 0; i--)
             {
-                // 该退出事件属于已被打断/替换的旧动作代际，直接安全忽略，绝不误删当前动作的新窗口
-                return;
-            }
-
-            RouteWindowData window = _activeRouteWindows[idx];
-            int windowGeneration = window.Generation;
-            object targetToken = window.Token;
-            List<CharacterCommand> captured = window.CapturedCommands;
-
-            try
-            {
-                // 1. Auto Transitions OnExit
-                if (EvalAutoTransitions(comboTag, RouteSingleModifierCheckTiming.OnWindowExit)) return;
-
-                // 2. Buffer Commands
-                if (EvalBufferRoutes(comboTag, captured)) return;
-            }
-            finally
-            {
-                // 仅当动作未切入更新代际时，才移除本代际的该窗口
-                if (_currentPlayGeneration == windowGeneration)
+                RouteWindowData w = _activeRouteWindows[i];
+                if (w.Window == routeWindow)
                 {
-                    int removeIdx = FindWindowIndex(comboTag, targetToken, windowGeneration);
-                    if (removeIdx >= 0)
-                    {
-                        _activeRouteWindows.RemoveAt(removeIdx);
-                    }
+                    w.Processer?.OnExit(CreateContext()); // 触发到期结算，推入 L2
+                    _activeRouteWindows.RemoveAt(i);
                 }
             }
         }
 
-        public bool TryTriggerEvent(RouteEventType eventType, string windowTag = null)
+        public void OnWindowDisable(RouteWindow routeWindow)
+        {
+            if (routeWindow == null) return;
+
+            for (int i = _activeRouteWindows.Count - 1; i >= 0; i--)
+            {
+                RouteWindowData w = _activeRouteWindows[i];
+                if (w.Window == routeWindow)
+                {
+                    w.Processer?.OnDisable(CreateContext()); // 只注销并清空内部捕获，绝不推入 L2
+                    _activeRouteWindows.RemoveAt(i);
+                }
+            }
+        }
+
+        public bool TryTriggerEvent(RouteEventType eventType, RouteWindow window = null)
         {
             if (_isTransitioning) return false;
 
             var eventCommand = CharacterCommandFactory.CreateSystemEventCommand(eventType);
 
             // 1. 优先尝试当前动作路由
-            if (TryResolveAndCommitEvent(eventCommand, GetCurrentAction(), windowTag))
+            if (TryResolveAndCommitEvent(eventCommand, GetCurrentAction(), window))
                 return true;
 
             // 2. 回退尝试全局 ActionRoot 路由
             ActionConfigAsset root = _entity.Config?.ActionRoot;
             if (root != null && root != GetCurrentAction())
             {
-                if (TryResolveAndCommitEvent(eventCommand, root, windowTag))
+                if (TryResolveAndCommitEvent(eventCommand, root, window))
                     return true;
             }
 
             return false;
         }
 
-        private bool TryResolveAndCommitEvent(CharacterCommand eventCommand, ActionConfigAsset action, string windowTag)
+        public bool TryTriggerEvent(RouteEventType eventType, string windowTag)
+        {
+            RouteWindow window = null;
+            if (!string.IsNullOrEmpty(windowTag))
+            {
+                for (int i = 0; i < _activeRouteWindows.Count; i++)
+                {
+                    if (string.Equals(_activeRouteWindows[i].Tag, windowTag, StringComparison.Ordinal))
+                    {
+                        window = _activeRouteWindows[i].Window;
+                        break;
+                    }
+                }
+            }
+            return TryTriggerEvent(eventType, window);
+        }
+
+        private bool TryResolveAndCommitEvent(CharacterCommand eventCommand, ActionConfigAsset action, RouteWindow window)
         {
             if (action == null) return false;
 
             action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
             if (_effectiveRoutes.Count == 0) return false;
 
-            RoleEntity actor = GetRouteEvalActor();
+            CharacterEntity actor = GetRouteEvalActor();
 
-            if (!string.IsNullOrEmpty(windowTag))
+            if (window != null)
             {
-                if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, windowTag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
+                if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, window, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
                 {
                     Apply(candidate);
                     return true;
@@ -224,11 +222,18 @@ namespace Game.GamePlay
                 for (int i = 0; i < _activeRouteWindows.Count; i++)
                 {
                     RouteWindowData w = _activeRouteWindows[i];
-                    if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, w.Tag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
+                    if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, w.Window, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
                     {
                         Apply(candidate);
                         return true;
                     }
+                }
+
+                // 兜底尝试全局无窗口事件路由
+                if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, null, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var globalCandidate))
+                {
+                    Apply(globalCandidate);
+                    return true;
                 }
             }
 
@@ -241,18 +246,28 @@ namespace Game.GamePlay
 
         private bool PlayAndTrack(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
         {
-            if (action == null || _entity.ActionPlayer == null) return false;
+            if (action == null || ActionPlayer == null) return false;
 
             unchecked { _currentPlayGeneration++; }
-            _activeRouteWindows.Clear();
+
+            // 切动作时，对所有存留活跃窗口调用 OnDisable 清空状态，杜绝打断遗留出招
+            if (_activeRouteWindows.Count > 0)
+            {
+                WindowProcessContext ctx = CreateContext();
+                for (int i = 0; i < _activeRouteWindows.Count; i++)
+                {
+                    _activeRouteWindows[i].Processer?.OnDisable(ctx);
+                }
+                _activeRouteWindows.Clear();
+            }
 
             _currentPlayingAction = action;
             if (_actionData != null)
                 _actionData.Set(nameof(_actionData.NextActionToCast), action);
 
-            _entity.ActionPlayer.OnActionComplete -= HandleActionComplete;
+            ActionPlayer.OnActionComplete -= HandleActionComplete;
 
-            bool success = _entity.ActionPlayer.PlayAction(action, crossfadeOverride, startTime);
+            bool success = ActionPlayer.PlayAction(action, crossfadeOverride, startTime);
 
             if (_currentPlayingAction != action)
                 return false;
@@ -263,106 +278,49 @@ namespace Game.GamePlay
                 return false;
             }
 
-            _entity.ActionPlayer.OnActionComplete -= HandleActionComplete;
-            _entity.ActionPlayer.OnActionComplete += HandleActionComplete;
+            ActionPlayer.OnActionComplete -= HandleActionComplete;
+            ActionPlayer.OnActionComplete += HandleActionComplete;
 
             return true;
         }
 
-        // ═══════════════════════════════════════════
-        //  统一多态评估
-        // ═══════════════════════════════════════════
-
-        private bool TryMatchInstant(CharacterCommand command)
+        private RouteWindowData ResolveRouteWindow(RouteWindow routeWindow)
         {
-            ActionConfigAsset action = GetCurrentAction();
-            if (action == null) return false;
+            if (routeWindow == null || !routeWindow.IsValid) return null;
 
-            action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
-            if (_effectiveRoutes.Count == 0) return false;
+            IRouteWindowProcesser processer = RouteWindowProcessorFactory.Create(routeWindow);
+            if (processer == null) return null;
 
-            RoleEntity actor = GetRouteEvalActor();
-
-            if (_activeRouteWindows.Count > 0)
+            return new RouteWindowData
             {
-                for (int i = 0; i < _activeRouteWindows.Count; i++)
-                {
-                    RouteWindowData window = _activeRouteWindows[i];
-                    if (RouteResolver.TryResolve(_effectiveRoutes, command, window.Tag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
-                    {
-                        Apply(candidate);
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                // 空闲或未限制窗口状态（tag=""），以全局空闲窗尝试匹配
-                if (RouteResolver.TryResolve(_effectiveRoutes, command, "", actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out RouteCandidate candidate))
-                {
-                    Apply(candidate);
-                    return true;
-                }
-            }
-
-            return false;
+                Tag = routeWindow.Tag,
+                OwnerAction = GetCurrentAction(),
+                Window = routeWindow,
+                Processer = processer
+            };
         }
 
-        private bool EvalBufferRoutes(string tag, List<CharacterCommand> commands)
-        {
-            if (_isTransitioning || commands == null) return false;
-
-            ActionConfigAsset action = GetCurrentAction();
-            if (action == null) return false;
-
-            action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
-            if (_effectiveRoutes.Count == 0) return false;
-
-            RoleEntity actor = GetRouteEvalActor();
-            RouteCandidate best = default;
-            bool found = false;
-
-            for (int i = 0; i < commands.Count; i++)
-            {
-                CharacterCommand cmd = commands[i];
-                if (!RouteResolver.TryResolve(_effectiveRoutes, cmd, tag, actor, _skillCostHandler, RouteSingleModifierCheckTiming.OnWindowExit, out var c)) continue;
-                if (!found || RouteResolver.IsHigherPriority(c, best)) { best = c; found = true; }
-            }
-
-            if (found)
-            {
-                Apply(best);
-                return true;
-            }
-            return false;
-        }
-
-        private bool EvalAutoTransitions(string tag, RouteSingleModifierCheckTiming timing)
-        {
-            if (_isTransitioning) return false;
-
-            ActionConfigAsset action = GetCurrentAction();
-            if (action == null) return false;
-
-            action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
-            if (_effectiveRoutes.Count == 0) return false;
-
-            if (RouteResolver.TryResolve(_effectiveRoutes, null, tag, GetRouteEvalActor(), _skillCostHandler, timing, out var candidate))
-            {
-                Apply(candidate);
-                return true;
-            }
-            return false;
-        }
-
-        private void EvalAutoTransitionsPerFrame()
+        private RouteWindowData FindActiveWindowData(RouteWindow routeWindow)
         {
             for (int i = 0; i < _activeRouteWindows.Count; i++)
             {
-                RouteWindowData window = _activeRouteWindows[i];
-                if (EvalAutoTransitions(window.Tag, RouteSingleModifierCheckTiming.EveryFrameInWindow))
-                    return;
+                if (_activeRouteWindows[i].Window == routeWindow)
+                    return _activeRouteWindows[i];
             }
+            return null;
+        }
+
+        private WindowProcessContext CreateContext()
+        {
+            ActionConfigAsset action = GetCurrentAction();
+            action?.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
+            return new WindowProcessContext
+            {
+                Routes = _effectiveRoutes,
+                Actor = GetRouteEvalActor(),
+                SkillHandler = _skillCostHandler,
+                Arbitrator = _entity.RouteArbitrator
+            };
         }
 
         // ═══════════════════════════════════════════
@@ -371,7 +329,11 @@ namespace Game.GamePlay
 
         private void Apply(RouteCandidate candidate)
         {
-            candidate.SourceRoute?.ConsumeSkillCost(GetRouteEvalActor(), _skillCostHandler);
+            CharacterEntity actor = GetRouteEvalActor();
+            candidate.SourceRoute?.ConsumeSkillCost(actor, _skillCostHandler);
+            // Bug #3 修复：副作用（如清除招架标记）在路由确认提交后才执行，
+            // 保证 Evaluate 阶段多路由优先级竞争期间不会提前消费一次性状态
+            candidate.SourceRoute?.CommitSideEffects(actor);
             float crossfade = candidate.SourceRoute?.CrossfadeOverride ?? -1f;
             Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag, crossfade);
         }
@@ -389,15 +351,13 @@ namespace Game.GamePlay
             if (executeType == ExecuteTarget.Action && nextAction == null) return false;
             if (executeType == ExecuteTarget.Event && routeExecuteEvent == ExecuteEvent.None) return false;
 
-            if (command != null) command.IsConsumed = true;
-
             if (executeType == ExecuteTarget.Action)
             {
                 _isTransitioning = true;
                 try
                 {
                     _activeRouteWindows.Clear();
-                    _entity.CommandBuffer?.Clear();
+                    _entity.RouteArbitrator?.Clear();
 
                     if (_actionData != null) _actionData.Set(nameof(_actionData.NextActionToCast), nextAction);
                     RecordRoute(command?.Payload, nextAction, source, tag, command?.Id ?? 0);
@@ -425,7 +385,7 @@ namespace Game.GamePlay
             if (finished == null || _isTransitioning) return;
 
             finished.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
-            if (RouteResolver.TryResolve(_effectiveRoutes, null, "", GetRouteEvalActor(), _skillCostHandler, RouteSingleModifierCheckTiming.OnWindowExit, out var c))
+            if (RouteResolver.TryResolve(_effectiveRoutes, null, null, GetRouteEvalActor(), _skillCostHandler, RouteSingleModifierCheckTiming.OnWindowExit, out var c))
             {
                 Apply(c);
                 return;
@@ -454,7 +414,7 @@ namespace Game.GamePlay
         private ActionConfigAsset GetCurrentAction()
         {
             return _currentPlayingAction
-                ?? _entity.ActionPlayer?.CurrentAction 
+                ?? ActionPlayer?.CurrentAction 
                 ?? _actionData?.NextActionToCast 
                 ?? _entity.Config?.ActionRoot;
         }
@@ -466,55 +426,14 @@ namespace Game.GamePlay
         }
 
         public CommandFate CheckCommandFate(long commandId) =>
-            _fateTracker.CheckFate(commandId, _entity.CommandBuffer, _activeRouteWindows);
+            _fateTracker.CheckFate(commandId, _activeRouteWindows);
 
-        private void PurgeActiveWindowMoveCommands()
+        public virtual void Dispose()
         {
-            foreach (RouteWindowData w in _activeRouteWindows)
-            {
-                w.CapturedCommands.RemoveAll(cmd => cmd.Payload is InputPayload p && p.InputType == HardwareInputType.Move);
-            }
+            ActionPlayer?.Dispose();
         }
 
-        private void CaptureToActiveWindows(CharacterCommand command)
-        {
-            if (command == null) return;
-            for (int i = 0; i < _activeRouteWindows.Count; i++)
-            {
-                _activeRouteWindows[i].CapturedCommands.Add(command);
-            }
-        }
-
-        private int FindWindowIndex(string tag, object token = null, int generation = -1)
-        {
-            for (int i = _activeRouteWindows.Count - 1; i >= 0; i--)
-            {
-                RouteWindowData w = _activeRouteWindows[i];
-                if (w.Tag != tag) continue;
-
-                if (token != null)
-                {
-                    if (ReferenceEquals(w.Token, token)) return i;
-                    continue;
-                }
-
-                if (generation >= 0)
-                {
-                    if (w.Generation == generation) return i;
-                    continue;
-                }
-
-                return i;
-            }
-            return -1;
-        }
-
-        private int FindWindowIndex(string tag)
-        {
-            return FindWindowIndex(tag, null, _currentPlayGeneration);
-        }
-
-        protected virtual RoleEntity GetRouteEvalActor() => null;
+        protected virtual CharacterEntity GetRouteEvalActor() => null;
         protected virtual void OnActionPlaySucceed(ActionConfigAsset action) { }
         protected virtual void RecordComboRoute(CommandRouteSource source, string tag, ICommandPayload payload, ActionConfigAsset action) { }
     }

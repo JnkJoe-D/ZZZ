@@ -47,136 +47,136 @@ namespace ATEditor
     public class CameraControlClip : ClipBase
     {
         [Header("核心控制模式 (单选)")]
-        [SkillProperty("控制模式")]
+        [ActionProperty("控制模式")]
         public CameraControlMode controlMode = CameraControlMode.LockRotation;
 
         #region 1. 锁定旋转参数
         [Header("锁定旋转参数")]
-        [SkillProperty("退出片段时自动解锁")]
-        [ShowIf("controlMode", CameraControlMode.LockRotation)]
+        [ActionProperty("退出片段时自动解锁")]
+        [ATShowIf("controlMode", CameraControlMode.LockRotation)]
         public bool unlockOnExit = true;
 
-        [SkillProperty("锁定水平偏航")]
-        [ShowIf("controlMode", CameraControlMode.LockRotation)]
+        [ActionProperty("锁定水平偏航")]
+        [ATShowIf("controlMode", CameraControlMode.LockRotation)]
         public bool lockYaw = true;
 
-        [SkillProperty("锁定垂直俯仰")]
-        [ShowIf("controlMode", CameraControlMode.LockRotation)]
+        [ActionProperty("锁定垂直俯仰")]
+        [ATShowIf("controlMode", CameraControlMode.LockRotation)]
         public bool lockPitch = true;
         #endregion
 
         #region 2. 视角回正参数
         [Header("视角回正参数")]
-        [SkillProperty("回正基准方向")]
-        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        [ActionProperty("回正基准方向")]
+        [ATShowIf("controlMode", CameraControlMode.Recenter)]
         public CameraRecenterTarget recenterTarget = CameraRecenterTarget.CombatFraming;
 
-        [SkillProperty("平滑阻尼时间 (秒)")]
-        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        [ActionProperty("平滑阻尼时间 (秒)")]
+        [ATShowIf("controlMode", CameraControlMode.Recenter)]
         [Tooltip("二阶临界阻尼时间，数值越小回正越快越紧凑，推荐 0.2~0.35s")]
         public float smoothTime = 0.25f;
 
-        [SkillProperty("目标俯仰角")]
-        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        [ActionProperty("目标俯仰角")]
+        [ATShowIf("controlMode", CameraControlMode.Recenter)]
         [Tooltip("目标俯仰角（度），绝区零推荐黄金俯角 10°~14°。如设置为 -999 则保持当前相机的俯仰角不变。")]
         public float targetPitch = 12.0f;
 
-        [SkillProperty("对峙构图侧向偏角")]
-        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        [ActionProperty("对峙构图侧向偏角")]
+        [ATShowIf("controlMode", CameraControlMode.Recenter)]
         [Tooltip("仅在 CombatFraming 模式下生效。负数使角色偏左下，正数偏右下，0为居中。推荐 -8°")]
         public float framingBiasAngle = -8.0f;
 
-        [SkillProperty("角度死区")]
-        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        [ActionProperty("角度死区")]
+        [ATShowIf("controlMode", CameraControlMode.Recenter)]
         [Tooltip("小于该角度偏差时不触发微调，消除视觉抖动。推荐 1.5°")]
         public float deadzoneAngle = 1.5f;
 
-        [SkillProperty("允许玩家输入软打断/融合")]
-        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        [ActionProperty("允许玩家输入软打断/融合")]
+        [ATShowIf("controlMode", CameraControlMode.Recenter)]
         public bool allowSoftInputInterrupt = true;
 
-        [SkillProperty("回正期间禁用旋转输入")]
-        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        [ActionProperty("回正期间禁用旋转输入")]
+        [ATShowIf("controlMode", CameraControlMode.Recenter)]
         [Tooltip("若为 true 则完全禁用玩家输入；若为 false 配合软输入融合可在玩家滑动时自适应让权")]
         public bool disableInputDuringRecenter = false;
 
-        [SkillProperty("退出片段时解锁输入")]
-        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        [ActionProperty("退出片段时解锁输入")]
+        [ATShowIf("controlMode", CameraControlMode.Recenter)]
         public bool unlockInputOnExit = true;
 
         [Header("回正伴随距离与变焦特写")]
-        [SkillProperty("启用伴随拉距/FOV")]
-        [ShowIf("controlMode", CameraControlMode.Recenter)]
+        [ActionProperty("启用伴随拉距/FOV")]
+        [ATShowIf("controlMode", CameraControlMode.Recenter)]
         public bool enableDistanceAndFovOverride = false;
 
-        [SkillProperty("进入时距离瞬间拉近 (瞬切)")]
-        [ShowIf("enableDistanceAndFovOverride", true)]
+        [ActionProperty("进入时距离瞬间拉近 (瞬切)")]
+        [ATShowIf("enableDistanceAndFovOverride", true)]
         [Tooltip("勾选后进入片段时瞬间将相机拉近至特写距离，提供强烈的拼刀打击冲击感")]
         public bool instantDistanceOnEnter = true;
 
-        [SkillProperty("特写相机距离")]
-        [ShowIf("enableDistanceAndFovOverride", true)]
+        [ActionProperty("特写相机距离")]
+        [ATShowIf("enableDistanceAndFovOverride", true)]
         [Tooltip("<= 0 则保持当前距离，招架特写推荐拉近至 1.6f ~ 2.0f")]
         public float recenterDistance = 1.8f;
 
-        [SkillProperty("特写 FOV")]
-        [ShowIf("enableDistanceAndFovOverride", true)]
+        [ActionProperty("特写 FOV")]
+        [ATShowIf("enableDistanceAndFovOverride", true)]
         public float recenterFOV = 45.0f;
 
-        [SkillProperty("拉近/拉远过渡速度")]
-        [ShowIf("enableDistanceAndFovOverride", true)]
+        [ActionProperty("拉近/拉远过渡速度")]
+        [ATShowIf("enableDistanceAndFovOverride", true)]
         public float recenterFovBlendSpeed = 6.0f;
 
-        [SkillProperty("退出片段时还原距离/FOV")]
-        [ShowIf("enableDistanceAndFovOverride", true)]
+        [ActionProperty("退出片段时还原距离/FOV")]
+        [ATShowIf("enableDistanceAndFovOverride", true)]
         public bool recenterRestoreFovOnExit = true;
 
-        [SkillProperty("退出回调速度 (缓慢还原)")]
-        [ShowIf("enableDistanceAndFovOverride", true)]
+        [ActionProperty("退出回调速度 (缓慢还原)")]
+        [ATShowIf("enableDistanceAndFovOverride", true)]
         [Tooltip("片段结束恢复原始距离与FOV的平滑速度，推荐 1.5 ~ 2.5f 缓慢平滑回调")]
         public float recenterRestoreSpeed = 2.0f;
         #endregion
 
         #region 3. 注视目标参数 (LookAtTarget)
         [Header("注视目标参数")]
-        [SkillProperty("注视点局部偏移")]
-        [ShowIf("controlMode", CameraControlMode.LookAtTarget)]
+        [ActionProperty("注视点局部偏移")]
+        [ATShowIf("controlMode", CameraControlMode.LookAtTarget)]
         public Vector3 lookAtOffset = new Vector3(0f, 1.2f, 0f);
 
-        [SkillProperty("追踪平滑速度")]
-        [ShowIf("controlMode", CameraControlMode.LookAtTarget)]
+        [ActionProperty("追踪平滑速度")]
+        [ATShowIf("controlMode", CameraControlMode.LookAtTarget)]
         public float trackSmoothSpeed = 8.0f;
 
-        [SkillProperty("无目标时回正角色")]
-        [ShowIf("controlMode", CameraControlMode.LookAtTarget)]
+        [ActionProperty("无目标时回正角色")]
+        [ATShowIf("controlMode", CameraControlMode.LookAtTarget)]
         public bool fallbackToCharacter = true;
 
-        [SkillProperty("退出时恢复控制")]
-        [ShowIf("controlMode", CameraControlMode.LookAtTarget)]
+        [ActionProperty("退出时恢复控制")]
+        [ATShowIf("controlMode", CameraControlMode.LookAtTarget)]
         public bool restoreLookAtOnExit = true;
         #endregion
 
         #region 4. FOV/距离特写参数 (FovTransition)
         [Header("FOV 与距离特写参数")]
-        [SkillProperty("目标 FOV")]
-        [ShowIf("controlMode", CameraControlMode.FovTransition)]
+        [ActionProperty("目标 FOV")]
+        [ATShowIf("controlMode", CameraControlMode.FovTransition)]
         public float targetFOV = 45.0f;
 
-        [SkillProperty("目标相机距离")]
-        [ShowIf("controlMode", CameraControlMode.FovTransition)]
+        [ActionProperty("目标相机距离")]
+        [ATShowIf("controlMode", CameraControlMode.FovTransition)]
         [Tooltip("若 <= 0 则保持当前距离不变")]
         public float targetDistance = 3.5f;
 
-        [SkillProperty("进入过渡速度")]
-        [ShowIf("controlMode", CameraControlMode.FovTransition)]
+        [ActionProperty("进入过渡速度")]
+        [ATShowIf("controlMode", CameraControlMode.FovTransition)]
         public float blendInSpeed = 5.0f;
 
-        [SkillProperty("退出还原速度")]
-        [ShowIf("controlMode", CameraControlMode.FovTransition)]
+        [ActionProperty("退出还原速度")]
+        [ATShowIf("controlMode", CameraControlMode.FovTransition)]
         public float blendOutSpeed = 5.0f;
 
-        [SkillProperty("退出时还原初始状态")]
-        [ShowIf("controlMode", CameraControlMode.FovTransition)]
+        [ActionProperty("退出时还原初始状态")]
+        [ATShowIf("controlMode", CameraControlMode.FovTransition)]
         public bool restoreOnExit = true;
         #endregion
 

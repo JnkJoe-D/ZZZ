@@ -6,10 +6,11 @@ namespace ATEditor
     public enum RotationReference
     {
         Input,                      // 世界坐标方向
-        InputWithCamera,            // 和当前移动状态里的转向方式一样
+        InputWithCamera,            // 基于相机的局部
         Target,                     // 没目标则不转
         TargetThenInput,           
         TargetThenInputWithCamera,
+        Camera,                    // 相机方向
     }
 
     public enum RotationMode
@@ -29,16 +30,16 @@ namespace ATEditor
     [ClipDefinition(typeof(TransformTrack), "旋转")]
     public class RotationClip : ClipBase
     {
-        [SkillProperty("参考方向")]
+        [ActionProperty("参考方向")]
         public RotationReference referenceDirection = RotationReference.Input;
 
-        [SkillProperty("旋转方式")]
+        [ActionProperty("旋转方式")]
         public RotationMode rotationMode = RotationMode.Interpolated;
 
-        [SkillProperty("更新频率")]
+        [ActionProperty("更新频率")]
         public UpdateFrequency updateFrequency = UpdateFrequency.Continuous;
 
-        [SkillProperty("本地旋转偏移")]
+        [ActionProperty("本地旋转偏移")]
         public Vector3 localRotationOffset;
 
         public RotationClip()

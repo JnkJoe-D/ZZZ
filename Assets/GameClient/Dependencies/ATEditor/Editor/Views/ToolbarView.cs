@@ -256,32 +256,46 @@ namespace ATEditor.Editor
             }, state.currentFilePath);
         }
 
+        /// <summary>
+        /// 纯粹导出动作副本到指定文件（不切换工作区、不改变当前编辑文件引用、不改变当前动作名称）
+        /// </summary>
         private void OnExportDual()
         {
             if (state.currentTimeline == null) return;
             
             string targetJsonDir = state.GetActiveWorkspaceJsonDirectory();
-            string targetAssetDir = state.GetActiveWorkspaceAssetDirectory();
-
             if (!System.IO.Directory.Exists(targetJsonDir)) System.IO.Directory.CreateDirectory(targetJsonDir);
-            if (!System.IO.Directory.Exists(targetAssetDir)) System.IO.Directory.CreateDirectory(targetAssetDir);
 
             string defaultName = string.IsNullOrEmpty(state.currentTimeline.name) ? "未命名" : state.currentTimeline.name;
-            string path = EditorUtility.SaveFilePanel(Lan.ExportPanelTitle, targetJsonDir, defaultName, "json");
+            string path = EditorUtility.SaveFilePanel("导出动作副本", targetJsonDir, defaultName, "json");
             
             if (!string.IsNullOrEmpty(path))
             {
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
-                string selectedDir = System.IO.Path.GetDirectoryName(path).Replace("\\", "/");
-                
-                state.currentTimeline.name = fileName; 
+                string selectedJsonDir = System.IO.Path.GetDirectoryName(path).Replace("\\", "/");
 
-                // 检查是否保存到了另一个工作区
-                CheckAndHandleCrossWorkspaceSave(selectedDir);
+                // 根据导出的目标路径推导其对应的 SO 目录
+                var db = ATEditorWorkspaceDatabase.Instance;
+                var matchedWs = db.GetWorkspaceByAssetPath(path);
 
-                SerializationUtility.SaveDual(state.currentTimeline, selectedDir, targetAssetDir, fileName);
-                state.currentFilePath = path; // 记录最新路径
+                string targetAssetDir;
+                if (matchedWs != null && !string.IsNullOrEmpty(matchedWs.FolderName))
+                {
+                    targetAssetDir = System.IO.Path.Combine(state.DefaultAssetDirectory, matchedWs.FolderName).Replace("\\", "/");
+                }
+                else
+                {
+                    targetAssetDir = state.GetActiveWorkspaceAssetDirectory();
+                }
+
+                if (!System.IO.Directory.Exists(selectedJsonDir)) System.IO.Directory.CreateDirectory(selectedJsonDir);
+                if (!System.IO.Directory.Exists(targetAssetDir)) System.IO.Directory.CreateDirectory(targetAssetDir);
+
+                // 纯副本导出：使用当前 timeline 数据写出文件，但不修改当前正在编辑的文件引用与工作区
+                SerializationUtility.SaveDual(state.currentTimeline, selectedJsonDir, targetAssetDir, fileName);
                 AssetDatabase.Refresh();
+                
+                EditorUtility.DisplayDialog("导出完成", $"动作已成功导出副本：\nJSON: {selectedJsonDir}/{fileName}.json\nSO: {targetAssetDir}/{fileName}.asset\n\n当前编辑器继续保持编辑原有动作。", "确定");
             }
         }
 
@@ -298,41 +312,95 @@ namespace ATEditor.Editor
             if (!string.IsNullOrEmpty(state.currentFilePath))
             {
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(state.currentFilePath);
-                string jsonDir = System.IO.Path.GetDirectoryName(state.currentFilePath).Replace("\\", "/");
-                string assetDir = state.GetActiveWorkspaceAssetDirectory();
+                string ext = System.IO.Path.GetExtension(state.currentFilePath);
+
+                // 优先根据文件路径推导所属工作区，若匹配不到则使用当前激活工作区
+                var db = ATEditorWorkspaceDatabase.Instance;
+                var matchedWs = db.GetWorkspaceByAssetPath(state.currentFilePath) ?? state.ActiveWorkspace;
+
+                string jsonDir;
+                string assetDir;
+
+                if (matchedWs != null && !string.IsNullOrEmpty(matchedWs.FolderName))
+                {
+                    jsonDir = System.IO.Path.Combine(state.DefaultJsonDirectory, matchedWs.FolderName).Replace("\\", "/");
+                    assetDir = System.IO.Path.Combine(state.DefaultAssetDirectory, matchedWs.FolderName).Replace("\\", "/");
+                }
+                else
+                {
+                    jsonDir = state.GetActiveWorkspaceJsonDirectory();
+                    assetDir = state.GetActiveWorkspaceAssetDirectory();
+                }
+
+                // 若本身记录的是合法的 .json 路径，且不在 SO 目录下，允许使用其真实目录作为 jsonDir
+                if (string.Equals(ext, ".json", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    string currentDir = System.IO.Path.GetDirectoryName(state.currentFilePath).Replace("\\", "/");
+                    string defaultSoDir = state.DefaultAssetDirectory.Replace("\\", "/");
+                    if (!currentDir.StartsWith(defaultSoDir, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        jsonDir = currentDir;
+                    }
+                }
+                else if (string.Equals(ext, ".asset", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    string currentDir = System.IO.Path.GetDirectoryName(state.currentFilePath).Replace("\\", "/");
+                    string defaultJsonDir = state.DefaultJsonDirectory.Replace("\\", "/");
+                    if (!currentDir.StartsWith(defaultJsonDir, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        assetDir = currentDir;
+                    }
+                }
 
                 SerializationUtility.SaveDual(state.currentTimeline, jsonDir, assetDir, fileName);
                 AssetDatabase.Refresh();
             }
             else
             {
-                // 否则执行另存为
-                OnExportDual();
+                // 尚未保存过的动作，执行初次保存并绑定
+                SaveAs();
             }
         }
 
-        private void CheckAndHandleCrossWorkspaceSave(string savedJsonDir)
+        /// <summary>
+        /// 初次保存（未命名的动作第一次保存，绑定到目标路径）
+        /// </summary>
+        private void SaveAs()
         {
-            var db = ATEditorWorkspaceDatabase.Instance;
-            foreach (var ws in db.Workspaces)
+            if (state.currentTimeline == null) return;
+
+            string targetJsonDir = state.GetActiveWorkspaceJsonDirectory();
+            if (!System.IO.Directory.Exists(targetJsonDir)) System.IO.Directory.CreateDirectory(targetJsonDir);
+
+            string defaultName = string.IsNullOrEmpty(state.currentTimeline.name) ? "未命名" : state.currentTimeline.name;
+            string path = EditorUtility.SaveFilePanel("保存动作", targetJsonDir, defaultName, "json");
+
+            if (!string.IsNullOrEmpty(path))
             {
-                if (ws.Id == state.ActiveWorkspaceId) continue;
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+                string selectedJsonDir = System.IO.Path.GetDirectoryName(path).Replace("\\", "/");
 
-                string wsJsonDir = System.IO.Path.Combine(state.DefaultJsonDirectory, ws.FolderName).Replace("\\", "/");
-                if (string.Equals(savedJsonDir.Trim('/'), wsJsonDir.Trim('/'), System.StringComparison.OrdinalIgnoreCase))
+                var db = ATEditorWorkspaceDatabase.Instance;
+                var matchedWs = db.GetWorkspaceByAssetPath(path) ?? state.ActiveWorkspace;
+
+                string targetAssetDir;
+                if (matchedWs != null && !string.IsNullOrEmpty(matchedWs.FolderName))
                 {
-                    bool switchWs = EditorUtility.DisplayDialog(
-                        "跨工作区保存提示",
-                        $"检测到文件保存到了 [{ws.DisplayName}] 工作区目录。\n是否同时将当前编辑器工作区切换为 [{ws.DisplayName}]？",
-                        "切换工作区",
-                        "保持当前工作区");
-
-                    if (switchWs)
+                    targetAssetDir = System.IO.Path.Combine(state.DefaultAssetDirectory, matchedWs.FolderName).Replace("\\", "/");
+                    if (state.ActiveWorkspaceId != matchedWs.Id)
                     {
-                        window.SwitchWorkspace(ws.Id, false);
+                        state.ActiveWorkspaceId = matchedWs.Id;
                     }
-                    break;
                 }
+                else
+                {
+                    targetAssetDir = state.GetActiveWorkspaceAssetDirectory();
+                }
+
+                state.currentTimeline.name = fileName;
+                SerializationUtility.SaveDual(state.currentTimeline, selectedJsonDir, targetAssetDir, fileName);
+                state.currentFilePath = path; // 绑定路径
+                AssetDatabase.Refresh();
             }
         }
 

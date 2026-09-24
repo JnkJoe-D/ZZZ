@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: Ellen_RouteSet_ToParryAid_Succeed
+  m_EditorClassIdentifier: 
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 3f24b8923a1c49b8a8b1c4e9d0a1b2c3, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 40
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379257910440230919
+    ExtraConditions:
+    - rid: 6379257910440230921
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 707c8b93263ac3a42b3b0eb3d0c43782, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 40
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379257910440230919
+    ExtraConditions:
+    - rid: 6379257910440230922
+  references:
+    version: 2
+    RefIds:
+    - rid: 6379257910440230919
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        EventType: 40
+        RequiredWindow:
+          rid: 6379258143149916841
+        RequiredWindowTag: Execute2
+        Modifiers: []
+    - rid: 6379257910440230921
+      type: {class: ParryWeightCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        ExpectedWeight: 1
+    - rid: 6379257910440230922
+      type: {class: ParryWeightCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        ExpectedWeight: 2
+    - rid: 6379258143149916841
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute2

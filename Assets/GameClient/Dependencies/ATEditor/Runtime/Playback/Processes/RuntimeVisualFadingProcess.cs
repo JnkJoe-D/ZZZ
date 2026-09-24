@@ -168,7 +168,7 @@ namespace ATEditor
             ApplyVisibility(!clip.Inverse);
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             // 防止播放打断时没有恢复
             ApplyVisibility(true);

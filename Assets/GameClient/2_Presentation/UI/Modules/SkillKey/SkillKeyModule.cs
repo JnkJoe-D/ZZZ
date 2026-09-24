@@ -34,25 +34,22 @@ namespace Game.UI
 
             _playerControl = new PlayerControl();
 
-            // 1. 预加载默认保底图标
-            _ = LoadDefaultSpritesAsync();
-
-            // 2. 初始化 5 个按键槽位的键位绑定与提示文本
+            // 1. 初始化 5 个按键槽位的键位绑定与提示文本
             RefreshKeyBindings();
 
-            // 3. 订阅事件闭环
-            EventCenter.Subscribe<ActiveCharacterChangedEvent>(OnActiveCharacterChanged);
+            // 2. 订阅事件闭环
+            EventCenter.Subscribe<ActiveRoleChangedEvent>(OnActiveCharacterChanged);
             EventCenter.Subscribe<PlayerStatChangedEvent>(OnPlayerStatChanged);
             EventCenter.Subscribe<AssistPointsChangedEvent>(OnAssistPointsChanged);
 
-            // 4. 首次加载拉取当前主控角色状态与队伍支援点数
+            // 3. 首次加载拉取当前主控角色状态与队伍支援点数
             RefreshActiveRole();
             RefreshAssistPoints();
         }
 
         protected override void OnRemove()
         {
-            EventCenter.Unsubscribe<ActiveCharacterChangedEvent>(OnActiveCharacterChanged);
+            EventCenter.Unsubscribe<ActiveRoleChangedEvent>(OnActiveCharacterChanged);
             EventCenter.Unsubscribe<PlayerStatChangedEvent>(OnPlayerStatChanged);
             EventCenter.Unsubscribe<AssistPointsChangedEvent>(OnAssistPointsChanged);
 
@@ -60,32 +57,6 @@ namespace Game.UI
             _playerControl = null;
 
             base.OnRemove();
-        }
-
-        // ─────────────────────────────────────────────
-        // 默认保底资源加载
-        // ─────────────────────────────────────────────
-
-        private async Task LoadDefaultSpritesAsync()
-        {
-            try
-            {
-                var rm = Game.Framework.ResourceManager.Instance;
-                if (rm != null)
-                {
-                    _defaultBranchExSprite = await rm.LoadAssetAsync<Sprite>("Assets/Dependencies/UI/Sprite/Icon/SkillKey/SkillBtnBranch.png");
-                    _defaultBranchNormalSprite = await rm.LoadAssetAsync<Sprite>("Assets/Dependencies/UI/Sprite/Icon/SkillKey/SkillBtnBranch2.png");
-                    _defaultUltimateReadySprite = await rm.LoadAssetAsync<Sprite>("Assets/Dependencies/UI/Sprite/Icon/SkillKey/IconRoleSkillKeyUltimate.png");
-                    _defaultUltimateNormalSprite = await rm.LoadAssetAsync<Sprite>("Assets/Dependencies/UI/Sprite/Icon/SkillKey/SkillQTE.png");
-                }
-            }
-            catch (Exception ex)
-            {
-                GLog.Warning(LogTags.UI, $"异步加载默认按键图标异常 (将使用运行时回退): {ex.Message}");
-            }
-
-            // 资源加载完成后立即刷新一次视图
-            RefreshActiveRole();
         }
 
         // ─────────────────────────────────────────────
@@ -157,11 +128,11 @@ namespace Game.UI
         // 角色切换与状态刷新
         // ─────────────────────────────────────────────
 
-        private void OnActiveCharacterChanged(ActiveCharacterChangedEvent evt)
+        private void OnActiveCharacterChanged(ActiveRoleChangedEvent evt)
         {
             if (evt.NewEntity != null)
             {
-                UpdateRoleState(evt.NewEntity, evt.NewEntity.Config as RoleConfigAsset);
+                UpdateRoleState(evt.NewEntity, evt.NewEntity.Config);
             }
             else
             {

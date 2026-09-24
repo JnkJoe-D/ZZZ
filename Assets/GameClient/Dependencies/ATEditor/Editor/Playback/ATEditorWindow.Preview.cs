@@ -78,7 +78,7 @@ namespace ATEditor.Editor
         }
 
         /// <summary>
-        /// 彻底清理场景中所有由 ATEditor 创建的预览对象实例
+        /// 彻底清理场景中所有由 ATEditor 创建的预览对象实例（包括游离/非活动场景/隐藏在内存中的实例）
         /// </summary>
         public void DestroyAllPreviewTargets()
         {
@@ -94,17 +94,13 @@ namespace ATEditor.Editor
                 state.previewOriginTarget = null;
             }
 
-            // 兜底：扫描场景根节点中所有以 [ATEditor_Preview]_ 开头的对象并清理
-            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            if (scene.isLoaded)
+            // 全局强力清理：扫描内存中所有非持久化的预览对象（无论在哪个场景或是否已脱离场景）
+            var allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+            foreach (var go in allObjects)
             {
-                var roots = scene.GetRootGameObjects();
-                foreach (var root in roots)
+                if (go != null && !EditorUtility.IsPersistent(go) && go.name.StartsWith("[ATEditor_Preview]_"))
                 {
-                    if (root != null && root.name.StartsWith("[ATEditor_Preview]_"))
-                    {
-                        Object.DestroyImmediate(root);
-                    }
+                    Object.DestroyImmediate(go);
                 }
             }
         }

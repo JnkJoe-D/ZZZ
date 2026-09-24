@@ -33,7 +33,7 @@ namespace Game.Presentation
             EventCenter.Subscribe<PartyCreatedEvent>(OnPartyCreated);
             EventCenter.Subscribe<PartyMemberSpawnedEvent>(OnPartyMemberSpawned);
             EventCenter.Subscribe<PartyDestroyedEvent>(OnPartyDestroyed);
-            EventCenter.Subscribe<ActiveCharacterChangedEvent>(OnActiveCharacterChanged);
+            EventCenter.Subscribe<ActiveRoleChangedEvent>(OnActiveCharacterChanged);
         }
 
         public void Shutdown()
@@ -44,7 +44,7 @@ namespace Game.Presentation
             EventCenter.Unsubscribe<PartyCreatedEvent>(OnPartyCreated);
             EventCenter.Unsubscribe<PartyMemberSpawnedEvent>(OnPartyMemberSpawned);
             EventCenter.Unsubscribe<PartyDestroyedEvent>(OnPartyDestroyed);
-            EventCenter.Unsubscribe<ActiveCharacterChangedEvent>(OnActiveCharacterChanged);
+            EventCenter.Unsubscribe<ActiveRoleChangedEvent>(OnActiveCharacterChanged);
 
             DestroySharedPartyCamera();
         }
@@ -64,7 +64,7 @@ namespace Game.Presentation
             DestroySharedPartyCamera();
         }
 
-        private void OnActiveCharacterChanged(ActiveCharacterChangedEvent evt)
+        private void OnActiveCharacterChanged(ActiveRoleChangedEvent evt)
         {
             if (evt.NewEntity != null && _sharedPartyVirtualCamera != null)
             {

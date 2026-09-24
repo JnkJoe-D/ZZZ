@@ -26,7 +26,7 @@ namespace ATEditor
             _handler?.UnregisterWarningMarker();
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             _handler?.UnregisterWarningMarker();
         }

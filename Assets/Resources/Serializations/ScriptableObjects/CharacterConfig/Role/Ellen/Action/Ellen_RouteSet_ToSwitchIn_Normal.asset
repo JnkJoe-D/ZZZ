@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: Ellen_RouteSet_ToSwitchIn_Normal
+  m_EditorClassIdentifier: 
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: cb2d647fb623ec6458c20aad68212444, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 20
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500773
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 1b3b3fd0bd5ddbe4383fe1a225823587, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 40
+    Priority: 40
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379257712028942388
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 89af5f7eac66f3545a53d59980bfa8ad, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 30
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379257712028942390
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868330708500773
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        EventType: 10
+        RequiredWindow:
+          rid: 6379258143149916794
+        RequiredWindowTag: SwitchExecute
+        Modifiers: []
+    - rid: 6379257712028942388
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        EventType: 30
+        RequiredWindow:
+          rid: 6379258143149916795
+        RequiredWindowTag: SwitchExecute
+        Modifiers: []
+    - rid: 6379257712028942390
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        EventType: 35
+        RequiredWindow:
+          rid: 6379258143149916796
+        RequiredWindowTag: SwitchExecute
+        Modifiers: []
+    - rid: 6379258143149916794
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute
+    - rid: 6379258143149916795
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute
+    - rid: 6379258143149916796
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute

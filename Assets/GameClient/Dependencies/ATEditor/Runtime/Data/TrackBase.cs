@@ -19,21 +19,21 @@ namespace ATEditor
         [HideInInspector]
         public string trackType;            // 轨道类型名称
         
-        [SkillProperty("轨道名称")]
+        [ActionProperty("轨道名称")]
         public string trackName;            // 轨道显示名称
         
         // 轨道状态
-        [SkillProperty("静音")]
+        [ActionProperty("静音")]
         public bool isMuted;                // 是否静音
         
-        [SkillProperty("锁定")]
+        [ActionProperty("锁定")]
         public bool isLocked;               // 是否锁定
-        [SkillProperty("隐藏")]
+        [ActionProperty("隐藏")]
         public bool isHidden;               // 是否隐藏
-        [SkillProperty("折叠")]
+        [ActionProperty("折叠")]
         public bool isCollapsed;            // 是否折叠
         
-        [SkillProperty("启用")]
+        [ActionProperty("启用")]
         public bool isEnabled;              // 是否启用
 
         // 片段列表

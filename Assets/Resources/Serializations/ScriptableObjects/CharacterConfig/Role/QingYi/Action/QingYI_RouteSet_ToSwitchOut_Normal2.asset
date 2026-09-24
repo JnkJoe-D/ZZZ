@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: QingYI_RouteSet_ToSwitchOut_Normal2
+  m_EditorClassIdentifier: 
+  TargetScope: 2
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: da7b615c3662da447b33adaeb1098435, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 99
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868508892233736
+    ExtraConditions:
+    - rid: 6379257713941807106
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868508892233736
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 10
+        RequiredWindow:
+          rid: 6379258143149917053
+        RequiredWindowTag: SwitchExecute
+        Modifiers: []
+    - rid: 6379257713941807106
+      type: {class: SwitchOutPendingCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data: 
+    - rid: 6379258143149917053
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1

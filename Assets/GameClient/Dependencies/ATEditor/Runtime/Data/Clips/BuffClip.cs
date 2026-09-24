@@ -29,7 +29,7 @@ namespace ATEditor
     /// 遵循单向依赖规范：只依赖 UnityEngine 与 ATEditor 基础抽象，绝不直接引用业务层具体的 BuffDefAsset 类。
     /// </summary>
     [Serializable]
-    [ClipDefinition(typeof(StatusTrack), "增益状态 (Buff)")]
+    [ClipDefinition(typeof(StatusTrack), "Buff状态")]
     public class BuffClip : ClipBase
     {
         [Tooltip("Buff 配置 ID（对应 Luban 配表 TbBuff 的 id，如 9000=纯无敌, 9001=极限闪避）")]

@@ -8,31 +8,31 @@ namespace ATEditor
     public class AudioClip : ClipBase
     {
         [Header("音频配置")]
-        [SkillProperty("音频资源池(随机选用)")]
+        [ActionProperty("音频资源池(随机选用)")]
         [HideInInspector]
         [SerializeField]
         public System.Collections.Generic.List<UnityEngine.AudioClip> audioClips = new System.Collections.Generic.List<UnityEngine.AudioClip>();
         
-        [SkillProperty("音量")]
+        [ActionProperty("音量")]
         [Range(0f, 1f)]
         public float volume = 1.0f;
 
-        [SkillProperty("音调")]
+        [ActionProperty("音调")]
         [Range(0.1f, 3f)]
         public float pitch = 1.0f;
 
-        [SkillProperty("循环播放")]
+        [ActionProperty("循环播放")]
         public bool loop = false;
 
-        [SkillProperty("速度同步")]
+        [ActionProperty("速度同步")]
         public bool isAffectSpeed = false;
 
-        [SkillProperty("空间混合 (0=2D, 1=3D)")]
+        [ActionProperty("空间混合 (0=2D, 1=3D)")]
         [Range(0f, 1f)]
         public float spatialBlend = 1f;
 
-        [SkillAssetReference("audioClips")]
-        public System.Collections.Generic.List<SkillAssetReference> audioRefs = new System.Collections.Generic.List<SkillAssetReference>();
+        [ActionAssetReference("audioClips")]
+        public System.Collections.Generic.List<ActionAssetReference> audioRefs = new System.Collections.Generic.List<ActionAssetReference>();
         
         public override bool SupportsBlending => true;
 
@@ -64,7 +64,7 @@ namespace ATEditor
             };
 
             foreach (var clip in this.audioClips) clone.audioClips.Add(clip);
-            foreach (var r in this.audioRefs) clone.audioRefs.Add(new SkillAssetReference(r.guid, r.assetName, r.assetPath));
+            foreach (var r in this.audioRefs) clone.audioRefs.Add(new ActionAssetReference(r.guid, r.assetName, r.assetPath));
 
             return clone;
         }

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
+  m_Name: QingYi_Action_Walk_End
+  m_EditorClassIdentifier: 
+  ID: 141050
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 7186eb1182923824486c3be927197095, type: 3}
+  actionTimelineSO: {fileID: 11400000, guid: ef5e40315f3dce34daaf3c04ea32f208, type: 2}
+  CompleteMode: 20
+  CompleteAction: {fileID: 0}
+  CompleteTransitCrossfade: -1
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: 3d62cb7f7c49e1142b16e7279e70d165, type: 2}
+  - {fileID: 11400000, guid: 49f91d2a59c73d84ba596930fac286ff, type: 2}
+  - {fileID: 11400000, guid: 1079305e8d007e04a96d5d337f6c425a, type: 2}
+  - {fileID: 11400000, guid: d7c93611739621c439d2f53b40b72bdb, type: 2}
+  - {fileID: 11400000, guid: 6b54149973a433c4797b504474e39a9c, type: 2}
+  - {fileID: 11400000, guid: 7c2b51488538d0541882acaddb82c10b, type: 2}
+  EnterState: 30
+  InheritMode: 0
+  references:
+    version: 2
+    RefIds: []

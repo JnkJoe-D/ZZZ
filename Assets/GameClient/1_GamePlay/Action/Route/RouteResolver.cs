@@ -13,6 +13,7 @@ namespace Game.GamePlay
         public ExecuteEvent RouteExecuteEvent;
         public ExecuteTarget ExecuteType;
         public int Priority;
+        public ATEditor.RouteWindow RouteWindow;
         public string RouteTag;
         public ActionRoute SourceRoute;
     }
@@ -28,8 +29,8 @@ namespace Game.GamePlay
         public static bool TryResolve(
             IReadOnlyList<ActionRoute> routes,
             CharacterCommand command,
-            string tag,
-            RoleEntity actor,
+            ATEditor.RouteWindow activeWindow,
+            CharacterEntity actor,
             ISkillCostHandler skillHandler,
             RouteSingleModifierCheckTiming timing,
             out RouteCandidate best)
@@ -45,7 +46,7 @@ namespace Game.GamePlay
                 if (route == null) continue;
                 if (!route.IsValid()) continue;
 
-                if (!route.Evaluate(command, tag, actor, skillHandler, timing))
+                if (!route.Evaluate(command, activeWindow, actor, skillHandler, timing))
                     continue;
 
                 var candidate = new RouteCandidate
@@ -55,7 +56,8 @@ namespace Game.GamePlay
                     RouteExecuteEvent = route.RouteExecuteEvent,
                     ExecuteType = route.ExecuteType,
                     Priority = route.Priority,
-                    RouteTag = tag,
+                    RouteWindow = activeWindow,
+                    RouteTag = activeWindow?.Tag,
                     SourceRoute = route
                 };
 

@@ -13,7 +13,14 @@ namespace Game.UI
 
     public class StatusPanelModel : UIModel
     {
-        public RoleStatusData[] RoleData = new RoleStatusData[3]
+        public const int MaxSlots = 3;
+
+        /// <summary>
+        /// 当前队伍实际可见并生效的角色数量（1~3）
+        /// </summary>
+        public int VisibleMemberCount { get; set; } = 3;
+
+        public RoleStatusData[] RoleData = new RoleStatusData[MaxSlots]
         {
             new RoleStatusData(),
             new RoleStatusData(),

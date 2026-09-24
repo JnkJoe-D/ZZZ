@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: Ellen_RouteSet_ToAttack_Dash_Start_Back
+  m_EditorClassIdentifier: 
+  TargetScope: 2
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: dcf47dcb1fb4536488a2e106ae70a30e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 10
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500844
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: dcf47dcb1fb4536488a2e106ae70a30e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 10
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500845
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: dcf47dcb1fb4536488a2e106ae70a30e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 10
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379258143149916973
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4681868330708500844
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916981
+        RequiredWindowTag: DashStart
+        Modifiers:
+        - Category: 10
+          RequiredKey: 50
+          InputCondition:
+            rid: -2
+          Inverse: 0
+    - rid: 4681868330708500845
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 10
+        RequiredWindow:
+          rid: 6379258143149916982
+        RequiredWindowTag: DashStart
+        Modifiers:
+        - Category: 10
+          RequiredKey: 50
+          InputCondition:
+            rid: -2
+          Inverse: 0
+    - rid: 6379258143149916973
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 10
+        RequiredWindow:
+          rid: 6379258143149916974
+        RequiredWindowTag: 
+        Modifiers:
+        - Category: 10
+          RequiredKey: 10
+          InputCondition:
+            rid: -2
+          Inverse: 0
+        - Category: 10
+          RequiredKey: 50
+          InputCondition:
+            rid: -2
+          Inverse: 0
+    - rid: 6379258143149916974
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1
+    - rid: 6379258143149916981
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute2
+    - rid: 6379258143149916982
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute2

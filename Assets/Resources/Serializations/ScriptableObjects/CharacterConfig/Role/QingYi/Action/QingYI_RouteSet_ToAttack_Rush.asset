@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: QingYI_RouteSet_ToAttack_Rush
+  m_EditorClassIdentifier: 
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: c2b895ad933f78945b7a3c0fd4caa14f, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500787
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868330708500787
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916782
+        RequiredWindowTag: Execute1
+        Modifiers: []
+    - rid: 6379258143149916782
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1

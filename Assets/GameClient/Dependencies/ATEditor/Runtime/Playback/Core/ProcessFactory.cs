@@ -98,6 +98,9 @@ namespace ATEditor
         {
             if (process == null) return;
 
+            // 归还即刻 Reset 洗净，切断外部引用，防止闲置对象强引用产生内存泄漏
+            process.Reset();
+
             var type = process.GetType();
             if (!pools.TryGetValue(type, out var pool))
             {

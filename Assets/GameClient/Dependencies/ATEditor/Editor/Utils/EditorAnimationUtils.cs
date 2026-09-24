@@ -680,7 +680,9 @@ namespace ATEditor.Editor
                 speed = 1f;
             }
 
-            float localTime = (currentTime - node.clip.StartTime) * speed;
+            // animOffset：动画内部起始偏移（秒），与运行时 RuntimeAnimationProcess 保持一致
+            float animOffset = node.clip.GetResolvedAnimStartOffsetSeconds();
+            float localTime = animOffset + (currentTime - node.clip.StartTime) * speed;
 
             if (node.clip.animationClip.isLooping)
             {

@@ -92,7 +92,7 @@ namespace Game.GamePlay
         }
 
         private IActionCommandHandler CurrentHandler =>
-            _handlerProvider?.Invoke() ?? CharacterStateBase.InputHandlerStatic;
+            _handlerProvider?.Invoke() ?? RoleStateBase.InputHandlerStatic;
 
         private void Dispatch(HardwareInputType commandType, CommandPhase phase)
         {

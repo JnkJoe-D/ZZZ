@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 namespace ATEditor.Editor
 {
@@ -21,29 +21,39 @@ namespace ATEditor.Editor
                 return;
             }
 
-            int ownerId = context.Owner.GetInstanceID();
+            var owner = context.Owner;
+            int ownerId = owner.GetInstanceID();
             tickActionKey = $"EditorPreview.Animation.Tick.{ownerId}";
             startActionKey = $"EditorPreview.Animation.Start.{ownerId}";
             cleanupActionKey = $"EditorPreview.Animation.Cleanup.{ownerId}";
 
             context.RegisterStartAction(startActionKey, () =>
             {
-                EditorAnimationUtils.EnsureInitialized(context.Owner);
+                if (owner != null)
+                {
+                    EditorAnimationUtils.EnsureInitialized(owner);
+                }
             });
 
             context.RegisterTickAction(tickActionKey, (currentTime, deltaTime) =>
             {
-                EditorAnimationUtils.Tick(context.Owner, currentTime, deltaTime, context.GlobalPlaySpeed);
+                if (owner != null)
+                {
+                    EditorAnimationUtils.Tick(owner, currentTime, deltaTime, context?.PresentationPlaySpeed ?? 1.0f);
+                }
             });
 
             context.RegisterCleanup(cleanupActionKey, () =>
             {
-                EditorAnimationUtils.Dispose(context.Owner);
+                if (owner != null)
+                {
+                    EditorAnimationUtils.Dispose(owner);
+                }
             });
 
             if (clip.animationClip != null && !string.IsNullOrEmpty(clip.clipId))
             {
-                EditorAnimationUtils.RegisterClip(context.Owner, clip);
+                EditorAnimationUtils.RegisterClip(owner, clip);
                 clipRegistered = true;
             }
                     }
@@ -60,7 +70,7 @@ namespace ATEditor.Editor
         {
                     }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             context?.UnregisterStartAction(startActionKey);
             context?.UnregisterTickAction(tickActionKey);

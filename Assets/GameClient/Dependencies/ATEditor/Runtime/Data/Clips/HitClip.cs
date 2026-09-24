@@ -8,60 +8,60 @@ namespace ATEditor
     public class HitClip : ClipBase, ISerializationCallbackReceiver
     {
         // ── 检测策略 ──
-        [SkillProperty("检测频率")]
+        [ActionProperty("检测频率")]
         public Frequency detectFrequency = Frequency.Once;
 
-        [SkillProperty("检测次数")][ShowIf("detectFrequency", Frequency.Times)]
+        [ActionProperty("检测次数")][ATShowIf("detectFrequency", Frequency.Times)]
         public int times = 1;
 
-        [SkillProperty("最大命中数")]
+        [ActionProperty("最大命中数")]
         public int maxHitTargets = 0;
 
-        [SkillProperty("选择策略")]
+        [ActionProperty("选择策略")]
         public TargetSortMode targetSortMode = TargetSortMode.Closest;
 
-        [SkillProperty("受击方向模式")]
+        [ActionProperty("受击方向模式")]
         public HitDirectionMode hitDirectionMode = HitDirectionMode.AttackerToTarget;
 
-        [SkillProperty("相对受击方向")]
-        [ShowIf("hitDirectionMode", HitDirectionMode.OnEnterCustomRelative)]
+        [ActionProperty("相对受击方向")]
+        [ATShowIf("hitDirectionMode", HitDirectionMode.OnEnterCustomRelative)]
         public Vector2 customHitDirection = new Vector2(0, 1);
  
-        [SkillProperty("碰撞检测层级")]
+        [ActionProperty("碰撞检测层级")]
         public LayerMask hitLayerMask = -1;
 
         [SerializeField, HideInInspector]
         private int serializedHitLayerMask = -1;
 
-        [SkillProperty("是否影响自身")]
+        [ActionProperty("是否影响自身")]
         public bool isSelfImpacted = false;
         
         // --- 检测盒 ---
-        [SkillProperty("检测盒")]
+        [ActionProperty("检测盒")]
         public HitBoxShape shape = new HitBoxShape();
 
         // --- 编辑器辅助 ---
         [NonSerialized]
-        [SkillProperty("检测盒Gizmos")]
-        public bool showHitBoxGizmos = false;
+        [ActionProperty("检测盒Gizmos")]
+        public bool showHitBoxGizmos = true;
 
-        [SkillProperty("检测盒跟随模式")]
+        [ActionProperty("检测盒跟随模式")]
         public HitBoxFollowMode hitBoxFollowMode = HitBoxFollowMode.PositionOnly;
 
-        [SkillProperty("检测盒绑定点")]
+        [ActionProperty("检测盒绑定点")]
         public BindPoint bindPoint = BindPoint.LogicRoot;
 
-        [SkillProperty("自定义骨骼名称")]
+        [ActionProperty("自定义骨骼名称")]
         public string customBoneName = "";
 
-        [SkillProperty("位置偏移")]
+        [ActionProperty("位置偏移")]
         public Vector3 positionOffset = Vector3.zero;
 
-        [SkillProperty("旋转偏移")]
+        [ActionProperty("旋转偏移")]
         public Vector3 rotationOffset = Vector3.zero;
 
-        // ── ★ 核心：嵌套的检测配置列表 ──
-        [SkillProperty("检测配置")]
+        // ── 嵌套的检测配置列表 ──
+        [ActionProperty("检测配置")]
         public DetectConfig[] detects = new DetectConfig[] { new DetectConfig() };
 
         // --- 编辑器辅助 ---

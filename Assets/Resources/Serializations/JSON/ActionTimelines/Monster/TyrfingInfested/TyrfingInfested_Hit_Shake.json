@@ -1,5 +1,5 @@
 {
-    "duration": 1.683333396911621,
+    "duration": 0.41666674613952639,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -162,11 +162,11 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.683333396911621,
+                    "duration": 0.4166666865348816,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 41282
+                        "instanceID": 34430
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -175,14 +175,17 @@
                     },
                     "clipRef": {
                         "guid": "bbdd7cde32f1b904aae7542268cb541a",
-                        "assetName": "TyrfingInfested_Ani_Hit_L_Front_Up",
+                        "assetName": "TyrfingInfested_Ani_Hit_Shake",
                         "assetPath": "Assets/Resources/Models/TyrfingInfested/Monster_TyrfingInfested.fbx"
                     },
                     "maskRef": {
                         "guid": "",
                         "assetName": "",
                         "assetPath": ""
-                    }
+                    },
+                    "animStartOffsetMode": 0,
+                    "animStartOffsetSeconds": 0.0,
+                    "animStartOffsetNormalized": 0.0
                 }
             },
             {
@@ -197,10 +200,15 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.683333396911621,
+                    "duration": 0.41666674613952639,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "localDeltaFilterMode": 1
+                    "localDeltaFilterMode": 1,
+                    "collisionMode": 1,
+                    "obstacleMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 1664
+                    }
                 }
             },
             {
@@ -215,10 +223,12 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.683333396911621,
+                    "duration": 0.41666674613952639,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "comboTag": "Execute1"
+                    "routewindow": {
+                        "rid": 1008
+                    }
                 }
             },
             {
@@ -233,10 +243,34 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.683333396911621,
+                    "duration": 0.41666674613952639,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "comboTag": "Hit"
+                    "routewindow": {
+                        "rid": 1009
+                    }
+                }
+            },
+            {
+                "rid": 1008,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "Execute1"
+                }
+            },
+            {
+                "rid": 1009,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "Hit"
                 }
             }
         ]

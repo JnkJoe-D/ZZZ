@@ -13,34 +13,34 @@ namespace ATEditor
     public class CameraAnimationClip : ClipBase
     {
         [Header("资源")]
-        [SkillProperty("相机预制体")]
+        [ActionProperty("相机预制体")]
         public GameObject cameraPrefab;
 
-        [SkillAssetReference("cameraPrefab")]
-        public SkillAssetReference cameraRef = new SkillAssetReference();
+        [ActionAssetReference("cameraPrefab")]
+        public ActionAssetReference cameraRef = new ActionAssetReference();
 
-        [SkillProperty("Timeline资源")]
+        [ActionProperty("Timeline资源")]
         public PlayableAsset timelineAsset;
 
-        [SkillAssetReference("timelineAsset")]
-        public SkillAssetReference timelineRef = new SkillAssetReference();
+        [ActionAssetReference("timelineAsset")]
+        public ActionAssetReference timelineRef = new ActionAssetReference();
 
-        [SkillProperty("跟拍骨骼名")]
+        [ActionProperty("跟拍骨骼名")]
         public string followBoneName;
 
-        [SkillProperty("看向骨骼名")]
+        [ActionProperty("看向骨骼名")]
         public string lookAtBoneName;
 
         [Header("摄像机设置覆盖")]
-        [SkillProperty("启用设置覆盖")]
+        [ActionProperty("启用设置覆盖")]
         public bool overrideSettings = false;
 
-        [SkillProperty("背景颜色")]
-        [ShowIf("overrideSettings", true)]
+        [ActionProperty("背景颜色")]
+        [ATShowIf("overrideSettings", true)]
         public Color backgroundColor = Color.black;
 
-        [SkillProperty("渲染层级")]
-        [ShowIf("overrideSettings", true)]
+        [ActionProperty("渲染层级")]
+        [ATShowIf("overrideSettings", true)]
         public LayerMask cullingMask = -1;
 
         public CameraAnimationClip()
@@ -59,9 +59,9 @@ namespace ATEditor
                 duration = this.duration,
                 isEnabled = this.isEnabled,
                 cameraPrefab = this.cameraPrefab,
-                cameraRef = new SkillAssetReference(this.cameraRef.guid, this.cameraRef.assetName, this.cameraRef.assetPath),
+                cameraRef = new ActionAssetReference(this.cameraRef.guid, this.cameraRef.assetName, this.cameraRef.assetPath),
                 timelineAsset = this.timelineAsset,
-                timelineRef = new SkillAssetReference(this.timelineRef.guid, this.timelineRef.assetName, this.timelineRef.assetPath),
+                timelineRef = new ActionAssetReference(this.timelineRef.guid, this.timelineRef.assetName, this.timelineRef.assetPath),
                 followBoneName = this.followBoneName,
                 lookAtBoneName = this.lookAtBoneName,
                 overrideSettings = this.overrideSettings,

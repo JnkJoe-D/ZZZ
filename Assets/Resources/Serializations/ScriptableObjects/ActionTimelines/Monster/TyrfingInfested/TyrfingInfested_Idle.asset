@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
-  m_Name: 
+  m_Name: TyrfingInfested_Idle
   m_EditorClassIdentifier: 
   duration: 2.016667
   isLoop: 1
@@ -107,6 +107,9 @@ MonoBehaviour:
           guid: 
           assetName: 
           assetPath: 
+        animStartOffsetMode: 0
+        animStartOffsetSeconds: 0
+        animStartOffsetNormalized: 0
     - rid: 4681868330708500872
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -132,7 +135,8 @@ MonoBehaviour:
         duration: 2.016667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        routewindow:
+          rid: 6379258164158660705
     - rid: 4681868330708500874
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -156,4 +160,13 @@ MonoBehaviour:
         duration: 2.016667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Hit
+        routewindow:
+          rid: 6379258164158660706
+    - rid: 6379258164158660705
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258164158660706
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Hit

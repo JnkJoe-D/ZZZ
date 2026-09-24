@@ -82,23 +82,23 @@ namespace ATEditor
                 };
             }
 
-            SyncSpeed(context.GlobalPlaySpeed);
+            SyncSpeed(context.PresentationPlaySpeed);
 
             if (context != null)
             {
-                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
-                context.OnGlobalSpeedChanged += HandleGlobalSpeedChanged;
+                context.OnPresentationSpeedChanged -= HandlePresentationSpeedChanged;
+                context.OnPresentationSpeedChanged += HandlePresentationSpeedChanged;
             }
         }
 
-        private void HandleGlobalSpeedChanged(float newGlobalSpeed)
+        private void HandlePresentationSpeedChanged(float newSpeed)
         {
-            SyncSpeed(newGlobalSpeed);
+            SyncSpeed(newSpeed);
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            SyncSpeed(context.GlobalPlaySpeed);
+            SyncSpeed(context.PresentationPlaySpeed);
         }
 
         private void SyncSpeed(float speed)
@@ -120,7 +120,7 @@ namespace ATEditor
             HandleVFXRelease();
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             HandleVFXRelease();
         }
@@ -130,7 +130,7 @@ namespace ATEditor
             base.Reset();
             if (context != null)
             {
-                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+                context.OnPresentationSpeedChanged -= HandlePresentationSpeedChanged;
             }
             particleInfos = null;
             vfxInstance = null;
@@ -143,7 +143,7 @@ namespace ATEditor
         {
             if (context != null)
             {
-                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+                context.OnPresentationSpeedChanged -= HandlePresentationSpeedChanged;
             }
 
             if (vfxInstance == null || _returnQueued) return;

@@ -32,5 +32,6 @@ namespace ATEditor
         void FaceToTargetImmediately(Transform target, Vector3 localOffset = default);
 
         Vector3 GetInputDirection(bool withCamera);
+        Vector3 GetCameraDirection();
     }
 }

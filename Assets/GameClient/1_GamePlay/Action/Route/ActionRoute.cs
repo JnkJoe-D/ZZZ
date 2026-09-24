@@ -81,23 +81,24 @@ namespace Game.GamePlay
 
         [ShowIf("Category", ModifierCategory.Condition)]
         [SerializeReference, SubclassSelector]
-        public IRawInputCondition InputCondition;
+        public IKeyInputCondition InputCondition;
 
         public bool Inverse = false;
 
-        public bool Evaluate(RoleEntity actor)
+        public bool Evaluate(CharacterEntity actor)
         {
+            if(!(actor is RoleEntity roleEntity)) return false;
             switch (Category)
             {
                 case ModifierCategory.None:
                     return true;
                 case ModifierCategory.Condition:
-                    bool conditionResult = InputCondition != null && InputCondition.Check(actor);
+                    bool conditionResult = InputCondition != null && InputCondition.Check(roleEntity);
                     return Inverse ? !conditionResult : conditionResult;
                 case ModifierCategory.KeyState:
-                    if (actor == null || !actor.IsControlActive || actor.InputProvider == null)
+                    if (actor == null || !roleEntity.IsControlActive || roleEntity.InputProvider == null)
                         return false;
-                    bool isHeld = actor.InputProvider.IsHeld((int)RequiredKey);
+                    bool isHeld = roleEntity.InputProvider.IsHeld((int)RequiredKey);
                     return Inverse ? !isHeld : isHeld;
                 default:
                     return true;
@@ -135,11 +136,11 @@ namespace Game.GamePlay
         [SerializeReference, SubclassSelector]
         public List<ITransitionCondition> ExtraConditions = new();
 
-        public bool Evaluate(CharacterCommand command, string windowTag, RoleEntity actor, ISkillCostHandler skillHandler, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
+        public bool Evaluate(CharacterCommand command, ATEditor.RouteWindow activeWindow, CharacterEntity actor, ISkillCostHandler skillHandler, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
         {
             if (TriggerStrategy == null) return false;
 
-            if (!TriggerStrategy.Evaluate(command, windowTag, actor, timing))
+            if (!TriggerStrategy.Evaluate(command, activeWindow, actor, timing))
                 return false;
 
             //  如果这是由 DirectAsset 触发的，必须保证它请求的动作正是本路由指向的动作
@@ -178,16 +179,30 @@ namespace Game.GamePlay
 
 
 
-        public bool CheckSkillRequire(RoleEntity actor, ISkillCostHandler skillHandler)
+        public bool CheckSkillRequire(CharacterEntity actor, ISkillCostHandler skillHandler)
         {
             if (!ValidateSkillRequirement) return true;
             return skillHandler == null || skillHandler.CheckSkillRequirement(ExecuteAction, actor);
         }
 
-        public void ConsumeSkillCost(RoleEntity actor, ISkillCostHandler skillHandler)
+        public void ConsumeSkillCost(CharacterEntity actor, ISkillCostHandler skillHandler)
         {
             if (!ValidateSkillRequirement) return;
             skillHandler?.ConsumeSkillCost(ExecuteAction, actor);
+        }
+
+        /// <summary>
+        /// 路由被最终确认提交后调用，执行各 ExtraCondition 中延迟的一次性副作用
+        /// （例如清除招架成功标记等只能消费一次的状态）。
+        /// 应在 ConsumeSkillCost 之后紧跟调用。
+        /// </summary>
+        public void CommitSideEffects(CharacterEntity actor)
+        {
+            if (ExtraConditions == null || ExtraConditions.Count == 0) return;
+            for (int i = 0; i < ExtraConditions.Count; i++)
+            {
+                ExtraConditions[i]?.OnCommit(actor);
+            }
         }
     }
 }

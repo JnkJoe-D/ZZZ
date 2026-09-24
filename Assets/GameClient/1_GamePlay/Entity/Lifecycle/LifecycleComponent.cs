@@ -14,7 +14,7 @@ namespace Game.GamePlay
         event Action<CharacterEntity> OnDied;
         event Action<CharacterEntity> OnRevived;
         void Init(CharacterEntity entity);
-        void Die(HitContext? ctx = null);
+        void Die(CharacterEntity attacker = null);
         void Revive(float hpPercent = 1.0f);
     }
 
@@ -53,18 +53,18 @@ namespace Game.GamePlay
             IsDead = false;
         }
 
-        public virtual void Die(HitContext? ctx = null)
+        public virtual void Die(CharacterEntity attacker = null)
         {
             if (IsDead) return;
             IsDead = true;
 
-            HandleDeath(ctx);
+            HandleDeath(attacker);
             OnDied?.Invoke(_entity);
 
             EventCenter.Publish(new EntityDiedEvent
             {
                 Victim = _entity,
-                Attacker = ctx.HasValue ? ctx.Value.attacker : null
+                Attacker = attacker
             });
         }
 
@@ -82,7 +82,7 @@ namespace Game.GamePlay
             OnRevived?.Invoke(_entity);
         }
 
-        protected virtual void HandleDeath(HitContext? ctx)
+        protected virtual void HandleDeath(CharacterEntity attacker)
         {
             // 通用操作：停止当前动作播放
             _entity?.ActionPlayer?.StopAction();

@@ -143,89 +143,89 @@ namespace ATEditor
     [ClipDefinition(typeof(TransformTrack), "移动")]
     public class MovementClip : ClipBase, ISerializationCallbackReceiver
     {
-        [SkillProperty("参考目标")]
+        [ActionProperty("参考目标")]
         public ReferenceDestination referenceDestination = ReferenceDestination.Fixed;
 
         // 参考目标点类型为固定坐标点 (Fixed)
-        [SkillProperty("参考坐标系")]
-        [ShowIf("referenceDestination", ReferenceDestination.Fixed)]
+        [ActionProperty("参考坐标系")]
+        [ATShowIf("referenceDestination", ReferenceDestination.Fixed)]
         public CoordinateSystem referenceCoordinate = CoordinateSystem.Local;
 
-        [SkillProperty("目标位置")]
-        [ShowIf("referenceDestination", ReferenceDestination.Fixed)]
+        [ActionProperty("目标位置")]
+        [ATShowIf("referenceDestination", ReferenceDestination.Fixed)]
         public Vector3 targetPosition;
 
         // 参考目标点类型为目标实体 (Target)
-        [SkillProperty("目标位置模式")]
-        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        [ActionProperty("目标位置模式")]
+        [ATShowIf("referenceDestination", ReferenceDestination.Target)]
         public TargetPositionType targetPositionEnum = TargetPositionType.EnemyFront;
 
-        [SkillProperty("基准朝向")]
-        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        [ActionProperty("基准朝向")]
+        [ATShowIf("referenceDestination", ReferenceDestination.Target)]
         public TargetBaseDirection targetBaseDirection = TargetBaseDirection.LineOfSight;
 
-        [SkillProperty("目标参照锚点")]
-        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        [ActionProperty("目标参照锚点")]
+        [ATShowIf("referenceDestination", ReferenceDestination.Target)]
         public DistanceAnchor targetAnchor = DistanceAnchor.NearEdge;
 
-        [SkillProperty("自身参照锚点")]
-        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        [ActionProperty("自身参照锚点")]
+        [ATShowIf("referenceDestination", ReferenceDestination.Target)]
         public DistanceAnchor selfAnchor = DistanceAnchor.NearEdge;
 
-        [SkillProperty("额外距离偏移")]
-        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        [ActionProperty("额外距离偏移")]
+        [ATShowIf("referenceDestination", ReferenceDestination.Target)]
         public float offsetRadius = 0f;
 
-        [SkillProperty("自定义角度(度)")]
-        [ShowIf("targetPositionEnum", TargetPositionType.CustomAngle)]
+        [ActionProperty("自定义角度(度)")]
+        [ATShowIf("targetPositionEnum", TargetPositionType.CustomAngle)]
         public float angleOffset = 0f;
 
         [Header("通用设置")]
-        [SkillProperty("位移方式")]
+        [ActionProperty("位移方式")]
         public DisplacementType displacementType = DisplacementType.Continuous;
 
-        [SkillProperty("移动曲线")]
+        [ActionProperty("移动曲线")]
         public MovementCurve movementCurve = MovementCurve.Linear;
 
         [Header("位置校验与智能寻位")]
-        [SkillProperty("启用位置可用性校验")]
-        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        [ActionProperty("启用位置可用性校验")]
+        [ATShowIf("referenceDestination", ReferenceDestination.Target)]
         public bool enablePositionValidation = false;
 
-        [SkillProperty("候选目标位置列表")]
-        [ShowIf("enablePositionValidation", true)]
+        [ActionProperty("候选目标位置列表")]
+        [ATShowIf("enablePositionValidation", true)]
         public MovementPositionCandidate[] candidatePositions = new MovementPositionCandidate[0];
 
-        [SkillProperty("启用径向环形扩散搜索")]
-        [ShowIf("enablePositionValidation", true)]
+        [ActionProperty("启用径向环形扩散搜索")]
+        [ATShowIf("enablePositionValidation", true)]
         public bool enableSmartRadialFallback = true;
 
-        [SkillProperty("搜索角度步长(度)")]
-        [ShowIf("enablePositionValidation", true)]
+        [ActionProperty("搜索角度步长(度)")]
+        [ATShowIf("enablePositionValidation", true)]
         public float fallbackAngleStep = 30f;
 
-        [SkillProperty("最大搜索角度(度)")]
-        [ShowIf("enablePositionValidation", true)]
+        [ActionProperty("最大搜索角度(度)")]
+        [ATShowIf("enablePositionValidation", true)]
         public float maxFallbackAngle = 180f;
 
-        [SkillProperty("障碍物检测层级")]
-        [ShowIf("enablePositionValidation", true)]
+        [ActionProperty("障碍物检测层级")]
+        [ATShowIf("enablePositionValidation", true)]
         public LayerMask obstacleLayers;
 
-        [SkillProperty("地面检测层级")]
-        [ShowIf("enablePositionValidation", true)]
+        [ActionProperty("地面检测层级")]
+        [ATShowIf("enablePositionValidation", true)]
         public LayerMask groundLayers;
 
-        [SkillProperty("地面检测最大距离")]
-        [ShowIf("enablePositionValidation", true)]
+        [ActionProperty("地面检测最大距离")]
+        [ATShowIf("enablePositionValidation", true)]
         public float groundCheckDistance = 3.0f;
 
-        [SkillProperty("必须贴合有效地面")]
-        [ShowIf("enablePositionValidation", true)]
+        [ActionProperty("必须贴合有效地面")]
+        [ATShowIf("enablePositionValidation", true)]
         public bool requireGrounded = true;
 
-        [SkillProperty("位移后自动面向目标")]
-        [ShowIf("referenceDestination", ReferenceDestination.Target)]
+        [ActionProperty("位移后自动面向目标")]
+        [ATShowIf("referenceDestination", ReferenceDestination.Target)]
         public bool faceTargetOnArrival = true;
 
         [SerializeField, HideInInspector]

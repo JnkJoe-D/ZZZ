@@ -37,11 +37,11 @@ namespace Game.GamePlay
 
         private IActionCommandHandler ResolveCurrentInputHandler()
         {
-            if (_role?.StateMachine?.CurrentState is CharacterStateBase charState && charState.InputHandler != null)
+            if (_role?.StateMachine?.CurrentState is RoleStateBase charState && charState.InputHandler != null)
             {
                 return charState.InputHandler;
             }
-            return CharacterStateBase.InputHandlerStatic;
+            return RoleStateBase.InputHandlerStatic;
         }
 
         public void SetFallbackInputProvider(IInputProvider provider)

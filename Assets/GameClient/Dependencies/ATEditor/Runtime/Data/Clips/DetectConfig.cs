@@ -11,60 +11,60 @@ namespace ATEditor
     public class DetectConfig
     {
         // ── 打击模式 ──
-        [SkillProperty("打击模式")]
+        [ActionProperty("打击模式")]
         public HitMode hitMode = HitMode.Once;
 
-        [SkillProperty("多段次数")]
-        [ShowIf("hitMode", HitMode.Times)]
+        [ActionProperty("多段次数")]
+        [ATShowIf("hitMode", HitMode.Times)]
         public int multiHitCount = 3;
 
-        [SkillProperty("多段总时长")]
-        [ShowIf("hitMode", HitMode.Times)]
+        [ActionProperty("多段总时长")]
+        [ATShowIf("hitMode", HitMode.Times)]
         public float multiHitDuration = 0.2f;
 
         // ── 打击反馈 ──
-        [SkillProperty("启用顿帧")]
+        [ActionProperty("启用顿帧")]
         public bool enableHitStop = false;
 
-        [SkillProperty("顿帧时长(秒)")]
-        [ShowIf("enableHitStop", true)]
+        [ActionProperty("顿帧时长(秒)")]
+        [ATShowIf("enableHitStop", true)]
         public float hitStopDuration = 0.05f;
 
-        [SkillProperty("顿帧倍率")]
-        [ShowIf("enableHitStop", true)]
+        [ActionProperty("顿帧倍率")]
+        [ATShowIf("enableHitStop", true)]
         public float hitStopScale = 0f;
 
-        [SkillProperty("受击硬直时长(秒)")]
+        [ActionProperty("受击硬直时长(秒)")]
         public float hitStunDuration = 0.3f;
 
         // ── 受击特效 ──
-        [SkillProperty("受击特效")]
+        [ActionProperty("受击特效")]
         public GameObject hitVFXPrefab;
 
-        [SkillAssetReference("hitVFXPrefab")][HideInInspector]
-        public SkillAssetReference hitVFXRef = new SkillAssetReference();
+        [ActionAssetReference("hitVFXPrefab")][HideInInspector]
+        public ActionAssetReference hitVFXRef = new ActionAssetReference();
 
-        [SkillProperty("受击特效高度")]
+        [ActionProperty("受击特效高度")]
         public float hitVFXHeight = 1.0f;
 
-        [SkillProperty("受击特效预览偏移")]
+        [ActionProperty("受击特效预览偏移")]
         public Vector2 hitVFXPreviewOffsetXZ = Vector2.zero;
 
-        [SkillProperty("受击特效缩放")]
+        [ActionProperty("受击特效缩放")]
         public Vector3 hitVFXScale = Vector3.one;
 
-        [SkillProperty("受击特效是否跟随目标")]
+        [ActionProperty("受击特效是否跟随目标")]
         public bool followTarget = true;
 
         // ── 受击音效 ──
-        [SkillProperty("受击音效")]
+        [ActionProperty("受击音效")]
         public UnityEngine.AudioClip hitAudioClip;
 
-        [SkillAssetReference("hitAudioClip")][HideInInspector]
-        public SkillAssetReference hitAudioRef = new SkillAssetReference();
+        [ActionAssetReference("hitAudioClip")][HideInInspector]
+        public ActionAssetReference hitAudioRef = new ActionAssetReference();
 
         // ── 命中效果 ──
-        [SkillProperty("命中效果 ID")]
+        [ActionProperty("命中效果 ID")]
         public int hitEffectId = 0;
 
         public DetectConfig Clone()
@@ -79,13 +79,13 @@ namespace ATEditor
                 hitStopScale = this.hitStopScale,
                 hitStunDuration = this.hitStunDuration,
                 hitVFXPrefab = this.hitVFXPrefab,
-                hitVFXRef = new SkillAssetReference(this.hitVFXRef.guid, this.hitVFXRef.assetName, this.hitVFXRef.assetPath),
+                hitVFXRef = new ActionAssetReference(this.hitVFXRef.guid, this.hitVFXRef.assetName, this.hitVFXRef.assetPath),
                 hitVFXHeight = this.hitVFXHeight,
                 hitVFXPreviewOffsetXZ = this.hitVFXPreviewOffsetXZ,
                 hitVFXScale = this.hitVFXScale,
                 followTarget = this.followTarget,
                 hitAudioClip = this.hitAudioClip,
-                hitAudioRef = new SkillAssetReference(this.hitAudioRef.guid, this.hitAudioRef.assetName, this.hitAudioRef.assetPath),
+                hitAudioRef = new ActionAssetReference(this.hitAudioRef.guid, this.hitAudioRef.assetName, this.hitAudioRef.assetPath),
                 hitEffectId = this.hitEffectId,
             };
         }

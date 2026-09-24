@@ -84,7 +84,7 @@ namespace ATEditor.Editor
                 vfxInstance = null;
             }
         }
-        public override void OnDisable()
+        public override void OnStop()
         {
             if (vfxInstance != null)
             {

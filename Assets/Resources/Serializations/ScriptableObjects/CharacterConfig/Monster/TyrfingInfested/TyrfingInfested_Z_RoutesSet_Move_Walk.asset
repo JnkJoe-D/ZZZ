@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: TyrfingInfested_Z_RoutesSet_Move_Walk
+  m_EditorClassIdentifier: 
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 8c977e69c5fffe5429f906cfe5c550bb, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 4681868330708500996
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: dcaf9d2d600272c408618d3c97ea4cbe, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 4681868330708500997
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 997f74a2eda661a4a9b8e06d9a18bda4, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 4681868330708500998
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 2d501e6c2a6e82b4eb3a76db8b725660, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 4681868330708500999
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: a065bbf51283ff143b7b046e4ccde39e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 4681868330708501000
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 12c5a54b43a03b446876b48ef895e96c, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 4681868330708501001
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868330708500996
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredWindow:
+          rid: 6379258143149916760
+        RequiredWindowTag: Execute1
+    - rid: 4681868330708500997
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredWindow:
+          rid: 6379258143149916761
+        RequiredWindowTag: Execute1
+    - rid: 4681868330708500998
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredWindow:
+          rid: 6379258143149916762
+        RequiredWindowTag: Execute1
+    - rid: 4681868330708500999
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredWindow:
+          rid: 6379258143149916763
+        RequiredWindowTag: Execute1
+    - rid: 4681868330708501000
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredWindow:
+          rid: 6379258143149916764
+        RequiredWindowTag: Execute1
+    - rid: 4681868330708501001
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredWindow:
+          rid: 6379258143149916765
+        RequiredWindowTag: Execute1
+    - rid: 6379258143149916760
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258143149916761
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258143149916762
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258143149916763
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258143149916764
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258143149916765
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1

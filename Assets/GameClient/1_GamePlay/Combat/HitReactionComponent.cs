@@ -30,35 +30,14 @@ namespace Game.GamePlay
         }
 
         /// <summary>
-        /// 由命中流水线（MotionAndActionPipe）驱动的打断切入钩子
+        /// 由命中流水线（MotionAndActionPipe）驱动的打断切入钩子。
+        /// 直接接收管线上下文，无翻译层。
         /// </summary>
         public virtual void TriggerInterruptedHook(HitPipelineContext ctx)
         {
-            var legacyCtx = new HitContext
-            {
-                attacker = ctx.Attacker,
-                victim = ctx.Victim,
-                hitEffectId = ctx.HitEffectId,
-                interruptLevel = ctx.InterruptLevel,
-                reactionType = ctx.SelectedReactionType,
-                enableHitStop = ctx.EnableHitStop,
-                hitStopDuration = ctx.HitStopDuration,
-                hitStopScale = ctx.HitStopScale,
-                hitVFXPrefab = ctx.HitVFXPrefab,
-                hitVFXHeight = ctx.HitVFXHeight,
-                hitVFXScale = ctx.HitVFXScale,
-                hitVFXFollowTarget = ctx.HitVFXFollowTarget,
-                hitAudioClip = ctx.HitAudioClip,
-                hitStunDuration = ctx.HitStunDuration,
-                hitPoint = ctx.HitPoint,
-                hitDirection = ctx.HitDirection,
-                reactionAxis = ctx.ReactionAxis,
-                resolvedHitAction = ctx.ResolvedHitAction,
-                requireFaceAttacker = ctx.RequireFaceAttacker
-            };
-            OnInterrupted(legacyCtx);
+            OnInterrupted(ctx);
         }
 
-        protected abstract void OnInterrupted(HitContext ctx);
+        protected abstract void OnInterrupted(HitPipelineContext ctx);
     }
 }

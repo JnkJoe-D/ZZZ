@@ -82,7 +82,7 @@ namespace ATEditor
             RestorePhysicsState();
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             RestorePhysicsState();
         }

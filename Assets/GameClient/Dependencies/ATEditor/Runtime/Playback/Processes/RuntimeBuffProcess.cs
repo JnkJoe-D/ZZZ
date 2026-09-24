@@ -35,7 +35,7 @@ namespace ATEditor
             }
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             // 动作打断/切招/退场强力防泄漏兜底：只要生命周期受片段管理，被禁用时必定触发移除
             if (_buffHandler == null || clip == null) return;

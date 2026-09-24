@@ -43,21 +43,21 @@ namespace ATEditor
         /// 可选扩展数据（外部注入业务相关对象）
         /// </summary>
         public object UserData { get; set; }
-        private float _globalPlaySpeed = 1f;
+        private float _presentationPlaySpeed = 1f;
         /// <summary>
-        /// 全局播放速度变更事件（供动画、特效等需要即时响应顿帧/慢动作的表现层 Process 订阅）
+        /// 表现层播放速度变更事件（供动画、特效等需要即时响应顿帧/慢动作的表现层 Process 订阅）
         /// </summary>
-        public event System.Action<float> OnGlobalSpeedChanged;
+        public event System.Action<float> OnPresentationSpeedChanged;
 
-        public float GlobalPlaySpeed
+        public float PresentationPlaySpeed
         {
-            get => _globalPlaySpeed;
+            get => _presentationPlaySpeed;
             set
             {
-                if (!Mathf.Approximately(_globalPlaySpeed, value))
+                if (!Mathf.Approximately(_presentationPlaySpeed, value))
                 {
-                    _globalPlaySpeed = value;
-                    OnGlobalSpeedChanged?.Invoke(_globalPlaySpeed);
+                    _presentationPlaySpeed = value;
+                    OnPresentationSpeedChanged?.Invoke(_presentationPlaySpeed);
                 }
             }
         }
@@ -274,7 +274,14 @@ namespace ATEditor
         {
             foreach (var action in _cleanupActions.Values)
             {
-                action?.Invoke();
+                try
+                {
+                    action?.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    ATLog.Error($"[ProcessContext] 执行系统清理时发生异常: {ex}");
+                }
             }
             _cleanupActions.Clear();
             _startActions.Clear();

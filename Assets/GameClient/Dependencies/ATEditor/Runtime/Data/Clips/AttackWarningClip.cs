@@ -16,7 +16,7 @@ namespace ATEditor
     }
 
     [Serializable]
-    [ClipDefinition(typeof(EventTrack), "攻击预警 (黄/红光)")]
+    [ClipDefinition(typeof(EventTrack), "攻击预警")]
     public class AttackWarningClip : ClipBase
     {
         [Header("Warning Type")]

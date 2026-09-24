@@ -1,6 +1,6 @@
+using ATEditor;
 using UnityEditor;
 using UnityEngine;
-using ATEditor;
 
 namespace ATEditor.Editor
 {
@@ -57,37 +57,35 @@ namespace ATEditor.Editor
                 if (_showSceneHandles)
                 {
                     EditorGUILayout.BeginVertical("box");
-                    GUILayout.BeginHorizontal();
 
-                    bool isPos = vfxClip.activeHandleType == VFXClip.VFXHandleType.Position;
-                    bool isRot = vfxClip.activeHandleType == VFXClip.VFXHandleType.Rotation;
-                    bool isSca = vfxClip.activeHandleType == VFXClip.VFXHandleType.Scale;
-
-                    GUIStyle leftStyle = new GUIStyle(EditorStyles.miniButtonLeft) { fontSize = 12, fixedHeight = 24 };
-                    GUIStyle midStyle = new GUIStyle(EditorStyles.miniButtonMid) { fontSize = 12, fixedHeight = 24 };
-                    GUIStyle rightStyle = new GUIStyle(EditorStyles.miniButtonRight) { fontSize = 12, fixedHeight = 24 };
-
-                    bool newPos = GUILayout.Toggle(isPos, "位置句柄", leftStyle);
-                    bool newRot = GUILayout.Toggle(isRot, "旋转句柄", midStyle);
-                    bool newSca = GUILayout.Toggle(isSca, "缩放句柄", rightStyle);
-
-                    GUILayout.EndHorizontal();
-
-                    VFXClip.VFXHandleType newType = VFXClip.VFXHandleType.None;
-                    if (newPos && !isPos) newType = VFXClip.VFXHandleType.Position;
-                    else if (newRot && !isRot) newType = VFXClip.VFXHandleType.Rotation;
-                    else if (newSca && !isSca) newType = VFXClip.VFXHandleType.Scale;
-
-                    if (isPos && !newPos) newType = VFXClip.VFXHandleType.None;
-                    if (isRot && !newRot) newType = VFXClip.VFXHandleType.None;
-                    if (isSca && !newSca) newType = VFXClip.VFXHandleType.None;
-
-                    if (newType != vfxClip.activeHandleType)
+                    // 默认选中移动句柄 (Position)
+                    if (vfxClip.activeHandleType == VFXClip.VFXHandleType.None)
                     {
-                        vfxClip.activeHandleType = newType;
-                        if (newType == VFXClip.VFXHandleType.Position) Tools.current = Tool.Move;
-                        else if (newType == VFXClip.VFXHandleType.Rotation) Tools.current = Tool.Rotate;
-                        else if (newType == VFXClip.VFXHandleType.Scale) Tools.current = Tool.Scale;
+                        vfxClip.activeHandleType = VFXClip.VFXHandleType.Position;
+                    }
+
+                    int currentHandleIndex = vfxClip.activeHandleType switch
+                    {
+                        VFXClip.VFXHandleType.Rotation => 1,
+                        VFXClip.VFXHandleType.Scale => 2,
+                        _ => 0
+                    };
+
+                    string[] handleLabels = new string[] { "移动句柄", "旋转句柄", "缩放句柄" };
+                    int newHandleIndex = GUILayout.Toolbar(currentHandleIndex, handleLabels, GUILayout.Height(24));
+                    if (newHandleIndex != currentHandleIndex)
+                    {
+                        vfxClip.activeHandleType = newHandleIndex switch
+                        {
+                            1 => VFXClip.VFXHandleType.Rotation,
+                            2 => VFXClip.VFXHandleType.Scale,
+                            _ => VFXClip.VFXHandleType.Position
+                        };
+
+                        if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Position) Tools.current = Tool.Move;
+                        else if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Rotation) Tools.current = Tool.Rotate;
+                        else if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Scale) Tools.current = Tool.Scale;
+
                         SceneView.RepaintAll();
                     }
 
@@ -110,105 +108,128 @@ namespace ATEditor.Editor
         {
             var vfxClip = clip as VFXClip;
             if (vfxClip == null || vfxClip.effectPrefab == null) return;
-            if (vfxClip.activeHandleType == VFXClip.VFXHandleType.None) return;
 
-            bool isActive = !state.isStopped && state.timeIndicator >= clip.StartTime && state.timeIndicator <= clip.StartTime + clip.Duration;
-            if (!isActive) return;
-
-            Editor.EditorVFXProcess activeProcess = null;
-            ATEditorWindow window = null;
-            if (EditorWindow.HasOpenInstances<ATEditorWindow>())
+            // 默认选中移动句柄，常驻显示
+            if (vfxClip.activeHandleType == VFXClip.VFXHandleType.None)
             {
-                window = EditorWindow.GetWindow<ATEditorWindow>(false, "技能编辑器", false);
-                if (window != null && window.PreviewRunner != null)
-                {
-                    foreach (var p in window.PreviewRunner.ActiveProcesses)
-                    {
-                        if (p.clip == vfxClip && p.isActive && p.process is Editor.EditorVFXProcess process)
-                        {
-                            activeProcess = process;
-                            break;
-                        }
-                    }
-                }
+                vfxClip.activeHandleType = VFXClip.VFXHandleType.Position;
             }
 
-            if (activeProcess != null && activeProcess.Instance != null && window != null)
+            Transform rootTrans = null;
+            if (state != null && state.PreviewContext != null && state.PreviewContext.Owner != null)
             {
-                // 获取当前实例的世界坐标和旋转
-                Vector3 currentPos = activeProcess.Instance.transform.position;
-                Quaternion currentRot = activeProcess.Instance.transform.rotation;
-                Vector3 currentScale = activeProcess.Instance.transform.localScale;
+                rootTrans = state.PreviewContext.Owner.transform;
+            }
+            else if (state != null && state.previewTarget != null)
+            {
+                rootTrans = state.previewTarget.transform;
+            }
 
-                EditorGUI.BeginChangeCheck();
-                
-                Vector3 newPos = currentPos;
-                Quaternion newRot = currentRot;
-                Vector3 newScale = currentScale;
+            if (rootTrans == null) return;
 
-                switch (vfxClip.activeHandleType)
+            // 获取特效挂载点 Transform
+            var boneGetter = new ATBoneGetter(rootTrans.gameObject);
+            Transform bindTrans = boneGetter.GetBone(vfxClip.bindPoint, vfxClip.customBoneName) ?? rootTrans;
+
+            // 计算基准世界位置与旋转
+            Vector3 refPos = bindTrans.position;
+            Quaternion refRot = bindTrans.rotation;
+
+            Vector3 vfxWorldPos = refPos + refRot * vfxClip.positionOffset;
+            Quaternion vfxWorldRot = refRot * Quaternion.Euler(vfxClip.rotationOffset);
+            Vector3 vfxScale = vfxClip.scale;
+
+            // 绘制与挂点的辅助连线与圆环
+            Handles.color = new Color(0.2f, 0.7f, 1f, 0.6f);
+            Handles.DrawLine(refPos, vfxWorldPos);
+            Handles.DrawWireDisc(vfxWorldPos, Vector3.up, 0.2f);
+
+            var labelStyle = new GUIStyle
+            {
+                normal = new GUIStyleState { textColor = new Color(0.3f, 0.85f, 1f) },
+                fontStyle = FontStyle.Bold
+            };
+            string handleName = vfxClip.activeHandleType switch
+            {
+                VFXClip.VFXHandleType.Rotation => "🌀 特效旋转",
+                VFXClip.VFXHandleType.Scale => "🔍 特效缩放",
+                _ => "✨ 特效位置"
+            };
+            Handles.Label(vfxWorldPos + Vector3.up * 0.25f, $"{handleName} ({vfxClip.clipName})", labelStyle);
+
+            EditorGUI.BeginChangeCheck();
+
+            Vector3 newWorldPos = vfxWorldPos;
+            Quaternion newWorldRot = vfxWorldRot;
+            Vector3 newScale = vfxScale;
+
+            switch (vfxClip.activeHandleType)
+            {
+                case VFXClip.VFXHandleType.Rotation:
+                    newWorldRot = Handles.RotationHandle(vfxWorldRot, vfxWorldPos);
+                    break;
+                case VFXClip.VFXHandleType.Scale:
+                    newScale = Handles.ScaleHandle(vfxScale, vfxWorldPos, vfxWorldRot, HandleUtility.GetHandleSize(vfxWorldPos));
+                    break;
+                case VFXClip.VFXHandleType.Position:
+                default:
+                    Quaternion pHandleRot = (Tools.pivotRotation == PivotRotation.Global) ? Quaternion.identity : vfxWorldRot;
+                    newWorldPos = Handles.PositionHandle(vfxWorldPos, pHandleRot);
+                    break;
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                // 反算相对偏移
+                if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Rotation)
                 {
-                    case VFXClip.VFXHandleType.Position:
-                        Quaternion pHandleRot = (Tools.pivotRotation == PivotRotation.Global) ? Quaternion.identity : currentRot;
-                        newPos = Handles.PositionHandle(currentPos, pHandleRot);
-                        Handles.Label(newPos + Vector3.up * 0.2f, "  特效预览位置", new GUIStyle() { normal = new GUIStyleState() { textColor = Color.yellow } });
-                        break;
-                    case VFXClip.VFXHandleType.Rotation:
-                        // 从实例最新的世界旋转角度进行编辑，确保多轴拖拽正确累加。
-                        newRot = Handles.RotationHandle(currentRot, currentPos); 
-                        Handles.Label(currentPos + Vector3.up * 0.2f, "  特效预览旋转", new GUIStyle() { normal = new GUIStyleState() { textColor = Color.yellow } });
-                        break;
-                    case VFXClip.VFXHandleType.Scale:
-                        newScale = Handles.ScaleHandle(currentScale, currentPos, currentRot, HandleUtility.GetHandleSize(currentPos));
-                        Handles.Label(currentPos + Vector3.up * 0.2f, "  特效预览缩放", new GUIStyle() { normal = new GUIStyleState() { textColor = Color.yellow } });
-                        break;
+                    Quaternion localRot = Quaternion.Inverse(refRot) * newWorldRot;
+                    vfxClip.rotationOffset = localRot.eulerAngles;
+                }
+                else if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Scale)
+                {
+                    vfxClip.scale = newScale;
+                }
+                else
+                {
+                    Vector3 localPos = Quaternion.Inverse(refRot) * (newWorldPos - refPos);
+                    vfxClip.positionOffset = localPos;
                 }
 
-                if (EditorGUI.EndChangeCheck())
+                if (EditorWindow.HasOpenInstances<ATEditorWindow>())
                 {
-                    // 将当前的变换信息交由 activeProcess 进行反推计算
+                    var window = EditorWindow.GetWindow<ATEditorWindow>(false, "动作时间轴编辑器", false);
                     if (window != null)
                     {
                         var timeline = window.GetCurrentTimeline();
                         if (timeline != null)
                         {
                             Undo.RecordObject(timeline, "Sync VFX Transform");
-                            
-                            // 将把手拖动的新变动立即赋给临时的 Instance 
-                            if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Position) activeProcess.Instance.transform.position = newPos;
-                            else if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Rotation) activeProcess.Instance.transform.rotation = newRot;
-                            else if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Scale) activeProcess.Instance.transform.localScale = newScale;
-
-                            // 调取现成皀GetCurrentRelativeOffset 
-                            // 里面处理了是否跟随第一帧缓存坐标系的全部反算逻辑　
-                            activeProcess.GetCurrentRelativeOffset(out Vector3 pOffset, out Vector3 rOffset, out Vector3 sOffset);
-                            
-                            if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Position)
-                            {
-                                vfxClip.positionOffset = pOffset;
-                            }
-                            else if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Rotation)
-                            {
-                                vfxClip.rotationOffset = rOffset;
-                            }
-                            else if (vfxClip.activeHandleType == VFXClip.VFXHandleType.Scale)
-                            {
-                                vfxClip.scale = sOffset;
-                            }
-
                             EditorUtility.SetDirty(timeline);
-                            activeProcess.ForceUpdateTransform();
-                            window.Repaint();
                         }
+
+                        // 若当前恰好处于播放中且存在活动特效实例，同步其实例位置
+                        if (window.PreviewRunner != null)
+                        {
+                            foreach (var p in window.PreviewRunner.ActiveProcesses)
+                            {
+                                if (p.clip == vfxClip && p.isActive && p.process is Editor.EditorVFXProcess process)
+                                {
+                                    process.ForceUpdateTransform();
+                                    break;
+                                }
+                            }
+                        }
+                        window.Repaint();
                     }
                 }
             }
         }
-        
+
         protected override bool ShouldShow(System.Reflection.FieldInfo field, object obj)
         {
             if (!base.ShouldShow(field, obj)) return false;
-            
+
             // 简单的硬编砀ShowIf 逻辑
             if (field.Name == "blendInDuration" || field.Name == "blendOutDuration")
             {
@@ -223,7 +244,7 @@ namespace ATEditor.Editor
                     return false;
                 }
             }
-            
+
             return true;
         }
     }

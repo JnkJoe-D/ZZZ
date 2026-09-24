@@ -13,7 +13,7 @@ namespace ATEditor
     [ClipDefinition(typeof(MotionWindowTrack), "视觉偏移")]
     public class VisualOffsetClip : ClipBase
     {
-        [SkillProperty("视觉偏移轴")]
+        [ActionProperty("视觉偏移轴")]
         public MotionWindowVisualOffsetMode visualOffsetMode = MotionWindowVisualOffsetMode.XZ;
 
         public VisualOffsetClip()

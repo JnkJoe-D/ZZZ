@@ -26,5 +26,12 @@
       }
     ],
     "baseResilience": 1
+  },
+  {
+    "characterId": 1004,
+    "initial_buffs": [],
+    "immune_tags": [],
+    "custom_attributes": [],
+    "baseResilience": 1
   }
 ]

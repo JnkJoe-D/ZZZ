@@ -96,7 +96,7 @@ namespace ATEditor
             }
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             if (_handler == null) return;
 

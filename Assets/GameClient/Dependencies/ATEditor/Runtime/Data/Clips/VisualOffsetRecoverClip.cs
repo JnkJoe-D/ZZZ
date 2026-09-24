@@ -7,7 +7,7 @@ namespace ATEditor
     [ClipDefinition(typeof(MotionWindowTrack), "视觉偏移矫正")]
     public class VisualOffsetRecoverClip : ClipBase
     {
-        [SkillProperty("强制回正速度")]
+        [ActionProperty("强制回正速度")]
         [Tooltip("当动画位移不足以回正时，提供的最小向心速度。")]
         public float recoverySpeed = 2f;
 

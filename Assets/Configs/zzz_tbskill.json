@@ -672,7 +672,7 @@
   },
   {
     "id": 140160,
-    "name": "攻击_普通攻击_3_向前_近",
+    "name": "攻击_普通攻击_3_近",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -683,29 +683,7 @@
   },
   {
     "id": 140170,
-    "name": "攻击_普通攻击_3_向前_远",
-    "desc": "",
-    "condition": [],
-    "cost": [],
-    "resilience": {
-      "interrupt_level": 5,
-      "resilience_bonus": 0
-    }
-  },
-  {
-    "id": 140180,
-    "name": "攻击_普通攻击_3_后撤_近",
-    "desc": "",
-    "condition": [],
-    "cost": [],
-    "resilience": {
-      "interrupt_level": 5,
-      "resilience_bonus": 0
-    }
-  },
-  {
-    "id": 140190,
-    "name": "攻击_普通攻击_3_后撤_远",
+    "name": "攻击_普通攻击_3_远",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -762,7 +740,30 @@
   },
   {
     "id": 140220,
-    "name": "攻击_普通攻击_3_急冻",
+    "name": "攻击_普通攻击_3_急冻_近",
+    "desc": "",
+    "condition": [
+      {
+        "attr_id": 2000,
+        "op": 0,
+        "value": 1
+      }
+    ],
+    "cost": [
+      {
+        "attr_id": 2000,
+        "cost_type": 0,
+        "amount": 1
+      }
+    ],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 140221,
+    "name": "攻击_普通攻击_3_急冻_远",
     "desc": "",
     "condition": [
       {
@@ -1028,6 +1029,415 @@
     "resilience": {
       "interrupt_level": 5,
       "resilience_bonus": 99
+    }
+  },
+  {
+    "id": 141000,
+    "name": "Idle",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141010,
+    "name": "Walk_Start",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141020,
+    "name": "Walk_Start2",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141030,
+    "name": "Walk_Loop",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141040,
+    "name": "Walk_Start_End",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141050,
+    "name": "Walk_End",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141060,
+    "name": "Run_Loop",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141070,
+    "name": "Run_End",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141080,
+    "name": "Evade_Front",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141081,
+    "name": "Evade_Front_Left",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141082,
+    "name": "Evade_Front_LeftFoot",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141083,
+    "name": "Evade_Front_Right",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141084,
+    "name": "Evade_Front_RightFoot",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141090,
+    "name": "Evade_Back",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141091,
+    "name": "Evade_Back_Left",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141092,
+    "name": "Evade_Back_LeftFoot",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141093,
+    "name": "Evade_Back_Right",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141094,
+    "name": "Evade_Back_RightFoot",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141095,
+    "name": "Evade_Left",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141096,
+    "name": "Evade_Right",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141100,
+    "name": "Attack_Normal_01",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141110,
+    "name": "Attack_Normal_02",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141120,
+    "name": "Attack_Normal_04",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141130,
+    "name": "Attack_Normal_05",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141131,
+    "name": "Attack_Normal_05_02",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141140,
+    "name": "Attack_Normal_06",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141150,
+    "name": "Attack_Normal_07",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141160,
+    "name": "Attack_Branch_01",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141170,
+    "name": "Attack_Branch_02",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141180,
+    "name": "Attack_Special",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141190,
+    "name": "Attack_ExSpecial",
+    "desc": "",
+    "condition": [
+      {
+        "attr_id": 110,
+        "op": 0,
+        "value": 40
+      }
+    ],
+    "cost": [
+      {
+        "attr_id": 110,
+        "cost_type": 0,
+        "amount": 40
+      }
+    ],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141200,
+    "name": "Attack_ExSpecial_02",
+    "desc": "",
+    "condition": [
+      {
+        "attr_id": 110,
+        "op": 0,
+        "value": 40
+      }
+    ],
+    "cost": [
+      {
+        "attr_id": 110,
+        "cost_type": 0,
+        "amount": 40
+      }
+    ],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141210,
+    "name": "Attack_Rush",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141220,
+    "name": "SwitchIn_Normal",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 141230,
+    "name": "SwitchOut_Normal",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
     }
   },
   {

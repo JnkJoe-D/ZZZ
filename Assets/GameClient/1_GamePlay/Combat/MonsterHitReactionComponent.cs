@@ -33,19 +33,19 @@ namespace Game.GamePlay
             }
         }
 
-        protected override void OnInterrupted(HitContext ctx)
+        protected override void OnInterrupted(HitPipelineContext ctx)
         {
             // 若被打断裁决没通过或无受击表现类型，直接忽略，不阻断自控力也不产生硬直
-            if (ctx.reactionType == cfg.ZZZ.HitReactionType.None) return;
+            if (ctx.SelectedReactionType == cfg.ZZZ.HitReactionType.None) return;
 
             if (_entity is MonsterEntity monster)
             {
-                var hitAction = ctx.resolvedHitAction ?? monster.Config?.hitReactionConfig?.GetHitAction(ctx.reactionType);
+                var hitAction = ctx.ResolvedHitAction;
 
                 // 仅当动作配置有效时才向动作控制器提交指令并标记动作播放中；若动作未配置，仅依赖硬直时间倒计时
                 if (hitAction != null && monster.ActionController != null)
                 {
-                    GLog.Info(LogTags.Combat, $"怪物播放受击动作: {monster.name} → {hitAction.name} (类型: {ctx.reactionType})");
+                    GLog.Info(LogTags.Combat, $"怪物播放受击动作: {monster.name} → {hitAction.name} (类型: {ctx.SelectedReactionType})");
                     var hitCommand = CharacterCommandFactory.CreateDirectAssetCommand(hitAction);
                     monster.ActionController.OnInput(hitCommand);
                     _isActionPlaying = true;
@@ -55,10 +55,10 @@ namespace Game.GamePlay
                     _isActionPlaying = false;
                 }
 
-                float targetStunDuration = ctx.hitStunDuration;
+                float targetStunDuration = ctx.HitStunDuration;
                 if (targetStunDuration <= 0f && monster.Config?.hitReactionConfig != null)
                 {
-                    targetStunDuration = monster.Config.hitReactionConfig.GetHitStunDuration(ctx.reactionType);
+                    targetStunDuration = monster.Config.hitReactionConfig.GetHitStunDuration(ctx.SelectedReactionType);
                 }
 
                 _remainingStunTimer = targetStunDuration;
@@ -88,7 +88,7 @@ namespace Game.GamePlay
                     _hitData.Set(nameof(_hitData.HitTriggerTimestamp), Time.frameCount);
                     _hitData.Set(nameof(_hitData.ResolvedHitAction), hitAction);
                     _hitData.Set(nameof(_hitData.CurrentHitStunDuration), targetStunDuration);
-                    _hitData.Set(nameof(_hitData.CurrentReactionType), ctx.reactionType);
+                    _hitData.Set(nameof(_hitData.CurrentReactionType), ctx.SelectedReactionType);
                     OnHitTimestampChanged?.Invoke();
                 }
 

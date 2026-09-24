@@ -40,37 +40,41 @@ namespace ATEditor
             // 调用接口播放控制 + 设置速度
             if (animHandler != null)
             {
-                float startTime = context.CurrentTime - clip.StartTime;
-                animHandler.PlayAnimation(clip.animationClip, (int)clip.layer, actualBlendIn, clip.playbackSpeed * context.GlobalPlaySpeed, startTime);
+                // timelineOffset：时间轴头进入片段后已推进的相对时间（0 ~ clip.Duration）
+                float timelineOffset = context.CurrentTime - clip.StartTime;
+                // animOffset：动画内部起始偏移（秒），由片段配置决定
+                float animOffset = clip.GetResolvedAnimStartOffsetSeconds();
+                animHandler.PlayAnimation(clip.animationClip, (int)clip.layer, actualBlendIn, clip.playbackSpeed * context.PresentationPlaySpeed, animOffset + timelineOffset);
             }
             //这里的update频率比monoupdate低，所以在onenter先同步一次播放速度，确保动画按预期速度开始播放
-            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.GlobalPlaySpeed);
+            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.PresentationPlaySpeed);
 
             if (context != null)
             {
-                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
-                context.OnGlobalSpeedChanged += HandleGlobalSpeedChanged;
+                context.OnPresentationSpeedChanged -= HandlePresentationSpeedChanged;
+                context.OnPresentationSpeedChanged += HandlePresentationSpeedChanged;
             }
         }
 
-        private void HandleGlobalSpeedChanged(float newGlobalSpeed)
+        private void HandlePresentationSpeedChanged(float newSpeed)
         {
-            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * newGlobalSpeed);
+            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * newSpeed);
         }
 
         public override void OnSeek(float targetTime)
         {
             if (animHandler != null)
             {
-                float startTime = targetTime - clip.StartTime;
-                animHandler.SetTime((int)clip.layer, startTime);
+                float timelineOffset = targetTime - clip.StartTime;
+                float animOffset = clip.GetResolvedAnimStartOffsetSeconds();
+                animHandler.SetTime((int)clip.layer, animOffset + timelineOffset);
             }
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
             // 仅控制播放状态和速度
-            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.GlobalPlaySpeed); // 叠加全局播放速度
+            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.PresentationPlaySpeed); // 叠加表现层播放速度
         }
         public override void OnPause()
         {
@@ -78,13 +82,13 @@ namespace ATEditor
         }
         public override void OnResume()
         {
-            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.GlobalPlaySpeed);
+            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.PresentationPlaySpeed);
         }
         public override void OnExit()
         {
             if (context != null)
             {
-                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+                context.OnPresentationSpeedChanged -= HandlePresentationSpeedChanged;
             }
 
             if (clip.overrideMask != null)
@@ -92,11 +96,11 @@ namespace ATEditor
                 context.PopLayerMask((int)clip.layer, clip.overrideMask);
             }
         }
-        public override void OnDisable()
+        public override void OnStop()
         {
             if (context != null)
             {
-                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+                context.OnPresentationSpeedChanged -= HandlePresentationSpeedChanged;
             }
 
             if (clip.overrideMask != null)
@@ -109,7 +113,7 @@ namespace ATEditor
             base.Reset();
             if (context != null)
             {
-                context.OnGlobalSpeedChanged -= HandleGlobalSpeedChanged;
+                context.OnPresentationSpeedChanged -= HandlePresentationSpeedChanged;
             }
             animHandler = null;
         }

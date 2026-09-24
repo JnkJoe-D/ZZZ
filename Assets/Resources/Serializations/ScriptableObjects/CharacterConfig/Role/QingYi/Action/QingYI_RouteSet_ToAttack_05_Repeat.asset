@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: QingYI_RouteSet_ToAttack_05_Repeat
+  m_EditorClassIdentifier: 
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: ad925bf5dd14b244fba49285cd694f21, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 40
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379258120226209844
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 3d36c0b053663af4e9a797eacca762ec, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 39
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379258120226209843
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 6379258120226209843
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916687
+        RequiredWindowTag: Execute2
+        Modifiers: []
+    - rid: 6379258120226209844
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916686
+        RequiredWindowTag: Execute2
+        Modifiers: []
+    - rid: 6379258143149916686
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute2
+    - rid: 6379258143149916687
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute2

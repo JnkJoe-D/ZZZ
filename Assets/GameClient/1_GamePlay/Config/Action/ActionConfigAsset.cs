@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Game.Framework;
 using UnityEngine;
-
+using ATEditor;
 namespace Game.GamePlay
 {
     /// <summary>
@@ -82,12 +82,11 @@ namespace Game.GamePlay
         [Header("通用路由集 (Route Sets)")]
         [Tooltip("通常用于配置闪避、移动等通用动作，打包成集合以便复用。")]
         public List<ActionRouteSetAsset> RouteSets = new();
-
         /// <summary>
         /// 收集此动作上所有有效的统一路由（展开集合资产）。
         /// 基础行为：收集自身配置的 Routes 和 RouteSets。派生类可重写加入继承逻辑。
         /// </summary>
-        public virtual void CollectEffectiveRoutes(List<ActionRoute> results, RoleEntity actor = null)
+        public virtual void CollectEffectiveRoutes(List<ActionRoute> results, CharacterEntity actor = null)
         {
             if (results == null) return;
             results.Clear();

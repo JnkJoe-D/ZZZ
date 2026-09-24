@@ -4,7 +4,7 @@ namespace Game.GamePlay
 {
     internal static class CommandRouteEvaluator
     {
-        public static bool MatchesConditions(List<ITransitionCondition> extraConditions, RoleEntity actor)
+        public static bool MatchesConditions(List<ITransitionCondition> extraConditions, CharacterEntity actor)
         {
             if (extraConditions == null || extraConditions.Count == 0)
             {

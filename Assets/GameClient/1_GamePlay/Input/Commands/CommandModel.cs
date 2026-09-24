@@ -31,6 +31,22 @@ namespace Game.GamePlay
         Dropped
     }
 
+    public enum CommandRouteSource
+    {
+        None = 0,
+        ActionRoute = 10,
+        ActionComplete = 20
+    }
+
+    public class CharacterCommand
+    {
+        public long Id;
+        public ICommandPayload Payload;
+        public float Timestamp;
+        public long BufferOrder;
+        public bool IsConsumed;
+    }
+
     public interface ICommandPayload { }
 
     public class InputPayload : ICommandPayload
@@ -50,10 +66,5 @@ namespace Game.GamePlay
     {
         public RouteEventType EventType;
     }
-
-    public enum CommandTriggerMode
-    {
-        OnWindowExit = 0,
-        Instant = 1
-    }
 }
+

@@ -7,13 +7,13 @@ namespace ATEditor
     /// 片段基类 (Non-Generic Wrapper for serialization)
     /// </summary>
     [Serializable]
-    public abstract class ClipBase : ISkillClipData
+    public abstract class ClipBase : IClipData
     {
         [HideInInspector]
         public string clipId = Guid.NewGuid().ToString();
-        [SkillProperty("片段名称")]
+        [ActionProperty("片段名称")]
         public string clipName = "Clip";
-        [SkillProperty("启用")]
+        [ActionProperty("启用")]
         public bool isEnabled = true;
 
         [SerializeField] protected float startTime;
@@ -21,7 +21,7 @@ namespace ATEditor
         [SerializeField] protected float blendInDuration;
         [SerializeField] protected float blendOutDuration;
 
-        [SkillProperty("开始时间")]
+        [ActionProperty("开始时间")]
         public virtual float StartTime
         {
             get { return startTime; }
@@ -33,7 +33,7 @@ namespace ATEditor
                 }
             }
         }
-        [SkillProperty("持续时间")]
+        [ActionProperty("持续时间")]
         public virtual float Duration
         {
             get{return duration;}
@@ -45,7 +45,7 @@ namespace ATEditor
                 }
             }
         }
-        [SkillProperty("渐入时间")]
+        [ActionProperty("渐入时间")]
         public virtual float BlendInDuration
         {
             get{return blendInDuration;}
@@ -57,7 +57,7 @@ namespace ATEditor
                 }
             }
         }
-        [SkillProperty("渐出时间")]
+        [ActionProperty("渐出时间")]
         public virtual float BlendOutDuration
         {
             get { return blendOutDuration; }

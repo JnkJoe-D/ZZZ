@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
+  m_Name: Ellen_Action_Attack_Normal_01_01_Enhanced
+  m_EditorClassIdentifier: 
+  ID: 140200
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 1cdb988764ed48e48969372e0a0c874b, type: 3}
+  actionTimelineSO: {fileID: 11400000, guid: d4e5fdacdcd461f488a459594ed7ff26, type: 2}
+  CompleteMode: 20
+  CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
+  CompleteTransitCrossfade: -1
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: d7facff2f5fb88e40a89c9bf1f3451f6, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 1
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500688
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: d7facff2f5fb88e40a89c9bf1f3451f6, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 1
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500689
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 4c1affe96f0c8f64da3215e776ef416d, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500690
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 4c1affe96f0c8f64da3215e776ef416d, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500691
+    ExtraConditions: []
+  RouteSets:
+  - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
+  - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
+  - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
+  - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
+  EnterState: 40
+  InheritMode: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868330708500688
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916724
+        RequiredWindowTag: Buffer1
+        Modifiers: []
+    - rid: 4681868330708500689
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916725
+        RequiredWindowTag: Execute1
+        Modifiers: []
+    - rid: 4681868330708500690
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916726
+        RequiredWindowTag: Execute1
+        Modifiers: []
+    - rid: 4681868330708500691
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916727
+        RequiredWindowTag: Execute1
+        Modifiers: []
+    - rid: 6379258143149916724
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer1
+    - rid: 6379258143149916725
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258143149916726
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258143149916727
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: TyrfingInfested_Z_RoutesSet_Attack
+  m_EditorClassIdentifier: 
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 0c41747f46b9f8643ab55ac8d733b3a1, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 4681868330708500992
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868330708500992
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredWindow:
+          rid: 6379258143149916766
+        RequiredWindowTag: Execute1
+    - rid: 6379258143149916766
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1

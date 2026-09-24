@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc907aef54d1b934298be1107be47939, type: 3}
+  m_Name: TyrfingInfestedHit
+  m_EditorClassIdentifier: 
+  reactionEntries:
+  - reactionType: 20
+    turnaroundPolicy: 1
+    overrideHitStunDuration: -1
+    frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 0
+  - reactionType: 30
+    turnaroundPolicy: 1
+    overrideHitStunDuration: -1
+    frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 0
+  - reactionType: 50
+    turnaroundPolicy: 0
+    overrideHitStunDuration: -1
+    frontAction: {fileID: 0}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 30
+  - reactionType: 10
+    turnaroundPolicy: 2
+    overrideHitStunDuration: -1
+    frontAction: {fileID: 11400000, guid: a40427f8c12377a4b81d6b1fa5126e0d, type: 2}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 0
+  - reactionType: 40
+    turnaroundPolicy: 2
+    overrideHitStunDuration: -1
+    frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 0
+  - reactionType: 60
+    turnaroundPolicy: 0
+    overrideHitStunDuration: -1
+    frontAction: {fileID: 0}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 30
+  - reactionType: 70
+    turnaroundPolicy: 2
+    overrideHitStunDuration: -1
+    frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+    backAction: {fileID: 0}
+    leftAction: {fileID: 0}
+    rightAction: {fileID: 0}
+    frontUpAction: {fileID: 0}
+    frontDownAction: {fileID: 0}
+    backUpAction: {fileID: 0}
+    backDownAction: {fileID: 0}
+    fallbackType: 20
+  knockbackForce: 0
+  launchForce: 0
+  superArmorThreshold: 0
+  defaultHitStunDuration: 0.5
+  hitAnimLight: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimHeavy: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimKnowAway: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimShake: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimStay: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimKnockDown: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
+  hitAnimParry: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}

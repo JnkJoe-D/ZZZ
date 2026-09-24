@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: QingYI_RouteSet_ToAttack_Entry_BackSwing
+  m_EditorClassIdentifier: 
+  TargetScope: 2
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 70a11f8c51b053e40bc2487856ba2212, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 30
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500803
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 86d95fbe9145ab74382acb837393e8f4, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 20
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500802
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 67d6812b48ee88749bfc25bf7da59b41, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500804
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868330708500802
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 30
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917038
+        RequiredWindowTag: BackSwing
+        Modifiers: []
+    - rid: 4681868330708500803
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 30
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917037
+        RequiredWindowTag: BackSwing
+        Modifiers: []
+    - rid: 4681868330708500804
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917039
+        RequiredWindowTag: BackSwing
+        Modifiers: []
+    - rid: 6379258143149917037
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
+    - rid: 6379258143149917038
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
+    - rid: 6379258143149917039
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1

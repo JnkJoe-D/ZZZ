@@ -8,7 +8,7 @@ namespace Game.GamePlay
     public class ProtectionPipe : IHitPipe
     {
         public string PipeName => "ProtectionPipe";
-        public int Priority => 100;
+        public int Priority => 200;
 
         private readonly System.Collections.Generic.List<(IHitDefenseModifier Modifier, BuffInstance Buff)> _defenseBuffer = new(8);
 
@@ -35,28 +35,6 @@ namespace Game.GamePlay
                     }
                 }
             }
-
-            // 兼容性保底：旧标签免疫系统 (若外部仅调用了 AddImmuneTag("Invincible"))
-            if (ctx.Victim.StatusModule != null && ctx.Victim.StatusModule.IsTagImmune("Invincible"))
-            {
-                var parryData = ctx.Victim.DataModule?.Get<ParryRuntimeData>();
-                if (parryData == null || !parryData.IsParrying)
-                {
-                    ctx.Abort("Victim is Invincible (Tag)", HitResultFlags.Invincible);
-                    return;
-                }
-            }
-
-            // 2. 受击保护内置 CD（已根据测试需求停用，避免隐藏时间间隔阻断单段检测多段受击）
-            // float currentTime = TimeManager.Instance != null ? TimeManager.Instance.GameplayTime : Time.time;
-            // if (ctx.Victim.HitReactionComponent != null)
-            // {
-            //     if (!ctx.Victim.HitReactionComponent.ValidateAndRecordHit(currentTime))
-            //     {
-            //         ctx.Abort("Hit in Protection Interval", HitResultFlags.Protected);
-            //         return;
-            //     }
-            // }
         }
     }
 }

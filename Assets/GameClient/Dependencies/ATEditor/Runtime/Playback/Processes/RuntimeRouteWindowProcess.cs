@@ -12,27 +12,34 @@ namespace ATEditor
 
         public override void OnEnter()
         {
-            if (comboHandler != null && clip != null)
+            if (comboHandler != null && clip?.routewindow != null)
             {
-                comboHandler.OnComboWindowEnter(clip.comboTag, this);
+                comboHandler.OnWindowEnter(clip.routewindow);
             }
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            // 窗口处于激活期间无需重复派发通知。
+            if (comboHandler != null && clip?.routewindow != null)
+            {
+                comboHandler.OnWindowProcess(clip.routewindow);
+            }
         }
 
         public override void OnExit()
         {
-            if (comboHandler != null && clip != null)
+            if (comboHandler != null && clip?.routewindow != null)
             {
-                comboHandler.OnComboWindowExit(clip.comboTag, this);
+                comboHandler.OnWindowExit(clip.routewindow);
             }
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
+            if (comboHandler != null && clip?.routewindow != null)
+            {
+                comboHandler.OnWindowDisable(clip.routewindow);
+            }
         }
 
         public override void Reset()

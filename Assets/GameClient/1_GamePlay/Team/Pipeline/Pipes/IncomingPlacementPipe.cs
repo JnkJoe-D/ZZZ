@@ -70,7 +70,7 @@ namespace Game.GamePlay
             inEntity.EnsureRuntimeInitialized();
             inEntity.Presentation?.SetColliderActive(true);
             ctx.Manager.SynchronizePartyMemberTransform(inEntity, spawnPos, spawnRot);
-            inEntity.CommandBuffer?.Clear();
+            inEntity.RouteArbitrator?.Clear();
             inEntity.Presentation?.SetPresentationVisible(true);
 
             // 4. 注入战斗上下文目标与警示标记（供动作时间轴中的 MovementClip / CameraControlClip 读取）

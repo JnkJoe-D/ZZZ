@@ -1,0 +1,133 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: QingYI_RouteSet_ToWalk_Start2
+  m_EditorClassIdentifier: 
+  TargetScope: 2
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 9a2e5ac6e7a7e164baf5a06f5485ae5c, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379258097012572210
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 9a2e5ac6e7a7e164baf5a06f5485ae5c, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379258097012572213
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 9a2e5ac6e7a7e164baf5a06f5485ae5c, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379258097012572214
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 9a2e5ac6e7a7e164baf5a06f5485ae5c, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379258143149917060
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 6379258097012572210
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917057
+        RequiredWindowTag: BackSwing
+        Modifiers:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6379258097012572211
+          Inverse: 0
+    - rid: 6379258097012572211
+      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Inverse: 0
+    - rid: 6379258097012572213
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 10
+        RequiredWindow:
+          rid: 6379258143149917058
+        RequiredWindowTag: BackSwing
+        Modifiers:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6379258097012572215
+          Inverse: 0
+    - rid: 6379258097012572214
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 30
+        RequiredWindow:
+          rid: 6379258143149917059
+        RequiredWindowTag: BackSwing
+        Modifiers:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6379258097012572216
+          Inverse: 0
+    - rid: 6379258097012572215
+      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Inverse: 0
+    - rid: 6379258097012572216
+      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Inverse: 0
+    - rid: 6379258143149917057
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
+    - rid: 6379258143149917058
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
+    - rid: 6379258143149917059
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
+    - rid: 6379258143149917060
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 10
+        RequiredWindow:
+          rid: 6379258143149917061
+        RequiredWindowTag: 
+        Modifiers: []
+    - rid: 6379258143149917061
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1

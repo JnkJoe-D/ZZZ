@@ -26,7 +26,7 @@ namespace ATEditor{
                 var args = new AudioArgs
                 {
                     volume = clip.volume,
-                    pitch = !clip.isAffectSpeed? clip.pitch:clip.pitch * context.GlobalPlaySpeed, // 叠加全局变速
+                    pitch = !clip.isAffectSpeed? clip.pitch:clip.pitch * context.PresentationPlaySpeed, // 叠加表现层变速
                     loop = clip.loop,
                     spatialBlend = clip.spatialBlend,
                     startTime = 0f, // 总是从头播放，除非实现了 Resume 逻辑
@@ -44,7 +44,7 @@ namespace ATEditor{
             // 目前仅更新各种变速后的 Pitch
             if (playingSoundId != -1 && audioHandler != null && clip.isAffectSpeed)
             {
-                float targetPitch = clip.pitch * context.GlobalPlaySpeed;
+                float targetPitch = clip.pitch * context.PresentationPlaySpeed;
                 audioHandler.UpdateSound(playingSoundId, clip.volume, targetPitch, -1f); // -1 time 表示不强制同步时间
             }
         }
@@ -74,7 +74,7 @@ namespace ATEditor{
             }
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             if (playingSoundId != -1 && audioHandler != null && clip != null && clip.loop)
             {

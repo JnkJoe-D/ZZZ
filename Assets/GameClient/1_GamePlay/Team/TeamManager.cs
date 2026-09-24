@@ -471,7 +471,7 @@ namespace Game.GamePlay
             entity.EnsureRuntimeInitialized();
             entity.Presentation?.SetColliderActive(true);
             SynchronizePartyMemberTransform(entity, spawnPos, spawnRot);
-            entity.CommandBuffer?.Clear();
+            entity.RouteArbitrator?.Clear();
             entity.Presentation?.SetPresentationVisible(true);
             entity.Presentation?.SetCameraActive(true);
             _teamContext?.SetActiveRole(entity);
@@ -519,7 +519,7 @@ namespace Game.GamePlay
             entity.EnsureRuntimeInitialized();
             entity.SetControlActive(false);
             entity.Presentation?.SetCameraActive(false);
-            entity.CommandBuffer?.Clear();
+            entity.RouteArbitrator?.Clear();
             entity.Presentation?.SetPresentationVisible(false);
             entity.Presentation?.SetColliderActive(false);
             SetDebugHudVisible(entity, false);

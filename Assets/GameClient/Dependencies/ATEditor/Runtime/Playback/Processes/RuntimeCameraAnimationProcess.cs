@@ -42,7 +42,7 @@ namespace ATEditor
         {
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             if (_cameraInstance != null && _handler != null)
             {

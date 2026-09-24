@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
-  m_Name: 
+  m_Name: TyrfingInfested_Walk_F_L
   m_EditorClassIdentifier: 
   duration: 3.5500002
   isLoop: 1
@@ -127,6 +127,9 @@ MonoBehaviour:
           guid: 
           assetName: 
           assetPath: 
+        animStartOffsetMode: 0
+        animStartOffsetSeconds: 0
+        animStartOffsetNormalized: 0
     - rid: 4681868330708500939
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -166,7 +169,8 @@ MonoBehaviour:
         duration: 3.5500002
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        routewindow:
+          rid: 6379258164158660717
     - rid: 4681868330708500942
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -190,4 +194,13 @@ MonoBehaviour:
         duration: 3.5500002
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Hit
+        routewindow:
+          rid: 6379258164158660718
+    - rid: 6379258164158660717
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258164158660718
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Hit

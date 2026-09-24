@@ -25,7 +25,7 @@ namespace ATEditor
             // 逻辑已在 MovementComponent 的 OnAnimatorMove 中实现，这里无需额外处理。
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             _motionWindowHandler?.DisableVisualOffsetRecover();
         }

@@ -201,7 +201,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34162
+                        "instanceID": 34414
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -217,7 +217,10 @@
                         "guid": "",
                         "assetName": "",
                         "assetPath": ""
-                    }
+                    },
+                    "animStartOffsetMode": 0,
+                    "animStartOffsetSeconds": 0.0,
+                    "animStartOffsetNormalized": 0.0
                 }
             },
             {
@@ -235,7 +238,12 @@
                     "duration": 3.5500001907348635,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "localDeltaFilterMode": 2
+                    "localDeltaFilterMode": 2,
+                    "collisionMode": 0,
+                    "obstacleMask": {
+                        "serializedVersion": "2",
+                        "m_Bits": 4294967295
+                    }
                 }
             },
             {
@@ -278,7 +286,9 @@
                     "duration": 3.5500001907348635,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "comboTag": "Execute1"
+                    "routewindow": {
+                        "rid": 1010
+                    }
                 }
             },
             {
@@ -296,7 +306,31 @@
                     "duration": 3.5500001907348635,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "comboTag": "Hit"
+                    "routewindow": {
+                        "rid": 1011
+                    }
+                }
+            },
+            {
+                "rid": 1010,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "Execute1"
+                }
+            },
+            {
+                "rid": 1011,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "Hit"
                 }
             }
         ]

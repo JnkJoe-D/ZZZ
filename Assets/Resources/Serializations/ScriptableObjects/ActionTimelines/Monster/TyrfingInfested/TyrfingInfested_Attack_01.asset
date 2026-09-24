@@ -124,6 +124,9 @@ MonoBehaviour:
           guid: 
           assetName: 
           assetPath: 
+        animStartOffsetMode: 0
+        animStartOffsetSeconds: 0
+        animStartOffsetNormalized: 0
     - rid: 4681868154359513092
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -189,7 +192,8 @@ MonoBehaviour:
         duration: 3.8833334
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        routewindow:
+          rid: 6379258164158660700
     - rid: 4681868419696689155
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -200,7 +204,8 @@ MonoBehaviour:
         duration: 3.8833334
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Hit
+        routewindow:
+          rid: 6379258164158660701
     - rid: 6379257712028942354
       type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -247,7 +252,7 @@ MonoBehaviour:
           angle: 120
           innerRadius: 1
         CoverageCenterOffset: {x: 0, y: 1, z: 2}
-        ClashPositionOffset: {x: 0, y: 0, z: 3}
+        ClashPositionOffset: {x: 0, y: 0, z: 2.2488058}
         AllowInPlaceParry: 1
         ShowGizmos: 1
         DetectionRadius: 30
@@ -457,3 +462,11 @@ MonoBehaviour:
         duration: 1.6000001
         blendInDuration: 0
         blendOutDuration: 0
+    - rid: 6379258164158660700
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258164158660701
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Hit

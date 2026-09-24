@@ -46,8 +46,8 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
-      - CollectPath: Assets/Dependencies/Animation
-        CollectorGUID: a493714e50889b1489d117296fde53ce
+      - CollectPath: Assets/Resources/Prefab
+        CollectorGUID: 7d77e75ba0dc1b54fae353ceec749ce3
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
@@ -86,16 +86,8 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
-      - CollectPath: Assets/Resources/Particles/Slash_effects/Prefabs
-        CollectorGUID: 5fd182e1cfa80254fb3a96bd342cf808
-        CollectorType: 0
-        AddressRuleName: AddressByFileName
-        PackRuleName: PackDirectory
-        FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
-      - CollectPath: Assets/Resources/Prefab
-        CollectorGUID: 7d77e75ba0dc1b54fae353ceec749ce3
+      - CollectPath: Assets/RawArtAssets/Animation
+        CollectorGUID: a493714e50889b1489d117296fde53ce
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
@@ -110,7 +102,7 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
-      - CollectPath: Assets/Dependencies/UI/Sprite
+      - CollectPath: Assets/RawArtAssets/UI/Sprite
         CollectorGUID: 74dee209d74d1ab43bd6f7ec90ea854b
         CollectorType: 0
         AddressRuleName: AddressByFileName

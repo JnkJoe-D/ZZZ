@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: "\u5B89\u6BD4_\u6307\u4EE4\u96C6_2_0_\u540E\u6447\u79FB\u52A8"
+  m_EditorClassIdentifier: 
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: a3bf143cf1b382c46ad31fce7b5e3a4e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500699
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: a3bf143cf1b382c46ad31fce7b5e3a4e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500700
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: a3bf143cf1b382c46ad31fce7b5e3a4e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500701
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: a3bf143cf1b382c46ad31fce7b5e3a4e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500702
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868330708500699
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 10
+        RequiredWindow:
+          rid: 6379258143149916616
+        RequiredWindowTag: BackSwing
+        Modifiers: []
+    - rid: 4681868330708500700
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 30
+        RequiredWindow:
+          rid: 6379258143149916617
+        RequiredWindowTag: BackSwing
+        Modifiers: []
+    - rid: 4681868330708500701
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916618
+        RequiredWindowTag: BackSwing
+        Modifiers: []
+    - rid: 4681868330708500702
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredWindow:
+          rid: 6379258143149916619
+        RequiredWindowTag: BackSwing
+    - rid: 6379258143149916616
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing
+    - rid: 6379258143149916617
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing
+    - rid: 6379258143149916618
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing
+    - rid: 6379258143149916619
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing

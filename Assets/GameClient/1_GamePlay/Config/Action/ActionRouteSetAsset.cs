@@ -10,6 +10,10 @@ namespace Game.GamePlay
     [CreateAssetMenu(fileName = "ActionRouteSetAsset", menuName = "Config/Action/Action Route Set")]
     public class ActionRouteSetAsset : GameConfigAsset
     {
+        [Header("适用实体领域")]
+        [Tooltip("指定本通用路由集的适用实体领域。用于在 Inspector 中智能过滤条件和触发器。")]
+        public ConditionScope TargetScope = ConditionScope.Role;
+
         [Header("Routes")]
         public List<ActionRoute> Routes = new();
 

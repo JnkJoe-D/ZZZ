@@ -23,7 +23,7 @@ namespace ATEditor.Editor
 
                 audioSource.clip = _playingClip;
                 audioSource.volume = clip.volume;
-                audioSource.pitch = clip.pitch * context.GlobalPlaySpeed; // 初始 Pitch
+                audioSource.pitch = clip.pitch * context.PresentationPlaySpeed; // 初始 Pitch
                 audioSource.loop = clip.loop;
                 audioSource.spatialBlend = clip.spatialBlend; // 支持 2D/3D 预览
                 
@@ -46,7 +46,7 @@ namespace ATEditor.Editor
             if (audioSource == null || _playingClip == null) return;
 
             // 1. 同步 Pitch (支持变速预览)
-            float targetPitch = clip.pitch * context.GlobalPlaySpeed;
+            float targetPitch = clip.pitch * context.PresentationPlaySpeed;
             if (Mathf.Abs(audioSource.pitch - targetPitch) > 0.01f)
             {
                 audioSource.pitch = targetPitch;
@@ -86,9 +86,9 @@ namespace ATEditor.Editor
             
             // 如果时间偏差过大（说明发生了 Seek/Scrub），强制同步
             // 注意：正常播放时 AudioSource 时间与 Editor 时间会有微小漂移，阈值不能太小
-            // 另外，当 GlobalPlaySpeed 为 0 (暂停) 时，AudioSource 应该暂停
+            // 另外，当 PresentationPlaySpeed 为 0 (暂停) 时，AudioSource 应该暂停
             
-            if (context.GlobalPlaySpeed == 0f)
+            if (context.PresentationPlaySpeed == 0f)
             {
                 if (audioSource.isPlaying) audioSource.Pause();
                 audioSource.time = clipLocalTime;
@@ -113,7 +113,7 @@ namespace ATEditor.Editor
                 audioSource = null;
             }
         }
-        public override void OnDisable()
+        public override void OnStop()
         {
             // 归还 AudioSource 到池
             if (audioSource != null)

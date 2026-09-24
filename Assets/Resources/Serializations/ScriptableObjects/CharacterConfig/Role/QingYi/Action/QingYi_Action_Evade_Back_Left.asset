@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
+  m_Name: QingYi_Action_Evade_Back_Left
+  m_EditorClassIdentifier: 
+  ID: 141091
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: a1af250a6aa3e6d44a1faef225efcb24, type: 3}
+  actionTimelineSO: {fileID: 11400000, guid: 91b6d241bc73bb04a9fbc9afe248eb77, type: 2}
+  CompleteMode: 0
+  CompleteAction: {fileID: 0}
+  CompleteTransitCrossfade: -1
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: 6f2b2deb236517647897cdda59ec8001, type: 2}
+  - {fileID: 11400000, guid: 6df26ea99b1e2ca49bf26e877d51e953, type: 2}
+  - {fileID: 11400000, guid: 49f91d2a59c73d84ba596930fac286ff, type: 2}
+  - {fileID: 11400000, guid: bb67c86673c0e944fb34dbb2fd7108e8, type: 2}
+  - {fileID: 11400000, guid: 27d0ab3ca1be3c54cbce4eb5d143e680, type: 2}
+  - {fileID: 11400000, guid: 6b54149973a433c4797b504474e39a9c, type: 2}
+  EnterState: 50
+  InheritMode: 0
+  references:
+    version: 2
+    RefIds: []

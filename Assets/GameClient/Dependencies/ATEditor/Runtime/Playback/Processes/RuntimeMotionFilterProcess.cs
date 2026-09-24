@@ -28,7 +28,7 @@ namespace ATEditor
             _motionWindowHandler?.DisableCollisionMode();
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             _motionWindowHandler?.DisableLocalDeltaFilter();
             _motionWindowHandler?.DisableCollisionMode();

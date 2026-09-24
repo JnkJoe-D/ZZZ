@@ -13,12 +13,12 @@ namespace Game.GamePlay
             if (role == null) return null;
 
             var fsm = new FSMSystem<RoleEntity>(role);
-            fsm.AddState(new CharacterGroundState());
-            fsm.AddState(new CharacterSkillState());
-            fsm.AddState(new CharacterEvadeState());
-            fsm.AddState(new CharacterHitStunState());
+            fsm.AddState(new RoleGroundState());
+            fsm.AddState(new RoleSkillState());
+            fsm.AddState(new RoleEvadeState());
+            fsm.AddState(new RoleHitStunState());
             fsm.AddState(new CharacterSwitchState());
-            fsm.AddState(new CharacterParryState());
+            fsm.AddState(new RoleParryState());
 
             return fsm;
         }

@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: Ellen_RouteSet_ToSwitchOut_Normal
+  m_EditorClassIdentifier: 
+  Routes:
+  - ExecuteType: 20
+    ExecuteAction: {fileID: 0}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 10
+    Priority: 20
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500673
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 69c71407d0a627e4e964e64fcce2274f, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 10
+    Priority: 20
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500674
+    ExtraConditions: []
+  - ExecuteType: 20
+    ExecuteAction: {fileID: 11400000, guid: 1b3b3fd0bd5ddbe4383fe1a225823587, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 40
+    Priority: 40
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379257712028942362
+    ExtraConditions:
+    - rid: 6379257712028942361
+  - ExecuteType: 20
+    ExecuteAction: {fileID: 0}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 45
+    Priority: 30
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 6379257712028942362
+    ExtraConditions:
+    - rid: 6379257712028942365
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868330708500673
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 60
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916718
+        RequiredWindowTag: SwitchCapture
+        Modifiers: []
+    - rid: 4681868330708500674
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        EventType: 20
+        RequiredWindow:
+          rid: 6379258143149916719
+        RequiredWindowTag: SwitchExecute
+        Modifiers: []
+    - rid: 6379257712028942361
+      type: {class: CombatWarningCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        WarningType: 0
+        RequireInCoverageArea: 0
+    - rid: 6379257712028942362
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 60
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916720
+        RequiredWindowTag: SwitchCapture
+        Modifiers: []
+    - rid: 6379257712028942365
+      type: {class: CombatWarningCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        WarningType: 1
+        RequireInCoverageArea: 1
+    - rid: 6379258143149916718
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6379258143149916719
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute
+    - rid: 6379258143149916720
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture

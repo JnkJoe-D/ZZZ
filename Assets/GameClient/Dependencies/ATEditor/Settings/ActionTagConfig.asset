@@ -14,16 +14,77 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   availableTargetTags: []
   availableEventTags: []
-  availableComboWindowTags:
-  - Execute1
-  - Execute2
-  - Buffer1
-  - BackSwing
-  - Evade
-  - DashLink
-  - DashStart
-  - SwitchCapture
-  - SwitchExecute
-  - TimelineRewind
-  - TimelineSkip
-  - Hit
+  availableRouteWindows:
+  - rid: 8001
+  - rid: 8002
+  - rid: 8003
+  - rid: 8004
+  - rid: 6379258143149916920
+  - rid: 6379258143149917000
+  - rid: 6379258143149916917
+  - rid: 6379258143149916919
+  - rid: 8009
+  - rid: 8010
+  - rid: 6379258143149917177
+  - rid: 8011
+  - rid: 6379258143149917007
+  - rid: 6379258143149916921
+  references:
+    version: 2
+    RefIds:
+    - rid: 8001
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 8002
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute2
+    - rid: 8003
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer1
+    - rid: 8004
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer2
+    - rid: 8009
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 8010
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute
+    - rid: 8011
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: TimelineRewind
+    - rid: 6379258143149916917
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1
+    - rid: 6379258143149916919
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto2
+    - rid: 6379258143149916920
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
+    - rid: 6379258143149916921
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Hit
+    - rid: 6379258143149917000
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917007
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: TimelineSkip
+    - rid: 6379258143149917177
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchAuto

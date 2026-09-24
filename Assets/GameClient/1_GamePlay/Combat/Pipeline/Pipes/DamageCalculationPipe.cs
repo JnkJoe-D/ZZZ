@@ -86,7 +86,7 @@ namespace Game.GamePlay
                 if (attributes.GetCurrent(AttributeId.HP) <= 0f && !target.LifecycleComponent.IsDead)
                 {
                     ctx.ResultFlags |= HitResultFlags.Killed;
-                    target.LifecycleComponent?.Die(null);
+                    target.LifecycleComponent?.Die(ctx.Attacker);
                 }
             }
         }

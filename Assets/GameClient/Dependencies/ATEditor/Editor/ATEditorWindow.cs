@@ -125,10 +125,7 @@ namespace ATEditor.Editor
             // 初始化轨道ID
             InitializeTrackIds();
 
-            // 自动根据当前工作区加载预览目标 (T-Pose)
-            EnsureWorkspacePreviewTarget();
-
-            // 初始化预览播放器 (如果在上面赋予了新的 previewTarget，这里会被正确注入)
+            // 初始化预览播放器
             InitPreview();
 
             // 注册 SceneView 绘制
@@ -474,20 +471,26 @@ namespace ATEditor.Editor
 
         private void OnPlayModeStateChanged(PlayModeStateChange change)
         {
-            if (change == PlayModeStateChange.ExitingEditMode)
+            if (change == PlayModeStateChange.ExitingEditMode || change == PlayModeStateChange.EnteredPlayMode)
             {
-                // 即将进入运行模式：彻底销毁预览对象，避免污染游戏运行场景
+                // 即将进入/已进入运行模式：彻底销毁预览对象，避免污染游戏运行场景
                 DestroyAllPreviewTargets();
             }
             else if (change == PlayModeStateChange.EnteredEditMode)
             {
-                // 退出运行模式回到编辑模式：自动恢复时间轴与预览模型
+                // 退出运行模式回到编辑模式：先清理任何潜在游离预览实例
+                DestroyAllPreviewTargets();
+
                 if (state == null || state.currentTimeline == null)
                 {
                     ResetToBlankTimeline();
                 }
-                EnsureWorkspacePreviewTarget();
-                InitPreview();
+                else if (!string.IsNullOrEmpty(state.currentFilePath))
+                {
+                    // 仅在已有载入动作资产时才恢复生成预览模型
+                    EnsureWorkspacePreviewTarget();
+                    InitPreview();
+                }
                 Repaint();
             }
         }

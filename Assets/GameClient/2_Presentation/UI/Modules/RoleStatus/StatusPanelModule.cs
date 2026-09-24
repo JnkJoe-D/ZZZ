@@ -23,7 +23,10 @@ namespace Game.UI
             // 订阅核心机制变化事件
             EventCenter.Subscribe<MechanicStatChangedEvent>(OnMechanicStatChanged);
             // 订阅主控角色切换事件
-            EventCenter.Subscribe<ActiveCharacterChangedEvent>(OnActiveCharacterChanged);
+            EventCenter.Subscribe<ActiveRoleChangedEvent>(OnActiveCharacterChanged);
+            // 订阅小队创建与销毁事件
+            EventCenter.Subscribe<PartyCreatedEvent>(OnPartyCreated);
+            EventCenter.Subscribe<PartyDestroyedEvent>(OnPartyDestroyed);
 
             // 界面刚创建时主动拉取一次当前状态并初始化机制UI
             RefreshAllStatus();
@@ -34,7 +37,9 @@ namespace Game.UI
             base.OnRemove();
             EventCenter.Unsubscribe<PlayerStatChangedEvent>(OnPlayerStatChanged);
             EventCenter.Unsubscribe<MechanicStatChangedEvent>(OnMechanicStatChanged);
-            EventCenter.Unsubscribe<ActiveCharacterChangedEvent>(OnActiveCharacterChanged);
+            EventCenter.Unsubscribe<ActiveRoleChangedEvent>(OnActiveCharacterChanged);
+            EventCenter.Unsubscribe<PartyCreatedEvent>(OnPartyCreated);
+            EventCenter.Unsubscribe<PartyDestroyedEvent>(OnPartyDestroyed);
             
             // 清理动态生成的UI
             foreach (var view in _mechanicViews.Values)
@@ -44,7 +49,18 @@ namespace Game.UI
             _mechanicViews.Clear();
         }
 
-        private void OnActiveCharacterChanged(ActiveCharacterChangedEvent evt)
+        private void OnPartyCreated(PartyCreatedEvent evt)
+        {
+            RefreshAllStatus();
+        }
+
+        private void OnPartyDestroyed(PartyDestroyedEvent evt)
+        {
+            Model.VisibleMemberCount = 0;
+            View.UpdateSlotsVisibility(0);
+        }
+
+        private void OnActiveCharacterChanged(ActiveRoleChangedEvent evt)
         {
             // 角色切换时，全局刷新一次映射
             RefreshAllStatus();
@@ -52,9 +68,10 @@ namespace Game.UI
 
         private int GetViewSlotIndex(int memberSlotIndex)
         {
+            if (TeamManager.Instance == null) return 0;
             int activeSlot = TeamManager.Instance.ActiveSlotIndex;
             if (activeSlot < 0) activeSlot = 0;
-            int count = TeamManager.Instance.PartyMembers.Count;
+            int count = TeamManager.Instance.PartyMembers != null ? TeamManager.Instance.PartyMembers.Count : 0;
             if (count <= 0) return 0;
             
             // 0 -> Active, 1 -> Next, 2 -> Next.Next
@@ -66,13 +83,20 @@ namespace Game.UI
         private void RefreshAllStatus()
         {
             var partyMembers = TeamManager.Instance?.PartyMembers;
-            if (partyMembers == null) return;
+            int memberCount = partyMembers != null ? partyMembers.Count : 0;
+
+            Model.VisibleMemberCount = memberCount;
+            // 按实际获取到的角色数量决定是否显示对应槽位（如队伍只有1个角色则只显示1号位，隐藏2、3号位）
+            View.UpdateSlotsVisibility(memberCount);
+
+            if (partyMembers == null || memberCount == 0) return;
 
             // 获取数据，直接分发给 View 进行表现刷新
             foreach (var member in partyMembers)
             {
                 if (member == null) continue;
                 int viewSlotIndex = GetViewSlotIndex(member.SlotIndex);
+                if (viewSlotIndex < 0 || viewSlotIndex >= StatusPanelModel.MaxSlots) continue;
 
                 if (member.Config is RoleConfigAsset roleConfig && roleConfig.UIConfig?.RoleIconGeneral != null)
                 {
@@ -148,7 +172,10 @@ namespace Game.UI
 
             if (targetMember != null && _mechanicViews.TryGetValue(targetMember.SlotIndex, out var mechanicView))
             {
-                mechanicView.UpdateView(evt.Data);
+                if (mechanicView != null)
+                {
+                    mechanicView.UpdateView(evt.Data);
+                }
             }
         }
 
@@ -169,6 +196,7 @@ namespace Game.UI
 
             if (targetMember == null) return;
             int viewSlotIndex = GetViewSlotIndex(targetMember.SlotIndex);
+            if (viewSlotIndex < 0 || viewSlotIndex >= StatusPanelModel.MaxSlots) return;
 
             // StatType.HP 对应 AttributeId.HP
             if (evt.StatType == StatType.HP)

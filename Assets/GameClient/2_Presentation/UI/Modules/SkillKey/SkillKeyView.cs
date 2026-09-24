@@ -26,7 +26,7 @@ namespace Game.UI
         [Header("换人 (KeySwitch)")]
         [SerializeField] private Image _imgSwitchIcon;
         [SerializeField] private TextMeshProUGUI _tmpSwitchKey;
-        [SerializeField] private AssistPointUIControl _switchEnergyWidget;
+        [SerializeField] private SkillSwitchBtnFill _switchEnergyWidget;
 
         [Header("连携大招 (KeyQTE)")]
         [SerializeField] private Image _imgQteIcon;
@@ -59,7 +59,7 @@ namespace Game.UI
 
             if (_imgSwitchIcon == null) _imgSwitchIcon = keysRoot.Find("KeySwitch/Icons/IconKey")?.GetComponent<Image>();
             if (_tmpSwitchKey == null) _tmpSwitchKey = keysRoot.Find("KeySwitch/KeyValue/TmpKey")?.GetComponent<TextMeshProUGUI>();
-            if (_switchEnergyWidget == null) _switchEnergyWidget = keysRoot.Find("KeySwitch/Icons/IconKey")?.GetComponent<AssistPointUIControl>();
+            if (_switchEnergyWidget == null) _switchEnergyWidget = keysRoot.Find("KeySwitch/Icons/IconKey")?.GetComponent<SkillSwitchBtnFill>();
 
             if (_imgQteIcon == null) _imgQteIcon = keysRoot.Find("KeyQTE/Icons/IconKey")?.GetComponent<Image>();
             if (_imgQteGlow == null) _imgQteGlow = keysRoot.Find("KeyQTE/Icons/IconKey (1)")?.GetComponent<Image>();

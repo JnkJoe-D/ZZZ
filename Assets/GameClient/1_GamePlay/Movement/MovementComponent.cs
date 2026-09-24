@@ -439,6 +439,15 @@ namespace Game.GamePlay
 
             return new Vector3(inputDir.x, 0f, inputDir.y).normalized;
         }
+        public Vector3 GetCameraDirection()
+        {
+            if (_entity is RoleEntity role && role.CameraController != null)
+            {
+                return role.CameraController.GetForward();
+            }
+
+            return transform.forward;
+        }
 
         public bool IsGrounded
         {

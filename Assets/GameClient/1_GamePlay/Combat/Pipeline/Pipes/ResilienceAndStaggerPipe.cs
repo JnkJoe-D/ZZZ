@@ -1,5 +1,6 @@
 using UnityEngine;
 using cfg.ZZZ;
+using System.Collections.Generic;
 
 namespace Game.GamePlay
 {
@@ -39,18 +40,13 @@ namespace Game.GamePlay
             {
                 ctx.ResultFlags |= HitResultFlags.Interrupted;
 
-                // 若上下文中已有明确指定的硬直级别（如招架反击预设的 HitReactionType.Parried），完整保留
-                if (ctx.SelectedReactionType == HitReactionType.None)
-                {
-                    ctx.SelectedReactionType = HitReactionType.Light;
-                }
-
                 // 同步运行时受击数据
                 var hitData = ctx.Victim.DataModule?.Get<HitReactionRuntimeData>();
                 if (hitData != null)
                 {
                     hitData.Set(nameof(hitData.CurrentHitStunDuration), ctx.HitStunDuration);
                     hitData.SetHitReactionAxis(ctx.ReactionAxis);
+                    ctx.SelectedReactionType = ResolveHitReactionType(ctx?.HitEffectConfig?.Effects, ctx);
                     hitData.Set(nameof(hitData.CurrentReactionType), ctx.SelectedReactionType);
                 }
             }
@@ -60,6 +56,23 @@ namespace Game.GamePlay
                 ctx.ResultFlags |= HitResultFlags.SuperArmor;
                 ctx.SelectedReactionType = HitReactionType.None;
             }
+        }
+        private HitReactionType ResolveHitReactionType(List<HitEffectData> hitEffects, HitPipelineContext ctx)
+        {
+            if (hitEffects == null || hitEffects.Count == 0) return HitReactionType.None;
+            HitReactionType result = HitReactionType.None;
+
+            foreach (var effect in hitEffects)
+            {
+                if (effect == null || effect.EffectTarget != EffectTarget.Victim) continue;
+                // 只取第一个匹配的受击效果类型，后续的忽略（Luban表格设计原则：同一招式不允许多种受击效果同时生效）
+                if(effect.HitReaction != HitReactionType.None)
+                {
+                    result = effect.HitReaction;
+                    break;
+                }
+            }
+            return result;
         }
     }
 }

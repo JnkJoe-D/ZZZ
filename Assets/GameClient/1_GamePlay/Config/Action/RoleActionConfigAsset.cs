@@ -9,8 +9,8 @@ namespace Game.GamePlay
     public enum ActionState
     {
         Idle = 0,       // GroundState → Idle 子状态
-        Jog = 10,       // GroundState → Jog 子状态
-        Dash = 20,      // GroundState → Dash 子状态
+        Walk = 10,       // GroundState → Jog 子状态
+        Run = 20,      // GroundState → Dash 子状态
         Stop = 30,      // GroundState → Stop 子状态
         Skill = 40,     // CharacterSkillState
         Evade = 50,     // CharacterEvadeState
@@ -39,7 +39,7 @@ namespace Game.GamePlay
         /// <summary>
         /// 收集此动作上所有有效的统一路由（展开集合资产）。
         /// </summary>
-        public override void CollectEffectiveRoutes(List<ActionRoute> results, RoleEntity actor = null)
+        public override void CollectEffectiveRoutes(List<ActionRoute> results, CharacterEntity actor = null)
         {
             if (results == null) return;
             results.Clear();

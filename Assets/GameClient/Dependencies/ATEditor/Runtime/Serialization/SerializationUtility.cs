@@ -43,6 +43,7 @@ namespace ATEditor
                 relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
             }
 
+            string fileName = Path.GetFileNameWithoutExtension(relativePath);
             var existingAsset = AssetDatabase.LoadAssetAtPath<ActionTimeline>(relativePath);
             if (existingAsset != null)
             {
@@ -51,6 +52,7 @@ namespace ATEditor
                 {
                     EditorUtility.CopySerialized(timeline, existingAsset);
                 }
+                existingAsset.name = fileName;
                 EditorUtility.SetDirty(existingAsset);
                 AssetDatabase.SaveAssets();
             }
@@ -59,7 +61,7 @@ namespace ATEditor
                 // 创建全新的 Asset。这里克隆一份，防止将编辑器当前使用的内存实例直接绑定到 AssetDatabase，
                 // 从而保证编辑器里的 timeline 始终是内存独立的，不会意外修改原文件。
                 var assetToSave = Object.Instantiate(timeline);
-                assetToSave.name = timeline.name;
+                assetToSave.name = fileName;
                 AssetDatabase.CreateAsset(assetToSave, relativePath);
                 AssetDatabase.SaveAssets();
             }
@@ -102,6 +104,7 @@ namespace ATEditor
 
             string json = File.ReadAllText(path);
             ActionTimeline timeline = ScriptableObject.CreateInstance<ActionTimeline>();
+            timeline.name = Path.GetFileNameWithoutExtension(path);
             JsonUtility.FromJsonOverwrite(json, timeline);
 
             // 导入后置处理：根据 GUID 还原资源引用
@@ -117,6 +120,7 @@ namespace ATEditor
 
             string json = File.ReadAllText(path);
             ActionTimeline timeline = ScriptableObject.CreateInstance<ActionTimeline>();
+            timeline.name = Path.GetFileNameWithoutExtension(path);
             JsonUtility.FromJsonOverwrite(json, timeline);
             await ResolveAllAssets(timeline);
             timeline.RecalculateDuration();
@@ -242,8 +246,8 @@ namespace ATEditor
                     }
                     else if (clip is AudioClip audioClip)
                     {
-                        if (audioClip.audioRefs == null) audioClip.audioRefs = new List<SkillAssetReference>();
-                        while (audioClip.audioRefs.Count < audioClip.audioClips.Count) audioClip.audioRefs.Add(new SkillAssetReference());
+                        if (audioClip.audioRefs == null) audioClip.audioRefs = new List<ActionAssetReference>();
+                        while (audioClip.audioRefs.Count < audioClip.audioClips.Count) audioClip.audioRefs.Add(new ActionAssetReference());
                         while (audioClip.audioRefs.Count > audioClip.audioClips.Count) audioClip.audioRefs.RemoveAt(audioClip.audioRefs.Count - 1);
 
                         for (int i = 0; i < audioClip.audioClips.Count; i++)
@@ -260,7 +264,7 @@ namespace ATEditor
             }
         }
 
-        private static void SyncAssetReference(SkillAssetReference r, Object asset)
+        private static void SyncAssetReference(ActionAssetReference r, Object asset)
         {
             if (asset == null)
             {

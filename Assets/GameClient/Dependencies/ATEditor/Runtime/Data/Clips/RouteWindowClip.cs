@@ -1,4 +1,5 @@
 using System;
+using Game.Framework;
 using UnityEngine;
 
 namespace ATEditor
@@ -8,9 +9,9 @@ namespace ATEditor
     public class RouteWindowClip : ClipBase
     {
         [Header("路由窗口")]
-        [SkillProperty("窗口标签")]
-        [Tooltip("用于标识连招窗口的标签，便于在技能逻辑中进行匹配和触发")]
-        public string comboTag = "";
+        [ActionProperty("窗口类型")]
+        [SerializeReference, SubclassSelector]
+        public RouteWindow routewindow;
 
         public override float Duration
         {
@@ -33,7 +34,7 @@ namespace ATEditor
                 startTime = startTime,
                 duration = duration,
                 isEnabled = isEnabled,
-                comboTag = comboTag
+                routewindow = routewindow?.Clone()
             };
         }
     }

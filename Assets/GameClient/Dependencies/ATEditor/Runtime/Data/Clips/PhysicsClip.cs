@@ -8,54 +8,54 @@ namespace ATEditor
     public class PhysicsClip : ClipBase, ISerializationCallbackReceiver
     {
         [Header("碰撞与层级控制")]
-        [SkillProperty("修改忽略碰撞层级")]
+        [ActionProperty("修改忽略碰撞层级")]
         public bool modifyExcludeLayers = true;
 
-        [SkillProperty("忽略的碰撞层级")]
-        [ShowIf("modifyExcludeLayers", true)]
+        [ActionProperty("忽略的碰撞层级")]
+        [ATShowIf("modifyExcludeLayers", true)]
         public LayerMask excludeLayers;
 
-        [SkillProperty("退出时还原忽略层级")]
-        [ShowIf("modifyExcludeLayers", true)]
+        [ActionProperty("退出时还原忽略层级")]
+        [ATShowIf("modifyExcludeLayers", true)]
         public bool restoreExcludeLayersOnExit = true;
 
-        [SkillProperty("修改碰撞体开关")]
+        [ActionProperty("修改碰撞体开关")]
         public bool modifyCollisionEnabled = false;
 
-        [SkillProperty("碰撞体启用状态")]
-        [ShowIf("modifyCollisionEnabled", true)]
+        [ActionProperty("碰撞体启用状态")]
+        [ATShowIf("modifyCollisionEnabled", true)]
         public bool isCollisionEnabled = false;
 
-        [SkillProperty("退出时还原碰撞体状态")]
-        [ShowIf("modifyCollisionEnabled", true)]
+        [ActionProperty("退出时还原碰撞体状态")]
+        [ATShowIf("modifyCollisionEnabled", true)]
         public bool restoreCollisionOnExit = true;
 
         [Header("重力与空中滞空控制")]
-        [SkillProperty("修改重力倍率")]
+        [ActionProperty("修改重力倍率")]
         public bool modifyGravity = false;
 
-        [SkillProperty("重力倍率")]
-        [ShowIf("modifyGravity", true)]
+        [ActionProperty("重力倍率")]
+        [ATShowIf("modifyGravity", true)]
         public float gravityScale = 0f; // 0 = 完全滞空无重力
 
-        [SkillProperty("进入时清空垂直下落动量")]
-        [ShowIf("modifyGravity", true)]
+        [ActionProperty("进入时清空垂直下落动量")]
+        [ATShowIf("modifyGravity", true)]
         public bool resetVerticalVelocityOnEnter = true;
 
-        [SkillProperty("退出时还原重力倍率")]
-        [ShowIf("modifyGravity", true)]
+        [ActionProperty("退出时还原重力倍率")]
+        [ATShowIf("modifyGravity", true)]
         public bool restoreGravityOnExit = true;
 
         [Header("推挤与霸体抗性控制")]
-        [SkillProperty("修改推挤抗性")]
+        [ActionProperty("修改推挤抗性")]
         public bool modifyPushResistance = false;
 
-        [SkillProperty("推挤抗性 (0~1)")]
-        [ShowIf("modifyPushResistance", true)]
+        [ActionProperty("推挤抗性 (0~1)")]
+        [ATShowIf("modifyPushResistance", true)]
         public float pushResistance = 1.0f; // 1 = 完全免疫推挤
 
-        [SkillProperty("退出时还原推挤抗性")]
-        [ShowIf("modifyPushResistance", true)]
+        [ActionProperty("退出时还原推挤抗性")]
+        [ATShowIf("modifyPushResistance", true)]
         public bool restorePushResistanceOnExit = true;
 
         [SerializeField, HideInInspector]

@@ -930,5 +930,299 @@
         "hit_reaction": 70
       }
     ]
+  },
+  {
+    "id": 1050000,
+    "name": "QingYi_Attack_Nomal_01",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      }
+    ]
+  },
+  {
+    "id": 1050010,
+    "name": "QingYi_Attack_Nomal_02",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      }
+    ]
+  },
+  {
+    "id": 1050020,
+    "name": "QingYi_Attack_Nomal_04",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      }
+    ]
+  },
+  {
+    "id": 1050030,
+    "name": "QingYi_Attack_Nomal_05",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 10
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      }
+    ]
+  },
+  {
+    "id": 1050040,
+    "name": "QingYi_Attack_Nomal_05_02",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 10
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      }
+    ]
+  },
+  {
+    "id": 1050050,
+    "name": "QingYi_Attack_Nomal_06",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      }
+    ]
+  },
+  {
+    "id": 1050060,
+    "name": "QingYi_Attack_Nomal_07",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 2,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      }
+    ]
+  },
+  {
+    "id": 1050070,
+    "name": "QingYi_Attack_Branch_01",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      }
+    ]
+  },
+  {
+    "id": 1050080,
+    "name": "QingYi_Attack_Branch_02",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 2,
+        "trigger_policy": 1,
+        "attr_id": 110,
+        "value": 5,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      }
+    ]
+  },
+  {
+    "id": 1050090,
+    "name": "QingYi_Attack_Special",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      }
+    ]
+  },
+  {
+    "id": 1050100,
+    "name": "QingYi_Attack_ExSpecial",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      }
+    ]
+  },
+  {
+    "id": 1050110,
+    "name": "QingYi_Attack_ExSpecial_02",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      }
+    ]
   }
 ]

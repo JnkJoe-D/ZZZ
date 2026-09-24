@@ -51,9 +51,11 @@ namespace Game.GamePlay
 
         /// <summary>
         /// 查询指定指令的最终命运（Pending / Executed / Dropped）。
-        /// 依次排查历史记录、缓冲区与活跃窗口。
+        /// 依次排查历史记录与 L1 缓冲区。
+        /// 注意：新架构中窗口不再暴露 CapturedCommands；
+        ///       处于 BufferWindow 捕获中的指令其物理副本仍在 L1，因此 L1 检查可覆盖该场景。
         /// </summary>
-        public CommandFate CheckFate(long commandId, CommandBuffer buffer, IReadOnlyList<ActionController.RouteWindowData> activeWindows)
+        public CommandFate CheckFate(long commandId, IReadOnlyList<ActionController.RouteWindowData> activeWindows)
         {
             if (commandId <= 0) return CommandFate.Dropped;
 
@@ -63,34 +65,7 @@ namespace Game.GamePlay
                 if (_history[i].CommandId == commandId) return CommandFate.Executed;
             }
 
-            // 2. 检查是否仍在 CommandBuffer 中挂起
-            if (buffer != null)
-            {
-                List<CharacterCommand> unconsumed = buffer.GetUnconsumedCommands();
-                for (int i = 0; i < unconsumed.Count; i++)
-                {
-                    CharacterCommand cmd = unconsumed[i];
-                    if (cmd.Id == commandId && !cmd.IsConsumed) return CommandFate.Pending;
-                }
-            }
-
-            // 3. 检查是否已被某个活跃窗口捕获等待退出裁决
-            if (activeWindows != null)
-            {
-                for (int i = 0; i < activeWindows.Count; i++)
-                {
-                    List<CharacterCommand> captured = activeWindows[i].CapturedCommands;
-                    if (captured == null) continue;
-
-                    for (int j = 0; j < captured.Count; j++)
-                    {
-                        CharacterCommand cmd = captured[j];
-                        if (cmd.Id == commandId && !cmd.IsConsumed) return CommandFate.Pending;
-                    }
-                }
-            }
-
-            // 4. 其余情况均视为已丢弃
+            // 2. 其余情况均视为已丢弃或已消费
             return CommandFate.Dropped;
         }
 

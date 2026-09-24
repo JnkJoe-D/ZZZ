@@ -1,0 +1,58 @@
+using Game.Framework;
+
+namespace Game.GamePlay
+{
+    /// <summary>
+    /// 玩家自身行为节点基类
+    /// </summary>
+    public abstract class RoleStateBase : IFSMState<RoleEntity>
+    {
+        protected FSMSystem<RoleEntity> Machine;
+        protected RoleEntity Entity => Machine.Owner;
+
+        // --- 指令路由 ---
+        public static readonly IActionCommandHandler NullInputHandler = new NullInputCommandHandler();
+        public static IActionCommandHandler InputHandlerStatic => NullInputHandler;
+        public virtual IActionCommandHandler InputHandler => NullInputHandler;
+
+        public virtual void OnInit(FSMSystem<RoleEntity> fsm)
+        {
+            Machine = fsm;
+        }
+
+        public virtual bool CanEnter() { return true; }
+        public virtual bool CanExit() { return true; }
+
+        public virtual void OnEnter() { }
+
+        public virtual void OnUpdate(float deltaTime) { }
+
+        public virtual void OnFixedUpdate(float fixedDeltaTime) { }
+
+        public virtual void OnExit() { }
+
+        public virtual void OnDestroy() { }
+    }
+
+    public sealed class CharacterSwitchState : RoleStateBase
+    {
+        private IActionCommandHandler _inputHandler;
+        public override IActionCommandHandler InputHandler => _inputHandler;
+
+        public override void OnInit(FSMSystem<RoleEntity> fsm)
+        {
+            base.OnInit(fsm);
+            _inputHandler = new ComboInputCommandHandler(Entity);
+        }
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+        }
+
+        public override void OnExit()
+        {
+
+        }
+    }
+}

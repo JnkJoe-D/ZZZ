@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25727d6c642c74145bc87312680d2a5a, type: 3}
+  m_Name: TyrfingInfested
+  m_EditorClassIdentifier: 
+  ID: 2001
+  Name: 
+  Prefab: {fileID: 8612589450643552581, guid: 80ad4626c1b004645a3ecbc09f764e4f, type: 3}
+  GroundRadius: 0.3
+  GroundHeight: 1.8
+  GroundOffset: 0.1
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  hitReactionConfig: {fileID: 11400000, guid: f3c5f768b41c4a448858c98bd725a4f0, type: 2}
+  ActionRoot: {fileID: 11400000, guid: a8ef118f0054c1f4f9794470564280dc, type: 2}
+  SensorConfig:
+    DetectionRadius: 50
+    RunThresholdRadius: 4
+    AttackInterval: 2.5
+  locomotionConfig: {fileID: 11400000, guid: 6e41b9ef35264b1ea936174cbef08611, type: 2}
+  stunConfig: {fileID: 0}
+  BehaviorTree: {fileID: 11400000, guid: 9de0b4738501d1c4c898f8ed31b41fda, type: 2}

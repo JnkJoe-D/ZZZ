@@ -40,6 +40,7 @@ namespace Game.GamePlay
         void FaceToTarget(Transform target, float speed = -1f, Vector3 localOffset = default);
         void FaceToTargetImmediately(Transform target, Vector3 localOffset = default);
         Vector3 CalculateWorldDirection(Vector2 inputDir);
+        Vector3 GetCameraDirection();
 
         /// <summary>
         /// 是否在地面上

@@ -24,13 +24,63 @@ namespace ATEditor.Editor
             // 1. 基础信息卡片
             DrawBaseClipCard(clip, ref _showBase, "基础信息");
 
-            // 2. 连招派生窗口卡片
-            _showCombo = EditorGUILayout.Foldout(_showCombo, "连招派生配置", true, EditorStyles.foldoutHeader);
+            // 2. 路由派生窗口卡片（仅允许选择已配置的预设窗口）
+            _showCombo = EditorGUILayout.Foldout(_showCombo, "路由派生窗口配置", true, EditorStyles.foldoutHeader);
             if (_showCombo)
             {
                 EditorGUILayout.BeginVertical("box");
-                string[] tagOptions = ActionTagOptions.GetComboWindowTags();
-                comboWindow.comboTag = DrawComboTagField(comboWindow.comboTag, tagOptions);
+
+                var presetWindows = ActionTagOptions.GetRouteWindows();
+                string[] presetLabels = ActionTagOptions.GetRouteWindowDisplayOptions();
+
+                if (presetLabels == null || presetLabels.Length == 0)
+                {
+                    EditorGUILayout.HelpBox("未在 ActionTagConfig 中配置路由窗口，请先在配置资产中添加预设窗口。", MessageType.Warning);
+                }
+                else
+                {
+                    int matchPresetIndex = -1;
+                    if (comboWindow.routewindow != null)
+                    {
+                        for (int i = 0; i < presetWindows.Count; i++)
+                        {
+                            if (presetWindows[i] != null && presetWindows[i].Matches(comboWindow.routewindow))
+                            {
+                                matchPresetIndex = i;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (matchPresetIndex >= 0)
+                    {
+                        // 当前窗口属于已注册预设
+                        int newIndex = EditorGUILayout.Popup("预设窗口", matchPresetIndex, presetLabels);
+                        if (newIndex != matchPresetIndex)
+                        {
+                            comboWindow.routewindow = presetWindows[newIndex]?.Clone();
+                        }
+                    }
+                    else
+                    {
+                        // 当前窗口未设置或不在已注册列表中
+                        string currentLabel = comboWindow.routewindow != null && !string.IsNullOrEmpty(comboWindow.routewindow.Tag)
+                            ? $"{comboWindow.routewindow.EditorLabel} [未在配置SO中注册]"
+                            : "<请选择预设窗口>";
+
+                        Color oldColor = GUI.color;
+                        GUI.color = Color.yellow;
+                        EditorGUILayout.LabelField("当前状态", currentLabel);
+                        GUI.color = oldColor;
+
+                        int newIndex = EditorGUILayout.Popup("选择预设窗口...", -1, presetLabels);
+                        if (newIndex >= 0)
+                        {
+                            comboWindow.routewindow = presetWindows[newIndex]?.Clone();
+                        }
+                    }
+                }
+
                 EditorGUILayout.EndVertical();
             }
 
@@ -38,55 +88,21 @@ namespace ATEditor.Editor
             {
                 if (UndoContext != null && UndoContext.Length > 0)
                 {
-                    Undo.RecordObjects(UndoContext, "Modify Combo Window Clip");
+                    Undo.RecordObjects(UndoContext, "Modify Route Window Clip");
                     foreach (var ctx in UndoContext) EditorUtility.SetDirty(ctx);
                 }
-                MarkTimelineDirty("Modify Combo Window Clip");
+                MarkTimelineDirty("Modify Route Window Clip");
             }
         }
 
         public override void DrawTimelineGUI(ClipBase clip, Rect clipRect, ATEditorState state, Color clipColor, string displayName)
         {
-            if (clip is RouteWindowClip comboWindow && !string.IsNullOrWhiteSpace(comboWindow.comboTag))
+            if (clip is RouteWindowClip comboWindow && comboWindow.routewindow != null && !string.IsNullOrWhiteSpace(comboWindow.routewindow.Tag))
             {
-                displayName = comboWindow.comboTag;
+                displayName = comboWindow.routewindow.EditorLabel;
             }
 
             base.DrawTimelineGUI(clip, clipRect, state, clipColor, displayName);
-        }
-
-        private static string DrawComboTagField(string currentValue, string[] tagOptions)
-        {
-            if (tagOptions == null || tagOptions.Length == 0)
-            {
-                EditorGUILayout.HelpBox("未配置连招窗口标签，请手动输入标签。", MessageType.Warning);
-                return EditorGUILayout.TextField("连招标签", currentValue);
-            }
-
-            int currentIndex = Array.IndexOf(tagOptions, currentValue ?? "");
-            
-            // 若标签合法，或为空字符串（新创建片段），直接展示标准下拉框
-            if (currentIndex >= 0 || string.IsNullOrEmpty(currentValue))
-            {
-                int newIndex = EditorGUILayout.Popup("连招标签", currentIndex, tagOptions);
-                return newIndex >= 0 ? tagOptions[newIndex] : currentValue;
-            }
-
-            // 若标签非空但不在已知列表中（未注册或旧版遗留标签）
-            Color oldColor = GUI.color;
-            GUI.color = Color.yellow;
-            string editedValue = EditorGUILayout.TextField("连招标签 [未注册]", currentValue);
-            GUI.color = oldColor;
-            
-            EditorGUILayout.HelpBox("此标签未在 ActionTagConfigAsset 中注册。可保留用于迁移或从下方选择替换。", MessageType.Warning);
-            
-            int replaceIndex = EditorGUILayout.Popup("替换为已注册标签...", -1, tagOptions);
-            if (replaceIndex >= 0)
-            {
-                return tagOptions[replaceIndex];
-            }
-            
-            return editedValue;
         }
     }
 }

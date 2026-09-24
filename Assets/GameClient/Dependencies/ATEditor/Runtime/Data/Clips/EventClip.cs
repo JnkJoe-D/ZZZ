@@ -7,16 +7,16 @@ namespace ATEditor
     [Serializable]
     public class ATEventParam
     {
-        [SkillProperty("参数名")]
+        [ActionProperty("参数名")]
         public string key = "";
         
-        [SkillProperty("字符串值")]
+        [ActionProperty("字符串值")]
         public string stringValue = "";
         
-        [SkillProperty("浮点数值")]
+        [ActionProperty("浮点数值")]
         public float floatValue = 0f;
         
-        [SkillProperty("整数值")]
+        [ActionProperty("整数值")]
         public int intValue = 0;
         
         public ATEventParam Clone()
@@ -35,7 +35,7 @@ namespace ATEditor
     public class ActionTimelineEvent
     {
         [Header("Event Settings")]
-        [SkillProperty("事件名")]
+        [ActionProperty("事件名")]
         public string eventName = "Event_Default";
 
         public List<ATEventParam> parameters = new List<ATEventParam>();
@@ -61,7 +61,7 @@ namespace ATEditor
     public class EventClip : ClipBase
     {
         [Header("Event Settings")]
-        [SkillProperty("事件名")]
+        [ActionProperty("事件名")]
         public string eventName = "Event_Default";
 
         // 由于 SkillProperty 目前可能不支持复杂的 List 嵌套结构，

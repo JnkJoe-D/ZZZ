@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: "\u661F\u89C1\u96C5_\u6307\u4EE4\u96C6_6_\u5207\u4EBA_1_\u7B49\u5F85\u5207\u51FA"
+  m_EditorClassIdentifier: 
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 4a04a33596996e442814299742e86e38, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 20
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868508892233737
+    ExtraConditions:
+    - rid: 6379257713941807105
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868508892233737
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 10
+        RequiredWindow:
+          rid: 6379258143149916758
+        RequiredWindowTag: SwitchExecute
+        Modifiers: []
+    - rid: 6379257713941807105
+      type: {class: SwitchOutPendingCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data: 
+    - rid: 6379258143149916758
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute

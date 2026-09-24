@@ -19,7 +19,7 @@ namespace ATEditor
             context.OnTimelineMessage += _eventCallback;
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             if (_eventCallback != null)
             {

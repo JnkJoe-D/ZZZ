@@ -29,7 +29,7 @@ namespace ATEditor
             _handler?.OnParryContractExit();
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             _handler?.OnParryContractExit();
         }

@@ -3854,52 +3854,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7439248134106430665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4268984141256289469
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 256453247198423316}
-  - component: {fileID: 6081202186754876830}
-  m_Layer: 9
-  m_Name: Rig 1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &256453247198423316
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4268984141256289469}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 373933339682860323}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6081202186754876830
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4268984141256289469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Weight: 1
-  m_Effectors: []
 --- !u!1 &4277306694459795717
 GameObject:
   m_ObjectHideFlags: 0
@@ -4636,7 +4590,6 @@ GameObject:
   - component: {fileID: 8738403362999709464}
   - component: {fileID: 5916555759901799047}
   - component: {fileID: 1978348166349306037}
-  - component: {fileID: 9042139248835808351}
   - component: {fileID: 5053675184613036775}
   m_Layer: 9
   m_Name: Avatar_Female_Size02_Ellen
@@ -4659,7 +4612,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6878238839722302797}
-  - {fileID: 256453247198423316}
   - {fileID: 5682943192197801065}
   - {fileID: 3194851503780463243}
   m_Father: {fileID: 0}
@@ -4677,7 +4629,7 @@ Animator:
   m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -4755,22 +4707,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followPoint: {fileID: 5682943192197801065}
   lookAtPoint: {fileID: 5682943192197801065}
---- !u!114 &9042139248835808351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5158763610275107262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fff0960ef4ea6e04eac66b4a7fd2189d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RigLayers:
-  - m_Rig: {fileID: 4598547279726136895}
-    m_Active: 1
-  m_Effectors: []
 --- !u!114 &5053675184613036775
 MonoBehaviour:
   m_ObjectHideFlags: 0

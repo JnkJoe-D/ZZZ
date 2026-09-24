@@ -25,7 +25,7 @@ namespace ATEditor
             _motionWindowHandler?.DisableVisualOffset();
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             _motionWindowHandler?.DisableVisualOffset();
         }

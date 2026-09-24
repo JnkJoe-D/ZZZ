@@ -14,11 +14,11 @@ namespace ATEditor
     [ClipDefinition(typeof(VisualTrack), "视觉隐现")]
     public class VisualFadingClip : ClipBase
     {
-        [SkillProperty("渲染器类型")]
+        [ActionProperty("渲染器类型")]
         [Tooltip("指定要控制的渲染器类型")]
         public RendererTargetType TargetType = RendererTargetType.SkinnedMeshRenderer;
 
-        [SkillProperty("反转逻辑(入显出隐)")]
+        [ActionProperty("反转逻辑(入显出隐)")]
         [Tooltip("默认行为是进入片段时隐藏，离开时显示。勾选此项则反转行为。")]
         public bool Inverse = false;
 

@@ -16,7 +16,7 @@ namespace Game.GamePlay
             _comboData = _entity.DataModule?.Get<ComboRouteRuntimeData>();
         }
 
-        protected override RoleEntity GetRouteEvalActor() => Role;
+        protected override CharacterEntity GetRouteEvalActor() => Role;
 
         protected override void OnActionPlaySucceed(ActionConfigAsset action)
         {
@@ -27,27 +27,27 @@ namespace Game.GamePlay
                 switch (roleAction.EnterState)
                 {
                     case ActionState.Idle:
-                    case ActionState.Jog:
-                    case ActionState.Dash:
+                    case ActionState.Walk:
+                    case ActionState.Run:
                     case ActionState.Stop:
                         if (_actionData != null)
                             _actionData.Set(nameof(_actionData.TargetGroundSubState), roleAction.EnterState);
-                        Role.StateMachine.ChangeState<CharacterGroundState>();
+                        Role.StateMachine.ChangeState<RoleGroundState>();
                         break;
                     case ActionState.Skill:
-                        Role.StateMachine.ChangeState<CharacterSkillState>();
+                        Role.StateMachine.ChangeState<RoleSkillState>();
                         break;
                     case ActionState.Evade:
-                        Role.StateMachine.ChangeState<CharacterEvadeState>();
+                        Role.StateMachine.ChangeState<RoleEvadeState>();
                         break;
                     case ActionState.Hit:
-                        Role.StateMachine.ChangeState<CharacterHitStunState>();
+                        Role.StateMachine.ChangeState<RoleHitStunState>();
                         break;
                     case ActionState.Switch:
                         Role.StateMachine.ChangeState<CharacterSwitchState>();
                         break;
                     case ActionState.Parry:
-                        Role.StateMachine.ChangeState<CharacterParryState>();
+                        Role.StateMachine.ChangeState<RoleParryState>();
                         break;
                 }
             }

@@ -7,7 +7,7 @@ namespace ATEditor
     [ClipDefinition(typeof(RewindTrack), "回溯循环")]
     public class RewindClip : ClipBase
     {
-        [SkillProperty("最大回溯次数")]
+        [ActionProperty("最大回溯次数")]
         public int MaxRewindCount = 3;
 
         public RewindClip()

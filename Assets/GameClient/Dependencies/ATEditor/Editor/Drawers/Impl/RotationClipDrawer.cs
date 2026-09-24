@@ -37,6 +37,7 @@ namespace ATEditor.Editor
                     RotationReference.Target => "严格锁定面向当前锁定的战斗目标（无目标则不转）",
                     RotationReference.TargetThenInput => "优先锁定战斗目标；若无目标则降级为输入方向",
                     RotationReference.TargetThenInputWithCamera => "优先锁定战斗目标；若无目标则降级为相机视角输入方向",
+                    RotationReference.Camera => "始终面向相机方向",
                     _ => ""
                 };
                 if (!string.IsNullOrEmpty(tip))

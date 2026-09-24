@@ -16,8 +16,11 @@ namespace Game.GamePlay
         public bool IsDead => LifecycleComponent != null && LifecycleComponent.IsDead;
 
         public virtual ActionController ActionController { get; protected set; }
-        public CommandBuffer CommandBuffer { get; protected set; }
-        public ActionPlayer ActionPlayer { get; private set; }
+        public RouteArbitrator RouteArbitrator { get; protected set; }
+        /// <summary>
+        /// 动作底层播放器：归属 ActionController 统一调度与驱动，此处提供只读快捷转发，保障外部现有组件平滑兼容。
+        /// </summary>
+        public ActionPlayer ActionPlayer => ActionController?.ActionPlayer;
         public ATMotionWindowHandler MotionWindowHandler { get; private set; }
         public virtual ITargetFinder TargetFinder { get; protected set; }
         public EntityDataModule DataModule { get; } = new EntityDataModule();
@@ -51,7 +54,6 @@ namespace Game.GamePlay
             DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
             DataModule[typeof(ParryRuntimeData)] ??= new ParryRuntimeData();
 
-            if (ActionPlayer == null) ActionPlayer = EntityModuleFactory.Create<ActionPlayer>(this);
             if (StatusModule == null) StatusModule = EntityModuleFactory.Create<StatusModule>(this);
             if (MotionWindowHandler == null) MotionWindowHandler = new ATMotionWindowHandler(this);
             if (AttributeResolver == null) AttributeResolver = new EntityAttributeResolver(this);
@@ -104,9 +106,8 @@ namespace Game.GamePlay
             // 2. 计算经实体层级时钟（子弹时间/顿帧）缩放后的有效逻辑步长
             float scaledDt = logicDeltaTime * (Clock != null ? Clock.EffectiveScale : 1.0f);
 
-            // 3. 将缩放后的步长自顶向下单向传递给各领域子系统
+            // 3. 将缩放后的步长自顶向下单向传递给各领域子系统（ActionController 内部自顶向下驱动 ActionPlayer）
             ActionController?.LogicTick(scaledDt);
-            ActionPlayer?.LogicTick(scaledDt);
             StatusModule?.LogicTick(scaledDt);
             OnSubLogicTick(scaledDt);
         }
@@ -122,7 +123,7 @@ namespace Game.GamePlay
         protected virtual void OnDestroy()
         {
             Clock?.Detach();
-            ActionPlayer?.Dispose();
+            ActionController?.Dispose();
             StatusModule?.Clear();
         }
     }

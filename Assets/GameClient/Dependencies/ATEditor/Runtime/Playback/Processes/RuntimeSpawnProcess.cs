@@ -53,7 +53,7 @@ namespace ATEditor
             }
             spawnedProjectile = null;
         }
-        public override void OnDisable()
+        public override void OnStop()
         {
             if (context != null && context.Owner != null && !context.Owner.gameObject.scene.isLoaded)
             {

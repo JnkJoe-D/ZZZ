@@ -1,0 +1,837 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
+  m_Name: QingYi_Timeline_Attack_ExSpecial
+  m_EditorClassIdentifier: 
+  duration: 5.816667
+  isLoop: 0
+  beforePlayEvents: []
+  onCompleteEvents: []
+  groups:
+  - groupId: 4d418aa4-cc08-4d71-a3f8-2fe81c3f5d28
+    groupName: "\u52A8\u753B"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868102985318454
+  - groupId: bf2dd4c3-588d-41e2-8451-7a4ba3258032
+    groupName: "\u7279\u6548"
+    isCollapsed: 1
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868102985318455
+  - groupId: 87517105-7af1-4746-a8ba-834e1987bc67
+    groupName: "\u97F3\u6548"
+    isCollapsed: 1
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868102985318456
+    - rid: 4681868102985318457
+  - groupId: e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b
+    groupName: "\u8F93\u5165"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 6379258120226209908
+    - rid: 4681868102985318458
+    - rid: 4681868102985318459
+    - rid: 4681868102985318460
+    - rid: 4681868102985318461
+  - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
+    groupName: "\u547D\u4E2D"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868102985318462
+  - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
+    groupName: "\u52A8\u753B\u4F4D\u79FB"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868102985318463
+  - groupId: fe97c978-da0d-4d70-b973-9218b609c4bc
+    groupName: "\u53D8\u6362"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868102985318464
+  - groupId: 99f4f9ae-826f-44a0-bdf0-91fbaacdbaf9
+    groupName: "\u76F8\u673A"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 4681868102985318465
+  references:
+    version: 2
+    RefIds:
+    - rid: 4681868102985318454
+      type: {class: AnimationTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 573ab7eb-5a8a-4dce-ad1d-d70ff0357aa4
+        trackType: AnimationTrack
+        trackName: "\u52A8\u753B\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318466
+        - rid: 6379258120226209896
+        isMasterTrack: 1
+        offsetPos: {x: 0, y: 0, z: 0}
+        offsetRot: {x: 0, y: 0, z: 0}
+    - rid: 4681868102985318455
+      type: {class: VFXTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: d43568e5-6a7f-4b1c-afb9-46a10ad689c7
+        trackType: VFXTrack
+        trackName: "\u7279\u6548\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868102985318456
+      type: {class: AudioTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: a05efcc5-b659-4a72-b03f-4719b6d446e4
+        trackType: AudioTrack
+        trackName: "\u97F3\u6548"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868102985318457
+      type: {class: AudioTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: c14034a8-c841-4dc3-b007-b107d1d294d1
+        trackType: AudioTrack
+        trackName: "\u8BED\u97F3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips: []
+    - rid: 4681868102985318458
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 95a1ff0c-6f52-49d9-ae8b-c8814ebeee5b
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318468
+        - rid: 4681868102985318469
+    - rid: 4681868102985318459
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: b3baf3da-1541-4ab2-8265-f6850731c53b
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318470
+    - rid: 4681868102985318460
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 08ec0a99-296c-403d-b1c7-4bacb6c08f0c
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318471
+    - rid: 4681868102985318461
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: e9912b1d-414a-428b-aba6-45e6d8bbc379
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318472
+    - rid: 4681868102985318462
+      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
+        trackType: DamageTrack
+        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318473
+        - rid: 6379258120226209897
+        - rid: 6379258120226209898
+        - rid: 6379258120226209910
+        - rid: 6379258120226209911
+        - rid: 6379258120226209912
+        - rid: 6379258120226209913
+    - rid: 4681868102985318463
+      type: {class: MotionWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 15e2bdc7-968f-4cfa-a5f8-f20e16b3ce0c
+        trackType: MotionWindowTrack
+        trackName: "\u4F4D\u79FB\u7A97\u53E3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318474
+    - rid: 4681868102985318464
+      type: {class: TransformTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 2b9fcf9c-8d3a-4238-a79a-cf6c1467ec44
+        trackType: TransformTrack
+        trackName: "\u53D8\u6362\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318475
+    - rid: 4681868102985318465
+      type: {class: CameraTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: b4a326f1-d0f5-429d-96f8-61a96cc2086a
+        trackType: CameraTrack
+        trackName: "\u6444\u50CF\u673A\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 4681868102985318476
+    - rid: 4681868102985318466
+      type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: b84015a3-cf3b-4c5f-ac3f-a6b01318c04f
+        clipName: "\u52A8\u753B\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 1.6833334
+        blendInDuration: 0
+        blendOutDuration: 0.1833334
+        animationClip: {fileID: 1022840337422060075, guid: edeaa8d47572b824888e18124223782d,
+          type: 3}
+        playbackSpeed: 1
+        layer: 0
+        overrideMask: {fileID: 0}
+        clipRef:
+          guid: edeaa8d47572b824888e18124223782d
+          assetName: Avatar_Female_Size01_QingYi_Ani_Attack_ExSpecial_02
+          assetPath: Assets/RawArtAssets/Animation/Role/QingYi/Avatar_Female_Size01_QingYi_Ani.fbx
+        maskRef:
+          guid: 
+          assetName: 
+          assetPath: 
+        animStartOffsetMode: 0
+        animStartOffsetSeconds: 0
+        animStartOffsetNormalized: 0
+    - rid: 4681868102985318468
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: c5a41784-dc4a-4c2d-b4e2-787ca2c922ba
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.0166662
+        duration: 0.2
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Buffer1
+    - rid: 4681868102985318469
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: c1b6a843-422d-4d08-8166-43406938b52b
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.2166662
+        duration: 4.600001
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: BackSwing
+    - rid: 4681868102985318470
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 939d85f4-d501-4c8a-b400-ed460bd2da67
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 5.816667
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Evade
+    - rid: 4681868102985318471
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 22468a39-2eaf-4f47-ac9b-d272e5e9f912
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 5.816667
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: SwitchCapture
+    - rid: 4681868102985318472
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: a3a73aa8-3cb0-4a11-9b18-b735be4e46bf
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.2166662
+        duration: 4.600001
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: SwitchExecute
+    - rid: 4681868102985318473
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 4842c7fd-5fab-42eb-866e-c9130fbe4e89
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.16666667
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 192
+        serializedHitLayerMask: 192
+        isSelfImpacted: 0
+        shape:
+          shapeType: 3
+          size: {x: 1, y: 1, z: 1}
+          radius: 3
+          height: 2
+          angle: 180
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 0}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 1
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1050100
+    - rid: 4681868102985318474
+      type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: ff188346-a31a-4769-9a1c-dcc0341d41e0
+        clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 5.816667
+        blendInDuration: 0
+        blendOutDuration: 0
+        localDeltaFilterMode: 1
+        collisionMode: 1
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 1152
+    - rid: 4681868102985318475
+      type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 2d9d6dfd-39ca-44c3-9f8b-5b13f2324f46
+        clipName: "\u65CB\u8F6C\u7247\u6BB5\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.2
+        blendInDuration: 0
+        blendOutDuration: 0
+        referenceDirection: 4
+        rotationMode: 1
+        updateFrequency: 2
+        localRotationOffset: {x: 0, y: 0, z: 0}
+    - rid: 4681868102985318476
+      type: {class: CameraControlClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 7701d3d3-0633-42a2-aa09-7893790d5764
+        clipName: "\u76F8\u673A\u63A7\u5236\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.50000006
+        blendInDuration: 0
+        blendOutDuration: 0
+        controlMode: 1
+        unlockOnExit: 1
+        lockYaw: 1
+        lockPitch: 1
+        recenterTarget: 3
+        smoothTime: 0.25
+        targetPitch: 12
+        framingBiasAngle: -8
+        deadzoneAngle: 1.5
+        allowSoftInputInterrupt: 1
+        disableInputDuringRecenter: 1
+        unlockInputOnExit: 1
+        enableDistanceAndFovOverride: 0
+        instantDistanceOnEnter: 1
+        recenterDistance: 1.8
+        recenterFOV: 45
+        recenterFovBlendSpeed: 6
+        recenterRestoreFovOnExit: 1
+        recenterRestoreSpeed: 2
+        lookAtOffset: {x: 0, y: 1.2, z: 0}
+        trackSmoothSpeed: 8
+        fallbackToCharacter: 1
+        restoreLookAtOnExit: 1
+        targetFOV: 45
+        targetDistance: 3.5
+        blendInSpeed: 5
+        blendOutSpeed: 5
+        restoreOnExit: 1
+    - rid: 6379258120226209896
+      type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: c09fd0e6-b27f-4623-b52a-c007e3286d25
+        clipName: "\u52A8\u753B\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.5
+        duration: 4.316667
+        blendInDuration: 0.1833334
+        blendOutDuration: 0
+        animationClip: {fileID: -416984191892264020, guid: edeaa8d47572b824888e18124223782d,
+          type: 3}
+        playbackSpeed: 1
+        layer: 0
+        overrideMask: {fileID: 0}
+        clipRef:
+          guid: edeaa8d47572b824888e18124223782d
+          assetName: Avatar_Female_Size01_QingYi_Ani_Attack_ExSpecial_End
+          assetPath: Assets/RawArtAssets/Animation/Role/QingYi/Avatar_Female_Size01_QingYi_Ani.fbx
+        maskRef:
+          guid: 
+          assetName: 
+          assetPath: 
+        animStartOffsetMode: 0
+        animStartOffsetSeconds: 0
+        animStartOffsetNormalized: 0
+    - rid: 6379258120226209897
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 53ae97c7-32b0-4016-8248-db9eaef60e36
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.28333336
+        duration: 0.10000008
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 192
+        serializedHitLayerMask: 192
+        isSelfImpacted: 0
+        shape:
+          shapeType: 3
+          size: {x: 1, y: 1, z: 1}
+          radius: 3
+          height: 2
+          angle: 180
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 0}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 1
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1050100
+    - rid: 6379258120226209898
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 165d5b81-2658-4a8f-a7f5-11777c4f2aeb
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.4333335
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 192
+        serializedHitLayerMask: 192
+        isSelfImpacted: 0
+        shape:
+          shapeType: 3
+          size: {x: 1, y: 1, z: 1}
+          radius: 3
+          height: 2
+          angle: 180
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 0}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 1
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1050100
+    - rid: 6379258120226209908
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: ddb21a2e-b9f3-4acf-bd4c-6ff02d2e8afe
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379258120226209909
+    - rid: 6379258120226209909
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 07b1371a-b1b7-49ba-ab7e-f3595d60adb2
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.2166662
+        duration: 0.3
+        blendInDuration: 0
+        blendOutDuration: 0
+        comboTag: Execute1
+    - rid: 6379258120226209910
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 62ada2b1-7f25-4967-8e18-d5ae4d2d7964
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.5333335
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 192
+        serializedHitLayerMask: 192
+        isSelfImpacted: 0
+        shape:
+          shapeType: 3
+          size: {x: 1, y: 1, z: 1}
+          radius: 3
+          height: 2
+          angle: 180
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 0}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 1
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1050100
+    - rid: 6379258120226209911
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: bd1768d1-5fc0-4d72-8bcf-bf5db47d2395
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.6333335
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 192
+        serializedHitLayerMask: 192
+        isSelfImpacted: 0
+        shape:
+          shapeType: 3
+          size: {x: 1, y: 1, z: 1}
+          radius: 3
+          height: 2
+          angle: 180
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 0}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 1
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1050100
+    - rid: 6379258120226209912
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 794b7dc5-313a-47c8-9773-5c757f8d8658
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.7333335
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 192
+        serializedHitLayerMask: 192
+        isSelfImpacted: 0
+        shape:
+          shapeType: 3
+          size: {x: 1, y: 1, z: 1}
+          radius: 3
+          height: 2
+          angle: 180
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 0}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 1
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1050100
+    - rid: 6379258120226209913
+      type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 2b1e42cf-f9b6-4acc-aa3a-8ab6c01d0319
+        clipName: "\u6253\u51FB\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.0333331
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        detectFrequency: 0
+        times: 1
+        maxHitTargets: 0
+        targetSortMode: 1
+        hitDirectionMode: 0
+        customHitDirection: {x: 0, y: 1}
+        hitLayerMask:
+          serializedVersion: 2
+          m_Bits: 192
+        serializedHitLayerMask: 192
+        isSelfImpacted: 0
+        shape:
+          shapeType: 3
+          size: {x: 1, y: 1, z: 1}
+          radius: 3
+          height: 2
+          angle: 180
+          innerRadius: 1
+        hitBoxFollowMode: 1
+        bindPoint: 0
+        customBoneName: 
+        positionOffset: {x: 0, y: 1, z: 0}
+        rotationOffset: {x: 0, y: 0, z: 0}
+        detects:
+        - hitMode: 0
+          multiHitCount: 3
+          multiHitDuration: 0.2
+          enableHitStop: 1
+          hitStopDuration: 0.05
+          hitStopScale: 0
+          hitStunDuration: 0.3
+          hitVFXPrefab: {fileID: 0}
+          hitVFXRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitVFXHeight: 1
+          hitVFXPreviewOffsetXZ: {x: 0, y: 0}
+          hitVFXScale: {x: 1, y: 1, z: 1}
+          followTarget: 1
+          hitAudioClip: {fileID: 0}
+          hitAudioRef:
+            guid: 
+            assetName: 
+            assetPath: 
+          hitEffectId: 1050100

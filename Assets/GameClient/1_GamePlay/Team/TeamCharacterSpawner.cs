@@ -77,7 +77,7 @@ namespace Game.GamePlay
             entity.Init(config);
             entity.EnsureRuntimeInitialized();
             entity.SetControlActive(false);
-            entity.CommandBuffer?.Clear();
+            entity.RouteArbitrator?.Clear();
 
             // 显式时钟生命周期装配：挂载至角色时钟通道
             TimeManager.Instance?.RegisterRoleClock(entity.Clock);

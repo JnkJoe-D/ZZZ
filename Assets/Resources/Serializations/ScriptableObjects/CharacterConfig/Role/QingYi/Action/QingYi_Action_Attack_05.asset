@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
+  m_Name: QingYi_Action_Attack_05
+  m_EditorClassIdentifier: 
+  ID: 141130
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: 7fbbe8efaa2ccef429dcc24afac4fccf, type: 3}
+  actionTimelineSO: {fileID: 11400000, guid: c25cc37584822fa4f83106fbf947bfc5, type: 2}
+  CompleteMode: 0
+  CompleteAction: {fileID: 0}
+  CompleteTransitCrossfade: -1
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: ad925bf5dd14b244fba49285cd694f21, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 20
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379258120226209793
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 7b393fefa3b85d746bf7e8741e310b51, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 6379258120226209792
+    ExtraConditions: []
+  RouteSets:
+  - {fileID: 11400000, guid: 49f91d2a59c73d84ba596930fac286ff, type: 2}
+  - {fileID: 11400000, guid: b24226d1790a13c4ab8e94253241596e, type: 2}
+  - {fileID: 11400000, guid: 1079305e8d007e04a96d5d337f6c425a, type: 2}
+  - {fileID: 11400000, guid: 807b3fb8d499de04d949afb8e12911e8, type: 2}
+  EnterState: 40
+  InheritMode: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 6379258120226209792
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 20
+        RequiredWindow:
+          rid: 6379258143149917035
+        RequiredWindowTag: Buffer1
+        Modifiers: []
+    - rid: 6379258120226209793
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916783
+        RequiredWindowTag: Buffer2
+        Modifiers: []
+    - rid: 6379258143149916783
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer2
+    - rid: 6379258143149917035
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1

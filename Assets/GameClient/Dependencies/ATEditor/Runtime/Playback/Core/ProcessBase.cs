@@ -16,7 +16,7 @@ namespace ATEditor
         /// </summary>
         protected ProcessContext context;
 
-        public void Initialize(ClipBase clipData, ProcessContext context)
+        public virtual void Initialize(ClipBase clipData, ProcessContext context)
         {
             this.clip = (TClip)clipData;
             this.context = context;
@@ -45,7 +45,7 @@ namespace ATEditor
         public virtual void OnSeek(float targetTime) { }
 
         public virtual void OnExit() { }
-
+        public virtual void OnStop() { }
         public virtual void OnDisable() { }
     }
 }

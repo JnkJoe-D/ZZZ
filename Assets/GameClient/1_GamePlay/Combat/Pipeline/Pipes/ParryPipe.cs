@@ -10,7 +10,7 @@ namespace Game.GamePlay
     public class ParryPipe : IHitPipe
     {
         public string PipeName => "ParryPipe";
-        public int Priority => 50;
+        public int Priority => 100;
 
         public void Process(HitPipelineContext ctx)
         {

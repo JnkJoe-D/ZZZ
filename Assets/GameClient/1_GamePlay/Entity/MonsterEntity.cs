@@ -39,7 +39,7 @@ namespace Game.GamePlay
             var monsterConfig = (MonsterConfigAsset)config;
 
             AttributeResolver = new MonsterAttributeResolver(this);
-            CommandBuffer ??= new CommandBuffer(BufferMode.SingleOverride);
+            RouteArbitrator ??= new RouteArbitrator();
             ActionController ??= EntityControllerFactory.Create<ActionController>(this);
 
             // 1. 注册运行时状态数据容器

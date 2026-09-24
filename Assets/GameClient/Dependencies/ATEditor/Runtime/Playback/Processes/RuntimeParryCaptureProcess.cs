@@ -24,7 +24,7 @@ namespace ATEditor
             _handler?.OnCaptureWindowExit(isInterrupted: false);
         }
 
-        public override void OnDisable()
+        public override void OnStop()
         {
             bool isInterrupted = context != null && context.IsInterrupted;
             _handler?.OnCaptureWindowExit(isInterrupted: isInterrupted);

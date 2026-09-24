@@ -73,6 +73,9 @@ namespace ATEditor
                         RotateToDirection(_transformHandler.GetInputDirection(true), immediate, offset, speed);
                     }
                     break;
+                case RotationReference.Camera:
+                    RotateToDirection(_transformHandler.GetCameraDirection(), immediate, offset, speed);
+                    break;
             }
         }
 

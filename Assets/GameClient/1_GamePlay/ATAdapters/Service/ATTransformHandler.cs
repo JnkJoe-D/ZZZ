@@ -170,5 +170,9 @@ namespace Game.GamePlay
 
             return Vector3.zero;
         }
+        public Vector3 GetCameraDirection()
+        {
+            return _entity?.MovementComponent?.GetCameraDirection() ?? _entity.transform.forward;
+        }
     }
 }

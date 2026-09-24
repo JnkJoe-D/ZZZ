@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: QingYI_RouteSet_ToEvade
+  m_EditorClassIdentifier: 
+  TargetScope: 2
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 7f84f4b4de7b9a540b6dc10f51c1af3e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 1
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500741
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 2188fbf1ff95f1b44916b10c3e159251, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 1
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500742
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 7f84f4b4de7b9a540b6dc10f51c1af3e, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 1
+    CrossfadeOverride: -1
+    TriggerStrategy:
+      rid: 4681868330708500743
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4681868330708500741
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917040
+        RequiredWindowTag: 
+        Modifiers:
+        - Category: 20
+          RequiredKey: 10
+          InputCondition:
+            rid: 4681868508892233739
+          Inverse: 0
+    - rid: 4681868330708500742
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917041
+        RequiredWindowTag: 
+        Modifiers: []
+    - rid: 4681868330708500743
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917042
+        RequiredWindowTag: 
+        Modifiers:
+        - Category: 10
+          RequiredKey: 10
+          InputCondition:
+            rid: -2
+          Inverse: 0
+    - rid: 4681868508892233739
+      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Inverse: 0
+    - rid: 6379258143149917040
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917041
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917042
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade

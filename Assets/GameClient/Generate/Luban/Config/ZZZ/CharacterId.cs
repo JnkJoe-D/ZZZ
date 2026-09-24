@@ -32,6 +32,14 @@ namespace cfg.ZZZ
         /// 艾莲
         /// </summary>
         Ellen = 1003,
+        /// <summary>
+        /// 青衣
+        /// </summary>
+        QingYi = 1004,
+        /// <summary>
+        /// 派派
+        /// </summary>
+        PiPie = 1005,
     }
 
 } 
