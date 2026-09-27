@@ -10,8 +10,10 @@ namespace Game.GamePlay
     {
         CharacterController CharacterController { get; }
         float TurnSpeed { get; set; }
-        /// <summary> 实体的有效物理几何半径（来自 CharacterController 或 CapsuleCollider） </summary>
+        /// <summary> 实体的有效物理几何半径（来自 CharacterController） </summary>
         float CharacterRadius { get; }
+        /// <summary> 实体的有效物理几何高度（来自 CharacterController） </summary>
+        float CharacterHeight { get; }
         void Init(CharacterEntity entity);
         /// <summary>
         /// 驱动角色向指定世界坐标系的方向向量平移
@@ -25,6 +27,10 @@ namespace Game.GamePlay
         void SetCollisionMode(RootMotionCollisionMode mode);
         void SetObstacleMask(LayerMask mask);
         void SetVisualOffsetMode(MotionWindowVisualOffsetMode visualOffsetMode);
+        void SetVisualRotationOffset(float yawOffset);
+        void ResetVisualRotationOffset();
+        void SetRotationFilter(RotationFilterClip clipData);
+        void ClearRotationFilter();
         /// <summary>
         /// 设置角色朝向
         /// </summary>

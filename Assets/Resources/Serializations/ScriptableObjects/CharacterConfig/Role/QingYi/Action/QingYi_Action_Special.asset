@@ -28,6 +28,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6b54149973a433c4797b504474e39a9c, type: 2}
   - {fileID: 11400000, guid: 1079305e8d007e04a96d5d337f6c425a, type: 2}
   - {fileID: 11400000, guid: 807b3fb8d499de04d949afb8e12911e8, type: 2}
+  - {fileID: 11400000, guid: a46bbbbf74379b147beb4e4ec5e60723, type: 2}
   EnterState: 40
   InheritMode: 0
   references:

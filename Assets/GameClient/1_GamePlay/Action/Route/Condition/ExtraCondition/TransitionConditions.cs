@@ -110,7 +110,8 @@ namespace Game.GamePlay
 
             // TargetFinder 只要能拿到对象就算有 Target
             bool hasTarget = actor.TargetFinder.GetTarget() != null;
-            
+
+
             return Inverse ? !hasTarget : hasTarget;
         }
     }

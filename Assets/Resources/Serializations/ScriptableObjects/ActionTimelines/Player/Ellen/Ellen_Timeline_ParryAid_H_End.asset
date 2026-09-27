@@ -48,6 +48,8 @@ MonoBehaviour:
     - rid: 4681868069779800838
     - rid: 6379257864831369248
     - rid: 4681868069779800839
+    - rid: 6379258213830230024
+    - rid: 6379258213830230027
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
     groupName: "\u547D\u4E2D"
     isCollapsed: 0
@@ -263,3 +265,61 @@ MonoBehaviour:
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Evade
+    - rid: 6379258213830230024
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 65ec971c-c6cc-4455-b249-a72586f9b1e4
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379258213830230025
+    - rid: 6379258213830230025
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 7602318a-8eba-464b-9e11-0e7a647adb21
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.4500003
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6379258213830230030
+    - rid: 6379258213830230027
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 0908dc43-1ced-432c-8541-8d87b367dcf1
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379258213830230028
+    - rid: 6379258213830230028
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 7ca9ea65-df63-4ee5-8014-2de61a28dba6
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 3.4500003
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6379258213830230031
+    - rid: 6379258213830230030
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6379258213830230031
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute

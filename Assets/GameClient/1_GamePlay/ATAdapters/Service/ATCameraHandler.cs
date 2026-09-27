@@ -89,5 +89,15 @@ namespace Game.GamePlay
         {
             _entity?.CameraController?.ResetCameraFOVAndDistance(speed);
         }
+
+        public void SetCameraTargetAnchor(CameraTargetScope scope, Vector3 targetWorldPos, float weight, bool syncX, bool syncY, bool syncZ, Vector3 offset, CameraTargetSpace space, bool enableDamping, float smoothTime, float deltaTime)
+        {
+            _entity?.CameraController?.SetCameraTargetAnchor(scope, targetWorldPos, weight, syncX, syncY, syncZ, offset, space, enableDamping, smoothTime, deltaTime);
+        }
+
+        public void RestoreCameraTargetAnchor(CameraTargetScope scope, float duration)
+        {
+            _entity?.CameraController?.RestoreCameraTargetAnchor(scope, duration);
+        }
     }
 }

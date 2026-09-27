@@ -1,3 +1,4 @@
+using Game.Framework;
 using NPBehave;
 using UnityEngine;
 
@@ -20,17 +21,28 @@ namespace Game.GamePlay
             _attackAction = attackAction;
         }
 
+        private ActionConfigAsset _actualAction;
+        private double _startTime;
+        private const float TimeoutSeconds = 8.0f;
+
         protected override void DoStart()
         {
-            if (_attackAction == null || _agent.Context == null)
+            _actualAction = _attackAction;
+            if (_actualAction == null && Blackboard != null && Blackboard.Isset("NextAttackAction"))
+            {
+                _actualAction = Blackboard.Get<ActionConfigAsset>("NextAttackAction");
+            }
+
+            if (_actualAction == null || _agent.Context == null)
             {
                 Stopped(false);
                 return;
             }
 
+            _startTime = RootNode.Clock.ElapsedTime;
             _hasBeenConsumed = false;
             _agent.Context.Strategy = MonsterStrategy.Attack;
-            _agent.Context.PendingAttack = _attackAction;
+            _agent.Context.PendingAttack = _actualAction;
 
             RootNode.Clock.AddUpdateObserver(OnTick);
         }
@@ -53,16 +65,28 @@ namespace Game.GamePlay
             // 2. 状态机已消费，且动作播放完毕
             if (_hasBeenConsumed)
             {
-                if (_agent.CurrentPlayingAction != _attackAction)
+                if (_agent.CurrentPlayingAction != _actualAction)
                 {
                     Finish(true);
+                    return;
                 }
+            }
+
+            // 3. 超时保护
+            if (RootNode.Clock.ElapsedTime - _startTime >= TimeoutSeconds)
+            {
+                GLog.Warning(LogTags.AI, $"MonsterAttackTask timed out waiting for {_actualAction?.name}");
+                Finish(false);
             }
         }
 
         private void Finish(bool success)
         {
             RootNode.Clock.RemoveUpdateObserver(OnTick);
+            if (_agent.Context != null && _agent.Context.PendingAttack == _actualAction)
+            {
+                _agent.Context.PendingAttack = null;
+            }
             Stopped(success);
         }
 

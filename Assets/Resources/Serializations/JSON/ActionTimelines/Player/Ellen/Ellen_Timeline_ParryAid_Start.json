@@ -70,6 +70,9 @@
             "tracks": [
                 {
                     "rid": 1007
+                },
+                {
+                    "rid": 1008
                 }
             ]
         },
@@ -81,7 +84,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1008
+                    "rid": 1009
                 }
             ]
         },
@@ -93,7 +96,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1009
+                    "rid": 1010
                 }
             ]
         },
@@ -105,7 +108,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1010
+                    "rid": 1011
                 }
             ]
         }
@@ -131,7 +134,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ],
                     "isMasterTrack": true,
@@ -222,7 +225,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1013
                         }
                     ]
                 }
@@ -245,7 +248,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1014
                         }
                     ]
                 }
@@ -268,7 +271,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1014
+                            "rid": 1015
                         }
                     ]
                 }
@@ -291,13 +294,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1016
                         }
                     ]
                 }
             },
             {
                 "rid": 1008,
+                "type": {
+                    "class": "EventTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "04e8d3b6-7f56-4e43-92e0-10f4b96fc4e0",
+                    "trackType": "EventTrack",
+                    "trackName": "事件轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1017
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1009,
                 "type": {
                     "class": "MotionWindowTrack",
                     "ns": "ATEditor",
@@ -314,13 +340,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1018
                         }
                     ]
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1010,
                 "type": {
                     "class": "TransformTrack",
                     "ns": "ATEditor",
@@ -337,13 +363,13 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1019
                         }
                     ]
                 }
             },
             {
-                "rid": 1010,
+                "rid": 1011,
                 "type": {
                     "class": "CameraTrack",
                     "ns": "ATEditor",
@@ -360,13 +386,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1018
+                            "rid": 1020
                         }
                     ]
                 }
             },
             {
-                "rid": 1011,
+                "rid": 1012,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -381,7 +407,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34708
+                        "instanceID": 34632
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -404,7 +430,7 @@
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1013,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -419,12 +445,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1019
+                        "rid": 1021
                     }
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1014,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -439,12 +465,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1020
+                        "rid": 1022
                     }
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1015,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -459,12 +485,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1021
+                        "rid": 1023
                     }
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1016,
                 "type": {
                     "class": "ParryCaptureClip",
                     "ns": "ATEditor",
@@ -475,13 +501,36 @@
                     "clipName": "招架捕获窗口",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.0,
+                    "duration": 0.18333333730697633,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0
+                    "blendOutDuration": 0.0,
+                    "data": {
+                        "triggerTiming": 20
+                    }
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1017,
+                "type": {
+                    "class": "ParryCaptureClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "8aa5f49d-f336-485e-aba5-b75dc931c832",
+                    "clipName": "招架捕获窗口",
+                    "isEnabled": true,
+                    "startTime": 0.1666666716337204,
+                    "duration": 0.8333333134651184,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "data": {
+                        "triggerTiming": 10
+                    }
+                }
+            },
+            {
+                "rid": 1018,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -504,7 +553,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1019,
                 "type": {
                     "class": "MovementClip",
                     "ns": "ATEditor",
@@ -554,7 +603,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1020,
                 "type": {
                     "class": "CameraControlClip",
                     "ns": "ATEditor",
@@ -603,7 +652,7 @@
                 }
             },
             {
-                "rid": 1019,
+                "rid": 1021,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -614,7 +663,7 @@
                 }
             },
             {
-                "rid": 1020,
+                "rid": 1022,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -625,7 +674,7 @@
                 }
             },
             {
-                "rid": 1021,
+                "rid": 1023,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",

@@ -80,8 +80,8 @@ MonoBehaviour:
   m_Name: BBCheckFloatData
   m_EditorClassIdentifier: 
   guid: bbcheck-cd-0005
-  position: {x: 493, y: 193}
-  child: {fileID: 3000000000000000001}
+  position: {x: 453.32498, y: 178}
+  child: {fileID: 8953947204227578429}
   key: 3
   op: 6
   value: 0
@@ -129,6 +129,8 @@ MonoBehaviour:
   - {fileID: 3000000000000000002}
   - {fileID: -2287995687045240616}
   - {fileID: -8170295703514271999}
+  - {fileID: 8953947204227578429}
+  - {fileID: 9153738116685318141}
 --- !u!114 &1999599061708079822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,11 +161,14 @@ MonoBehaviour:
   m_Name: MonsterAttackSequenceData
   m_EditorClassIdentifier: 
   guid: attack-seq-0006
-  position: {x: 471, y: 328.4}
+  position: {x: 542, y: 431}
   sequence:
   - action: {fileID: 11400000, guid: 0c41747f46b9f8643ab55ac8d733b3a1, type: 2}
     effectiveRange: 3.5
-    description: Attack_01_Combo
+    description: Attack_01
+  - action: {fileID: 11400000, guid: 7481b629f257b124a8beb45e0e53abde, type: 2}
+    effectiveRange: 5
+    description: Attack_02
   attackInterval: 2.5
 --- !u!114 &3000000000000000002
 MonoBehaviour:
@@ -179,4 +184,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: cooling-strafe-0007
   position: {x: 762, y: 138}
-  strafeDuration: 2
+  strafeDuration: 3
+--- !u!114 &8953947204227578429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31d4fa159e249434483999b6da6dc368, type: 3}
+  m_Name: SequenceData
+  m_EditorClassIdentifier: 
+  guid: 22f2cb87-3bf4-4990-a9ae-10d9d316206f
+  position: {x: 453, y: 288.29254}
+  children:
+  - {fileID: 9153738116685318141}
+  - {fileID: 3000000000000000001}
+--- !u!114 &9153738116685318141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dbefccae621cb6438ea16f11bc4e0c5, type: 3}
+  m_Name: MonsterApproachData
+  m_EditorClassIdentifier: 
+  guid: 6b0da23f-c501-45fd-be7c-f5b1d632d452
+  position: {x: 383, y: 431}
+  defaultRange: 3.5
+  timeout: 3

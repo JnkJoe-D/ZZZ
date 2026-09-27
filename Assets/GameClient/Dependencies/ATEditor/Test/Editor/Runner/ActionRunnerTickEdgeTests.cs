@@ -186,5 +186,47 @@ namespace ATEditor.Test
                 _runner.Stop();
             }, "空时间轴在整个播放生命周期中绝不应抛出任何异常");
         }
+
+        [Test]
+        public void Tick_AdjacentClips_ExitsPrecedeEnters_AndNoOverlap()
+        {
+            // 验证紧邻相邻片段（ClipA.EndTime == ClipB.StartTime）的边界判定与调度顺序
+            // 片段 A: [0.0, 0.5]，片段 B: [0.5, 1.0]
+            var timeline = TestTimelineBuilder.Create(1.0f, isLoop: false);
+            var clipA = timeline.AddMockClip(0.0f, 0.5f, "Clip_A");
+            var clipB = timeline.AddMockClip(0.5f, 0.5f, "Clip_B");
+
+            var executionLog = new System.Collections.Generic.List<string>();
+
+            _runner.Play(timeline, _context, startTime: 0f);
+            var procA = GetProcessForClip(clipA);
+            var procB = GetProcessForClip(clipB);
+
+            procA.CustomOnExitAction = (p) => executionLog.Add("ClipA_Exit");
+            procB.CustomOnEnterAction = (p) => executionLog.Add("ClipB_Enter");
+
+            // 步进到 0.3s：只有 Clip A 活跃
+            _runner.Tick(0.3f);
+            Assert.AreEqual(1, procA.OnEnterCount);
+            Assert.AreEqual(0, procA.OnExitCount);
+            Assert.AreEqual(0, procB.OnEnterCount);
+
+            // 步进到 0.5s：刚好到达交界点！
+            // 预期：半开半闭区间 [StartTime, EndTime) 下，Clip A 退出，Clip B 进入
+            // 两阶段调度下，ClipA_Exit 必须严格优先于 ClipB_Enter 执行！
+            _runner.Tick(0.2f); // t = 0.5s
+
+            Assert.AreEqual(1, procA.OnExitCount, "到达 0.5s 时 Clip A 必须已退出");
+            Assert.AreEqual(1, procB.OnEnterCount, "到达 0.5s 时 Clip B 必须已进入");
+
+            Assert.AreEqual(2, executionLog.Count);
+            Assert.AreEqual("ClipA_Exit", executionLog[0], "旧片段 Exit 必须严格排在第一阶段执行");
+            Assert.AreEqual("ClipB_Enter", executionLog[1], "新片段 Enter 必须严格排在第二阶段执行");
+
+            // 验证 Clip A 在退出前是否补全了 0.5s 的终态插值
+            var updateRecordsA = procA.History.FindAll(r => r.MethodName == nameof(procA.OnUpdate));
+            var lastUpdateA = updateRecordsA[updateRecordsA.Count - 1];
+            Assert.AreEqual(0.5f, lastUpdateA.Time, 0.0001f, "Clip A 退出前必须已完成 EndTime(0.5s) 的终态插值更新");
+        }
     }
 }

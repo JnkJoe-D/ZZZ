@@ -45,7 +45,7 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 6379257712028942354
-    - rid: 6379257712028942358
+    - rid: 6379258182230343765
     - rid: 6379257712028942355
     - rid: 6379257937949097996
   - groupId: 48bd4221-439a-46f0-bbbe-7c608f53feea
@@ -238,12 +238,12 @@ MonoBehaviour:
         clipId: 41440e9a-f2f0-4b58-a436-9fafb6f14784
         clipName: "\u653B\u51FB\u9884\u8B66 (\u9EC4/\u7EA2\u5149)\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.3
-        duration: 0.7
+        startTime: 0.5
+        duration: 0.5
         blendInDuration: 0
         blendOutDuration: 0
         SignalType: 0
-        ParryWeight: 1
+        ParryWeight: 2
         CoverageShape:
           shapeType: 1
           size: {x: 2, y: 1, z: 4}
@@ -252,7 +252,7 @@ MonoBehaviour:
           angle: 120
           innerRadius: 1
         CoverageCenterOffset: {x: 0, y: 1, z: 2}
-        ClashPositionOffset: {x: 0, y: 0, z: 2.2488058}
+        ClashPositionOffset: {x: 0, y: 0, z: 3.2021754}
         AllowInPlaceParry: 1
         ShowGizmos: 1
         DetectionRadius: 30
@@ -263,8 +263,8 @@ MonoBehaviour:
         clipId: 4f458405-9c31-442c-a646-242e12fbb51a
         clipName: "\u6253\u51FB\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.0666667
-        duration: 0.016666668
+        startTime: 1.0333333
+        duration: 0.33333346
         blendInDuration: 0
         blendOutDuration: 0
         detectFrequency: 0
@@ -312,11 +312,42 @@ MonoBehaviour:
             guid: 
             assetName: 
             assetPath: 
-          hitEffectId: 1040000
-    - rid: 6379257712028942358
+          hitEffectId: 9000000
+    - rid: 6379257937949097996
+      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: c0dfb225-2d31-482b-a2d3-94932f56e984
+        trackType: EventTrack
+        trackName: "\u4E8B\u4EF6\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379257937949097998
+    - rid: 6379257937949097998
+      type: {class: ParryContractClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 9ffb73b7-d655-4b1c-8db9-b64aa5442f02
+        clipName: "\u62FC\u5200\u5951\u7EA6\u751F\u547D\u5468\u671F\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.5
+        duration: 1.4166667
+        blendInDuration: 0
+        blendOutDuration: 0
+    - rid: 6379258164158660700
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258164158660701
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Hit
+    - rid: 6379258182230343765
       type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        trackId: 49499b5d-87a2-4b76-84ec-55d8ac235512
+        trackId: ac121e9c-9d92-4f3d-8735-c56823bcfdb9
         trackType: DamageTrack
         trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
         isMuted: 0
@@ -325,16 +356,16 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 6379257712028942359
-        - rid: 6379257712028942360
-    - rid: 6379257712028942359
+        - rid: 6379258182230343766
+        - rid: 6379258182230343767
+    - rid: 6379258182230343766
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        clipId: 7283831a-9866-43af-ab87-444dc959bf8d
+        clipId: 9abb4041-3b2d-42fc-a4c9-48100d2903e7
         clipName: "\u6253\u51FB\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.1833334
-        duration: 0.016666668
+        startTime: 1.2333329
+        duration: 0.36666676
         blendInDuration: 0
         blendOutDuration: 0
         detectFrequency: 0
@@ -350,7 +381,7 @@ MonoBehaviour:
         isSelfImpacted: 0
         shape:
           shapeType: 1
-          size: {x: 2, y: 1, z: 4}
+          size: {x: 2, y: 1, z: 3}
           radius: 2
           height: 2
           angle: 90
@@ -358,7 +389,7 @@ MonoBehaviour:
         hitBoxFollowMode: 1
         bindPoint: 0
         customBoneName: 
-        positionOffset: {x: 0, y: 1, z: 2}
+        positionOffset: {x: 0, y: 1, z: 1.5}
         rotationOffset: {x: 0, y: 0, z: 0}
         detects:
         - hitMode: 0
@@ -382,15 +413,15 @@ MonoBehaviour:
             guid: 
             assetName: 
             assetPath: 
-          hitEffectId: 1040000
-    - rid: 6379257712028942360
+          hitEffectId: 9000000
+    - rid: 6379258182230343767
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        clipId: 715bdc72-5063-4d79-a410-0728e4cf3075
+        clipId: 73538d90-4618-4087-9902-617adebca366
         clipName: "\u6253\u51FB\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.8833334
-        duration: 0.016666668
+        startTime: 1.8833323
+        duration: 0.36666676
         blendInDuration: 0
         blendOutDuration: 0
         detectFrequency: 0
@@ -438,35 +469,4 @@ MonoBehaviour:
             guid: 
             assetName: 
             assetPath: 
-          hitEffectId: 1040000
-    - rid: 6379257937949097996
-      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        trackId: c0dfb225-2d31-482b-a2d3-94932f56e984
-        trackType: EventTrack
-        trackName: "\u4E8B\u4EF6\u8F68\u9053"
-        isMuted: 0
-        isLocked: 0
-        isHidden: 0
-        isCollapsed: 0
-        isEnabled: 1
-        clips:
-        - rid: 6379257937949097998
-    - rid: 6379257937949097998
-      type: {class: ParryContractClip, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        clipId: 9ffb73b7-d655-4b1c-8db9-b64aa5442f02
-        clipName: "\u62FC\u5200\u5951\u7EA6\u751F\u547D\u5468\u671F\u7247\u6BB5"
-        isEnabled: 1
-        startTime: 0.3
-        duration: 1.6000001
-        blendInDuration: 0
-        blendOutDuration: 0
-    - rid: 6379258164158660700
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Execute1
-    - rid: 6379258164158660701
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Hit
+          hitEffectId: 9000000

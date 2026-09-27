@@ -161,6 +161,38 @@ namespace Game.GamePlay
             return false;
         }
 
+        /// <summary> 查询指定成员是否处于切出队列的 Pending（待切出）阶段。 </summary>
+        public bool IsPendingSwitchOut(PartyMember member)
+        {
+            if (member == null) return false;
+
+            for (int i = 0; i < _switchOutQueue.Count; i++)
+            {
+                SwitchOutTask task = _switchOutQueue[i];
+                if (task.Member == member && task.Phase == SwitchOutPhase.Pending)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary> 查询指定实体是否处于切出队列的 Pending（待切出）阶段。 </summary>
+        public bool IsPendingSwitchOut(RoleEntity entity)
+        {
+            if (entity == null) return false;
+
+            for (int i = 0; i < _switchOutQueue.Count; i++)
+            {
+                SwitchOutTask task = _switchOutQueue[i];
+                if (ReferenceEquals(task.Member?.Entity, entity) && task.Phase == SwitchOutPhase.Pending)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         // ═══════════════════════════════════════════
         //  事件响应与管线驱动入口
         // ═══════════════════════════════════════════

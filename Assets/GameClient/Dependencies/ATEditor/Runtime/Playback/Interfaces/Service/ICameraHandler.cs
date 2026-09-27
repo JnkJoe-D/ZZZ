@@ -26,6 +26,10 @@ namespace ATEditor
         void StopLookAtTarget(bool restore);
         void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed, bool instant = false);
         void ResetCameraFOVAndDistance(float speed);
+
+        // 目标跟随控制 (CameraTargetClip)
+        void SetCameraTargetAnchor(CameraTargetScope scope, Vector3 targetWorldPos, float weight, bool syncX, bool syncY, bool syncZ, Vector3 offset, CameraTargetSpace space, bool enableDamping, float smoothTime, float deltaTime);
+        void RestoreCameraTargetAnchor(CameraTargetScope scope, float duration);
     }
 
     public class CameraControlParams

@@ -108,20 +108,7 @@ namespace Game.GamePlay
             float radius = entity.MovementComponent != null ? entity.MovementComponent.CharacterRadius : 0.5f;
             float checkRadius = radius * (teamConfig != null ? teamConfig.blockRadiusMultipier : 1.0f);
 
-            float height = 2.0f;
-            var cc = entity.GetComponent<CharacterController>();
-            if (cc != null)
-            {
-                height = cc.height;
-            }
-            else
-            {
-                var capsule = entity.GetComponent<CapsuleCollider>();
-                if (capsule != null)
-                {
-                    height = capsule.height;
-                }
-            }
+            float height = entity.MovementComponent != null ? entity.MovementComponent.CharacterHeight : 2.0f;
 
             Vector3 point1 = pos + Vector3.up * checkRadius;
             Vector3 point2 = pos + Vector3.up * Mathf.Max(checkRadius, height - checkRadius);

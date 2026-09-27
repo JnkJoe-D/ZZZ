@@ -53,8 +53,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916981
-        RequiredWindowTag: DashStart
-        Modifiers:
+        InputConditions:
         - Category: 10
           RequiredKey: 50
           InputCondition:
@@ -67,8 +66,7 @@ MonoBehaviour:
         RequiredPhase: 10
         RequiredWindow:
           rid: 6379258143149916982
-        RequiredWindowTag: DashStart
-        Modifiers:
+        InputConditions:
         - Category: 10
           RequiredKey: 50
           InputCondition:
@@ -80,15 +78,14 @@ MonoBehaviour:
         Timing: 10
         RequiredWindow:
           rid: 6379258143149916974
-        RequiredWindowTag: 
-        Modifiers:
+        InputConditions:
         - Category: 10
-          RequiredKey: 10
+          RequiredKey: 50
           InputCondition:
             rid: -2
           Inverse: 0
         - Category: 10
-          RequiredKey: 50
+          RequiredKey: 10
           InputCondition:
             rid: -2
           Inverse: 0

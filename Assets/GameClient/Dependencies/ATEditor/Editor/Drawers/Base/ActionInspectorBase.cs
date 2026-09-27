@@ -563,6 +563,14 @@ namespace ATEditor.Editor
             {
                 EditorGUILayout.LabelField(name, "List (Not Implemented in Base)");
             }
+            else if (value != null && !fieldType.IsPrimitive && !fieldType.IsEnum && fieldType != typeof(string))
+            {
+                EditorGUILayout.LabelField(name, EditorStyles.boldLabel);
+                EditorGUI.indentLevel++;
+                DrawDefaultInspector(value);
+                EditorGUI.indentLevel--;
+                newValue = value;
+            }
             else
             {
                 EditorGUILayout.LabelField(name, $"Unsupported Type: {fieldType.Name}");

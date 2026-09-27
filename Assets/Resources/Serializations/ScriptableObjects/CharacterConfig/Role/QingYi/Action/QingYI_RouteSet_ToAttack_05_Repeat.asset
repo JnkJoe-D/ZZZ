@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
   m_Name: QingYI_RouteSet_ToAttack_05_Repeat
   m_EditorClassIdentifier: 
+  TargetScope: 2
   Routes:
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: ad925bf5dd14b244fba49285cd694f21, type: 2}
@@ -40,7 +41,7 @@ MonoBehaviour:
         RequiredInput: 20
         RequiredPhase: 0
         RequiredWindow:
-          rid: 6379258143149916687
+          rid: 6379258171200110813
         RequiredWindowTag: Execute2
         Modifiers: []
     - rid: 6379258120226209844
@@ -49,14 +50,14 @@ MonoBehaviour:
         RequiredInput: 20
         RequiredPhase: 0
         RequiredWindow:
-          rid: 6379258143149916686
+          rid: 6379258171200110812
         RequiredWindowTag: Execute2
         Modifiers: []
-    - rid: 6379258143149916686
+    - rid: 6379258171200110812
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        Tag: Execute2
-    - rid: 6379258143149916687
+        Tag: Execute1
+    - rid: 6379258171200110813
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        Tag: Execute2
+        Tag: Execute1

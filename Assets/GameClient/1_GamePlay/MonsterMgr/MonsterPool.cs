@@ -24,7 +24,12 @@ namespace Game.GamePlay
             var go = Spawn(position, rotation, parent);
             if (go == null) return null;
             
-            return go.GetComponent<MonsterEntity>();
+            var entity = go.GetComponent<MonsterEntity>();
+            if (entity == null)
+            {
+                entity = go.AddComponent<MonsterEntity>();
+            }
+            return entity;
         }
 
         /// <summary>
@@ -41,7 +46,11 @@ namespace Game.GamePlay
         private void HandleSpawn(GameObject go)
         {
             // 取出时，GameObjectPool 已经自动调用了 SetActive(true)。
-            // 实体的黑盒重置和初始化工作交由 Manager 调用的 entity.Init() 完成。
+            // 确保纯美术/无脚本预制体也能自动装配 MonsterEntity 聚合根
+            if (go != null && go.GetComponent<MonsterEntity>() == null)
+            {
+                go.AddComponent<MonsterEntity>();
+            }
         }
 
         private void HandleReturn(GameObject go)

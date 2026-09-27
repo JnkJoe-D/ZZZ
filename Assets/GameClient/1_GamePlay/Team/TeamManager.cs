@@ -77,6 +77,9 @@ namespace Game.GamePlay
         /// <summary> 队伍共享的索敌组件。 </summary>
         public ITargetFinder TargetFinder => _teamContext?.TargetFinder;
 
+        /// <summary> 队伍共享的目标锁定器。 </summary>
+        public TargetLocker TargetLocker => _teamContext?.TargetLocker;
+
         /// <summary> 当前被玩家直接操作并占有的主控角色 Entity。 </summary>
         public RoleEntity LocalCharacter { get; internal set; }
 
@@ -139,6 +142,7 @@ namespace Game.GamePlay
         public void Update(float deltaTime)
         {
             _switchExecutor?.Update(deltaTime);
+            _teamContext?.LogicTick(deltaTime);
 
             for (int i = 0; i < _partyMembers.Count; i++)
             {
@@ -388,7 +392,7 @@ namespace Game.GamePlay
                 _teamContext = _teamInstance.AddComponent<RoleTeamContext>();
             }
 
-            _teamContext.Initialize(teamConfig?.TargetSearchConfig);
+            _teamContext.Initialize(teamConfig?.TargetSearchConfig, teamConfig?.TargetLockerConfig);
         }
 
         /// <summary>
@@ -586,7 +590,7 @@ namespace Game.GamePlay
                 return;
             }
 
-            CharacterDebugHUD[] huds = entity.GetComponentsInChildren<CharacterDebugHUD>(true);
+            RoleDebugHuD[] huds = entity.GetComponentsInChildren<RoleDebugHuD>(true);
             for (int i = 0; i < huds.Length; i++)
             {
                 if (huds[i] != null)

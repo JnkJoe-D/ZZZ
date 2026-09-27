@@ -225,17 +225,21 @@ MonoBehaviour:
           guid: 
           assetName: 
           assetPath: 
+        animStartOffsetMode: 0
+        animStartOffsetSeconds: 0
+        animStartOffsetNormalized: 0
     - rid: 4681868069779800745
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: d8e4d5d8-a530-4fc6-8b1b-b4e27195a2dd
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.5000002
+        startTime: 0.5
         duration: 4.616667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: BackSwing
+        routewindow:
+          rid: 6379258171200110778
     - rid: 4681868069779800746
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -246,7 +250,8 @@ MonoBehaviour:
         duration: 5.116667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        routewindow:
+          rid: 6379258171200110779
     - rid: 4681868069779800747
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -257,7 +262,8 @@ MonoBehaviour:
         duration: 5.116667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchCapture
+        routewindow:
+          rid: 6379258171200110781
     - rid: 4681868069779800748
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -268,7 +274,8 @@ MonoBehaviour:
         duration: 5.116667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchExecute
+        routewindow:
+          rid: 6379258171200110782
     - rid: 4681868069779800749
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -307,4 +314,25 @@ MonoBehaviour:
         duration: 5.116667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Evade
+        routewindow:
+          rid: 6379258171200110780
+    - rid: 6379258171200110778
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
+    - rid: 6379258171200110779
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258171200110780
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258171200110781
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6379258171200110782
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute

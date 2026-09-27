@@ -25,6 +25,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 49f91d2a59c73d84ba596930fac286ff, type: 2}
   - {fileID: 11400000, guid: d7c93611739621c439d2f53b40b72bdb, type: 2}
   - {fileID: 11400000, guid: 6b54149973a433c4797b504474e39a9c, type: 2}
+  - {fileID: 11400000, guid: 1079305e8d007e04a96d5d337f6c425a, type: 2}
   EnterState: 10
   InheritMode: 0
   references:

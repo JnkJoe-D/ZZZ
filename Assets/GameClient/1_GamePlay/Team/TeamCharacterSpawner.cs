@@ -67,6 +67,11 @@ namespace Game.GamePlay
                 entity = characterGo.AddComponent<RoleEntity>();
             }
 
+            if (characterGo.GetComponent<RoleDebugHuD>() == null)
+            {
+                characterGo.AddComponent<RoleDebugHuD>();
+            }
+
             onBeforeInit?.Invoke(entity);
 
             if (teamContext != null)

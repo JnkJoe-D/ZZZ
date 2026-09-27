@@ -134,9 +134,21 @@ namespace Game.GamePlay
                     return new WaitForCondition(() => { return true; }, waitCond.checkInterval, waitCond.randomVariance, TranslateChild(data, bb, agent, map));
 
                 // -- Tasks --
+                case MonsterApproachData approachData:
+                    if (agent != null) {
+                        return new MonsterApproachTask(agent, approachData.defaultRange, approachData.timeout);
+                    }
+                    return new NPBehave.Action(() => { });
+
+                case MonsterAttackData attackData:
+                    if (agent != null) {
+                        return new MonsterAttackTask(agent, attackData.attackAction);
+                    }
+                    return new NPBehave.Action(() => { });
+
                 case MonsterAttackSequenceData seqData:
                     if (agent != null) {
-                        return new StatefulAttackSequencerTask(
+                        return new MonsterAttackSequenceTask(
                             seqData,
                             agent,
                             agent.StartAttackCooldown,

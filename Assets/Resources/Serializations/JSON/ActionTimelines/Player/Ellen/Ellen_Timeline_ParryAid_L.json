@@ -354,7 +354,7 @@
                     "blendInDuration": 0.06666667014360428,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34408
+                        "instanceID": 34414
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -472,7 +472,10 @@
                     "startTime": 0.0,
                     "duration": 0.6000000238418579,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0
+                    "blendOutDuration": 0.0,
+                    "data": {
+                        "triggerTiming": 10
+                    }
                 }
             },
             {
@@ -502,7 +505,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "Tag": "Execute2"
+                    "Tag": "Execute1"
                 }
             },
             {

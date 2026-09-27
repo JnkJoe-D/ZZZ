@@ -48,13 +48,14 @@ namespace Game.GamePlay
                         if (effect.BuffId > 0)
                         {
                             GLog.Info(LogTags.Combat, $"命中触发施加 Buff ID: {effect.BuffId} -> {targetEntity.name}");
+                            targetEntity.StatusModule?.Buffs?.AddBuff(effect.BuffId, new BuffApplyContext { Instigator = ctx.Attacker });
                         }
                         break;
                 }
             }
         }
 
-        private void ApplyDamage(HitPipelineContext ctx, CharacterEntity target, float baseDamage)
+        private void ApplyDamage(HitPipelineContext ctx, CharacterEntity target, float dmgMultipier)
         {
             var attributes = target.StatusModule?.Attributes;
             if (attributes == null) return;
@@ -72,7 +73,7 @@ namespace Game.GamePlay
                 def = attributes.GetCurrent(AttributeId.DEF);
             }
 
-            float damage = Mathf.Max(1f, baseDamage + atk - def);
+            float damage = Mathf.Max(1f, dmgMultipier * atk - def);
             ctx.FinalDamage += damage;
 
             if (attributes.Has(AttributeId.HP))
@@ -80,7 +81,7 @@ namespace Game.GamePlay
                 attributes.Modify(AttributeId.HP, -damage);
                 ctx.ResultFlags |= HitResultFlags.Damaged;
 
-                GLog.Info(LogTags.Combat, $"命中成功: {ctx.Attacker?.name} → {target.name} | 造成伤害: {damage:F0} (基础: {baseDamage}) | 目标剩余HP: {attributes.GetCurrent(AttributeId.HP):F0}");
+                GLog.Info(LogTags.Combat, $"命中成功: {ctx.Attacker?.name} → {target.name} | 造成伤害: {damage:F0} (倍率: {dmgMultipier}) | 目标剩余HP: {attributes.GetCurrent(AttributeId.HP):F0}");
 
                 // 致死判定与通用生命周期结算
                 if (attributes.GetCurrent(AttributeId.HP) <= 0f && !target.LifecycleComponent.IsDead)

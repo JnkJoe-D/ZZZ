@@ -28,6 +28,7 @@ namespace Game.GamePlay
 
         [Header("Targeting")]
         public RoleTargetFinder.RoleTargetFinderCfg TargetSearchConfig = new RoleTargetFinder.RoleTargetFinderCfg();
+        public TargetLockerConfig TargetLockerConfig = new TargetLockerConfig();
 
         /// <summary>
         /// 获取靠左排序好的只读成员列表契约（长度恒为 3，空位为 null）。

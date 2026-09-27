@@ -88,6 +88,9 @@ namespace Game.GamePlay
                 Apply(best);
                 return;
             }
+
+            // 3. 检查 CompleteAction 的提前 ExitTime 过渡 (若配置了 HasCustomExitTime)
+            CheckEarlyCompleteActionTransition();
         }
 
         public bool PlayAction(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
@@ -334,7 +337,17 @@ namespace Game.GamePlay
             // Bug #3 修复：副作用（如清除招架标记）在路由确认提交后才执行，
             // 保证 Evaluate 阶段多路由优先级竞争期间不会提前消费一次性状态
             candidate.SourceRoute?.CommitSideEffects(actor);
-            float crossfade = candidate.SourceRoute?.CrossfadeOverride ?? -1f;
+            
+            float crossfade = -1f;
+            if (candidate.ExecuteType == ExecuteTarget.Action && candidate.NextAction != null)
+            {
+                ActionConfigAsset currentAction = GetCurrentAction();
+                if (currentAction != null)
+                {
+                    crossfade = currentAction.GetTransitionCrossfade(candidate.NextAction);
+                }
+            }
+
             Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag, crossfade);
         }
 
@@ -397,7 +410,8 @@ namespace Game.GamePlay
                     if (finished.CompleteAction != null)
                     {
                         RecordRoute(null, finished.CompleteAction, CommandRouteSource.ActionComplete, "TransitToAction");
-                        PlayAction(finished.CompleteAction, finished.CompleteTransitCrossfade);
+                        float completeCrossfade = finished.GetTransitionCrossfade(finished.CompleteAction);
+                        PlayAction(finished.CompleteAction, completeCrossfade);
                         return;
                     }
                     break;
@@ -408,7 +422,48 @@ namespace Game.GamePlay
 
             ActionConfigAsset rootAction = _entity.Config?.ActionRoot;
             RecordRoute(null, rootAction, CommandRouteSource.ActionComplete, "RootFallback");
-            PlayAction(rootAction, -1f);
+            float rootCrossfade = finished != null && rootAction != null ? finished.GetTransitionCrossfade(rootAction) : -1f;
+            PlayAction(rootAction, rootCrossfade);
+        }
+
+        /// <summary>
+        /// 检查当前动作是否配置了针对 CompleteAction 的提前退出过渡 (ExitTime)。
+        /// 若配置了 HasCustomExitTime，则当动作时间轴推进至 ExitTime 时，立即提前触发向 CompleteAction 的平滑过渡。
+        /// </summary>
+        private void CheckEarlyCompleteActionTransition()
+        {
+            if (_isTransitioning || _currentPlayingAction == null || ActionPlayer == null || !ActionPlayer.IsPlaying)
+                return;
+
+            if (_currentPlayingAction.CompleteMode != ActionCompleteMode.TransitToAction 
+                || _currentPlayingAction.CompleteAction == null)
+                return;
+
+            var transition = _currentPlayingAction.GetTransition(_currentPlayingAction.CompleteAction);
+            if (transition == null || !transition.HasCustomExitTime)
+                return;
+
+            float exitTime = transition.CustomExitTime;
+            if (ActionPlayer.CurrentTime >= exitTime)
+            {
+                _isTransitioning = true;
+                try
+                {
+                    ActionConfigAsset targetAction = _currentPlayingAction.CompleteAction;
+                    float crossfade = _currentPlayingAction.GetTransitionCrossfade(targetAction);
+
+                    _activeRouteWindows.Clear();
+                    _entity?.RouteArbitrator?.Clear();
+
+                    if (_actionData != null) _actionData.Set(nameof(_actionData.NextActionToCast), targetAction);
+                    RecordRoute(null, targetAction, CommandRouteSource.ActionComplete, "TransitToAction_EarlyExit");
+                    PlayAction(targetAction, crossfade);
+                }
+                finally
+                {
+                    _isTransitioning = false;
+                }
+            }
         }
 
         private ActionConfigAsset GetCurrentAction()

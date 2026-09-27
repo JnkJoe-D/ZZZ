@@ -44,6 +44,8 @@ namespace Game.GamePlay
         private Vector2 _lastRawMoveInput;
         private Vector2 _smoothedMoveInput;
         private Vector2 _smoothMoveVelocity;
+        private Vector2 _residualMoveInput;
+        private Vector2 _residualMoveVelocity;
         private RoleConfigAsset _cachedRoleConfig;
         private readonly HashSet<int> _heldActions = new();
 
@@ -217,6 +219,8 @@ namespace Game.GamePlay
             _lastRawMoveInput = Vector2.zero;
             _smoothedMoveInput = Vector2.zero;
             _smoothMoveVelocity = Vector2.zero;
+            _residualMoveInput = Vector2.zero;
+            _residualMoveVelocity = Vector2.zero;
             _input.Disable();
         }
 
@@ -245,10 +249,11 @@ namespace Game.GamePlay
                 OnRawMovementZero?.Invoke();
             }
 
-            // 3. 从 RoleConfigAsset 读取衰减阻尼时长（默认 0.08s）
-            float decelDuration = _cachedRoleConfig != null ? _cachedRoleConfig.InputConfig.MoveInputDecelerationDuration : 0.08f;
             float dt = Time.unscaledDeltaTime;
 
+            // 3. 阻尼输入 A（给走跑状态机与通用移动路由用的阻尼输入）
+            // 从 RoleConfigAsset 读取衰减阻尼时长（默认 0.08s）
+            float decelDuration = _cachedRoleConfig != null ? _cachedRoleConfig.InputConfig.MoveInputDecelerationDuration : 0.08f;
             bool hadSmoothedInput = _smoothedMoveInput.sqrMagnitude > 0.001f;
 
             if (hasRawInput)
@@ -276,6 +281,24 @@ namespace Game.GamePlay
                 _smoothMoveVelocity = Vector2.zero;
                 OnMovementZero?.Invoke();
             }
+
+            // 4. 阻尼输入 B（输入残留缓存：专供与当前原生输入对比，计算输入变化向量或180度转向）
+            // 从 RoleConfigAsset 读取残留阻尼时长（默认 0.12s）
+            float residualDuration = _cachedRoleConfig != null ? _cachedRoleConfig.InputConfig.MoveInputResidualDuration : 0.12f;
+            if (residualDuration > 0f)
+            {
+                _residualMoveInput = Vector2.SmoothDamp(_residualMoveInput, _currentMoveInput, ref _residualMoveVelocity, residualDuration, float.MaxValue, dt);
+                if (_residualMoveInput.sqrMagnitude < 0.0001f && !hasRawInput)
+                {
+                    _residualMoveInput = Vector2.zero;
+                    _residualMoveVelocity = Vector2.zero;
+                }
+            }
+            else
+            {
+                _residualMoveInput = _currentMoveInput;
+                _residualMoveVelocity = Vector2.zero;
+            }
         }
 
         // ==========================================
@@ -287,18 +310,34 @@ namespace Game.GamePlay
             return _smoothedMoveInput;
         }
 
+        public Vector2 GetRawMovementDirection()
+        {
+            return _currentMoveInput;
+        }
+
+        public Vector2 GetResidualMovementDirection()
+        {
+            return _residualMoveInput;
+        }
+
         public Vector2 GetLastMovementDirection()
         {
-            return _smoothedMoveInput;
+            return _residualMoveInput;
         }
 
         public bool HasMoveInput()
         {
             return _smoothedMoveInput.sqrMagnitude > 0.001f;
         }
+
         public bool HasRawMoveInput()
         {
             return _currentMoveInput.sqrMagnitude > 0.001f;
+        }
+
+        public bool HasResidualMoveInput()
+        {
+            return _residualMoveInput.sqrMagnitude > 0.01f;
         }
     }
 }

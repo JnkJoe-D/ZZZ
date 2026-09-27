@@ -49,5 +49,9 @@ namespace Game.GamePlay
         void StopLookAtTarget(bool restore);
         void SetCameraFOVAndDistance(float targetFOV, float targetDistance, float speed, bool instant = false);
         void ResetCameraFOVAndDistance(float speed);
+
+        // 目标基准点跟随控制
+        void SetCameraTargetAnchor(ATEditor.CameraTargetScope scope, Vector3 targetWorldPos, float weight, bool syncX, bool syncY, bool syncZ, Vector3 offset, ATEditor.CameraTargetSpace space, bool enableDamping, float smoothTime, float deltaTime);
+        void RestoreCameraTargetAnchor(ATEditor.CameraTargetScope scope, float duration);
     }
 }

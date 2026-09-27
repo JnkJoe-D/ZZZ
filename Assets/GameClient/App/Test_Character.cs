@@ -92,7 +92,7 @@ namespace Game.App
             else
             {
                 UIManager.Instance.Open<Game.UI.StatusPanelModule>();
-                UIManager.Instance.Open<SkillKeyModule>();
+                UIManager.Instance.Open<SkillBtnModule>();
             }
         }
 

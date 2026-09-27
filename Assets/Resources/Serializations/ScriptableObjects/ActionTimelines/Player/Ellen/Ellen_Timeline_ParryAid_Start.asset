@@ -55,6 +55,7 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 6379257712028942346
+    - rid: 6379258182230343755
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
     isCollapsed: 0
@@ -255,9 +256,11 @@ MonoBehaviour:
         clipName: "\u62DB\u67B6\u6355\u83B7\u7A97\u53E3"
         isEnabled: 1
         startTime: 0
-        duration: 1
+        duration: 0.18333334
         blendInDuration: 0
         blendOutDuration: 0
+        data:
+          triggerTiming: 20
     - rid: 6379257712028942364
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -396,3 +399,28 @@ MonoBehaviour:
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: SwitchExecute
+    - rid: 6379258182230343755
+      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 04e8d3b6-7f56-4e43-92e0-10f4b96fc4e0
+        trackType: EventTrack
+        trackName: "\u4E8B\u4EF6\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379258182230343756
+    - rid: 6379258182230343756
+      type: {class: ParryCaptureClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 8aa5f49d-f336-485e-aba5-b75dc931c832
+        clipName: "\u62DB\u67B6\u6355\u83B7\u7A97\u53E3"
+        isEnabled: 1
+        startTime: 0.16666667
+        duration: 0.8333333
+        blendInDuration: 0
+        blendOutDuration: 0
+        data:
+          triggerTiming: 10

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.GamePlay
 {
-    [RequireComponent(typeof(CharacterEntity))]
+    [RequireComponent(typeof(CharacterEntity), typeof(CharacterController))]
     public class MovementComponent : MonoBehaviour, IMovementComponent
     {
         private CharacterController _cc;
@@ -29,39 +29,9 @@ namespace Game.GamePlay
         public float PushResistance = 0f;
         public CharacterController CharacterController => _cc;
 
-        public float CharacterRadius
-        {
-            get
-            {
-                if (_cc != null)
-                {
-                    return _cc.radius + _cc.skinWidth;
-                }
-                var capsule = GetComponent<CapsuleCollider>();
-                if (capsule != null)
-                {
-                    return capsule.radius;
-                }
-                return 0.5f;
-            }
-        }
+        public float CharacterRadius => _cc != null ? _cc.radius + _cc.skinWidth : 0.5f;
 
-        public float CharacterHeight
-        {
-            get
-            {
-                if (_cc != null)
-                {
-                    return _cc.height;
-                }
-                var capsule = GetComponent<CapsuleCollider>();
-                if (capsule != null)
-                {
-                    return capsule.height;
-                }
-                return 2.0f;
-            }
-        }
+        public float CharacterHeight => _cc != null ? _cc.height : 2.0f;
 
         public Vector3 Velocity => _cc != null ? _cc.velocity : Vector3.zero;
 
@@ -83,6 +53,12 @@ namespace Game.GamePlay
         private LayerMask _obstacleMask = ~0;
         
         [SerializeField] private float _rootMotionSkin = 0.01f;
+
+        // --- 根运动旋转过滤与对齐状态 ---
+        private RotationFilterClip _currentRotationFilter;
+        private Quaternion _rotationFilterEnterRotation = Quaternion.identity;
+        private float _accumulatedYaw = 0f;
+        private int _yawDirectionSign = 0;
 
         public void OnComponentInit(CharacterEntity owner)
         {
@@ -107,6 +83,7 @@ namespace Game.GamePlay
         {
             ResetVisualOffset();
             ResetVerticalVelocity();
+            ClearRotationFilter();
         }
 
         private void Awake()
@@ -114,10 +91,11 @@ namespace Game.GamePlay
             _visualOffsetPresenter = GetComponent<IVisualOffsetPresenter>();
 
             _cc = gameObject.GetComponent<CharacterController>();
-            if (_cc != null)
+            if (_cc == null)
             {
-                ApplyDefaultCapsuleSettings();
+                _cc = gameObject.AddComponent<CharacterController>();
             }
+            ApplyDefaultCapsuleSettings();
 
             _animator = GetComponent<Animator>();
             if (_animator == null)
@@ -231,7 +209,7 @@ namespace Game.GamePlay
 
             if (_animator.applyRootMotion && deltaRotation != Quaternion.identity)
             {
-                transform.rotation *= deltaRotation;
+                ApplyRootRotation(deltaRotation);
             }
         }
 
@@ -364,6 +342,153 @@ namespace Game.GamePlay
         public void SetVisualOffsetMode(MotionWindowVisualOffsetMode visualOffsetMode)
         {
             VisualOffsetPresenter?.SetVisualOffsetMode(visualOffsetMode);
+        }
+
+        public void SetVisualRotationOffset(float yawOffset)
+        {
+            VisualOffsetPresenter?.SetVisualRotationOffset(yawOffset);
+        }
+
+        public void ResetVisualRotationOffset()
+        {
+            VisualOffsetPresenter?.ResetVisualRotationOffset();
+        }
+
+        public void SetRotationFilter(RotationFilterClip clipData)
+        {
+            _currentRotationFilter = clipData;
+            _rotationFilterEnterRotation = transform.rotation;
+            _accumulatedYaw = 0f;
+            _yawDirectionSign = 0;
+        }
+
+        public void ClearRotationFilter()
+        {
+            if (_currentRotationFilter != null)
+            {
+                // 注意：在过滤全开（全部勾选）或水平转向 Y 轴被过滤时，必须彻底禁止退出对齐吸附，
+                // 否则末尾的强制吸附会导致过渡到下一个动作时的严重姿态跳变与逻辑异常。
+                bool isRotationSuppressed = _currentRotationFilter.axisMask.IsAllAxesFiltered || _currentRotationFilter.axisMask.FilterY;
+                if (!isRotationSuppressed)
+                {
+                    ApplyExitAlignment(_currentRotationFilter);
+                }
+            }
+            _currentRotationFilter = null;
+            _accumulatedYaw = 0f;
+            _yawDirectionSign = 0;
+        }
+
+        private void ApplyRootRotation(Quaternion deltaRotation)
+        {
+            if (_currentRotationFilter == null)
+            {
+                transform.rotation *= deltaRotation;
+                return;
+            }
+
+            var clip = _currentRotationFilter;
+
+            // 1. 轴向全过滤短路保护：过滤全开时彻底禁止一切根旋转与增量计算
+            if (clip.axisMask.IsAllAxesFiltered)
+            {
+                return;
+            }
+
+            // 2. 提取局部旋转增量角
+            Vector3 deltaEuler = deltaRotation.eulerAngles;
+            float deltaPitch = Mathf.DeltaAngle(0f, deltaEuler.x);
+            float deltaYaw = Mathf.DeltaAngle(0f, deltaEuler.y);
+            float deltaRoll = Mathf.DeltaAngle(0f, deltaEuler.z);
+
+            if (clip.axisMask.FilterX) deltaPitch = 0f;
+            if (clip.axisMask.FilterZ) deltaRoll = 0f;
+            if (clip.axisMask.FilterY) deltaYaw = 0f;
+
+            // 3. 单向单调锁定（针对水平偏航 Yaw）
+            if (clip.lockToSingleDirection && Mathf.Abs(deltaYaw) > 0.0001f)
+            {
+                if (_yawDirectionSign == 0)
+                {
+                    if (Mathf.Abs(deltaYaw) > 0.01f)
+                    {
+                        _yawDirectionSign = deltaYaw > 0f ? 1 : -1;
+                    }
+                }
+                else
+                {
+                    // 若当前增量与主掉头方向相反（反向晃动），直接滤除
+                    if ((_yawDirectionSign > 0 && deltaYaw < 0f) || (_yawDirectionSign < 0 && deltaYaw > 0f))
+                    {
+                        deltaYaw = 0f;
+                    }
+                }
+            }
+
+            // 4. 最大累计旋转角度截断（防止转过头或后半段左右晃动）
+            if (clip.enableMaxAngleLimit && clip.maxAccumulatedAngle > 0f && Mathf.Abs(deltaYaw) > 0.0001f)
+            {
+                float currentAbs = Mathf.Abs(_accumulatedYaw);
+                if (currentAbs >= clip.maxAccumulatedAngle)
+                {
+                    deltaYaw = 0f;
+                }
+                else
+                {
+                    float nextAbs = Mathf.Abs(_accumulatedYaw + deltaYaw);
+                    if (nextAbs > clip.maxAccumulatedAngle)
+                    {
+                        float allowedDelta = (clip.maxAccumulatedAngle - currentAbs) * Mathf.Sign(deltaYaw != 0f ? deltaYaw : (_yawDirectionSign != 0 ? _yawDirectionSign : 1));
+                        deltaYaw = allowedDelta;
+                        _accumulatedYaw = clip.maxAccumulatedAngle * Mathf.Sign(_accumulatedYaw != 0f ? _accumulatedYaw : (_yawDirectionSign != 0 ? _yawDirectionSign : 1));
+                    }
+                    else
+                    {
+                        _accumulatedYaw += deltaYaw;
+                    }
+                }
+            }
+            else
+            {
+                _accumulatedYaw += deltaYaw;
+            }
+
+            // 5. 组合并应用最终过滤后的增量
+            Quaternion finalDeltaRot = Quaternion.Euler(deltaPitch, deltaYaw, deltaRoll);
+            if (finalDeltaRot != Quaternion.identity)
+            {
+                transform.rotation *= finalDeltaRot;
+            }
+        }
+
+        private void ApplyExitAlignment(RotationFilterClip clip)
+        {
+            if (clip == null || clip.exitAlignMode == RotationExitAlignMode.None) return;
+
+            Quaternion targetRotation = transform.rotation;
+
+            if (clip.exitAlignMode == RotationExitAlignMode.SnapToRelativeTarget)
+            {
+                float signedTargetYaw = (_yawDirectionSign >= 0 ? 1f : -1f) * clip.targetRelativeYaw;
+                targetRotation = _rotationFilterEnterRotation * Quaternion.Euler(0f, signedTargetYaw, 0f);
+            }
+            else if (clip.exitAlignMode == RotationExitAlignMode.SnapToInputDirection)
+            {
+                if (_entity is RoleEntity role && role.InputProvider != null && role.InputProvider.HasRawMoveInput())
+                {
+                    Vector2 rawInput = role.InputProvider.GetRawMovementDirection();
+                    Vector3 worldDir = CalculateWorldDirection(rawInput);
+                    if (worldDir.sqrMagnitude > 0.001f)
+                    {
+                        targetRotation = Quaternion.LookRotation(worldDir, Vector3.up);
+                    }
+                }
+            }
+
+            // 统一确保俯仰与翻滚归零
+            Vector3 euler = targetRotation.eulerAngles;
+            targetRotation = Quaternion.Euler(0f, euler.y, 0f);
+            transform.rotation = targetRotation;
         }
 
         public void RotateTo(Vector3 worldDirection, float speed = -1f, Vector3 localOffset = default, float dt = -1f)

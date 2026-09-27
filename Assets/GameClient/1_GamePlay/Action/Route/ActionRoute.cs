@@ -125,9 +125,6 @@ namespace Game.GamePlay
         [Header("Execution")]
         public int Priority;
 
-        [Tooltip("-1表示使用下个动作自身设定的混合时间，>=0则强制覆盖混合时间。")]
-        public float CrossfadeOverride = -1f;
-
         [Header("Trigger Strategy")]
         [SerializeReference, SubclassSelector]
         public IRouteTrigger TriggerStrategy;

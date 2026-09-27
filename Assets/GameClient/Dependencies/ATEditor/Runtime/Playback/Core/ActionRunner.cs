@@ -243,36 +243,44 @@ namespace ATEditor
 
             ATLog.Info($"[SkillRunner] Seek called! targetTime={targetTime}, dt={deltaTime}, processes={processes.Count}");
 
+            // 阶段 1: 退出阶段 (Exits) —— 优先清理所有脱离区间的 Process
             for (int i = 0; i < processes.Count; i++)
             {
                 var inst = processes[i];
-                bool willBeActive = targetTime >= inst.clip.StartTime
-                                 && targetTime <= inst.clip.EndTime;
+                bool willBeActive = IsClipActive(inst.clip, targetTime);
 
                 if (inst.isActive && !willBeActive)
                 {
                     inst.process.OnExit();
                     inst.isActive = false;
                     activeProcesses.Remove(inst);
+                    processes[i] = inst;
                 }
-                else if (inst.isActive && willBeActive)
+            }
+
+            // 阶段 2: 保持/进入阶段 (Seeks & Enters)
+            for (int i = 0; i < processes.Count; i++)
+            {
+                var inst = processes[i];
+                bool willBeActive = IsClipActive(inst.clip, targetTime);
+
+                if (inst.isActive && willBeActive)
                 {
                     inst.process.OnSeek(targetTime);
                 }
-
-                if (!inst.isActive && willBeActive)
+                else if (!inst.isActive && willBeActive)
                 {
                     inst.process.OnEnter();
                     inst.isActive = true;
                     activeProcesses.Add(inst);
+                    processes[i] = inst;
                 }
-
-                processes[i] = inst;
             }
 
-            //刷新当前帧画面
-            foreach (var inst in processes)
+            // 阶段 3: 刷新当前帧画面 (Updates)
+            for (int i = 0; i < processes.Count; i++)
             {
+                var inst = processes[i];
                 if (inst.isActive)
                 {
                     inst.process.OnUpdate(CurrentTime, deltaTime); 
@@ -297,56 +305,67 @@ namespace ATEditor
             {
                 var actingTimeline = Timeline; // 保存当前正在运行的时间轴，以检测运行中是否切招
 
-            CurrentTime += deltaTime;
-            context.CurrentTime = CurrentTime;
-            bool isReversing = deltaTime < 0;
-            // 区间扫描
-            for (int i = 0; i < processes.Count; i++)
-            {
-                var inst = processes[i];
-                bool shouldBeActive =  CurrentTime >= inst.clip.StartTime && CurrentTime <= inst.clip.EndTime;
-                // 进入区间
-                if (shouldBeActive && !inst.isActive)
-                {
-                    inst.process.OnEnter();
-                    // 如果 OnEnter() 中的事件触发了外界强切技能，则 Runner 会重建，当前 foreach 需要直接打断
-                    if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
-                    
-                    inst.isActive = true;
-                    activeProcesses.Add(inst);
-                }
+                CurrentTime += deltaTime;
+                context.CurrentTime = CurrentTime;
+                bool isReversing = deltaTime < 0;
 
-                // 区间内更新
-                if (shouldBeActive && inst.isActive)
+                // 阶段 1: 退出阶段 (Exits) —— 优先执行终态插值并清理所有脱离区间的 Process
+                for (int i = 0; i < processes.Count; i++)
                 {
-                    inst.process.OnUpdate(CurrentTime, deltaTime);
-                    if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
-                }
+                    var inst = processes[i];
+                    bool shouldBeActive = IsClipActive(inst.clip, CurrentTime);
 
-                // 离开区间
-                if (!shouldBeActive && inst.isActive)
-                {
-                    // 如果因为正向或反向步进刚好越界，在退出前强制做一次边界插值保证终态
-                    if (CurrentTime >= inst.clip.EndTime)
+                    if (!shouldBeActive && inst.isActive)
                     {
-                        inst.process.OnUpdate(inst.clip.EndTime, deltaTime);
+                        // 如果因为正向或反向步进刚好越界，在退出前强制做一次边界插值保证终态
+                        if (CurrentTime >= inst.clip.EndTime)
+                        {
+                            inst.process.OnUpdate(inst.clip.EndTime, deltaTime);
+                        }
+                        else if (CurrentTime < inst.clip.StartTime)
+                        {
+                            inst.process.OnUpdate(inst.clip.StartTime, deltaTime);
+                        }
+                        inst.process.OnExit();
+                        if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
+
+                        activeProcesses.Remove(inst);
+                        inst.isActive = false;
+                        processes[i] = inst;
                     }
-                    else if (CurrentTime < inst.clip.StartTime)
-                    {
-                        inst.process.OnUpdate(inst.clip.StartTime, deltaTime);
-                    }
-                    inst.process.OnExit();
-                    if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
-                    
-                    activeProcesses.Remove(inst);
-                    inst.isActive = false;
                 }
 
-                processes[i] = inst;
-            }
+                // 阶段 2: 进入阶段 (Enters) —— 激活所有新进入区间的 Process（确保在所有 Exits 完成后触发）
+                for (int i = 0; i < processes.Count; i++)
+                {
+                    var inst = processes[i];
+                    bool shouldBeActive = IsClipActive(inst.clip, CurrentTime);
 
-            context?.ExecuteTickActions(CurrentTime, deltaTime);
-            context?.ExecuteLateTickActions(CurrentTime, deltaTime);
+                    if (shouldBeActive && !inst.isActive)
+                    {
+                        inst.process.OnEnter();
+                        // 如果 OnEnter() 中的事件触发了外界强切技能，则 Runner 会重建，当前需要直接打断
+                        if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
+
+                        inst.isActive = true;
+                        activeProcesses.Add(inst);
+                        processes[i] = inst;
+                    }
+                }
+
+                // 阶段 3: 更新阶段 (Updates) —— 推进所有当前处于激活状态的 Process
+                for (int i = 0; i < processes.Count; i++)
+                {
+                    var inst = processes[i];
+                    if (inst.isActive)
+                    {
+                        inst.process.OnUpdate(CurrentTime, deltaTime);
+                        if (this.Timeline != actingTimeline || this.CurrentState != State.Playing) return;
+                    }
+                }
+
+                context?.ExecuteTickActions(CurrentTime, deltaTime);
+                context?.ExecuteLateTickActions(CurrentTime, deltaTime);
 
             OnTick?.Invoke(CurrentTime);
 
@@ -399,6 +418,29 @@ namespace ATEditor
         }
 
         // ─── 私有方法 ───
+
+        /// <summary>
+        /// 判断片段在指定时间点是否应当处于激活状态（半开半闭区间 [StartTime, EndTime)）
+        /// </summary>
+        private bool IsClipActive(ClipBase clip, float time)
+        {
+            if (clip == null) return false;
+
+            // 零时长片段：浮点容差精确匹配
+            if (Math.Abs(clip.StartTime - clip.EndTime) <= 0.0001f)
+            {
+                return Math.Abs(time - clip.StartTime) <= 0.0001f;
+            }
+
+            // 播放到时间轴最末尾时，允许右边界包含（避免最后一个压轴片段在终点因微小误差或 == Duration 提前退出）
+            if (Timeline != null && time >= Timeline.Duration && clip.EndTime >= Timeline.Duration)
+            {
+                return time >= clip.StartTime && time <= clip.EndTime;
+            }
+
+            // 标准规范：左闭右开区间 [StartTime, EndTime)
+            return time >= clip.StartTime && time < clip.EndTime;
+        }
 
         /// <summary>
         /// 内部打断：触发事件 → 清理 → 重置

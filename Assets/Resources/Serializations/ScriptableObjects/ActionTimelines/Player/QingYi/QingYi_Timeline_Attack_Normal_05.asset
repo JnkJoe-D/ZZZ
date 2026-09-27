@@ -57,6 +57,7 @@ MonoBehaviour:
     - rid: 4681868069779800887
     - rid: 4681868069779800888
     - rid: 4681868069779800889
+    - rid: 6379258171200110645
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
     isCollapsed: 0
@@ -193,6 +194,7 @@ MonoBehaviour:
         isEnabled: 1
         clips:
         - rid: 4681868069779800902
+        - rid: 6379258182230343793
     - rid: 4681868069779800892
       type: {class: TransformTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -242,7 +244,8 @@ MonoBehaviour:
         duration: 7.8166676
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Evade
+        routewindow:
+          rid: 6379258171200110643
     - rid: 4681868069779800899
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -253,7 +256,8 @@ MonoBehaviour:
         duration: 7.8166676
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchCapture
+        routewindow:
+          rid: 6379258171200110644
     - rid: 4681868069779800900
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -264,7 +268,8 @@ MonoBehaviour:
         duration: 6.816668
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchExecute
+        routewindow:
+          rid: 6379258171200110647
     - rid: 4681868069779800901
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -291,7 +296,7 @@ MonoBehaviour:
           size: {x: 1, y: 1, z: 1}
           radius: 3
           height: 2
-          angle: 180
+          angle: 360
           innerRadius: 1
         hitBoxFollowMode: 1
         bindPoint: 0
@@ -327,15 +332,15 @@ MonoBehaviour:
         clipId: ff188346-a31a-4769-9a1c-dcc0341d41e0
         clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 7.8166685
+        startTime: 0.1
+        duration: 7.7166686
         blendInDuration: 0
         blendOutDuration: 0
-        localDeltaFilterMode: 1
-        collisionMode: 0
+        localDeltaFilterMode: 3
+        collisionMode: 1
         obstacleMask:
           serializedVersion: 2
-          m_Bits: 4294967295
+          m_Bits: 1152
     - rid: 4681868069779800903
       type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -399,7 +404,8 @@ MonoBehaviour:
         duration: 0.3
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Buffer1
+        routewindow:
+          rid: 6379258171200110653
     - rid: 6379258064343400460
       type: {class: VFXClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -443,8 +449,73 @@ MonoBehaviour:
         clipId: 45c57923-b4b7-4f56-8806-e8cadbd862e6
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 0.95000005
+        startTime: 0.65
+        duration: 0.30000007
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Buffer2
+        routewindow:
+          rid: 6379258171200110651
+    - rid: 6379258171200110643
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258171200110644
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6379258171200110645
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: ce2f7418-dbf6-457b-b258-cfebb5f4a519
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 0
+        clips:
+        - rid: 6379258171200110646
+    - rid: 6379258171200110646
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 3afba5f0-b337-4972-ad21-5ceca4a0ca47
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1
+        duration: 6.816668
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6379258171200110648
+    - rid: 6379258171200110647
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute
+    - rid: 6379258171200110648
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchAuto
+    - rid: 6379258171200110651
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer1
+    - rid: 6379258171200110653
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1
+    - rid: 6379258182230343793
+      type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: c81959d7-42bf-4e59-b7be-106286a2b220
+        clipName: "\u52A8\u753B\u4F4D\u79FB\u8FC7\u6EE4\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.1
+        blendInDuration: 0
+        blendOutDuration: 0
+        localDeltaFilterMode: 1
+        collisionMode: 1
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 1152

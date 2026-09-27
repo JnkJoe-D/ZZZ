@@ -46,6 +46,16 @@ namespace Game.UI
                 {
                     _settings = Game.Framework.ResourceManager.Instance.LoadAsset<UIGlobalSettingAsset>("Assets/Resources/Settings/UIGlobalSettingSO.asset");
                 }
+                if (_settings == null)
+                {
+                    _settings = Resources.Load<UIGlobalSettingAsset>("Settings/UIGlobalSettingSO");
+                }
+#if UNITY_EDITOR
+                if (_settings == null)
+                {
+                    _settings = UnityEditor.AssetDatabase.LoadAssetAtPath<UIGlobalSettingAsset>("Assets/Resources/Settings/UIGlobalSettingSO.asset");
+                }
+#endif
                 return _settings;
             }
             set => _settings = value;

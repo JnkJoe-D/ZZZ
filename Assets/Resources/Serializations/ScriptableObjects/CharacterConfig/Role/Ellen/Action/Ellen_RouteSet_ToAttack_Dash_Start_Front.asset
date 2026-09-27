@@ -43,9 +43,8 @@ MonoBehaviour:
         RequiredInput: 10
         RequiredPhase: 0
         RequiredWindow:
-          rid: 6379258143149917011
-        RequiredWindowTag: 
-        Modifiers:
+          rid: 6379258227727269934
+        InputConditions:
         - Category: 10
           RequiredKey: 50
           InputCondition:
@@ -57,19 +56,18 @@ MonoBehaviour:
         RequiredInput: 50
         RequiredPhase: 30
         RequiredWindow:
-          rid: 6379258143149917012
-        RequiredWindowTag: 
-        Modifiers:
+          rid: 6379258227727269933
+        InputConditions:
         - Category: 10
-          RequiredKey: 10
+          RequiredKey: 50
           InputCondition:
             rid: -2
           Inverse: 0
-    - rid: 6379258143149917011
+    - rid: 6379258227727269933
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        Tag: Evade
-    - rid: 6379258143149917012
+        Tag: Execute1
+    - rid: 6379258227727269934
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        Tag: Evade
+        Tag: Execute1

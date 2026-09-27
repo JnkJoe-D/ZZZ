@@ -57,8 +57,6 @@ namespace Game.GamePlay
             {
                 var cc = target.GetComponent<CharacterController>();
                 if (cc != null) return cc.radius + cc.skinWidth;
-                var capsule = target.GetComponent<CapsuleCollider>();
-                if (capsule != null) return capsule.radius;
             }
             return 0.5f;
         }
@@ -67,8 +65,6 @@ namespace Game.GamePlay
         {
             var cc = _entity.GetComponent<CharacterController>();
             if (cc != null) return cc.height;
-            var capsule = _entity.GetComponent<CapsuleCollider>();
-            if (capsule != null) return capsule.height;
             return 2.0f;
         }
 
@@ -76,8 +72,6 @@ namespace Game.GamePlay
         {
             var cc = _entity.GetComponent<CharacterController>();
             if (cc != null) return cc.center;
-            var capsule = _entity.GetComponent<CapsuleCollider>();
-            if (capsule != null) return capsule.center;
             return new Vector3(0f, 1.0f, 0f);
         }
 

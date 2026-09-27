@@ -37,3 +37,9 @@ MonoBehaviour:
     PriorityTags:
     - Enemy
     - Monster
+  TargetLockerConfig:
+    LockRadius: 10
+    LoseRadius: 10
+    ScanInterval: 0.08
+    ForwardAngleWeight: 0.35
+    ViewFovHalfAngle: 90

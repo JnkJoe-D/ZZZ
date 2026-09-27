@@ -106,10 +106,12 @@ namespace Game.GamePlay
 
                     _runner = new ActionRunner(ATEditor.PlayMode.Runtime);
 
-                    // 如果动作配置了强制的过渡时间，注给 Context
-                    if (config.CompleteTransitCrossfade >= 0f)
+                    // 如果动作配置了强制的过渡时间，注入给 Context
+                    var nextConfig = actions[(_currentIndex + 1) % actions.Count];
+                    float crossfade = config.GetTransitionCrossfade(nextConfig);
+                    if (crossfade >= 0f)
                     {
-                        _context.TransitionCrossfadeOverride = config.CompleteTransitCrossfade;
+                        _context.TransitionCrossfadeOverride = crossfade;
                     }
 
                     _runner.Play(timeline, _context, overshoot);

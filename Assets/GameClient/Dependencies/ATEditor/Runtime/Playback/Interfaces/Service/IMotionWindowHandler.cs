@@ -16,5 +16,12 @@ namespace ATEditor
 
         void EnableVisualOffsetRecover(float speed);
         void DisableVisualOffsetRecover();
+
+        void EnableRotationFilter(RotationFilterClip clipData);
+        void DisableRotationFilter();
+
+        void EnableVisualRotationOffset(VisualRotationOffsetClip clipData);
+        void UpdateVisualRotationOffset(float normalizedTime);
+        void DisableVisualRotationOffset();
     }
 }

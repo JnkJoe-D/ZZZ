@@ -233,7 +233,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
-          rid: 6379258143149916953
+          rid: 6379258182230343769
     - rid: 6379257934100824084
       type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -282,6 +282,8 @@ MonoBehaviour:
         duration: 0.6
         blendInDuration: 0
         blendOutDuration: 0
+        data:
+          triggerTiming: 10
     - rid: 6379257937949097990
       type: {class: StatusTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -311,7 +313,7 @@ MonoBehaviour:
       type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Buffer1
-    - rid: 6379258143149916953
+    - rid: 6379258182230343769
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        Tag: Execute2
+        Tag: Execute1

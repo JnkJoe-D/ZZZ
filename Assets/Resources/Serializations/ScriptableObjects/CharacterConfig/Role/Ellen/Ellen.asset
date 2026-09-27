@@ -26,7 +26,8 @@ MonoBehaviour:
   UIConfig: {fileID: 11400000, guid: 1bb90a7b62951834abf1c70b166dd838, type: 2}
   InputConfig:
     MoveShortInputThreshold: 0.2
-    MoveInputDecelerationDuration: 0.08
+    MoveInputDecelerationDuration: 0.04
+    MoveInputResidualDuration: 0.12
   EvadeConfig:
     LimitedTimes: 2
     CoolDown: 1

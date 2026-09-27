@@ -224,6 +224,9 @@ MonoBehaviour:
           guid: 
           assetName: 
           assetPath: 
+        animStartOffsetMode: 0
+        animStartOffsetSeconds: 0
+        animStartOffsetNormalized: 0
     - rid: 4681868069779800729
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -234,7 +237,8 @@ MonoBehaviour:
         duration: 0.40000004
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        routewindow:
+          rid: 6379258171200110783
     - rid: 4681868069779800730
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -245,7 +249,8 @@ MonoBehaviour:
         duration: 0.40000004
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Evade
+        routewindow:
+          rid: 6379258171200110784
     - rid: 4681868069779800731
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -256,7 +261,8 @@ MonoBehaviour:
         duration: 0.40000004
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchCapture
+        routewindow:
+          rid: 6379258171200110785
     - rid: 4681868069779800732
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -267,7 +273,8 @@ MonoBehaviour:
         duration: 0.40000004
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchExecute
+        routewindow:
+          rid: 6379258171200110786
     - rid: 4681868069779800733
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -283,3 +290,19 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 4294967295
+    - rid: 6379258171200110783
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258171200110784
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258171200110785
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6379258171200110786
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute

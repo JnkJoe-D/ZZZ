@@ -237,7 +237,8 @@ MonoBehaviour:
         duration: 0.5
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        routewindow:
+          rid: 6379258171200110800
     - rid: 4681868069779800830
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -248,7 +249,8 @@ MonoBehaviour:
         duration: 0.5
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Evade
+        routewindow:
+          rid: 6379258171200110801
     - rid: 4681868069779800831
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -259,7 +261,8 @@ MonoBehaviour:
         duration: 0.5
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchCapture
+        routewindow:
+          rid: 6379258171200110802
     - rid: 4681868069779800832
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -270,7 +273,8 @@ MonoBehaviour:
         duration: 0.5
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchExecute
+        routewindow:
+          rid: 6379258171200110803
     - rid: 4681868069779800833
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -286,3 +290,19 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 4294967295
+    - rid: 6379258171200110800
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258171200110801
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
+    - rid: 6379258171200110802
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6379258171200110803
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute

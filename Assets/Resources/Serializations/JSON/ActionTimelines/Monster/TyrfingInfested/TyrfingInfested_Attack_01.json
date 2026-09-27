@@ -191,7 +191,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "49499b5d-87a2-4b76-84ec-55d8ac235512",
+                    "trackId": "ac121e9c-9d92-4f3d-8735-c56823bcfdb9",
                     "trackType": "DamageTrack",
                     "trackName": "命中判定轨道",
                     "isMuted": false,
@@ -317,7 +317,7 @@
                     "blendInDuration": 0.10000000149011612,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34568
+                        "instanceID": 34530
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -398,8 +398,8 @@
                     "clipId": "4f458405-9c31-442c-a646-242e12fbb51a",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 1.0666667222976685,
-                    "duration": 0.01666666753590107,
+                    "startTime": 1.0333333015441895,
+                    "duration": 0.33333346247673037,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "detectFrequency": 0,
@@ -478,7 +478,7 @@
                                 "assetName": "",
                                 "assetPath": ""
                             },
-                            "hitEffectId": 1040000
+                            "hitEffectId": 9000000
                         }
                     ]
                 }
@@ -491,11 +491,11 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "7283831a-9866-43af-ab87-444dc959bf8d",
+                    "clipId": "9abb4041-3b2d-42fc-a4c9-48100d2903e7",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 1.183333396911621,
-                    "duration": 0.01666666753590107,
+                    "startTime": 1.233332872390747,
+                    "duration": 0.3666667640209198,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "detectFrequency": 0,
@@ -518,7 +518,7 @@
                         "size": {
                             "x": 2.0,
                             "y": 1.0,
-                            "z": 4.0
+                            "z": 3.0
                         },
                         "radius": 2.0,
                         "height": 2.0,
@@ -531,7 +531,7 @@
                     "positionOffset": {
                         "x": 0.0,
                         "y": 1.0,
-                        "z": 2.0
+                        "z": 1.5
                     },
                     "rotationOffset": {
                         "x": 0.0,
@@ -574,7 +574,7 @@
                                 "assetName": "",
                                 "assetPath": ""
                             },
-                            "hitEffectId": 1040000
+                            "hitEffectId": 9000000
                         }
                     ]
                 }
@@ -587,11 +587,11 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "715bdc72-5063-4d79-a410-0728e4cf3075",
+                    "clipId": "73538d90-4618-4087-9902-617adebca366",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 1.883333444595337,
-                    "duration": 0.01666666753590107,
+                    "startTime": 1.8833322525024415,
+                    "duration": 0.3666667640209198,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "detectFrequency": 0,
@@ -670,7 +670,7 @@
                                 "assetName": "",
                                 "assetPath": ""
                             },
-                            "hitEffectId": 1040000
+                            "hitEffectId": 9000000
                         }
                     ]
                 }
@@ -686,12 +686,12 @@
                     "clipId": "41440e9a-f2f0-4b58-a436-9fafb6f14784",
                     "clipName": "攻击预警 (黄/红光)片段",
                     "isEnabled": true,
-                    "startTime": 0.30000001192092898,
-                    "duration": 0.699999988079071,
+                    "startTime": 0.5,
+                    "duration": 0.5,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "SignalType": 0,
-                    "ParryWeight": 1,
+                    "ParryWeight": 2,
                     "CoverageShape": {
                         "shapeType": 1,
                         "size": {
@@ -712,7 +712,7 @@
                     "ClashPositionOffset": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 2.2488057613372804
+                        "z": 3.2021753787994386
                     },
                     "AllowInPlaceParry": true,
                     "ShowGizmos": true,
@@ -731,8 +731,8 @@
                     "clipId": "9ffb73b7-d655-4b1c-8db9-b64aa5442f02",
                     "clipName": "拼刀契约生命周期片段",
                     "isEnabled": true,
-                    "startTime": 0.30000001192092898,
-                    "duration": 1.6000001430511475,
+                    "startTime": 0.5,
+                    "duration": 1.4166667461395264,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0
                 }

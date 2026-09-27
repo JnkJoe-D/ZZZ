@@ -57,6 +57,7 @@ MonoBehaviour:
     - rid: 4681868069779800887
     - rid: 4681868069779800888
     - rid: 4681868069779800889
+    - rid: 6379258171200110659
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
     isCollapsed: 0
@@ -243,7 +244,8 @@ MonoBehaviour:
         duration: 7.683334
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Evade
+        routewindow:
+          rid: 6379258171200110656
     - rid: 4681868069779800899
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -254,7 +256,8 @@ MonoBehaviour:
         duration: 7.683334
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchCapture
+        routewindow:
+          rid: 6379258171200110657
     - rid: 4681868069779800900
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -265,7 +268,8 @@ MonoBehaviour:
         duration: 6.816667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchExecute
+        routewindow:
+          rid: 6379258171200110658
     - rid: 4681868069779800901
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -292,7 +296,7 @@ MonoBehaviour:
           size: {x: 1, y: 1, z: 1}
           radius: 3
           height: 2
-          angle: 180
+          angle: 360
           innerRadius: 1
         hitBoxFollowMode: 1
         bindPoint: 0
@@ -400,7 +404,8 @@ MonoBehaviour:
         duration: 0.3
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Buffer1
+        routewindow:
+          rid: 6379258171200110655
     - rid: 6379258064343400460
       type: {class: VFXClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -444,11 +449,12 @@ MonoBehaviour:
         clipId: 45c57923-b4b7-4f56-8806-e8cadbd862e6
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 0.84999985
+        startTime: 0.54999983
+        duration: 0.3
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Buffer2
+        routewindow:
+          rid: 6379258171200110654
     - rid: 6379258120226209814
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -464,3 +470,52 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 1152
+    - rid: 6379258171200110654
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer1
+    - rid: 6379258171200110655
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1
+    - rid: 6379258171200110656
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258171200110657
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6379258171200110658
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute
+    - rid: 6379258171200110659
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 2d53e991-5aef-4f2c-9ae1-ba9bb1e64d1e
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 0
+        clips:
+        - rid: 6379258171200110660
+    - rid: 6379258171200110660
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: a8494636-51ea-48a4-a532-792ebcfe1a8a
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.84999985
+        duration: 6.816667
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6379258171200110662
+    - rid: 6379258171200110662
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchAuto

@@ -983,7 +983,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 0,
-      "resilience_bonus": 0
+      "resilience_bonus": 99
     }
   },
   {
@@ -1017,7 +1017,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 0,
-      "resilience_bonus": 0
+      "resilience_bonus": 99
     }
   },
   {
@@ -1441,6 +1441,96 @@
     }
   },
   {
+    "id": 141240,
+    "name": "ParryAid_Start",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 99
+    }
+  },
+  {
+    "id": 141250,
+    "name": "ParryAid_H",
+    "desc": "",
+    "condition": [
+      {
+        "attr_id": 300,
+        "op": 0,
+        "value": 2
+      }
+    ],
+    "cost": [
+      {
+        "attr_id": 300,
+        "cost_type": 0,
+        "amount": 2
+      }
+    ],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 99
+    }
+  },
+  {
+    "id": 141260,
+    "name": "ParryAid_L",
+    "desc": "",
+    "condition": [
+      {
+        "attr_id": 300,
+        "op": 0,
+        "value": 1
+      }
+    ],
+    "cost": [
+      {
+        "attr_id": 300,
+        "cost_type": 0,
+        "amount": 1
+      }
+    ],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 99
+    }
+  },
+  {
+    "id": 141270,
+    "name": "ParryAid_H_End",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 99
+    }
+  },
+  {
+    "id": 141280,
+    "name": "ParryAid_L_End",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 99
+    }
+  },
+  {
+    "id": 141290,
+    "name": "AssultAid",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 99
+    }
+  },
+  {
     "id": 200040,
     "name": "攻击_1",
     "desc": "",
@@ -1459,7 +1549,51 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 5,
-      "resilience_bonus": 5
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200060,
+    "name": "攻击_3",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200070,
+    "name": "攻击_4",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200080,
+    "name": "攻击_5",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200090,
+    "name": "攻击_6",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 5,
+      "resilience_bonus": 0
     }
   }
 ]

@@ -62,14 +62,14 @@ MonoBehaviour:
         RequiredInput: 20
         RequiredPhase: 0
         RequiredWindow:
-          rid: 6379258143149916832
+          rid: 6379258171200110650
         RequiredWindowTag: Buffer2
         Modifiers: []
-    - rid: 6379258143149916832
-      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Buffer2
     - rid: 6379258143149917036
       type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Auto1
+    - rid: 6379258171200110650
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer1

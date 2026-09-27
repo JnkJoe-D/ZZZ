@@ -18,7 +18,14 @@ namespace Game.GamePlay
 
             RoleEntity inEntity = ctx.IncomingEntity;
 
-            // 0. 确保战斗上下文目标注入
+            // 0. 处于 Pending 待切出状态切回：角色保持正在执行的动作，不重新播放切入动作
+            if (ctx.IsIncomingPendingSwitchOut)
+            {
+                GLog.Info(LogTags.Team, $"切入角色 {inEntity.name} 处于 Pending 状态切回，保持当前动作，跳过触发 SwitchIn");
+                return;
+            }
+
+            // 1. 确保战斗上下文目标注入
             if (ctx.TargetAttacker != null)
             {
                 inEntity.TargetFinder?.SetCombatContextTarget(ctx.TargetAttacker);

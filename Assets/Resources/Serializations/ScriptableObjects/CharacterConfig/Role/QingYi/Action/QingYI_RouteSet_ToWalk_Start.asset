@@ -62,17 +62,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916612
-        RequiredWindowTag: Execute1
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258097012572211
-          Inverse: 0
-    - rid: 6379258097012572211
-      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Inverse: 0
+        InputConditions: []
     - rid: 6379258097012572213
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -80,13 +70,7 @@ MonoBehaviour:
         RequiredPhase: 10
         RequiredWindow:
           rid: 6379258143149916613
-        RequiredWindowTag: Execute1
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258097012572215
-          Inverse: 0
+        InputConditions: []
     - rid: 6379258097012572214
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -94,21 +78,7 @@ MonoBehaviour:
         RequiredPhase: 30
         RequiredWindow:
           rid: 6379258143149916614
-        RequiredWindowTag: Execute1
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258097012572216
-          Inverse: 0
-    - rid: 6379258097012572215
-      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Inverse: 0
-    - rid: 6379258097012572216
-      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Inverse: 0
+        InputConditions: []
     - rid: 6379258143149916612
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -127,8 +97,7 @@ MonoBehaviour:
         Timing: 10
         RequiredWindow:
           rid: 6379258143149917056
-        RequiredWindowTag: 
-        Modifiers:
+        InputConditions:
         - Category: 10
           RequiredKey: 10
           InputCondition:

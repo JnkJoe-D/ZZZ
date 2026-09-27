@@ -297,7 +297,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "b12112e4-6c95-45fe-ac4b-19625609127a",
+                    "trackId": "27404557-800f-4cf6-a3c8-914363bd5885",
                     "trackType": "RouteWindowTrack",
                     "trackName": "输入派生窗口",
                     "isMuted": false,
@@ -320,7 +320,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "27404557-800f-4cf6-a3c8-914363bd5885",
+                    "trackId": "b12112e4-6c95-45fe-ac4b-19625609127a",
                     "trackType": "RouteWindowTrack",
                     "trackName": "输入派生窗口",
                     "isMuted": false,
@@ -393,7 +393,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34678
+                        "instanceID": 34686
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -503,11 +503,11 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "f704adb8-bb10-4603-960b-400979d6f38d",
+                    "clipId": "b21f94b8-e5bf-4899-bb21-8af8900cfb11",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.5,
-                    "duration": 2.5833334922790529,
+                    "startTime": 0.0,
+                    "duration": 3.0833334922790529,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -523,7 +523,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "b21f94b8-e5bf-4899-bb21-8af8900cfb11",
+                    "clipId": "f704adb8-bb10-4603-960b-400979d6f38d",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
@@ -610,7 +610,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "Tag": "SwitchExecute"
+                    "Tag": "SwitchCapture"
                 }
             },
             {
@@ -621,7 +621,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "Tag": "SwitchCapture"
+                    "Tag": "SwitchExecute"
                 }
             }
         ]

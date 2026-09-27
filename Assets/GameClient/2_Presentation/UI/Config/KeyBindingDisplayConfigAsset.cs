@@ -29,7 +29,7 @@ namespace Game.UI
     /// 全局按键与图标映射配置资产 (ScriptableObject)
     /// </summary>
     [CreateAssetMenu(fileName = "KeyBindingDisplayConfig", menuName = "Config/UI/Key Binding Display Config")]
-    public class KeyBindingDisplayConfigAsset : ScriptableObject
+    public class KeyBindingDisplayConfigAsset : GameConfigAsset
     {
         [Header("按键映射列表 (覆盖 26 字母、鼠标、主/小键盘、控制键与手柄)")]
         [SerializeField]

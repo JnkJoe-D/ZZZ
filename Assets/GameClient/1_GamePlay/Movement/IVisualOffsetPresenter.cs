@@ -13,5 +13,15 @@ namespace Game.GamePlay
         void ResetVisualOffset();
         void SetVisualRecover(bool active, float speed = 0f);
         void SetVisualOffsetMode(MotionWindowVisualOffsetMode mode);
+
+        /// <summary>
+        /// 设置视觉模型局部偏航角旋转偏移 (单位：度)
+        /// </summary>
+        void SetVisualRotationOffset(float yawOffset);
+
+        /// <summary>
+        /// 重置视觉模型局部旋转偏移为 0 度
+        /// </summary>
+        void ResetVisualRotationOffset();
     }
 }

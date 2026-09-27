@@ -43,6 +43,7 @@ namespace Game.Presentation
         private void OnDisable()
         {
             ResetVisualOffset();
+            ResetVisualRotationOffset();
         }
 
         public void ResetVisualOffset()
@@ -50,6 +51,22 @@ namespace Game.Presentation
             if (_visualRoot != null)
             {
                 _visualRoot.localPosition = Vector3.zero;
+            }
+        }
+
+        public void SetVisualRotationOffset(float yawOffset)
+        {
+            if (_visualRoot != null)
+            {
+                _visualRoot.localRotation = Quaternion.Euler(0f, yawOffset, 0f);
+            }
+        }
+
+        public void ResetVisualRotationOffset()
+        {
+            if (_visualRoot != null)
+            {
+                _visualRoot.localRotation = Quaternion.identity;
             }
         }
 

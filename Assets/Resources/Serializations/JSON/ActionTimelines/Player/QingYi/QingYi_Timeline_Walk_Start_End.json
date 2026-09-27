@@ -341,7 +341,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 51420
+                        "instanceID": 34918
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -357,7 +357,10 @@
                         "guid": "",
                         "assetName": "",
                         "assetPath": ""
-                    }
+                    },
+                    "animStartOffsetMode": 0,
+                    "animStartOffsetSeconds": 0.0,
+                    "animStartOffsetNormalized": 0.0
                 }
             },
             {
@@ -375,7 +378,9 @@
                     "duration": 5.650000095367432,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "comboTag": "Execute1"
+                    "routewindow": {
+                        "rid": 1016
+                    }
                 }
             },
             {
@@ -393,7 +398,9 @@
                     "duration": 5.650000095367432,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "comboTag": "Evade"
+                    "routewindow": {
+                        "rid": 1017
+                    }
                 }
             },
             {
@@ -411,7 +418,9 @@
                     "duration": 5.650000095367432,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "comboTag": "SwitchCapture"
+                    "routewindow": {
+                        "rid": 1018
+                    }
                 }
             },
             {
@@ -429,7 +438,9 @@
                     "duration": 5.650000095367432,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "comboTag": "SwitchExecute"
+                    "routewindow": {
+                        "rid": 1019
+                    }
                 }
             },
             {
@@ -453,6 +464,50 @@
                         "serializedVersion": "2",
                         "m_Bits": 4294967295
                     }
+                }
+            },
+            {
+                "rid": 1016,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "Execute1"
+                }
+            },
+            {
+                "rid": 1017,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "BackSwing1"
+                }
+            },
+            {
+                "rid": 1018,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "SwitchCapture"
+                }
+            },
+            {
+                "rid": 1019,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "SwitchExecute"
                 }
             }
         ]

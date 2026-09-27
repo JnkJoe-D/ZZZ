@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
+  m_Name: QingYi_Action_TurnBack
+  m_EditorClassIdentifier: 
+  ID: 142050
+  Name: 
+  TimelineAsset: {fileID: 4900000, guid: f7050f2951a95a142be0ca6d4a8d7b06, type: 3}
+  actionTimelineSO: {fileID: 11400000, guid: 64f9b22a73cba234ebb994a5159272cc, type: 2}
+  CompleteMode: 20
+  CompleteAction: {fileID: 11400000, guid: 4fac0e6a2fd255f4099400b04a2b662a, type: 2}
+  _transitionTable:
+    _items:
+    - TargetAction: {fileID: 11400000, guid: 4fac0e6a2fd255f4099400b04a2b662a, type: 2}
+      CrossfadeDuration: 0.05
+      HasCustomExitTime: 1
+      CustomExitTime: 1.3
+  Routes: []
+  RouteSets:
+  - {fileID: 11400000, guid: 49f91d2a59c73d84ba596930fac286ff, type: 2}
+  - {fileID: 11400000, guid: 1079305e8d007e04a96d5d337f6c425a, type: 2}
+  - {fileID: 11400000, guid: d7c93611739621c439d2f53b40b72bdb, type: 2}
+  - {fileID: 11400000, guid: 6b54149973a433c4797b504474e39a9c, type: 2}
+  - {fileID: 11400000, guid: f9b3ddeaf2392e54ca3106ef67f21920, type: 2}
+  - {fileID: 11400000, guid: b02b953d87ad6d0489b560232e616319, type: 2}
+  EnterState: 30
+  InheritMode: 0
+  references:
+    version: 2
+    RefIds: []

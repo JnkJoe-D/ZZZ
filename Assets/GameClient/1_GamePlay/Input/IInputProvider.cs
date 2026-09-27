@@ -16,24 +16,39 @@ namespace Game.GamePlay
 
         /// <summary>
         /// 获取当前移动方向（归一化后的二维向量）
-        /// 支持手柄摇杆与 WASD 的通用读取。
+        /// 支持手柄摇杆与 WASD 的通用读取。带有常规松开阻尼衰减，专用于走跑状态机与通用移动路由。
         /// </summary>
         Vector2 GetMovementDirection();
         
         /// <summary>
-        /// 获取上一次移动方向（用于检测瞬间大幅度掉头）
+        /// 获取当前物理原始移动输入方向（无阻尼、零延迟，直接反映硬件按键/摇杆真实瞬时状态）
+        /// </summary>
+        Vector2 GetRawMovementDirection();
+
+        /// <summary>
+        /// 获取输入残留缓存方向（带平滑滞后阻尼，专用于与当前原生输入对比，计算输入变化向量或180度大幅度转向）
+        /// </summary>
+        Vector2 GetResidualMovementDirection();
+
+        /// <summary>
+        /// 获取上一次移动方向（历史残留缓存，与 GetResidualMovementDirection 语义对齐，用于检测瞬间大幅度掉头）
         /// </summary>
         Vector2 GetLastMovementDirection();
 
         /// <summary>
-        /// 是否有有效移动输入
+        /// 是否有有效移动输入（常规阻尼输入，松开后在衰减期内仍判定为有，防止轻微抖动停顿）
         /// </summary>
         bool HasMoveInput();
+
         /// <summary>
-        /// 是否有原始移动输入
+        /// 是否有原始物理移动输入（硬性物理按键/摇杆按下状态）
         /// </summary>
-        /// <returns></returns>
         bool HasRawMoveInput();
+
+        /// <summary>
+        /// 是否存在有效的输入残留缓存（用于确认此前是否处于移动输入状态，避免从完全静止起步时被误判为掉头）
+        /// </summary>
+        bool HasResidualMoveInput();
 
         // ==========================================
         // Held 状态查询（物理按键持有状态，输入层维护，共享且唯一）

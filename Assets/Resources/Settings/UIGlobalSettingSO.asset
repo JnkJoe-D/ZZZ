@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: UIGlobalSettingSO
   m_EditorClassIdentifier: 
   KeyBindingConfig: {fileID: 11400000, guid: 49bf97825bb64c638be6e355912443bb, type: 2}
+  AssetConfig: {fileID: 11400000, guid: ed81aa932b454a54ab0b1b0846a87500, type: 2}
   HudDefaultScale: 1

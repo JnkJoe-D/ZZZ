@@ -22,19 +22,7 @@ namespace Game.GamePlay
         [ComboWindowTag(typeof(BufferRouteWindow), typeof(ExecuteRouteWindow))]
         public RouteWindow RequiredWindow;
 
-        // 仅用于承接历史 YAML 资产反序列化数据，以便数据迁移工具无损升级
-        [SerializeField, HideInInspector]
-        private string RequiredWindowTag;
-
-        public List<RouteModifierCheck> Modifiers = new List<RouteModifierCheck>();
-
-        public void UpgradeLegacyData(Func<string, RouteWindow> resolver)
-        {
-            if (RequiredWindow == null && !string.IsNullOrEmpty(RequiredWindowTag))
-            {
-                RequiredWindow = resolver?.Invoke(RequiredWindowTag);
-            }
-        }
+        public List<RouteModifierCheck> InputConditions = new List<RouteModifierCheck>();
 
         public bool Evaluate(CharacterCommand command, RouteWindow activeWindow, CharacterEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
         {
@@ -49,9 +37,9 @@ namespace Game.GamePlay
                     return false;
             }
 
-            if (Modifiers != null && Modifiers.Count > 0)
+            if (InputConditions != null && InputConditions.Count > 0)
             {
-                foreach (var mod in Modifiers)
+                foreach (var mod in InputConditions)
                 {
                     if (!mod.Evaluate(actor)) return false;
                 }
@@ -67,18 +55,6 @@ namespace Game.GamePlay
         [SerializeReference]
         [ComboWindowTag(typeof(BufferRouteWindow), typeof(ExecuteRouteWindow))]
         public RouteWindow RequiredWindow;
-
-        [SerializeField, HideInInspector]
-        private string RequiredWindowTag;
-
-        public void UpgradeLegacyData(Func<string, RouteWindow> resolver)
-        {
-            if (RequiredWindow == null && !string.IsNullOrEmpty(RequiredWindowTag))
-            {
-                RequiredWindow = resolver?.Invoke(RequiredWindowTag);
-            }
-        }
-
         public bool Evaluate(CharacterCommand command, RouteWindow activeWindow, CharacterEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
         {
             if (command == null || command.Payload is not DirectAssetPayload) return false;
@@ -102,19 +78,7 @@ namespace Game.GamePlay
         [SerializeReference]
         [ComboWindowTag(typeof(BufferRouteWindow), typeof(ExecuteRouteWindow))]
         public RouteWindow RequiredWindow;
-
-        [SerializeField, HideInInspector]
-        private string RequiredWindowTag;
-
-        public void UpgradeLegacyData(Func<string, RouteWindow> resolver)
-        {
-            if (RequiredWindow == null && !string.IsNullOrEmpty(RequiredWindowTag))
-            {
-                RequiredWindow = resolver?.Invoke(RequiredWindowTag);
-            }
-        }
-
-        public List<RouteModifierCheck> Modifiers = new List<RouteModifierCheck>();
+        public List<RouteModifierCheck> InputConditions = new List<RouteModifierCheck>();
 
         public bool Evaluate(CharacterCommand command, RouteWindow activeWindow, CharacterEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
         {
@@ -128,9 +92,9 @@ namespace Game.GamePlay
                     return false;
             }
 
-            if (Modifiers != null)
+            if (InputConditions != null)
             {
-                foreach (var mod in Modifiers)
+                foreach (var mod in InputConditions)
                 {
                     if (!mod.Evaluate(actor)) return false;
                 }
@@ -148,19 +112,7 @@ namespace Game.GamePlay
         [SerializeReference]
         [ComboWindowTag(typeof(AutoRouteWindow))]
         public RouteWindow RequiredWindow;
-
-        [SerializeField, HideInInspector]
-        private string RequiredWindowTag;
-
-        public void UpgradeLegacyData(Func<string, RouteWindow> resolver)
-        {
-            if (RequiredWindow == null && !string.IsNullOrEmpty(RequiredWindowTag))
-            {
-                RequiredWindow = resolver?.Invoke(RequiredWindowTag);
-            }
-        }
-
-        public List<RouteModifierCheck> Modifiers = new List<RouteModifierCheck>();
+        public List<RouteModifierCheck> InputConditions = new List<RouteModifierCheck>();
 
         public bool Evaluate(CharacterCommand command, RouteWindow activeWindow, CharacterEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
         {
@@ -176,9 +128,9 @@ namespace Game.GamePlay
             if (Timing != timing)
                 return false;
 
-            if (Modifiers != null)
+            if (InputConditions != null)
             {
-                foreach (var mod in Modifiers)
+                foreach (var mod in InputConditions)
                 {
                     if (!mod.Evaluate(actor)) return false;
                 }
@@ -197,19 +149,7 @@ namespace Game.GamePlay
         [SerializeReference]
         [ComboWindowTag(typeof(AutoRouteWindow))]
         public RouteWindow RequiredWindow;
-
-        [SerializeField, HideInInspector]
-        private string RequiredWindowTag;
-
-        public void UpgradeLegacyData(Func<string, RouteWindow> resolver)
-        {
-            if (RequiredWindow == null && !string.IsNullOrEmpty(RequiredWindowTag))
-            {
-                RequiredWindow = resolver?.Invoke(RequiredWindowTag);
-            }
-        }
-
-        public List<RouteModifierCheck> Modifiers = new List<RouteModifierCheck>();
+        public List<RouteModifierCheck> InputConditions = new List<RouteModifierCheck>();
 
         public bool Evaluate(CharacterCommand command, RouteWindow activeWindow, CharacterEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
         {
@@ -226,9 +166,9 @@ namespace Game.GamePlay
                 return false;
 
             // 如果没有任何条件，直接返回 false
-            if (Modifiers == null || Modifiers.Count == 0) return false;
+            if (InputConditions == null || InputConditions.Count == 0) return false;
 
-            foreach (var mod in Modifiers)
+            foreach (var mod in InputConditions)
             {
                 if (!mod.Evaluate(actor)) return false;
             }

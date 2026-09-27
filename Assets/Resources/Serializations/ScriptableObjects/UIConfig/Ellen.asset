@@ -17,9 +17,9 @@ MonoBehaviour:
   RoleIconCircle: {fileID: 0}
   MechanicUIPrefab: {fileID: 0}
   EXSpecialAttackID: 140240
-  SpecialAttackNormalIcon: {fileID: 21300000, guid: 6491603bae62cbd4ba2760664415c6c6,
+  SpecialAttackNormalIcon: {fileID: 21300000, guid: 0ad095041e811274286c165376ec7e2e,
     type: 3}
-  SpecialAttackExIcon: {fileID: 21300000, guid: 3243ddb571fdda240ba6ea906c4fd054,
+  SpecialAttackExIcon: {fileID: 21300000, guid: 34ffdbce6975db846b62550b5d4209f9,
     type: 3}
-  UltimateReadyIcon: {fileID: 21300000, guid: 89488c941067ed24c97981817cc9aa7e, type: 3}
-  UltimateNormalIcon: {fileID: 21300000, guid: fbb6a496dd84c54438c2a00555d35f26, type: 3}
+  UltimateReadyIcon: {fileID: 21300000, guid: 282c5544575adb14693e8eb51821ebfe, type: 3}
+  UltimateNormalIcon: {fileID: 21300000, guid: 4c536ba28368de9428bd9ee9bbe78101, type: 3}

@@ -4586,11 +4586,8 @@ GameObject:
   m_Component:
   - component: {fileID: 373933339682860323}
   - component: {fileID: 5977784012519785506}
-  - component: {fileID: 5908842543149302730}
   - component: {fileID: 8738403362999709464}
-  - component: {fileID: 5916555759901799047}
   - component: {fileID: 1978348166349306037}
-  - component: {fileID: 5053675184613036775}
   m_Layer: 9
   m_Name: Avatar_Female_Size02_Ellen
   m_TagString: LocalRole
@@ -4637,23 +4634,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5908842543149302730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5158763610275107262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7db5a2a7245d3a84d822ea3b0fb79628, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _virtualCameraPrefab: {fileID: 6600116627084618121, guid: eefc9c6130678ee44a5750a6b7eb4797,
-    type: 3}
-  _virtualCamera: {fileID: 0}
-  follow: {fileID: 5682943192197801065}
-  lookAt: {fileID: 5682943192197801065}
 --- !u!143 &8738403362999709464
 CharacterController:
   m_ObjectHideFlags: 0
@@ -4680,19 +4660,6 @@ CharacterController:
   m_SkinWidth: 0.015
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.8, z: 0}
---- !u!114 &5916555759901799047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5158763610275107262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cee5e65f44c12874ca41d7de8c1527e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetEntity: {fileID: 5053675184613036775}
 --- !u!114 &1978348166349306037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4707,18 +4674,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followPoint: {fileID: 5682943192197801065}
   lookAtPoint: {fileID: 5682943192197801065}
---- !u!114 &5053675184613036775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5158763610275107262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fadf7f137634994597fc2563180dd68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5196999053846985474
 GameObject:
   m_ObjectHideFlags: 0

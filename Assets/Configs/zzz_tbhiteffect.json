@@ -9,7 +9,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -36,7 +36,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -63,7 +63,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -90,7 +90,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -117,7 +117,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -144,7 +144,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -171,7 +171,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -198,7 +198,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -225,7 +225,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -252,7 +252,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -279,7 +279,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -306,7 +306,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -333,7 +333,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -360,7 +360,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -387,7 +387,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -414,7 +414,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -441,7 +441,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -468,7 +468,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -495,7 +495,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -522,7 +522,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -549,7 +549,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -576,7 +576,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -603,7 +603,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -630,7 +630,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -657,7 +657,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -684,7 +684,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -711,7 +711,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -738,7 +738,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -765,7 +765,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -792,7 +792,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -819,7 +819,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -853,7 +853,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -880,7 +880,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -941,7 +941,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -968,7 +968,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -995,7 +995,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -1022,7 +1022,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 10
@@ -1049,7 +1049,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 10
@@ -1076,7 +1076,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -1103,7 +1103,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -1113,7 +1113,7 @@
         "effect_target": 2,
         "trigger_policy": 1,
         "attr_id": 110,
-        "value": 2,
+        "value": 5,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
@@ -1130,7 +1130,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -1157,7 +1157,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -1184,7 +1184,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -1201,7 +1201,7 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
-        "value": 20,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
@@ -1218,7 +1218,160 @@
         "effect_target": 1,
         "trigger_policy": 1,
         "attr_id": 0,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      }
+    ]
+  },
+  {
+    "id": 1050120,
+    "name": "QingYi_ParryAid_H",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 2,
+        "attr_id": 310,
+        "value": 40,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 70
+      }
+    ]
+  },
+  {
+    "id": 1050130,
+    "name": "QingYi_ParryAid_L",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 2,
+        "attr_id": 310,
         "value": 20,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 70
+      }
+    ]
+  },
+  {
+    "id": 1050140,
+    "name": "QingYi_AssultAid",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      }
+    ]
+  },
+  {
+    "id": 9000000,
+    "name": "TyrflingInfected_Attack_01",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 30
+      }
+    ]
+  },
+  {
+    "id": 9000010,
+    "name": "TyrflingInfected_Attack_02",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      }
+    ]
+  },
+  {
+    "id": 9000020,
+    "name": "TyrflingInfected_Attack_03",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      }
+    ]
+  },
+  {
+    "id": 9000030,
+    "name": "TyrflingInfected_Attack_04",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      }
+    ]
+  },
+  {
+    "id": 9000040,
+    "name": "TyrflingInfected_Attack_05",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 20
+      }
+    ]
+  },
+  {
+    "id": 9000050,
+    "name": "TyrflingInfected_Attack_06",
+    "desc": "",
+    "effects": [
+      {
+        "effect_type": 1,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 0,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20

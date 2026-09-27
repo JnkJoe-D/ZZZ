@@ -86,7 +86,7 @@ MonoBehaviour:
     backDownAction: {fileID: 0}
     fallbackType: 30
   - reactionType: 70
-    turnaroundPolicy: 2
+    turnaroundPolicy: 1
     overrideHitStunDuration: -1
     frontAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
     backAction: {fileID: 0}
@@ -101,10 +101,3 @@ MonoBehaviour:
   launchForce: 0
   superArmorThreshold: 0
   defaultHitStunDuration: 0.5
-  hitAnimLight: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
-  hitAnimHeavy: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
-  hitAnimKnowAway: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
-  hitAnimShake: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
-  hitAnimStay: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
-  hitAnimKnockDown: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
-  hitAnimParry: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}

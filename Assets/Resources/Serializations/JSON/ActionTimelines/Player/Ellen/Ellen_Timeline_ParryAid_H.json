@@ -254,7 +254,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "fa92a7ca-bc4e-402d-91ac-694cafc713f7",
+                    "trackId": "5ba69835-e785-4697-a180-9680c2fc82bb",
                     "trackType": "EventTrack",
                     "trackName": "事件轨道",
                     "isMuted": false,
@@ -277,7 +277,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "5ba69835-e785-4697-a180-9680c2fc82bb",
+                    "trackId": "fa92a7ca-bc4e-402d-91ac-694cafc713f7",
                     "trackType": "EventTrack",
                     "trackName": "事件轨道",
                     "isMuted": false,
@@ -354,7 +354,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34432
+                        "instanceID": 34438
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -419,6 +419,26 @@
             {
                 "rid": 1013,
                 "type": {
+                    "class": "ParryCaptureClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "3d01ffc4-1e05-413a-882a-ec3657a34775",
+                    "clipName": "招架捕获窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.033333420753479,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "data": {
+                        "triggerTiming": 10
+                    }
+                }
+            },
+            {
+                "rid": 1014,
+                "type": {
                     "class": "ParryExecuteClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
@@ -433,23 +453,6 @@
                     "blendOutDuration": 0.0,
                     "hitEffectId": 1040017,
                     "hitStopDuration": 0.20000000298023225
-                }
-            },
-            {
-                "rid": 1014,
-                "type": {
-                    "class": "ParryCaptureClip",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "3d01ffc4-1e05-413a-882a-ec3657a34775",
-                    "clipName": "招架捕获窗口片段",
-                    "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 1.033333420753479,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0
                 }
             },
             {
@@ -502,7 +505,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "Tag": "Execute2"
+                    "Tag": "Execute1"
                 }
             },
             {

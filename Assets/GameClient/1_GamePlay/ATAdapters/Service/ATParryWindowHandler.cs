@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Game.Framework;
 using UnityEngine;
 using ATEditor;
@@ -15,6 +16,7 @@ namespace Game.GamePlay
         private ParryClashContract _currentContract;
 
         private ParryClashContext _pendingClashContext;
+        private readonly HashSet<ParryCaptureData> _activeCaptureWindows = new();
 
         public ATParryWindowHandler(CharacterEntity entity)
         {
@@ -39,23 +41,51 @@ namespace Game.GamePlay
         /// <summary>
         /// 捕获窗口激活 (ParryCaptureClip 进入)
         /// </summary>
-        public void OnCaptureWindowEnter()
+        public void OnCaptureWindowEnter(ParryCaptureData data)
         {
-            SetIsParrying(true);
-            EnsureClashContract();
+            if (data == null) return;
+
+            bool isFirst = _activeCaptureWindows.Count == 0;
+            _activeCaptureWindows.Add(data);
+
+            // 仅在首个招架窗口进入时初始化状态与契约；后续相邻或重叠片段进入时绝不重置 _pendingClashContext
+            if (isFirst)
+            {
+                _pendingClashContext = null;
+                SetIsParrying(true);
+                EnsureClashContract();
+            }
         }
 
         /// <summary>
         /// 捕获窗口退出 (ParryCaptureClip 离开)
         /// </summary>
-        public void OnCaptureWindowExit(bool isInterrupted)
+        public void OnCaptureWindowExit(ParryCaptureData data, bool isInterrupted)
         {
-            SetIsParrying(false);
+            if (data == null) return;
+            _activeCaptureWindows.Remove(data);
 
-            // 打断时不注销契约，保持切人后动作交接保护；仅在自然结束时注销契约
-            if (!isInterrupted)
+            bool triggeredSucceed = false;
+            // 若本片段为 OnExit 触发时机且未被打断，且存在捕获到的未消费命中上下文，则在退出时发布招架成功路由
+            if (!isInterrupted && data.triggerTiming == ParryCaptureTriggerTiming.OnExit)
             {
-                CleanContracts();
+                if (_pendingClashContext != null && !_pendingClashContext.IsConsumed)
+                {
+                    triggeredSucceed = _entity.ActionController != null &&
+                                       _entity.ActionController.TryTriggerEvent(RouteEventType.ParryAidSucceed);
+                }
+            }
+
+            // 只有当所有捕获窗口全部退出后，才关闭招架状态
+            if (_activeCaptureWindows.Count == 0)
+            {
+                SetIsParrying(false);
+
+                // 打断或成功触发招架派生反击时不注销契约，保持动作交接保护；仅在自然无招架结束时注销契约
+                if (!isInterrupted && !triggeredSucceed)
+                {
+                    CleanContracts();
+                }
             }
         }
 
@@ -95,8 +125,22 @@ namespace Game.GamePlay
             // 1. 暂存最新的招架命中上下文（供切入的新动作执行窗消费）
             _pendingClashContext = ctx;
 
-            // 2. 触发动作路由（由路由根据预警重量等条件切入对应轻/重招架动作）
-            _entity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidSucceed);
+            // 2. 检查当前处于活跃状态的捕获窗口中是否存在 Instant 模式
+            bool hasInstantWindow = false;
+            foreach (var win in _activeCaptureWindows)
+            {
+                if (win.triggerTiming == ParryCaptureTriggerTiming.Instant)
+                {
+                    hasInstantWindow = true;
+                    break;
+                }
+            }
+
+            // 3. 若存在 Instant 模式窗口，瞬时触发招架成功路由；若当前全为 OnExit 窗口，则保持格挡架势等待 OnExit
+            if (hasInstantWindow)
+            {
+                _entity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidSucceed);
+            }
         }
 
         /// <summary>
@@ -109,65 +153,21 @@ namespace Game.GamePlay
 
             // 1. 获取反制配置 (由具体动作时间轴 ParryExecuteClip 传入的 hitEffectId 驱动)
             var hitEffectCfg = ConfigManager.Instance?.Tables?.TbHitEffect?.GetOrDefault(hitEffectId);
-            var mainEffect = hitEffectCfg?.Effects != null && hitEffectCfg.Effects.Count > 0 ? hitEffectCfg.Effects[0] : null;
 
-            // 2. 纯数据驱动打断裁决：防守方当前真实动作打断力 vs 攻击方 (怪物) 韧性
+            // 2. 纯数据驱动打断力：防守方当前真实招架动作的打断等级
             int parryInterruptLevel = ActionResilienceHelper.GetInterruptLevel(_entity);
-            int monsterTotalResilience = ActionResilienceHelper.GetTotalResilience(ctx.Attacker);
-            bool canInterruptMonster = parryInterruptLevel > 0 && parryInterruptLevel >= monsterTotalResilience;
 
-            HitReactionType reactionType = HitReactionType.None;
-            if (canInterruptMonster)
-            {
-                reactionType = mainEffect != null && mainEffect.HitReaction != HitReactionType.None
-                    ? mainEffect.HitReaction
-                    : HitReactionType.Parried;
-            }
-
-            // 3. 通用分发配表中配置的反制效果 (削韧失衡 Daze、Buff 等)
-            if (hitEffectCfg?.Effects != null)
-            {
-                foreach (var effect in hitEffectCfg.Effects)
-                {
-                    switch (effect.EffectType)
-                    {
-                        case cfg.ZZZ.HitEffectType.ModifyAttribute:
-                            if (ctx.Attacker.AttributeResolver != null)
-                            {
-                                ctx.Attacker.AttributeResolver.ModifyAttribute((Game.GamePlay.AttributeId)effect.AttrId, effect.Value);
-                            }
-                            else if (ctx.Attacker.StatusModule?.Attributes != null)
-                            {
-                                var targetAttrId = (Game.GamePlay.AttributeId)effect.AttrId;
-                                if (ctx.Attacker.StatusModule.Attributes.Has(targetAttrId))
-                                {
-                                    ctx.Attacker.StatusModule.Attributes.Modify(targetAttrId, effect.Value);
-                                }
-                            }
-                            GLog.Info(LogTags.Combat, $"[ParryExecute] 招架反制生效通用属性修改: AttrId={effect.AttrId}, Value={effect.Value} -> 目标: {ctx.Attacker.name}");
-                            break;
-
-                        case cfg.ZZZ.HitEffectType.ApplyBuff:
-                            if (effect.BuffId > 0)
-                            {
-                                ctx.Attacker.StatusModule?.Buffs?.AddBuff(effect.BuffId, new BuffApplyContext { Instigator = _entity });
-                            }
-                            break;
-                    }
-                }
-            }
-
-            // 4. 驱动攻击者受击动作与深度顿帧反馈 (直接通过标准命中受击管线 HitPipeline，不通过表现组件反向中继)
+            // 3. 构建标准受击管线上下文，由 HitPipeline 权威统筹执行全部数值属性、Buff、动作打断、转向与顿帧
             var pipeline = HitPipeline.Default;
             var pipeCtx = pipeline.AllocateContext();
             pipeCtx.Attacker = _entity;
             pipeCtx.Victim = ctx.Attacker;
-            pipeCtx.HitPoint = ctx.Attacker != null ? ctx.Attacker.transform.position : Vector3.zero;
-            Vector3 hitDir = ctx.Attacker != null ? (ctx.Attacker.transform.position - _entity.transform.position).normalized : Vector3.forward;
+            pipeCtx.HitEffectConfig = hitEffectCfg;
+            pipeCtx.HitPoint = ctx.Attacker.transform.position;
+            Vector3 hitDir = (ctx.Attacker.transform.position - _entity.transform.position).normalized;
             pipeCtx.HitDirection = hitDir;
             pipeCtx.ReactionAxis = -hitDir;
-            pipeCtx.InterruptLevel = canInterruptMonster ? parryInterruptLevel : 0;
-            pipeCtx.SelectedReactionType = reactionType;
+            pipeCtx.InterruptLevel = parryInterruptLevel;
             pipeCtx.EnableHitStop = true;
             pipeCtx.HitStopDuration = hitStopDuration;
             pipeCtx.HitStopScale = 0f;

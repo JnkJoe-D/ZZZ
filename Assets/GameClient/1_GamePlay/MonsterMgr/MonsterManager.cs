@@ -202,7 +202,7 @@ namespace Game.GamePlay
             MonsterEntity entity = pool.SpawnMonster(spawnPos, spawnRot);
             if (entity == null)
             {
-                GLog.Error(LogTags.Monster, "Spawn failed: Prefab lacks MonsterEntity component.");
+                GLog.Error(LogTags.Monster, "Spawn failed: Could not instantiate monster from pool.");
                 return null;
             }
 
@@ -259,5 +259,24 @@ namespace Game.GamePlay
             }
             _activeMonsters.Clear();
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary> 供单元测试注入模拟活跃怪物 </summary>
+        public void RegisterActiveMonsterForTest(MonsterEntity monster)
+        {
+            if (monster != null && !_activeMonsters.Contains(monster))
+            {
+                _activeMonsters.Add(monster);
+            }
+        }
+
+        public void UnregisterActiveMonsterForTest(MonsterEntity monster)
+        {
+            if (monster != null)
+            {
+                _activeMonsters.Remove(monster);
+            }
+        }
+#endif
     }
 }

@@ -67,6 +67,9 @@ namespace Game.GamePlay
                 return;
             }
 
+            // 1.2 预判切入角色是否正处于待切出 (Pending) 阶段
+            ctx.IsIncomingPendingSwitchOut = ctx.Manager.SwitchExecutor?.IsPendingSwitchOut(ctx.IncomingMember) ?? false;
+
             // 1.5 招架合法性校验（底层安全防线：若前端请求了 ParryAid 但当前预警实际已为红光不可招架或失效）
             if (ctx.Type == SwitchType.ParryAid)
             {

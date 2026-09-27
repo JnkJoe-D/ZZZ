@@ -53,8 +53,8 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 6379257712028942346
     - rid: 6379257934100824066
+    - rid: 6379257712028942346
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
     isCollapsed: 0
@@ -246,7 +246,7 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
-          rid: 6379258143149916950
+          rid: 6379258182230343768
     - rid: 6379257934100824066
       type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -282,6 +282,8 @@ MonoBehaviour:
         duration: 1.0333334
         blendInDuration: 0
         blendOutDuration: 0
+        data:
+          triggerTiming: 10
     - rid: 6379257937949097986
       type: {class: StatusTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -311,7 +313,7 @@ MonoBehaviour:
       type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Buffer1
-    - rid: 6379258143149916950
+    - rid: 6379258182230343768
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        Tag: Execute2
+        Tag: Execute1

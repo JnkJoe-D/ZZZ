@@ -1,3 +1,4 @@
+using Game.Framework;
 using UnityEngine;
 
 namespace Game.UI
@@ -7,11 +8,15 @@ namespace Game.UI
     /// 存放于 Assets/Resources/Settings/UIGlobalSettingSO.asset
     /// </summary>
     [CreateAssetMenu(fileName = "UIGlobalSettingSO", menuName = "Config/UI/UI Global Setting")]
-    public class UIGlobalSettingAsset : ScriptableObject
+    public class UIGlobalSettingAsset : GameConfigAsset
     {
         [Header("按键显示配置 (Key Display Config)")]
         [Tooltip("按键与图标映射配置资产 (ScriptableObject)")]
         public KeyBindingDisplayConfigAsset KeyBindingConfig;
+
+        [Header("通用 UI 静态资源与资产配置")]
+        [Tooltip("通用 UI 静态资源与资产配置表 (ScriptableObject)")]
+        public UIAssetConfigAsset AssetConfig;
 
         [Header("通用 UI 参数与资产扩展")]
         [Tooltip("HUD 默认缩放")]

@@ -12,7 +12,8 @@ namespace ATEditor
 
         public override void OnEnter()
         {
-            _handler?.OnCaptureWindowEnter();
+            if (clip?.data == null) return;
+            _handler?.OnCaptureWindowEnter(clip.data);
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
@@ -21,13 +22,15 @@ namespace ATEditor
 
         public override void OnExit()
         {
-            _handler?.OnCaptureWindowExit(isInterrupted: false);
+            if (clip?.data == null) return;
+            _handler?.OnCaptureWindowExit(clip.data, isInterrupted: false);
         }
 
         public override void OnStop()
         {
+            if (clip?.data == null) return;
             bool isInterrupted = context != null && context.IsInterrupted;
-            _handler?.OnCaptureWindowExit(isInterrupted: isInterrupted);
+            _handler?.OnCaptureWindowExit(clip.data, isInterrupted: isInterrupted);
         }
 
         public override void Reset()

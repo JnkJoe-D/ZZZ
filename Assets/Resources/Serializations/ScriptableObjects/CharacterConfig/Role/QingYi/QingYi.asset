@@ -26,12 +26,13 @@ MonoBehaviour:
   UIConfig: {fileID: 11400000, guid: df40856c12fd1734ba05bb4991e2e6f0, type: 2}
   InputConfig:
     MoveShortInputThreshold: 0.2
-    MoveInputDecelerationDuration: 0.08
+    MoveInputDecelerationDuration: 0.04
+    MoveInputResidualDuration: 0.12
   EvadeConfig:
     LimitedTimes: 2
     CoolDown: 1
   AssistConfig:
     SupportType: 0
-    ParryLAction: {fileID: 0}
-    ParryHAction: {fileID: 0}
+    ParryLAction: {fileID: 11400000, guid: 1883259327cd60b4d84e0e2039a6fb15, type: 2}
+    ParryHAction: {fileID: 11400000, guid: e5b85d21470b97f41ba22e1c3629815c, type: 2}
     EvasionAidAction: {fileID: 0}

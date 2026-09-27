@@ -51,8 +51,8 @@ namespace Game.Presentation
             _owner = owner;
             CachePresentationState();
 
-            CameraController = GetComponent<CharacterCameraController>() 
-                ?? gameObject.AddComponent<CharacterCameraController>();
+            CameraController = GetComponent<RoleCameraController>() 
+                ?? gameObject.AddComponent<RoleCameraController>();
             CameraPointBinder = GetComponent<CameraPointBinder>() 
                 ?? gameObject.AddComponent<CameraPointBinder>();
 

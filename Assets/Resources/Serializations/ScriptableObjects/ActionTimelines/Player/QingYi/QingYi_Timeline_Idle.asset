@@ -219,11 +219,14 @@ MonoBehaviour:
         clipRef:
           guid: edeaa8d47572b824888e18124223782d
           assetName: Avatar_Female_Size01_QingYi_Ani_Idle
-          assetPath: Assets/RawArtAssets/Animation/Role/QingYi/Avatar_Female_Size01_QingYi.fbx
+          assetPath: Assets/RawArtAssets/Animation/Role/QingYi/Avatar_Female_Size01_QingYi_Ani.fbx
         maskRef:
           guid: 
           assetName: 
           assetPath: 
+        animStartOffsetMode: 0
+        animStartOffsetSeconds: 0
+        animStartOffsetNormalized: 0
     - rid: 4681868069779800813
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -234,7 +237,8 @@ MonoBehaviour:
         duration: 4.016667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        routewindow:
+          rid: 6379258171200110774
     - rid: 4681868069779800814
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -245,7 +249,8 @@ MonoBehaviour:
         duration: 4.016667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Evade
+        routewindow:
+          rid: 6379258171200110775
     - rid: 4681868069779800815
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -256,7 +261,8 @@ MonoBehaviour:
         duration: 4.016667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchCapture
+        routewindow:
+          rid: 6379258171200110776
     - rid: 4681868069779800816
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -267,7 +273,8 @@ MonoBehaviour:
         duration: 4.016667
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchExecute
+        routewindow:
+          rid: 6379258171200110777
     - rid: 4681868069779800817
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -283,3 +290,19 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 4294967295
+    - rid: 6379258171200110774
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258171200110775
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258171200110776
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6379258171200110777
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute

@@ -24,7 +24,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6f2b2deb236517647897cdda59ec8001, type: 2}
   - {fileID: 11400000, guid: 49f91d2a59c73d84ba596930fac286ff, type: 2}
   - {fileID: 11400000, guid: bb67c86673c0e944fb34dbb2fd7108e8, type: 2}
-  - {fileID: 11400000, guid: 27d0ab3ca1be3c54cbce4eb5d143e680, type: 2}
   - {fileID: 11400000, guid: 6b54149973a433c4797b504474e39a9c, type: 2}
   - {fileID: 11400000, guid: 6df26ea99b1e2ca49bf26e877d51e953, type: 2}
   EnterState: 50

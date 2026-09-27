@@ -39,6 +39,7 @@ namespace Game.GamePlay
             if (isInterrupted)
             {
                 ctx.ResultFlags |= HitResultFlags.Interrupted;
+                ctx.SelectedReactionType = ResolveHitReactionType(ctx?.HitEffectConfig?.Effects, ctx);
 
                 // 同步运行时受击数据
                 var hitData = ctx.Victim.DataModule?.Get<HitReactionRuntimeData>();
@@ -46,7 +47,6 @@ namespace Game.GamePlay
                 {
                     hitData.Set(nameof(hitData.CurrentHitStunDuration), ctx.HitStunDuration);
                     hitData.SetHitReactionAxis(ctx.ReactionAxis);
-                    ctx.SelectedReactionType = ResolveHitReactionType(ctx?.HitEffectConfig?.Effects, ctx);
                     hitData.Set(nameof(hitData.CurrentReactionType), ctx.SelectedReactionType);
                 }
             }

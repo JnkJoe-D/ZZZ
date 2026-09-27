@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
   m_Name: Ellen_RouteSet_ToParryAid_Succeed
   m_EditorClassIdentifier: 
+  TargetScope: 2
   Routes:
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 3f24b8923a1c49b8a8b1c4e9d0a1b2c3, type: 2}
@@ -20,7 +21,7 @@ MonoBehaviour:
     Priority: 40
     CrossfadeOverride: -1
     TriggerStrategy:
-      rid: 6379257910440230919
+      rid: 6379258182230343687
     ExtraConditions:
     - rid: 6379257910440230921
   - ExecuteType: 10
@@ -41,7 +42,7 @@ MonoBehaviour:
       data:
         EventType: 40
         RequiredWindow:
-          rid: 6379258143149916841
+          rid: 6379258182230343685
         RequiredWindowTag: Execute2
         Modifiers: []
     - rid: 6379257910440230921
@@ -52,7 +53,19 @@ MonoBehaviour:
       type: {class: ParryWeightCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         ExpectedWeight: 2
-    - rid: 6379258143149916841
+    - rid: 6379258182230343685
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        Tag: Execute2
+        Tag: Execute1
+    - rid: 6379258182230343687
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        EventType: 40
+        RequiredWindow:
+          rid: 6379258182230343688
+        RequiredWindowTag: 
+        Modifiers: []
+    - rid: 6379258182230343688
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1

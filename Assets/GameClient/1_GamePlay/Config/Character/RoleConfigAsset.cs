@@ -39,6 +39,10 @@ namespace Game.GamePlay
         [Tooltip("松开移动按键后，移动向量平滑归零的阻尼衰减时长（秒）。\n0 表示按键松开瞬时归零（硬性切断）；>0 则平滑过渡归零（推荐 0.06~0.08s），模拟摇杆回弹与身体物理惯性。")]
         [Range(0f, 0.3f)]
         public float MoveInputDecelerationDuration = 0.08f;
+
+        [Tooltip("输入残留缓存的平滑阻尼时长（秒）。用于与当前原生输入对比获取输入变化量与方向，判定180度掉头转向路由（推荐 0.1~0.15s）。\n>0 则平滑滞后追踪，为大幅度转向/掉头检测保留前向输入残留的时间窗口。")]
+        [Range(0.01f, 0.5f)]
+        public float MoveInputResidualDuration = 0.12f;
     }
     [System.Serializable]
     public class RoleEvadeConfig

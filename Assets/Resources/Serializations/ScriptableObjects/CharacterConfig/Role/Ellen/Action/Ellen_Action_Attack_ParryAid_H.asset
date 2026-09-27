@@ -36,7 +36,7 @@ MonoBehaviour:
     Priority: 10
     CrossfadeOverride: 0
     TriggerStrategy:
-      rid: 6379257910440230920
+      rid: 6379258182230343759
     ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: 40165cfc780333c41a67a3da30539e85, type: 2}
@@ -58,3 +58,16 @@ MonoBehaviour:
       type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Buffer1
+    - rid: 6379258182230343759
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258182230343760
+        RequiredWindowTag: 
+        Modifiers: []
+    - rid: 6379258182230343760
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1

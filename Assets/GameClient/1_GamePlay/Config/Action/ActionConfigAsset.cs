@@ -69,9 +69,39 @@ namespace Game.GamePlay
         [Tooltip("当 CompleteMode 设为 TransitToAction 时，自动衔接的这个后续动作。")]
         public ActionConfigAsset CompleteAction;
 
-        [ShowIf("CompleteMode", ActionCompleteMode.TransitToAction)]
-        [Tooltip("-1表示使用下个动作自身设定的混合时间，>=0则强制覆盖混合时间。")]
-        public float CompleteTransitCrossfade = -1f;
+        [SerializeField, HideInInspector]
+        private ActionTransitionTable _transitionTable = new();
+
+        /// <summary>
+        /// 过渡表现配置表（仅只读访问，编辑需通过 Action Transition Workbench）
+        /// </summary>
+        public ActionTransitionTable TransitionTable => _transitionTable ??= new ActionTransitionTable();
+
+        /// <summary>
+        /// 获取转移到目标动作的过渡参数（未配置则返回 null）
+        /// </summary>
+        public ActionTransitionItem GetTransition(ActionConfigAsset targetAction)
+        {
+            return _transitionTable?.GetTransition(targetAction);
+        }
+
+        /// <summary>
+        /// 获取转移到目标动作的有效混合时间（秒）。>= 0 表示覆盖值，-1 表示回退到目标动作默认起手 BlendIn
+        /// </summary>
+        public float GetTransitionCrossfade(ActionConfigAsset targetAction)
+        {
+            var item = GetTransition(targetAction);
+            return item != null && item.CrossfadeDuration >= 0f ? item.CrossfadeDuration : -1f;
+        }
+
+        /// <summary>
+        /// 更新针对目标动作的过渡参数（供过渡编辑器工作台调用）
+        /// </summary>
+        public void SetTransition(ActionConfigAsset targetAction, float crossfade, bool hasCustomExit = false, float exitTime = 0f)
+        {
+            if (_transitionTable == null) _transitionTable = new ActionTransitionTable();
+            _transitionTable.SetOrUpdate(targetAction, crossfade, hasCustomExit, exitTime);
+        }
 
 
 
@@ -109,5 +139,88 @@ namespace Game.GamePlay
         }
     }
 
+    /// <summary>
+    /// 单个目标动作的过渡表现参数（边属性）
+    /// </summary>
+    [System.Serializable]
+    public class ActionTransitionItem
+    {
+        [Tooltip("目标动作")]
+        public ActionConfigAsset TargetAction;
 
+        [Tooltip("混合过渡时间（秒）。-1 表示使用目标动作自身默认起手 BlendIn；>= 0 强制覆盖")]
+        public float CrossfadeDuration = -1f;
+
+        [Tooltip("是否启用自定义打断时间（默认关闭，通常用于自循环动作或末尾自动衔接的提前截断）")]
+        public bool HasCustomExitTime = false;
+
+        [Tooltip("自定义打断/退出时间点（秒）")]
+        public float CustomExitTime = 0f;
+    }
+
+    /// <summary>
+    /// 动作过渡表现配置表（唯一归宿：ActionConfigAsset）
+    /// 仅由专门的 Action Transition Workbench 进行可视化编辑与落盘，杜绝手填盲改。
+    /// </summary>
+    [System.Serializable]
+    public class ActionTransitionTable
+    {
+        [SerializeField]
+        private List<ActionTransitionItem> _items = new();
+
+        public IReadOnlyList<ActionTransitionItem> Items => _items;
+
+        /// <summary>
+        /// 查询转移到目标动作的有效过渡配置项
+        /// </summary>
+        public ActionTransitionItem GetTransition(ActionConfigAsset targetAction)
+        {
+            if (targetAction == null || _items == null) return null;
+            for (int i = 0; i < _items.Count; i++)
+            {
+                if (_items[i] != null && _items[i].TargetAction == targetAction)
+                {
+                    return _items[i];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 更新或新增针对特定目标动作的过渡配置（供编辑器工作台调用）
+        /// </summary>
+        public void SetOrUpdate(ActionConfigAsset targetAction, float crossfade, bool hasCustomExit = false, float exitTime = 0f)
+        {
+            if (targetAction == null) return;
+            if (_items == null) _items = new List<ActionTransitionItem>();
+
+            var item = GetTransition(targetAction);
+            if (item == null)
+            {
+                item = new ActionTransitionItem { TargetAction = targetAction };
+                _items.Add(item);
+            }
+
+            item.CrossfadeDuration = crossfade;
+            item.HasCustomExitTime = hasCustomExit;
+            item.CustomExitTime = exitTime;
+        }
+
+        /// <summary>
+        /// 移除针对某个目标动作的过渡配置项
+        /// </summary>
+        public bool Remove(ActionConfigAsset targetAction)
+        {
+            if (targetAction == null || _items == null) return false;
+            for (int i = _items.Count - 1; i >= 0; i--)
+            {
+                if (_items[i] != null && _items[i].TargetAction == targetAction)
+                {
+                    _items.RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }

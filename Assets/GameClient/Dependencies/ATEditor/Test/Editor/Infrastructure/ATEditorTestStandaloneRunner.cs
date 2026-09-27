@@ -38,7 +38,10 @@ namespace ATEditor.Test
                 typeof(ActionRunnerTickEdgeTests),
                 typeof(ActionRunnerConcurrencyTests),
                 typeof(ProcessContextTests),
-                typeof(ProcessFactoryPoolTests)
+                typeof(ProcessFactoryPoolTests),
+                typeof(CameraTargetClipTests),
+                typeof(Game.Tests.Targeting.TargetLockerTests),
+                typeof(Game.Tests.Combat.ParryWorkflowTests)
             };
 
             int passedCount = 0;

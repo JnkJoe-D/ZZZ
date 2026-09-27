@@ -48,7 +48,7 @@ MonoBehaviour:
     - rid: 4681868069779800885
   - groupId: e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b
     groupName: "\u8F93\u5165"
-    isCollapsed: 0
+    isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -56,6 +56,7 @@ MonoBehaviour:
     - rid: 4681868069779800887
     - rid: 4681868069779800888
     - rid: 4681868069779800889
+    - rid: 6379258171200110679
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
     isCollapsed: 0
@@ -66,11 +67,18 @@ MonoBehaviour:
     - rid: 6379258097012572316
   - groupId: fe97c978-da0d-4d70-b973-9218b609c4bc
     groupName: "\u53D8\u6362"
-    isCollapsed: 0
+    isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
     - rid: 4681868069779800892
+  - groupId: f9b6f902-dd1a-40af-94bc-95674af52987
+    groupName: "\u76F8\u673A"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 6379258182230343773
   references:
     version: 2
     RefIds:
@@ -242,7 +250,8 @@ MonoBehaviour:
         duration: 0.41666663
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Execute1
+        routewindow:
+          rid: 6379258171200110674
     - rid: 4681868069779800898
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -253,7 +262,8 @@ MonoBehaviour:
         duration: 5.2499995
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Evade
+        routewindow:
+          rid: 6379258171200110676
     - rid: 4681868069779800899
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -264,7 +274,8 @@ MonoBehaviour:
         duration: 6.333333
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchCapture
+        routewindow:
+          rid: 6379258171200110677
     - rid: 4681868069779800900
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -275,7 +286,8 @@ MonoBehaviour:
         duration: 5.25
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: SwitchExecute
+        routewindow:
+          rid: 6379258171200110678
     - rid: 4681868069779800901
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -412,7 +424,8 @@ MonoBehaviour:
         duration: 0.18333334
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: Buffer1
+        routewindow:
+          rid: 6379258171200110673
     - rid: 6379258001640914955
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -423,7 +436,8 @@ MonoBehaviour:
         duration: 4.8333335
         blendInDuration: 0
         blendOutDuration: 0
-        comboTag: BackSwing
+        routewindow:
+          rid: 6379258171200110675
     - rid: 6379258064343400460
       type: {class: VFXClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -536,3 +550,140 @@ MonoBehaviour:
         faceTargetOnArrival: 1
         serializedObstacleLayers: 1
         serializedGroundLayers: 1
+    - rid: 6379258171200110673
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer1
+    - rid: 6379258171200110674
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
+    - rid: 6379258171200110675
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
+    - rid: 6379258171200110676
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258171200110677
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6379258171200110678
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute
+    - rid: 6379258171200110679
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: c567c950-a141-48e5-af28-fac5821733f0
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379258171200110680
+    - rid: 6379258171200110680
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 532a7404-1ce2-4f5d-ad90-9f4ed05bb729
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.0833334
+        duration: 5.25
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6379258171200110682
+    - rid: 6379258171200110682
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchAuto
+    - rid: 6379258182230343773
+      type: {class: CameraTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 3c5e825d-cecb-4a66-b348-51749c1b55e9
+        trackType: CameraTrack
+        trackName: "\u6444\u50CF\u673A\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379258182230343775
+    - rid: 6379258182230343775
+      type: {class: CameraTargetClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: d194a6ec-285a-437a-90d6-0f7d59b81fd6
+        clipName: "\u76F8\u673A\u76EE\u6807\u8DDF\u968F\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.2
+        duration: 0.4666667
+        blendInDuration: 0
+        blendOutDuration: 0.12666668
+        targetScope: 2
+        bindPoint: 5
+        customBoneName: 
+        referenceSpace: 0
+        positionOffset: {x: 0, y: 0, z: 0}
+        syncX: 0
+        syncY: 1
+        syncZ: 0
+        blendInCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1.0163574
+            value: 0.5601654
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        blendOutCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        enableDamping: 1
+        smoothTime: 0.08
+        restoreOnExit: 1
+        restoreOnStop: 1
+        interruptRestoreDuration: 0.2

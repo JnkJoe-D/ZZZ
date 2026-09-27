@@ -129,9 +129,10 @@ namespace Game.GamePlay
             return rawWorldPos;
         }
 
-        public Vector3 GetWorldClashPosition()
+        public Vector3 GetWorldClashPosition(CharacterEntity entity)
         {
-            return GetWorldClashPosition(LayerMask.GetMask("Default", "Ground", "Terrain"));
+            LayerMask layer = entity?.Config?.GroundLayer ?? LayerMask.GetMask("Ground");
+            return GetWorldClashPosition(layer);
         }
     }
 

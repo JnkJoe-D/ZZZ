@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
   m_Name: QingYI_RouteSet_ToAttack_Entry
   m_EditorClassIdentifier: 
+  TargetScope: 2
   Routes:
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 67d6812b48ee88749bfc25bf7da59b41, type: 2}

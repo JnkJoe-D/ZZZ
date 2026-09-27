@@ -34,6 +34,7 @@ namespace Game.GamePlay
         public CharacterEntity TargetAttacker { get; set; }
 
         // ── 控制流状态 ────────────────────────────
+        public bool IsIncomingPendingSwitchOut { get; set; }
         public bool IsAborted { get; private set; }
         public string AbortReason { get; private set; }
 
@@ -69,6 +70,7 @@ namespace Game.GamePlay
             WarningMarker = null;
             TargetAttacker = null;
 
+            IsIncomingPendingSwitchOut = false;
             IsAborted = false;
             AbortReason = null;
         }

@@ -141,10 +141,10 @@ MonoBehaviour:
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
-        collisionMode: 0
+        collisionMode: 1
         obstacleMask:
           serializedVersion: 2
-          m_Bits: 4294967295
+          m_Bits: 1664
     - rid: 4681868330708500900
       type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:

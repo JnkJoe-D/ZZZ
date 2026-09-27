@@ -32,13 +32,13 @@ MonoBehaviour:
       data:
         Timing: 10
         RequiredWindow:
-          rid: 6379258143149917053
+          rid: 6379258171200110592
         RequiredWindowTag: SwitchExecute
         Modifiers: []
     - rid: 6379257713941807106
       type: {class: SwitchOutPendingCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data: 
-    - rid: 6379258143149917053
+    - rid: 6379258171200110592
       type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        Tag: Auto1
+        Tag: SwitchAuto

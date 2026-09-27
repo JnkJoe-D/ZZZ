@@ -43,8 +43,8 @@ namespace Game.GamePlay
                 var lifecycle = GetComponent<LifecycleComponent>();
                 if (lifecycle == null) lifecycle = gameObject.AddComponent<LifecycleComponent>();
                 LifecycleComponent = lifecycle;
-                lifecycle.Init(this);
             }
+            LifecycleComponent?.Init(this);
 
             // 初始化实体专属时钟节点，并监听有效流速变更
             Clock = new TimeClock(gameObject.name);

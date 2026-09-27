@@ -19,8 +19,17 @@ namespace Game.GamePlay
 
         public T Get<T>() where T : class, IEntityRuntimeData
         {
-            if (_dataMap.TryGetValue(typeof(T), out var data))
-                return data as T;
+            if (_dataMap.TryGetValue(typeof(T), out var data) && data is T typed)
+                return typed;
+
+            // 防御性自愈：若容器中尚未注册该类型，自动按需创建具备无参构造的实例并缓存，杜绝生命周期时序或单测环境下的空引用
+            if (typeof(T).GetConstructor(Type.EmptyTypes) != null)
+            {
+                var created = (T)Activator.CreateInstance(typeof(T));
+                _dataMap[typeof(T)] = created;
+                return created;
+            }
+
             return null;
         }
 

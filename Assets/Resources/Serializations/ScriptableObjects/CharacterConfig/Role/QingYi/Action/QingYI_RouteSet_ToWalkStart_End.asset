@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
   m_Name: QingYI_RouteSet_ToWalkStart_End
   m_EditorClassIdentifier: 
+  TargetScope: 2
   Routes:
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: af75f710c7696524c8fd6b691ed09c24, type: 2}
@@ -31,17 +32,25 @@ MonoBehaviour:
         EventType: 85
         RequiredWindow:
           rid: 6379258143149916716
-        RequiredWindowTag: Execute1
-        Modifiers:
+        InputConditions:
         - Category: 20
           RequiredKey: 0
           InputCondition:
-            rid: 6379258097012572218
+            rid: 6379258227727269943
           Inverse: 0
-    - rid: 6379258097012572218
-      type: {class: ShortMoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data: 
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6379258227727269944
+          Inverse: 0
     - rid: 6379258143149916716
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Execute1
+    - rid: 6379258227727269943
+      type: {class: ShortMoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data: 
+    - rid: 6379258227727269944
+      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Inverse: 1

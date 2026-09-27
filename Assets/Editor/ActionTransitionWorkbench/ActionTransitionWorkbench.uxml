@@ -1,0 +1,88 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Editor/ActionTransitionWorkbench/ActionTransitionWorkbench.uss" />
+    <ui:VisualElement name="root" class="transition-root">
+        <!-- 左侧边栏 (Workspace / Action / Targets / Inspector) -->
+        <ui:VisualElement name="sidebar" class="transition-sidebar">
+            <ui:Label text="动作过渡工作台 (Workbench)" class="sidebar-title" />
+            
+            <!-- 0. 角色工作区选择 -->
+            <ui:VisualElement name="workspace-box" class="section-box">
+                <ui:VisualElement class="section-header-row">
+                    <ui:Label text="角色工作区 (Workspace)" class="section-label" />
+                    <ui:Button name="manage-ws-btn" text="管理" class="mini-btn" />
+                </ui:VisualElement>
+                <ui:VisualElement name="workspace-popup-container" class="popup-container" />
+            </ui:VisualElement>
+
+            <!-- 1. 源动作资产选择 (仅保留下拉框) -->
+            <ui:VisualElement name="source-box" class="section-box">
+                <ui:Label text="1. 源动作资产 (Source Action)" class="section-label" />
+                <ui:VisualElement name="action-popup-container" class="popup-container" />
+            </ui:VisualElement>
+
+            <!-- 2. 有效转移目标列表 -->
+            <ui:VisualElement name="targets-box" class="section-box targets-box">
+                <ui:VisualElement class="section-header-row">
+                    <ui:Label text="2. 有效转移目标 (Targets)" class="section-label" />
+                    <ui:Button name="refresh-targets-btn" text="刷新" class="mini-btn" />
+                </ui:VisualElement>
+                <uie:ToolbarSearchField name="targets-search" class="targets-search" />
+                <ui:ScrollView name="targets-scrollview" class="target-list-view" />
+            </ui:VisualElement>
+
+            <!-- 3. 过渡参数微调与反向保存面板 (左侧栏紧凑卡片) -->
+            <ui:VisualElement name="inspector-box" class="section-box inspector-box">
+                <ui:Label name="inspector-header" text="当前微调: 未选择目标" class="inspector-header-label" />
+                
+                <!-- Crossfade 配置 -->
+                <ui:VisualElement class="inspector-field-group">
+                    <ui:VisualElement class="inspector-label-row">
+                        <ui:Label text="混合时间 (Crossfade):" class="inspector-field-title" />
+                        <ui:Button name="reset-fade-btn" text="恢复默认" class="mini-btn" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="inspector-control-row">
+                        <ui:Slider name="crossfade-slider" low-value="0" high-value="1" class="inspector-slider" />
+                        <uie:FloatField name="crossfade-field" class="inspector-num-field" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- ExitTime 配置 -->
+                <ui:VisualElement class="inspector-field-group">
+                    <ui:VisualElement class="inspector-label-row">
+                        <ui:Toggle name="custom-exit-toggle" text="指定退出时间 (ExitTime):" class="inspector-toggle" />
+                        <ui:Button name="exit-mode-toggle-btn" text="模式: 秒 (s)" class="mini-btn" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="inspector-control-row">
+                        <uie:FloatField name="custom-exit-field" class="inspector-num-field-full" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- 保存按钮 -->
+                <ui:Button name="save-transition-btn" text="保存过渡配置到 ActionConfigAsset" class="save-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- 右侧主区域 (Viewport / Toolbar / Timeline) -->
+        <ui:VisualElement name="main" class="transition-main">
+            <!-- 3D 预览视口 -->
+            <ui:IMGUIContainer name="viewport-container" class="viewport-container" />
+
+            <!-- 播放控制条 -->
+            <ui:VisualElement name="playback-toolbar" class="playback-toolbar">
+                <ui:Button name="play-pause-btn" text="播放" class="toolbar-btn" />
+                <ui:Button name="restart-btn" text="重置" class="toolbar-btn" />
+                <ui:Button name="preview-mode-btn" text="模式: 常规预览 ▾" class="toolbar-menu-btn" />
+                <ui:Button name="speed-menu-btn" text="倍速: 1.00x ▾" class="toolbar-menu-btn" />
+                <ui:Button name="ruler-fps-btn" text="标尺: 帧 (60 FPS) ▾" class="toolbar-menu-btn" />
+                <ui:Label name="time-display-label" text="0F (0.00s) / 0F (0.00s)" class="time-label" />
+                <ui:Toggle name="follow-cam-toggle" text="镜头跟随" class="toolbar-toggle" />
+                <ui:Toggle name="loop-playback-toggle" text="循环播放" class="toolbar-toggle" value="true" />
+                <ui:Toggle name="reset-on-loop-toggle" text="循环复位" class="toolbar-toggle" />
+                <ui:Toggle name="loop-focus-toggle" text="局部循环" class="toolbar-toggle" />
+            </ui:VisualElement>
+
+            <!-- 双轨时间轴 -->
+            <ui:IMGUIContainer name="timeline-container" class="timeline-container" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

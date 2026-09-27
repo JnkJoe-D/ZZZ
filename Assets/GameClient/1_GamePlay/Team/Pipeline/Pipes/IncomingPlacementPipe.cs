@@ -19,10 +19,40 @@ namespace Game.GamePlay
             PartyMember inMember = ctx.IncomingMember;
             RoleEntity outEntity = ctx.OutgoingEntity;
 
-            // 1. 如果切入角色还在切出队列中，取消其切出任务（复活保护）
+            // 1. 检查切入角色是否正处于待切出 (Pending) 阶段
+            bool isPendingSwitchOut = ctx.IsIncomingPendingSwitchOut ||
+                                      (ctx.Manager.SwitchExecutor?.IsPendingSwitchOut(inMember) ?? false);
+            ctx.IsIncomingPendingSwitchOut = isPendingSwitchOut;
+
+            // 2. 如果切入角色还在切出队列中，取消其切出任务（复活保护）
             ctx.Manager.SwitchExecutor?.TryCancelSwitchOut(inMember);
 
-            // 2. 计算安全的切入位置和朝向（胶囊体探测避障防卡）
+            // 3. 若切入角色正处于 Pending 待切出状态，角色仍在场上继续运行当前动作：
+            //    不需要转向和位置更新，直接保持其现存位置和朝向
+            if (isPendingSwitchOut)
+            {
+                ctx.SpawnPosition = inEntity.transform.position;
+                ctx.SpawnRotation = inEntity.transform.rotation;
+
+                if (!inEntity.gameObject.activeSelf)
+                {
+                    inEntity.gameObject.SetActive(true);
+                }
+
+                inEntity.EnsureRuntimeInitialized();
+                inEntity.Presentation?.SetColliderActive(true);
+                inEntity.Presentation?.SetPresentationVisible(true);
+
+                if (ctx.TargetAttacker != null)
+                {
+                    inEntity.TargetFinder?.SetCombatContextTarget(ctx.TargetAttacker);
+                }
+
+                GLog.Info(LogTags.Team, $"切入角色 {inMember.Config?.Name} 处于 Pending 待切出状态切回，保持原位与朝向，不更新 Transform");
+                return;
+            }
+
+            // 4. 计算安全的切入位置和朝向（胶囊体探测避障防卡）
             Vector3 originPos = outEntity != null ? outEntity.transform.position : inEntity.transform.position;
             Quaternion originRot = outEntity != null ? outEntity.transform.rotation : inEntity.transform.rotation;
 
@@ -46,7 +76,7 @@ namespace Game.GamePlay
                 else
                 {
                     // 远距切入：精准瞬移至怪物接刀身位（带探地贴合）
-                    spawnPos = ctx.WarningMarker.GetWorldClashPosition();
+                    spawnPos = ctx.WarningMarker.GetWorldClashPosition(inEntity);
                     Vector3 lookDir = ctx.TargetAttacker.transform.position - spawnPos;
                     lookDir.y = 0f;
                     spawnRot = lookDir.sqrMagnitude > 0.001f ? Quaternion.LookRotation(lookDir) : originRot;
@@ -73,7 +103,7 @@ namespace Game.GamePlay
             inEntity.RouteArbitrator?.Clear();
             inEntity.Presentation?.SetPresentationVisible(true);
 
-            // 4. 注入战斗上下文目标与警示标记（供动作时间轴中的 MovementClip / CameraControlClip 读取）
+            // 4. 注入战斗上下文目标与警示标记（供动作时间轴中的 MovementHandler / CameraControlHandler 读取）
             if (ctx.TargetAttacker != null)
             {
                 inEntity.TargetFinder?.SetCombatContextTarget(ctx.TargetAttacker);
