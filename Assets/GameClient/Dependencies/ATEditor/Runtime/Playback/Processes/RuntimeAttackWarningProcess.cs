@@ -14,7 +14,8 @@ namespace ATEditor
         {
             ATLog.Info($"<color=red>[RuntimeAttackWarningProcess] AttackWarning!!!!!!</color>");
             if (_handler == null || clip == null) return;
-            _handler.RegisterWarningMarker(clip);
+            float expectedHitTime = UnityEngine.Time.time + clip.Duration;
+            _handler.RegisterWarningMarker(clip, expectedHitTime);
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)

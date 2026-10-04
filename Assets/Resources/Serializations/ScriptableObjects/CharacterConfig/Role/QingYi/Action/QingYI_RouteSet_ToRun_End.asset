@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
   m_Name: QingYI_RouteSet_ToRun_End
   m_EditorClassIdentifier: 
+  TargetScope: 2
   Routes:
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 907e9bdb3822bb74599ca4f029da2ffc, type: 2}
     ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
     Priority: 0
-    CrossfadeOverride: 0
     TriggerStrategy:
       rid: 6379258097012572217
     ExtraConditions: []
@@ -31,8 +31,7 @@ MonoBehaviour:
         EventType: 80
         RequiredWindow:
           rid: 6379258143149916806
-        RequiredWindowTag: Execute1
-        Modifiers: []
+        InputConditions: []
     - rid: 6379258143149916806
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:

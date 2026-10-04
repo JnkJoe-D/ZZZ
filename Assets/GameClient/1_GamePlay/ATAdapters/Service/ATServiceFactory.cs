@@ -83,16 +83,19 @@ namespace Game.GamePlay
             {
                 return GetOrCreateCachedService(serviceType, owner, () =>
                 {
-                    var entity = owner.GetComponent<CharacterEntity>();
-                    if (entity is RoleEntity role) return role.ActionController;
-                    if (entity is MonsterEntity monster) return monster.ActionController;
-                    return null;
+                    var entity = owner != null ? owner.GetComponent<CharacterEntity>() : null;
+                    return entity != null ? entity.ActionController : null;
                 });
             }
 
             if (serviceType == typeof(IMotionWindowHandler))
             {
-                return GetOrCreateCachedService(serviceType, owner, () => owner.GetComponent<CharacterEntity>()?.MotionWindowHandler);
+                return GetOrCreateCachedService(serviceType, owner, () =>
+                {
+                    var entity = owner != null ? owner.GetComponent<CharacterEntity>() : null;
+                    if (entity == null) return null;
+                    return entity.MotionWindowHandler ?? new ATMotionWindowHandler(entity);
+                });
             }
 
             if (serviceType == typeof(IPhysicsHandler))
@@ -123,6 +126,14 @@ namespace Game.GamePlay
                 });
             }
 
+            if (serviceType == typeof(ICrossFlashHandler))
+            {
+                return GetOrCreateCachedService(serviceType, owner, () => {
+                    var entity = owner.GetComponent<CharacterEntity>();
+                    return entity != null ? new ATCrossFlashHandler(entity) : null;
+                });
+            }
+
             return null;
         }
 
@@ -141,7 +152,10 @@ namespace Game.GamePlay
                 return cached;
 
             var created = factory();
-            ownerCache[serviceType] = created;
+            if (created != null)
+            {
+                ownerCache[serviceType] = created;
+            }
             return created;
         }
         public static void RemoveStaticCaches(GameObject obj)

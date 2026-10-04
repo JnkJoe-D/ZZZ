@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Game.GamePlay
@@ -60,11 +61,15 @@ namespace Game.GamePlay
     public class DirectAssetPayload : ICommandPayload
     {
         public ActionConfigAsset TargetAsset;
+        public float CrossfadeOverride = -1f;
+        public float StartTime = 0f;
+        public Action OnComplete;
     }
 
     public class SystemEventPayload : ICommandPayload
     {
         public RouteEventType EventType;
+        public float StartTime = 0f;
     }
 }
 

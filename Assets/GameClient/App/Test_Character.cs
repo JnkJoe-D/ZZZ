@@ -144,6 +144,7 @@ namespace Game.App
 
             GameCameraManager.Instance.Initialize();
             Game.Presentation.TeamCameraPresenter.Instance.Initialize();
+            Game.Presentation.VFX.CrossFlash.CrossFlashManager.Instance.Initialize();
 
             Game.GamePlay.TeamManager.Instance.Initialize();
             Game.GamePlay.MonsterManager.Instance.Initialize();
@@ -162,6 +163,7 @@ namespace Game.App
 
         private void OnDestroy()
         {
+            Game.Presentation.VFX.CrossFlash.CrossFlashManager.Instance?.Shutdown();
             Game.GamePlay.MonsterManager.Instance?.Shutdown();
             Game.GamePlay.TeamManager.Instance?.Shutdown();
             Game.GamePlay.ActionManager.Instance?.Shutdown();

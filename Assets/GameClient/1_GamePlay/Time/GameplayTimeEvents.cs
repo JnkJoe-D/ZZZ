@@ -1,3 +1,4 @@
+using System;
 using cfg.ZZZ;
 using Game.Framework;
 
@@ -53,13 +54,15 @@ namespace Game.GamePlay
         public readonly TimeClock VictimClock;
         public readonly float Duration;
         public readonly float Scale;
+        public readonly Action OnComplete;
 
-        public HitStopRequestEvent(TimeClock attackerClock, TimeClock victimClock, float duration, float scale)
+        public HitStopRequestEvent(TimeClock attackerClock, TimeClock victimClock, float duration, float scale, Action onComplete = null)
         {
             AttackerClock = attackerClock;
             VictimClock = victimClock;
             Duration = duration;
             Scale = scale;
+            OnComplete = onComplete;
         }
     }
 }

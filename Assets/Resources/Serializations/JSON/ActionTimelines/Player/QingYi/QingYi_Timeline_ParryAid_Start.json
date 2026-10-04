@@ -58,19 +58,19 @@
                 },
                 {
                     "rid": 1006
+                },
+                {
+                    "rid": 1007
                 }
             ]
         },
         {
             "groupId": "c049ddd2-da2f-47c7-939b-5c2ab38fc517",
-            "groupName": "命中",
+            "groupName": "战斗",
             "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
-                {
-                    "rid": 1007
-                },
                 {
                     "rid": 1008
                 }
@@ -238,7 +238,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "ead71bc0-6159-4434-b353-88dafbe75fbb",
+                    "trackId": "0fb6a6a6-8249-4a7b-824e-f392da506e97",
                     "trackType": "RouteWindowTrack",
                     "trackName": "输入派生窗口",
                     "isMuted": false,
@@ -261,7 +261,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "b1cd0bb3-d620-4ac3-8195-029d623a0de0",
+                    "trackId": "ead71bc0-6159-4434-b353-88dafbe75fbb",
                     "trackType": "RouteWindowTrack",
                     "trackName": "输入派生窗口",
                     "isMuted": false,
@@ -279,14 +279,14 @@
             {
                 "rid": 1007,
                 "type": {
-                    "class": "EventTrack",
+                    "class": "RouteWindowTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "fa92a7ca-bc4e-402d-91ac-694cafc713f7",
-                    "trackType": "EventTrack",
-                    "trackName": "事件轨道",
+                    "trackId": "b1cd0bb3-d620-4ac3-8195-029d623a0de0",
+                    "trackType": "RouteWindowTrack",
+                    "trackName": "输入派生窗口",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -302,14 +302,14 @@
             {
                 "rid": 1008,
                 "type": {
-                    "class": "EventTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "b22a7100-e762-43a5-b893-6f45d23deb48",
-                    "trackType": "EventTrack",
-                    "trackName": "事件轨道",
+                    "trackId": "d718111a-d654-45a9-829d-3f96b3397e76",
+                    "trackType": "CombatTrack",
+                    "trackName": "战斗轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -404,10 +404,10 @@
                     "isEnabled": true,
                     "startTime": 0.0,
                     "duration": 6.4166669845581059,
-                    "blendInDuration": 0.13333329558372498,
+                    "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 51242
+                        "instanceID": 34732
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -457,11 +457,11 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "01b8f9e7-4df6-4686-b2f5-22d0d8e187d8",
+                    "clipId": "c6679dfd-7e29-4f17-bb51-55843bcb6341",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 6.4166669845581059,
+                    "startTime": 1.5,
+                    "duration": 4.9166669845581059,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -477,7 +477,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "9baad997-6b87-4b4c-8da2-c5cde8445992",
+                    "clipId": "01b8f9e7-4df6-4686-b2f5-22d0d8e187d8",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
@@ -492,41 +492,38 @@
             {
                 "rid": 1016,
                 "type": {
-                    "class": "ParryCaptureClip",
+                    "class": "RouteWindowClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "6bff96c5-999a-48c4-89f2-cdd6eac41cb9",
-                    "clipName": "招架捕获窗口",
+                    "clipId": "9baad997-6b87-4b4c-8da2-c5cde8445992",
+                    "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.3666667640209198,
+                    "duration": 6.4166669845581059,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "data": {
-                        "triggerTiming": 20
+                    "routewindow": {
+                        "rid": 1024
                     }
                 }
             },
             {
                 "rid": 1017,
                 "type": {
-                    "class": "ParryCaptureClip",
+                    "class": "ParryWindowClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "aa68c46a-c08b-4eac-801e-5308263d89ad",
-                    "clipName": "招架捕获窗口",
+                    "clipId": "5e69f418-3c4b-4d59-8337-bc6761703ca1",
+                    "clipName": "招架防御窗口片段",
                     "isEnabled": true,
                     "startTime": 0.3666667640209198,
-                    "duration": 1.2999999523162842,
+                    "duration": 1.1333332061767579,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "data": {
-                        "triggerTiming": 10
-                    }
+                    "blendOutDuration": 0.0
                 }
             },
             {
@@ -670,11 +667,22 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "Tag": "SwitchCapture"
+                    "Tag": "BackSwing1"
                 }
             },
             {
                 "rid": 1023,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "SwitchCapture"
+                }
+            },
+            {
+                "rid": 1024,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",

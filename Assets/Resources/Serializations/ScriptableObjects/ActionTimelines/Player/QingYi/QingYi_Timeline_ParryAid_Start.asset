@@ -46,16 +46,16 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 4681868069779800838
+    - rid: 6293806958974861312
     - rid: 4681868069779800839
     - rid: 6379257712028942364
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
-    groupName: "\u547D\u4E2D"
+    groupName: "\u6218\u6597"
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 6379257712028942346
-    - rid: 6379258182230343746
+    - rid: 6293806918069911618
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
     isCollapsed: 0
@@ -179,7 +179,7 @@ MonoBehaviour:
         isEnabled: 1
         startTime: 0
         duration: 6.416667
-        blendInDuration: 0.1333333
+        blendInDuration: 0
         blendOutDuration: 0
         animationClip: {fileID: -5349107145812805856, guid: edeaa8d47572b824888e18124223782d,
           type: 3}
@@ -236,19 +236,58 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 4294967295
-    - rid: 6379257712028942346
-      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
+    - rid: 6293806918069911618
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        trackId: fa92a7ca-bc4e-402d-91ac-694cafc713f7
-        trackType: EventTrack
-        trackName: "\u4E8B\u4EF6\u8F68\u9053"
+        trackId: d718111a-d654-45a9-829d-3f96b3397e76
+        trackType: CombatTrack
+        trackName: "\u6218\u6597\u8F68\u9053"
         isMuted: 0
         isLocked: 0
         isHidden: 0
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 6379258182230343742
+        - rid: 6293806918069911620
+    - rid: 6293806918069911620
+      type: {class: ParryWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 5e69f418-3c4b-4d59-8337-bc6761703ca1
+        clipName: "\u62DB\u67B6\u9632\u5FA1\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.36666676
+        duration: 1.1333332
+        blendInDuration: 0
+        blendOutDuration: 0
+    - rid: 6293806958974861312
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 0fb6a6a6-8249-4a7b-824e-f392da506e97
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6293806958974861313
+    - rid: 6293806958974861313
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: c6679dfd-7e29-4f17-bb51-55843bcb6341
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 1.5
+        duration: 4.916667
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6293806958974861315
+    - rid: 6293806958974861315
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
     - rid: 6379257712028942364
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -387,40 +426,3 @@ MonoBehaviour:
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: SwitchExecute
-    - rid: 6379258182230343742
-      type: {class: ParryCaptureClip, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        clipId: 6bff96c5-999a-48c4-89f2-cdd6eac41cb9
-        clipName: "\u62DB\u67B6\u6355\u83B7\u7A97\u53E3"
-        isEnabled: 1
-        startTime: -0
-        duration: 0.36666676
-        blendInDuration: 0
-        blendOutDuration: 0
-        data:
-          triggerTiming: 20
-    - rid: 6379258182230343746
-      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        trackId: b22a7100-e762-43a5-b893-6f45d23deb48
-        trackType: EventTrack
-        trackName: "\u4E8B\u4EF6\u8F68\u9053"
-        isMuted: 0
-        isLocked: 0
-        isHidden: 0
-        isCollapsed: 0
-        isEnabled: 1
-        clips:
-        - rid: 6379258182230343747
-    - rid: 6379258182230343747
-      type: {class: ParryCaptureClip, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        clipId: aa68c46a-c08b-4eac-801e-5308263d89ad
-        clipName: "\u62DB\u67B6\u6355\u83B7\u7A97\u53E3"
-        isEnabled: 1
-        startTime: 0.36666676
-        duration: 1.3
-        blendInDuration: 0
-        blendOutDuration: 0
-        data:
-          triggerTiming: 10

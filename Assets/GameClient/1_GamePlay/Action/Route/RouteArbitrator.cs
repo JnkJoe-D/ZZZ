@@ -16,6 +16,11 @@ namespace Game.GamePlay
         private readonly List<RouteCandidate> _candidates = new();
 
         /// <summary>
+        /// 是否存在已进入仲裁池的候选动作。
+        /// </summary>
+        public bool HasCandidates => _candidates.Count > 0;
+
+        /// <summary>
         /// 窗口将评估通过的候选提交至仲裁池。
         /// </summary>
         public void Submit(RouteCandidate candidate)

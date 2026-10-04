@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
   m_Name: QingYi_Timeline_TurnBack
   m_EditorClassIdentifier: 
-  duration: 1.35
+  duration: 1.4166667
   isLoop: 0
   beforePlayEvents: []
   onCompleteEvents: []
@@ -197,8 +197,8 @@ MonoBehaviour:
         clipId: 9f92e938-2082-4858-9500-2706c3c4b614
         clipName: "\u52A8\u753B\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 1.35
+        startTime: -0
+        duration: 1.4166667
         blendInDuration: 0.1333333
         blendOutDuration: 0
         animationClip: {fileID: -8818081666715829858, guid: edeaa8d47572b824888e18124223782d,
@@ -224,7 +224,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.35
+        duration: 1.4166667
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -236,7 +236,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.35
+        duration: 1.4166667
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -248,7 +248,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.35
+        duration: 1.4166667
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -260,7 +260,7 @@ MonoBehaviour:
         clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.35
+        duration: 1.4166667
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
@@ -288,7 +288,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.35
+        duration: 1.4166667
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -342,7 +342,7 @@ MonoBehaviour:
         clipName: "\u65CB\u8F6C\u7247\u6BB5"
         isEnabled: 1
         startTime: 0.5
-        duration: 0.8499999
+        duration: 0.9166666
         blendInDuration: 0
         blendOutDuration: 0
         referenceDirection: 1

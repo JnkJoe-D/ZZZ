@@ -8,7 +8,6 @@ namespace Game.GamePlay
         public float CurrentHitStunDuration => Get<float>(nameof(CurrentHitStunDuration));
         public cfg.ZZZ.HitReactionType CurrentReactionType => Get<cfg.ZZZ.HitReactionType>(nameof(CurrentReactionType));
         public ActionConfigAsset ResolvedHitAction => Get<ActionConfigAsset>(nameof(ResolvedHitAction));
-        public bool RequireFaceAttacker => Get<bool>(nameof(RequireFaceAttacker));
         public int HitTriggerTimestamp => Get<int>(nameof(HitTriggerTimestamp), -1);
         public int HitSequenceId => Get<int>(nameof(HitSequenceId), 0);
 

@@ -170,7 +170,7 @@
             {
                 "rid": 1002,
                 "type": {
-                    "class": "HitTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -411,7 +411,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.20000004768371583,
                     "animationClip": {
-                        "instanceID": 34612
+                        "instanceID": 34722
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -449,7 +449,7 @@
                     "blendInDuration": 0.20000004768371583,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34614
+                        "instanceID": 34724
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -487,7 +487,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 34616
+                        "instanceID": 34726
                     },
                     "vfxRef": {
                         "guid": "",
@@ -768,10 +768,10 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1,
-                    "collisionMode": 0,
+                    "collisionMode": 1,
                     "obstacleMask": {
                         "serializedVersion": "2",
-                        "m_Bits": 4294967295
+                        "m_Bits": 1152
                     }
                 }
             },

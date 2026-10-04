@@ -21,6 +21,10 @@ MonoBehaviour:
   _transitionTable:
     _items:
     - TargetAction: {fileID: 11400000, guid: 4fac0e6a2fd255f4099400b04a2b662a, type: 2}
+      CrossfadeDuration: 0.083333336
+      HasCustomExitTime: 1
+      CustomExitTime: 1.3333334
+    - TargetAction: {fileID: 11400000, guid: 67d6812b48ee88749bfc25bf7da59b41, type: 2}
       CrossfadeDuration: 0.05
       HasCustomExitTime: 1
       CustomExitTime: 1.3

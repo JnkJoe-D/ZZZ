@@ -345,9 +345,9 @@ namespace Game.GamePlay
                     // 中断切出动作，回到根动作，时序在切入动作裁决前
                     // 如果切出动作没配转窗口不同切入动作的窗口的话，需要先转到根动作保证切入动作能顺利切入
                     // 如果配了的话，此处可以不转到根动作后续管线也能顺利切换切入动作
-                 if (member.Entity.Config?.ActionRoot != null)
+                    if (member.Entity.Config?.ActionRoot != null)
                     {
-                        member.Entity.ActionController?.PlayAction(member.Entity.Config.ActionRoot);
+                        member.Entity.ActionController?.PlayRootAction();
                     }
                 }
 
@@ -377,7 +377,7 @@ namespace Game.GamePlay
             // 播放 ActionRoot 使角色回到待机循环（Standby 维护需要）
             if (entity.Config?.ActionRoot != null)
             {
-                entity.ActionController?.PlayAction(entity.Config.ActionRoot);
+                entity.ActionController?.PlayRootAction();
             }
 
             GLog.Info(LogTags.Team, $"Completed switch-out: {task.Member.Config?.Name}");

@@ -31,7 +31,7 @@
         {
             "groupId": "c049ddd2-da2f-47c7-939b-5c2ab38fc517",
             "groupName": "命中",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -61,7 +61,7 @@
         {
             "groupId": "e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b",
             "groupName": "输入",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -91,7 +91,7 @@
         {
             "groupId": "50586f84-6bc9-4e9d-9b71-ea088a873da7",
             "groupName": "时间",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -103,7 +103,7 @@
         {
             "groupId": "2618bfdd-54e5-4e01-b001-9112a202093c",
             "groupName": "动画位移",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -539,7 +539,7 @@
                     "isLocked": false,
                     "isHidden": false,
                     "isCollapsed": false,
-                    "isEnabled": true,
+                    "isEnabled": false,
                     "clips": [
                         {
                             "rid": 1033
@@ -563,7 +563,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1333332657814026,
                     "animationClip": {
-                        "instanceID": 34890
+                        "instanceID": 34878
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -601,7 +601,7 @@
                     "blendInDuration": 0.1333332657814026,
                     "blendOutDuration": 0.15000009536743165,
                     "animationClip": {
-                        "instanceID": 34892
+                        "instanceID": 34880
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -639,7 +639,7 @@
                     "blendInDuration": 0.15000009536743165,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34894
+                        "instanceID": 34882
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -1066,7 +1066,7 @@
                     "clipName": "旋转片段片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.3333333432674408,
+                    "duration": 0.45000016689300539,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "referenceDirection": 4,

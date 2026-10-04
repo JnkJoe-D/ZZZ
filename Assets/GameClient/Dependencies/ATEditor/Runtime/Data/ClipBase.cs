@@ -27,34 +27,25 @@ namespace ATEditor
             get { return startTime; }
             set
             {
-                if (!Application.isPlaying)
-                {
-                    startTime = Mathf.Max(0,value);
-                }
+                startTime = Mathf.Max(0, value);
             }
         }
         [ActionProperty("持续时间")]
         public virtual float Duration
         {
-            get{return duration;}
+            get { return duration; }
             set
             {
-                if(!Application.isPlaying)
-                {
-                    duration=Mathf.Max(value,0.01f);
-                }
+                duration = Mathf.Max(value, 0.01f);
             }
         }
         [ActionProperty("渐入时间")]
         public virtual float BlendInDuration
         {
-            get{return blendInDuration;}
+            get { return blendInDuration; }
             set
             {
-                if (!Application.isPlaying)
-                {
-                    blendInDuration = Mathf.Clamp(value, 0,duration-blendOutDuration);
-                }
+                blendInDuration = Mathf.Clamp(value, 0, duration - blendOutDuration);
             }
         }
         [ActionProperty("渐出时间")]
@@ -63,10 +54,7 @@ namespace ATEditor
             get { return blendOutDuration; }
             set
             {
-                if (!Application.isPlaying)
-                {
-                    blendOutDuration = Mathf.Clamp(value, 0,duration - blendInDuration);
-                }
+                blendOutDuration = Mathf.Clamp(value, 0, duration - blendInDuration);
             }
         }
         public float EndTime => startTime + duration;

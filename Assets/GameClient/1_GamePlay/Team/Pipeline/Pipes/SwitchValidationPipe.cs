@@ -61,7 +61,8 @@ namespace Game.GamePlay
                 return;
             }
 
-            if (ctx.IncomingEntity.LifecycleComponent.IsDead)
+            var inLifecycle = ctx.IncomingEntity.DataModule?.Get<LifecycleRuntimeData>();
+            if (inLifecycle != null && inLifecycle.IsDead)
             {
                 ctx.Abort("IncomingEntity is already dead");
                 return;
@@ -70,9 +71,41 @@ namespace Game.GamePlay
             // 1.2 预判切入角色是否正处于待切出 (Pending) 阶段
             ctx.IsIncomingPendingSwitchOut = ctx.Manager.SwitchExecutor?.IsPendingSwitchOut(ctx.IncomingMember) ?? false;
 
-            // 1.5 招架合法性校验（底层安全防线：若前端请求了 ParryAid 但当前预警实际已为红光不可招架或失效）
+            // 1.3 智能切人决策：若为普通切人请求，且当前在场角色正受到怪物的攻击预警威胁，自动推导升级为招架或避险
+            if (ctx.Type == SwitchType.NormalSwitch)
+            {
+                var warning = ctx.WarningMarker ?? CombatWarningManager.GetAnyValidWarning(ctx.OutgoingEntity);
+                if (warning != null)
+                {
+                    if (warning.SignalType == ATEditor.WarningSignalType.Yellow_Parryable)
+                    {
+                        ctx.Type = SwitchType.ParryAid;
+                        ctx.WarningMarker = warning;
+                        ctx.TargetAttacker = warning.Attacker;
+                        GLog.Info(LogTags.Team, $"检测到黄光攻击预警，切人请求由 NormalSwitch 自动升级为 ParryAid (招架支援)");
+                    }
+                    else if (warning.SignalType == ATEditor.WarningSignalType.Red_Unparryable)
+                    {
+                        ctx.Type = SwitchType.FallbackEvasion;
+                        ctx.WarningMarker = warning;
+                        ctx.TargetAttacker = warning.Attacker;
+                        GLog.Info(LogTags.Team, $"检测到红光不可招架攻击预警，切人请求由 NormalSwitch 自动升级为 FallbackEvasion (避险切人)");
+                    }
+                }
+            }
+
+            // 1.5 招架合法性校验（底层安全防线：若请求了 ParryAid 但当前预警实际已为红光不可招架或失效）
             if (ctx.Type == SwitchType.ParryAid)
             {
+                if (ctx.WarningMarker == null)
+                {
+                    ctx.WarningMarker = CombatWarningManager.GetAnyValidWarning(ctx.OutgoingEntity);
+                    if (ctx.WarningMarker != null)
+                    {
+                        ctx.TargetAttacker = ctx.WarningMarker.Attacker;
+                    }
+                }
+
                 bool isParryInvalid = ctx.WarningMarker == null || ctx.WarningMarker.SignalType == ATEditor.WarningSignalType.Red_Unparryable;
                 if (isParryInvalid)
                 {

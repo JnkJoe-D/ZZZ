@@ -33,6 +33,9 @@ namespace Game.GamePlay
         public AttackWarningMarker WarningMarker { get; set; }
         public CharacterEntity TargetAttacker { get; set; }
 
+        // ── 动作播放与位移快进时间 ──────────────────
+        public float CalculatedStartTime { get; set; } = 0f;
+
         // ── 控制流状态 ────────────────────────────
         public bool IsIncomingPendingSwitchOut { get; set; }
         public bool IsAborted { get; private set; }
@@ -70,6 +73,7 @@ namespace Game.GamePlay
             WarningMarker = null;
             TargetAttacker = null;
 
+            CalculatedStartTime = 0f;
             IsIncomingPendingSwitchOut = false;
             IsAborted = false;
             AbortReason = null;

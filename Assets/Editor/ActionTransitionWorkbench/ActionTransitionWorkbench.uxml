@@ -57,8 +57,23 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
 
+                <!-- 4. AutoRouteWindow 同步覆写配置 -->
+                <ui:VisualElement name="autoroute-sync-container" class="autoroute-sync-group">
+                    <ui:VisualElement class="inspector-label-row">
+                        <ui:Toggle name="autoroute-sync-toggle" text="同步覆写 AutoRouteWindow" class="inspector-toggle" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="autoroute-popup-row">
+                        <ui:Label text="目标窗口:" class="autoroute-popup-label" />
+                        <ui:VisualElement name="autoroute-window-popup-container" class="autoroute-popup" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="autoroute-popup-row">
+                        <ui:Label text="覆写目标:" class="autoroute-popup-label" />
+                        <ui:VisualElement name="autoroute-property-popup-container" class="autoroute-popup" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
                 <!-- 保存按钮 -->
-                <ui:Button name="save-transition-btn" text="保存过渡配置到 ActionConfigAsset" class="save-button" />
+                <ui:Button name="save-transition-btn" text="保存过渡配置与时间轴 (Save)" class="save-button" />
             </ui:VisualElement>
         </ui:VisualElement>
 
@@ -72,6 +87,7 @@
                 <ui:Button name="play-pause-btn" text="播放" class="toolbar-btn" />
                 <ui:Button name="restart-btn" text="重置" class="toolbar-btn" />
                 <ui:Button name="preview-mode-btn" text="模式: 常规预览 ▾" class="toolbar-menu-btn" />
+                <ui:Button name="preview-channel-btn" text="通道: 全部 ▾" class="toolbar-menu-btn" />
                 <ui:Button name="speed-menu-btn" text="倍速: 1.00x ▾" class="toolbar-menu-btn" />
                 <ui:Button name="ruler-fps-btn" text="标尺: 帧 (60 FPS) ▾" class="toolbar-menu-btn" />
                 <ui:Label name="time-display-label" text="0F (0.00s) / 0F (0.00s)" class="time-label" />

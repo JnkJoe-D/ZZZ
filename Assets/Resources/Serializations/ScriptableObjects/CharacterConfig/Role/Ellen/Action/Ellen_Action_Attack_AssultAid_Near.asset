@@ -24,6 +24,10 @@ MonoBehaviour:
       CrossfadeDuration: 1
       HasCustomExitTime: 0
       CustomExitTime: 0
+    - TargetAction: {fileID: 11400000, guid: 947511aa0618d094b8f8ab1949bc780f, type: 2}
+      CrossfadeDuration: -1
+      HasCustomExitTime: 0
+      CustomExitTime: 0
   Routes:
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 15bac3a544be57e4fba6bcf7fe527825, type: 2}

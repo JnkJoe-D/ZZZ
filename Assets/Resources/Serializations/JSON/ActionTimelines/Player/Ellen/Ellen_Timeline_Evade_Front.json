@@ -454,7 +454,7 @@
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34644
+                        "instanceID": 34696
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -547,7 +547,7 @@
                     "clipId": "19b75411-f484-4cf3-861b-c17633f9ee6c",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.2666666805744171,
+                    "startTime": 0.3333333432674408,
                     "duration": 0.20000000298023225,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,

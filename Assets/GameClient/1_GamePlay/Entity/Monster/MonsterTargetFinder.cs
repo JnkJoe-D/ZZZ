@@ -25,9 +25,6 @@ namespace Game.GamePlay
         private readonly MonsterSensorConfig _config;
         private Transform _ownerTransform;
         private CharacterEntity _owner;
-        private static readonly Collider[] _overlapBuffer = new Collider[16];
-        private static readonly int _localRoleLayerMask = LayerMask.GetMask("LocalRole");
-        
         private Transform _currentTarget;
 
         public CharacterEntity OwnerEntity => _owner;
@@ -73,40 +70,26 @@ namespace Game.GamePlay
         {
             if (_ownerTransform == null) return null;
 
-            Transform player = null;
-            float maxSearchRadius = _config.DetectionRadius;
-            int hitCount = Physics.OverlapSphereNonAlloc(_ownerTransform.position, maxSearchRadius, _overlapBuffer, _localRoleLayerMask);
-            for (int i = 0; i < hitCount; i++)
-            {
-                var col = _overlapBuffer[i];
-                if (col != null && col.CompareTag("LocalRole"))
-                {
-                    // 过滤掉未上场(后台Standby)的角色，防止索敌锁定在原地的隐形队友身上
-                    var entity = col.GetComponentInParent<RoleEntity>();
-                    if (entity != null && !entity.IsControlActive)
-                    {
-                        continue;
-                    }
-
-                    player = col.transform;
-                    break;
-                }
-            }
-
-            Array.Clear(_overlapBuffer, 0, hitCount);
-
-            if (player == null)
+            RoleEntity localRole = TeamManager.Instance?.LocalCharacter;
+            if (localRole == null || (localRole.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false) || !localRole.gameObject.activeInHierarchy)
             {
                 _currentTarget = null;
                 return null;
             }
 
-            float distanceSqr = (player.position - _ownerTransform.position).sqrMagnitude;
-            
-            _currentTarget = distanceSqr <= _config.DetectionRadius * _config.DetectionRadius
-                ? player
-                : null;
+            // 感知半径 (DetectionRadius) 范围校验
+            float maxSearchRadius = _config.DetectionRadius;
+            if (maxSearchRadius > 0f)
+            {
+                float distanceSqr = (localRole.transform.position - _ownerTransform.position).sqrMagnitude;
+                if (distanceSqr > maxSearchRadius * maxSearchRadius)
+                {
+                    _currentTarget = null;
+                    return null;
+                }
+            }
 
+            _currentTarget = localRole.transform;
             return _currentTarget;
         }
 
@@ -120,7 +103,7 @@ namespace Game.GamePlay
 
         public Transform GetEffectiveTarget()
         {
-            if (CombatContextTarget != null && CombatContextTarget.gameObject.activeInHierarchy && !CombatContextTarget.IsDead)
+            if (CombatContextTarget != null && CombatContextTarget.gameObject.activeInHierarchy && !(CombatContextTarget.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false))
             {
                 return CombatContextTarget.transform;
             }

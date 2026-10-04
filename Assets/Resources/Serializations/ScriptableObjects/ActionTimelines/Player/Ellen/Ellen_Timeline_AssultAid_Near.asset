@@ -213,7 +213,7 @@ MonoBehaviour:
         clips:
         - rid: 4681868069782421513
     - rid: 4681868069779801083
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 137cd20e-cfee-423e-a703-4338cdb0a5ae
         trackType: DamageTrack
@@ -226,7 +226,7 @@ MonoBehaviour:
         clips:
         - rid: 4681868069782421514
     - rid: 4681868069779801084
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: f3c935e1-b0ca-4e10-897d-ed106fa49cef
         trackType: DamageTrack
@@ -642,14 +642,14 @@ MonoBehaviour:
         maxFallbackAngle: 180
         obstacleLayers:
           serializedVersion: 2
-          m_Bits: 1024
+          m_Bits: 1152
         groundLayers:
           serializedVersion: 2
           m_Bits: 256
         groundCheckDistance: 3
         requireGrounded: 1
         faceTargetOnArrival: 0
-        serializedObstacleLayers: 1024
+        serializedObstacleLayers: 1152
         serializedGroundLayers: 256
     - rid: 4681868069782421519
       type: {class: PhysicsClip, ns: ATEditor, asm: Assembly-CSharp}

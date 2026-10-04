@@ -86,9 +86,9 @@ namespace Game.GamePlay
             
             if (eventPayload.EventType != EventType) return false;
 
-            if (RequiredWindow != null)
+            if (RequiredWindow != null && activeWindow != null)
             {
-                if (activeWindow == null || !RequiredWindow.Matches(activeWindow))
+                if (!RequiredWindow.Matches(activeWindow))
                     return false;
             }
 

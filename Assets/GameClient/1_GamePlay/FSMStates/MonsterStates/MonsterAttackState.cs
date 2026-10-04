@@ -23,8 +23,8 @@ namespace Game.GamePlay
             // 出刀瞬间瞬时锁定正向
             RotateTowardsTarget(0f);
 
-            // 权威播放攻击动作，彻底规避面向玩家的路由表与指令丢弃隐患
-            if (!Entity.ActionController.PlayAction(_executingAttack))
+            // 统一通过 OnInput 压指令驱动出刀动作
+            if (!SendCommand(_executingAttack))
             {
                 Machine.ChangeState<MonsterIdleState>();
                 return;
@@ -33,6 +33,7 @@ namespace Game.GamePlay
 
         public override void OnUpdate(float deltaTime)
         {
+            if (TryEnterStun()) return;
             if (TryEnterHitStun()) return;
 
             // 动作播放完毕（或者被动作管线打断/融合），退回待机

@@ -8,6 +8,7 @@ namespace Game.GamePlay
         public event System.Action OnHitTimestampChanged;
 
         private bool _isActionPlaying;
+        private bool _isStartingHitAction;
         private float _remainingStunTimer;
         private float _maxSafetyTimer;
 
@@ -47,7 +48,15 @@ namespace Game.GamePlay
                 {
                     GLog.Info(LogTags.Combat, $"怪物播放受击动作: {monster.name} → {hitAction.name} (类型: {ctx.SelectedReactionType})");
                     var hitCommand = CharacterCommandFactory.CreateDirectAssetCommand(hitAction);
-                    monster.ActionController.OnInput(hitCommand);
+                    _isStartingHitAction = true;
+                    try
+                    {
+                        monster.ActionController.OnInputAndResolveImmediately(hitCommand);
+                    }
+                    finally
+                    {
+                        _isStartingHitAction = false;
+                    }
                     _isActionPlaying = true;
                 }
                 else
@@ -142,6 +151,7 @@ namespace Game.GamePlay
         /// </summary>
         private void HandleActionInterrupt()
         {
+            if (_isStartingHitAction) return;
             _isActionPlaying = false;
             _remainingStunTimer = 0f;
             _maxSafetyTimer = 0f;

@@ -72,16 +72,13 @@
         },
         {
             "groupId": "eecd9144-45ee-4a18-87d5-a12dd50d3e87",
-            "groupName": "命中",
+            "groupName": "战斗",
             "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
                 {
                     "rid": 1007
-                },
-                {
-                    "rid": 1008
                 }
             ]
         },
@@ -96,6 +93,18 @@
         {
             "groupId": "55db9612-7c89-4be6-ad14-5d87873ddea0",
             "groupName": "Buff",
+            "isCollapsed": true,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
+                {
+                    "rid": 1008
+                }
+            ]
+        },
+        {
+            "groupId": "09da74dd-2d05-455f-af11-1c1318f9844a",
+            "groupName": "相机",
             "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
@@ -272,14 +281,14 @@
             {
                 "rid": 1007,
                 "type": {
-                    "class": "EventTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "d4f852d0-d2f0-4be4-95c0-af9cb2ba03ec",
-                    "trackType": "EventTrack",
-                    "trackName": "事件轨道",
+                    "trackId": "9598237f-bdcc-4738-b4db-cc5d4f409976",
+                    "trackType": "CombatTrack",
+                    "trackName": "战斗轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -295,14 +304,14 @@
             {
                 "rid": 1008,
                 "type": {
-                    "class": "EventTrack",
+                    "class": "StatusTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "acebddc5-67d3-4893-9fd6-eb286e7c6a40",
-                    "trackType": "EventTrack",
-                    "trackName": "事件轨道",
+                    "trackId": "916280d9-4886-409b-92a7-19727e4a045c",
+                    "trackType": "StatusTrack",
+                    "trackName": "状态增益轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -318,19 +327,19 @@
             {
                 "rid": 1009,
                 "type": {
-                    "class": "StatusTrack",
+                    "class": "CameraTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "916280d9-4886-409b-92a7-19727e4a045c",
-                    "trackType": "StatusTrack",
-                    "trackName": "状态增益轨道",
+                    "trackId": "c3f0344f-2c9f-4e09-b032-93f71ca1de00",
+                    "trackType": "CameraTrack",
+                    "trackName": "摄像机轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
                     "isCollapsed": false,
-                    "isEnabled": true,
+                    "isEnabled": false,
                     "clips": [
                         {
                             "rid": 1016
@@ -351,10 +360,10 @@
                     "isEnabled": true,
                     "startTime": 0.0,
                     "duration": 0.6833333969116211,
-                    "blendInDuration": 0.06666667014360428,
+                    "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 51238
+                        "instanceID": 34552
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -442,44 +451,22 @@
             {
                 "rid": 1014,
                 "type": {
-                    "class": "ParryExecuteClip",
+                    "class": "ParryWindowClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "1e78c732-4a40-41a1-a9d9-7070db3f133f",
-                    "clipName": "招架执行窗口片段",
+                    "clipId": "8f80464c-cdc4-4691-915c-7571f257aaa4",
+                    "clipName": "招架防御窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.6833330988883972,
+                    "duration": 0.6833333969116211,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "hitEffectId": 1050130,
-                    "hitStopDuration": 0.20000000298023225
+                    "blendOutDuration": 0.0
                 }
             },
             {
                 "rid": 1015,
-                "type": {
-                    "class": "ParryCaptureClip",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "9b43a9fb-1d07-44e3-9c52-deb8f3e303b7",
-                    "clipName": "招架捕获窗口片段",
-                    "isEnabled": true,
-                    "startTime": 0.0,
-                    "duration": 0.6833328008651733,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "data": {
-                        "triggerTiming": 10
-                    }
-                }
-            },
-            {
-                "rid": 1016,
                 "type": {
                     "class": "BuffClip",
                     "ns": "ATEditor",
@@ -495,6 +482,55 @@
                     "blendOutDuration": 0.0,
                     "buffId": 9000,
                     "lifetimeMode": 0
+                }
+            },
+            {
+                "rid": 1016,
+                "type": {
+                    "class": "CameraControlClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "f1c2fd24-a77f-4509-9f58-376c56061ecb",
+                    "clipName": "相机控制片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.5,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "controlMode": 1,
+                    "unlockOnExit": true,
+                    "lockYaw": true,
+                    "lockPitch": true,
+                    "recenterTarget": 0,
+                    "smoothTime": 0.10000000149011612,
+                    "targetPitch": -12.0,
+                    "framingBiasAngle": -30.0,
+                    "deadzoneAngle": 1.5,
+                    "allowSoftInputInterrupt": true,
+                    "disableInputDuringRecenter": false,
+                    "unlockInputOnExit": true,
+                    "enableDistanceAndFovOverride": true,
+                    "instantDistanceOnEnter": true,
+                    "recenterDistance": 1.7999999523162842,
+                    "recenterFOV": 45.0,
+                    "recenterFovBlendSpeed": 6.0,
+                    "recenterRestoreFovOnExit": true,
+                    "recenterRestoreSpeed": 2.0,
+                    "lookAtOffset": {
+                        "x": 0.0,
+                        "y": 1.2000000476837159,
+                        "z": 0.0
+                    },
+                    "trackSmoothSpeed": 8.0,
+                    "fallbackToCharacter": true,
+                    "restoreLookAtOnExit": true,
+                    "targetFOV": 45.0,
+                    "targetDistance": 3.5,
+                    "blendInSpeed": 5.0,
+                    "blendOutSpeed": 5.0,
+                    "restoreOnExit": true
                 }
             },
             {

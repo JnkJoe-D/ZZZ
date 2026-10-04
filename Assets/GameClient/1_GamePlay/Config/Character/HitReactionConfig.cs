@@ -209,12 +209,10 @@ namespace Game.GamePlay
             HitReactionType requestType,
             float signedHorizontalAngle,
             float verticalAngle,
-            out ActionConfigAsset resolvedAction,
-            out bool needFaceAttacker)
+            out ActionConfigAsset resolvedAction)
         {
             InitializeCache();
             resolvedAction = null;
-            needFaceAttacker = false;
 
             if (requestType == HitReactionType.None)
             {
@@ -227,7 +225,7 @@ namespace Game.GamePlay
                 // 声明式回退
                 if (entry != null && entry.fallbackType != HitReactionType.None && entry.fallbackType != requestType)
                 {
-                    return TryResolveHitAction(entry.fallbackType, signedHorizontalAngle, verticalAngle, out resolvedAction, out needFaceAttacker);
+                    return TryResolveHitAction(entry.fallbackType, signedHorizontalAngle, verticalAngle, out resolvedAction);
                 }
 
                 // 规则保底自动回退链：KnockDown -> Launch -> Heavy -> Light
@@ -241,44 +239,26 @@ namespace Game.GamePlay
 
                 if (autoFallback != HitReactionType.None && autoFallback != requestType && _entryMap.ContainsKey(autoFallback))
                 {
-                    return TryResolveHitAction(autoFallback, signedHorizontalAngle, verticalAngle, out resolvedAction, out needFaceAttacker);
+                    return TryResolveHitAction(autoFallback, signedHorizontalAngle, verticalAngle, out resolvedAction);
                 }
 
                 return false;
             }
 
             // 2. 方位与动作细分裁决
-            resolvedAction = ResolveDirectionalAction(entry, signedHorizontalAngle, verticalAngle, out bool isHitFromBack);
-
-            // 3. 转向策略裁决
-            switch (entry.turnaroundPolicy)
-            {
-                case HitTurnaroundPolicy.AlwaysFaceAttacker:
-                    needFaceAttacker = true;
-                    break;
-                case HitTurnaroundPolicy.NeverTurn:
-                    needFaceAttacker = false;
-                    break;
-                case HitTurnaroundPolicy.AutoByAvailability:
-                default:
-                    if (isHitFromBack)
-                    {
-                        // 若命中背后：
-                        // 如果成功匹配到了专用的 Back 动作 -> 保持朝向，不扭头（丝滑前倾受击）
-                        // 如果只能回退降级使用 Front 动作 -> 必须面向攻击袭来矢量（确保受力退避自洽）
-                        bool isPlayingBackAnim = (resolvedAction == entry.backAction ||
-                                                  resolvedAction == entry.backUpAction ||
-                                                  resolvedAction == entry.backDownAction);
-                        needFaceAttacker = !isPlayingBackAnim;
-                    }
-                    else
-                    {
-                        needFaceAttacker = false;
-                    }
-                    break;
-            }
-
+            resolvedAction = ResolveDirectionalAction(entry, signedHorizontalAngle, verticalAngle, out _);
             return resolvedAction != null;
+        }
+
+        public bool TryResolveHitAction(
+            HitReactionType requestType,
+            float signedHorizontalAngle,
+            float verticalAngle,
+            out ActionConfigAsset resolvedAction,
+            out bool needFaceAttacker)
+        {
+            needFaceAttacker = false;
+            return TryResolveHitAction(requestType, signedHorizontalAngle, verticalAngle, out resolvedAction);
         }
 
         private ActionConfigAsset ResolveDirectionalAction(

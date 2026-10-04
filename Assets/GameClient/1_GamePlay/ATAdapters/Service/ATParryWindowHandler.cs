@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Game.Framework;
 using UnityEngine;
@@ -7,16 +8,16 @@ using cfg.ZZZ;
 namespace Game.GamePlay
 {
     /// <summary>
-    /// 统一招架适配器：同时实现时间轴 Clip 引擎生命周期驱动 (IParryWindowHandler) 
-    /// 与战斗流水线拼刀反制流转 (IParryClashHandler)，构建捕获-执行两段式解耦架构。
+    /// 统一招架防御窗口适配器：
+    /// 驱动时间轴 ParryWindowClip 生命周期 (IParryWindowHandler)
+    /// 并处理命中流水线拼刀反制 (IParryClashHandler)。
     /// </summary>
     public class ATParryWindowHandler : IParryWindowHandler, IParryClashHandler
     {
         private readonly CharacterEntity _entity;
         private ParryClashContract _currentContract;
-
-        private ParryClashContext _pendingClashContext;
-        private readonly HashSet<ParryCaptureData> _activeCaptureWindows = new();
+        private readonly HashSet<ParryWindowClip> _activeWindows = new();
+        private ParryWindowClip _currentClip;
 
         public ATParryWindowHandler(CharacterEntity entity)
         {
@@ -36,79 +37,42 @@ namespace Game.GamePlay
             }
         }
 
-        #region IParryWindowHandler (New Decoupled Lifecycle)
+        #region IParryWindowHandler (Unified Parry Window Lifecycle)
 
         /// <summary>
-        /// 捕获窗口激活 (ParryCaptureClip 进入)
+        /// 招架防御有效窗口进入 (ParryWindowClip 进入)
         /// </summary>
-        public void OnCaptureWindowEnter(ParryCaptureData data)
+        public void OnParryWindowEnter(ParryWindowClip clip)
         {
-            if (data == null) return;
+            if (clip == null) return;
 
-            bool isFirst = _activeCaptureWindows.Count == 0;
-            _activeCaptureWindows.Add(data);
+            bool isFirst = _activeWindows.Count == 0;
+            _activeWindows.Add(clip);
+            _currentClip = clip;
 
-            // 仅在首个招架窗口进入时初始化状态与契约；后续相邻或重叠片段进入时绝不重置 _pendingClashContext
             if (isFirst)
             {
-                _pendingClashContext = null;
                 SetIsParrying(true);
                 EnsureClashContract();
+                GLog.Info(LogTags.Combat, $"[ATParryWindowHandler] 实体 {_entity?.name} 开启招架防御窗口: {clip.clipName}, 时长: {clip.Duration}s");
             }
         }
 
         /// <summary>
-        /// 捕获窗口退出 (ParryCaptureClip 离开)
+        /// 招架防御有效窗口离开 (ParryWindowClip 退出)
         /// </summary>
-        public void OnCaptureWindowExit(ParryCaptureData data, bool isInterrupted)
+        public void OnParryWindowExit(ParryWindowClip clip, bool isInterrupted)
         {
-            if (data == null) return;
-            _activeCaptureWindows.Remove(data);
+            if (clip == null) return;
+            _activeWindows.Remove(clip);
 
-            bool triggeredSucceed = false;
-            // 若本片段为 OnExit 触发时机且未被打断，且存在捕获到的未消费命中上下文，则在退出时发布招架成功路由
-            if (!isInterrupted && data.triggerTiming == ParryCaptureTriggerTiming.OnExit)
-            {
-                if (_pendingClashContext != null && !_pendingClashContext.IsConsumed)
-                {
-                    triggeredSucceed = _entity.ActionController != null &&
-                                       _entity.ActionController.TryTriggerEvent(RouteEventType.ParryAidSucceed);
-                }
-            }
-
-            // 只有当所有捕获窗口全部退出后，才关闭招架状态
-            if (_activeCaptureWindows.Count == 0)
+            if (_activeWindows.Count == 0)
             {
                 SetIsParrying(false);
-
-                // 打断或成功触发招架派生反击时不注销契约，保持动作交接保护；仅在自然无招架结束时注销契约
-                if (!isInterrupted && !triggeredSucceed)
-                {
-                    CleanContracts();
-                }
+                _currentClip = null;
+                CleanContracts();
+                GLog.Info(LogTags.Combat, $"[ATParryWindowHandler] 实体 {_entity?.name} 退出招架防御窗口 (被打断: {isInterrupted})");
             }
-        }
-
-        /// <summary>
-        /// 执行窗口激活 (ParryExecuteClip 进入)
-        /// </summary>
-        public void OnExecuteWindowEnter(int hitEffectId, float hitStopDuration)
-        {
-            // 若有暂存的未消费招架命中上下文 (从 招架_Start 遗留)，同帧立即消费执行！
-            if (_pendingClashContext != null && !_pendingClashContext.IsConsumed)
-            {
-                var ctx = _pendingClashContext;
-                _pendingClashContext = null;
-                ExecuteClash(ctx, hitEffectId, hitStopDuration);
-            }
-        }
-
-        /// <summary>
-        /// 执行窗口退出 (ParryExecuteClip 离开)
-        /// </summary>
-        public void OnExecuteWindowExit()
-        {
-            CleanContracts();
         }
 
         #endregion
@@ -116,30 +80,105 @@ namespace Game.GamePlay
         #region IParryClashHandler (Combat Pipeline Interaction)
 
         /// <summary>
-        /// 战斗流水线 (ParryPipe) 捕获到命中时的入口
+        /// 战斗流水线 (ParryPipe) 捕获到命中时的入口。
+        /// 严格遵循绝区零招架物理与视听时序：
+        /// 1. 玩家进入招架成功动作（切入架刀/格挡姿态）；
+        /// 2. 攻守双方同时进入顿帧（攻击者在挥刀攻击帧定格，玩家在格挡架刀姿态定格，怪物尚未被打断）；
+        /// 3. 等双方顿帧结束后，触发回调：怪物的本次攻击才被打断并播放打断受击动作（若之前裁决为被打断）。
         /// </summary>
         public void OnHitCaptured(ParryClashContext ctx)
         {
-            if (ctx == null) return;
-
-            // 1. 暂存最新的招架命中上下文（供切入的新动作执行窗消费）
-            _pendingClashContext = ctx;
-
-            // 2. 检查当前处于活跃状态的捕获窗口中是否存在 Instant 模式
-            bool hasInstantWindow = false;
-            foreach (var win in _activeCaptureWindows)
+            if (ctx == null)
             {
-                if (win.triggerTiming == ParryCaptureTriggerTiming.Instant)
+                GLog.Warning(LogTags.Combat, "[ATParryWindowHandler] OnHitCaptured 收到空的 clashContext，忽略");
+                return;
+            }
+
+            // 1. 玩家进入招架成功动作（物理命中直接触发切入/重入正式招架轻/重反击动作，进入首帧格挡架刀姿态）
+            _entity?.ActionController?.TryTriggerEvent(RouteEventType.ParryAid);
+
+            // 2. 根据轻重招架读取配置的反制效果与顿帧时长
+            var parryWeight = ctx.Marker != null ? ctx.Marker.ParryWeight : ParryWeight.Heavy;
+            var parryEntry = (_entity as RoleEntity)?.Config?.AssistConfig?.GetParryEntry(parryWeight);
+            if(parryEntry == null)
+            {
+                GLog.Warning(LogTags.Combat, $"[ATParryWindowHandler] 实体 {_entity?.name} 的招架配置中未找到 {parryWeight} 招架条目，无法执行反制");
+                return;
+            }
+            int effectId = parryEntry.HitEffectId;
+            float stopDur = parryEntry.HitStopDuration;
+
+            if(effectId <=0 )
+            {
+                GLog.Warning(LogTags.Combat, $"[ATParryWindowHandler] 实体 {_entity?.name} 的招架条目 {parryWeight} 未配置有效的 HitEffectId，无法执行反制");
+                return;
+            }
+            // 3. 定义顿帧结束后的打断与反震受击动作回调
+            Action onHitStopComplete = () =>
+            {
+                // 等双方顿帧完全结束后，怪物的本次攻击才真正被打断并播放打断受击动作（如果之前裁决为被打断）
+                ExecuteClash(ctx, effectId, 0f);
+
+                // 兜底保障：若受击组件未生效，且裁决为打断，则下发受击动作打断
+                var hitData = ctx.Attacker?.DataModule?.Get<HitReactionRuntimeData>();
+                if (hitData == null || !hitData.InHitReaction)
                 {
-                    hasInstantWindow = true;
-                    break;
+                    ApplyAttackerParriedReaction(ctx);
+                }
+
+                // 连续招架支持：契约注销延后至 OnParryWindowExit 统一执行，确保招架窗口期内后续连续攻击仍能正确识别契约
+            };
+
+            // 4. 攻守双方同时进入顿帧，并在顿帧结束时触发打断回调
+            if (TimeManager.Instance != null && (ctx.Attacker?.Clock != null || _entity?.Clock != null))
+            {
+                TimeManager.Instance.RegisterHitStop(ctx.Attacker?.Clock, _entity?.Clock, stopDur, 0f, onHitStopComplete);
+            }
+            else
+            {
+                // 无时钟环境（如纯逻辑单元测试）自愈保底：直接同步执行回调
+                onHitStopComplete.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// 招架成功反震攻击者打断动作下发（仅在受击组件未生效时兜底）
+        /// </summary>
+        private void ApplyAttackerParriedReaction(ParryClashContext clashCtx)
+        {
+            if (clashCtx == null || clashCtx.Attacker == null)
+            {
+                GLog.Warning(LogTags.Combat, "[ATParryWindowHandler] ApplyAttackerParriedReaction clashCtx 或 Attacker 为空");
+                return;
+            }
+
+            var preData = clashCtx.PrecomputedData;
+            if (preData == null || !preData.IsValid)
+            {
+                var contract = CombatWarningManager.GetActiveContract(clashCtx.Attacker);
+                if (contract != null)
+                {
+                    if (contract.PrecomputedData == null || !contract.PrecomputedData.IsValid)
+                    {
+                        ParryPreArbitrator.Precompute(contract);
+                    }
+                    preData = contract.PrecomputedData;
                 }
             }
 
-            // 3. 若存在 Instant 模式窗口，瞬时触发招架成功路由；若当前全为 OnExit 窗口，则保持格挡架势等待 OnExit
-            if (hasInstantWindow)
+            if (preData != null && preData.IsValid && preData.WillInterrupt && preData.TargetHitAction != null)
             {
-                _entity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidSucceed);
+                var hitCmd = CharacterCommandFactory.CreateDirectAssetCommand(preData.TargetHitAction);
+                clashCtx.Attacker.ActionController?.OnInputAndResolveImmediately(hitCmd);
+
+                // 兜底同步运行时硬直数据，防止行为树无感知抢占
+                var hitData = clashCtx.Attacker.DataModule?.Get<HitReactionRuntimeData>();
+                if (hitData != null)
+                {
+                    hitData.Set(nameof(hitData.InHitReaction), true);
+                    hitData.Set(nameof(hitData.HitTriggerTimestamp), Time.frameCount);
+                    hitData.Set(nameof(hitData.ResolvedHitAction), preData.TargetHitAction);
+                }
             }
         }
 
@@ -151,11 +190,26 @@ namespace Game.GamePlay
             if (ctx == null || ctx.Attacker == null || _entity == null) return;
             ctx.IsConsumed = true;
 
-            // 1. 获取反制配置 (由具体动作时间轴 ParryExecuteClip 传入的 hitEffectId 驱动)
+            // 1. 获取反制配置 (由具体动作时间轴 ParryWindowClip 传入的 hitEffectId 驱动)
             var hitEffectCfg = ConfigManager.Instance?.Tables?.TbHitEffect?.GetOrDefault(hitEffectId);
 
-            // 2. 纯数据驱动打断力：防守方当前真实招架动作的打断等级
-            int parryInterruptLevel = ActionResilienceHelper.GetInterruptLevel(_entity);
+            // 2. 纯数据驱动打断力：防守方招架反制动作的打断等级（必须取反击动作的打断力，而非起手架势动作）
+            var parryWeight = ctx.Marker != null ? ctx.Marker.ParryWeight : ParryWeight.Heavy;
+            var parryEntry = (_entity as RoleEntity)?.Config?.AssistConfig?.GetParryEntry(parryWeight);
+            int parryInterruptLevel = 0;
+            if (parryEntry?.Action != null)
+            {
+                parryInterruptLevel = ActionResilienceHelper.GetInterruptLevelById(parryEntry.Action.ID);
+            }
+            if (parryInterruptLevel <= 0)
+            {
+                parryInterruptLevel = ActionResilienceHelper.GetInterruptLevel(_entity);
+            }
+            if (parryInterruptLevel <= 0)
+            {
+                // 保底机制：招架反制必定具有顶级打断力（轻招架 2 / 重招架 5），压制怪物常规攻击
+                parryInterruptLevel = parryWeight == ParryWeight.Heavy ? 5 : 2;
+            }
 
             // 3. 构建标准受击管线上下文，由 HitPipeline 权威统筹执行全部数值属性、Buff、动作打断、转向与顿帧
             var pipeline = HitPipeline.Default;
@@ -168,8 +222,9 @@ namespace Game.GamePlay
             pipeCtx.HitDirection = hitDir;
             pipeCtx.ReactionAxis = -hitDir;
             pipeCtx.InterruptLevel = parryInterruptLevel;
-            pipeCtx.EnableHitStop = true;
+            pipeCtx.EnableHitStop = hitStopDuration > 0f;
             pipeCtx.HitStopDuration = hitStopDuration;
+            pipeCtx.HitStunDuration = hitStopDuration;
             pipeCtx.HitStopScale = 0f;
             pipeCtx.ResultFlags |= HitResultFlags.Parried;
 
@@ -212,6 +267,16 @@ namespace Game.GamePlay
 
             if (marker != null && marker.Attacker != null && marker.Attacker.gameObject.activeInHierarchy)
             {
+                var attackerContract = CombatWarningManager.GetActiveContract(marker.Attacker);
+                if (attackerContract != null)
+                {
+                    attackerContract.ParryRole = _entity;
+                    attackerContract.Marker = marker;
+                    _currentContract = attackerContract;
+                    ParryPreArbitrator.Precompute(_currentContract);
+                    return;
+                }
+
                 _currentContract = new ParryClashContract
                 {
                     Attacker = marker.Attacker,

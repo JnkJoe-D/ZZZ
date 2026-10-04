@@ -284,20 +284,12 @@ namespace Game.GamePlay
         {
             var parryData = role.DataModule?.Get<ParryRuntimeData>();
             if (parryData == null) return false;
-            // 只检查状态，不在此处清除 —— 副作用延迟到 OnCommit 执行，
-            // 防止多路由 Evaluate 时第一条路由就把状态消费掉
-            if (!parryData.ParrySucceeded) return false;
             return parryData.LastParryWeight == ExpectedWeight;
         }
 
         protected override void OnCommitRole(RoleEntity role)
         {
-            // 路由被最终确认提交后，才清除一次性招架标记，确保高优先级路由能正确竞争
-            var parryData = role.DataModule?.Get<ParryRuntimeData>();
-            if (parryData != null)
-            {
-                parryData.Set(nameof(parryData.ParrySucceeded), false);
-            }
+            // 提交后保持 LastParryWeight 供后续动作或表现层查询
         }
     }
 }

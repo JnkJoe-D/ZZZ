@@ -18,7 +18,16 @@ MonoBehaviour:
   actionTimelineSO: {fileID: 11400000, guid: d9e866d08d157624eaa910beca491e73, type: 2}
   CompleteMode: 0
   CompleteAction: {fileID: 0}
-  CompleteTransitCrossfade: -1
+  _transitionTable:
+    _items:
+    - TargetAction: {fileID: 11400000, guid: 67d6812b48ee88749bfc25bf7da59b41, type: 2}
+      CrossfadeDuration: -1
+      HasCustomExitTime: 0
+      CustomExitTime: 5.024542
+    - TargetAction: {fileID: 11400000, guid: c2b895ad933f78945b7a3c0fd4caa14f, type: 2}
+      CrossfadeDuration: -1
+      HasCustomExitTime: 0
+      CustomExitTime: 0.92174757
   Routes: []
   RouteSets:
   - {fileID: 11400000, guid: 6df26ea99b1e2ca49bf26e877d51e953, type: 2}

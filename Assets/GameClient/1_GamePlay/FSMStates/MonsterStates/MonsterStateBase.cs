@@ -1,3 +1,4 @@
+using System;
 using Game.Framework;
 using UnityEngine;
 
@@ -33,14 +34,14 @@ namespace Game.GamePlay
         /// <summary>
         /// 向实体动作控制器压入资产指令
         /// </summary>
-        protected bool SendCommand(ActionConfigAsset action)
+        protected bool SendCommand(ActionConfigAsset action, Action onComplete = null)
         {
             if (action == null || Entity == null || Entity.ActionController == null)
             {
                 return false;
             }
 
-            var cmd = CharacterCommandFactory.CreateDirectAssetCommand(action);
+            var cmd = CharacterCommandFactory.CreateDirectAssetCommand(action, onComplete: onComplete);
             Entity.ActionController.OnInput(cmd);
             return true;
         }
@@ -59,10 +60,34 @@ namespace Game.GamePlay
         }
 
         /// <summary>
-        /// 检查受击事实并跳转硬直状态
+        /// 检查失衡事实并跳转失衡瘫痪状态（最高优先级控制）
+        /// </summary>
+        protected bool TryEnterStun()
+        {
+            var attrs = Entity.StatusModule?.Attributes;
+            if (attrs != null && attrs.Has(AttributeId.Daze) && attrs.Has(AttributeId.MaxDaze))
+            {
+                float daze = attrs.GetCurrent(AttributeId.Daze);
+                float maxDaze = attrs.GetCurrent(AttributeId.MaxDaze);
+                if (maxDaze > 0f && daze >= maxDaze)
+                {
+                    if (Machine != null && Machine.CurrentState is not MonsterStunState)
+                    {
+                        Machine.ChangeState<MonsterStunState>();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 检查受击事实并跳转硬直状态（失衡状态下不被普通受击打断抢占）
         /// </summary>
         protected bool TryEnterHitStun()
         {
+            if (Machine != null && Machine.CurrentState is MonsterStunState) return false;
+
             var hitData = Entity.DataModule?.Get<HitReactionRuntimeData>();
             if (hitData != null && hitData.InHitReaction)
             {

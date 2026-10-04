@@ -104,51 +104,20 @@ namespace Game.Editor.ActionTransition
                 result.TimelineDuration = Mathf.Max(timeline.Duration, 0.1f);
                 result.IsLoop = timeline.isLoop;
 
-                // 查找主轨道的动画片段
-                ATEditor.AnimationTrack masterAnimTrack = null;
-                ATEditor.AnimationTrack anyAnimTrack = null;
-
-                foreach (var track in timeline.AllTracks)
+                // 使用扩展方法安全获取所有动画片段，解除对 AnimationTrack 和具体片段类型的直接依赖
+                var animClips = timeline.GetAnimationClips();
+                foreach (var item in animClips)
                 {
-                    if (track is ATEditor.AnimationTrack animTrack)
+                    result.Clips.Add(new SkillClipItem
                     {
-                        if (animTrack.isMasterTrack)
-                        {
-                            masterAnimTrack = animTrack;
-                            break;
-                        }
-                        anyAnimTrack ??= animTrack;
-                    }
+                        AnimationClip = item.Clip,
+                        StartTime = item.StartTime,
+                        Duration = item.Duration,
+                        BlendIn = item.BlendInDuration
+                    });
                 }
 
-                var targetTrack = masterAnimTrack ?? anyAnimTrack;
-                if (targetTrack != null && targetTrack.clips != null)
-                {
-                    foreach (var clip in targetTrack.clips)
-                    {
-                        if (clip is ATEditor.AnimationClip skillClip && skillClip.isEnabled && skillClip.animationClip != null)
-                        {
-                            float dur = skillClip.Duration > 0.01f ? skillClip.Duration : skillClip.animationClip.length;
-                            float blendIn = skillClip.BlendInDuration > 0f ? skillClip.BlendInDuration : 0.15f;
-
-                            result.Clips.Add(new SkillClipItem
-                            {
-                                AnimationClip = skillClip.animationClip,
-                                StartTime = skillClip.StartTime,
-                                Duration = dur,
-                                BlendIn = blendIn
-                            });
-
-                            if (result.Clips.Count == 1)
-                            {
-                                result.DefaultBlendIn = blendIn;
-                            }
-                        }
-                    }
-
-                    // 按 StartTime 排序片段
-                    result.Clips.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
-                }
+                result.DefaultBlendIn = timeline.GetDefaultBlendInDuration();
             }
 
             return result;
@@ -188,25 +157,15 @@ namespace Game.Editor.ActionTransition
                 return range;
             }
 
-            // 遍历时间轴轨道寻找匹配 Tag 的 RouteWindowClip
-            foreach (var track in clipData.TimelineSO.AllTracks)
+            // 使用扩展方法检索匹配 Tag 的 RouteWindowClip
+            var matchedClips = clipData.TimelineSO.FindRouteWindowClips(windowTag);
+            if (matchedClips.Count > 0)
             {
-                if (track is RouteWindowTrack rwTrack && rwTrack.clips != null)
-                {
-                    foreach (var clip in rwTrack.clips)
-                    {
-                        if (clip is RouteWindowClip rwClip && rwClip.isEnabled && rwClip.routewindow != null)
-                        {
-                            if (string.Equals(rwClip.routewindow.Tag, windowTag, StringComparison.OrdinalIgnoreCase))
-                            {
-                                range.HasWindow = true;
-                                range.StartTime = rwClip.StartTime;
-                                range.EndTime = rwClip.StartTime + rwClip.Duration;
-                                return range;
-                            }
-                        }
-                    }
-                }
+                var rwClip = matchedClips[0];
+                range.HasWindow = true;
+                range.StartTime = rwClip.StartTime;
+                range.EndTime = rwClip.StartTime + rwClip.Duration;
+                return range;
             }
 
             return range;

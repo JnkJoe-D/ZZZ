@@ -27,9 +27,9 @@ namespace Game.GamePlay
             // 2. 如果切入角色还在切出队列中，取消其切出任务（复活保护）
             ctx.Manager.SwitchExecutor?.TryCancelSwitchOut(inMember);
 
-            // 3. 若切入角色正处于 Pending 待切出状态，角色仍在场上继续运行当前动作：
-            //    不需要转向和位置更新，直接保持其现存位置和朝向
-            if (isPendingSwitchOut)
+            // 3. 若切入角色正处于 Pending 待切出状态，且非紧急招架支援：
+            //    角色仍在场上继续运行当前动作，直接保持其现存位置和朝向
+            if (isPendingSwitchOut && ctx.Type != SwitchType.ParryAid)
             {
                 ctx.SpawnPosition = inEntity.transform.position;
                 ctx.SpawnRotation = inEntity.transform.rotation;
@@ -61,27 +61,36 @@ namespace Game.GamePlay
 
             if (ctx.Type == SwitchType.ParryAid && ctx.WarningMarker != null && ctx.TargetAttacker != null)
             {
-                // 招架支援专属身位裁决（方案 C）
-                bool alreadyInCoverage = ctx.WarningMarker.AllowInPlaceParry && ctx.WarningMarker.IsPositionInCoverage(originPos);
+                // 1. 动态时间差计算：获取怪物攻击帧到来的剩余物理时间
+                float expectedHitTime = ctx.WarningMarker.ExpectedHitTime > 0f ? ctx.WarningMarker.ExpectedHitTime : Time.time + ctx.WarningMarker.Duration;
+                float remainTimeToHit = Mathf.Max(0f, expectedHitTime - Time.time);
 
-                if (alreadyInCoverage)
-                {
-                    // 就地格挡：保持原身位，仅转向面向怪物
-                    spawnPos = originPos;
-                    Vector3 lookDir = ctx.TargetAttacker.transform.position - spawnPos;
-                    lookDir.y = 0f;
-                    spawnRot = lookDir.sqrMagnitude > 0.001f ? Quaternion.LookRotation(lookDir) : originRot;
-                    GLog.Info(LogTags.Team, $"角色已在攻击威胁覆盖域内，执行【就地格挡】，不发生位移");
-                }
-                else
-                {
-                    // 远距切入：精准瞬移至怪物接刀身位（带探地贴合）
-                    spawnPos = ctx.WarningMarker.GetWorldClashPosition(inEntity);
-                    Vector3 lookDir = ctx.TargetAttacker.transform.position - spawnPos;
-                    lookDir.y = 0f;
-                    spawnRot = lookDir.sqrMagnitude > 0.001f ? Quaternion.LookRotation(lookDir) : originRot;
-                    GLog.Info(LogTags.Team, $"角色在威胁覆盖域外，瞬移至【接刀锚点】: {spawnPos}");
-                }
+                var assistCfg = inEntity.Config?.AssistConfig;
+                float readyDuration = assistCfg != null && assistCfg.ParryReadyDuration > 0f ? assistCfg.ParryReadyDuration : 0.2f;
+                float diff = remainTimeToHit - readyDuration;
+
+                // 差值大于等于 0 说明时间充裕，从 0 帧开始播；差值小于 0 说明需快进以对齐刀尖
+                float calculatedStartTime = diff >= 0f ? 0f : Mathf.Min(-diff, readyDuration);
+                ctx.CalculatedStartTime = calculatedStartTime;
+
+                // 2. 招架支援身位裁决与位移补偿（三维严谨裁决：禁区外 + 有效范围内 + 怪物与接刀点连线上）
+                bool alreadyInCoverage = ctx.WarningMarker.CanPerformInPlaceParry(originPos);
+                Vector3 basePos = alreadyInCoverage ? originPos : ctx.WarningMarker.GetWorldClashPosition(inEntity);
+
+                Vector3 lookDir = ctx.TargetAttacker.transform.position - basePos;
+                lookDir.y = 0f;
+                spawnRot = lookDir.sqrMagnitude > 0.001f ? Quaternion.LookRotation(lookDir) : originRot;
+
+                // 根运动前向滑步位移补偿算法：无论是就地格挡还是远距切入，统一扣除起手动作产生的根运动滑步位移
+                float rootMotionZ = assistCfg != null ? assistCfg.ParryRootMotionZOffset : 0f;
+                float displacementRatio = readyDuration > 0.001f ? (readyDuration - calculatedStartTime) / readyDuration : 0f;
+                displacementRatio = Mathf.Clamp01(displacementRatio);
+                float actualDisplacement = rootMotionZ * displacementRatio;
+
+                // 在切入角色朝向的反方向（即后退方向）扣除该位移量，确保滑步结束后刚好到达 basePos
+                spawnPos = basePos - (spawnRot * Vector3.forward) * actualDisplacement;
+
+                GLog.Info(LogTags.Team, $"[ParryPlacement] {(alreadyInCoverage ? "就地格挡" : "远距切入")}: Base={basePos}, ActualSpawn={spawnPos}, RootMotionOffset={actualDisplacement:F2}m (Ratio={displacementRatio:P0}), CalculatedStartTime={calculatedStartTime:F3}s");
             }
             else if (outEntity != null)
             {

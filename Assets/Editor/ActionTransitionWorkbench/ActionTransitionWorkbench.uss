@@ -180,19 +180,54 @@
 .inspector-control-row {
     flex-direction: row;
     align-items: center;
+    overflow: hidden;
 }
 
 .inspector-slider {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 60px;
     margin-right: 4px;
 }
 
 .inspector-num-field {
-    width: 60px;
+    flex-shrink: 0;
+    width: 52px;
+    min-width: 52px;
 }
 
 .inspector-num-field-full {
     flex-grow: 1;
+}
+
+.autoroute-sync-group {
+    margin-top: 6px;
+    padding: 6px;
+    background-color: #1e1e23;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: #33333d;
+}
+
+.autoroute-popup-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+.autoroute-popup-label {
+    font-size: 10px;
+    color: #9aa0a6;
+    width: 65px;
+    flex-shrink: 0;
+}
+
+.autoroute-popup {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 80px;
+    height: 20px;
 }
 
 .inspector-toggle {

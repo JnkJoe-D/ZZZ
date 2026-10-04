@@ -16,7 +16,7 @@ namespace ATEditor
     }
 
     [Serializable]
-    [ClipDefinition(typeof(EventTrack), "攻击预警")]
+    [ClipDefinition(typeof(CombatTrack), "攻击预警")]
     public class AttackWarningClip : ClipBase
     {
         [Header("Warning Type")]
@@ -46,6 +46,18 @@ namespace ATEditor
         [Tooltip("是否允许就地招架。若勾选且玩家已在覆盖域内，切入时不发生位移，仅瞬间转向面向怪物")]
         public bool AllowInPlaceParry = true;
 
+        [Tooltip("贴脸禁区半径（米）。若玩家与怪物距离小于此半径，禁止就地招架，强制瞬移至 ClashPositionOffset，避免模型穿插或打击盒扫空")]
+        public float RestrictedInnerRadius = 1.2f;
+
+        [Tooltip("原地招架连线横向容差（米）。玩家偏离怪物与预设接刀点连线的横向距离小于此容差，才允许就地招架。")]
+        public float InPlaceLineTolerance = 0.5f;
+
+        [Header("招架分期 (提前预判 vs 临界直接接刀)")]
+        [Tooltip("直接切入招架的相对时间偏移（单位：秒）。\n" +
+                 "• 若为 0 (默认)：整段预警区间内按键均直接切入招架轻/重 (ParryAid)；\n" +
+                 "• 若 > 0：在预警开始后的 [0, Offset) 秒内按键进入提前架势 (ParryAidStart)；在 Offset 之后按键直接切入招架轻/重 (ParryAid)。")]
+        public float DirectClashTimeOffset = 0.0f;
+
         [Header("Editor Gizmos")]
         [Tooltip("是否在 Scene 窗口绘制预警覆盖盒与接刀身位标记")]
         public bool ShowGizmos = true;
@@ -72,6 +84,9 @@ namespace ATEditor
                 CoverageCenterOffset = this.CoverageCenterOffset,
                 ClashPositionOffset = this.ClashPositionOffset,
                 AllowInPlaceParry = this.AllowInPlaceParry,
+                RestrictedInnerRadius = this.RestrictedInnerRadius,
+                InPlaceLineTolerance = this.InPlaceLineTolerance,
+                DirectClashTimeOffset = this.DirectClashTimeOffset,
                 ShowGizmos = this.ShowGizmos,
                 DetectionRadius = this.DetectionRadius,
                 DetectionAngle = this.DetectionAngle

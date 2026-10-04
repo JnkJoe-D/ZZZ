@@ -72,6 +72,7 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks:
+    - rid: 6293806958974861350
     - rid: 4681868069779801086
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
@@ -210,7 +211,7 @@ MonoBehaviour:
         clips:
         - rid: 4681868069782421513
     - rid: 4681868069779801083
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 137cd20e-cfee-423e-a703-4338cdb0a5ae
         trackType: DamageTrack
@@ -496,6 +497,88 @@ MonoBehaviour:
         blendInSpeed: 5
         blendOutSpeed: 5
         restoreOnExit: 1
+    - rid: 6293806958974861350
+      type: {class: TransformTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 33f3fd9a-1d83-4ad5-85a8-b6dab29430df
+        trackType: TransformTrack
+        trackName: "\u53D8\u6362\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6293806958974861352
+    - rid: 6293806958974861352
+      type: {class: MovementClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: db8c4197-9293-4427-84e9-047c31b05b26
+        clipName: "\u79FB\u52A8\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.13333334
+        blendInDuration: 0
+        blendOutDuration: 0
+        referenceDestination: 1
+        referenceCoordinate: 0
+        targetPosition: {x: 0, y: 0, z: 0}
+        targetPositionEnum: 6
+        targetBaseDirection: 1
+        targetAnchor: 0
+        selfAnchor: 0
+        offsetRadius: 0
+        angleOffset: 0
+        displacementType: 0
+        movementCurve: 0
+        enablePositionValidation: 1
+        candidatePositions:
+        - label: "\u9996\u9009\u6B63\u524D"
+          targetPositionEnum: 0
+          targetBaseDirection: 0
+          targetAnchor: 0
+          selfAnchor: 0
+          offsetRadius: 4
+          angleOffset: 0
+          heightOffset: 0
+        - label: "\u5907\u9009\u5DE6\u4FA7"
+          targetPositionEnum: 2
+          targetBaseDirection: 0
+          targetAnchor: 0
+          selfAnchor: 0
+          offsetRadius: 4
+          angleOffset: 0
+          heightOffset: 0
+        - label: "\u5907\u9009\u53F3\u4FA7"
+          targetPositionEnum: 3
+          targetBaseDirection: 0
+          targetAnchor: 0
+          selfAnchor: 0
+          offsetRadius: 4
+          angleOffset: 0
+          heightOffset: 0
+        - label: "\u5907\u9009\u8EAB\u540E"
+          targetPositionEnum: 1
+          targetBaseDirection: 0
+          targetAnchor: 0
+          selfAnchor: 0
+          offsetRadius: 4
+          angleOffset: 0
+          heightOffset: 0
+        enableSmartRadialFallback: 1
+        fallbackAngleStep: 30
+        maxFallbackAngle: 180
+        obstacleLayers:
+          serializedVersion: 2
+          m_Bits: 1152
+        groundLayers:
+          serializedVersion: 2
+          m_Bits: 256
+        groundCheckDistance: 3
+        requireGrounded: 1
+        faceTargetOnArrival: 1
+        serializedObstacleLayers: 1152
+        serializedGroundLayers: 256
     - rid: 6379257910440230924
       type: {class: StatusTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -600,7 +683,7 @@ MonoBehaviour:
       data:
         Tag: Auto1
     - rid: 6379258182230343697
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 833c1f6c-ad6a-4032-9c6d-bf5779a93d66
         trackType: DamageTrack
@@ -669,7 +752,7 @@ MonoBehaviour:
             assetPath: 
           hitEffectId: 1050140
     - rid: 6379258182230343699
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 9dfa7994-986e-4b18-bcb7-81f407453e7d
         trackType: DamageTrack

@@ -17,7 +17,7 @@ MonoBehaviour:
   TimelineAsset: {fileID: 4900000, guid: 428f7472c04f0d8438901fcb200b2169, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: dbee69f72575bfb4a996b66efbb7ba2e, type: 2}
   CompleteMode: 20
-  CompleteAction: {fileID: 11400000, guid: 89316a6c143e02e41a76275294ffbd3b, type: 2}
+  CompleteAction: {fileID: 11400000, guid: a55a8c55c3fefa141ada190143464c08, type: 2}
   _transitionTable:
     _items:
     - TargetAction: {fileID: 11400000, guid: b9c11e41b6f805544b4bc92c600578b5, type: 2}

@@ -14,7 +14,8 @@ namespace Game.GamePlay
 
         public void Process(HitPipelineContext ctx)
         {
-            if (ctx.IsAborted || ctx.Victim == null || ctx.Victim.LifecycleComponent.IsDead) return;
+            var victimLifecycle = ctx.Victim?.DataModule?.Get<LifecycleRuntimeData>();
+            if (ctx.IsAborted || ctx.Victim == null || (victimLifecycle != null && victimLifecycle.IsDead)) return;
             if (!ctx.ResultFlags.HasFlag(HitResultFlags.Interrupted)) return;
 
             // 1. 攻击袭来方向向量（面向受击方向上下文，水平投射）
@@ -39,9 +40,8 @@ namespace Game.GamePlay
                 verticalAngle = Vector3.Angle(Vector3.up, -ctx.HitDirection) - 90f;
             }
 
-            // 3. 受击动作多向细分与自适应转向决策
+            // 3. 受击动作多向细分
             ActionConfigAsset resolvedAction = null;
-            bool needFaceAttacker = false;
 
             var hitReactionConfig = ctx.Victim.Config?.hitReactionConfig;
             if (hitReactionConfig != null && ctx.SelectedReactionType != HitReactionType.None)
@@ -50,15 +50,23 @@ namespace Game.GamePlay
                     ctx.SelectedReactionType,
                     signedHorizontalAngle,
                     verticalAngle,
-                    out resolvedAction,
-                    out needFaceAttacker);
+                    out resolvedAction);
+            }
+
+            // 兜底保障：若受击配置未能匹配到动作，但在招架反制语境下契约已预解析出受击动作，则采用预裁决动作
+            if (resolvedAction == null && ctx.ResultFlags.HasFlag(HitResultFlags.Parried))
+            {
+                var contract = CombatWarningManager.GetActiveContract(ctx.Victim);
+                if (contract?.PrecomputedData != null && contract.PrecomputedData.TargetHitAction != null)
+                {
+                    resolvedAction = contract.PrecomputedData.TargetHitAction;
+                }
             }
 
             ctx.ResolvedHitAction = resolvedAction;
-            ctx.RequireFaceAttacker = needFaceAttacker;
 
-            // 4. 受控物理转向：仅在裁决明确需要转向时，精准面向受击方向上下文（绝不硬编码 180°）
-            if (needFaceAttacker && faceDir.sqrMagnitude > 0.0001f)
+            // 4. 受控物理转向：受击转向严格以 ctx.HitDirection 的反方向为受击朝向进行转向（怎么转向完全取决于 HitDirection）
+            if (faceDir.sqrMagnitude > 0.0001f)
             {
                 if (ctx.Victim.MovementComponent != null)
                 {
@@ -81,10 +89,9 @@ namespace Game.GamePlay
                 {
                     hitData.Set(nameof(hitData.CurrentReactionType), ctx.SelectedReactionType);
                     hitData.Set(nameof(hitData.ResolvedHitAction), resolvedAction);
-                    hitData.Set(nameof(hitData.RequireFaceAttacker), needFaceAttacker);
                 }
 
-                GLog.Info(LogTags.Combat, $"受击表现: {ctx.Victim.name} | 类型: {ctx.SelectedReactionType} | 动作: {resolvedAction?.name ?? "None"} | 转向: {needFaceAttacker} (角:{signedHorizontalAngle:F1}°) | 攻击来源: {ctx.Attacker?.name}");
+                GLog.Info(LogTags.Combat, $"受击表现: {ctx.Victim.name} | 类型: {ctx.SelectedReactionType} | 动作: {resolvedAction?.name ?? "None"} | 转向方向: {faceDir.normalized} (角:{signedHorizontalAngle:F1}°) | 攻击来源: {ctx.Attacker?.name}");
 
                 ctx.Victim.HitReactionComponent?.TriggerInterruptedHook(ctx);
             }

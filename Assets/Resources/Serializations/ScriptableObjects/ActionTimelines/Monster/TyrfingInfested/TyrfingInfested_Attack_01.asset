@@ -46,8 +46,14 @@ MonoBehaviour:
     tracks:
     - rid: 6379257712028942354
     - rid: 6379258182230343765
-    - rid: 6379257712028942355
-    - rid: 6379257937949097996
+    - rid: 6293806918069911595
+  - groupId: 5ffc75f9-4f3c-4b44-b0e0-07f30abca713
+    groupName: "\u7279\u6548"
+    isCollapsed: 0
+    isEnabled: 1
+    isLocked: 0
+    tracks:
+    - rid: 6379258280598044686
   - groupId: 48bd4221-439a-46f0-bbbe-7c608f53feea
     groupName: Route
     isCollapsed: 0
@@ -206,8 +212,49 @@ MonoBehaviour:
         blendOutDuration: 0
         routewindow:
           rid: 6379258164158660701
+    - rid: 6293806918069911595
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: fed7f412-e6ed-4177-a380-a0d1671acbdd
+        trackType: CombatTrack
+        trackName: "\u6218\u6597\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6293806918069911596
+    - rid: 6293806918069911596
+      type: {class: AttackWarningClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 83170466-b455-4151-a2bc-6e69715cd8b3
+        clipName: "\u653B\u51FB\u9884\u8B66\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.53333336
+        duration: 0.5
+        blendInDuration: 0
+        blendOutDuration: 0
+        SignalType: 0
+        ParryWeight: 2
+        CoverageShape:
+          shapeType: 3
+          size: {x: 1, y: 1, z: 1}
+          radius: 5
+          height: 2.5
+          angle: 120
+          innerRadius: 1
+        CoverageCenterOffset: {x: 0, y: 0, z: 0}
+        ClashPositionOffset: {x: 0, y: 0, z: 1.8}
+        AllowInPlaceParry: 1
+        RestrictedInnerRadius: 1.2
+        InPlaceLineTolerance: 0.5
+        DirectClashTimeOffset: 0
+        ShowGizmos: 1
+        DetectionRadius: 5
+        DetectionAngle: 180
     - rid: 6379257712028942354
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 0375336a-cad1-43e7-aae8-657ce8a33c47
         trackType: DamageTrack
@@ -219,44 +266,6 @@ MonoBehaviour:
         isEnabled: 1
         clips:
         - rid: 6379257712028942357
-    - rid: 6379257712028942355
-      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        trackId: ec2a65ba-a7f6-4fa3-8b45-52c107499c07
-        trackType: EventTrack
-        trackName: "\u4E8B\u4EF6\u8F68\u9053"
-        isMuted: 0
-        isLocked: 0
-        isHidden: 0
-        isCollapsed: 0
-        isEnabled: 1
-        clips:
-        - rid: 6379257712028942356
-    - rid: 6379257712028942356
-      type: {class: AttackWarningClip, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        clipId: 41440e9a-f2f0-4b58-a436-9fafb6f14784
-        clipName: "\u653B\u51FB\u9884\u8B66 (\u9EC4/\u7EA2\u5149)\u7247\u6BB5"
-        isEnabled: 1
-        startTime: 0.5
-        duration: 0.5
-        blendInDuration: 0
-        blendOutDuration: 0
-        SignalType: 0
-        ParryWeight: 2
-        CoverageShape:
-          shapeType: 1
-          size: {x: 2, y: 1, z: 4}
-          radius: 5
-          height: 2.5
-          angle: 120
-          innerRadius: 1
-        CoverageCenterOffset: {x: 0, y: 1, z: 2}
-        ClashPositionOffset: {x: 0, y: 0, z: 3.2021754}
-        AllowInPlaceParry: 1
-        ShowGizmos: 1
-        DetectionRadius: 30
-        DetectionAngle: 360
     - rid: 6379257712028942357
       type: {class: HitClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -313,29 +322,6 @@ MonoBehaviour:
             assetName: 
             assetPath: 
           hitEffectId: 9000000
-    - rid: 6379257937949097996
-      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        trackId: c0dfb225-2d31-482b-a2d3-94932f56e984
-        trackType: EventTrack
-        trackName: "\u4E8B\u4EF6\u8F68\u9053"
-        isMuted: 0
-        isLocked: 0
-        isHidden: 0
-        isCollapsed: 0
-        isEnabled: 1
-        clips:
-        - rid: 6379257937949097998
-    - rid: 6379257937949097998
-      type: {class: ParryContractClip, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        clipId: 9ffb73b7-d655-4b1c-8db9-b64aa5442f02
-        clipName: "\u62FC\u5200\u5951\u7EA6\u751F\u547D\u5468\u671F\u7247\u6BB5"
-        isEnabled: 1
-        startTime: 0.5
-        duration: 1.4166667
-        blendInDuration: 0
-        blendOutDuration: 0
     - rid: 6379258164158660700
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -345,7 +331,7 @@ MonoBehaviour:
       data:
         Tag: Hit
     - rid: 6379258182230343765
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: ac121e9c-9d92-4f3d-8735-c56823bcfdb9
         trackType: DamageTrack
@@ -381,7 +367,7 @@ MonoBehaviour:
         isSelfImpacted: 0
         shape:
           shapeType: 1
-          size: {x: 2, y: 1, z: 3}
+          size: {x: 2, y: 1, z: 6}
           radius: 2
           height: 2
           angle: 90
@@ -389,7 +375,7 @@ MonoBehaviour:
         hitBoxFollowMode: 1
         bindPoint: 0
         customBoneName: 
-        positionOffset: {x: 0, y: 1, z: 1.5}
+        positionOffset: {x: 0, y: 1, z: 3}
         rotationOffset: {x: 0, y: 0, z: 0}
         detects:
         - hitMode: 0
@@ -470,3 +456,41 @@ MonoBehaviour:
             assetName: 
             assetPath: 
           hitEffectId: 9000000
+    - rid: 6379258280598044686
+      type: {class: VFXTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 0aa5d173-6450-4dc7-8a9d-85e5bda6026c
+        trackType: VFXTrack
+        trackName: "\u7279\u6548\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6379258280598044687
+    - rid: 6379258280598044687
+      type: {class: CrossFlashClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: c29c790b-09cf-4b22-be3a-38737b3b4542
+        clipName: "\u5341\u5B57\u9884\u8B66\u95EA\u5149\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.6166667
+        duration: 0.38333333
+        blendInDuration: 0
+        blendOutDuration: 0
+        bindPoint: 7
+        customBoneName: 
+        positionOffset: {x: 0.000000059123703, y: -0.08653943, z: -0.000000022430765}
+        parameters:
+          FlashColor: {r: 0.9716981, g: 0.4604672, b: 0, a: 1}
+          Intensity: 8
+          Duration: 0.25
+          BaseLineWidth: 0.002
+          MinLineWidth: 0.0008
+          MaxLineWidth: 0.012
+          WidthScaleRate: 0.02
+          LineSoftness: 0.0015
+          NearFadeDistance: 0.02
+          FollowTarget: 0
+          InheritEntityTimeScale: 1

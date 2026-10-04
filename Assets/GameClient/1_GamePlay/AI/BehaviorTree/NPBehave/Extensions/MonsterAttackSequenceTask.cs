@@ -94,7 +94,8 @@ namespace Game.GamePlay
             // 1. 监测受击打断（招架反击 / 受击失衡）
             if (_isInterruptedByHit != null && _isInterruptedByHit())
             {
-                // 发生断点打断！保留当前 _currentIndex 不重置，下次恢复后继续推进
+                // 发生断点打断！本次攻击完成，更新index,下次恢复后继续推进
+                AdvanceIndex();
                 StopAndReturn(true);
                 return;
             }

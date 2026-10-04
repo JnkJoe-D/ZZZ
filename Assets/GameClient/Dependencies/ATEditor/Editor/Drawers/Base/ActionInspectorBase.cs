@@ -611,7 +611,7 @@ namespace ATEditor.Editor
         private static string[] _hitEffectNames;
         private static int[] _hitEffectIds;
 
-        private static int DrawHitEffectIdSelector(string label, int currentValue)
+        public static int DrawHitEffectIdSelector(string label, int currentValue)
         {
             if (_hitEffectNames == null)
             {
@@ -625,9 +625,9 @@ namespace ATEditor.Editor
 
             EditorGUILayout.BeginHorizontal();
             int currentIndex = Array.IndexOf(_hitEffectIds, currentValue);
-            if (currentIndex == -1) currentIndex = 0; // 若未找到则回退为 0
+            int popupIndex = currentIndex >= 0 ? currentIndex : 0;
 
-            int newIndex = EditorGUILayout.Popup(label, currentIndex, _hitEffectNames);
+            int newIndex = EditorGUILayout.Popup(label, popupIndex, _hitEffectNames);
             
             if (GUILayout.Button("刷新", GUILayout.Width(40)))
             {
@@ -635,7 +635,11 @@ namespace ATEditor.Editor
             }
             EditorGUILayout.EndHorizontal();
 
-            return _hitEffectIds[newIndex];
+            if (newIndex != popupIndex)
+            {
+                return _hitEffectIds[newIndex];
+            }
+            return currentValue;
         }
 
         private static void LoadHitEffectData()

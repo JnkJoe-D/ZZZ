@@ -172,5 +172,39 @@ namespace Game.Tests.TimeSystem
             Assert.AreEqual(1.0f, victimClock.LocalScale, 0.0001f);
             victimClock.Detach();
         }
+
+        [Test]
+        public void ClockTree_HitStopWithCallback_ExecutesOnCompleteWhenTimerExpires()
+        {
+            var tm = Game.GamePlay.TimeManager.Instance;
+            tm.ResetToNormal();
+
+            var atkClock = new TimeClock("AtkClock");
+            var vicClock = new TimeClock("VicClock");
+
+            bool callbackInvoked = false;
+            tm.RegisterHitStop(atkClock, vicClock, 0.1f, 0f, () =>
+            {
+                callbackInvoked = true;
+            });
+
+            // 1. 顿帧生效中：两个时钟均定格为 0
+            Assert.AreEqual(0f, atkClock.LocalScale, 0.0001f);
+            Assert.AreEqual(0f, vicClock.LocalScale, 0.0001f);
+            Assert.IsFalse(callbackInvoked, "顿帧未到期前不得触发回调");
+
+            // 2. 模拟步进推进 0.05s (未结束)
+            tm.ManualTick(0.05f);
+            Assert.IsFalse(callbackInvoked, "半程时不得触发回调");
+            Assert.AreEqual(0f, atkClock.LocalScale, 0.0001f);
+
+            // 3. 模拟步进再推进 0.06s (总计 0.11s > 0.1s，顿帧结束)
+            tm.ManualTick(0.06f);
+            Assert.IsTrue(callbackInvoked, "顿帧倒计时归零时必须触发 onComplete 回调");
+            Assert.AreEqual(1.0f, atkClock.LocalScale, 0.0001f, "攻击者时钟必须自然恢复为 1.0f");
+            Assert.AreEqual(1.0f, vicClock.LocalScale, 0.0001f, "受害者时钟必须自然恢复为 1.0f");
+
+            tm.ResetToNormal();
+        }
     }
 }

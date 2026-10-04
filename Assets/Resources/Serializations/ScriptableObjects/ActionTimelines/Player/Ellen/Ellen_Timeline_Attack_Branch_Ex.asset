@@ -41,7 +41,7 @@ MonoBehaviour:
     - rid: 4681868069782421661
   - groupId: e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b
     groupName: "\u8F93\u5165"
-    isCollapsed: 0
+    isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -61,7 +61,7 @@ MonoBehaviour:
     - rid: 4681868069782421667
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
-    isCollapsed: 0
+    isCollapsed: 1
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -486,13 +486,13 @@ MonoBehaviour:
         clipId: 2d9d6dfd-39ca-44c3-9f8b-5b13f2324f46
         clipName: "\u65CB\u8F6C\u7247\u6BB5\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 0.016666668
+        startTime: -0
+        duration: 0.1
         blendInDuration: 0
         blendOutDuration: 0
         referenceDirection: 4
         rotationMode: 1
-        updateFrequency: 0
+        updateFrequency: 2
         localRotationOffset: {x: 0, y: 0, z: 0}
     - rid: 4681868069782421682
       type: {class: CameraControlClip, ns: ATEditor, asm: Assembly-CSharp}

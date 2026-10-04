@@ -405,7 +405,7 @@
             {
                 "rid": 1010,
                 "type": {
-                    "class": "HitTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -428,7 +428,7 @@
             {
                 "rid": 1011,
                 "type": {
-                    "class": "HitTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -625,7 +625,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.20000004768371583,
                     "animationClip": {
-                        "instanceID": 34538
+                        "instanceID": 34890
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -663,7 +663,7 @@
                     "blendInDuration": 0.20000004768371583,
                     "blendOutDuration": 0.11666679382324219,
                     "animationClip": {
-                        "instanceID": 34540
+                        "instanceID": 34892
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -701,7 +701,7 @@
                     "blendInDuration": 0.11666679382324219,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34542
+                        "instanceID": 34894
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -1219,7 +1219,7 @@
                     "maxFallbackAngle": 180.0,
                     "obstacleLayers": {
                         "serializedVersion": "2",
-                        "m_Bits": 1024
+                        "m_Bits": 1152
                     },
                     "groundLayers": {
                         "serializedVersion": "2",
@@ -1228,7 +1228,7 @@
                     "groundCheckDistance": 3.0,
                     "requireGrounded": true,
                     "faceTargetOnArrival": false,
-                    "serializedObstacleLayers": 1024,
+                    "serializedObstacleLayers": 1152,
                     "serializedGroundLayers": 256
                 }
             },

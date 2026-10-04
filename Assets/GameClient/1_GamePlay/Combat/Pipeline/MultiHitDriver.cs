@@ -47,7 +47,7 @@ namespace Game.GamePlay
                 for (int i = 0; i < totalHits; i++)
                 {
                     // 若攻击者已被销毁或死亡，多段打击立即熔断终止
-                    if (ctx.Attacker == null || ctx.Attacker.LifecycleComponent == null || ctx.Attacker.LifecycleComponent.IsDead)
+                    if (ctx.Attacker == null || (ctx.Attacker.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false))
                     {
                         yield break;
                     }
@@ -70,7 +70,7 @@ namespace Game.GamePlay
                         while (elapsed < interval)
                         {
                             yield return null;
-                            if (ctx.Attacker == null || ctx.Attacker.LifecycleComponent == null || ctx.Attacker.LifecycleComponent.IsDead)
+                            if (ctx.Attacker == null || (ctx.Attacker.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false))
                             {
                                 yield break;
                             }

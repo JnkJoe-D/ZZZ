@@ -134,24 +134,7 @@ namespace Game.GamePlay
 
         public void AppendExtraHitTargets(GameObject deployer, List<Collider> outHits)
         {
-            if (deployer == null || outHits == null) return;
-            var attackerEntity = deployer.GetComponent<CharacterEntity>();
-            if (attackerEntity != null)
-            {
-                var contract = CombatWarningManager.GetActiveContract(attackerEntity);
-                if (contract != null && contract.IsValid && contract.ParryRole != null)
-                {
-                    var parryData = contract.ParryRole.DataModule?.Get<ParryRuntimeData>();
-                    if (parryData != null && parryData.IsParrying)
-                    {
-                        var roleCol = contract.ParryRole.GetComponent<Collider>() ?? contract.ParryRole.GetComponentInChildren<Collider>();
-                        if (roleCol != null && !outHits.Contains(roleCol))
-                        {
-                            outHits.Add(roleCol);
-                        }
-                    }
-                }
-            }
+            // 纯物理命中设计：不再进行任何人工塞入 Collider 的兜底作弊
         }
     }
 }

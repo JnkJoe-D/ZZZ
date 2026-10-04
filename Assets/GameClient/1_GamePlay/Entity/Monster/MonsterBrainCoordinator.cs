@@ -20,7 +20,7 @@ namespace Game.GamePlay
                 if (_monster == null) return false;
 
                 // 1. 死亡无自控
-                if (_monster.LifecycleComponent != null && _monster.LifecycleComponent.IsDead) return false;
+                if (_monster.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false) return false;
 
                 // 2. 受击硬直中无自控
                 if (_hitData != null && _hitData.InHitReaction) return false;
@@ -71,6 +71,21 @@ namespace Game.GamePlay
             if (id == AttributeId.Daze || id == AttributeId.MaxDaze)
             {
                 SyncBlackboardSelfControl();
+
+                // 若失衡满 100，立即切入失衡瘫痪状态
+                var attrs = _monster?.StatusModule?.Attributes;
+                if (attrs != null)
+                {
+                    float daze = attrs.GetCurrent(AttributeId.Daze);
+                    float maxDaze = attrs.GetCurrent(AttributeId.MaxDaze);
+                    if (maxDaze > 0f && daze >= maxDaze)
+                    {
+                        if (_monster.StateMachine != null && _monster.StateMachine.CurrentState is not MonsterStunState)
+                        {
+                            _monster.StateMachine.ChangeState<MonsterStunState>();
+                        }
+                    }
+                }
             }
         }
 

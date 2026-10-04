@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
   m_Name: Ellen_Timeline_Walk_Start
   m_EditorClassIdentifier: 
-  duration: 1.5
+  duration: 1.5500001
   isLoop: 0
   beforePlayEvents: []
   onCompleteEvents: []
@@ -208,7 +208,7 @@ MonoBehaviour:
         clipName: "\u52A8\u753B\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.5
+        duration: 1.5500001
         blendInDuration: 0.1
         blendOutDuration: 0
         animationClip: {fileID: -3135577873957234835, guid: 769312a99595bf44f83906711cfb6784,
@@ -234,7 +234,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.5
+        duration: 1.5500001
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -246,7 +246,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.5
+        duration: 1.5500001
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -258,7 +258,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.5
+        duration: 1.5500001
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -270,7 +270,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.5
+        duration: 1.5500001
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -282,7 +282,7 @@ MonoBehaviour:
         clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 1.5
+        duration: 1.5500001
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1

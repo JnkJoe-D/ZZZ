@@ -530,7 +530,7 @@ namespace Game.GamePlay
             if (entity.Config?.ActionRoot != null &&
                 (entity.ActionPlayer?.CurrentAction != entity.Config.ActionRoot || entity.ActionPlayer?.IsPlaying != true))
             {
-                entity.ActionController?.PlayAction(entity.Config.ActionRoot);
+                entity.ActionController?.PlayRootAction();
             }
         }
 
@@ -640,7 +640,7 @@ namespace Game.GamePlay
             {
                 int index = (startIndex + attempt) % _partyMembers.Count;
                 PartyMember candidate = _partyMembers[index];
-                if (candidate != current && candidate.Entity != null && !candidate.Entity.LifecycleComponent.IsDead)
+                if (candidate != current && candidate.Entity != null && !(candidate.Entity.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false))
                     return candidate;
             }
             return null;

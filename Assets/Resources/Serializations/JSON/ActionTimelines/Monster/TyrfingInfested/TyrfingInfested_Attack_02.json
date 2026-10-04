@@ -52,7 +52,16 @@
                 },
                 {
                     "rid": 1004
-                },
+                }
+            ]
+        },
+        {
+            "groupId": "3451e28c-699e-4ff0-9668-925abf490637",
+            "groupName": "特效",
+            "isCollapsed": false,
+            "isEnabled": true,
+            "isLocked": false,
+            "tracks": [
                 {
                     "rid": 1005
                 }
@@ -160,7 +169,7 @@
             {
                 "rid": 1003,
                 "type": {
-                    "class": "HitTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -183,14 +192,14 @@
             {
                 "rid": 1004,
                 "type": {
-                    "class": "EventTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "ec2a65ba-a7f6-4fa3-8b45-52c107499c07",
-                    "trackType": "EventTrack",
-                    "trackName": "事件轨道",
+                    "trackId": "4fe78559-57f1-4b8d-b3ec-dddb07141508",
+                    "trackType": "CombatTrack",
+                    "trackName": "战斗轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -206,14 +215,14 @@
             {
                 "rid": 1005,
                 "type": {
-                    "class": "EventTrack",
+                    "class": "VFXTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "c0dfb225-2d31-482b-a2d3-94932f56e984",
-                    "trackType": "EventTrack",
-                    "trackName": "事件轨道",
+                    "trackId": "c31822e8-614d-4753-8204-213c209ff3a1",
+                    "trackType": "VFXTrack",
+                    "trackName": "特效轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -288,7 +297,7 @@
                     "blendInDuration": 0.10000000149011612,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34572
+                        "instanceID": 34630
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -369,8 +378,8 @@
                     "clipId": "4f458405-9c31-442c-a646-242e12fbb51a",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.7166666388511658,
-                    "duration": 0.3666667640209198,
+                    "startTime": 0.7000000476837158,
+                    "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "detectFrequency": 0,
@@ -389,15 +398,15 @@
                     "serializedHitLayerMask": 512,
                     "isSelfImpacted": false,
                     "shape": {
-                        "shapeType": 1,
+                        "shapeType": 3,
                         "size": {
                             "x": 2.0,
                             "y": 1.0,
                             "z": 4.0
                         },
-                        "radius": 2.0,
+                        "radius": 6.0,
                         "height": 2.0,
-                        "angle": 90.0,
+                        "angle": 180.0,
                         "innerRadius": 1.0
                     },
                     "hitBoxFollowMode": 1,
@@ -406,7 +415,7 @@
                     "positionOffset": {
                         "x": 0.0,
                         "y": 1.0,
-                        "z": 2.0
+                        "z": 0.0
                     },
                     "rotationOffset": {
                         "x": 0.0,
@@ -419,7 +428,7 @@
                             "multiHitCount": 3,
                             "multiHitDuration": 0.20000000298023225,
                             "enableHitStop": false,
-                            "hitStopDuration": 0.05000000074505806,
+                            "hitStopDuration": 10.0,
                             "hitStopScale": 0.0,
                             "hitStunDuration": 0.30000001192092898,
                             "hitVFXPrefab": {
@@ -462,58 +471,85 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "41440e9a-f2f0-4b58-a436-9fafb6f14784",
-                    "clipName": "攻击预警 (黄/红光)片段",
+                    "clipId": "43c10804-30ee-42a6-a3a5-b9b4a0f80ca5",
+                    "clipName": "攻击预警片段",
                     "isEnabled": true,
-                    "startTime": 0.46666669845581057,
-                    "duration": 0.24999994039535523,
+                    "startTime": 0.30000004172325137,
+                    "duration": 0.4000000059604645,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "SignalType": 0,
                     "ParryWeight": 1,
                     "CoverageShape": {
-                        "shapeType": 1,
+                        "shapeType": 3,
                         "size": {
-                            "x": 1.6399999856948853,
+                            "x": 1.0,
                             "y": 1.0,
-                            "z": 2.0
+                            "z": 1.0
                         },
-                        "radius": 5.0,
+                        "radius": 3.0,
                         "height": 2.5,
                         "angle": 120.0,
                         "innerRadius": 1.0
                     },
                     "CoverageCenterOffset": {
                         "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "ClashPositionOffset": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 2.0
+                        "z": 3.0
                     },
-                    "AllowInPlaceParry": false,
+                    "AllowInPlaceParry": true,
+                    "RestrictedInnerRadius": 2.0,
+                    "DirectClashTimeOffset": 0.0,
                     "ShowGizmos": true,
                     "DetectionRadius": 30.0,
-                    "DetectionAngle": 360.0
+                    "DetectionAngle": 180.0
                 }
             },
             {
                 "rid": 1013,
                 "type": {
-                    "class": "ParryContractClip",
+                    "class": "CrossFlashClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "9ffb73b7-d655-4b1c-8db9-b64aa5442f02",
-                    "clipName": "拼刀契约生命周期片段",
+                    "clipId": "442c8f47-5d15-40fe-9465-59b00ae3d5db",
+                    "clipName": "十字预警闪光片段",
                     "isEnabled": true,
-                    "startTime": 0.46666669845581057,
-                    "duration": 0.2666666507720947,
+                    "startTime": 0.366666704416275,
+                    "duration": 0.3333333432674408,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0
+                    "blendOutDuration": 0.0,
+                    "bindPoint": 7,
+                    "customBoneName": "",
+                    "positionOffset": {
+                        "x": 5.9123703266550368e-8,
+                        "y": -0.08653943240642548,
+                        "z": -2.2430764801129045e-8
+                    },
+                    "parameters": {
+                        "FlashColor": {
+                            "r": 0.9716981053352356,
+                            "g": 0.4604671895503998,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "Intensity": 8.0,
+                        "Duration": 0.25,
+                        "BaseLineWidth": 0.0020000000949949028,
+                        "MinLineWidth": 0.0007999999797903001,
+                        "MaxLineWidth": 0.012000000104308129,
+                        "WidthScaleRate": 0.019999999552965165,
+                        "LineSoftness": 0.001500000013038516,
+                        "NearFadeDistance": 0.019999999552965165,
+                        "FollowTarget": false,
+                        "InheritEntityTimeScale": true
+                    }
                 }
             },
             {

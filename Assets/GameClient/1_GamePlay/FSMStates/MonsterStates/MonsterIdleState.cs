@@ -8,6 +8,7 @@ namespace Game.GamePlay
     {
         public override void OnUpdate(float deltaTime)
         {
+            if (TryEnterStun()) return;
             if (TryEnterHitStun()) return;
             if (TryEnterAttackFromContext()) return;
 

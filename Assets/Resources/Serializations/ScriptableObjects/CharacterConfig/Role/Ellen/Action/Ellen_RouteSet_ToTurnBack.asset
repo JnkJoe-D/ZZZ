@@ -19,7 +19,6 @@ MonoBehaviour:
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     Priority: 0
-    CrossfadeOverride: -1
     TriggerStrategy:
       rid: 6379258227727269929
     ExtraConditions: []
@@ -46,7 +45,7 @@ MonoBehaviour:
     - rid: 6379258227727269931
       type: {class: MoveTurnAroundCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
-        MinAngle: 135
+        MinAngle: 180
         RequireRawInput: 1
         RequireResidualInput: 1
         Inverse: 0

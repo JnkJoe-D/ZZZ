@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using ATEditor;
 using ATEditor.Editor;
 using Game.GamePlay;
 
@@ -24,10 +25,10 @@ namespace Game.Editor.ActionTransition
     /// </summary>
     public sealed class ActionTransitionWorkbenchWindow : EditorWindow
     {
-        [MenuItem("Tools/Combat/Action Transition Workbench (动作过渡工作台)", priority = 100)]
+        [MenuItem("Tools/Action/动作过渡工作台", priority = 300)]
         public static void OpenWindow()
         {
-            var window = GetWindow<ActionTransitionWorkbenchWindow>("Action Transition Workbench");
+            var window = GetWindow<ActionTransitionWorkbenchWindow>("动作过渡工作台");
             window.minSize = new Vector2(850, 620);
             window.Show();
         }
@@ -56,6 +57,18 @@ namespace Game.Editor.ActionTransition
         private bool _hasCustomExitTime = false;
         private float _customExitTimeValue = 0f;
 
+        // AutoRouteWindow 同步覆写 UI 元素
+        private VisualElement _autoRouteSyncContainer;
+        private Toggle _autoRouteSyncToggle;
+        private VisualElement _autoRouteWindowPopupContainer;
+        private PopupField<string> _autoRouteWindowPopup;
+        private VisualElement _autoRoutePropertyPopupContainer;
+        private PopupField<string> _autoRoutePropertyPopup;
+
+        private List<RouteWindowClip> _availableAutoRouteClips = new();
+        private int _selectedAutoRouteClipIndex = -1;
+        private WindowTimingTarget _selectedTimingTarget = WindowTimingTarget.StartTime;
+
         // UI Toolkit 元素引用
         private PopupField<string> _workspacePopup;
         private PopupField<string> _actionQuickSelectPopup;
@@ -67,6 +80,7 @@ namespace Game.Editor.ActionTransition
         // 控制栏元素
         private WorkbenchPreviewMode _previewMode = WorkbenchPreviewMode.Normal;
         private Button _previewModeBtn;
+        private Button _previewChannelBtn;
         private Button _playPauseBtn;
         private Button _restartBtn;
         private Button _speedMenuBtn;
@@ -336,6 +350,42 @@ namespace Game.Editor.ActionTransition
                 });
             }
 
+            // 4. AutoRouteWindow 同步覆写面板初始化
+            _autoRouteSyncContainer = rootVisualElement.Q<VisualElement>("autoroute-sync-container");
+            _autoRouteSyncToggle = rootVisualElement.Q<Toggle>("autoroute-sync-toggle");
+            _autoRouteWindowPopupContainer = rootVisualElement.Q<VisualElement>("autoroute-window-popup-container");
+            _autoRoutePropertyPopupContainer = rootVisualElement.Q<VisualElement>("autoroute-property-popup-container");
+
+            if (_autoRouteSyncToggle != null)
+            {
+                _autoRouteSyncToggle.RegisterValueChangedCallback(evt =>
+                {
+                    bool enabled = evt.newValue;
+                    _autoRouteWindowPopup?.SetEnabled(enabled);
+                    _autoRoutePropertyPopup?.SetEnabled(enabled);
+                });
+            }
+
+            // 初始化覆写目标下拉框
+            List<string> propChoices = new List<string> { "StartTime (进入时刻)", "EndTime (退出时刻)" };
+            _autoRoutePropertyPopup = new PopupField<string>(propChoices, 0);
+            _autoRoutePropertyPopup.RegisterValueChangedCallback(evt =>
+            {
+                _selectedTimingTarget = evt.newValue.StartsWith("StartTime") ? WindowTimingTarget.StartTime : WindowTimingTarget.EndTime;
+            });
+            _autoRoutePropertyPopupContainer?.Add(_autoRoutePropertyPopup);
+
+            // 初始化窗口选择下拉框
+            _autoRouteWindowPopup = new PopupField<string>(new List<string> { "(未检测到窗口)" }, 0);
+            _autoRouteWindowPopup.RegisterValueChangedCallback(evt =>
+            {
+                if (_autoRouteWindowPopup != null && _availableAutoRouteClips.Count > 0)
+                {
+                    _selectedAutoRouteClipIndex = Mathf.Clamp(_autoRouteWindowPopup.index, 0, _availableAutoRouteClips.Count - 1);
+                }
+            });
+            _autoRouteWindowPopupContainer?.Add(_autoRouteWindowPopup);
+
             _saveBtn = rootVisualElement.Q<Button>("save-transition-btn");
             if (_saveBtn != null)
             {
@@ -362,6 +412,9 @@ namespace Game.Editor.ActionTransition
 
             _previewModeBtn = rootVisualElement.Q<Button>("preview-mode-btn");
             if (_previewModeBtn != null) _previewModeBtn.clicked += ShowPreviewModeMenu;
+
+            _previewChannelBtn = rootVisualElement.Q<Button>("preview-channel-btn");
+            if (_previewChannelBtn != null) _previewChannelBtn.clicked += ShowPreviewChannelMenu;
 
             _speedMenuBtn = rootVisualElement.Q<Button>("speed-menu-btn");
             if (_speedMenuBtn != null) _speedMenuBtn.clicked += ShowSpeedMenu;
@@ -604,6 +657,38 @@ namespace Game.Editor.ActionTransition
             _exitModeToggleBtn?.SetEnabled(true);
             UpdateExitTimeFieldDisplay();
             PersistCurrentTransition();
+
+            _timelineContainer?.MarkDirtyRepaint();
+            _viewportContainer?.MarkDirtyRepaint();
+            UpdateTimeDisplayLabel();
+        }
+
+        private void ShowPreviewChannelMenu()
+        {
+            GenericMenu menu = new GenericMenu();
+            var cur = _viewport?.Player != null ? _viewport.Player.ActiveChannel : PreviewChannel.All;
+
+            menu.AddItem(new GUIContent("全部 (双轨过渡混合)"), cur == PreviewChannel.All, () => SetPreviewChannel(PreviewChannel.All));
+            menu.AddItem(new GUIContent("仅源动作 (Solo Source)"), cur == PreviewChannel.SourceOnly, () => SetPreviewChannel(PreviewChannel.SourceOnly));
+            menu.AddItem(new GUIContent("仅目标动作 (Solo Target)"), cur == PreviewChannel.TargetOnly, () => SetPreviewChannel(PreviewChannel.TargetOnly));
+
+            menu.DropDown(_previewChannelBtn.worldBound);
+        }
+
+        private void SetPreviewChannel(PreviewChannel channel)
+        {
+            if (_viewport?.Player == null) return;
+            _viewport.Player.ActiveChannel = channel;
+
+            if (_previewChannelBtn != null)
+            {
+                _previewChannelBtn.text = channel switch
+                {
+                    PreviewChannel.SourceOnly => "通道: 仅源动作 ▾",
+                    PreviewChannel.TargetOnly => "通道: 仅目标动作 ▾",
+                    _ => "通道: 全部 ▾"
+                };
+            }
 
             _timelineContainer?.MarkDirtyRepaint();
             _viewportContainer?.MarkDirtyRepaint();
@@ -935,6 +1020,7 @@ namespace Game.Editor.ActionTransition
                 _customExitToggle.SetEnabled(false);
                 _customExitField.SetEnabled(false);
                 _saveBtn.SetEnabled(false);
+                _autoRouteSyncContainer?.SetEnabled(false);
                 return;
             }
 
@@ -973,6 +1059,98 @@ namespace Game.Editor.ActionTransition
             _customExitField.SetEnabled(_hasCustomExitTime);
             _exitModeToggleBtn.SetEnabled(_hasCustomExitTime);
             UpdateExitTimeFieldDisplay();
+
+            // 联动刷新可覆写的 AutoRouteWindow 候选与智能推荐
+            UpdateAutoRouteWindowChoices(info);
+        }
+
+        private void UpdateAutoRouteWindowChoices(TransitionTargetInfo info)
+        {
+            _availableAutoRouteClips.Clear();
+            _selectedAutoRouteClipIndex = -1;
+
+            if (_sourceClipData.TimelineSO != null)
+            {
+                _availableAutoRouteClips = _sourceClipData.TimelineSO.FindAutoRouteWindowClips();
+            }
+
+            if (_autoRouteSyncContainer == null) return;
+
+            if (_availableAutoRouteClips.Count == 0)
+            {
+                _autoRouteSyncContainer.SetEnabled(false);
+                _autoRouteSyncToggle?.SetValueWithoutNotify(false);
+                if (_autoRouteWindowPopup != null)
+                {
+                    _autoRouteWindowPopup.choices = new List<string> { "(无可用 AutoRouteWindow)" };
+                    _autoRouteWindowPopup.SetValueWithoutNotify("(无可用 AutoRouteWindow)");
+                }
+                return;
+            }
+
+            _autoRouteSyncContainer.SetEnabled(true);
+
+            List<string> choices = new List<string>();
+            int defaultMatchIndex = 0;
+            string matchedTag = null;
+            RouteSingleModifierCheckTiming? detectedTiming = null;
+
+            if (info != null && info.Kind == TransitionTargetKind.RouteBranch && info.MatchedRoute != null)
+            {
+                if (info.MatchedRoute.TriggerStrategy is AutoTransitionTrigger autoTrig)
+                {
+                    matchedTag = autoTrig.RequiredWindow?.Tag;
+                    detectedTiming = autoTrig.Timing;
+                }
+                else if (info.MatchedRoute.TriggerStrategy is ConditionOnlyTrigger condTrig)
+                {
+                    matchedTag = condTrig.RequiredWindow?.Tag;
+                    detectedTiming = condTrig.Timing;
+                }
+            }
+
+            for (int i = 0; i < _availableAutoRouteClips.Count; i++)
+            {
+                var clip = _availableAutoRouteClips[i];
+                string tag = clip.routewindow != null ? clip.routewindow.Tag : "None";
+                string itemText = $"[{tag}] ({clip.StartTime:0.00}s~{clip.EndTime:0.00}s)";
+                choices.Add(itemText);
+
+                if (!string.IsNullOrEmpty(matchedTag) && string.Equals(tag, matchedTag, StringComparison.OrdinalIgnoreCase))
+                {
+                    defaultMatchIndex = i;
+                }
+            }
+
+            _selectedAutoRouteClipIndex = defaultMatchIndex;
+            if (_autoRouteWindowPopup != null)
+            {
+                _autoRouteWindowPopup.choices = choices;
+                _autoRouteWindowPopup.SetValueWithoutNotify(choices[defaultMatchIndex]);
+            }
+
+            // 智能根据 Trigger 的 Timing 决策默认覆写目标与是否开启同步
+            if (detectedTiming == RouteSingleModifierCheckTiming.OnWindowExit)
+            {
+                _selectedTimingTarget = WindowTimingTarget.EndTime;
+                _autoRoutePropertyPopup?.SetValueWithoutNotify("EndTime (退出时刻)");
+                _autoRouteSyncToggle?.SetValueWithoutNotify(true);
+            }
+            else if (detectedTiming == RouteSingleModifierCheckTiming.OnWindowEnter)
+            {
+                _selectedTimingTarget = WindowTimingTarget.StartTime;
+                _autoRoutePropertyPopup?.SetValueWithoutNotify("StartTime (进入时刻)");
+                _autoRouteSyncToggle?.SetValueWithoutNotify(true);
+            }
+            else
+            {
+                // EveryFrameInWindow 无法决定也不该决定，默认不自动勾选同步，但允许用户手动开启
+                _autoRouteSyncToggle?.SetValueWithoutNotify(false);
+            }
+
+            bool syncActive = _autoRouteSyncToggle?.value ?? false;
+            _autoRouteWindowPopup?.SetEnabled(syncActive);
+            _autoRoutePropertyPopup?.SetEnabled(syncActive);
         }
 
         private void ToggleExitTimeMode()
@@ -1121,12 +1299,84 @@ namespace Game.Editor.ActionTransition
 
         private void SaveTransitionAssets()
         {
-            if (_sourceAction != null)
+            if (_sourceAction == null) return;
+
+            EditorUtility.SetDirty(_sourceAction);
+            string saveMsg = $"已成功保存 {_sourceAction.Name} 的过渡配置表！";
+
+            // 若勾选了同步覆写 AutoRouteWindow
+            if (_autoRouteSyncToggle != null && _autoRouteSyncToggle.value)
             {
-                EditorUtility.SetDirty(_sourceAction);
-                AssetDatabase.SaveAssets();
-                ShowNotification(new GUIContent($"已成功保存 {_sourceAction.Name} 的过渡配置表！"));
+                if (_selectedAutoRouteClipIndex >= 0 && _selectedAutoRouteClipIndex < _availableAutoRouteClips.Count && _sourceClipData.TimelineSO != null)
+                {
+                    var clip = _availableAutoRouteClips[_selectedAutoRouteClipIndex];
+                    bool ok = ActionTimelineWindowOperations.AdjustRouteWindowTiming(
+                        _sourceClipData.TimelineSO,
+                        clip,
+                        _selectedTimingTarget,
+                        _currentExitTime,
+                        out string adjustMsg
+                    );
+
+                    if (ok)
+                    {
+                        // 采用 ATEditor 标准的双轨保存（同时写出 SO 与 JSON 文件）
+                        string knownPath = string.Empty;
+                        if (_sourceAction.TimelineAsset != null)
+                        {
+                            knownPath = AssetDatabase.GetAssetPath(_sourceAction.TimelineAsset);
+                        }
+                        else if (_sourceAction.actionTimelineSO != null)
+                        {
+                            knownPath = AssetDatabase.GetAssetPath(_sourceAction.actionTimelineSO);
+                        }
+
+                        bool dualSaved = ActionTimelineWindowOperations.SaveTimelineDual(
+                            _sourceClipData.TimelineSO,
+                            knownPath,
+                            _activeWorkspace,
+                            out string savedJsonPath,
+                            out string savedAssetPath
+                        );
+
+                        if (dualSaved)
+                        {
+                            // 若 ActionConfigAsset 原先缺少 SO 或 JSON 引用，自动对齐补全
+                            if (_sourceAction.TimelineAsset == null && !string.IsNullOrEmpty(savedJsonPath))
+                            {
+                                _sourceAction.TimelineAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(savedJsonPath);
+                            }
+                            if (_sourceAction.actionTimelineSO == null && !string.IsNullOrEmpty(savedAssetPath))
+                            {
+                                _sourceAction.actionTimelineSO = AssetDatabase.LoadAssetAtPath<ActionTimeline>(savedAssetPath);
+                            }
+                            EditorUtility.SetDirty(_sourceAction);
+                            saveMsg += "\n[双轨保存] 已同步更新 SO 与 JSON 时间轴资产！";
+                        }
+                        else
+                        {
+                            EditorUtility.SetDirty(_sourceClipData.TimelineSO);
+                        }
+
+                        saveMsg += "\n" + adjustMsg;
+
+                        // 重新提取并刷新时间轴显示
+                        _sourceClipData = ActionClipInfoExtractor.Extract(_sourceAction);
+                        if (HasValidTarget())
+                        {
+                            var info = _filteredTargets[_selectedTargetIndex];
+                            if (info.Kind == TransitionTargetKind.RouteBranch)
+                            {
+                                _currentRouteWindow = ActionClipInfoExtractor.ExtractRouteWindow(_sourceAction, info.MatchedRoute);
+                            }
+                        }
+                        _timelineContainer?.MarkDirtyRepaint();
+                    }
+                }
             }
+
+            AssetDatabase.SaveAssets();
+            ShowNotification(new GUIContent(saveMsg));
         }
 
         private void TogglePlayPause()

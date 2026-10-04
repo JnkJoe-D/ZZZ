@@ -1,5 +1,5 @@
 {
-    "duration": 1.350000023841858,
+    "duration": 1.4166667461395264,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -416,7 +416,7 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.350000023841858,
+                    "duration": 1.4166667461395264,
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
@@ -454,7 +454,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.350000023841858,
+                    "duration": 1.4166667461395264,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -474,7 +474,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.350000023841858,
+                    "duration": 1.4166667461395264,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -494,7 +494,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.350000023841858,
+                    "duration": 1.4166667461395264,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -514,7 +514,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.350000023841858,
+                    "duration": 1.4166667461395264,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -534,7 +534,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 1.350000023841858,
+                    "duration": 1.4166667461395264,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1,
@@ -607,7 +607,7 @@
                     "clipName": "旋转片段",
                     "isEnabled": true,
                     "startTime": 0.5,
-                    "duration": 0.8499999046325684,
+                    "duration": 0.9166666269302368,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "referenceDirection": 1,

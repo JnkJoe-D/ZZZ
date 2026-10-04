@@ -15,6 +15,11 @@ namespace Game.GamePlay
         }
         public void RegisterWarningMarker(AttackWarningClip clip)
         {
+            RegisterWarningMarker(clip, clip != null ? Time.time + clip.Duration : 0f);
+        }
+
+        public void RegisterWarningMarker(AttackWarningClip clip, float expectedHitTime)
+        {
             if (clip == null) return;
             if (_marker != null)
             {
@@ -46,7 +51,13 @@ namespace Game.GamePlay
                 CoverageShape = clip.CoverageShape,
                 CoverageCenterOffset = clip.CoverageCenterOffset,
                 ClashPositionOffset = clip.ClashPositionOffset,
-                AllowInPlaceParry = clip.AllowInPlaceParry
+                AllowInPlaceParry = clip.AllowInPlaceParry,
+                RestrictedInnerRadius = clip.RestrictedInnerRadius,
+                InPlaceLineTolerance = clip.InPlaceLineTolerance,
+                StartTime = clip.StartTime,
+                Duration = clip.Duration,
+                DirectClashTimeOffset = clip.DirectClashTimeOffset,
+                ExpectedHitTime = expectedHitTime > 0f ? expectedHitTime : Time.time + clip.Duration
             };
             if (CombatWarningManager.Register(marker))
             {
@@ -111,19 +122,6 @@ namespace Game.GamePlay
             {
                 CombatWarningManager.Unregister(_marker);
                 _marker = null;
-            }
-        }
-
-        public void OnParryContractEnter(ParryContractClip clip)
-        {
-            // 拼刀契约生命周期窗口激活
-        }
-
-        public void OnParryContractExit()
-        {
-            if (_entity != null)
-            {
-                CombatWarningManager.UnregisterContractsByAttacker(_entity);
             }
         }
     }

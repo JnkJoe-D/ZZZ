@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ATEditor
 {
     [Serializable]
-    [ClipDefinition(typeof(HitTrack), "打击")]
+    [ClipDefinition(typeof(CombatTrack), "打击")]
     public class HitClip : ClipBase, ISerializationCallbackReceiver
     {
         // ── 检测策略 ──

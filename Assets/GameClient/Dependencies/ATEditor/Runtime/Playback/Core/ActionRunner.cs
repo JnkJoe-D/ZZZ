@@ -523,10 +523,16 @@ namespace ATEditor
         /// </summary>
         private void InterruptCleanup()
         {
-            // 级别 1: 进程级清理（打断/停止）
-            foreach (var inst in processes)
+            // 级别 1: 进程级清理（仅针对当前正在激活/播放中的 Process 执行打断清理）
+            for (int i = 0; i < processes.Count; i++)
             {
-                inst.process.OnStop();
+                var inst = processes[i];
+                if (inst.isActive)
+                {
+                    inst.process.OnStop();
+                    inst.isActive = false;
+                    processes[i] = inst;
+                }
             }
 
             // 级别 2: 系统级清理（此时所有 Process 字段依然完整有效）

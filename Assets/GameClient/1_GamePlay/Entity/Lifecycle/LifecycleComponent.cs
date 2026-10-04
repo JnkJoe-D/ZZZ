@@ -25,8 +25,9 @@ namespace Game.GamePlay
     public class LifecycleComponent : MonoBehaviour, ILifecycleComponent
     {
         protected CharacterEntity _entity;
+        protected LifecycleRuntimeData _lifecycleData;
         public CharacterEntity OwnerEntity => _entity;
-        public bool IsDead { get; protected set; } = false;
+        public bool IsDead => _lifecycleData?.IsDead ?? false;
         public bool IsAlive => !IsDead;
 
         public event Action<CharacterEntity> OnDied;
@@ -39,24 +40,25 @@ namespace Game.GamePlay
 
         public void OnComponentSpawn()
         {
-            IsDead = false;
+            _lifecycleData?.Set(nameof(LifecycleRuntimeData.IsDead), false);
         }
 
         public void OnComponentDespawn()
         {
-            IsDead = true;
+            _lifecycleData?.Set(nameof(LifecycleRuntimeData.IsDead), true);
         }
 
         public virtual void Init(CharacterEntity entity)
         {
             _entity = entity;
-            IsDead = false;
+            _lifecycleData = _entity?.DataModule?.Get<LifecycleRuntimeData>();
+            _lifecycleData?.Set(nameof(LifecycleRuntimeData.IsDead), false);
         }
 
         public virtual void Die(CharacterEntity attacker = null)
         {
             if (IsDead) return;
-            IsDead = true;
+            _lifecycleData?.Set(nameof(LifecycleRuntimeData.IsDead), true);
 
             HandleDeath(attacker);
             OnDied?.Invoke(_entity);
@@ -71,7 +73,7 @@ namespace Game.GamePlay
         public virtual void Revive(float hpPercent = 1.0f)
         {
             if (!IsDead) return;
-            IsDead = false;
+            _lifecycleData?.Set(nameof(LifecycleRuntimeData.IsDead), false);
 
             if (_entity?.StatusModule?.Attributes != null && _entity.StatusModule.Attributes.Has(AttributeId.MaxHp))
             {

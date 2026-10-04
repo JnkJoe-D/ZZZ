@@ -221,8 +221,7 @@ namespace ATEditor
                 }
             }
 
-            // 由伤害处理器扩展特定的战斗契约目标（如拼刀契约 ParryClashContract）
-            damageHandler?.AppendExtraHitTargets(context.Owner, _cachedValidHits);
+
 
             if (_cachedValidHits.Count > 0)
             {

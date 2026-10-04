@@ -132,7 +132,7 @@ namespace Game.GamePlay
         private bool IsCombatContextTargetValid()
         {
             if (CombatContextTarget == null || CombatContextTarget.gameObject == null) return false;
-            if (!CombatContextTarget.gameObject.activeInHierarchy || CombatContextTarget.IsDead) return false;
+            if (!CombatContextTarget.gameObject.activeInHierarchy || (CombatContextTarget.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false)) return false;
             if (_owner == null) return false;
 
             float maxDist = _targetLocker?.Config?.LoseRadius ?? _config.SearchRadius;
@@ -157,7 +157,7 @@ namespace Game.GamePlay
             {
                 var monster = activeMonsters[i];
                 if (monster == null || monster.gameObject == null) continue;
-                if (!monster.gameObject.activeInHierarchy || monster.IsDead) continue;
+                if (!monster.gameObject.activeInHierarchy || (monster.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false)) continue;
 
                 Vector3 toMonster = monster.transform.position - ownerPos;
                 toMonster.y = 0;

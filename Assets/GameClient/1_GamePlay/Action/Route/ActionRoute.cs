@@ -14,11 +14,11 @@ namespace Game.GamePlay
         SwitchIn = 10,
         [InspectorName("切出")]
         SwitchOut = 20,
-        [InspectorName("开始招架支援")]
+        [InspectorName("招架支援开始")]
         ParryAidStart = 30,
-        [InspectorName("招架支援成功")]
-        ParryAidSucceed = 40,
-        [InspectorName(" 无点数避险切入")]
+        [InspectorName("招架支援")]
+        ParryAid = 40,
+        [InspectorName("招架支援(点数不足)")]
         FallbackEvasionIn = 35,
         [InspectorName("开始闪避支援")]
         EvasionAidStart = 50,

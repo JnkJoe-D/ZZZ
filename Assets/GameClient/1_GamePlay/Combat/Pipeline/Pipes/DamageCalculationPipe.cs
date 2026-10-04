@@ -84,7 +84,8 @@ namespace Game.GamePlay
                 GLog.Info(LogTags.Combat, $"命中成功: {ctx.Attacker?.name} → {target.name} | 造成伤害: {damage:F0} (倍率: {dmgMultipier}) | 目标剩余HP: {attributes.GetCurrent(AttributeId.HP):F0}");
 
                 // 致死判定与通用生命周期结算
-                if (attributes.GetCurrent(AttributeId.HP) <= 0f && !target.LifecycleComponent.IsDead)
+                var targetLifecycle = target.DataModule?.Get<LifecycleRuntimeData>();
+                if (attributes.GetCurrent(AttributeId.HP) <= 0f && (targetLifecycle == null || !targetLifecycle.IsDead))
                 {
                     ctx.ResultFlags |= HitResultFlags.Killed;
                     target.LifecycleComponent?.Die(ctx.Attacker);

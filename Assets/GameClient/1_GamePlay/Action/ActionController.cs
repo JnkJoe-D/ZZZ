@@ -36,21 +36,40 @@ namespace Game.GamePlay
         private bool _isTransitioning;
         private ActionConfigAsset _currentPlayingAction;
         public ActionConfigAsset CurrentPlayingAction => _currentPlayingAction;
-    
+
+
         public IReadOnlyList<ExecutionRecord> ExecutionHistory => _fateTracker.History;
+
+        /// <summary>
+        /// 当通过 TryTriggerEvent 派发路由系统事件时触发（供表现层/测试监听）
+        /// </summary>
+        public event Action<RouteEventType> OnRouteEventTriggered;
 
         protected ActionRuntimeData _actionData;
         protected IRouteEventReceiver _routeEventReceiver;
         protected ISkillCostHandler _skillCostHandler;
+        private ActionConfigAsset _rootAction;
+        private Action _currentActionOnComplete;
 
         public virtual void Initialize(CharacterEntity owner)
         {
             _entity = owner;
-            _actionData = _entity.DataModule?.Get<ActionRuntimeData>();
+            _rootAction = _entity?.Config?.ActionRoot;
+            _actionData = _entity?.DataModule?.Get<ActionRuntimeData>();
             if (ActionPlayer == null && _entity != null)
             {
                 ActionPlayer = EntityModuleFactory.Create<ActionPlayer>(_entity);
             }
+        }
+
+        /// <summary>
+        /// 专用于播放实体的根节点动作 (ActionRoot / 默认待机态)。
+        /// 仅限初始化与切人待机复位调用。其余所有业务动作严禁使用本接口，一律走 OnInput 压指令流。
+        /// </summary>
+        public bool PlayRootAction(float crossfadeOverride = -1f)
+        {
+            if (_rootAction == null) return false;
+            return PlayAction(_rootAction, crossfadeOverride);
         }
 
         public void ResetController()
@@ -93,7 +112,7 @@ namespace Game.GamePlay
             CheckEarlyCompleteActionTransition();
         }
 
-        public bool PlayAction(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
+        private bool PlayAction(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
         {
             if (action == null) return false;
 
@@ -109,13 +128,53 @@ namespace Game.GamePlay
         {
             if (command == null || _isTransitioning) return;
 
-            // 瞬时广播给所有活跃窗口进行前置评估，不进行多余的物理指令存储与生命周期维持
+            // 1. 瞬时广播给所有活跃窗口进行前置评估，不进行多余的物理指令存储与生命周期维持
             if (_activeRouteWindows.Count > 0)
             {
                 WindowProcessContext ctx = CreateContext();
                 for (int i = 0; i < _activeRouteWindows.Count; i++)
                     _activeRouteWindows[i].Processer?.OnCommandReceived(command, ctx);
             }
+
+            // 2. 针对 DirectAssetPayload（直接资产指令，如状态机出招、失衡、受击）：
+            //    若活跃窗口未将其接纳入仲裁池，且未处于切动作过渡中，走直接资产通道立即执行
+            if (command.Payload is DirectAssetPayload directPayload && directPayload.TargetAsset != null)
+            {
+                bool isQueuedInArbitrator = _entity?.RouteArbitrator != null && _entity.RouteArbitrator.HasCandidates;
+                if (!isQueuedInArbitrator)
+                {
+                    _currentActionOnComplete = directPayload.OnComplete;
+                    Commit(command, directPayload.TargetAsset, ExecuteEvent.None, ExecuteTarget.Action, CommandRouteSource.ActionRoute, "DirectAsset", directPayload.CrossfadeOverride, directPayload.StartTime);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 接收指令并同帧现场执行路由仲裁结算（0 帧时差）。
+        /// 专用于受击、招架等高时效性事件，100% 遵守现存 RouteWindow 校验与 RouteArbitrator 优先级仲裁。
+        /// </summary>
+        public bool OnInputAndResolveImmediately(CharacterCommand command)
+        {
+            if (command == null || _isTransitioning) return false;
+
+            OnInput(command);
+
+            return ResolveArbitratorImmediately();
+        }
+
+        /// <summary>
+        /// 现场立即从仲裁池取出最高优先级候选并执行切换。
+        /// </summary>
+        public bool ResolveArbitratorImmediately()
+        {
+            if (_isTransitioning || _entity?.RouteArbitrator == null) return false;
+
+            if (_entity.RouteArbitrator.TryResolveBest(out var best))
+            {
+                Apply(best);
+                return true;
+            }
+            return false;
         }
 
         public void OnWindowEnter(RouteWindow routeWindow)
@@ -165,25 +224,48 @@ namespace Game.GamePlay
             }
         }
 
-        public bool TryTriggerEvent(RouteEventType eventType, RouteWindow window = null)
+        public bool TryTriggerEvent(RouteEventType eventType, RouteWindow window) => TryTriggerEvent(eventType, 0f, window);
+
+        public bool TryTriggerEvent(RouteEventType eventType, float startTime = 0f, RouteWindow window = null)
         {
             if (_isTransitioning) return false;
 
-            var eventCommand = CharacterCommandFactory.CreateSystemEventCommand(eventType);
+            OnRouteEventTriggered?.Invoke(eventType);
 
-            // 1. 优先尝试当前动作路由
-            if (TryResolveAndCommitEvent(eventCommand, GetCurrentAction(), window))
-                return true;
+            var eventCommand = CharacterCommandFactory.CreateSystemEventCommand(eventType, startTime);
 
-            // 2. 回退尝试全局 ActionRoot 路由
-            ActionConfigAsset root = _entity.Config?.ActionRoot;
-            if (root != null && root != GetCurrentAction())
+            // 1. 若显式指定了具体窗口，仅针对该窗口进行评估并提交至仲裁器
+            if (window != null)
             {
-                if (TryResolveAndCommitEvent(eventCommand, root, window))
-                    return true;
+                RouteWindowData w = FindActiveWindowData(window);
+                if (w?.Processer != null)
+                {
+                    w.Processer.OnCommandReceived(eventCommand, CreateContext());
+                }
+                else
+                {
+                    TryResolveAndSubmitEventToArbitrator(eventCommand, GetCurrentAction(), window);
+                }
+            }
+            else
+            {
+                // 2. 未指定具体窗口时，统一走即时仲裁压指令流水线：
+                // a. 广播给所有活跃窗口进行前置评估与候选提交（例如 ExecuteRouteWindow / BufferRouteWindow）
+                OnInput(eventCommand);
+
+                // b. 评估当前动作未挂载到特定窗口的全局/无窗口事件路由，提交至仲裁池统一竞优
+                TryResolveAndSubmitEventToArbitrator(eventCommand, GetCurrentAction(), null);
+
+                // c. 评估 ActionRoot 中的全局系统事件路由，提交至仲裁池统一竞优
+                ActionConfigAsset root = _entity.Config?.ActionRoot;
+                if (root != null && root != GetCurrentAction())
+                {
+                    TryResolveAndSubmitEventToArbitrator(eventCommand, root, null);
+                }
             }
 
-            return false;
+            // 3. 立即现场执行统一仲裁结算（0 帧时滞，严格按 RouteArbitrator 优先级决选最佳动作）
+            return ResolveArbitratorImmediately();
         }
 
         public bool TryTriggerEvent(RouteEventType eventType, string windowTag)
@@ -200,47 +282,22 @@ namespace Game.GamePlay
                     }
                 }
             }
-            return TryTriggerEvent(eventType, window);
+            return TryTriggerEvent(eventType, 0f, window);
         }
 
-        private bool TryResolveAndCommitEvent(CharacterCommand eventCommand, ActionConfigAsset action, RouteWindow window)
+        private void TryResolveAndSubmitEventToArbitrator(CharacterCommand eventCommand, ActionConfigAsset action, RouteWindow window)
         {
-            if (action == null) return false;
+            if (action == null || _entity.RouteArbitrator == null) return;
 
             action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
-            if (_effectiveRoutes.Count == 0) return false;
+            if (_effectiveRoutes.Count == 0) return;
 
             CharacterEntity actor = GetRouteEvalActor();
 
-            if (window != null)
+            if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, window, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
             {
-                if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, window, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
-                {
-                    Apply(candidate);
-                    return true;
-                }
+                _entity.RouteArbitrator.Submit(candidate);
             }
-            else
-            {
-                for (int i = 0; i < _activeRouteWindows.Count; i++)
-                {
-                    RouteWindowData w = _activeRouteWindows[i];
-                    if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, w.Window, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var candidate))
-                    {
-                        Apply(candidate);
-                        return true;
-                    }
-                }
-
-                // 兜底尝试全局无窗口事件路由
-                if (RouteResolver.TryResolve(_effectiveRoutes, eventCommand, null, actor, _skillCostHandler, RouteSingleModifierCheckTiming.EveryFrameInWindow, out var globalCandidate))
-                {
-                    Apply(globalCandidate);
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         // ═══════════════════════════════════════════
@@ -337,7 +394,8 @@ namespace Game.GamePlay
             // Bug #3 修复：副作用（如清除招架标记）在路由确认提交后才执行，
             // 保证 Evaluate 阶段多路由优先级竞争期间不会提前消费一次性状态
             candidate.SourceRoute?.CommitSideEffects(actor);
-            
+
+
             float crossfade = -1f;
             if (candidate.ExecuteType == ExecuteTarget.Action && candidate.NextAction != null)
             {
@@ -348,7 +406,17 @@ namespace Game.GamePlay
                 }
             }
 
-            Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag, crossfade);
+            float startTime = 0f;
+            if (candidate.Command?.Payload is SystemEventPayload sysPayload)
+            {
+                startTime = sysPayload.StartTime;
+            }
+            else if (candidate.Command?.Payload is DirectAssetPayload directPayload)
+            {
+                startTime = directPayload.StartTime;
+            }
+
+            Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag, crossfade, startTime);
         }
 
         private bool Commit(
@@ -358,7 +426,8 @@ namespace Game.GamePlay
             ExecuteTarget executeType,
             CommandRouteSource source,
             string tag = null,
-            float crossfadeOverride = -1f)
+            float crossfadeOverride = -1f,
+            float startTime = 0f)
         {
             if (executeType == ExecuteTarget.None) return false;
             if (executeType == ExecuteTarget.Action && nextAction == null) return false;
@@ -374,7 +443,7 @@ namespace Game.GamePlay
 
                     if (_actionData != null) _actionData.Set(nameof(_actionData.NextActionToCast), nextAction);
                     RecordRoute(command?.Payload, nextAction, source, tag, command?.Id ?? 0);
-                    PlayAction(nextAction, crossfadeOverride);
+                    PlayAction(nextAction, crossfadeOverride, startTime);
                 }
                 finally
                 {
@@ -394,6 +463,10 @@ namespace Game.GamePlay
         {
             ActionConfigAsset finished = _currentPlayingAction;
             _currentPlayingAction = null;
+
+            var onCompleteCallback = _currentActionOnComplete;
+            _currentActionOnComplete = null;
+            onCompleteCallback?.Invoke();
 
             if (finished == null || _isTransitioning) return;
 
@@ -435,7 +508,8 @@ namespace Game.GamePlay
             if (_isTransitioning || _currentPlayingAction == null || ActionPlayer == null || !ActionPlayer.IsPlaying)
                 return;
 
-            if (_currentPlayingAction.CompleteMode != ActionCompleteMode.TransitToAction 
+            if (_currentPlayingAction.CompleteMode != ActionCompleteMode.TransitToAction
+
                 || _currentPlayingAction.CompleteAction == null)
                 return;
 
@@ -469,8 +543,10 @@ namespace Game.GamePlay
         private ActionConfigAsset GetCurrentAction()
         {
             return _currentPlayingAction
-                ?? ActionPlayer?.CurrentAction 
-                ?? _actionData?.NextActionToCast 
+                ?? ActionPlayer?.CurrentAction
+
+                ?? _actionData?.NextActionToCast
+
                 ?? _entity.Config?.ActionRoot;
         }
 

@@ -13,7 +13,6 @@ namespace Game.GamePlay
         public IMovementComponent MovementComponent { get; protected set; }
         public HitReactionComponent HitReactionComponent { get; protected set; }
         public ILifecycleComponent LifecycleComponent { get; protected set; }
-        public bool IsDead => LifecycleComponent != null && LifecycleComponent.IsDead;
 
         public virtual ActionController ActionController { get; protected set; }
         public RouteArbitrator RouteArbitrator { get; protected set; }
@@ -24,18 +23,25 @@ namespace Game.GamePlay
         public ATMotionWindowHandler MotionWindowHandler { get; private set; }
         public virtual ITargetFinder TargetFinder { get; protected set; }
         public EntityDataModule DataModule { get; } = new EntityDataModule();
-        public StatusModule StatusModule { get; private set; }
+        public StatusModule StatusModule { get; protected set; }
         public virtual IAttributeResolver AttributeResolver { get; protected set; }
+        public bool IsRuntimeInitialized { get; protected set; }
 
         /// <summary>实体专属层次化时钟叶子节点（单一真理源）</summary>
         public TimeClock Clock { get; private set; }
 
         protected virtual void Awake()
         {
+            // 阶段 0: 引擎就绪（底层先行）
             if (gameObject.GetComponent<AnimComponent>() == null)
             {
                 gameObject.AddComponent<AnimComponent>();
             }
+
+            // 初始化实体专属时钟节点，并监听有效流速变更
+            Clock = new TimeClock(gameObject.name);
+            Clock.OnEffectiveScaleChanged += HandleClockEffectiveScaleChanged;
+
             InitRequiredComponents();
 
             if (LifecycleComponent == null)
@@ -44,19 +50,14 @@ namespace Game.GamePlay
                 if (lifecycle == null) lifecycle = gameObject.AddComponent<LifecycleComponent>();
                 LifecycleComponent = lifecycle;
             }
-            LifecycleComponent?.Init(this);
 
-            // 初始化实体专属时钟节点，并监听有效流速变更
-            Clock = new TimeClock(gameObject.name);
-            Clock.OnEffectiveScaleChanged += HandleClockEffectiveScaleChanged;
-
+            // 预置基础运行时状态数据容器（确保任何极早期只读访问安全）
             DataModule[typeof(ActionRuntimeData)] ??= new ActionRuntimeData();
             DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
             DataModule[typeof(ParryRuntimeData)] ??= new ParryRuntimeData();
+            DataModule[typeof(LifecycleRuntimeData)] ??= new LifecycleRuntimeData();
 
-            if (StatusModule == null) StatusModule = EntityModuleFactory.Create<StatusModule>(this);
-            if (MotionWindowHandler == null) MotionWindowHandler = new ATMotionWindowHandler(this);
-            if (AttributeResolver == null) AttributeResolver = new EntityAttributeResolver(this);
+            MotionWindowHandler = new ATMotionWindowHandler(this);
         }
 
         private void HandleClockEffectiveScaleChanged(float effectiveScale)
@@ -85,14 +86,58 @@ namespace Game.GamePlay
 
         protected abstract void InitRequiredComponents();
 
-        public virtual void Init(Game.GamePlay.CharacterConfigAsset config)
+        /// <summary>
+        /// 实体标准化四阶段初始化管线（唯一真理入口）
+        /// 严格遵循优先级：静态配置注入(Phase 1) -> 运行时状态容器(Phase 2) -> 底层引擎适配与表现装配(Phase 3) -> 领域控制器与状态机(Phase 4)
+        /// </summary>
+        public void Init(CharacterConfigAsset config)
+        {
+            if (config == null)
+            {
+                GLog.Error(LogTags.Combat, $"[Entity] {name} Init 失败: config 为 null！");
+                return;
+            }
+
+            // 阶段 1: 静态配置数据注入 (最高优先级)
+            SetupConfig(config);
+
+            // 阶段 2: 运行时状态容器装配 (次高优先级)
+            SetupRuntimeData();
+
+            // 阶段 3: 底层引擎适配与表现组件装配 (第三优先级，底层先行)
+            SetupComponents();
+
+            // 阶段 4: 领域模块、控制器中枢与状态机 (第四优先级)
+            SetupDomainModulesAndFSM();
+
+            IsRuntimeInitialized = true;
+
+            // 实体各子系统与状态机全部装配完毕后，启动默认根节点动作 (ActionRoot / 默认待机态)
+            ActionController?.PlayRootAction();
+        }
+
+        protected virtual void SetupConfig(CharacterConfigAsset config)
         {
             Config = config;
-            
+        }
+
+        protected virtual void SetupRuntimeData()
+        {
+            DataModule[typeof(ActionRuntimeData)] ??= new ActionRuntimeData();
+            DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
+            DataModule[typeof(ParryRuntimeData)] ??= new ParryRuntimeData();
+            DataModule[typeof(LifecycleRuntimeData)] ??= new LifecycleRuntimeData();
+        }
+
+        protected virtual void SetupComponents()
+        {
             LifecycleComponent?.Init(this);
             MovementComponent?.Init(this);
             HitReactionComponent?.Init(this);
+            MotionWindowHandler ??= new ATMotionWindowHandler(this);
         }
+
+        protected abstract void SetupDomainModulesAndFSM();
 
         protected virtual void Start()
         {

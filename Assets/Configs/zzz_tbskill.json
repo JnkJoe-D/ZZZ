@@ -1531,8 +1531,118 @@
     }
   },
   {
+    "id": 200010,
+    "name": "TryfingInfested_Idle",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200020,
+    "name": "TryfingInfested_Run_Start",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200021,
+    "name": "TryfingInfested_Run_Loop",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200022,
+    "name": "TryfingInfested_Run_End",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200030,
+    "name": "TryfingInfested_Walk_B",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200031,
+    "name": "TryfingInfested_Walk_F",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200032,
+    "name": "TryfingInfested_Walk_F_L",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200033,
+    "name": "TryfingInfested_Walk_F_R",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200034,
+    "name": "TryfingInfested_Walk_L",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200035,
+    "name": "TryfingInfested_Walk_R",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
     "id": 200040,
-    "name": "攻击_1",
+    "name": "TryfingInfested_Attack_01",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1543,7 +1653,7 @@
   },
   {
     "id": 200050,
-    "name": "攻击_2",
+    "name": "TryfingInfested_Attack_02",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1554,7 +1664,7 @@
   },
   {
     "id": 200060,
-    "name": "攻击_3",
+    "name": "TryfingInfested_Attack_03",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1565,7 +1675,7 @@
   },
   {
     "id": 200070,
-    "name": "攻击_4",
+    "name": "TryfingInfested_Attack_04",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1576,7 +1686,7 @@
   },
   {
     "id": 200080,
-    "name": "攻击_5",
+    "name": "TryfingInfested_Attack_05",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1587,12 +1697,67 @@
   },
   {
     "id": 200090,
-    "name": "攻击_6",
+    "name": "TryfingInfested_Attack_06",
     "desc": "",
     "condition": [],
     "cost": [],
     "resilience": {
       "interrupt_level": 5,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200100,
+    "name": "TryfingInfested_Hit_Front_Up",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200101,
+    "name": "TryfingInfested_Hit_Shake",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200120,
+    "name": "TryfingInfested_Stun_Start",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200121,
+    "name": "TryfingInfested_Stun_Loop",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
+      "resilience_bonus": 0
+    }
+  },
+  {
+    "id": 200122,
+    "name": "TryfingInfested_Stun_End",
+    "desc": "",
+    "condition": [],
+    "cost": [],
+    "resilience": {
+      "interrupt_level": 0,
       "resilience_bonus": 0
     }
   }

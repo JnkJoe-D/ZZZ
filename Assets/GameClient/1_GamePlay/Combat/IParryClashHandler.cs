@@ -11,6 +11,7 @@ namespace Game.GamePlay
         public Vector3 HitPoint;
         public Vector3 HitDirection;
         public bool IsConsumed;
+        public ParryPrecomputedData PrecomputedData;
     }
 
     public interface IParryClashHandler

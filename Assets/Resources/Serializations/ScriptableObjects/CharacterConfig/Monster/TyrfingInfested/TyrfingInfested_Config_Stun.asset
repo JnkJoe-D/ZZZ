@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f296385bae884fe9a95446efc60ae77e, type: 3}
+  m_Name: TyrfingInfested_Config_Stun
+  m_EditorClassIdentifier: 
+  StunStart: {fileID: 11400000, guid: 039a6160b2a32504da5d7fe75073369a, type: 2}
+  StunLoop: {fileID: 11400000, guid: 7a6f5d75684c88c43b062bf67e5876d2, type: 2}
+  StunEnd: {fileID: 11400000, guid: 3ae929b2483cd54419f4651404e453a6, type: 2}
+  DefaultStunDuration: 5

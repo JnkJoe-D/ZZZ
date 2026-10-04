@@ -16,10 +16,22 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 75dec296ecd91d341b83b15a29173092, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 3bb860e65b2afdf44a7efd44ce241157, type: 2}
-  EnterState: 50
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
-  CompleteTransitCrossfade: -1
+  _transitionTable:
+    _items:
+    - TargetAction: {fileID: 11400000, guid: 39597b3808f14ba4e9d617ad4e2bdeb1, type: 2}
+      CrossfadeDuration: 0.15
+      HasCustomExitTime: 1
+      CustomExitTime: 0.22324504
+    - TargetAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
+      CrossfadeDuration: 0.1
+      HasCustomExitTime: 1
+      CustomExitTime: 1.1333876
+    - TargetAction: {fileID: 11400000, guid: 01314b8f7c89159429ee37b5f4564176, type: 2}
+      CrossfadeDuration: 0.16666667
+      HasCustomExitTime: 1
+      CustomExitTime: 0.33333334
   Routes: []
   RouteSets:
   - {fileID: 11400000, guid: 8db2c3e8d1e9f054583fb1496a8633a5, type: 2}
@@ -28,7 +40,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: 5d4a502ea31a12241bc5607fe2c03112, type: 2}
-  PlaybackSpeed: 1
+  EnterState: 50
+  InheritMode: 0
   references:
     version: 2
     RefIds: []

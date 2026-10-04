@@ -10,6 +10,7 @@ namespace ATEditor.Editor
         private static bool _showWarningSettings = true;
         private static bool _showCoverageSettings = true;
         private static bool _showClashSettings = true;
+        private static bool _showPhasingSettings = true;
 
         public override void DrawInspector(ClipBase clip)
         {
@@ -91,11 +92,43 @@ namespace ATEditor.Editor
                 EditorGUILayout.BeginVertical("box");
                 warningClip.ClashPositionOffset = EditorGUILayout.Vector3Field("接刀身位偏移 (Clash Offset)", warningClip.ClashPositionOffset);
                 warningClip.AllowInPlaceParry = EditorGUILayout.Toggle("允许就地格挡 (In-Place Parry)", warningClip.AllowInPlaceParry);
-                EditorGUILayout.HelpBox("若开启就地格挡，当玩家在覆盖域内切入时，不发生位移，仅瞬间转向面向怪物；若在外部，则精准瞬移至接刀身位偏移处。", MessageType.Info);
+                if (warningClip.AllowInPlaceParry)
+                {
+                    warningClip.RestrictedInnerRadius = EditorGUILayout.Slider("贴脸禁区半径 (Restricted Inner Radius)", warningClip.RestrictedInnerRadius, 0f, 5f);
+                    warningClip.InPlaceLineTolerance = EditorGUILayout.Slider("连线横向容差 (Line Tolerance)", warningClip.InPlaceLineTolerance, 0.05f, 2f);
+                    EditorGUILayout.HelpBox("开启就地格挡时，玩家位置必须同时满足：①覆盖域有效范围内；②贴脸禁区半径外；③处于怪物与预设接刀点的连线上（横向偏差 <= 容差）。三者均符合才原地招架；任一不符则强制瞬移至接刀点。", MessageType.Info);
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("关闭就地格挡：无论玩家在何处切入，均强制瞬移至接刀偏移点。", MessageType.Info);
+                }
 
                 if (GUILayout.Button("快速重置为正前方身位 (1.8m)"))
                 {
                     warningClip.ClashPositionOffset = new Vector3(0f, 0f, 1.8f);
+                }
+                EditorGUILayout.EndVertical();
+            }
+
+            _showPhasingSettings = EditorGUILayout.Foldout(_showPhasingSettings, "招架时序分期 (提前预判 vs 临界接刀)", true, EditorStyles.foldoutHeader);
+            if (_showPhasingSettings)
+            {
+                EditorGUILayout.BeginVertical("box");
+                warningClip.DirectClashTimeOffset = EditorGUILayout.Slider("直接接刀时间偏移 (Direct Clash Offset)", warningClip.DirectClashTimeOffset, 0f, warningClip.Duration);
+
+                if (warningClip.DirectClashTimeOffset <= 0.001f)
+                {
+                    EditorGUILayout.HelpBox("【全段直接接刀】：整段预警期间 (0.00s ~ " + warningClip.Duration.ToString("F2") + "s) 内切入，均直接触发招架轻/重 (ParryAid)。", MessageType.None);
+                }
+                else
+                {
+                    float offset = warningClip.DirectClashTimeOffset;
+                    float duration = warningClip.Duration;
+                    EditorGUILayout.HelpBox(
+                        $"【双阶段招架】：\n" +
+                        $"• [0.00s ~ {offset:F2}s)：提前预判期，切入触发招架架势起手 (ParryAidStart)；\n" +
+                        $"• [{offset:F2}s ~ {duration:F2}s]：临界接刀期，切入直接触发招架轻/重 (ParryAid)。",
+                        MessageType.Info);
                 }
                 EditorGUILayout.EndVertical();
             }
@@ -211,7 +244,20 @@ namespace ATEditor.Editor
 
             Handles.matrix = Matrix4x4.identity;
 
-            // 2. 绘制招架接刀身位 (Clash Position) 与可拖拽交互手柄
+            // 2. 绘制贴脸禁区 (Restricted Inner Radius)
+            if (warningClip.AllowInPlaceParry && warningClip.RestrictedInnerRadius > 0.05f)
+            {
+                Handles.color = new Color(1f, 0.2f, 0.2f, isActive ? 0.8f : 0.4f);
+                Handles.DrawWireDisc(rootTrans.position, Vector3.up, warningClip.RestrictedInnerRadius);
+                var banStyle = new GUIStyle
+                {
+                    normal = new GUIStyleState { textColor = new Color(1f, 0.3f, 0.3f) },
+                    fontSize = 10
+                };
+                Handles.Label(rootTrans.position + rootTrans.forward * warningClip.RestrictedInnerRadius + Vector3.up * 0.1f, "🚫 贴脸禁区", banStyle);
+            }
+
+            // 3. 绘制招架接刀身位 (Clash Position) 与可拖拽交互手柄
             Vector3 clashWorldPos = rootTrans.TransformPoint(warningClip.ClashPositionOffset);
             Handles.color = isActive ? Color.green : new Color(0.2f, 0.8f, 0.2f, 0.6f);
             Handles.DrawWireDisc(clashWorldPos, Vector3.up, 0.35f);

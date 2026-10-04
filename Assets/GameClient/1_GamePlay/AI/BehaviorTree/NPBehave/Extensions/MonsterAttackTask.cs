@@ -50,7 +50,7 @@ namespace Game.GamePlay
         private void OnTick()
         {
             var ctx = _agent.Context;
-            if (ctx == null)
+            if (ctx == null || (_agent != null && _agent.IsInHitStun()))
             {
                 Finish(false);
                 return;

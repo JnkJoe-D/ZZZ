@@ -18,17 +18,27 @@ namespace Game.GamePlay
 
             RoleEntity inEntity = ctx.IncomingEntity;
 
-            // 0. 处于 Pending 待切出状态切回：角色保持正在执行的动作，不重新播放切入动作
-            if (ctx.IsIncomingPendingSwitchOut)
+            // 0. 处于 Pending 待切出状态切回且非招架支援：角色保持正在执行的动作，不重新播放切入动作
+            if (ctx.IsIncomingPendingSwitchOut && ctx.Type != SwitchType.ParryAid)
             {
                 GLog.Info(LogTags.Team, $"切入角色 {inEntity.name} 处于 Pending 状态切回，保持当前动作，跳过触发 SwitchIn");
                 return;
             }
 
-            // 1. 确保战斗上下文目标注入
+            // 1. 确保战斗上下文目标注入与预警标记同步
             if (ctx.TargetAttacker != null)
             {
                 inEntity.TargetFinder?.SetCombatContextTarget(ctx.TargetAttacker);
+            }
+
+            if (ctx.WarningMarker != null && inEntity.DataModule != null)
+            {
+                var actionData = inEntity.DataModule.Get<ActionRuntimeData>();
+                actionData?.Set(nameof(actionData.MatchedWarningMarker), ctx.WarningMarker);
+
+                var parryData = inEntity.DataModule.Get<ParryRuntimeData>();
+                var weight = ctx.WarningMarker.ParryWeight != 0 ? ctx.WarningMarker.ParryWeight : ATEditor.ParryWeight.Light;
+                parryData?.Set(nameof(parryData.LastParryWeight), weight);
             }
 
             // 1. 触发切入动作触发源路由事件
@@ -39,7 +49,17 @@ namespace Game.GamePlay
                     break;
 
                 case SwitchType.ParryAid:
-                    inEntity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidStart);
+                    var parryData = inEntity.DataModule?.Get<ParryRuntimeData>();
+                    if (parryData != null && ctx.WarningMarker != null)
+                    {
+                        var weight = ctx.WarningMarker.ParryWeight != 0 ? ctx.WarningMarker.ParryWeight : ATEditor.ParryWeight.Light;
+                        parryData.Set(nameof(parryData.LastParryWeight), weight);
+                    }
+
+                    // 纯数据裁决：统一触发招架起手架势 (ParryAidStart)，并携带动态推导的动作快进偏移
+                    float startOffset = ctx.CalculatedStartTime;
+                    inEntity.ActionController?.TryTriggerEvent(RouteEventType.ParryAidStart, startOffset);
+                    GLog.Info(LogTags.Team, $"[Parry] 派发招架起手路由事件: ParryAidStart, StartTime={startOffset:F3}s");
                     break;
 
                 case SwitchType.FallbackEvasion:

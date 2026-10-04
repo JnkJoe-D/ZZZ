@@ -12,22 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
   m_Name: Ellen_RouteSet_ToSwitchIn_Normal
   m_EditorClassIdentifier: 
+  TargetScope: 2
   Routes:
   - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: cb2d647fb623ec6458c20aad68212444, type: 2}
-    ValidateSkillRequirement: 1
+    ExecuteAction: {fileID: 11400000, guid: 3f24b8923a1c49b8a8b1c4e9d0a1b2c3, type: 2}
+    ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
-    Priority: 20
-    CrossfadeOverride: -1
+    Priority: 50
     TriggerStrategy:
       rid: 4681868330708500773
-    ExtraConditions: []
+    ExtraConditions:
+    - rid: 6293806958974861346
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 707c8b93263ac3a42b3b0eb3d0c43782, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 50
+    TriggerStrategy:
+      rid: 4681868330708500773
+    ExtraConditions:
+    - rid: 6293806958974861347
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: 1b3b3fd0bd5ddbe4383fe1a225823587, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 40
     Priority: 40
-    CrossfadeOverride: -1
     TriggerStrategy:
       rid: 6379257712028942388
     ExtraConditions: []
@@ -36,9 +45,16 @@ MonoBehaviour:
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     Priority: 30
-    CrossfadeOverride: -1
     TriggerStrategy:
       rid: 6379257712028942390
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: cb2d647fb623ec6458c20aad68212444, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 20
+    TriggerStrategy:
+      rid: 6293806958974861344
     ExtraConditions: []
   references:
     version: 2
@@ -46,35 +62,51 @@ MonoBehaviour:
     - rid: 4681868330708500773
       type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
+        EventType: 40
+        RequiredWindow:
+          rid: 6293806958974861340
+        InputConditions: []
+    - rid: 6293806958974861340
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
+    - rid: 6293806958974861344
+      type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
         EventType: 10
         RequiredWindow:
-          rid: 6379258143149916794
-        RequiredWindowTag: SwitchExecute
-        Modifiers: []
+          rid: 6293806958974861345
+        InputConditions: []
+    - rid: 6293806958974861345
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchExecute
+    - rid: 6293806958974861346
+      type: {class: ParryWeightCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        ExpectedWeight: 1
+    - rid: 6293806958974861347
+      type: {class: ParryWeightCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        ExpectedWeight: 2
+    - rid: 6293806958974861348
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchCapture
     - rid: 6379257712028942388
       type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         EventType: 30
         RequiredWindow:
-          rid: 6379258143149916795
-        RequiredWindowTag: SwitchExecute
-        Modifiers: []
+          rid: 6293806958974861348
+        InputConditions: []
     - rid: 6379257712028942390
       type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         EventType: 35
         RequiredWindow:
           rid: 6379258143149916796
-        RequiredWindowTag: SwitchExecute
-        Modifiers: []
-    - rid: 6379258143149916794
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: SwitchExecute
-    - rid: 6379258143149916795
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: SwitchExecute
+        InputConditions: []
     - rid: 6379258143149916796
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:

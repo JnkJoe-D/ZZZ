@@ -37,7 +37,7 @@ namespace Game.GamePlay
 
                 if (outEntity.Config?.ActionRoot != null)
                 {
-                    outEntity.ActionController?.PlayAction(outEntity.Config.ActionRoot);
+                    outEntity.ActionController?.PlayRootAction();
                 }
 
                 GLog.Info(LogTags.Team, $"Outgoing 即时隐藏退场: {outMember?.Config?.Name}");

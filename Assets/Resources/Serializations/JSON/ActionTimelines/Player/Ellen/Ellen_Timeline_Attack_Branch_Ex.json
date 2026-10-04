@@ -46,7 +46,7 @@
         {
             "groupId": "e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b",
             "groupName": "输入",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -88,7 +88,7 @@
         {
             "groupId": "2618bfdd-54e5-4e01-b001-9112a202093c",
             "groupName": "动画位移",
-            "isCollapsed": false,
+            "isCollapsed": true,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -491,7 +491,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.10000002384185791,
                     "animationClip": {
-                        "instanceID": 34704
+                        "instanceID": 34738
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -529,7 +529,7 @@
                     "blendInDuration": 0.10000002384185791,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34706
+                        "instanceID": 34740
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -918,12 +918,12 @@
                     "clipName": "旋转片段片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.01666666753590107,
+                    "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "referenceDirection": 4,
                     "rotationMode": 1,
-                    "updateFrequency": 0,
+                    "updateFrequency": 2,
                     "localRotationOffset": {
                         "x": 0.0,
                         "y": 0.0,

@@ -19,7 +19,6 @@ MonoBehaviour:
     ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
     Priority: 0
-    CrossfadeOverride: 0
     TriggerStrategy:
       rid: 6379258097012572217
     ExtraConditions: []
@@ -38,11 +37,6 @@ MonoBehaviour:
           InputCondition:
             rid: 6379258227727269943
           Inverse: 0
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258227727269944
-          Inverse: 0
     - rid: 6379258143149916716
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -50,7 +44,3 @@ MonoBehaviour:
     - rid: 6379258227727269943
       type: {class: ShortMoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data: 
-    - rid: 6379258227727269944
-      type: {class: MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Inverse: 1

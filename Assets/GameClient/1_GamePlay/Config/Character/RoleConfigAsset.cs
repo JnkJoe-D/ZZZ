@@ -56,19 +56,58 @@ namespace Game.GamePlay
         public float CoolDown = 1f;
     }
     [System.Serializable]
+    public class ParryActionEntry
+    {
+        [Tooltip("招架反制动作 (如 ParryAid_L / ParryAid_H)")]
+        public ActionConfigAsset Action;
+
+        [HitEffectId]
+        [Tooltip("招架反制命中效果 ID (配置失衡值、怪物 Parried 受击表现等，支持 Luban 查表)")]
+        public int HitEffectId = 1050120;
+
+        [Tooltip("招架成功双方顿帧时长 (秒)")]
+        [Range(0.01f, 0.5f)]
+        public float HitStopDuration = 0.2f;
+    }
+
+    [System.Serializable]
     public class RoleAssistConfig
     {
         [Tooltip("角色支援类型：近战招架 / 远程回避")]
         public RoleAssistType SupportType = RoleAssistType.ParryAid;
 
-        [Header("近战招架动作引用 (用于查 TbSkill 消耗/条件)")]
-        [Tooltip("轻招架执行动作（招架支援_L），对应 TbSkill 配置（通常消耗 1 点支援点数）")]
+        [Header("近战招架起手动作与位移配置 (ParryAidStart)")]
+        [Tooltip("招架起手动作配置（ParryAid_Start），切入招架时优先切入此动作")]
         [ShowIf("SupportType", RoleAssistType.ParryAid)]
-        public ActionConfigAsset ParryLAction;
-        [Header("近战招架动作引用 (用于查 TbSkill 消耗/条件)")]
-        [Tooltip("重招架执行动作（招架支援_H），对应 TbSkill 配置（通常消耗 2 点支援点数）")]
+        public ActionConfigAsset ParryStartAction;
+
+        [Tooltip("招架起手完成举刀防御的准备时长（即时期 a 到时期 b 的时间点 T_ready，单位：秒，推荐 0.2s）")]
         [ShowIf("SupportType", RoleAssistType.ParryAid)]
-        public ActionConfigAsset ParryHAction;
+        public float ParryReadyDuration = 0.2f;
+
+        [Tooltip("招架起手在时期 a 完整播放时产生的 Z 轴前向根运动总位移（米）。\n切入时将根据剩余播放时间比例动态扣除生成位置，确保举刀时刚好停留在接刀锚点。")]
+        [ShowIf("SupportType", RoleAssistType.ParryAid)]
+        public float ParryRootMotionZOffset = 1.0f;
+
+        [Header("近战轻招架反制配置 (消耗 1 点支援点数)")]
+        [ShowIf("SupportType", RoleAssistType.ParryAid)]
+        public ParryActionEntry ParryLight = new ParryActionEntry();
+
+        [Header("近战重招架反制配置 (消耗 2 点支援点数)")]
+        [ShowIf("SupportType", RoleAssistType.ParryAid)]
+        public ParryActionEntry ParryHeavy = new ParryActionEntry();
+
+        // 兼容转发：用于外部（如技能点校验）只读获取轻重动作引用
+        public ActionConfigAsset ParryLAction => ParryLight?.Action;
+        public ActionConfigAsset ParryHAction => ParryHeavy?.Action;
+
+        /// <summary>
+        /// 根据招架强度权重获取对应的招架反制配置条目
+        /// </summary>
+        public ParryActionEntry GetParryEntry(ATEditor.ParryWeight weight)
+        {
+            return weight == ATEditor.ParryWeight.Heavy ? ParryHeavy : ParryLight;
+        }
 
         [Header("远程回避动作引用 (用于查 TbSkill 消耗/条件)")]
         [Tooltip("回避支援技能动作，对应 TbSkill 配置（通常消耗 1 点支援点数）")]

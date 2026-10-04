@@ -19,6 +19,7 @@ namespace Game.GamePlay
             fsm.AddState(new MonsterWalkState());
             fsm.AddState(new MonsterAttackState());
             fsm.AddState(new MonsterHitStunState());
+            fsm.AddState(new MonsterStunState());
             fsm.ChangeState<MonsterIdleState>();
 
             return fsm;

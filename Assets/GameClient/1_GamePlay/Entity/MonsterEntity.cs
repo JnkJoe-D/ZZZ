@@ -33,32 +33,51 @@ namespace Game.GamePlay
                 ?? gameObject.AddComponent<MonsterLifecycleComponent>();
         }
 
-        public override void Init(CharacterConfigAsset config)
+        protected override void SetupConfig(CharacterConfigAsset config)
         {
-            base.Init(config);
-            var monsterConfig = (MonsterConfigAsset)config;
+            base.SetupConfig(config);
+        }
+
+        protected override void SetupRuntimeData()
+        {
+            base.SetupRuntimeData();
+
+            // 阶段 2: 注册怪物专属行为运行时数据容器
+            DataModule[typeof(MonSterBehaviorRuntimeData)] ??= new MonSterBehaviorRuntimeData();
+        }
+
+        protected override void SetupComponents()
+        {
+            base.SetupComponents();
+        }
+
+        protected override void SetupDomainModulesAndFSM()
+        {
+            // 阶段 4: 领域模块、控制器中枢与状态机 (第四优先级)
+            var monsterConfig = Config;
 
             AttributeResolver = new MonsterAttributeResolver(this);
             RouteArbitrator ??= new RouteArbitrator();
-            ActionController ??= EntityControllerFactory.Create<ActionController>(this);
 
-            // 1. 注册运行时状态数据容器
-            DataModule[typeof(MonSterBehaviorRuntimeData)] ??= new MonSterBehaviorRuntimeData();
-            DataModule[typeof(HitReactionRuntimeData)] ??= new HitReactionRuntimeData();
-
-            // 2. 组装大脑协同器与传感器
-            BrainCoordinator = new MonsterBrainCoordinator();
+            BrainCoordinator ??= new MonsterBrainCoordinator();
             BrainCoordinator.Initialize(this);
 
             TargetFinder = new MonsterTargetFinder(monsterConfig.SensorConfig, transform);
             TargetFinder.Initialize(this);
             TacticalContext = new MonsterTacticalContext { LocomotionConfig = monsterConfig.locomotionConfig };
 
-            // 3. 构建状态机与行为树
+            // 1. 先构建状态机 (确保 ActionController 内部自驱播放 RootAction 时状态机已就绪)
             StateMachine = MonsterFSMBuilder.Build(this);
 
-            if (monsterConfig.ActionRoot != null)
-                ActionController.PlayAction(monsterConfig.ActionRoot);
+            // 2. 核心时序：此时 Config 与 StateMachine 已完备注入！ActionController.Initialize 内部自驱播放 PlayRootAction
+            if (ActionController == null)
+            {
+                ActionController = EntityControllerFactory.Create<ActionController>(this);
+            }
+            else
+            {
+                ActionController.Initialize(this);
+            }
 
             if (monsterConfig.BehaviorTree != null && BTRunner != null)
             {
@@ -66,6 +85,34 @@ namespace Game.GamePlay
                 BTRunner.StartTree();
                 BrainCoordinator.SyncBlackboardSelfControl();
             }
+        }
+
+        public void EnsureRuntimeInitialized()
+        {
+            if (IsRuntimeInitialized) return;
+
+            if (Config != null)
+            {
+                Init(Config);
+                return;
+            }
+
+            // 防御性兜底：在纯单元测试环境下未注入 Config 即调用 EnsureRuntimeInitialized 时，组装最小可用领域模块
+            EnsureMinimalDomainModules();
+            IsRuntimeInitialized = true;
+            ActionController?.PlayRootAction();
+        }
+
+        private void EnsureMinimalDomainModules()
+        {
+            RouteArbitrator ??= new RouteArbitrator();
+            if (ActionController == null)
+            {
+                ActionController = EntityControllerFactory.Create<ActionController>(this);
+            }
+            BrainCoordinator ??= new MonsterBrainCoordinator();
+            BrainCoordinator.Initialize(this);
+            StateMachine ??= MonsterFSMBuilder.Build(this);
         }
 
         protected override void OnSubLogicTick(float scaledDeltaTime)

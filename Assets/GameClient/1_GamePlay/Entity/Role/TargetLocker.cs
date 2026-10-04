@@ -258,7 +258,7 @@ namespace Game.GamePlay
         {
             if (monster == null || monster.gameObject == null) return false;
             if (!monster.gameObject.activeInHierarchy) return false;
-            if (monster.IsDead) return false;
+            if (monster.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false) return false;
             return true;
         }
 

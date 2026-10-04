@@ -305,7 +305,7 @@ MonoBehaviour:
         clipId: 19b75411-f484-4cf3-861b-c17633f9ee6c
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.26666668
+        startTime: 0.33333334
         duration: 0.2
         blendInDuration: 0
         blendOutDuration: 0

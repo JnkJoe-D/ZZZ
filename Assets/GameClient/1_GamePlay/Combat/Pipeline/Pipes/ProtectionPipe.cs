@@ -14,7 +14,8 @@ namespace Game.GamePlay
 
         public void Process(HitPipelineContext ctx)
         {
-            if (ctx.Victim == null || ctx.Victim.LifecycleComponent.IsDead)
+            var victimLifecycle = ctx.Victim?.DataModule?.Get<LifecycleRuntimeData>();
+            if (ctx.Victim == null || (victimLifecycle != null && victimLifecycle.IsDead))
             {
                 ctx.Abort("Victim is null or already dead");
                 return;

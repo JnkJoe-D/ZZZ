@@ -176,7 +176,7 @@ MonoBehaviour:
         clips:
         - rid: 4681868069779800900
     - rid: 4681868069779800890
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
         trackType: DamageTrack
@@ -324,15 +324,15 @@ MonoBehaviour:
         clipId: ff188346-a31a-4769-9a1c-dcc0341d41e0
         clipName: "\u4F4D\u79FB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
+        startTime: -0
         duration: 4.9333334
         blendInDuration: 0
         blendOutDuration: 0
         localDeltaFilterMode: 1
-        collisionMode: 0
+        collisionMode: 1
         obstacleMask:
           serializedVersion: 2
-          m_Bits: 4294967295
+          m_Bits: 1152
     - rid: 4681868069779800903
       type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:

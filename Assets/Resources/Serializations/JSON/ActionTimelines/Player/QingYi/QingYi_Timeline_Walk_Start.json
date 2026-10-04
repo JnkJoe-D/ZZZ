@@ -286,7 +286,7 @@
             {
                 "rid": 1008,
                 "type": {
-                    "class": "HitTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -341,7 +341,7 @@
                     "blendInDuration": 0.10000000149011612,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34700
+                        "instanceID": 34764
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -459,10 +459,10 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1,
-                    "collisionMode": 0,
+                    "collisionMode": 1,
                     "obstacleMask": {
                         "serializedVersion": "2",
-                        "m_Bits": 4294967295
+                        "m_Bits": 1152
                     }
                 }
             },

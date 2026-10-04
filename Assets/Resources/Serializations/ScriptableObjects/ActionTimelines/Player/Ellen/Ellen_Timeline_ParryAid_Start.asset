@@ -46,6 +46,7 @@ MonoBehaviour:
     isLocked: 0
     tracks:
     - rid: 4681868069779800838
+    - rid: 6293806958974861316
     - rid: 4681868069779800839
     - rid: 6379257712028942364
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
@@ -54,8 +55,7 @@ MonoBehaviour:
     isEnabled: 1
     isLocked: 0
     tracks:
-    - rid: 6379257712028942346
-    - rid: 6379258182230343755
+    - rid: 6293806958974861320
   - groupId: 2618bfdd-54e5-4e01-b001-9112a202093c
     groupName: "\u52A8\u753B\u4F4D\u79FB"
     isCollapsed: 0
@@ -179,7 +179,7 @@ MonoBehaviour:
         isEnabled: 1
         startTime: 0
         duration: 4.1833334
-        blendInDuration: 0.1333333
+        blendInDuration: 0
         blendOutDuration: 0
         animationClip: {fileID: -2165006858905627079, guid: 769312a99595bf44f83906711cfb6784,
           type: 3}
@@ -236,31 +236,58 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 4294967295
-    - rid: 6379257712028942346
-      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
+    - rid: 6293806958974861316
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        trackId: fa92a7ca-bc4e-402d-91ac-694cafc713f7
-        trackType: EventTrack
-        trackName: "\u4E8B\u4EF6\u8F68\u9053"
+        trackId: 8481104b-dc49-4ca8-b22d-6af374a74744
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
         isMuted: 0
         isLocked: 0
         isHidden: 0
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 6379257712028942348
-    - rid: 6379257712028942348
-      type: {class: ParryCaptureClip, ns: ATEditor, asm: Assembly-CSharp}
+        - rid: 6293806958974861317
+    - rid: 6293806958974861317
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
-        clipId: 62c31550-0015-43ac-8303-bf471860ab36
-        clipName: "\u62DB\u67B6\u6355\u83B7\u7A97\u53E3"
+        clipId: 6f88c792-9ff3-443e-a454-b2ead457cd37
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0
-        duration: 0.18333334
+        startTime: 1
+        duration: 3.166667
         blendInDuration: 0
         blendOutDuration: 0
-        data:
-          triggerTiming: 20
+        routewindow:
+          rid: 6293806958974861323
+    - rid: 6293806958974861320
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 335152a6-3257-4b4e-a1f4-35633f5456a5
+        trackType: CombatTrack
+        trackName: "\u6218\u6597\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6293806958974861322
+    - rid: 6293806958974861322
+      type: {class: ParryWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: b9e072d7-1c5e-4bdb-9324-dc9a7e215001
+        clipName: "\u62DB\u67B6\u9632\u5FA1\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.31666672
+        duration: 0.68333304
+        blendInDuration: 0
+        blendOutDuration: 0
+    - rid: 6293806958974861323
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: BackSwing1
     - rid: 6379257712028942364
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -399,28 +426,3 @@ MonoBehaviour:
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: SwitchExecute
-    - rid: 6379258182230343755
-      type: {class: EventTrack, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        trackId: 04e8d3b6-7f56-4e43-92e0-10f4b96fc4e0
-        trackType: EventTrack
-        trackName: "\u4E8B\u4EF6\u8F68\u9053"
-        isMuted: 0
-        isLocked: 0
-        isHidden: 0
-        isCollapsed: 0
-        isEnabled: 1
-        clips:
-        - rid: 6379258182230343756
-    - rid: 6379258182230343756
-      type: {class: ParryCaptureClip, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        clipId: 8aa5f49d-f336-485e-aba5-b75dc931c832
-        clipName: "\u62DB\u67B6\u6355\u83B7\u7A97\u53E3"
-        isEnabled: 1
-        startTime: 0.16666667
-        duration: 0.8333333
-        blendInDuration: 0
-        blendOutDuration: 0
-        data:
-          triggerTiming: 10

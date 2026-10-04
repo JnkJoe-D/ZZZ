@@ -19,7 +19,6 @@ MonoBehaviour:
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     Priority: 1
-    CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500848
     ExtraConditions: []
@@ -34,8 +33,7 @@ MonoBehaviour:
         Timing: 0
         RequiredWindow:
           rid: 6379258143149917021
-        RequiredWindowTag: DashLink
-        Modifiers:
+        InputConditions:
         - Category: 10
           RequiredKey: 10
           InputCondition:
