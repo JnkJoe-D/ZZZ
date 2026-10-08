@@ -23,7 +23,7 @@ namespace Game.GamePlay
         private readonly float _timeout;
 
         private int _currentIndex = 0;
-        private bool _hasBeenConsumed = false;
+        private bool _hasStartedPlaying = false;
         private double _startTime;
         private ActionConfigAsset _currentExecutingAction;
 
@@ -79,7 +79,7 @@ namespace Game.GamePlay
             SyncNextRangeToBlackboard();
 
             _currentExecutingAction = currentEntry.action;
-            _hasBeenConsumed = false;
+            _hasStartedPlaying = false;
             _startTime = RootNode.Clock.ElapsedTime;
 
             // 宏观意图下发：声明出刀策略与待执行攻击资产
@@ -107,25 +107,34 @@ namespace Game.GamePlay
                 return;
             }
 
-            // 2. 监测状态机是否已消费 PendingAttack
-            if (!_hasBeenConsumed && ctx.PendingAttack == null)
+            // 2. 阶段 1：等待状态机消费指令并真正开始播放该攻击动作
+            if (!_hasStartedPlaying)
             {
-                _hasBeenConsumed = true;
+                if (_agent.IsPlayingAction(_currentExecutingAction))
+                {
+                    _hasStartedPlaying = true;
+                }
+                else if (_timeout > 0f && (RootNode.Clock.ElapsedTime - _startTime >= _timeout))
+                {
+                    GLog.Warning(LogTags.AI, $"MonsterAttackSequenceTask timed out waiting to start {_currentExecutingAction?.name}");
+                    AdvanceIndex();
+                    StopAndReturn(false);
+                    return;
+                }
             }
-
-            // 3. 状态机已消费，且动作播放完毕
-            if (_hasBeenConsumed)
+            // 3. 阶段 2：已确认开始播放后，动作播放结束退出
+            else
             {
                 if (!_agent.IsPlayingAction(_currentExecutingAction))
                 {
-                    // 当前动作顺利完成，推进索引
+                    // 当前动作顺利完成，推进索引并开启冷却
                     AdvanceIndex();
                     StopAndReturn(true);
                     return;
                 }
             }
 
-            // 4. 超时安全防护：防止动作未播放或卡死导致行为树永久挂起
+            // 4. 总超时安全防护
             if (_timeout > 0f && (RootNode.Clock.ElapsedTime - _startTime >= _timeout))
             {
                 GLog.Warning(LogTags.AI, $"MonsterAttackSequenceTask timed out on index {_currentIndex}, resetting sequence.");

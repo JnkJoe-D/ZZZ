@@ -1,5 +1,5 @@
 {
-    "duration": 5.9166669845581059,
+    "duration": 5.9166669845581055,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -286,14 +286,14 @@
             {
                 "rid": 1008,
                 "type": {
-                    "class": "HitTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "trackId": "6c372d50-4b7d-4af7-992f-9aff4e5fa659",
-                    "trackType": "DamageTrack",
-                    "trackName": "命中判定轨道",
+                    "trackType": "CombatTrack",
+                    "trackName": "战斗轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -337,7 +337,7 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 5.9166669845581059,
+                    "duration": 5.9166669845581055,
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
@@ -375,7 +375,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 5.9166669845581059,
+                    "duration": 5.9166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -395,7 +395,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 5.9166669845581059,
+                    "duration": 5.9166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -415,7 +415,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 5.9166669845581059,
+                    "duration": 5.9166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -435,7 +435,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 5.9166669845581059,
+                    "duration": 5.9166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -455,7 +455,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 5.9166669845581059,
+                    "duration": 5.9166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1,

@@ -172,5 +172,47 @@ namespace Game.Tests.ActionSystem
             Assert.AreEqual(0.65f, completeTarget.CustomExitTime);
             Assert.AreEqual(0.25f, completeTarget.ConfiguredCrossfade);
         }
+
+        [Test]
+        public void TransitionTable_StartTimeAndAliases_WorkAsExpected()
+        {
+            // 配置全套新参数：EndTime, HasEndTime, BlendDuration, StartTime, HasStartTime
+            _sourceAction.SetTransition(
+                targetAction: _targetR1,
+                blendDuration: 0.4f,
+                hasEndTime: true,
+                endTime: 0.75f,
+                hasStartTime: true,
+                startTime: 0.2f
+            );
+
+            var item = _sourceAction.GetTransition(_targetR1);
+            Assert.IsNotNull(item);
+            // 核心新字段断言
+            Assert.AreEqual(0.4f, item.BlendDuration);
+            Assert.IsTrue(item.HasEndTime);
+            Assert.AreEqual(0.75f, item.EndTime);
+            Assert.IsTrue(item.HasStartTime);
+            Assert.AreEqual(0.2f, item.StartTime);
+
+            // 向后兼容别名断言
+            Assert.AreEqual(0.4f, item.CrossfadeDuration);
+            Assert.IsTrue(item.HasCustomExitTime);
+            Assert.AreEqual(0.75f, item.CustomExitTime);
+
+            // Topology 扫描测试
+            _sourceAction.Routes = new List<ActionRoute>
+            {
+                new ActionRoute { ExecuteType = ExecuteTarget.Action, ExecuteAction = _targetR1, Priority = 50 }
+            };
+            var targets = ActionTransitionTopologyService.DiscoverTargets(_sourceAction);
+            var targetInfo = targets.Find(t => t.TargetAction == _targetR1);
+            Assert.IsNotNull(targetInfo);
+            Assert.IsTrue(targetInfo.HasStartTime);
+            Assert.AreEqual(0.2f, targetInfo.StartTime);
+            Assert.IsTrue(targetInfo.HasEndTime);
+            Assert.AreEqual(0.75f, targetInfo.EndTime);
+            Assert.AreEqual(0.4f, targetInfo.BlendDuration);
+        }
     }
 }

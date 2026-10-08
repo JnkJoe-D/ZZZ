@@ -20,37 +20,8 @@ namespace Game.GamePlay
 
         protected override void OnActionPlaySucceed(ActionConfigAsset action)
         {
-            if (Role.StateMachine == null) return;
-            
-            if (action is RoleActionConfigAsset roleAction)
-            {
-                switch (roleAction.EnterState)
-                {
-                    case ActionState.Idle:
-                    case ActionState.Walk:
-                    case ActionState.Run:
-                    case ActionState.Stop:
-                        if (_actionData != null)
-                            _actionData.Set(nameof(_actionData.TargetGroundSubState), roleAction.EnterState);
-                        Role.StateMachine.ChangeState<RoleGroundState>();
-                        break;
-                    case ActionState.Skill:
-                        Role.StateMachine.ChangeState<RoleSkillState>();
-                        break;
-                    case ActionState.Evade:
-                        Role.StateMachine.ChangeState<RoleEvadeState>();
-                        break;
-                    case ActionState.Hit:
-                        Role.StateMachine.ChangeState<RoleHitStunState>();
-                        break;
-                    case ActionState.Switch:
-                        Role.StateMachine.ChangeState<CharacterSwitchState>();
-                        break;
-                    case ActionState.Parry:
-                        Role.StateMachine.ChangeState<RoleParryState>();
-                        break;
-                }
-            }
+            // 由多态 ActionDomain 系统权威驱动生命周期流转
+            Role?.DomainContext?.HandleActionChanged(action);
         }
 
         protected override void RecordComboRoute(CommandRouteSource source, string tag, ICommandPayload payload, ActionConfigAsset action)

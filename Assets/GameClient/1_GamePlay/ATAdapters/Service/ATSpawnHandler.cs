@@ -1,13 +1,12 @@
 using ATEditor;
 using UnityEngine;
-using Game.Framework;
 
 namespace Game.GamePlay
 {
     /// <summary>
-    /// Spawn 处理器
-    /// 实现 ISkillSpawnHandler 接口，使用 GlobalPoolManager 管理 Spawn 对象，
-    /// 并为生成的投掷物自动注入创建者实体的时钟。
+    /// ATEditor Spawn 业务适配器 (Adapter)
+    /// 实现 ISpawnHandler 接口，作为 ATEditor 时间轴播放层与集中管理器 SpawnObjectManager 之间的交互桥梁。
+    /// 不直接管理对象池与生成物实例，统一转交 SpawnObjectManager 进行大盘调度与框架对象池存取。
     /// </summary>
     public class ATSpawnHandler : ISpawnHandler
     {
@@ -18,46 +17,19 @@ namespace Game.GamePlay
             _owner = owner;
         }
 
-        public IProjectileHandler Spawn(SpawnData data)
+        public ISpawnObject Spawn(SpawnData data)
         {
-            var obj = SpawnObject(data.configPrefab, data.position, data.rotation, data.detach, data.parent);
-            if (obj == null) return null;
-            IProjectileHandler sp = obj.GetComponent<ATProjectileHandler>() ?? obj.AddComponent<ATProjectileHandler>();
-            if (sp is ATProjectileHandler projHandler)
-            {
-                projHandler.Initialize(data, this, _owner?.Clock);
-            }
-            else
-            {
-                sp.Initialize(data, this);
-            }
-            return sp;
+            return SpawnObjectManager.Instance.Spawn(data, _owner);
         }
 
         public GameObject SpawnObject(GameObject prefab, Vector3 position, Quaternion rotation, bool detach, Transform parent)
         {
-            if (prefab == null) return null;
-
-            // 通过 GlobalPoolManager 统一获取并设置父节点/场景归属
-            Transform targetParent = (!detach && parent != null) ? parent : null;
-            var instance = GlobalPoolManager.Spawn(prefab, position, rotation, targetParent);
-            instance.SetActive(true);
-
-            return instance;
+            return SpawnObjectManager.Instance.SpawnObject(prefab, position, rotation, detach, parent);
         }
 
-        public void DestroySpawnedObject(IProjectileHandler projectile)
+        public void DestroySpawnedObject(ISpawnObject projectile)
         {
-            if (projectile is MonoBehaviour mono)
-            {
-                GameObject obj = mono.gameObject;
-                if (obj == null || !obj.scene.isLoaded) return;
-
-                obj.SetActive(false);
-
-                // 通过 GlobalPoolManager 统一归还，由池内部统一安全挂回 _poolRoot
-                GlobalPoolManager.Return(obj);
-            }
+            SpawnObjectManager.Instance.Recycle(projectile);
         }
     }
 }

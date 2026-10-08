@@ -6,7 +6,7 @@ namespace ATEditor
     public class RuntimeSpawnProcess : ProcessBase<SpawnClip>
     {
         private ISpawnHandler spawnHandler;
-        private IProjectileHandler spawnedProjectile;
+        private ISpawnObject spawnedProjectile;
 
         public override void OnEnable()
         {
@@ -19,16 +19,26 @@ namespace ATEditor
 
             GetMatrix(out Vector3 pos, out Quaternion rot, out Transform parent);
 
+            bool detach = clip.bindConfig != null ? !clip.bindConfig.followTarget : true;
+
             var spawnData = new SpawnData
             {
                 configPrefab = clip.prefab,
                 position = pos,
                 rotation = rot,
-                detach = clip.detach,
-                parent = clip.detach ? null : parent,
+                detach = detach,
+                parent = detach ? null : parent,
                 eventTag = clip.eventTag,
                 targetTags = clip.targetTags,
-                deployer = context.Owner
+                deployer = context.Owner,
+
+                bindConfig = clip.bindConfig,
+                lifecycleConfig = clip.lifecycleConfig,
+                movementConfig = clip.movementConfig,
+                enableAttackDetection = clip.enableAttackDetection,
+                hitBoxScope = clip.hitBoxScope,
+                attackPolicy = clip.attackPolicy,
+                hitHandler = context.GetService<IHitHandler>()
             };
 
             spawnedProjectile = spawnHandler.Spawn(spawnData);
@@ -39,20 +49,19 @@ namespace ATEditor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            // SpawnProcess 作为纯种的"产出器"，在这里不负责强行接管投射物的位移
-            // 实体投射物的运动应该由生成的实体自身(或被注入的组件如Rigidbody/Dotween/ProjectileController)完全接管
+            // 生成物实体自主接管移动、判定与生命周期
         }
 
         public override void OnExit()
         {
-            // 如果技能被打断，且要求打断时连带销毁产生物
-            // 依赖于 SkillRunner 触发的 InterruptInternal 和 IsInterrupted 标记
-            if (clip.destroyOnInterrupt && spawnedProjectile != null && context != null && context.IsInterrupted)
+            bool destroyOnInterrupt = clip.lifecycleConfig != null && clip.lifecycleConfig.destroyOnInterrupt;
+            if (destroyOnInterrupt && spawnedProjectile != null && context != null && context.IsInterrupted)
             {
                 spawnedProjectile.Recycle();
             }
             spawnedProjectile = null;
         }
+
         public override void OnStop()
         {
             if (context != null && context.Owner != null && !context.Owner.gameObject.scene.isLoaded)
@@ -61,35 +70,39 @@ namespace ATEditor
                 return;
             }
 
-            if (clip.destroyOnInterrupt && spawnedProjectile != null && context != null && context.IsInterrupted)
+            bool destroyOnInterrupt = clip.lifecycleConfig != null && clip.lifecycleConfig.destroyOnInterrupt;
+            if (destroyOnInterrupt && spawnedProjectile != null && context != null && context.IsInterrupted)
             {
                 spawnedProjectile.Recycle();
             }
             spawnedProjectile = null;
         }
+
         private void GetMatrix(out Vector3 pos, out Quaternion rot, out Transform parent)
         {
             parent = null;
+            var bindConfig = clip.bindConfig ?? new TransformBindConfig();
+
             if (context != null)
             {
                 var actor = context.GetService<IBoneGetter>();
-                parent = actor?.GetBone(clip.bindPoint);
+                parent = actor?.GetBone(bindConfig.bindPoint, bindConfig.customBoneName);
             }
 
             if (parent != null)
             {
-                pos = parent.position + parent.rotation * clip.positionOffset;
-                rot = parent.rotation * Quaternion.Euler(clip.rotationOffset);
+                pos = parent.position + parent.rotation * bindConfig.positionOffset;
+                rot = parent.rotation * Quaternion.Euler(bindConfig.rotationOffset);
             }
             else if (context?.Owner != null)
             {
-                pos = context.Owner.transform.position + context.Owner.transform.rotation * clip.positionOffset;
-                rot = context.Owner.transform.rotation * Quaternion.Euler(clip.rotationOffset);
+                pos = context.Owner.transform.position + context.Owner.transform.rotation * bindConfig.positionOffset;
+                rot = context.Owner.transform.rotation * Quaternion.Euler(bindConfig.rotationOffset);
             }
             else
             {
-                pos = clip.positionOffset;
-                rot = Quaternion.Euler(clip.rotationOffset);
+                pos = bindConfig.positionOffset;
+                rot = Quaternion.Euler(bindConfig.rotationOffset);
             }
         }
 

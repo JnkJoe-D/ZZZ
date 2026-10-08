@@ -45,6 +45,14 @@ namespace Game.GamePlay
         OnWindowExit = 20,
     }
 
+    public enum RouteArbitrationTiming
+    {
+        [InspectorName("帧末延迟裁决 (Deferred / LogicTick)")]
+        Deferred = 0,
+        [InspectorName("即时抢占裁决 (Immediate / OnCommand)")]
+        Immediate = 10,
+    }
+
     public enum ExecuteTarget
     {
         None = 0,
@@ -125,6 +133,9 @@ namespace Game.GamePlay
         [Header("Execution")]
         public int Priority;
 
+        [Tooltip("仲裁决选时机：Immediate 表示压入指令瞬间立即现场决选；Deferred 表示等待当前帧所有路由评估完毕后统一在帧末/Tick决选。")]
+        public RouteArbitrationTiming ArbitrationTiming = RouteArbitrationTiming.Deferred;
+
         [Header("Trigger Strategy")]
         [SerializeReference, SubclassSelector]
         public IRouteTrigger TriggerStrategy;
@@ -169,9 +180,6 @@ namespace Game.GamePlay
             if (ExecuteType == ExecuteTarget.Event && RouteExecuteEvent == ExecuteEvent.None) return false;
             return true;
         }
-
-        [Obsolete("Use IsValid() instead. Note that IsInvalid now correctly returns true when invalid.", false)]
-        public bool IsInvalid() => !IsValid();
 
 
 

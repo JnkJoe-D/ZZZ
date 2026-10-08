@@ -13,13 +13,13 @@ namespace ATEditor
         /// </summary>
         /// <param name="data">包含预制体、坐标、旋转、所有者等在内的完整生成参数包</param>
         /// <returns>生成的投射物逻辑控制接口</returns>
-        IProjectileHandler Spawn(SpawnData data);
+        ISpawnObject Spawn(SpawnData data);
         
         /// <summary>
         /// 技能提早或意外中断时，请求销毁相关的生成物
         /// </summary>
         /// <param name="projectile">之前生成的实例接口</param>
-        void DestroySpawnedObject(IProjectileHandler projectile);
+        void DestroySpawnedObject(ISpawnObject projectile);
     }
 
     /// <summary>
@@ -35,5 +35,14 @@ namespace ATEditor
         public string eventTag;        // 事件标识
         public string[] targetTags;    // 目标标签过滤
         public GameObject deployer;    // 释放者（所有者）
+
+        // ── 扩展的参数块 ──
+        public TransformBindConfig bindConfig;
+        public LifecycleConfig lifecycleConfig;
+        public ProjectileMovementConfig movementConfig;
+        public bool enableAttackDetection;
+        public HitBoxScopeConfig hitBoxScope;
+        public AttackDetectionPolicy attackPolicy;
+        public IHitHandler hitHandler;
     }
 }

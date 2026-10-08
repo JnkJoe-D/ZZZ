@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 140070
   Name: 
+  _domainId: 1
   TimelineAsset: {fileID: 4900000, guid: eb661017a03b74b439246b43d8ea0b17, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: aacf25e586a12ff4c88cb76df40cb1cb, type: 2}
-  EnterState: 30
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
-  CompleteTransitCrossfade: -1
+  _transitionTable:
+    _items: []
   Routes: []
   RouteSets:
   - {fileID: 11400000, guid: c585274d9e6056448a1a96f056b089d0, type: 2}
@@ -27,7 +28,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5e4cd4063c908d0458afbdced951fe56, type: 2}
   - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
   - {fileID: 11400000, guid: 583f82f198484fa4db2e6e5bb6a36e69, type: 2}
-  PlaybackSpeed: 1
+  EnterState: 30
+  InheritMode: 0
   references:
     version: 2
     RefIds: []

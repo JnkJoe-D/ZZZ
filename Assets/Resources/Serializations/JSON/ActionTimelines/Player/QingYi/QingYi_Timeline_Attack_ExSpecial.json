@@ -363,14 +363,14 @@
             {
                 "rid": 1010,
                 "type": {
-                    "class": "HitTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "trackId": "6c372d50-4b7d-4af7-992f-9aff4e5fa659",
-                    "trackType": "DamageTrack",
-                    "trackName": "命中判定轨道",
+                    "trackType": "CombatTrack",
+                    "trackName": "战斗轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -583,8 +583,8 @@
                     "clipId": "07b1371a-b1b7-49ba-ab7e-f3595d60adb2",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 1.2166662216186524,
-                    "duration": 0.30000001192092898,
+                    "startTime": 1.2166662216186523,
+                    "duration": 0.30000001192092896,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -603,8 +603,8 @@
                     "clipId": "c5a41784-dc4a-4c2d-b4e2-787ca2c922ba",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 1.0166661739349366,
-                    "duration": 0.20000000298023225,
+                    "startTime": 1.0166661739349365,
+                    "duration": 0.20000000298023224,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -623,7 +623,7 @@
                     "clipId": "c1b6a843-422d-4d08-8166-43406938b52b",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 1.2166662216186524,
+                    "startTime": 1.2166662216186523,
                     "duration": 4.600000858306885,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -683,7 +683,7 @@
                     "clipId": "a3a73aa8-3cb0-4a11-9b18-b735be4e46bf",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 1.2166662216186524,
+                    "startTime": 1.2166662216186523,
                     "duration": 4.600000858306885,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -703,7 +703,7 @@
                     "clipId": "12cae616-d55f-4a17-8d01-be12c4e08c69",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 1.2166662216186524,
+                    "startTime": 1.2166662216186523,
                     "duration": 4.600000858306885,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -727,85 +727,90 @@
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "detectFrequency": 0,
-                    "times": 1,
-                    "maxHitTargets": 0,
-                    "targetSortMode": 1,
-                    "hitDirectionMode": 0,
-                    "customHitDirection": {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    "hitLayerMask": {
-                        "serializedVersion": "2",
-                        "m_Bits": 192
-                    },
-                    "serializedHitLayerMask": 192,
-                    "isSelfImpacted": false,
-                    "shape": {
-                        "shapeType": 3,
-                        "size": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "radius": 3.0,
-                        "height": 2.0,
-                        "angle": 180.0,
-                        "innerRadius": 1.0
-                    },
-                    "hitBoxFollowMode": 1,
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "detects": [
-                        {
-                            "hitMode": 0,
-                            "multiHitCount": 3,
-                            "multiHitDuration": 0.20000000298023225,
-                            "enableHitStop": true,
-                            "hitStopDuration": 0.05000000074505806,
-                            "hitStopScale": 0.0,
-                            "hitStunDuration": 0.30000001192092898,
-                            "hitVFXPrefab": {
-                                "instanceID": 0
-                            },
-                            "hitVFXRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitVFXHeight": 1.0,
-                            "hitVFXPreviewOffsetXZ": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "hitVFXScale": {
+                    "hitBoxScope": {
+                        "shape": {
+                            "shapeType": 3,
+                            "size": {
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "followTarget": true,
-                            "hitAudioClip": {
-                                "instanceID": 0
-                            },
-                            "hitAudioRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitEffectId": 1050100
-                        }
-                    ]
+                            "radius": 3.0,
+                            "height": 2.0,
+                            "angle": 180.0,
+                            "innerRadius": 1.0
+                        },
+                        "bindPoint": 0,
+                        "customBoneName": "",
+                        "hitBoxFollowMode": 1,
+                        "positionOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "rotationOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "showHitBoxGizmos": true
+                    },
+                    "attackPolicy": {
+                        "detectFrequency": 0,
+                        "times": 1,
+                        "maxHitTargets": 0,
+                        "targetSortMode": 1,
+                        "hitDirectionMode": 0,
+                        "customHitDirection": {
+                            "x": 0.0,
+                            "y": 1.0
+                        },
+                        "hitLayerMask": {
+                            "serializedVersion": "2",
+                            "m_Bits": 192
+                        },
+                        "serializedHitLayerMask": 192,
+                        "isSelfImpacted": false,
+                        "detects": [
+                            {
+                                "hitMode": 0,
+                                "multiHitCount": 3,
+                                "multiHitDuration": 0.20000000298023224,
+                                "enableHitStop": true,
+                                "hitStopDuration": 0.05000000074505806,
+                                "hitStopScale": 0.0,
+                                "hitStunDuration": 0.30000001192092896,
+                                "hitVFXPrefab": {
+                                    "instanceID": 0
+                                },
+                                "hitVFXRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitVFXHeight": 1.0,
+                                "hitVFXPreviewOffsetXZ": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "hitVFXScale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "followTarget": true,
+                                "hitAudioClip": {
+                                    "instanceID": 0
+                                },
+                                "hitAudioRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitEffectId": 1050100
+                            }
+                        ]
+                    }
                 }
             },
             {
@@ -819,89 +824,94 @@
                     "clipId": "53ae97c7-32b0-4016-8248-db9eaef60e36",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.28333336114883425,
+                    "startTime": 0.28333336114883423,
                     "duration": 0.10000008344650269,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "detectFrequency": 0,
-                    "times": 1,
-                    "maxHitTargets": 0,
-                    "targetSortMode": 1,
-                    "hitDirectionMode": 0,
-                    "customHitDirection": {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    "hitLayerMask": {
-                        "serializedVersion": "2",
-                        "m_Bits": 192
-                    },
-                    "serializedHitLayerMask": 192,
-                    "isSelfImpacted": false,
-                    "shape": {
-                        "shapeType": 3,
-                        "size": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "radius": 3.0,
-                        "height": 2.0,
-                        "angle": 180.0,
-                        "innerRadius": 1.0
-                    },
-                    "hitBoxFollowMode": 1,
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "detects": [
-                        {
-                            "hitMode": 0,
-                            "multiHitCount": 3,
-                            "multiHitDuration": 0.20000000298023225,
-                            "enableHitStop": true,
-                            "hitStopDuration": 0.05000000074505806,
-                            "hitStopScale": 0.0,
-                            "hitStunDuration": 0.30000001192092898,
-                            "hitVFXPrefab": {
-                                "instanceID": 0
-                            },
-                            "hitVFXRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitVFXHeight": 1.0,
-                            "hitVFXPreviewOffsetXZ": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "hitVFXScale": {
+                    "hitBoxScope": {
+                        "shape": {
+                            "shapeType": 3,
+                            "size": {
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "followTarget": true,
-                            "hitAudioClip": {
-                                "instanceID": 0
-                            },
-                            "hitAudioRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitEffectId": 1050100
-                        }
-                    ]
+                            "radius": 3.0,
+                            "height": 2.0,
+                            "angle": 180.0,
+                            "innerRadius": 1.0
+                        },
+                        "bindPoint": 0,
+                        "customBoneName": "",
+                        "hitBoxFollowMode": 1,
+                        "positionOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "rotationOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "showHitBoxGizmos": true
+                    },
+                    "attackPolicy": {
+                        "detectFrequency": 0,
+                        "times": 1,
+                        "maxHitTargets": 0,
+                        "targetSortMode": 1,
+                        "hitDirectionMode": 0,
+                        "customHitDirection": {
+                            "x": 0.0,
+                            "y": 1.0
+                        },
+                        "hitLayerMask": {
+                            "serializedVersion": "2",
+                            "m_Bits": 192
+                        },
+                        "serializedHitLayerMask": 192,
+                        "isSelfImpacted": false,
+                        "detects": [
+                            {
+                                "hitMode": 0,
+                                "multiHitCount": 3,
+                                "multiHitDuration": 0.20000000298023224,
+                                "enableHitStop": true,
+                                "hitStopDuration": 0.05000000074505806,
+                                "hitStopScale": 0.0,
+                                "hitStunDuration": 0.30000001192092896,
+                                "hitVFXPrefab": {
+                                    "instanceID": 0
+                                },
+                                "hitVFXRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitVFXHeight": 1.0,
+                                "hitVFXPreviewOffsetXZ": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "hitVFXScale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "followTarget": true,
+                                "hitAudioClip": {
+                                    "instanceID": 0
+                                },
+                                "hitAudioRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitEffectId": 1050100
+                            }
+                        ]
+                    }
                 }
             },
             {
@@ -915,89 +925,94 @@
                     "clipId": "165d5b81-2658-4a8f-a7f5-11777c4f2aeb",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.43333348631858828,
+                    "startTime": 0.43333348631858826,
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "detectFrequency": 0,
-                    "times": 1,
-                    "maxHitTargets": 0,
-                    "targetSortMode": 1,
-                    "hitDirectionMode": 0,
-                    "customHitDirection": {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    "hitLayerMask": {
-                        "serializedVersion": "2",
-                        "m_Bits": 192
-                    },
-                    "serializedHitLayerMask": 192,
-                    "isSelfImpacted": false,
-                    "shape": {
-                        "shapeType": 3,
-                        "size": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "radius": 3.0,
-                        "height": 2.0,
-                        "angle": 180.0,
-                        "innerRadius": 1.0
-                    },
-                    "hitBoxFollowMode": 1,
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "detects": [
-                        {
-                            "hitMode": 0,
-                            "multiHitCount": 3,
-                            "multiHitDuration": 0.20000000298023225,
-                            "enableHitStop": true,
-                            "hitStopDuration": 0.05000000074505806,
-                            "hitStopScale": 0.0,
-                            "hitStunDuration": 0.30000001192092898,
-                            "hitVFXPrefab": {
-                                "instanceID": 0
-                            },
-                            "hitVFXRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitVFXHeight": 1.0,
-                            "hitVFXPreviewOffsetXZ": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "hitVFXScale": {
+                    "hitBoxScope": {
+                        "shape": {
+                            "shapeType": 3,
+                            "size": {
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "followTarget": true,
-                            "hitAudioClip": {
-                                "instanceID": 0
-                            },
-                            "hitAudioRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitEffectId": 1050100
-                        }
-                    ]
+                            "radius": 3.0,
+                            "height": 2.0,
+                            "angle": 180.0,
+                            "innerRadius": 1.0
+                        },
+                        "bindPoint": 0,
+                        "customBoneName": "",
+                        "hitBoxFollowMode": 1,
+                        "positionOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "rotationOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "showHitBoxGizmos": true
+                    },
+                    "attackPolicy": {
+                        "detectFrequency": 0,
+                        "times": 1,
+                        "maxHitTargets": 0,
+                        "targetSortMode": 1,
+                        "hitDirectionMode": 0,
+                        "customHitDirection": {
+                            "x": 0.0,
+                            "y": 1.0
+                        },
+                        "hitLayerMask": {
+                            "serializedVersion": "2",
+                            "m_Bits": 192
+                        },
+                        "serializedHitLayerMask": 192,
+                        "isSelfImpacted": false,
+                        "detects": [
+                            {
+                                "hitMode": 0,
+                                "multiHitCount": 3,
+                                "multiHitDuration": 0.20000000298023224,
+                                "enableHitStop": true,
+                                "hitStopDuration": 0.05000000074505806,
+                                "hitStopScale": 0.0,
+                                "hitStunDuration": 0.30000001192092896,
+                                "hitVFXPrefab": {
+                                    "instanceID": 0
+                                },
+                                "hitVFXRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitVFXHeight": 1.0,
+                                "hitVFXPreviewOffsetXZ": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "hitVFXScale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "followTarget": true,
+                                "hitAudioClip": {
+                                    "instanceID": 0
+                                },
+                                "hitAudioRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitEffectId": 1050100
+                            }
+                        ]
+                    }
                 }
             },
             {
@@ -1015,85 +1030,90 @@
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "detectFrequency": 0,
-                    "times": 1,
-                    "maxHitTargets": 0,
-                    "targetSortMode": 1,
-                    "hitDirectionMode": 0,
-                    "customHitDirection": {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    "hitLayerMask": {
-                        "serializedVersion": "2",
-                        "m_Bits": 192
-                    },
-                    "serializedHitLayerMask": 192,
-                    "isSelfImpacted": false,
-                    "shape": {
-                        "shapeType": 3,
-                        "size": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "radius": 3.0,
-                        "height": 2.0,
-                        "angle": 180.0,
-                        "innerRadius": 1.0
-                    },
-                    "hitBoxFollowMode": 1,
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "detects": [
-                        {
-                            "hitMode": 0,
-                            "multiHitCount": 3,
-                            "multiHitDuration": 0.20000000298023225,
-                            "enableHitStop": true,
-                            "hitStopDuration": 0.05000000074505806,
-                            "hitStopScale": 0.0,
-                            "hitStunDuration": 0.30000001192092898,
-                            "hitVFXPrefab": {
-                                "instanceID": 0
-                            },
-                            "hitVFXRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitVFXHeight": 1.0,
-                            "hitVFXPreviewOffsetXZ": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "hitVFXScale": {
+                    "hitBoxScope": {
+                        "shape": {
+                            "shapeType": 3,
+                            "size": {
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "followTarget": true,
-                            "hitAudioClip": {
-                                "instanceID": 0
-                            },
-                            "hitAudioRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitEffectId": 1050100
-                        }
-                    ]
+                            "radius": 3.0,
+                            "height": 2.0,
+                            "angle": 180.0,
+                            "innerRadius": 1.0
+                        },
+                        "bindPoint": 0,
+                        "customBoneName": "",
+                        "hitBoxFollowMode": 1,
+                        "positionOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "rotationOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "showHitBoxGizmos": true
+                    },
+                    "attackPolicy": {
+                        "detectFrequency": 0,
+                        "times": 1,
+                        "maxHitTargets": 0,
+                        "targetSortMode": 1,
+                        "hitDirectionMode": 0,
+                        "customHitDirection": {
+                            "x": 0.0,
+                            "y": 1.0
+                        },
+                        "hitLayerMask": {
+                            "serializedVersion": "2",
+                            "m_Bits": 192
+                        },
+                        "serializedHitLayerMask": 192,
+                        "isSelfImpacted": false,
+                        "detects": [
+                            {
+                                "hitMode": 0,
+                                "multiHitCount": 3,
+                                "multiHitDuration": 0.20000000298023224,
+                                "enableHitStop": true,
+                                "hitStopDuration": 0.05000000074505806,
+                                "hitStopScale": 0.0,
+                                "hitStunDuration": 0.30000001192092896,
+                                "hitVFXPrefab": {
+                                    "instanceID": 0
+                                },
+                                "hitVFXRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitVFXHeight": 1.0,
+                                "hitVFXPreviewOffsetXZ": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "hitVFXScale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "followTarget": true,
+                                "hitAudioClip": {
+                                    "instanceID": 0
+                                },
+                                "hitAudioRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitEffectId": 1050100
+                            }
+                        ]
+                    }
                 }
             },
             {
@@ -1111,85 +1131,90 @@
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "detectFrequency": 0,
-                    "times": 1,
-                    "maxHitTargets": 0,
-                    "targetSortMode": 1,
-                    "hitDirectionMode": 0,
-                    "customHitDirection": {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    "hitLayerMask": {
-                        "serializedVersion": "2",
-                        "m_Bits": 192
-                    },
-                    "serializedHitLayerMask": 192,
-                    "isSelfImpacted": false,
-                    "shape": {
-                        "shapeType": 3,
-                        "size": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "radius": 3.0,
-                        "height": 2.0,
-                        "angle": 180.0,
-                        "innerRadius": 1.0
-                    },
-                    "hitBoxFollowMode": 1,
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "detects": [
-                        {
-                            "hitMode": 0,
-                            "multiHitCount": 3,
-                            "multiHitDuration": 0.20000000298023225,
-                            "enableHitStop": true,
-                            "hitStopDuration": 0.05000000074505806,
-                            "hitStopScale": 0.0,
-                            "hitStunDuration": 0.30000001192092898,
-                            "hitVFXPrefab": {
-                                "instanceID": 0
-                            },
-                            "hitVFXRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitVFXHeight": 1.0,
-                            "hitVFXPreviewOffsetXZ": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "hitVFXScale": {
+                    "hitBoxScope": {
+                        "shape": {
+                            "shapeType": 3,
+                            "size": {
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "followTarget": true,
-                            "hitAudioClip": {
-                                "instanceID": 0
-                            },
-                            "hitAudioRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitEffectId": 1050100
-                        }
-                    ]
+                            "radius": 3.0,
+                            "height": 2.0,
+                            "angle": 180.0,
+                            "innerRadius": 1.0
+                        },
+                        "bindPoint": 0,
+                        "customBoneName": "",
+                        "hitBoxFollowMode": 1,
+                        "positionOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "rotationOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "showHitBoxGizmos": true
+                    },
+                    "attackPolicy": {
+                        "detectFrequency": 0,
+                        "times": 1,
+                        "maxHitTargets": 0,
+                        "targetSortMode": 1,
+                        "hitDirectionMode": 0,
+                        "customHitDirection": {
+                            "x": 0.0,
+                            "y": 1.0
+                        },
+                        "hitLayerMask": {
+                            "serializedVersion": "2",
+                            "m_Bits": 192
+                        },
+                        "serializedHitLayerMask": 192,
+                        "isSelfImpacted": false,
+                        "detects": [
+                            {
+                                "hitMode": 0,
+                                "multiHitCount": 3,
+                                "multiHitDuration": 0.20000000298023224,
+                                "enableHitStop": true,
+                                "hitStopDuration": 0.05000000074505806,
+                                "hitStopScale": 0.0,
+                                "hitStunDuration": 0.30000001192092896,
+                                "hitVFXPrefab": {
+                                    "instanceID": 0
+                                },
+                                "hitVFXRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitVFXHeight": 1.0,
+                                "hitVFXPreviewOffsetXZ": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "hitVFXScale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "followTarget": true,
+                                "hitAudioClip": {
+                                    "instanceID": 0
+                                },
+                                "hitAudioRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitEffectId": 1050100
+                            }
+                        ]
+                    }
                 }
             },
             {
@@ -1207,85 +1232,90 @@
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "detectFrequency": 0,
-                    "times": 1,
-                    "maxHitTargets": 0,
-                    "targetSortMode": 1,
-                    "hitDirectionMode": 0,
-                    "customHitDirection": {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    "hitLayerMask": {
-                        "serializedVersion": "2",
-                        "m_Bits": 192
-                    },
-                    "serializedHitLayerMask": 192,
-                    "isSelfImpacted": false,
-                    "shape": {
-                        "shapeType": 3,
-                        "size": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "radius": 3.0,
-                        "height": 2.0,
-                        "angle": 180.0,
-                        "innerRadius": 1.0
-                    },
-                    "hitBoxFollowMode": 1,
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "detects": [
-                        {
-                            "hitMode": 0,
-                            "multiHitCount": 3,
-                            "multiHitDuration": 0.20000000298023225,
-                            "enableHitStop": true,
-                            "hitStopDuration": 0.05000000074505806,
-                            "hitStopScale": 0.0,
-                            "hitStunDuration": 0.30000001192092898,
-                            "hitVFXPrefab": {
-                                "instanceID": 0
-                            },
-                            "hitVFXRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitVFXHeight": 1.0,
-                            "hitVFXPreviewOffsetXZ": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "hitVFXScale": {
+                    "hitBoxScope": {
+                        "shape": {
+                            "shapeType": 3,
+                            "size": {
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "followTarget": true,
-                            "hitAudioClip": {
-                                "instanceID": 0
-                            },
-                            "hitAudioRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitEffectId": 1050100
-                        }
-                    ]
+                            "radius": 3.0,
+                            "height": 2.0,
+                            "angle": 180.0,
+                            "innerRadius": 1.0
+                        },
+                        "bindPoint": 0,
+                        "customBoneName": "",
+                        "hitBoxFollowMode": 1,
+                        "positionOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "rotationOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "showHitBoxGizmos": true
+                    },
+                    "attackPolicy": {
+                        "detectFrequency": 0,
+                        "times": 1,
+                        "maxHitTargets": 0,
+                        "targetSortMode": 1,
+                        "hitDirectionMode": 0,
+                        "customHitDirection": {
+                            "x": 0.0,
+                            "y": 1.0
+                        },
+                        "hitLayerMask": {
+                            "serializedVersion": "2",
+                            "m_Bits": 192
+                        },
+                        "serializedHitLayerMask": 192,
+                        "isSelfImpacted": false,
+                        "detects": [
+                            {
+                                "hitMode": 0,
+                                "multiHitCount": 3,
+                                "multiHitDuration": 0.20000000298023224,
+                                "enableHitStop": true,
+                                "hitStopDuration": 0.05000000074505806,
+                                "hitStopScale": 0.0,
+                                "hitStunDuration": 0.30000001192092896,
+                                "hitVFXPrefab": {
+                                    "instanceID": 0
+                                },
+                                "hitVFXRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitVFXHeight": 1.0,
+                                "hitVFXPreviewOffsetXZ": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "hitVFXScale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "followTarget": true,
+                                "hitAudioClip": {
+                                    "instanceID": 0
+                                },
+                                "hitAudioRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitEffectId": 1050100
+                            }
+                        ]
+                    }
                 }
             },
             {
@@ -1303,85 +1333,90 @@
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "detectFrequency": 0,
-                    "times": 1,
-                    "maxHitTargets": 0,
-                    "targetSortMode": 1,
-                    "hitDirectionMode": 0,
-                    "customHitDirection": {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    "hitLayerMask": {
-                        "serializedVersion": "2",
-                        "m_Bits": 192
-                    },
-                    "serializedHitLayerMask": 192,
-                    "isSelfImpacted": false,
-                    "shape": {
-                        "shapeType": 3,
-                        "size": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "radius": 3.0,
-                        "height": 2.0,
-                        "angle": 180.0,
-                        "innerRadius": 1.0
-                    },
-                    "hitBoxFollowMode": 1,
-                    "bindPoint": 0,
-                    "customBoneName": "",
-                    "positionOffset": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "rotationOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "detects": [
-                        {
-                            "hitMode": 0,
-                            "multiHitCount": 3,
-                            "multiHitDuration": 0.20000000298023225,
-                            "enableHitStop": true,
-                            "hitStopDuration": 0.05000000074505806,
-                            "hitStopScale": 0.0,
-                            "hitStunDuration": 0.30000001192092898,
-                            "hitVFXPrefab": {
-                                "instanceID": 0
-                            },
-                            "hitVFXRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitVFXHeight": 1.0,
-                            "hitVFXPreviewOffsetXZ": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "hitVFXScale": {
+                    "hitBoxScope": {
+                        "shape": {
+                            "shapeType": 3,
+                            "size": {
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "followTarget": true,
-                            "hitAudioClip": {
-                                "instanceID": 0
-                            },
-                            "hitAudioRef": {
-                                "guid": "",
-                                "assetName": "",
-                                "assetPath": ""
-                            },
-                            "hitEffectId": 1050100
-                        }
-                    ]
+                            "radius": 3.0,
+                            "height": 2.0,
+                            "angle": 180.0,
+                            "innerRadius": 1.0
+                        },
+                        "bindPoint": 0,
+                        "customBoneName": "",
+                        "hitBoxFollowMode": 1,
+                        "positionOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "rotationOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "showHitBoxGizmos": true
+                    },
+                    "attackPolicy": {
+                        "detectFrequency": 0,
+                        "times": 1,
+                        "maxHitTargets": 0,
+                        "targetSortMode": 1,
+                        "hitDirectionMode": 0,
+                        "customHitDirection": {
+                            "x": 0.0,
+                            "y": 1.0
+                        },
+                        "hitLayerMask": {
+                            "serializedVersion": "2",
+                            "m_Bits": 192
+                        },
+                        "serializedHitLayerMask": 192,
+                        "isSelfImpacted": false,
+                        "detects": [
+                            {
+                                "hitMode": 0,
+                                "multiHitCount": 3,
+                                "multiHitDuration": 0.20000000298023224,
+                                "enableHitStop": true,
+                                "hitStopDuration": 0.05000000074505806,
+                                "hitStopScale": 0.0,
+                                "hitStunDuration": 0.30000001192092896,
+                                "hitVFXPrefab": {
+                                    "instanceID": 0
+                                },
+                                "hitVFXRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitVFXHeight": 1.0,
+                                "hitVFXPreviewOffsetXZ": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "hitVFXScale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "followTarget": true,
+                                "hitAudioClip": {
+                                    "instanceID": 0
+                                },
+                                "hitAudioRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitEffectId": 1050100
+                            }
+                        ]
+                    }
                 }
             },
             {
@@ -1419,7 +1454,7 @@
                     "clipName": "旋转片段片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.20000000298023225,
+                    "duration": 0.20000000298023224,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "referenceDirection": 4,
@@ -1468,7 +1503,7 @@
                     "recenterRestoreSpeed": 2.0,
                     "lookAtOffset": {
                         "x": 0.0,
-                        "y": 1.2000000476837159,
+                        "y": 1.2000000476837158,
                         "z": 0.0
                     },
                     "trackSmoothSpeed": 8.0,
@@ -1495,7 +1530,7 @@
                     "startTime": 0.3833334445953369,
                     "duration": 0.5999996662139893,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.20000000298023225,
+                    "blendOutDuration": 0.20000000298023224,
                     "targetScope": 2,
                     "bindPoint": 5,
                     "customBoneName": "",
@@ -1572,7 +1607,7 @@
                     "smoothTime": 0.07999999821186066,
                     "restoreOnExit": true,
                     "restoreOnStop": true,
-                    "interruptRestoreDuration": 0.20000000298023225
+                    "interruptRestoreDuration": 0.20000000298023224
                 }
             },
             {

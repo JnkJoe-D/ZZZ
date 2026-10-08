@@ -1,5 +1,5 @@
 {
-    "duration": 3.8500001430511476,
+    "duration": 3.8500001430511475,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -357,7 +357,7 @@
             {
                 "rid": 1010,
                 "type": {
-                    "class": "HitTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
@@ -412,7 +412,11 @@
                     "isHidden": false,
                     "isCollapsed": false,
                     "isEnabled": true,
-                    "clips": []
+                    "clips": [
+                        {
+                            "rid": 1023
+                        }
+                    ]
                 }
             },
             {
@@ -433,7 +437,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1023
+                            "rid": 1024
                         }
                     ]
                 }
@@ -450,11 +454,11 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.8500001430511476,
+                    "duration": 3.8500001430511475,
                     "blendInDuration": 0.13333329558372498,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34696
+                        "instanceID": 34710
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -488,11 +492,11 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.46666663885116579,
+                    "duration": 0.46666663885116577,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1024
+                        "rid": 1025
                     }
                 }
             },
@@ -507,12 +511,12 @@
                     "clipId": "ac5012a8-53ae-4ec1-b8a6-35e6e5032ecf",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.46666669845581057,
+                    "startTime": 0.46666669845581055,
                     "duration": 3.383333206176758,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1025
+                        "rid": 1026
                     }
                 }
             },
@@ -527,12 +531,12 @@
                     "clipId": "9b24dbf5-6cef-4219-b9e5-13e3f39f11fa",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.46666663885116579,
+                    "startTime": 0.46666663885116577,
                     "duration": 3.383333206176758,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1026
+                        "rid": 1027
                     }
                 }
             },
@@ -548,11 +552,11 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.3333333432674408,
-                    "duration": 0.20000000298023225,
+                    "duration": 0.20000000298023224,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1027
+                        "rid": 1028
                     }
                 }
             },
@@ -568,11 +572,11 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.8499999046325685,
+                    "duration": 3.8499999046325684,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1028
+                        "rid": 1029
                     }
                 }
             },
@@ -587,12 +591,12 @@
                     "clipId": "f41dbc2f-6b05-4a17-a09c-8858eda4cda5",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.46666663885116579,
+                    "startTime": 0.46666663885116577,
                     "duration": 3.383333206176758,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1029
+                        "rid": 1030
                     }
                 }
             },
@@ -607,12 +611,12 @@
                     "clipId": "5d12481b-5015-44f8-8292-6d3cefa260fe",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.46666663885116579,
+                    "startTime": 0.46666663885116577,
                     "duration": 3.383333206176758,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1030
+                        "rid": 1031
                     }
                 }
             },
@@ -628,7 +632,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.8499999046325685,
+                    "duration": 3.8499999046325684,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1,
@@ -642,6 +646,31 @@
             {
                 "rid": 1023,
                 "type": {
+                    "class": "RotationClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "a35a8eac-01e8-465d-8e21-50ea3fb7f16b",
+                    "clipName": "旋转片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.0,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "referenceDirection": 1,
+                    "rotationMode": 1,
+                    "updateFrequency": 0,
+                    "localRotationOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            },
+            {
+                "rid": 1024,
+                "type": {
                     "class": "BuffClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
@@ -651,22 +680,11 @@
                     "clipName": "增益状态 (Buff)片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.46666663885116579,
+                    "duration": 0.46666663885116577,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "buffId": 9001,
                     "lifetimeMode": 0
-                }
-            },
-            {
-                "rid": 1024,
-                "type": {
-                    "class": "ExecuteRouteWindow",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "Tag": "Execute1"
                 }
             },
             {
@@ -677,7 +695,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "Tag": "BackSwing1"
+                    "Tag": "Execute1"
                 }
             },
             {
@@ -688,11 +706,22 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "Tag": "Evade"
+                    "Tag": "BackSwing1"
                 }
             },
             {
                 "rid": 1027,
+                "type": {
+                    "class": "ExecuteRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "Evade"
+                }
+            },
+            {
+                "rid": 1028,
                 "type": {
                     "class": "AutoRouteWindow",
                     "ns": "ATEditor",
@@ -703,7 +732,7 @@
                 }
             },
             {
-                "rid": 1028,
+                "rid": 1029,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -714,7 +743,7 @@
                 }
             },
             {
-                "rid": 1029,
+                "rid": 1030,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -725,7 +754,7 @@
                 }
             },
             {
-                "rid": 1030,
+                "rid": 1031,
                 "type": {
                     "class": "AutoRouteWindow",
                     "ns": "ATEditor",

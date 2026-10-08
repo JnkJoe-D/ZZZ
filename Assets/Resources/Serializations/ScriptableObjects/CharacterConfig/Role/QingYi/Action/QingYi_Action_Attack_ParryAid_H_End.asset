@@ -16,6 +16,7 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: e0ad29c0356aaee4a88313ef7b846c22, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 41b914175c83cf04fb1d8e3c1da78f8d, type: 2}
+  _domainId: 4
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: 89316a6c143e02e41a76275294ffbd3b, type: 2}
   _transitionTable:
@@ -26,6 +27,7 @@ MonoBehaviour:
     ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
     Priority: 0
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258182230343716
     ExtraConditions: []
@@ -34,7 +36,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bb67c86673c0e944fb34dbb2fd7108e8, type: 2}
   - {fileID: 11400000, guid: 6df26ea99b1e2ca49bf26e877d51e953, type: 2}
   - {fileID: 11400000, guid: 49f91d2a59c73d84ba596930fac286ff, type: 2}
-  EnterState: 80
+  - {fileID: 11400000, guid: 1079305e8d007e04a96d5d337f6c425a, type: 2}
   InheritMode: 0
   references:
     version: 2

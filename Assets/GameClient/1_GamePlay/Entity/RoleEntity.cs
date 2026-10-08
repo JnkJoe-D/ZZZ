@@ -16,7 +16,7 @@ namespace Game.GamePlay
         // ── 内部装配的核心模块与组件 ──
         public IRolePresentation Presentation { get; private set; }
         public RoleInputAdapterModule InputAdapter { get; private set; }
-        public FSMSystem<RoleEntity> StateMachine { get; private set; }
+        public ActionDomainContextModule DomainContext { get; private set; }
         public RoleTeamContext TeamContext { get; private set; }
 
         public IInputProvider InputProvider => InputAdapter?.BoundInputProvider ?? TeamContext?.InputProvider;
@@ -92,10 +92,10 @@ namespace Game.GamePlay
 
             RouteArbitrator ??= new RouteArbitrator();
 
-            // 1. 先构建状态机 (因为 ActionController.Initialize 内部自驱播放 RootAction 时会触发 OnActionPlaySucceed 驱动状态机进入 RoleGroundState)
-            StateMachine = RoleFSMBuilder.Build(this);
+            // 1. 构建并注册动作领域系统 (通过专职工厂封装装配)
+            DomainContext ??= RoleActionDomainBuilder.Build(this);
 
-            // 2. 装配并初始化 ActionController (内部自驱播放 ActionRoot，此时 StateMachine 已就绪，能正确响应 OnActionPlaySucceed)
+            // 2. 装配并初始化 ActionController (内部自驱播放 ActionRoot，驱动 DomainContext 响应)
             ActionController ??= EntityControllerFactory.Create<RoleActionController>(this);
 
             // 3. 构建并装配输入适配器与目标查找
@@ -107,12 +107,6 @@ namespace Game.GamePlay
 
             TargetFinder = TeamContext?.TargetFinder;
             TargetFinder?.Initialize(this);
-
-            // 4. 若 ActionRoot 播放后状态机尚未切入状态，兜底切入 RoleGroundState 确保输入处理器就绪
-            if (StateMachine.CurrentState == null)
-            {
-                StateMachine.ChangeState<RoleGroundState>();
-            }
         }
 
         public void EnsureRuntimeInitialized()
@@ -134,17 +128,13 @@ namespace Game.GamePlay
         private void EnsureMinimalDomainModules()
         {
             RouteArbitrator ??= new RouteArbitrator();
-            StateMachine ??= RoleFSMBuilder.Build(this);
+            DomainContext ??= RoleActionDomainBuilder.Build(this);
             if (ActionController == null)
             {
                 ActionController = EntityControllerFactory.Create<RoleActionController>(this);
             }
             InputAdapter ??= EntityModuleFactory.Create<RoleInputAdapterModule>(this);
             StatusModule ??= EntityModuleFactory.Create<StatusModule>(this);
-            if (StateMachine.CurrentState == null)
-            {
-                StateMachine.ChangeState<RoleGroundState>();
-            }
         }
 
         protected override void Start()
@@ -157,7 +147,7 @@ namespace Game.GamePlay
         {
             base.OnSubLogicTick(logicDeltaTime);
             DataModule.Get<EvadeRuntimeData>()?.Tick(logicDeltaTime);
-            StateMachine?.Update(logicDeltaTime);
+            DomainContext?.LogicTick(logicDeltaTime);
         }
 
         public void AssignTeamContext(RoleTeamContext teamContext)
@@ -188,8 +178,8 @@ namespace Game.GamePlay
             InputAdapter = null;
             CombatWarningManager.UnregisterContractsByRole(this);
 
-            StateMachine?.Destroy();
-            StateMachine = null;
+            DomainContext?.Dispose();
+            DomainContext = null;
         }
     }
 }

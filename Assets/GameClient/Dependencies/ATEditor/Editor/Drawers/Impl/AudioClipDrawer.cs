@@ -76,6 +76,7 @@ namespace ATEditor.Editor
                 audioClip.spatialBlend = EditorGUILayout.Slider("空间混合", audioClip.spatialBlend, 0f, 1f);
                 audioClip.loop = EditorGUILayout.Toggle("循环播放", audioClip.loop);
                 audioClip.isAffectSpeed = EditorGUILayout.Toggle("同步角色速度", audioClip.isAffectSpeed);
+                audioClip.lifeControlByClip = EditorGUILayout.Toggle("生命周期跟随片段", audioClip.lifeControlByClip);
                 EditorGUILayout.EndVertical();
             }
 

@@ -86,7 +86,7 @@ MonoBehaviour:
   op: 6
   value: 0
   tolerance: 0.0001
-  stopsOnChange: 4
+  stopsOnChange: 2
 --- !u!114 &-2287995687045240616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +184,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: cooling-strafe-0007
   position: {x: 762, y: 138}
-  strafeDuration: 3
+  strafeDuration: 2
+  targetDistance: 3.5
 --- !u!114 &8953947204227578429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,4 +218,4 @@ MonoBehaviour:
   guid: 6b0da23f-c501-45fd-be7c-f5b1d632d452
   position: {x: 383, y: 431}
   defaultRange: 3.5
-  timeout: 3
+  timeout: 8

@@ -5,64 +5,100 @@ namespace ATEditor
 {
     [Serializable]
     [ClipDefinition(typeof(CombatTrack), "打击")]
-    public class HitClip : ClipBase, ISerializationCallbackReceiver
+    public class HitClip : ClipBase
     {
-        // ── 检测策略 ──
-        [ActionProperty("检测频率")]
-        public Frequency detectFrequency = Frequency.Once;
+        // ── 检测盒与范围定义 ──
+        [Header("检测盒与范围")]
+        [ActionProperty("检测盒范围")]
+        public HitBoxScopeConfig hitBoxScope = new HitBoxScopeConfig();
 
-        [ActionProperty("检测次数")][ATShowIf("detectFrequency", Frequency.Times)]
-        public int times = 1;
+        // ── 打击判定与效果策略 ──
+        [Header("判定规则与表现")]
+        [ActionProperty("攻击检测策略")]
+        public AttackDetectionPolicy attackPolicy = new AttackDetectionPolicy();
 
-        [ActionProperty("最大命中数")]
-        public int maxHitTargets = 0;
+        // --- 便捷代理属性 (方便快速访问，保持代码精炼并支持双向读写) ---
+        public HitBoxShape shape
+        {
+            get => hitBoxScope?.shape;
+            set { if (hitBoxScope != null) hitBoxScope.shape = value; }
+        }
+        public BindPoint bindPoint
+        {
+            get => hitBoxScope != null ? hitBoxScope.bindPoint : BindPoint.LogicRoot;
+            set { if (hitBoxScope != null) hitBoxScope.bindPoint = value; }
+        }
+        public string customBoneName
+        {
+            get => hitBoxScope != null ? hitBoxScope.customBoneName : "";
+            set { if (hitBoxScope != null) hitBoxScope.customBoneName = value; }
+        }
+        public Vector3 positionOffset
+        {
+            get => hitBoxScope != null ? hitBoxScope.positionOffset : Vector3.zero;
+            set { if (hitBoxScope != null) hitBoxScope.positionOffset = value; }
+        }
+        public Vector3 rotationOffset
+        {
+            get => hitBoxScope != null ? hitBoxScope.rotationOffset : Vector3.zero;
+            set { if (hitBoxScope != null) hitBoxScope.rotationOffset = value; }
+        }
+        public HitBoxFollowMode hitBoxFollowMode
+        {
+            get => hitBoxScope != null ? hitBoxScope.hitBoxFollowMode : HitBoxFollowMode.PositionOnly;
+            set { if (hitBoxScope != null) hitBoxScope.hitBoxFollowMode = value; }
+        }
+        public bool showHitBoxGizmos
+        {
+            get => hitBoxScope != null && hitBoxScope.showHitBoxGizmos;
+            set { if (hitBoxScope != null) hitBoxScope.showHitBoxGizmos = value; }
+        }
 
-        [ActionProperty("选择策略")]
-        public TargetSortMode targetSortMode = TargetSortMode.Closest;
-
-        [ActionProperty("受击方向模式")]
-        public HitDirectionMode hitDirectionMode = HitDirectionMode.AttackerToTarget;
-
-        [ActionProperty("相对受击方向")]
-        [ATShowIf("hitDirectionMode", HitDirectionMode.OnEnterCustomRelative)]
-        public Vector2 customHitDirection = new Vector2(0, 1);
- 
-        [ActionProperty("碰撞检测层级")]
-        public LayerMask hitLayerMask = -1;
-
-        [SerializeField, HideInInspector]
-        private int serializedHitLayerMask = -1;
-
-        [ActionProperty("是否影响自身")]
-        public bool isSelfImpacted = false;
-        
-        // --- 检测盒 ---
-        [ActionProperty("检测盒")]
-        public HitBoxShape shape = new HitBoxShape();
-
-        // --- 编辑器辅助 ---
-        [NonSerialized]
-        [ActionProperty("检测盒Gizmos")]
-        public bool showHitBoxGizmos = true;
-
-        [ActionProperty("检测盒跟随模式")]
-        public HitBoxFollowMode hitBoxFollowMode = HitBoxFollowMode.PositionOnly;
-
-        [ActionProperty("检测盒绑定点")]
-        public BindPoint bindPoint = BindPoint.LogicRoot;
-
-        [ActionProperty("自定义骨骼名称")]
-        public string customBoneName = "";
-
-        [ActionProperty("位置偏移")]
-        public Vector3 positionOffset = Vector3.zero;
-
-        [ActionProperty("旋转偏移")]
-        public Vector3 rotationOffset = Vector3.zero;
-
-        // ── 嵌套的检测配置列表 ──
-        [ActionProperty("检测配置")]
-        public DetectConfig[] detects = new DetectConfig[] { new DetectConfig() };
+        public Frequency detectFrequency
+        {
+            get => attackPolicy != null ? attackPolicy.detectFrequency : Frequency.Once;
+            set { if (attackPolicy != null) attackPolicy.detectFrequency = value; }
+        }
+        public int times
+        {
+            get => attackPolicy != null ? attackPolicy.times : 1;
+            set { if (attackPolicy != null) attackPolicy.times = value; }
+        }
+        public int maxHitTargets
+        {
+            get => attackPolicy != null ? attackPolicy.maxHitTargets : 0;
+            set { if (attackPolicy != null) attackPolicy.maxHitTargets = value; }
+        }
+        public TargetSortMode targetSortMode
+        {
+            get => attackPolicy != null ? attackPolicy.targetSortMode : TargetSortMode.Closest;
+            set { if (attackPolicy != null) attackPolicy.targetSortMode = value; }
+        }
+        public HitDirectionMode hitDirectionMode
+        {
+            get => attackPolicy != null ? attackPolicy.hitDirectionMode : HitDirectionMode.AttackerToTarget;
+            set { if (attackPolicy != null) attackPolicy.hitDirectionMode = value; }
+        }
+        public Vector2 customHitDirection
+        {
+            get => attackPolicy != null ? attackPolicy.customHitDirection : new Vector2(0, 1);
+            set { if (attackPolicy != null) attackPolicy.customHitDirection = value; }
+        }
+        public LayerMask hitLayerMask
+        {
+            get => attackPolicy != null ? attackPolicy.hitLayerMask : (LayerMask)(-1);
+            set { if (attackPolicy != null) attackPolicy.hitLayerMask = value; }
+        }
+        public bool isSelfImpacted
+        {
+            get => attackPolicy != null && attackPolicy.isSelfImpacted;
+            set { if (attackPolicy != null) attackPolicy.isSelfImpacted = value; }
+        }
+        public DetectConfig[] detects
+        {
+            get => attackPolicy?.detects;
+            set { if (attackPolicy != null) attackPolicy.detects = value; }
+        }
 
         // --- 编辑器辅助 ---
         public enum HitVFXHandleType { None, Position, Scale }
@@ -85,9 +121,10 @@ namespace ATEditor
         {
             get
             {
-                if (detects == null || detects.Length == 0) return null;
-                int idx = Mathf.Clamp(selectedDetectIndex, 0, detects.Length - 1);
-                return detects[idx];
+                var d = attackPolicy?.detects;
+                if (d == null || d.Length == 0) return null;
+                int idx = Mathf.Clamp(selectedDetectIndex, 0, d.Length - 1);
+                return d[idx];
             }
         }
 
@@ -100,49 +137,13 @@ namespace ATEditor
                 startTime = this.startTime,
                 duration = this.duration,
                 isEnabled = this.isEnabled,
-                
-                detectFrequency = this.detectFrequency,
-                times = this.times,
-                maxHitTargets = this.maxHitTargets,
-                targetSortMode = this.targetSortMode,
-                hitDirectionMode = this.hitDirectionMode,
-                customHitDirection = this.customHitDirection,
-                hitLayerMask = this.hitLayerMask,
 
-                shape = this.shape.Clone(),
-
-                hitBoxFollowMode = this.hitBoxFollowMode,
-                bindPoint = this.bindPoint,
-                customBoneName = this.customBoneName,
-                positionOffset = this.positionOffset,
-                rotationOffset = this.rotationOffset,
-
-                detects = CloneDetects(this.detects),
+                hitBoxScope = this.hitBoxScope?.Clone() ?? new HitBoxScopeConfig(),
+                attackPolicy = this.attackPolicy?.Clone() ?? new AttackDetectionPolicy(),
 
                 activeVFXHandleType = this.activeVFXHandleType,
-                showHitBoxGizmos = this.showHitBoxGizmos
+                selectedDetectIndex = this.selectedDetectIndex
             };
-        }
-
-        private static DetectConfig[] CloneDetects(DetectConfig[] source)
-        {
-            if (source == null || source.Length == 0) return new DetectConfig[] { new DetectConfig() };
-            var result = new DetectConfig[source.Length];
-            for (int i = 0; i < source.Length; i++)
-            {
-                result[i] = source[i]?.Clone() ?? new DetectConfig();
-            }
-            return result;
-        }
-
-        public void OnBeforeSerialize()
-        {
-            serializedHitLayerMask = hitLayerMask.value;
-        }
-
-        public void OnAfterDeserialize()
-        {
-            hitLayerMask.value = serializedHitLayerMask;
         }
     }
 }

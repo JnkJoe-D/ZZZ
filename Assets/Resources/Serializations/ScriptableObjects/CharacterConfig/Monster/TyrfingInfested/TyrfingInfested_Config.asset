@@ -26,7 +26,7 @@ MonoBehaviour:
   SensorConfig:
     DetectionRadius: 50
     RunThresholdRadius: 4
-    AttackInterval: 2.5
+    AttackInterval: 2
   locomotionConfig: {fileID: 11400000, guid: 6e41b9ef35264b1ea936174cbef08611, type: 2}
   stunConfig: {fileID: 11400000, guid: 0469cec1c94ca7f41a9da7a3cf370cfd, type: 2}
   BehaviorTree: {fileID: 11400000, guid: 9de0b4738501d1c4c898f8ed31b41fda, type: 2}

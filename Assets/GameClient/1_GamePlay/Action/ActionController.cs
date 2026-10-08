@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using ATEditor;
 
 namespace Game.GamePlay
@@ -39,6 +40,7 @@ namespace Game.GamePlay
 
 
         public IReadOnlyList<ExecutionRecord> ExecutionHistory => _fateTracker.History;
+        public int ActiveRouteWindowsCount => _activeRouteWindows.Count;
 
         /// <summary>
         /// 当通过 TryTriggerEvent 派发路由系统事件时触发（供表现层/测试监听）
@@ -124,42 +126,34 @@ namespace Game.GamePlay
             return false;
         }
 
+        /// <summary>
+        /// 动作系统全系统唯一压指令入口。
+        /// 严格遵循 100% 时间轴窗口配置驱动原则：
+        /// - 当前动作无任何活跃路由窗口时，判定为硬直区间，直接拒绝响应；
+        /// - 收到指令仅广播给当前活跃的 RouteWindow 处理；
+        /// - 若命中配置为 Immediate (即时裁决) 的路由，现场立即决选执行，无需外部干预。
+        /// </summary>
         public void OnInput(CharacterCommand command)
         {
             if (command == null || _isTransitioning) return;
 
-            // 1. 瞬时广播给所有活跃窗口进行前置评估，不进行多余的物理指令存储与生命周期维持
-            if (_activeRouteWindows.Count > 0)
+            // 100% 窗口驱动铁律：无任何活跃窗口 = 处于不可打断的硬直区间，绝对不响应任何输入！
+            if (_activeRouteWindows.Count == 0) return;
+
+            // 1. 瞬时广播给所有活跃窗口进行前置评估，使用各窗口专属分桶切片
+            for (int i = 0; i < _activeRouteWindows.Count; i++)
             {
-                WindowProcessContext ctx = CreateContext();
-                for (int i = 0; i < _activeRouteWindows.Count; i++)
-                    _activeRouteWindows[i].Processer?.OnCommandReceived(command, ctx);
+                var windowData = _activeRouteWindows[i];
+                WindowProcessContext ctx = CreateContext(windowData.Window);
+                windowData.Processer?.OnCommandReceived(command, ctx);
             }
 
-            // 2. 针对 DirectAssetPayload（直接资产指令，如状态机出招、失衡、受击）：
-            //    若活跃窗口未将其接纳入仲裁池，且未处于切动作过渡中，走直接资产通道立即执行
-            if (command.Payload is DirectAssetPayload directPayload && directPayload.TargetAsset != null)
+            // 2. 核心仲裁时机：若仲裁池中存在要求 Immediate (即时抢占) 的候选，立即现场决选执行
+            if (_entity?.RouteArbitrator != null && _entity.RouteArbitrator.HasImmediateCandidate)
             {
-                bool isQueuedInArbitrator = _entity?.RouteArbitrator != null && _entity.RouteArbitrator.HasCandidates;
-                if (!isQueuedInArbitrator)
-                {
-                    _currentActionOnComplete = directPayload.OnComplete;
-                    Commit(command, directPayload.TargetAsset, ExecuteEvent.None, ExecuteTarget.Action, CommandRouteSource.ActionRoute, "DirectAsset", directPayload.CrossfadeOverride, directPayload.StartTime);
-                }
+                ResolveArbitratorImmediately();
+                return;
             }
-        }
-
-        /// <summary>
-        /// 接收指令并同帧现场执行路由仲裁结算（0 帧时差）。
-        /// 专用于受击、招架等高时效性事件，100% 遵守现存 RouteWindow 校验与 RouteArbitrator 优先级仲裁。
-        /// </summary>
-        public bool OnInputAndResolveImmediately(CharacterCommand command)
-        {
-            if (command == null || _isTransitioning) return false;
-
-            OnInput(command);
-
-            return ResolveArbitratorImmediately();
         }
 
         /// <summary>
@@ -184,14 +178,14 @@ namespace Game.GamePlay
             RouteWindowData windowData = ResolveRouteWindow(routeWindow);
             if (windowData == null) return;
             _activeRouteWindows.Add(windowData);
-            windowData.Processer?.OnEnter(CreateContext());
+            windowData.Processer?.OnEnter(CreateContext(windowData.Window));
         }
 
         public void OnWindowProcess(RouteWindow routeWindow)
         {
             if (_isTransitioning || routeWindow == null) return;
             RouteWindowData data = FindActiveWindowData(routeWindow);
-            data?.Processer?.OnFrameProcess(CreateContext());
+            data?.Processer?.OnFrameProcess(CreateContext(data.Window));
         }
 
         public void OnWindowExit(RouteWindow routeWindow)
@@ -203,7 +197,7 @@ namespace Game.GamePlay
                 RouteWindowData w = _activeRouteWindows[i];
                 if (w.Window == routeWindow)
                 {
-                    w.Processer?.OnExit(CreateContext()); // 触发到期结算，推入 L2
+                    w.Processer?.OnExit(CreateContext(w.Window)); // 触发到期结算，推入 L2
                     _activeRouteWindows.RemoveAt(i);
                 }
             }
@@ -218,7 +212,7 @@ namespace Game.GamePlay
                 RouteWindowData w = _activeRouteWindows[i];
                 if (w.Window == routeWindow)
                 {
-                    w.Processer?.OnDisable(CreateContext()); // 只注销并清空内部捕获，绝不推入 L2
+                    w.Processer?.OnDisable(CreateContext(w.Window)); // 只注销并清空内部捕获，绝不推入 L2
                     _activeRouteWindows.RemoveAt(i);
                 }
             }
@@ -240,7 +234,7 @@ namespace Game.GamePlay
                 RouteWindowData w = FindActiveWindowData(window);
                 if (w?.Processer != null)
                 {
-                    w.Processer.OnCommandReceived(eventCommand, CreateContext());
+                    w.Processer.OnCommandReceived(eventCommand, CreateContext(w.Window));
                 }
                 else
                 {
@@ -249,23 +243,17 @@ namespace Game.GamePlay
             }
             else
             {
-                // 2. 未指定具体窗口时，统一走即时仲裁压指令流水线：
-                // a. 广播给所有活跃窗口进行前置评估与候选提交（例如 ExecuteRouteWindow / BufferRouteWindow）
+                // 2. 未指定具体窗口时，统一走时间轴活跃窗口压指令流水线
                 OnInput(eventCommand);
-
-                // b. 评估当前动作未挂载到特定窗口的全局/无窗口事件路由，提交至仲裁池统一竞优
-                TryResolveAndSubmitEventToArbitrator(eventCommand, GetCurrentAction(), null);
-
-                // c. 评估 ActionRoot 中的全局系统事件路由，提交至仲裁池统一竞优
-                ActionConfigAsset root = _entity.Config?.ActionRoot;
-                if (root != null && root != GetCurrentAction())
-                {
-                    TryResolveAndSubmitEventToArbitrator(eventCommand, root, null);
-                }
             }
 
-            // 3. 立即现场执行统一仲裁结算（0 帧时滞，严格按 RouteArbitrator 优先级决选最佳动作）
-            return ResolveArbitratorImmediately();
+            // 3. 立即现场执行统一仲裁结算：若有 Immediate 候选或提交了候选，即时决选执行
+            if (_entity?.RouteArbitrator != null && (_entity.RouteArbitrator.HasImmediateCandidate || _entity.RouteArbitrator.HasCandidates))
+            {
+                return ResolveArbitratorImmediately();
+            }
+
+            return false;
         }
 
         public bool TryTriggerEvent(RouteEventType eventType, string windowTag)
@@ -289,7 +277,7 @@ namespace Game.GamePlay
         {
             if (action == null || _entity.RouteArbitrator == null) return;
 
-            action.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
+            ActionRouteRuntimeResolver.ResolveEffectiveWindowRoutes(action, window, GetRouteEvalActor(), _effectiveRoutes);
             if (_effectiveRoutes.Count == 0) return;
 
             CharacterEntity actor = GetRouteEvalActor();
@@ -313,10 +301,10 @@ namespace Game.GamePlay
             // 切动作时，对所有存留活跃窗口调用 OnDisable 清空状态，杜绝打断遗留出招
             if (_activeRouteWindows.Count > 0)
             {
-                WindowProcessContext ctx = CreateContext();
                 for (int i = 0; i < _activeRouteWindows.Count; i++)
                 {
-                    _activeRouteWindows[i].Processer?.OnDisable(ctx);
+                    var w = _activeRouteWindows[i];
+                    w.Processer?.OnDisable(CreateContext(w.Window));
                 }
                 _activeRouteWindows.Clear();
             }
@@ -370,10 +358,10 @@ namespace Game.GamePlay
             return null;
         }
 
-        private WindowProcessContext CreateContext()
+        private WindowProcessContext CreateContext(RouteWindow activeWindow = null)
         {
             ActionConfigAsset action = GetCurrentAction();
-            action?.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
+            ActionRouteRuntimeResolver.ResolveEffectiveWindowRoutes(action, activeWindow, GetRouteEvalActor(), _effectiveRoutes);
             return new WindowProcessContext
             {
                 Routes = _effectiveRoutes,
@@ -397,21 +385,30 @@ namespace Game.GamePlay
 
 
             float crossfade = -1f;
+            float transitionStartTime = 0f;
             if (candidate.ExecuteType == ExecuteTarget.Action && candidate.NextAction != null)
             {
                 ActionConfigAsset currentAction = GetCurrentAction();
                 if (currentAction != null)
                 {
-                    crossfade = currentAction.GetTransitionCrossfade(candidate.NextAction);
+                    var transition = currentAction.GetTransition(candidate.NextAction);
+                    if (transition != null)
+                    {
+                        crossfade = transition.BlendDuration >= 0f ? transition.BlendDuration : -1f;
+                        if (transition.HasStartTime)
+                        {
+                            transitionStartTime = Mathf.Max(0f, transition.StartTime);
+                        }
+                    }
                 }
             }
 
-            float startTime = 0f;
-            if (candidate.Command?.Payload is SystemEventPayload sysPayload)
+            float startTime = transitionStartTime;
+            if (candidate.Command?.Payload is SystemEventPayload sysPayload && sysPayload.StartTime > 0f)
             {
                 startTime = sysPayload.StartTime;
             }
-            else if (candidate.Command?.Payload is DirectAssetPayload directPayload)
+            else if (candidate.Command?.Payload is DirectAssetPayload directPayload && directPayload.StartTime > 0f)
             {
                 startTime = directPayload.StartTime;
             }
@@ -470,7 +467,7 @@ namespace Game.GamePlay
 
             if (finished == null || _isTransitioning) return;
 
-            finished.CollectEffectiveRoutes(_effectiveRoutes, GetRouteEvalActor());
+            ActionRouteRuntimeResolver.ResolveEffectiveWindowRoutes(finished, null, GetRouteEvalActor(), _effectiveRoutes);
             if (RouteResolver.TryResolve(_effectiveRoutes, null, null, GetRouteEvalActor(), _skillCostHandler, RouteSingleModifierCheckTiming.OnWindowExit, out var c))
             {
                 Apply(c);
@@ -483,8 +480,10 @@ namespace Game.GamePlay
                     if (finished.CompleteAction != null)
                     {
                         RecordRoute(null, finished.CompleteAction, CommandRouteSource.ActionComplete, "TransitToAction");
-                        float completeCrossfade = finished.GetTransitionCrossfade(finished.CompleteAction);
-                        PlayAction(finished.CompleteAction, completeCrossfade);
+                        var transition = finished.GetTransition(finished.CompleteAction);
+                        float completeCrossfade = transition != null && transition.BlendDuration >= 0f ? transition.BlendDuration : -1f;
+                        float completeStartTime = transition != null && transition.HasStartTime ? Mathf.Max(0f, transition.StartTime) : 0f;
+                        PlayAction(finished.CompleteAction, completeCrossfade, completeStartTime);
                         return;
                     }
                     break;
@@ -495,13 +494,15 @@ namespace Game.GamePlay
 
             ActionConfigAsset rootAction = _entity.Config?.ActionRoot;
             RecordRoute(null, rootAction, CommandRouteSource.ActionComplete, "RootFallback");
-            float rootCrossfade = finished != null && rootAction != null ? finished.GetTransitionCrossfade(rootAction) : -1f;
-            PlayAction(rootAction, rootCrossfade);
+            var rootTransition = finished != null && rootAction != null ? finished.GetTransition(rootAction) : null;
+            float rootCrossfade = rootTransition != null && rootTransition.BlendDuration >= 0f ? rootTransition.BlendDuration : -1f;
+            float rootStartTime = rootTransition != null && rootTransition.HasStartTime ? Mathf.Max(0f, rootTransition.StartTime) : 0f;
+            PlayAction(rootAction, rootCrossfade, rootStartTime);
         }
 
         /// <summary>
-        /// 检查当前动作是否配置了针对 CompleteAction 的提前退出过渡 (ExitTime)。
-        /// 若配置了 HasCustomExitTime，则当动作时间轴推进至 ExitTime 时，立即提前触发向 CompleteAction 的平滑过渡。
+        /// 检查当前动作是否配置了针对 CompleteAction 的提前退出过渡 (EndTime)。
+        /// 若配置了 HasEndTime，则当动作时间轴推进至 EndTime 时，立即提前触发向 CompleteAction 的平滑过渡。
         /// </summary>
         private void CheckEarlyCompleteActionTransition()
         {
@@ -514,24 +515,25 @@ namespace Game.GamePlay
                 return;
 
             var transition = _currentPlayingAction.GetTransition(_currentPlayingAction.CompleteAction);
-            if (transition == null || !transition.HasCustomExitTime)
+            if (transition == null || !transition.HasEndTime)
                 return;
 
-            float exitTime = transition.CustomExitTime;
+            float exitTime = transition.EndTime;
             if (ActionPlayer.CurrentTime >= exitTime)
             {
                 _isTransitioning = true;
                 try
                 {
                     ActionConfigAsset targetAction = _currentPlayingAction.CompleteAction;
-                    float crossfade = _currentPlayingAction.GetTransitionCrossfade(targetAction);
+                    float crossfade = transition.BlendDuration >= 0f ? transition.BlendDuration : -1f;
+                    float startTime = transition.HasStartTime ? Mathf.Max(0f, transition.StartTime) : 0f;
 
                     _activeRouteWindows.Clear();
                     _entity?.RouteArbitrator?.Clear();
 
                     if (_actionData != null) _actionData.Set(nameof(_actionData.NextActionToCast), targetAction);
                     RecordRoute(null, targetAction, CommandRouteSource.ActionComplete, "TransitToAction_EarlyExit");
-                    PlayAction(targetAction, crossfade);
+                    PlayAction(targetAction, crossfade, startTime);
                 }
                 finally
                 {
@@ -542,12 +544,7 @@ namespace Game.GamePlay
 
         private ActionConfigAsset GetCurrentAction()
         {
-            return _currentPlayingAction
-                ?? ActionPlayer?.CurrentAction
-
-                ?? _actionData?.NextActionToCast
-
-                ?? _entity.Config?.ActionRoot;
+            return _currentPlayingAction ?? ActionPlayer?.CurrentAction;
         }
 
         private void RecordRoute(ICommandPayload payload, ActionConfigAsset action, CommandRouteSource source, string tag, long commandId = 0)

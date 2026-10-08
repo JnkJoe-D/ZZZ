@@ -486,6 +486,7 @@ namespace Game.GamePlay
 
         /// <summary>
         /// 查找对目标有效的任何类型的预警标记（锁定优先 + 危险自动索敌最近攻击者）
+        /// 严格限定在时间轴 WarningClip 激活生命周期内（_activeMarkers），杜绝 Clip 结束后按键误响应导致的空招架
         /// </summary>
         public static AttackWarningMarker GetAnyValidWarning(CharacterEntity target)
         {
@@ -555,6 +556,13 @@ namespace Game.GamePlay
                     return marker;
                 }
             }
+
+            // 临界保护：若预警已离开，从当前尚未注销的威胁会话中回溯
+            if (_activeThreatSessions.TryGetValue(attacker, out var session) && session?.WarningMarker != null)
+            {
+                return session.WarningMarker;
+            }
+
             return null;
         }
 

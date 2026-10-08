@@ -1,6 +1,4 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Game.Framework;
 using UnityEngine;
 
@@ -10,12 +8,15 @@ namespace Game.GamePlay
     /// 怪物失衡瘫痪状态 (MonsterStunState)。
     /// 遵循绝区零原版失衡逻辑：
     /// 1. 进入时打断一切战术意图，根据 StunConfig 播放 StunStart 动作；
-    /// 2. 启动受怪物私有时钟 (Clock.EffectiveScale) 流速缩放影响的异步计时；
+    /// 2. 状态机自顶向下由 OnUpdate(deltaTime) 推进确定性计时（天然继承怪物局部时钟流速与顿帧）；
     /// 3. 倒计时结束后播放 StunEnd 起身动作，并在其 onComplete 回调中清空失衡槽并切回 Idle 待机。
     /// </summary>
     public class MonsterStunState : MonsterStateBase
     {
-        private CancellationTokenSource _cts;
+        private float _stunDuration = 5.0f;
+        private float _elapsedTime = 0f;
+        private bool _isRecovering = false;
+        private ActionConfigAsset _stunEndAction;
 
         public override void OnEnter()
         {
@@ -24,50 +25,41 @@ namespace Game.GamePlay
 
             var monsterConfig = Entity.Config as MonsterConfigAsset;
             var stunCfg = monsterConfig?.stunConfig;
-            float duration = stunCfg != null && stunCfg.DefaultStunDuration > 0f ? stunCfg.DefaultStunDuration : 5.0f;
+            _stunDuration = stunCfg != null && stunCfg.DefaultStunDuration > 0f ? stunCfg.DefaultStunDuration : 5.0f;
+            _elapsedTime = 0f;
+            _isRecovering = false;
+            _stunEndAction = stunCfg?.StunEnd;
 
-            GLog.Info(LogTags.Combat, $"[MonsterStunState] 怪物 {Entity.name} 进入失衡瘫痪状态，时长: {duration:F2}s");
+            GLog.Info(LogTags.Combat, $"[MonsterStunState] 怪物 {Entity.name} 进入失衡瘫痪状态，时长: {_stunDuration:F2}s");
 
             // 2. 播放失衡起手 StunStart (通过 OnInput 压指令)
             if (stunCfg?.StunStart != null)
             {
                 SendCommand(stunCfg.StunStart);
             }
-
-            // 3. 启动异步受控时钟计时器
-            _cts?.Cancel();
-            _cts?.Dispose();
-            _cts = new CancellationTokenSource();
-
-            _ = RunStunCountdownAsync(duration, stunCfg?.StunEnd, _cts.Token);
         }
 
-        private async Task RunStunCountdownAsync(float totalDuration, ActionConfigAsset stunEndAction, CancellationToken ct)
+        public override void OnUpdate(float deltaTime)
         {
-            try
+            if (_isRecovering)
             {
-                float elapsed = 0f;
-
-                // 严格受怪物私有时钟流速缩放驱动（子弹时间等比变慢，顿帧瞬间定格）
-                while (elapsed < totalDuration)
+                // 若处于起身阶段但动作已不在播放（防御兜底防止极端异常卡死），恢复并切回 Idle
+                if (Entity.ActionController != null && Entity.ActionController.CurrentPlayingAction != _stunEndAction)
                 {
-                    await Task.Yield();
-
-                    if (ct.IsCancellationRequested || Entity == null) return;
-
-                    float effectiveScale = Entity.Clock != null ? Entity.Clock.EffectiveScale : 1.0f;
-                    float dt = Time.deltaTime * effectiveScale;
-                    elapsed += dt;
+                    RecoverFromStun();
                 }
+                return;
+            }
 
-                if (ct.IsCancellationRequested || Entity == null) return;
-
+            _elapsedTime += deltaTime;
+            if (_elapsedTime >= _stunDuration)
+            {
+                _isRecovering = true;
                 GLog.Info(LogTags.Combat, $"[MonsterStunState] 怪物 {Entity.name} 失衡倒计时结束，播放 StunEnd");
 
-                // 4. 时间到达，播放 StunEnd，并在其 OnComplete 回调中清空失衡槽并切回 Idle
-                if (stunEndAction != null)
+                if (_stunEndAction != null)
                 {
-                    bool commandSent = SendCommand(stunEndAction, onComplete: () =>
+                    bool commandSent = SendCommand(_stunEndAction, onComplete: () =>
                     {
                         RecoverFromStun();
                     });
@@ -81,15 +73,6 @@ namespace Game.GamePlay
                 {
                     RecoverFromStun();
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                // 正常取消（如怪物死亡或状态被主动打断）
-            }
-            catch (Exception ex)
-            {
-                GLog.Exception(LogTags.Combat, ex);
-                RecoverFromStun();
             }
         }
 
@@ -108,23 +91,16 @@ namespace Game.GamePlay
 
         public override void OnExit()
         {
-            // 安全退出：取消异步倒计时，杜绝内存泄漏与幽灵回调
-            if (_cts != null)
-            {
-                _cts.Cancel();
-                _cts.Dispose();
-                _cts = null;
-            }
+            _stunEndAction = null;
+            _isRecovering = false;
+            _elapsedTime = 0f;
         }
 
         public override void OnDestroy()
         {
-            if (_cts != null)
-            {
-                _cts.Cancel();
-                _cts.Dispose();
-                _cts = null;
-            }
+            _stunEndAction = null;
+            _isRecovering = false;
+            _elapsedTime = 0f;
         }
     }
 }

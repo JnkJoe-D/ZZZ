@@ -15,7 +15,12 @@ namespace Game.GamePlay
         public override void Init(CharacterEntity entity)
         {
             base.Init(entity);
-            if (_entity != null && _entity.ActionPlayer != null)
+            EnsureActionPlayerSubscribed();
+        }
+
+        private void EnsureActionPlayerSubscribed()
+        {
+            if (_entity?.ActionPlayer != null)
             {
                 _entity.ActionPlayer.OnActionComplete -= HandleActionComplete;
                 _entity.ActionPlayer.OnActionComplete += HandleActionComplete;
@@ -27,7 +32,7 @@ namespace Game.GamePlay
 
         private void OnDestroy()
         {
-            if (_entity != null && _entity.ActionPlayer != null)
+            if (_entity?.ActionPlayer != null)
             {
                 _entity.ActionPlayer.OnActionComplete -= HandleActionComplete;
                 _entity.ActionPlayer.OnActionInterrupt -= HandleActionInterrupt;
@@ -38,6 +43,9 @@ namespace Game.GamePlay
         {
             // 若被打断裁决没通过或无受击表现类型，直接忽略，不阻断自控力也不产生硬直
             if (ctx.SelectedReactionType == cfg.ZZZ.HitReactionType.None) return;
+
+            // 受击时确保 ActionPlayer 事件已正确订阅（解决 Init 时 ActionPlayer 尚未初始化的时序错位问题）
+            EnsureActionPlayerSubscribed();
 
             if (_entity is MonsterEntity monster)
             {
@@ -51,13 +59,14 @@ namespace Game.GamePlay
                     _isStartingHitAction = true;
                     try
                     {
-                        monster.ActionController.OnInputAndResolveImmediately(hitCommand);
+                        monster.ActionController.OnInput(hitCommand);
                     }
                     finally
                     {
                         _isStartingHitAction = false;
                     }
-                    _isActionPlaying = true;
+                    // 仅当动作控制器确实成功切入受击动作时才标记播放中；若未切入则仅依赖硬直时间倒计时
+                    _isActionPlaying = (monster.ActionController?.CurrentPlayingAction == hitAction);
                 }
                 else
                 {
@@ -101,10 +110,6 @@ namespace Game.GamePlay
                     OnHitTimestampChanged?.Invoke();
                 }
 
-                if (monster.BTRunner?.RuntimeBlackboard != null && _hitData != null)
-                {
-                    monster.BTRunner.RuntimeBlackboard.Set("HitTriggerTimestamp", _hitData.HitTriggerTimestamp);
-                }
             }
         }
 
@@ -112,6 +117,8 @@ namespace Game.GamePlay
         {
             if (_hitData != null && _hitData.InHitReaction)
             {
+                EnsureActionPlayerSubscribed();
+
                 if (_remainingStunTimer > 0f)
                 {
                     _remainingStunTimer -= logicDeltaTime;
@@ -120,6 +127,19 @@ namespace Game.GamePlay
                 if (_maxSafetyTimer > 0f)
                 {
                     _maxSafetyTimer -= logicDeltaTime;
+                }
+
+                // 权威状态比对：若 ActionController 当前播放的动作已不再是受击动作（已回待机或转入其他动作），
+                // 或 ActionPlayer 已播放结束，则权威确认受击动作已经播放完毕（双保险防御）
+                var currentPlaying = _entity?.ActionController?.CurrentPlayingAction;
+                var resolvedHitAction = _hitData?.ResolvedHitAction;
+                if (_isActionPlaying && resolvedHitAction != null)
+                {
+                    bool isStillPlayingHit = (currentPlaying == resolvedHitAction) && (_entity.ActionPlayer?.IsPlaying ?? false);
+                    if (!isStillPlayingHit)
+                    {
+                        _isActionPlaying = false;
+                    }
                 }
 
                 // 正常退出条件：动作自然播完 且 硬直倒计时归零
@@ -160,6 +180,10 @@ namespace Game.GamePlay
 
         private void EndHitReactionSafely()
         {
+            _isActionPlaying = false;
+            _remainingStunTimer = 0f;
+            _maxSafetyTimer = 0f;
+
             if (_hitData != null && _hitData.InHitReaction)
             {
                 _hitData.Set(nameof(_hitData.InHitReaction), false);

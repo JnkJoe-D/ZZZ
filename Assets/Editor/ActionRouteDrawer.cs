@@ -178,7 +178,14 @@ namespace Game.Editor.ActionConfig
                 return new GUIContent($"⚠️ [非法输入配置] {category} / {tag} -> {targetName}");
             }
 
-            return new GUIContent($"{category} / {tag} -> {targetName}");
+            SerializedProperty timingProp = property.FindPropertyRelative("ArbitrationTiming");
+            string timingTag = string.Empty;
+            if (timingProp != null && timingProp.intValue == (int)RouteArbitrationTiming.Immediate)
+            {
+                timingTag = " [⚡即时]";
+            }
+
+            return new GUIContent($"{category} / {tag} -> {targetName}{timingTag}");
         }
 
         // ────────────────── 特殊字段渲染 ──────────────────

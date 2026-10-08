@@ -135,5 +135,56 @@ namespace Game.GamePlay
                 Entity.transform.rotation = Quaternion.RotateTowards(Entity.transform.rotation, targetRot, speed * deltaTime);
             }
         }
+
+        /// <summary>
+        /// 获取怪物自身物理几何半径
+        /// </summary>
+        protected float GetSelfRadius()
+        {
+            if (Entity?.MovementComponent != null && Entity.MovementComponent.CharacterRadius > 0f)
+            {
+                return Entity.MovementComponent.CharacterRadius;
+            }
+            if (Entity != null && Entity.TryGetComponent<CharacterController>(out var cc))
+            {
+                return cc.radius;
+            }
+            return 0.8f;
+        }
+
+        /// <summary>
+        /// 获取锁定目标的物理几何半径
+        /// </summary>
+        protected float GetTargetRadius()
+        {
+            var target = Entity?.TargetFinder?.GetTarget();
+            if (target == null) return 0.5f;
+
+            if (target.TryGetComponent<CharacterController>(out var cc))
+            {
+                return cc.radius;
+            }
+            return 0.5f;
+        }
+
+        /// <summary>
+        /// 获取双方物理胶囊体半径之和（即发生物理接触阻挡时的中心距离理论极限）
+        /// </summary>
+        protected float GetCombinedPhysicalRadius()
+        {
+            return GetSelfRadius() + GetTargetRadius();
+        }
+
+        /// <summary>
+        /// 判定是否逼近到位：满足招式射程，或已经与目标发生物理贴身接触（防止碰撞体阻挡卡死）
+        /// </summary>
+        protected bool IsApproachedTarget(float currentDistance, float targetRadius, float contactTolerance = 0.15f)
+        {
+            if (currentDistance < 0f) return false;
+            if (currentDistance <= targetRadius) return true;
+
+            float contactDistance = GetCombinedPhysicalRadius() + contactTolerance;
+            return currentDistance <= contactDistance;
+        }
     }
 }

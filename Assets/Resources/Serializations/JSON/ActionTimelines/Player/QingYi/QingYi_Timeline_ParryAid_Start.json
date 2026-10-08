@@ -1,5 +1,5 @@
 {
-    "duration": 6.4166669845581059,
+    "duration": 6.4166669845581055,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -403,7 +403,7 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.4166669845581059,
+                    "duration": 6.4166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
@@ -441,7 +441,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.4166669845581059,
+                    "duration": 6.4166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -461,7 +461,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 1.5,
-                    "duration": 4.9166669845581059,
+                    "duration": 4.9166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -481,7 +481,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.4166669845581059,
+                    "duration": 6.4166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -501,7 +501,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.4166669845581059,
+                    "duration": 6.4166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -521,7 +521,7 @@
                     "clipName": "招架防御窗口片段",
                     "isEnabled": true,
                     "startTime": 0.3666667640209198,
-                    "duration": 1.1333332061767579,
+                    "duration": 1.1333332061767578,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0
                 }
@@ -538,7 +538,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.4166669845581059,
+                    "duration": 6.4166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1,
@@ -630,12 +630,12 @@
                     "instantDistanceOnEnter": true,
                     "recenterDistance": 1.7999999523162842,
                     "recenterFOV": 45.0,
-                    "recenterFovBlendSpeed": 6.0,
+                    "recenterFovBlendSpeed": 20.0,
                     "recenterRestoreFovOnExit": true,
                     "recenterRestoreSpeed": 2.0,
                     "lookAtOffset": {
                         "x": 0.0,
-                        "y": 1.2000000476837159,
+                        "y": 1.2000000476837158,
                         "z": 0.0
                     },
                     "trackSmoothSpeed": 8.0,

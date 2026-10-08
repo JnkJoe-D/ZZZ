@@ -21,10 +21,19 @@ namespace Game.GamePlay
         public bool HasCandidates => _candidates.Count > 0;
 
         /// <summary>
+        /// 仲裁池中是否存在要求即时抢占裁决 (Immediate) 的候选动作。
+        /// </summary>
+        public bool HasImmediateCandidate { get; private set; }
+
+        /// <summary>
         /// 窗口将评估通过的候选提交至仲裁池。
         /// </summary>
         public void Submit(RouteCandidate candidate)
         {
+            if (candidate.ArbitrationTiming == RouteArbitrationTiming.Immediate)
+            {
+                HasImmediateCandidate = true;
+            }
             _candidates.Add(candidate);
         }
 
@@ -53,6 +62,7 @@ namespace Game.GamePlay
         public void Clear()
         {
             _candidates.Clear();
+            HasImmediateCandidate = false;
         }
     }
 }

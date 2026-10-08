@@ -107,7 +107,7 @@ namespace ATEditor.Editor
         public override void OnExit()
         {
             // 归还 AudioSource 到池
-            if (audioSource != null)
+            if (audioSource != null && _playingClip != null && clip.lifeControlByClip)
             {
                 EditorAudioManager.Instance.Return(audioSource);
                 audioSource = null;
@@ -116,7 +116,7 @@ namespace ATEditor.Editor
         public override void OnStop()
         {
             // 归还 AudioSource 到池
-            if (audioSource != null)
+            if (audioSource != null && _playingClip != null && clip.lifeControlByClip)
             {
                 EditorAudioManager.Instance.Return(audioSource);
                 audioSource = null;

@@ -175,11 +175,11 @@ MonoBehaviour:
         clips:
         - rid: 4681868069779800900
     - rid: 4681868069779800890
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
-        trackType: DamageTrack
-        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
+        trackType: CombatTrack
+        trackName: "\u6218\u6597\u8F68\u9053"
         isMuted: 0
         isLocked: 0
         isHidden: 0
@@ -297,52 +297,55 @@ MonoBehaviour:
         duration: 0.15
         blendInDuration: 0
         blendOutDuration: 0
-        detectFrequency: 0
-        times: 1
-        maxHitTargets: 0
-        targetSortMode: 1
-        hitDirectionMode: 0
-        customHitDirection: {x: 0, y: 1}
-        hitLayerMask:
-          serializedVersion: 2
-          m_Bits: 192
-        serializedHitLayerMask: 192
-        isSelfImpacted: 0
-        shape:
-          shapeType: 3
-          size: {x: 1, y: 1, z: 1}
-          radius: 3
-          height: 2
-          angle: 180
-          innerRadius: 1
-        hitBoxFollowMode: 1
-        bindPoint: 0
-        customBoneName: 
-        positionOffset: {x: 0, y: 1, z: 0}
-        rotationOffset: {x: 0, y: 0, z: 0}
-        detects:
-        - hitMode: 0
-          multiHitCount: 3
-          multiHitDuration: 0.2
-          enableHitStop: 1
-          hitStopDuration: 0.05
-          hitStopScale: 0
-          hitStunDuration: 0.3
-          hitVFXPrefab: {fileID: 0}
-          hitVFXRef:
-            guid: 
-            assetName: 
-            assetPath: 
-          hitVFXHeight: 1
-          hitVFXPreviewOffsetXZ: {x: 0, y: 1.5}
-          hitVFXScale: {x: 1, y: 1, z: 1}
-          followTarget: 1
-          hitAudioClip: {fileID: 0}
-          hitAudioRef:
-            guid: 
-            assetName: 
-            assetPath: 
-          hitEffectId: 1050050
+        hitBoxScope:
+          shape:
+            shapeType: 3
+            size: {x: 1, y: 1, z: 1}
+            radius: 3
+            height: 2
+            angle: 180
+            innerRadius: 1
+          bindPoint: 0
+          customBoneName: 
+          hitBoxFollowMode: 1
+          positionOffset: {x: 0, y: 1, z: 0}
+          rotationOffset: {x: 0, y: 0, z: 0}
+          showHitBoxGizmos: 1
+        attackPolicy:
+          detectFrequency: 0
+          times: 1
+          maxHitTargets: 0
+          targetSortMode: 1
+          hitDirectionMode: 0
+          customHitDirection: {x: 0, y: 1}
+          hitLayerMask:
+            serializedVersion: 2
+            m_Bits: 192
+          serializedHitLayerMask: 192
+          isSelfImpacted: 0
+          detects:
+          - hitMode: 0
+            multiHitCount: 3
+            multiHitDuration: 0.2
+            enableHitStop: 1
+            hitStopDuration: 0.05
+            hitStopScale: 0
+            hitStunDuration: 0.3
+            hitVFXPrefab: {fileID: 0}
+            hitVFXRef:
+              guid: 
+              assetName: 
+              assetPath: 
+            hitVFXHeight: 1
+            hitVFXPreviewOffsetXZ: {x: 0, y: 1.5}
+            hitVFXScale: {x: 1, y: 1, z: 1}
+            followTarget: 1
+            hitAudioClip: {fileID: 0}
+            hitAudioRef:
+              guid: 
+              assetName: 
+              assetPath: 
+            hitEffectId: 1050050
     - rid: 4681868069779800902
       type: {class: MotionFilterClip, ns: ATEditor, asm: Assembly-CSharp}
       data:

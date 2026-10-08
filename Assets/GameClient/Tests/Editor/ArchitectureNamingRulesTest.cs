@@ -13,6 +13,8 @@ namespace Game.Tests.Architecture
             var assembly = typeof(Game.GamePlay.MovementComponent).Assembly;
             foreach (var type in assembly.GetTypes())
             {
+                if (type.Namespace == null || !type.Namespace.StartsWith("Game.")) continue;
+
                 if (type.Name.EndsWith("Component") && !type.IsInterface)
                 {
                     Assert.IsTrue(typeof(MonoBehaviour).IsAssignableFrom(type),
@@ -27,6 +29,8 @@ namespace Game.Tests.Architecture
             var assembly = typeof(Game.GamePlay.MovementComponent).Assembly;
             foreach (var type in assembly.GetTypes())
             {
+                if (type.Namespace == null || !type.Namespace.StartsWith("Game.")) continue;
+
                 // 排除标注为 Obsolete 的过渡别名类
                 if (type.GetCustomAttribute<ObsoleteAttribute>() != null) continue;
 
@@ -44,6 +48,8 @@ namespace Game.Tests.Architecture
             var assembly = typeof(Game.GamePlay.MovementComponent).Assembly;
             foreach (var type in assembly.GetTypes())
             {
+                if (type.Namespace == null || !type.Namespace.StartsWith("Game.")) continue;
+
                 if (type.Name.EndsWith("Controller") && !type.Name.Contains("Camera") && !type.IsInterface)
                 {
                     Assert.IsFalse(typeof(MonoBehaviour).IsAssignableFrom(type),

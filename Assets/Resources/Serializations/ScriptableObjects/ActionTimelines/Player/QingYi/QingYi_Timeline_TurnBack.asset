@@ -167,11 +167,11 @@ MonoBehaviour:
         clips:
         - rid: 4681868069779800748
     - rid: 4681868069779800742
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
-        trackType: DamageTrack
-        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
+        trackType: CombatTrack
+        trackName: "\u6218\u6597\u8F68\u9053"
         isMuted: 0
         isLocked: 0
         isHidden: 0

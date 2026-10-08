@@ -111,6 +111,7 @@ namespace Game.GamePlay
                 return false;
             }
 
+            OnActionStart?.Invoke();
             return true;
         }
 

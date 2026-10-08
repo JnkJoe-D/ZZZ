@@ -156,20 +156,18 @@ namespace Game.GamePlay
                 GUILayout.Label("CHARACTER DEBUG HUD", titleStyle);
                 GUILayout.Space(10);
 
-                var machine = targetEntity.StateMachine;
-                if (machine != null)
+                if (targetEntity != null && targetEntity.DomainContext != null)
                 {
-                    DrawInfo("Current State", machine.CurrentState?.GetType().Name ?? "None");
-                    DrawInfo("Previous State", machine.PreviousState?.GetType().Name ?? "None", new Color(0.7f, 0.7f, 0.7f));
-                    DrawInfo("Ground SubState", GetGroundSubStateLabel(machine.CurrentState), new Color(0.55f, 0.9f, 0.65f));
+                    DrawInfo("Action Domain", targetEntity.DomainContext.CurrentDomainId.ToString(), new Color(0.4f, 1f, 0.6f));
+                    var currentAction = targetEntity.ActionController?.CurrentPlayingAction;
+                    if (currentAction != null)
+                    {
+                        DrawInfo("Current Action", currentAction.name, new Color(0.55f, 0.9f, 0.65f));
+                    }
                 }
 
                 var actionData = targetEntity.DataModule?.Get<ActionRuntimeData>();
                 var comboData = targetEntity.DataModule?.Get<ComboRouteRuntimeData>();
-                DrawInfo(
-                    "Target Ground",
-                    actionData?.TargetGroundSubState.ToString() ?? "None",
-                    new Color(0.75f, 0.9f, 1f));
 
 
                 string lastRouteText = "None";
@@ -288,16 +286,6 @@ namespace Game.GamePlay
             GUILayout.EndHorizontal();
         }
 
-        private static string GetGroundSubStateLabel(object currentState)
-        {
-            if (currentState is not RoleGroundState groundState)
-            {
-                return "-";
-            }
-
-            RoleSubState subState = groundState.CurrentSubState;
-            return subState != null ? subState.GetType().Name : "None";
-        }
 
         private Texture2D CreateRoundedTex(int width, int height, int radius, Color color)
         {

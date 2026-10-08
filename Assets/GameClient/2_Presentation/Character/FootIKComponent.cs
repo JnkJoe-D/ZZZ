@@ -236,12 +236,9 @@ namespace Game.Presentation
         #endregion
 
         #region Initialization
-        private ActionRuntimeData _actionData;
-
         public void Init(CharacterEntity entity)
         {
             _entity = entity;
-            _actionData = _entity.DataModule?.Get<ActionRuntimeData>();
             _enableIK = true;
             _masterWeight = 1.0f;
             EnsureGroundLayerMask();
@@ -368,18 +365,9 @@ namespace Game.Presentation
                     isMoving = _entity.MovementComponent.Velocity.sqrMagnitude > 0.05f;
                 }
 
-                // 智能感知是否处于技能/发力/闪避/受击状态
+                // 智能感知是否处于技能/发力/闪避/受击状态 (由 DomainContext 提供权威领域分类)
                 RoleEntity role = _entity as RoleEntity;
-                if (role != null && role.StateMachine != null && role.StateMachine.CurrentState != null)
-                {
-                    System.Type stateType = role.StateMachine.CurrentState.GetType();
-                    if (stateType != typeof(RoleGroundState))
-                    {
-                        isSkillOrAction = true;
-                    }
-                }
-
-                if (_actionData != null && _actionData.TargetGroundSubState == ActionState.Skill)
+                if (role != null && role.DomainContext != null && role.DomainContext.CurrentDomainId != ActionDomainId.Locomotion)
                 {
                     isSkillOrAction = true;
                 }

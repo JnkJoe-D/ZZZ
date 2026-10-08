@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Framework;
 using UnityEngine;
+using UnityEngine.Serialization;
 using ATEditor;
 namespace Game.GamePlay
 {
@@ -60,7 +61,15 @@ namespace Game.GamePlay
         [Tooltip("SkillEditor 生成的 ScriptableObject 格式时间轴数据（支持运行时热更），ActionPlayer 会优先解析此资源。")]
         public ATEditor.ActionTimeline actionTimelineSO;
 
+        [Header("动作领域 (Action Domain)")]
+        [Tooltip("宏观动作领域分类，供领域生命周期控制器驱动阻尼、受击衰减、闪避计时等宏观业务。")]
+        [SerializeField] private ActionDomainId _domainId = ActionDomainId.Locomotion;
 
+        public virtual ActionDomainId DomainId
+        {
+            get => _domainId;
+            set => _domainId = value;
+        }
 
         [Header("状态转换")]
         [Tooltip("动作正常完成后的后续转换策略。")]
@@ -91,16 +100,22 @@ namespace Game.GamePlay
         public float GetTransitionCrossfade(ActionConfigAsset targetAction)
         {
             var item = GetTransition(targetAction);
-            return item != null && item.CrossfadeDuration >= 0f ? item.CrossfadeDuration : -1f;
+            return item != null && item.BlendDuration >= 0f ? item.BlendDuration : -1f;
         }
 
         /// <summary>
         /// 更新针对目标动作的过渡参数（供过渡编辑器工作台调用）
         /// </summary>
-        public void SetTransition(ActionConfigAsset targetAction, float crossfade, bool hasCustomExit = false, float exitTime = 0f)
+        public void SetTransition(
+            ActionConfigAsset targetAction,
+            float blendDuration,
+            bool hasEndTime = false,
+            float endTime = 0f,
+            bool hasStartTime = false,
+            float startTime = 0f)
         {
             if (_transitionTable == null) _transitionTable = new ActionTransitionTable();
-            _transitionTable.SetOrUpdate(targetAction, crossfade, hasCustomExit, exitTime);
+            _transitionTable.SetOrUpdate(targetAction, blendDuration, hasEndTime, endTime, hasStartTime, startTime);
         }
 
 
@@ -137,10 +152,33 @@ namespace Game.GamePlay
                 }
             }
         }
+
+        [System.NonSerialized]
+        private ActionWindowRouteTable _cachedWindowTable;
+
+        /// <summary>
+        /// 获取此动作的窗口分桶快照表（仅缓存静态自有 Routes 与 RouteSets）。
+        /// 若未构建则调用 ActionRouteTableBuilder.BuildTable 首次构建并缓存。
+        /// </summary>
+        public ActionWindowRouteTable GetWindowRouteTable(CharacterEntity actor = null)
+        {
+            if (_cachedWindowTable != null) return _cachedWindowTable;
+            _cachedWindowTable = ActionRouteTableBuilder.BuildTable(this, actor);
+            return _cachedWindowTable;
+        }
+
+        /// <summary>
+        /// 废弃分桶缓存（供编辑器修改或热重载时调用）
+        /// </summary>
+        public void InvalidateWindowRouteTable()
+        {
+            _cachedWindowTable = null;
+        }
     }
 
     /// <summary>
     /// 单个目标动作的过渡表现参数（边属性）
+    /// 包含源动作 EndTime, HasEndTime, BlendDuration 以及目标动作切入 StartTime, HasStartTime。
     /// </summary>
     [System.Serializable]
     public class ActionTransitionItem
@@ -148,14 +186,28 @@ namespace Game.GamePlay
         [Tooltip("目标动作")]
         public ActionConfigAsset TargetAction;
 
+        [Tooltip("源动作退出时间点（秒）。若未开启 HasEndTime 则在当前动作自然播放完成或窗口关闭时切出")]
+        [FormerlySerializedAs("CustomExitTime")]
+        public float EndTime = 0f;
+
+        [Tooltip("是否指定源动作的自定义退出时间（提前打断/截断）")]
+        [FormerlySerializedAs("HasCustomExitTime")]
+        public bool HasEndTime = false;
+
         [Tooltip("混合过渡时间（秒）。-1 表示使用目标动作自身默认起手 BlendIn；>= 0 强制覆盖")]
-        public float CrossfadeDuration = -1f;
+        [FormerlySerializedAs("CrossfadeDuration")]
+        public float BlendDuration = -1f;
 
-        [Tooltip("是否启用自定义打断时间（默认关闭，通常用于自循环动作或末尾自动衔接的提前截断）")]
-        public bool HasCustomExitTime = false;
+        [Tooltip("目标动作切入的起始时间点（秒）。默认为 0")]
+        public float StartTime = 0f;
 
-        [Tooltip("自定义打断/退出时间点（秒）")]
-        public float CustomExitTime = 0f;
+        [Tooltip("是否启用目标动作的自定义起始切入时间（默认关闭，从第 0 秒起手）")]
+        public bool HasStartTime = false;
+
+        // ── 向后兼容属性别名 (Backward-compatible Aliases) ──
+        public float CustomExitTime { get => EndTime; set => EndTime = value; }
+        public bool HasCustomExitTime { get => HasEndTime; set => HasEndTime = value; }
+        public float CrossfadeDuration { get => BlendDuration; set => BlendDuration = value; }
     }
 
     /// <summary>
@@ -189,7 +241,13 @@ namespace Game.GamePlay
         /// <summary>
         /// 更新或新增针对特定目标动作的过渡配置（供编辑器工作台调用）
         /// </summary>
-        public void SetOrUpdate(ActionConfigAsset targetAction, float crossfade, bool hasCustomExit = false, float exitTime = 0f)
+        public void SetOrUpdate(
+            ActionConfigAsset targetAction,
+            float blendDuration,
+            bool hasEndTime = false,
+            float endTime = 0f,
+            bool hasStartTime = false,
+            float startTime = 0f)
         {
             if (targetAction == null) return;
             if (_items == null) _items = new List<ActionTransitionItem>();
@@ -201,9 +259,11 @@ namespace Game.GamePlay
                 _items.Add(item);
             }
 
-            item.CrossfadeDuration = crossfade;
-            item.HasCustomExitTime = hasCustomExit;
-            item.CustomExitTime = exitTime;
+            item.BlendDuration = blendDuration;
+            item.HasEndTime = hasEndTime;
+            item.EndTime = endTime;
+            item.HasStartTime = hasStartTime;
+            item.StartTime = startTime;
         }
 
         /// <summary>

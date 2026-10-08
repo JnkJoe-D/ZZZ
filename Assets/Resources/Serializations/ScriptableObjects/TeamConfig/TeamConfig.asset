@@ -39,7 +39,7 @@ MonoBehaviour:
     - Monster
   TargetLockerConfig:
     LockRadius: 20
-    LoseRadius: 30
+    LoseRadius: 10
     ScanInterval: 0.08
     ForwardAngleWeight: 0.35
     ViewFovHalfAngle: 180

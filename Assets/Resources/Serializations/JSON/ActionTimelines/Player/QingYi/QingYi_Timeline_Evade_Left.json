@@ -1,5 +1,5 @@
 {
-    "duration": 6.1666669845581059,
+    "duration": 6.1666669845581055,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -328,14 +328,14 @@
             {
                 "rid": 1009,
                 "type": {
-                    "class": "HitTrack",
+                    "class": "CombatTrack",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "trackId": "6c372d50-4b7d-4af7-992f-9aff4e5fa659",
-                    "trackType": "DamageTrack",
-                    "trackName": "命中判定轨道",
+                    "trackType": "CombatTrack",
+                    "trackName": "战斗轨道",
                     "isMuted": false,
                     "isLocked": false,
                     "isHidden": false,
@@ -463,7 +463,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.75,
-                    "duration": 5.4166669845581059,
+                    "duration": 5.4166669845581055,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {

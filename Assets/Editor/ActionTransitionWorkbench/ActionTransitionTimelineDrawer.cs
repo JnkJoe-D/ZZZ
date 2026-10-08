@@ -73,7 +73,9 @@ namespace Game.Editor.ActionTransition
             float currentTime,
             bool isLoopFocus,
             float focusStartTime,
-            float focusEndTime)
+            float focusEndTime,
+            bool hasStartTime = false,
+            float startTime = 0f)
         {
             if (totalRect.width <= 10f || totalRect.height <= 10f) return;
 
@@ -92,7 +94,9 @@ namespace Game.Editor.ActionTransition
                 float availableWidth = totalRect.width - 16f;
 
                 // 动态自适应缩放比（若用户未手动缩放）
-                float maxTime = Mathf.Max(sourceDuration, exitTime + targetDuration, exitTime + crossfadeDuration + 0.4f, 1.5f);
+                float effectiveStartTime = hasStartTime ? startTime : 0f;
+                float effectiveTargetDuration = Mathf.Max(0.1f, targetDuration - effectiveStartTime);
+                float maxTime = Mathf.Max(sourceDuration, exitTime + effectiveTargetDuration, exitTime + crossfadeDuration + 0.4f, 1.5f);
                 if (!_userZoomed && maxTime * _timeToPixelScale < availableWidth)
                 {
                     _timeToPixelScale = availableWidth / maxTime;
@@ -119,7 +123,7 @@ namespace Game.Editor.ActionTransition
                 DrawSourceTrack(track1Rect, contentStartX, sourceActionName, sourceDuration, routeWindow);
 
                 // 4. 绘制 Track 2: 目标动作 (翡翠绿)
-                DrawTargetTrack(track2Rect, contentStartX, targetActionName, targetDuration, exitTime);
+                DrawTargetTrack(track2Rect, contentStartX, targetActionName, targetDuration, exitTime, hasStartTime, startTime);
 
                 // 5. 绘制 Crossfade 混合梯形与右边缘手柄（居中连接两轨，风格与左侧对称）
                 DrawCrossfadeTrapezoid(track1Rect, track2Rect, contentStartX, exitTime, crossfadeDuration);
@@ -334,10 +338,13 @@ namespace Game.Editor.ActionTransition
             GUI.Label(new Rect(blockRect.x + 6f, blockRect.y + 6f, blockRect.width - 12f, 16f), $"源动作: {actionName} ({durText})", labelStyle);
         }
 
-        private void DrawTargetTrack(Rect rect, float startX, string actionName, float duration, float exitTime)
+        private void DrawTargetTrack(Rect rect, float startX, string actionName, float duration, float exitTime, bool hasStartTime, float startTime)
         {
+            float effectiveStartTime = hasStartTime ? startTime : 0f;
+            float effectiveDuration = Mathf.Max(0.05f, duration - effectiveStartTime);
+
             float blockX = startX + exitTime * _timeToPixelScale;
-            float blockWidth = Mathf.Max(12f, duration * _timeToPixelScale);
+            float blockWidth = Mathf.Max(12f, effectiveDuration * _timeToPixelScale);
             Rect blockRect = new Rect(blockX, rect.y, blockWidth, rect.height);
 
             // 深翡翠绿底色与高亮碧绿边框
@@ -352,9 +359,10 @@ namespace Game.Editor.ActionTransition
                 fontSize = 10
             };
 
-            int tgtFrames = Mathf.RoundToInt(duration * CurrentFps);
-            string durText = RulerUnit == TimelineRulerUnit.Frames ? $"{tgtFrames}F ({duration:0.00}s)" : $"{duration:0.00}s ({tgtFrames}F)";
-            string title = !string.IsNullOrEmpty(actionName) ? $"目标动作: {actionName} ({durText})" : $"目标动作: (未配置) ({durText})";
+            int tgtFrames = Mathf.RoundToInt(effectiveDuration * CurrentFps);
+            string durText = RulerUnit == TimelineRulerUnit.Frames ? $"{tgtFrames}F ({effectiveDuration:0.00}s)" : $"{effectiveDuration:0.00}s ({tgtFrames}F)";
+            string startInfo = hasStartTime && startTime > 0.001f ? $" [起切: {startTime:0.00}s]" : "";
+            string title = !string.IsNullOrEmpty(actionName) ? $"目标动作: {actionName}{startInfo} ({durText})" : $"目标动作: (未配置) ({durText})";
             GUI.Label(new Rect(blockRect.x + 6f, blockRect.y + 6f, blockRect.width - 12f, 16f), title, labelStyle);
         }
 

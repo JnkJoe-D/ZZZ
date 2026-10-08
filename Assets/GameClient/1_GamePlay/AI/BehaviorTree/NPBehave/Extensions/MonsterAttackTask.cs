@@ -12,7 +12,6 @@ namespace Game.GamePlay
     {
         private readonly TreeActionAgent _agent;
         private readonly ActionConfigAsset _attackAction;
-        private bool _hasBeenConsumed;
 
         public MonsterAttackTask(TreeActionAgent agent, ActionConfigAsset attackAction) 
             : base("MonsterAttackTask")
@@ -23,6 +22,7 @@ namespace Game.GamePlay
 
         private ActionConfigAsset _actualAction;
         private double _startTime;
+        private bool _hasStartedPlaying;
         private const float TimeoutSeconds = 8.0f;
 
         protected override void DoStart()
@@ -40,7 +40,7 @@ namespace Game.GamePlay
             }
 
             _startTime = RootNode.Clock.ElapsedTime;
-            _hasBeenConsumed = false;
+            _hasStartedPlaying = false;
             _agent.Context.Strategy = MonsterStrategy.Attack;
             _agent.Context.PendingAttack = _actualAction;
 
@@ -56,14 +56,22 @@ namespace Game.GamePlay
                 return;
             }
 
-            // 1. 等待状态机消费 PendingAttack
-            if (!_hasBeenConsumed && ctx.PendingAttack == null)
+            // 1. 等待真正开始播放该动作
+            if (!_hasStartedPlaying)
             {
-                _hasBeenConsumed = true;
+                if (_agent.CurrentPlayingAction == _actualAction)
+                {
+                    _hasStartedPlaying = true;
+                }
+                else if (RootNode.Clock.ElapsedTime - _startTime >= 3.0f)
+                {
+                    GLog.Warning(LogTags.AI, $"MonsterAttackTask timed out waiting to start {_actualAction?.name}");
+                    Finish(false);
+                    return;
+                }
             }
-
-            // 2. 状态机已消费，且动作播放完毕
-            if (_hasBeenConsumed)
+            // 2. 确认开始播放后，动作播放结束
+            else
             {
                 if (_agent.CurrentPlayingAction != _actualAction)
                 {

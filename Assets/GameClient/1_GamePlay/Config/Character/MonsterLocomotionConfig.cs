@@ -40,6 +40,15 @@ namespace Game.GamePlay
         [Tooltip("奔跑逼近与缓步前压的距离差值阈值（米）。当目标距离与攻击射程之差大于此值时奔跑，小于等于此值时前压慢走")]
         public float runThresholdRadius = 4.0f;
 
+        [Tooltip("对峙横移容差区间半宽（米，即 x）。基准对峙距离为 TargetRadius，周旋稳定区间为 [TargetRadius - x, TargetRadius + x]")]
+        public float strafeDistanceTolerance = 0.8f;
+
+        [Tooltip("脱离对峙区的追赶阈值增量（米，即 Δcatch）。当距离大于 TargetRadius + x + Δcatch 时，由走位升档为奔跑")]
+        public float strafeCatchUpThreshold = 2.5f;
+
+        [Tooltip("物理接触到位判定容差（米）。当实际距离 <= (自身物理半径 + 目标物理半径 + 容差) 时视为物理接触到位")]
+        public float contactTolerance = 0.15f;
+
         [Header("环绕对峙换向配置")]
         [Tooltip("环绕横移随机换向最小间隔（秒）")]
         public float minStrafeInterval = 2.0f;

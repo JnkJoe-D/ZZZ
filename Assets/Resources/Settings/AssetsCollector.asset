@@ -110,3 +110,11 @@ MonoBehaviour:
         FilterRuleName: CollectSprite
         AssetTags: 
         UserData: 
+      - CollectPath: Assets/RawArtAssets/SFX
+        CollectorGUID: 70fff29d68cafb6478773e129eec1dc0
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 

@@ -51,7 +51,7 @@ namespace ATEditor{
 
         public override void OnPause()
         {
-            if (playingSoundId != -1 && audioHandler != null)
+            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.lifeControlByClip)
             {
                 audioHandler.PauseSound(playingSoundId);
             }
@@ -59,7 +59,7 @@ namespace ATEditor{
 
         public override void OnResume()
         {
-            if (playingSoundId != -1 && audioHandler != null)
+            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.lifeControlByClip)
             {
                 audioHandler.ResumeSound(playingSoundId);
             }
@@ -67,7 +67,7 @@ namespace ATEditor{
 
         public override void OnExit()
         {
-            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.loop)
+            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.lifeControlByClip)
             {
                 audioHandler.StopSound(playingSoundId);
                 playingSoundId = -1;
@@ -76,7 +76,7 @@ namespace ATEditor{
 
         public override void OnStop()
         {
-            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.loop)
+            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.lifeControlByClip)
             {
                 audioHandler.StopSound(playingSoundId);
                 playingSoundId = -1;
@@ -85,7 +85,7 @@ namespace ATEditor{
 
         public override void Reset()
         {
-            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.loop)
+            if (playingSoundId != -1 && audioHandler != null && clip != null && clip.lifeControlByClip)
             {
                 audioHandler.StopSound(playingSoundId);
             }

@@ -169,7 +169,7 @@ namespace Game.GamePlay
             if (preData != null && preData.IsValid && preData.WillInterrupt && preData.TargetHitAction != null)
             {
                 var hitCmd = CharacterCommandFactory.CreateDirectAssetCommand(preData.TargetHitAction);
-                clashCtx.Attacker.ActionController?.OnInputAndResolveImmediately(hitCmd);
+                clashCtx.Attacker.ActionController?.OnInput(hitCmd);
 
                 // 兜底同步运行时硬直数据，防止行为树无感知抢占
                 var hitData = clashCtx.Attacker.DataModule?.Get<HitReactionRuntimeData>();

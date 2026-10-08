@@ -16,6 +16,7 @@ namespace Game.GamePlay
         public ATEditor.RouteWindow RouteWindow;
         public string RouteTag;
         public ActionRoute SourceRoute;
+        public RouteArbitrationTiming ArbitrationTiming;
     }
 
     /// <summary>
@@ -58,7 +59,8 @@ namespace Game.GamePlay
                     Priority = route.Priority,
                     RouteWindow = activeWindow,
                     RouteTag = activeWindow?.Tag,
-                    SourceRoute = route
+                    SourceRoute = route,
+                    ArbitrationTiming = route.ArbitrationTiming
                 };
 
                 if (!found || IsHigherPriority(candidate, best))

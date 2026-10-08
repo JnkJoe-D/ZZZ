@@ -31,7 +31,7 @@
         {
             "groupId": "87517105-7af1-4746-a8ba-834e1987bc67",
             "groupName": "音效",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -187,7 +187,11 @@
                     "isHidden": false,
                     "isCollapsed": false,
                     "isEnabled": true,
-                    "clips": []
+                    "clips": [
+                        {
+                            "rid": 1011
+                        }
+                    ]
                 }
             },
             {
@@ -227,7 +231,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1011
+                            "rid": 1012
                         }
                     ]
                 }
@@ -250,7 +254,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1012
+                            "rid": 1013
                         }
                     ]
                 }
@@ -273,7 +277,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1013
+                            "rid": 1014
                         }
                     ]
                 }
@@ -296,7 +300,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1014
+                            "rid": 1015
                         }
                     ]
                 }
@@ -319,7 +323,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1016
                         }
                     ]
                 }
@@ -342,7 +346,7 @@
                     "isEnabled": false,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1017
                         }
                     ]
                 }
@@ -388,6 +392,41 @@
             {
                 "rid": 1011,
                 "type": {
+                    "class": "AudioClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "71079804-6ffd-4553-b2b8-15793a4aadfa",
+                    "clipName": "音频片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 0.5,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "audioClips": [
+                        {
+                            "instanceID": 145966
+                        }
+                    ],
+                    "volume": 1.0,
+                    "pitch": 1.0,
+                    "loop": false,
+                    "isAffectSpeed": false,
+                    "spatialBlend": 0.0,
+                    "lifeControlByClip": false,
+                    "audioRefs": [
+                        {
+                            "guid": "e61f68ac027c90b4797cda64d434dadf",
+                            "assetName": "Attack_Parry_SFX2",
+                            "assetPath": "Assets/RawArtAssets/SFX/Attack/Attack_Parry_SFX2.wav"
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1012,
+                "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
@@ -401,12 +440,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1017
+                        "rid": 1018
                     }
                 }
             },
             {
-                "rid": 1012,
+                "rid": 1013,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -421,12 +460,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1018
+                        "rid": 1019
                     }
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1014,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -449,7 +488,7 @@
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1015,
                 "type": {
                     "class": "ParryWindowClip",
                     "ns": "ATEditor",
@@ -466,7 +505,7 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1016,
                 "type": {
                     "class": "BuffClip",
                     "ns": "ATEditor",
@@ -485,7 +524,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1017,
                 "type": {
                     "class": "CameraControlClip",
                     "ns": "ATEditor",
@@ -520,7 +559,7 @@
                     "recenterRestoreSpeed": 2.0,
                     "lookAtOffset": {
                         "x": 0.0,
-                        "y": 1.2000000476837159,
+                        "y": 1.2000000476837158,
                         "z": 0.0
                     },
                     "trackSmoothSpeed": 8.0,
@@ -534,7 +573,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1018,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -545,7 +584,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1019,
                 "type": {
                     "class": "BufferRouteWindow",
                     "ns": "ATEditor",

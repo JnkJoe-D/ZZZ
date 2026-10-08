@@ -91,8 +91,10 @@ namespace Game.GamePlay
             }
         }
 
+        private static readonly IActionCommandHandler DefaultFallbackHandler = new NullInputCommandHandler();
+
         private IActionCommandHandler CurrentHandler =>
-            _handlerProvider?.Invoke() ?? RoleStateBase.InputHandlerStatic;
+            _handlerProvider?.Invoke() ?? DefaultFallbackHandler;
 
         private void Dispatch(HardwareInputType commandType, CommandPhase phase)
         {

@@ -201,11 +201,11 @@ MonoBehaviour:
         clips:
         - rid: 4681868069782421733
     - rid: 4681868069782421724
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
-        trackType: DamageTrack
-        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
+        trackType: CombatTrack
+        trackName: "\u6218\u6597\u8F68\u9053"
         isMuted: 0
         isLocked: 0
         isHidden: 0
@@ -236,7 +236,8 @@ MonoBehaviour:
         isHidden: 0
         isCollapsed: 0
         isEnabled: 1
-        clips: []
+        clips:
+        - rid: 6293806958974861362
     - rid: 4681868069782421727
       type: {class: AnimationClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -350,6 +351,20 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 4294967295
+    - rid: 6293806958974861362
+      type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: a35a8eac-01e8-465d-8e21-50ea3fb7f16b
+        clipName: "\u65CB\u8F6C\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 1
+        blendInDuration: 0
+        blendOutDuration: 0
+        referenceDirection: 1
+        rotationMode: 1
+        updateFrequency: 0
+        localRotationOffset: {x: 0, y: 0, z: 0}
     - rid: 6379257891250765829
       type: {class: StatusTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:

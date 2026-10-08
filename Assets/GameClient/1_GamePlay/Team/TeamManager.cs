@@ -537,7 +537,7 @@ namespace Game.GamePlay
         /// <summary>
         /// 同步角色实体的空间三维坐标与旋转朝向。
         /// </summary>
-        internal void SynchronizePartyMemberTransform(RoleEntity entity, Vector3 position, Quaternion rotation)
+        public void SynchronizePartyMemberTransform(RoleEntity entity, Vector3 position, Quaternion rotation)
         {
             if (entity == null)
             {
@@ -556,6 +556,9 @@ namespace Game.GamePlay
             {
                 entity.transform.SetPositionAndRotation(position, rotation);
             }
+
+            // 强制刷新物理世界空间加速结构（BVH/AABB），确保刚瞬移的角色碰撞体能立即被同帧攻击检测重叠命中
+            Physics.SyncTransforms();
         }
 
         internal void CalculateSafeSwitchInTransform(Transform originTransform, RoleEntity switchInEntity, out Vector3 targetPos, out Quaternion targetRot)

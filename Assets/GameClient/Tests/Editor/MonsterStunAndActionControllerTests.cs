@@ -199,13 +199,10 @@ namespace Game.Tests.Combat
                 Assert.IsNotNull(service, "ATServiceFactory 必须能解析到实体的 IRouteWindowHandler");
                 Assert.AreSame(role.ActionController, service, "IRouteWindowHandler 必须就是实体的 ActionController");
 
-                // 2. 验证状态机已经处于地面待机态，且有效 InputHandler 已建立 (绝非 NullInputCommandHandler)
-                Assert.IsNotNull(role.StateMachine.CurrentState, "角色初始化后状态机当前状态不得为空");
-                Assert.IsInstanceOf<RoleGroundState>(role.StateMachine.CurrentState, "角色初始状态必须为 RoleGroundState");
-
-                var groundState = (RoleGroundState)role.StateMachine.CurrentState;
-                Assert.IsNotNull(groundState.InputHandler, "地面状态输入处理器不得为空");
-                Assert.IsNotInstanceOf<NullInputCommandHandler>(groundState.InputHandler, "初始待机状态下输入处理器绝不能是 NullInputCommandHandler");
+                // 2. 验证动作领域系统已经处于地面待机态，且有效接收输入 (绝非受击输入阻断)
+                Assert.IsNotNull(role.DomainContext, "角色初始化后动作领域上下文不得为空");
+                Assert.AreEqual(ActionDomainId.Locomotion, role.DomainContext.CurrentDomainId, "角色初始领域必须为 Locomotion 地面位移领域");
+                Assert.IsTrue(role.DomainContext.CanAcceptCommand(null), "初始待机状态下必须允许接收输入");
             }
             finally
             {

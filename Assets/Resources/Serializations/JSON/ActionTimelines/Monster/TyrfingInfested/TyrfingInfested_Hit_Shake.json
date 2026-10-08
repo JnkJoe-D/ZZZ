@@ -1,5 +1,5 @@
 {
-    "duration": 0.41666674613952639,
+    "duration": 0.41666674613952637,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -200,7 +200,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.41666674613952639,
+                    "duration": 0.41666674613952637,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1,
@@ -223,7 +223,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.41666674613952639,
+                    "duration": 0.41666674613952637,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -243,7 +243,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.41666674613952639,
+                    "duration": 0.41666674613952637,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {

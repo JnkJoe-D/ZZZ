@@ -30,6 +30,8 @@ namespace ATEditor
         [ActionProperty("空间混合 (0=2D, 1=3D)")]
         [Range(0f, 1f)]
         public float spatialBlend = 1f;
+        [ActionProperty("生命周期跟随片段")]
+        public bool lifeControlByClip = false;
 
         [ActionAssetReference("audioClips")]
         public System.Collections.Generic.List<ActionAssetReference> audioRefs = new System.Collections.Generic.List<ActionAssetReference>();
@@ -58,6 +60,7 @@ namespace ATEditor
                 pitch = this.pitch,
                 loop = this.loop,
                 isAffectSpeed = this.isAffectSpeed,
+                lifeControlByClip = this.lifeControlByClip,
                 spatialBlend = this.spatialBlend,
                 blendInDuration = this.blendInDuration,
                 blendOutDuration = this.blendOutDuration

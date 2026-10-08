@@ -16,16 +16,18 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 95d12aae3dbcc6946b5b0dd8fec39a8e, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: a41f133bfbce5f943ae3b69f82437761, type: 2}
+  _domainId: 2
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
-  CompleteTransitCrossfade: -1
+  _transitionTable:
+    _items: []
   Routes:
   - ExecuteType: 10
     ExecuteAction: {fileID: 11400000, guid: de326408d3de72044b10942ea69e532c, type: 2}
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     Priority: 110
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500722
     ExtraConditions:
@@ -35,7 +37,7 @@ MonoBehaviour:
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     Priority: 110
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500723
     ExtraConditions:
@@ -45,7 +47,7 @@ MonoBehaviour:
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     Priority: 100
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500724
     ExtraConditions: []
@@ -54,7 +56,7 @@ MonoBehaviour:
     ValidateSkillRequirement: 1
     RouteExecuteEvent: 0
     Priority: 100
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500725
     ExtraConditions: []
@@ -63,7 +65,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
   - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
-  EnterState: 40
+  - {fileID: 11400000, guid: 36a2a976c94302b44afd0ccc5c5dd5d4, type: 2}
   InheritMode: 0
   references:
     version: 2
@@ -75,8 +77,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916624
-        RequiredWindowTag: Buffer1
-        Modifiers: []
+        InputConditions: []
     - rid: 4681868330708500723
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -84,8 +85,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916625
-        RequiredWindowTag: Execute1
-        Modifiers: []
+        InputConditions: []
     - rid: 4681868330708500724
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -93,8 +93,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916626
-        RequiredWindowTag: Buffer1
-        Modifiers: []
+        InputConditions: []
     - rid: 4681868330708500725
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -102,8 +101,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916627
-        RequiredWindowTag: Execute1
-        Modifiers: []
+        InputConditions: []
     - rid: 4681868330708500863
       type: {class: TargetDistanceCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

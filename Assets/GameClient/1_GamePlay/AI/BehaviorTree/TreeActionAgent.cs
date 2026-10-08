@@ -62,23 +62,10 @@ namespace Game.GamePlay
             commandId = command.Id;
 
             _owner.ActionController.OnInput(command);
-
-            // 若播放的是非移动动作（如攻击、受击等），清理当前移动意图缓存
-            if (!IsLocomotionAction(actionConfig))
-            {
-                _currentLocomotionIntent = MonsterLocomotionIntent.None;
-            }
-
             return true;
         }
 
-        private bool IsLocomotionAction(ActionConfigAsset action)
-        {
-            var config = LocomotionConfig;
-            if (config == null || action == null) return false;
-            return action == config.RunStart || action == config.RunLoop || action == config.RunEnd ||
-                   action == config.WalkF || action == config.WalkB || action == config.WalkL || action == config.WalkR;
-        }
+
 
         public CommandFate CheckCommandFate(long commandId)
         {
@@ -90,117 +77,26 @@ namespace Game.GamePlay
             return _owner.TargetFinder?.GetDistanceToTarget() ?? -1f;
         }
 
+        public float GetCombinedPhysicalRadius()
+        {
+            float monsterRadius = _owner?.MovementComponent?.CharacterRadius ?? 0.8f;
+            if (monsterRadius <= 0f && _owner != null && _owner.TryGetComponent<CharacterController>(out var selfCc))
+            {
+                monsterRadius = selfCc.radius;
+            }
+            float targetRadius = 0.5f;
+            var target = _owner?.TargetFinder?.GetTarget();
+            if (target != null && target.TryGetComponent<CharacterController>(out var targetCc))
+            {
+                targetRadius = targetCc.radius;
+            }
+            return (monsterRadius > 0f ? monsterRadius : 0.8f) + targetRadius;
+        }
+
         public ActionConfigAsset CurrentPlayingAction => _owner?.ActionController?.CurrentPlayingAction;
         public MonsterLocomotionConfig LocomotionConfig => (_owner?.Config as MonsterConfigAsset)?.locomotionConfig;
 
-        private MonsterLocomotionIntent _currentLocomotionIntent = MonsterLocomotionIntent.None;
-        public MonsterLocomotionIntent CurrentLocomotionIntent => _currentLocomotionIntent;
 
-        /// <summary>
-        /// 清理当前移动意图（例如被出刀攻击、受击硬直打断时调用）。
-        /// </summary>
-        public void ClearLocomotionIntent()
-        {
-            _currentLocomotionIntent = MonsterLocomotionIntent.None;
-        }
-
-        /// <summary>
-        /// 检查当前动作控制器是否正在播放该移动意图对应的动作。
-        /// </summary>
-        [Obsolete("微观步态已下放至 MonsterStateBase 状态机自决策，此方法保留仅供向下兼容")]
-        public bool IsPlayingLocomotionIntent(MonsterLocomotionIntent intent)
-        {
-            var config = LocomotionConfig;
-            if (config == null) return false;
-            var current = CurrentPlayingAction;
-            if (current == null) return false;
-
-            return intent switch
-            {
-                MonsterLocomotionIntent.Run => current == config.RunStart || current == config.RunLoop,
-                MonsterLocomotionIntent.StrafeForward => current == config.WalkF,
-                MonsterLocomotionIntent.StrafeBackward => current == config.WalkB,
-                MonsterLocomotionIntent.StrafeLeft => current == config.WalkL,
-                MonsterLocomotionIntent.StrafeRight => current == config.WalkR,
-                MonsterLocomotionIntent.Stop => current == config.RunEnd,
-                _ => false
-            };
-        }
-
-        /// <summary>
-        /// 核心决策接口（已由 MonsterTacticalContext 与 FSM 接管，保留供旧节点过渡）
-        /// </summary>
-        [Obsolete("请使用 Context.Strategy / TargetRadius 替代直接设置动作意图")]
-        public bool SetLocomotionIntent(MonsterLocomotionIntent newIntent)
-        {
-            if (newIntent == MonsterLocomotionIntent.None)
-            {
-                _currentLocomotionIntent = MonsterLocomotionIntent.None;
-                return true;
-            }
-
-            if (_currentLocomotionIntent == newIntent)
-            {
-                if (IsPlayingLocomotionIntent(newIntent))
-                {
-                    return true;
-                }
-            }
-
-            _currentLocomotionIntent = newIntent;
-            long cmdId;
-            return newIntent switch
-            {
-                MonsterLocomotionIntent.Run => PlayRunInternal(out cmdId),
-                MonsterLocomotionIntent.StrafeForward => PlayStrafeInternal(StrafeDirection.Forward, out cmdId),
-                MonsterLocomotionIntent.StrafeBackward => PlayStrafeInternal(StrafeDirection.Backward, out cmdId),
-                MonsterLocomotionIntent.StrafeLeft => PlayStrafeInternal(StrafeDirection.Left, out cmdId),
-                MonsterLocomotionIntent.StrafeRight => PlayStrafeInternal(StrafeDirection.Right, out cmdId),
-                MonsterLocomotionIntent.Stop => PlayStopRunInternal(out cmdId),
-                _ => true
-            };
-        }
-
-        private bool PlayRunInternal(out long commandId)
-        {
-            commandId = 0;
-            var config = LocomotionConfig;
-            if (config == null) return false;
-
-            ActionConfigAsset runAction = config.RunStart != null ? config.RunStart : config.RunLoop;
-            if (runAction == null) return false;
-
-            return SendCommand(runAction, out commandId);
-        }
-
-        private bool PlayStrafeInternal(StrafeDirection dir, out long commandId)
-        {
-            commandId = 0;
-            var config = LocomotionConfig;
-            if (config == null) return false;
-
-            ActionConfigAsset walkAction = dir switch
-            {
-                StrafeDirection.Forward => config.WalkF,
-                StrafeDirection.Backward => config.WalkB,
-                StrafeDirection.Left => config.WalkL,
-                StrafeDirection.Right => config.WalkR,
-                _ => config.WalkF
-            };
-
-            if (walkAction == null) return false;
-
-            return SendCommand(walkAction, out commandId);
-        }
-
-        private bool PlayStopRunInternal(out long commandId)
-        {
-            commandId = 0;
-            var config = LocomotionConfig;
-            if (config == null || config.RunEnd == null) return false;
-
-            return SendCommand(config.RunEnd, out commandId);
-        }
 
         public void ServiceUpdate(Blackboard bb)
         {

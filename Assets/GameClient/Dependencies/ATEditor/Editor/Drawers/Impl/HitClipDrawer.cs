@@ -241,10 +241,36 @@ namespace ATEditor.Editor
 
         private void DrawFieldByName(HitClip obj, string fieldName)
         {
+            if (obj == null) return;
+
+            // 1. 尝试从 HitClip 顶层字段查找
             var field = typeof(HitClip).GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (field != null)
             {
                 DrawField(field, obj);
+                return;
+            }
+
+            // 2. 尝试从 hitBoxScope 查找
+            if (obj.hitBoxScope != null)
+            {
+                field = typeof(HitBoxScopeConfig).GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (field != null)
+                {
+                    DrawField(field, obj.hitBoxScope);
+                    return;
+                }
+            }
+
+            // 3. 尝试从 attackPolicy 查找
+            if (obj.attackPolicy != null)
+            {
+                field = typeof(AttackDetectionPolicy).GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (field != null)
+                {
+                    DrawField(field, obj.attackPolicy);
+                    return;
+                }
             }
         }
 

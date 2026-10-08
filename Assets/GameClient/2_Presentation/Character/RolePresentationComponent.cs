@@ -23,6 +23,9 @@ namespace Game.Presentation
         public CameraPointBinder CameraPointBinder { get; private set; }
         public IVisualOffsetPresenter VisualOffsetPresenter { get; private set; }
 
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+#endif
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoRegisterPresentationBinder()
         {

@@ -29,19 +29,23 @@ namespace Game.GamePlay
 
         public bool UsesSharedInputProvider => IsSharedProvider(EffectiveInputProvider);
 
+        private IActionCommandHandler _defaultHandler;
+        private static readonly IActionCommandHandler NullHandler = new NullInputCommandHandler();
+
         public void Initialize(CharacterEntity owner)
         {
             _role = (RoleEntity)owner;
+            _defaultHandler = new DefaultActionCommandHandler(_role);
             _inputEventAdapter = new CharacterInputEventAdapter(ResolveCurrentInputHandler);
         }
 
         private IActionCommandHandler ResolveCurrentInputHandler()
         {
-            if (_role?.StateMachine?.CurrentState is RoleStateBase charState && charState.InputHandler != null)
+            if (_role?.DomainContext != null && !_role.DomainContext.CanAcceptCommand(null))
             {
-                return charState.InputHandler;
+                return NullHandler;
             }
-            return RoleStateBase.InputHandlerStatic;
+            return _defaultHandler;
         }
 
         public void SetFallbackInputProvider(IInputProvider provider)

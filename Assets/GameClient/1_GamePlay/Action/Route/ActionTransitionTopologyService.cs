@@ -50,6 +50,16 @@ namespace Game.GamePlay
 
         /// <summary> 已配置的自定义退出时间点 </summary>
         public float CustomExitTime { get; set; }
+
+        /// <summary> 是否配置了自定义切入起始时间点 </summary>
+        public bool HasStartTime { get; set; }
+
+        /// <summary> 已配置的切入起始时间点 </summary>
+        public float StartTime { get; set; }
+
+        public bool HasEndTime { get => HasCustomExitTime; set => HasCustomExitTime = value; }
+        public float EndTime { get => CustomExitTime; set => CustomExitTime = value; }
+        public float BlendDuration { get => ConfiguredCrossfade; set => ConfiguredCrossfade = value; }
     }
 
     /// <summary>
@@ -171,9 +181,11 @@ namespace Game.GamePlay
                     MatchedRoute = kvp.Value.bestRoute,
                     SourceDescription = string.Join(", ", kvp.Value.sources),
                     IsConfiguredInTable = existingTransition != null,
-                    ConfiguredCrossfade = existingTransition?.CrossfadeDuration ?? -1f,
-                    HasCustomExitTime = existingTransition?.HasCustomExitTime ?? false,
-                    CustomExitTime = existingTransition?.CustomExitTime ?? 0f
+                    ConfiguredCrossfade = existingTransition?.BlendDuration ?? -1f,
+                    HasCustomExitTime = existingTransition?.HasEndTime ?? false,
+                    CustomExitTime = existingTransition?.EndTime ?? 0f,
+                    HasStartTime = existingTransition?.HasStartTime ?? false,
+                    StartTime = existingTransition?.StartTime ?? 0f
                 });
             }
 
@@ -199,9 +211,11 @@ namespace Game.GamePlay
                     MaxPriority = int.MinValue + 1, // 象征性保底低优先级
                     SourceDescription = "动作自循环 (Loop Transition)",
                     IsConfiguredInTable = existingTransition != null,
-                    ConfiguredCrossfade = existingTransition?.CrossfadeDuration ?? -1f,
-                    HasCustomExitTime = existingTransition?.HasCustomExitTime ?? false,
-                    CustomExitTime = existingTransition?.CustomExitTime ?? 0f
+                    ConfiguredCrossfade = existingTransition?.BlendDuration ?? -1f,
+                    HasCustomExitTime = existingTransition?.HasEndTime ?? false,
+                    CustomExitTime = existingTransition?.EndTime ?? 0f,
+                    HasStartTime = existingTransition?.HasStartTime ?? false,
+                    StartTime = existingTransition?.StartTime ?? 0f
                 });
             }
 
@@ -217,9 +231,11 @@ namespace Game.GamePlay
                     MaxPriority = int.MinValue, // 排在最末尾
                     SourceDescription = "自然完成顺承 (Complete Transition)",
                     IsConfiguredInTable = existingTransition != null,
-                    ConfiguredCrossfade = existingTransition?.CrossfadeDuration ?? -1f,
-                    HasCustomExitTime = existingTransition?.HasCustomExitTime ?? false,
-                    CustomExitTime = existingTransition?.CustomExitTime ?? 0f
+                    ConfiguredCrossfade = existingTransition?.BlendDuration ?? -1f,
+                    HasCustomExitTime = existingTransition?.HasEndTime ?? false,
+                    CustomExitTime = existingTransition?.EndTime ?? 0f,
+                    HasStartTime = existingTransition?.HasStartTime ?? false,
+                    StartTime = existingTransition?.StartTime ?? 0f
                 });
             }
 

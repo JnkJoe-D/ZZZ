@@ -1,5 +1,5 @@
 {
-    "duration": 3.5500001907348635,
+    "duration": 3.5500001907348633,
     "isLoop": true,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -197,7 +197,7 @@
                     "clipName": "动画片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.5500001907348635,
+                    "duration": 3.5500001907348633,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
@@ -235,7 +235,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.5500001907348635,
+                    "duration": 3.5500001907348633,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 2,
@@ -258,7 +258,7 @@
                     "clipName": "旋转片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.5500001907348635,
+                    "duration": 3.5500001907348633,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "referenceDirection": 2,
@@ -283,7 +283,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.5500001907348635,
+                    "duration": 3.5500001907348633,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -303,7 +303,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 3.5500001907348635,
+                    "duration": 3.5500001907348633,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {

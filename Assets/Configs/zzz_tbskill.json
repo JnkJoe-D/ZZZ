@@ -655,7 +655,7 @@
     "condition": [],
     "cost": [],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -666,7 +666,7 @@
     "condition": [],
     "cost": [],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -711,7 +711,7 @@
       }
     ],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -734,7 +734,7 @@
       }
     ],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -848,7 +848,7 @@
     "condition": [],
     "cost": [],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -859,7 +859,7 @@
     "condition": [],
     "cost": [],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -1258,7 +1258,7 @@
     "condition": [],
     "cost": [],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -1269,7 +1269,7 @@
     "condition": [],
     "cost": [],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -1291,7 +1291,7 @@
     "condition": [],
     "cost": [],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -1302,7 +1302,7 @@
     "condition": [],
     "cost": [],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -1414,7 +1414,7 @@
     "condition": [],
     "cost": [],
     "resilience": {
-      "interrupt_level": 5,
+      "interrupt_level": 2,
       "resilience_bonus": 0
     }
   },
@@ -1648,7 +1648,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 5,
-      "resilience_bonus": 99
+      "resilience_bonus": 5
     }
   },
   {
@@ -1659,7 +1659,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 5,
-      "resilience_bonus": 0
+      "resilience_bonus": 5
     }
   },
   {
@@ -1670,7 +1670,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 5,
-      "resilience_bonus": 0
+      "resilience_bonus": 5
     }
   },
   {
@@ -1681,7 +1681,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 5,
-      "resilience_bonus": 0
+      "resilience_bonus": 5
     }
   },
   {
@@ -1692,7 +1692,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 5,
-      "resilience_bonus": 0
+      "resilience_bonus": 5
     }
   },
   {
@@ -1703,7 +1703,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 5,
-      "resilience_bonus": 0
+      "resilience_bonus": 5
     }
   },
   {
@@ -1736,7 +1736,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 0,
-      "resilience_bonus": 0
+      "resilience_bonus": 99
     }
   },
   {
@@ -1747,7 +1747,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 0,
-      "resilience_bonus": 0
+      "resilience_bonus": 99
     }
   },
   {
@@ -1758,7 +1758,7 @@
     "cost": [],
     "resilience": {
       "interrupt_level": 0,
-      "resilience_bonus": 0
+      "resilience_bonus": 99
     }
   }
 ]

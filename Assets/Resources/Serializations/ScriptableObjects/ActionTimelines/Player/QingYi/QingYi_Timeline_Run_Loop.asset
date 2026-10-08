@@ -68,7 +68,8 @@ MonoBehaviour:
     isCollapsed: 0
     isEnabled: 1
     isLocked: 0
-    tracks: []
+    tracks:
+    - rid: 6293807052277415954
   references:
     version: 2
     RefIds:
@@ -177,11 +178,11 @@ MonoBehaviour:
         clips:
         - rid: 4681868069779800732
     - rid: 4681868069779800726
-      type: {class: HitTrack, ns: ATEditor, asm: Assembly-CSharp}
+      type: {class: CombatTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
         trackId: 6c372d50-4b7d-4af7-992f-9aff4e5fa659
-        trackType: DamageTrack
-        trackName: "\u547D\u4E2D\u5224\u5B9A\u8F68\u9053"
+        trackType: CombatTrack
+        trackName: "\u6218\u6597\u8F68\u9053"
         isMuted: 0
         isLocked: 0
         isHidden: 0
@@ -290,6 +291,33 @@ MonoBehaviour:
         obstacleMask:
           serializedVersion: 2
           m_Bits: 4294967295
+    - rid: 6293807052277415954
+      type: {class: TransformTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 2634862c-1bf4-4509-96f5-946475532f9d
+        trackType: TransformTrack
+        trackName: "\u53D8\u6362\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6293807052277415955
+    - rid: 6293807052277415955
+      type: {class: RotationClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 5bfd4fe5-c571-410f-b972-82f853792622
+        clipName: "\u65CB\u8F6C\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.02
+        duration: 0.38000003
+        blendInDuration: 0
+        blendOutDuration: 0
+        referenceDirection: 1
+        rotationMode: 0
+        updateFrequency: 2
+        localRotationOffset: {x: 0, y: 0, z: 0}
     - rid: 6379258171200110783
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:

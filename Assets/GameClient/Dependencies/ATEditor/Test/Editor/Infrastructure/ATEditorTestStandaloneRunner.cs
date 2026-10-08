@@ -41,7 +41,9 @@ namespace ATEditor.Test
                 typeof(ProcessFactoryPoolTests),
                 typeof(CameraTargetClipTests),
                 typeof(Game.Tests.Targeting.TargetLockerTests),
-                typeof(Game.Tests.Combat.ParryWorkflowTests)
+                typeof(Game.Tests.Combat.ParryWorkflowTests),
+                typeof(Game.Tests.Combat.MonsterStunAndActionControllerTests),
+                typeof(Game.Tests.Combat.ActionWindowRouteAndDomainTests)
             };
 
             int passedCount = 0;

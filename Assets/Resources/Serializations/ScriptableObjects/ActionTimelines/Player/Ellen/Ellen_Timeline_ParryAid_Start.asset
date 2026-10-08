@@ -204,7 +204,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 4.166667
+        duration: 4.1833334
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -216,7 +216,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 4.166667
+        duration: 4.1833334
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -256,7 +256,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 1
-        duration: 3.166667
+        duration: 3.1833334
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -308,7 +308,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 4.166667
+        duration: 4.1833334
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -402,7 +402,7 @@ MonoBehaviour:
         instantDistanceOnEnter: 1
         recenterDistance: 1.8
         recenterFOV: 45
-        recenterFovBlendSpeed: 6
+        recenterFovBlendSpeed: 20
         recenterRestoreFovOnExit: 1
         recenterRestoreSpeed: 2
         lookAtOffset: {x: 0, y: 1.2, z: 0}

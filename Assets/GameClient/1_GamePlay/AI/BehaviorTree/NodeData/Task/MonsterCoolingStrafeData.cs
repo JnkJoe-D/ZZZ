@@ -10,5 +10,8 @@ namespace Game.GamePlay
     {
         [Tooltip("单次对峙周旋动作的最长持续时间 (秒)")]
         public float strafeDuration = 2.0f;
+
+        [Tooltip("对峙基准距离 (米)。周旋时在此距离形成的迟滞区间内走动，默认 3.5m")]
+        public float targetDistance = 3.5f;
     }
 }

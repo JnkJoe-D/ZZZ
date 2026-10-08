@@ -33,7 +33,7 @@ MonoBehaviour:
     - rid: 4681868069779800835
   - groupId: 87517105-7af1-4746-a8ba-834e1987bc67
     groupName: "\u97F3\u6548"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -123,7 +123,8 @@ MonoBehaviour:
         isHidden: 0
         isCollapsed: 0
         isEnabled: 1
-        clips: []
+        clips:
+        - rid: 6293806958974861360
     - rid: 4681868069779800837
       type: {class: AudioTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -289,6 +290,28 @@ MonoBehaviour:
         blendInSpeed: 5
         blendOutSpeed: 5
         restoreOnExit: 1
+    - rid: 6293806958974861360
+      type: {class: AudioClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 71079804-6ffd-4553-b2b8-15793a4aadfa
+        clipName: "\u97F3\u9891\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 0.5
+        blendInDuration: 0
+        blendOutDuration: 0
+        audioClips:
+        - {fileID: 8300000, guid: e61f68ac027c90b4797cda64d434dadf, type: 3}
+        volume: 1
+        pitch: 1
+        loop: 0
+        isAffectSpeed: 0
+        spatialBlend: 0
+        lifeControlByClip: 0
+        audioRefs:
+        - guid: e61f68ac027c90b4797cda64d434dadf
+          assetName: Attack_Parry_SFX2
+          assetPath: Assets/RawArtAssets/SFX/Attack/Attack_Parry_SFX2.wav
     - rid: 6379257910440230917
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:

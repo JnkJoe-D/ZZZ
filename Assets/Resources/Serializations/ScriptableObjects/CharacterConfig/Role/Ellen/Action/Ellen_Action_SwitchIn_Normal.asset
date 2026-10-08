@@ -16,24 +16,105 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: a2a0585b77b05c24788cfeec8e806999, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 884baad65dee2534ba74d2a0e9667091, type: 2}
+  _domainId: 6
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
   _transitionTable:
     _items:
     - TargetAction: {fileID: 11400000, guid: 01314b8f7c89159429ee37b5f4564176, type: 2}
-      CrossfadeDuration: 0.1
-      HasCustomExitTime: 1
-      CustomExitTime: 3.3166666
-  Routes: []
+      EndTime: 0.11666667
+      HasEndTime: 1
+      BlendDuration: 0.05
+      StartTime: 0.11666667
+      HasStartTime: 1
+    - TargetAction: {fileID: 11400000, guid: b4ff7bab837936c41a8f679b5dffb8eb, type: 2}
+      EndTime: 0.11666667
+      HasEndTime: 1
+      BlendDuration: 0.083333336
+      StartTime: 0.05
+      HasStartTime: 1
+    - TargetAction: {fileID: 11400000, guid: 252b76f192268094da0cf1c1619bd95a, type: 2}
+      EndTime: 0.16666667
+      HasEndTime: 1
+      BlendDuration: 0.16666667
+      StartTime: 0.083333336
+      HasStartTime: 1
+    - TargetAction: {fileID: 11400000, guid: 4bebc32c4f9b7c2419e905e133e0bc41, type: 2}
+      EndTime: 0
+      HasEndTime: 1
+      BlendDuration: 0.1333333
+      StartTime: 0
+      HasStartTime: 1
+  Routes:
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 252b76f192268094da0cf1c1619bd95a, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 2
+    ArbitrationTiming: 0
+    TriggerStrategy:
+      rid: 6293807052277415959
+    ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 01314b8f7c89159429ee37b5f4564176, type: 2}
+    ValidateSkillRequirement: 0
+    RouteExecuteEvent: 0
+    Priority: 1
+    ArbitrationTiming: 0
+    TriggerStrategy:
+      rid: 6293807052277415968
+    ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: d4c1f367ea1737540b698956656afdee, type: 2}
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
   - {fileID: 11400000, guid: 5d4a502ea31a12241bc5607fe2c03112, type: 2}
   - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
-  - {fileID: 11400000, guid: 88af4c9d2a2b9f54e896f88493c95379, type: 2}
-  EnterState: 70
   InheritMode: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 6293807052277415959
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 10
+        RequiredWindow:
+          rid: 6293807052277415965
+        InputConditions:
+        - Category: 10
+          RequiredKey: 50
+          InputCondition:
+            rid: -2
+          Inverse: 0
+        - Category: 10
+          RequiredKey: 10
+          InputCondition:
+            rid: -2
+          Inverse: 0
+    - rid: 6293807052277415965
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto2
+    - rid: 6293807052277415968
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 10
+        RequiredWindow:
+          rid: 6293807052277415970
+        InputConditions:
+        - Category: 10
+          RequiredKey: 50
+          InputCondition:
+            rid: -2
+          Inverse: 1
+        - Category: 10
+          RequiredKey: 10
+          InputCondition:
+            rid: -2
+          Inverse: 0
+    - rid: 6293807052277415970
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1

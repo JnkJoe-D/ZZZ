@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 141040
   Name: 
+  _domainId: 1
   TimelineAsset: {fileID: 4900000, guid: 9736a3072eb95a74b8e22de07c7d874d, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 466d81ae99bf80b42a075fb048a13308, type: 2}
   CompleteMode: 0

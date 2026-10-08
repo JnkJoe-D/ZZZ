@@ -54,6 +54,25 @@ namespace Game.GamePlay
                     {
                         var weight = ctx.WarningMarker.ParryWeight != 0 ? ctx.WarningMarker.ParryWeight : ATEditor.ParryWeight.Light;
                         parryData.Set(nameof(parryData.LastParryWeight), weight);
+
+                        // 临界压哨接刀保护：若快进播放（说明攻击即将或已经到达），提前无缝激活 IsParrying，抹平时间轴与判定帧之间微秒级空窗期
+                        if (ctx.CalculatedStartTime > 0f)
+                        {
+                            parryData.Set(nameof(parryData.IsParrying), true);
+                        }
+                    }
+
+                    // 预先建立拼刀契约，确保受击管线在极早期或压哨命中时能立刻锁定招架目标
+                    if (ctx.WarningMarker != null && ctx.TargetAttacker != null)
+                    {
+                        var contract = new ParryClashContract
+                        {
+                            Attacker = ctx.TargetAttacker,
+                            ParryRole = inEntity,
+                            Marker = ctx.WarningMarker,
+                            IsResolved = false
+                        };
+                        CombatWarningManager.RegisterContract(contract);
                     }
 
                     // 纯数据裁决：统一触发招架起手架势 (ParryAidStart)，并携带动态推导的动作快进偏移

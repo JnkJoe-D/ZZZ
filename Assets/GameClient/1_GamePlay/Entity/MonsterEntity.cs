@@ -72,7 +72,7 @@ namespace Game.GamePlay
             // 2. 核心时序：此时 Config 与 StateMachine 已完备注入！ActionController.Initialize 内部自驱播放 PlayRootAction
             if (ActionController == null)
             {
-                ActionController = EntityControllerFactory.Create<ActionController>(this);
+                ActionController = EntityControllerFactory.Create<MonsterActionController>(this);
             }
             else
             {
@@ -108,7 +108,7 @@ namespace Game.GamePlay
             RouteArbitrator ??= new RouteArbitrator();
             if (ActionController == null)
             {
-                ActionController = EntityControllerFactory.Create<ActionController>(this);
+                ActionController = EntityControllerFactory.Create<MonsterActionController>(this);
             }
             BrainCoordinator ??= new MonsterBrainCoordinator();
             BrainCoordinator.Initialize(this);

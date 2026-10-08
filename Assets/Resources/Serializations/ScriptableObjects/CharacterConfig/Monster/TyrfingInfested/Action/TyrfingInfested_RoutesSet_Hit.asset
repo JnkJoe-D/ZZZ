@@ -19,6 +19,7 @@ MonoBehaviour:
     ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
     Priority: 99
+    ArbitrationTiming: 10
     TriggerStrategy:
       rid: 4681868330708501003
     ExtraConditions: []
@@ -27,6 +28,7 @@ MonoBehaviour:
     ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
     Priority: 99
+    ArbitrationTiming: 10
     TriggerStrategy:
       rid: 4681868330708501003
     ExtraConditions: []
@@ -35,6 +37,7 @@ MonoBehaviour:
     ValidateSkillRequirement: 0
     RouteExecuteEvent: 0
     Priority: 999
+    ArbitrationTiming: 10
     TriggerStrategy:
       rid: 4681868330708501003
     ExtraConditions: []

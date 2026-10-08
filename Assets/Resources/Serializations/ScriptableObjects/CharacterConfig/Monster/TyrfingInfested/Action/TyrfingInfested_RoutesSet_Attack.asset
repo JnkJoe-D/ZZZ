@@ -22,10 +22,25 @@ MonoBehaviour:
     TriggerStrategy:
       rid: 4681868330708500992
     ExtraConditions: []
+  - ExecuteType: 10
+    ExecuteAction: {fileID: 11400000, guid: 7481b629f257b124a8beb45e0e53abde, type: 2}
+    ValidateSkillRequirement: 1
+    RouteExecuteEvent: 0
+    Priority: 0
+    CrossfadeOverride: 0
+    TriggerStrategy:
+      rid: 4681868330708500993
+    ExtraConditions: []
   references:
     version: 2
     RefIds:
     - rid: 4681868330708500992
+      type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredWindow:
+          rid: 6379258143149916766
+        RequiredWindowTag: Execute1
+    - rid: 4681868330708500993
       type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         RequiredWindow:

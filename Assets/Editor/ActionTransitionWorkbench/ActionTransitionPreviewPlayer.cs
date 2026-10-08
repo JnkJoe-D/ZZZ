@@ -54,6 +54,28 @@ namespace Game.Editor.ActionTransition
             }
         }
 
+        private bool _hasStartTime = false;
+        public bool HasStartTime
+        {
+            get => _hasStartTime;
+            set
+            {
+                _hasStartTime = value;
+                RecalculateTotalDuration();
+            }
+        }
+
+        private float _startTime = 0f;
+        public float StartTime
+        {
+            get => _startTime;
+            set
+            {
+                _startTime = Mathf.Max(0f, value);
+                RecalculateTotalDuration();
+            }
+        }
+
         private PreviewChannel _activeChannel = PreviewChannel.All;
         public PreviewChannel ActiveChannel
         {
@@ -72,7 +94,9 @@ namespace Game.Editor.ActionTransition
         public void RecalculateTotalDuration()
         {
             float durA = _sourceData.TimelineDuration > 0.001f ? _sourceData.TimelineDuration : 1f;
-            float durB = _targetData.TimelineDuration > 0.001f ? _targetData.TimelineDuration : 1f;
+            float rawDurB = _targetData.TimelineDuration > 0.001f ? _targetData.TimelineDuration : 1f;
+            float effectiveStartTime = _hasStartTime ? _startTime : 0f;
+            float durB = Mathf.Max(0.1f, rawDurB - effectiveStartTime);
 
             if (_activeChannel == PreviewChannel.SourceOnly)
             {
@@ -258,8 +282,9 @@ namespace Game.Editor.ActionTransition
             }
             else if (_activeChannel == PreviewChannel.TargetOnly)
             {
-                // 仅目标动作独立预览：100% 从 0 秒开始播放目标动作全程，不受源动作影响
-                var (clipB, localTimeB) = _targetData.SampleAt(CurrentTime);
+                // 仅目标动作独立预览：从切入点 StartTime 推进至结尾
+                float effectiveStartTime = _hasStartTime ? _startTime : 0f;
+                var (clipB, localTimeB) = _targetData.SampleAt(effectiveStartTime + CurrentTime);
                 BindClipPlayable(1, clipB, ref _playableB, ref _currentBoundClipB);
                 if (_playableB.IsValid()) _playableB.SetTime(localTimeB);
                 _mixer.SetInputWeight(0, 0.0f);
@@ -269,7 +294,8 @@ namespace Game.Editor.ActionTransition
             {
                 // 常规双轨过渡预览：根据 ExitTime 与 Crossfade 进行实时平滑插值
                 var (clipA, localTimeA) = _sourceData.SampleAt(CurrentTime);
-                float targetTimeOffset = Mathf.Max(0f, CurrentTime - ExitTime);
+                float effectiveStartTime = _hasStartTime ? _startTime : 0f;
+                float targetTimeOffset = effectiveStartTime + Mathf.Max(0f, CurrentTime - ExitTime);
                 var (clipB, localTimeB) = _targetData.SampleAt(targetTimeOffset);
 
                 BindClipPlayable(0, clipA, ref _playableA, ref _currentBoundClipA);

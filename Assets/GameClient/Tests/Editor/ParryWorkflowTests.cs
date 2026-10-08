@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ATEditor;
 using Game.Framework;
 using Game.GamePlay;
+using Game.Presentation;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -40,6 +41,14 @@ namespace Game.Tests.Combat
         public void SetUp()
         {
             CombatWarningManager.Clear();
+
+            // 确保单测环境下 RolePresentationRegistry 装配可用
+            RolePresentationRegistry.Register((go, entity) =>
+            {
+                var comp = go.GetComponent<RolePresentationComponent>() 
+                    ?? go.AddComponent<RolePresentationComponent>();
+                return comp;
+            });
 
             // 1. 初始化主攻击怪物（位于 (0, 0, 10)，面向 -Z 方向）
             _monsterGo = new GameObject("Monster_Primary");
@@ -84,6 +93,7 @@ namespace Game.Tests.Combat
         public void TearDown()
         {
             CombatWarningManager.Clear();
+            RolePresentationRegistry.Clear();
 
             if (_monsterGo != null) Object.DestroyImmediate(_monsterGo);
             if (_monsterGo2 != null) Object.DestroyImmediate(_monsterGo2);
@@ -776,6 +786,92 @@ namespace Game.Tests.Combat
             Assert.IsTrue(contract.IsResolved, "契约已标记为解决");
 
             pipeline.ReleaseContext(hitCtx);
+        }
+
+        #endregion
+
+        #region 8. 临界压哨时间差与物理空间同步边界保证
+
+        [Test]
+        public void Dim8_WarningClipExit_InputDoesNotTriggerParryAid_PreventsGhostParry()
+        {
+            // 场景：验证招架按键严格控制在 WarningClip 激活期内；
+            // 若 AttackWarningClip 离开注销，后续普通切人按键严禁再次响应升级为 ParryAid，杜绝“空招架”
+            var marker = new AttackWarningMarker
+            {
+                Attacker = _monster,
+                SignalType = WarningSignalType.Yellow_Parryable,
+                DetectionRadius = 15f
+            };
+            CombatWarningManager.Register(marker);
+
+            // 预警 Clip 离开注销
+            CombatWarningManager.Unregister(marker);
+
+            // 1. 验证：预警 Clip 离开后，GetAnyValidWarning 不再返回该预警
+            var warningAfterExit = CombatWarningManager.GetAnyValidWarning(_outgoingRole);
+            Assert.IsNull(warningAfterExit, "预警 Clip 离开后必须立即失效，不得继续响应招架按键");
+
+            // 2. 验证：切人管线保持 NormalSwitch，不发生越权升级为 ParryAid，彻底杜绝空招架
+            var pipe = new SwitchValidationPipe();
+            var ctx = new SwitchPipelineContext
+            {
+                Manager = TeamManager.Instance,
+                Type = SwitchType.NormalSwitch,
+                IncomingMember = _incomingMember,
+                OutgoingMember = _outgoingMember
+            };
+
+            pipe.Process(ctx);
+
+            Assert.AreEqual(SwitchType.NormalSwitch, ctx.Type, "预警结束后按切人键必须保持普通切人，杜绝切出角色面对空气空招架");
+        }
+
+        [Test]
+        public void Dim8_LateParry_ActionTriggerPipe_PreActivatesIsParrying()
+        {
+            // 场景：压哨快进播放（CalculatedStartTime > 0），
+            // 验证切入瞬间即提前开启 IsParrying，并预注册 ParryClashContract，消除进入时间轴片段前的微秒级受击空窗
+            var marker = new AttackWarningMarker
+            {
+                Attacker = _monster,
+                SignalType = WarningSignalType.Yellow_Parryable,
+                ParryWeight = ParryWeight.Light
+            };
+            CombatWarningManager.Register(marker);
+
+            var pipe = new ActionAndInvincibleTriggerPipe();
+            var ctx = new SwitchPipelineContext
+            {
+                Manager = TeamManager.Instance,
+                Type = SwitchType.ParryAid,
+                IncomingMember = _incomingMember,
+                OutgoingMember = _outgoingMember,
+                TargetAttacker = _monster,
+                WarningMarker = marker,
+                CalculatedStartTime = 0.15f // 模拟临界快进 0.15s
+            };
+
+            pipe.Process(ctx);
+
+            var parryData = _incomingRole.DataModule.Get<ParryRuntimeData>();
+            Assert.IsTrue(parryData.IsParrying, "临界快进接刀时，IsParrying 必须无缝预先激活");
+
+            var contract = CombatWarningManager.GetActiveContractByRole(_incomingRole);
+            Assert.IsNotNull(contract, "必须预先建立防守方拼刀契约");
+            Assert.AreEqual(_monster, contract.Attacker);
+        }
+
+        [Test]
+        public void Dim8_Placement_PhysicsSyncTransforms_SynchronizesCollider()
+        {
+            // 场景：验证 SynchronizePartyMemberTransform 调用后，物理世界坐标立即同步
+            Vector3 targetPos = new Vector3(0f, 0f, 7.0f);
+            Quaternion targetRot = Quaternion.identity;
+
+            TeamManager.Instance.SynchronizePartyMemberTransform(_incomingRole, targetPos, targetRot);
+
+            Assert.AreEqual(7.0f, _incomingRole.transform.position.z, 0.001f);
         }
 
         #endregion

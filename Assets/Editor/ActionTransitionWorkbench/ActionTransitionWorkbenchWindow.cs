@@ -56,6 +56,8 @@ namespace Game.Editor.ActionTransition
         private float _currentCrossfade = 0.2f;
         private bool _hasCustomExitTime = false;
         private float _customExitTimeValue = 0f;
+        private bool _hasStartTime = false;
+        private float _startTimeValue = 0f;
 
         // AutoRouteWindow 同步覆写 UI 元素
         private VisualElement _autoRouteSyncContainer;
@@ -89,23 +91,67 @@ namespace Game.Editor.ActionTransition
         private Toggle _loopFocusToggle;
         private Label _timeDisplayLabel;
 
+        // N-Panel 侧边收纳组件
+        private VisualElement _npanelContainer;
+        private VisualElement _npanelContent;
+        private Button _npanelTabBtn;
+        private bool _isNPanelExpanded = true;
+        private const string PrefsKeyNPanelExpanded = "AT_Workbench_NPanel_Expanded";
+
         // 属性微调元素
         private Label _targetHeaderLabel;
         private Slider _crossfadeSlider;
         private FloatField _crossfadeField;
         private Button _resetDefaultFadeBtn;
+
         private Toggle _customExitToggle;
-        private Button _exitModeToggleBtn;
-        private bool _isNormalizedExitTimeMode = false; // false: 秒, true: 归一化 (0~1)
+        private PopupField<string> _exitUnitPopup;
+        private MiniSliderUnit _exitUnit = MiniSliderUnit.Seconds;
+        private IMGUIContainer _exitMiniSliderContainer;
+        private ActionTransitionMiniSlider _exitMiniSlider;
         private FloatField _customExitField;
+
+        private Toggle _startTimeToggle;
+        private PopupField<string> _startUnitPopup;
+        private MiniSliderUnit _startUnit = MiniSliderUnit.Seconds;
+        private IMGUIContainer _startMiniSliderContainer;
+        private ActionTransitionMiniSlider _startMiniSlider;
+        private FloatField _startTimeField;
+
         private Button _saveBtn;
+
+        private static readonly List<string> UnitChoices = new List<string> { "秒 (s)", "帧 (f)", "归一化 (0~1)" };
 
         private double _lastUpdateTime;
 
         private void OnEnable()
         {
+            _isNPanelExpanded = EditorPrefs.GetBool(PrefsKeyNPanelExpanded, true);
+
             _viewport = new ActionTransitionPreviewViewport();
             _timelineDrawer = new ActionTransitionTimelineDrawer();
+
+            _exitMiniSlider = new ActionTransitionMiniSlider
+            {
+                Theme = MiniSliderTheme.Source,
+                Unit = MiniSliderUnit.Seconds,
+                Fps = 60,
+                Duration = 1.0f,
+                CurrentTime = 0f,
+                IsEnabled = false
+            };
+            _exitMiniSlider.OnValueChanged = (val) => ApplyExitTimeChange(val);
+
+            _startMiniSlider = new ActionTransitionMiniSlider
+            {
+                Theme = MiniSliderTheme.Target,
+                Unit = MiniSliderUnit.Seconds,
+                Fps = 60,
+                Duration = 1.0f,
+                CurrentTime = 0f,
+                IsEnabled = false
+            };
+            _startMiniSlider.OnValueChanged = (val) => ApplyStartTimeChange(val);
 
             // 绑定时间轴交互回调
             _timelineDrawer.OnCrossfadeChanged += HandleTimelineCrossfadeChanged;
@@ -285,7 +331,17 @@ namespace Game.Editor.ActionTransition
 
             _targetListContainer = rootVisualElement.Q<ScrollView>("targets-scrollview");
 
-            // 3. 过渡参数微调与保存面板 (左侧栏紧凑卡片)
+            // 3. 右上角 N-Panel 侧边收纳组件绑定
+            _npanelContainer = rootVisualElement.Q<VisualElement>("npanel-container");
+            _npanelContent = rootVisualElement.Q<VisualElement>("npanel-content");
+            _npanelTabBtn = rootVisualElement.Q<Button>("npanel-tab-btn");
+            if (_npanelTabBtn != null)
+            {
+                _npanelTabBtn.clicked += ToggleNPanelExpanded;
+                UpdateNPanelVisualState();
+            }
+
+            // 过渡参数微调与保存面板
             _targetHeaderLabel = rootVisualElement.Q<Label>("inspector-header");
 
             _crossfadeSlider = rootVisualElement.Q<Slider>("crossfade-slider");
@@ -313,40 +369,128 @@ namespace Game.Editor.ActionTransition
                 _resetDefaultFadeBtn.clicked += ResetToDefaultFade;
             }
 
+            // EndTime (源动作退出时间)
             _customExitToggle = rootVisualElement.Q<Toggle>("custom-exit-toggle");
             _customExitToggle?.RegisterValueChangedCallback(evt =>
             {
                 _hasCustomExitTime = evt.newValue;
                 _customExitField?.SetEnabled(_hasCustomExitTime);
-                _exitModeToggleBtn?.SetEnabled(_hasCustomExitTime);
+                _exitUnitPopup?.SetEnabled(_hasCustomExitTime);
+                if (_exitMiniSlider != null) _exitMiniSlider.IsEnabled = _hasCustomExitTime;
+                _exitMiniSliderContainer?.MarkDirtyRepaint();
                 PersistCurrentTransition();
             });
 
-            _exitModeToggleBtn = rootVisualElement.Q<Button>("exit-mode-toggle-btn");
-            if (_exitModeToggleBtn != null)
+            var exitUnitContainer = rootVisualElement.Q<VisualElement>("exit-unit-dropdown-container");
+            _exitUnitPopup = new PopupField<string>(UnitChoices, (int)_exitUnit);
+            _exitUnitPopup.RegisterValueChangedCallback(evt =>
             {
-                _exitModeToggleBtn.clicked += ToggleExitTimeMode;
-                _exitModeToggleBtn.SetEnabled(false);
+                _exitUnit = (MiniSliderUnit)_exitUnitPopup.index;
+                if (_exitMiniSlider != null) _exitMiniSlider.Unit = _exitUnit;
+                UpdateExitTimeFieldDisplay();
+                _exitMiniSliderContainer?.MarkDirtyRepaint();
+            });
+            _exitUnitPopup.SetEnabled(false);
+            exitUnitContainer?.Add(_exitUnitPopup);
+
+            _exitMiniSliderContainer = rootVisualElement.Q<IMGUIContainer>("exit-mini-slider");
+            if (_exitMiniSliderContainer != null)
+            {
+                _exitMiniSliderContainer.onGUIHandler = () =>
+                {
+                    if (_exitMiniSlider != null)
+                    {
+                        float dur = _sourceClipData.TimelineDuration > 0.001f ? _sourceClipData.TimelineDuration : 1f;
+                        _exitMiniSlider.Duration = dur;
+                        _exitMiniSlider.Fps = _timelineDrawer != null ? _timelineDrawer.CurrentFps : 60;
+                        _exitMiniSlider.CurrentTime = _currentExitTime;
+                        _exitMiniSlider.IsEnabled = _hasCustomExitTime && HasValidTarget();
+                        _exitMiniSlider.Draw(_exitMiniSliderContainer.contentRect);
+                    }
+                };
             }
 
             _customExitField = rootVisualElement.Q<FloatField>("custom-exit-field");
             if (_customExitField != null)
             {
                 _customExitField.SetEnabled(false);
-                _customExitField.RegisterValueChangedCallback(evt =>
+                _customExitField.RegisterCallback<KeyDownEvent>(evt =>
                 {
-                    float dur = _sourceClipData.TimelineDuration > 0.001f ? _sourceClipData.TimelineDuration : 1f;
-                    if (_isNormalizedExitTimeMode)
+                    if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
                     {
-                        float norm = Mathf.Clamp01(evt.newValue);
-                        _customExitTimeValue = norm * dur;
+                        CommitExitTimeFromField();
+                        evt.StopPropagation();
                     }
-                    else
+                });
+                _customExitField.RegisterCallback<FocusOutEvent>(evt =>
+                {
+                    CommitExitTimeFromField();
+                });
+            }
+
+            // StartTime (目标动作切入时间)
+            _startTimeToggle = rootVisualElement.Q<Toggle>("start-time-toggle");
+            _startTimeToggle?.RegisterValueChangedCallback(evt =>
+            {
+                _hasStartTime = evt.newValue;
+                _startTimeField?.SetEnabled(_hasStartTime);
+                _startUnitPopup?.SetEnabled(_hasStartTime);
+                if (_startMiniSlider != null) _startMiniSlider.IsEnabled = _hasStartTime;
+                _startMiniSliderContainer?.MarkDirtyRepaint();
+
+                if (_viewport?.Player != null)
+                {
+                    _viewport.Player.HasStartTime = _hasStartTime;
+                    _viewport.Player.EvaluateAt(_viewport.Player.CurrentTime);
+                }
+                PersistCurrentTransition();
+                _timelineContainer?.MarkDirtyRepaint();
+            });
+
+            var startUnitContainer = rootVisualElement.Q<VisualElement>("start-unit-dropdown-container");
+            _startUnitPopup = new PopupField<string>(UnitChoices, (int)_startUnit);
+            _startUnitPopup.RegisterValueChangedCallback(evt =>
+            {
+                _startUnit = (MiniSliderUnit)_startUnitPopup.index;
+                if (_startMiniSlider != null) _startMiniSlider.Unit = _startUnit;
+                UpdateStartTimeFieldDisplay();
+                _startMiniSliderContainer?.MarkDirtyRepaint();
+            });
+            _startUnitPopup.SetEnabled(false);
+            startUnitContainer?.Add(_startUnitPopup);
+
+            _startMiniSliderContainer = rootVisualElement.Q<IMGUIContainer>("start-mini-slider");
+            if (_startMiniSliderContainer != null)
+            {
+                _startMiniSliderContainer.onGUIHandler = () =>
+                {
+                    if (_startMiniSlider != null)
                     {
-                        _customExitTimeValue = Mathf.Max(0f, evt.newValue);
+                        float dur = _targetClipData.TimelineDuration > 0.001f ? _targetClipData.TimelineDuration : 1f;
+                        _startMiniSlider.Duration = dur;
+                        _startMiniSlider.Fps = _timelineDrawer != null ? _timelineDrawer.CurrentFps : 60;
+                        _startMiniSlider.CurrentTime = _startTimeValue;
+                        _startMiniSlider.IsEnabled = _hasStartTime && HasValidTarget();
+                        _startMiniSlider.Draw(_startMiniSliderContainer.contentRect);
                     }
-                    _currentExitTime = _customExitTimeValue;
-                    ApplyExitTimeChange(_currentExitTime);
+                };
+            }
+
+            _startTimeField = rootVisualElement.Q<FloatField>("start-time-field");
+            if (_startTimeField != null)
+            {
+                _startTimeField.SetEnabled(false);
+                _startTimeField.RegisterCallback<KeyDownEvent>(evt =>
+                {
+                    if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
+                    {
+                        CommitStartTimeFromField();
+                        evt.StopPropagation();
+                    }
+                });
+                _startTimeField.RegisterCallback<FocusOutEvent>(evt =>
+                {
+                    CommitStartTimeFromField();
                 });
             }
 
@@ -654,7 +798,13 @@ namespace Game.Editor.ActionTransition
             // 5. 同步 UI 与持久化
             _customExitToggle?.SetValueWithoutNotify(true);
             _customExitField?.SetEnabled(true);
-            _exitModeToggleBtn?.SetEnabled(true);
+            _exitUnitPopup?.SetEnabled(true);
+            if (_exitMiniSlider != null)
+            {
+                _exitMiniSlider.IsEnabled = true;
+                _exitMiniSlider.CurrentTime = _currentExitTime;
+            }
+            _exitMiniSliderContainer?.MarkDirtyRepaint();
             UpdateExitTimeFieldDisplay();
             PersistCurrentTransition();
 
@@ -795,7 +945,9 @@ namespace Game.Editor.ActionTransition
                 currentTime,
                 isFocus,
                 focusStart,
-                focusEnd
+                focusEnd,
+                _hasStartTime,
+                _startTimeValue
             );
 
             // 当发生滚轮缩放、横轴滚动或手柄平移拖拽时，主动标记重绘以保证时间轴交互极其平滑
@@ -954,15 +1106,19 @@ namespace Game.Editor.ActionTransition
             var itemConfig = _sourceAction.GetTransition(info.TargetAction);
             if (itemConfig != null)
             {
-                _currentCrossfade = itemConfig.CrossfadeDuration >= 0f ? itemConfig.CrossfadeDuration : _targetClipData.DefaultBlendIn;
-                _hasCustomExitTime = itemConfig.HasCustomExitTime;
-                _customExitTimeValue = itemConfig.CustomExitTime;
+                _currentCrossfade = itemConfig.BlendDuration >= 0f ? itemConfig.BlendDuration : _targetClipData.DefaultBlendIn;
+                _hasCustomExitTime = itemConfig.HasEndTime;
+                _customExitTimeValue = itemConfig.EndTime;
+                _hasStartTime = itemConfig.HasStartTime;
+                _startTimeValue = itemConfig.StartTime;
             }
             else
             {
                 _currentCrossfade = _targetClipData.DefaultBlendIn;
                 _hasCustomExitTime = false;
                 _customExitTimeValue = 0f;
+                _hasStartTime = false;
+                _startTimeValue = 0f;
             }
 
             // ExitTime 与 RouteWindow
@@ -992,6 +1148,11 @@ namespace Game.Editor.ActionTransition
             }
 
             SyncPlayerClips();
+            if (_viewport?.Player != null)
+            {
+                _viewport.Player.HasStartTime = _hasStartTime;
+                _viewport.Player.StartTime = _startTimeValue;
+            }
             _viewport?.ResetCharacterTransform();
             _viewportContainer?.MarkDirtyRepaint();
             UpdateInspectorTargetDisplay();
@@ -1019,8 +1180,18 @@ namespace Game.Editor.ActionTransition
                 _resetDefaultFadeBtn.SetEnabled(false);
                 _customExitToggle.SetEnabled(false);
                 _customExitField.SetEnabled(false);
+                _exitUnitPopup?.SetEnabled(false);
+                if (_exitMiniSlider != null) _exitMiniSlider.IsEnabled = false;
+
+                _startTimeToggle?.SetEnabled(false);
+                _startTimeField?.SetEnabled(false);
+                _startUnitPopup?.SetEnabled(false);
+                if (_startMiniSlider != null) _startMiniSlider.IsEnabled = false;
+
                 _saveBtn.SetEnabled(false);
                 _autoRouteSyncContainer?.SetEnabled(false);
+                _exitMiniSliderContainer?.MarkDirtyRepaint();
+                _startMiniSliderContainer?.MarkDirtyRepaint();
                 return;
             }
 
@@ -1040,6 +1211,7 @@ namespace Game.Editor.ActionTransition
             _crossfadeField.SetEnabled(true);
             _resetDefaultFadeBtn.SetEnabled(true);
             _customExitToggle.SetEnabled(true);
+            _startTimeToggle?.SetEnabled(true);
             _saveBtn.SetEnabled(true);
 
             _crossfadeSlider.SetValueWithoutNotify(_currentCrossfade);
@@ -1048,17 +1220,42 @@ namespace Game.Editor.ActionTransition
 
             if (info.Kind == TransitionTargetKind.CompleteAction)
             {
-                _customExitToggle.text = "提前退出 (ExitTime) [运行时]:";
+                _customExitToggle.text = "提前退出 (EndTime) [运行时]:";
             }
             else
             {
-                _customExitToggle.text = "模拟按键 (ExitTime) [预览]:";
+                _customExitToggle.text = "模拟按键 (EndTime) [预览]:";
             }
 
             _customExitToggle.SetValueWithoutNotify(_hasCustomExitTime);
             _customExitField.SetEnabled(_hasCustomExitTime);
-            _exitModeToggleBtn.SetEnabled(_hasCustomExitTime);
+            _exitUnitPopup?.SetEnabled(_hasCustomExitTime);
+            _exitUnitPopup?.SetValueWithoutNotify(UnitChoices[(int)_exitUnit]);
+            if (_exitMiniSlider != null)
+            {
+                _exitMiniSlider.IsEnabled = _hasCustomExitTime;
+                _exitMiniSlider.CurrentTime = _currentExitTime;
+                _exitMiniSlider.Unit = _exitUnit;
+            }
             UpdateExitTimeFieldDisplay();
+
+            if (_startTimeToggle != null)
+            {
+                _startTimeToggle.SetValueWithoutNotify(_hasStartTime);
+                _startTimeField?.SetEnabled(_hasStartTime);
+                _startUnitPopup?.SetEnabled(_hasStartTime);
+                _startUnitPopup?.SetValueWithoutNotify(UnitChoices[(int)_startUnit]);
+                if (_startMiniSlider != null)
+                {
+                    _startMiniSlider.IsEnabled = _hasStartTime;
+                    _startMiniSlider.CurrentTime = _startTimeValue;
+                    _startMiniSlider.Unit = _startUnit;
+                }
+                UpdateStartTimeFieldDisplay();
+            }
+
+            _exitMiniSliderContainer?.MarkDirtyRepaint();
+            _startMiniSliderContainer?.MarkDirtyRepaint();
 
             // 联动刷新可覆写的 AutoRouteWindow 候选与智能推荐
             UpdateAutoRouteWindowChoices(info);
@@ -1153,26 +1350,127 @@ namespace Game.Editor.ActionTransition
             _autoRoutePropertyPopup?.SetEnabled(syncActive);
         }
 
-        private void ToggleExitTimeMode()
+        private void ToggleNPanelExpanded()
         {
-            _isNormalizedExitTimeMode = !_isNormalizedExitTimeMode;
-            _exitModeToggleBtn.text = _isNormalizedExitTimeMode ? "模式: 归一化" : "模式: 秒 (s)";
-            UpdateExitTimeFieldDisplay();
+            _isNPanelExpanded = !_isNPanelExpanded;
+            EditorPrefs.SetBool(PrefsKeyNPanelExpanded, _isNPanelExpanded);
+            UpdateNPanelVisualState();
+        }
+
+        private void UpdateNPanelVisualState()
+        {
+            if (_npanelContent != null)
+            {
+                _npanelContent.style.display = _isNPanelExpanded ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+            if (_npanelTabBtn != null)
+            {
+                if (_isNPanelExpanded) _npanelTabBtn.AddToClassList("active");
+                else _npanelTabBtn.RemoveFromClassList("active");
+            }
+        }
+
+        private void CommitExitTimeFromField()
+        {
+            if (_customExitField == null) return;
+            float rawValue = _customExitField.value;
+            float dur = _sourceClipData.TimelineDuration > 0.001f ? _sourceClipData.TimelineDuration : 1f;
+            int fps = _timelineDrawer != null ? _timelineDrawer.CurrentFps : 60;
+            int totalFrames = Mathf.Max(1, Mathf.RoundToInt(dur * fps));
+
+            float clampedTime;
+            switch (_exitUnit)
+            {
+                case MiniSliderUnit.Frames:
+                    int frame = Mathf.Clamp(Mathf.RoundToInt(rawValue), 0, totalFrames);
+                    clampedTime = (float)frame / fps;
+                    break;
+                case MiniSliderUnit.Normalized:
+                    float norm = Mathf.Clamp01(rawValue);
+                    clampedTime = norm * dur;
+                    break;
+                case MiniSliderUnit.Seconds:
+                default:
+                    clampedTime = Mathf.Clamp(rawValue, 0f, dur);
+                    break;
+            }
+
+            ApplyExitTimeChange(clampedTime);
+        }
+
+        private void CommitStartTimeFromField()
+        {
+            if (_startTimeField == null) return;
+            float rawValue = _startTimeField.value;
+            float tgtDur = _targetClipData.TimelineDuration > 0.001f ? _targetClipData.TimelineDuration : 1f;
+            int fps = _timelineDrawer != null ? _timelineDrawer.CurrentFps : 60;
+            int totalFrames = Mathf.Max(1, Mathf.RoundToInt(tgtDur * fps));
+
+            float clampedTime;
+            switch (_startUnit)
+            {
+                case MiniSliderUnit.Frames:
+                    int frame = Mathf.Clamp(Mathf.RoundToInt(rawValue), 0, totalFrames);
+                    clampedTime = (float)frame / fps;
+                    break;
+                case MiniSliderUnit.Normalized:
+                    float norm = Mathf.Clamp01(rawValue);
+                    clampedTime = norm * tgtDur;
+                    break;
+                case MiniSliderUnit.Seconds:
+                default:
+                    clampedTime = Mathf.Clamp(rawValue, 0f, Mathf.Max(0f, tgtDur - 0.05f));
+                    break;
+            }
+
+            ApplyStartTimeChange(clampedTime);
         }
 
         private void UpdateExitTimeFieldDisplay()
         {
             if (_customExitField == null) return;
-            float dur = _sourceClipData.TimelineDuration;
+            float dur = _sourceClipData.TimelineDuration > 0.001f ? _sourceClipData.TimelineDuration : 1f;
             float val = _hasCustomExitTime ? _customExitTimeValue : _currentExitTime;
-            if (_isNormalizedExitTimeMode)
+            int fps = _timelineDrawer != null ? _timelineDrawer.CurrentFps : 60;
+
+            switch (_exitUnit)
             {
-                float norm = dur > 0.001f ? Mathf.Clamp01(val / dur) : 0f;
-                _customExitField.SetValueWithoutNotify(norm);
+                case MiniSliderUnit.Frames:
+                    int frame = Mathf.RoundToInt(val * fps);
+                    _customExitField.SetValueWithoutNotify(frame);
+                    break;
+                case MiniSliderUnit.Normalized:
+                    float norm = dur > 0.001f ? Mathf.Clamp01(val / dur) : 0f;
+                    _customExitField.SetValueWithoutNotify((float)Math.Round(norm, 3));
+                    break;
+                case MiniSliderUnit.Seconds:
+                default:
+                    _customExitField.SetValueWithoutNotify((float)Math.Round(val, 3));
+                    break;
             }
-            else
+        }
+
+        private void UpdateStartTimeFieldDisplay()
+        {
+            if (_startTimeField == null) return;
+            float dur = _targetClipData.TimelineDuration > 0.001f ? _targetClipData.TimelineDuration : 1f;
+            float val = _startTimeValue;
+            int fps = _timelineDrawer != null ? _timelineDrawer.CurrentFps : 60;
+
+            switch (_startUnit)
             {
-                _customExitField.SetValueWithoutNotify(val);
+                case MiniSliderUnit.Frames:
+                    int frame = Mathf.RoundToInt(val * fps);
+                    _startTimeField.SetValueWithoutNotify(frame);
+                    break;
+                case MiniSliderUnit.Normalized:
+                    float norm = dur > 0.001f ? Mathf.Clamp01(val / dur) : 0f;
+                    _startTimeField.SetValueWithoutNotify((float)Math.Round(norm, 3));
+                    break;
+                case MiniSliderUnit.Seconds:
+                default:
+                    _startTimeField.SetValueWithoutNotify((float)Math.Round(val, 3));
+                    break;
             }
         }
 
@@ -1233,12 +1531,18 @@ namespace Game.Editor.ActionTransition
 
         private void ApplyExitTimeChange(float newExit)
         {
-            _currentExitTime = Mathf.Max(0f, newExit);
+            float srcDur = _sourceClipData.TimelineDuration > 0.001f ? _sourceClipData.TimelineDuration : 1f;
+            _currentExitTime = Mathf.Clamp(newExit, 0f, srcDur);
             _hasCustomExitTime = true;
             _customExitTimeValue = _currentExitTime;
             _customExitToggle?.SetValueWithoutNotify(true);
             _customExitField?.SetEnabled(true);
-            _exitModeToggleBtn?.SetEnabled(true);
+            _exitUnitPopup?.SetEnabled(true);
+            if (_exitMiniSlider != null)
+            {
+                _exitMiniSlider.IsEnabled = true;
+                _exitMiniSlider.CurrentTime = _currentExitTime;
+            }
             UpdateExitTimeFieldDisplay();
 
             if (_viewport?.Player != null)
@@ -1248,6 +1552,33 @@ namespace Game.Editor.ActionTransition
             }
 
             PersistCurrentTransition();
+            _exitMiniSliderContainer?.MarkDirtyRepaint();
+            _timelineContainer?.MarkDirtyRepaint();
+        }
+
+        private void ApplyStartTimeChange(float newStart)
+        {
+            float tgtDur = _targetClipData.TimelineDuration > 0.001f ? _targetClipData.TimelineDuration : 1f;
+            _startTimeValue = Mathf.Clamp(newStart, 0f, Mathf.Max(0f, tgtDur - 0.05f));
+            _hasStartTime = true;
+            _startTimeToggle?.SetValueWithoutNotify(true);
+            _startTimeField?.SetEnabled(true);
+            _startUnitPopup?.SetEnabled(true);
+            if (_startMiniSlider != null)
+            {
+                _startMiniSlider.IsEnabled = true;
+                _startMiniSlider.CurrentTime = _startTimeValue;
+            }
+            UpdateStartTimeFieldDisplay();
+
+            if (_viewport?.Player != null)
+            {
+                _viewport.Player.StartTime = _startTimeValue;
+                _viewport.Player.EvaluateAt(_viewport.Player.CurrentTime);
+            }
+
+            PersistCurrentTransition();
+            _startMiniSliderContainer?.MarkDirtyRepaint();
             _timelineContainer?.MarkDirtyRepaint();
         }
 
@@ -1256,7 +1587,7 @@ namespace Game.Editor.ActionTransition
             if (!HasValidTarget()) return;
 
             var targetAction = _filteredTargets[_selectedTargetIndex].TargetAction;
-            _sourceAction.SetTransition(targetAction, -1f, _hasCustomExitTime, _customExitTimeValue);
+            _sourceAction.SetTransition(targetAction, -1f, _hasCustomExitTime, _customExitTimeValue, _hasStartTime, _startTimeValue);
             EditorUtility.SetDirty(_sourceAction);
 
             _currentCrossfade = _targetClipData.DefaultBlendIn;
@@ -1278,7 +1609,7 @@ namespace Game.Editor.ActionTransition
             if (!HasValidTarget()) return;
 
             var targetAction = _filteredTargets[_selectedTargetIndex].TargetAction;
-            _sourceAction.SetTransition(targetAction, _currentCrossfade, _hasCustomExitTime, _customExitTimeValue);
+            _sourceAction.SetTransition(targetAction, _currentCrossfade, _hasCustomExitTime, _customExitTimeValue, _hasStartTime, _startTimeValue);
             EditorUtility.SetDirty(_sourceAction);
 
             UpdateSidebarItemFadeText(_selectedTargetIndex, $"{_currentCrossfade:0.00}s");
@@ -1301,6 +1632,7 @@ namespace Game.Editor.ActionTransition
         {
             if (_sourceAction == null) return;
 
+            PersistCurrentTransition();
             EditorUtility.SetDirty(_sourceAction);
             string saveMsg = $"已成功保存 {_sourceAction.Name} 的过渡配置表！";
 

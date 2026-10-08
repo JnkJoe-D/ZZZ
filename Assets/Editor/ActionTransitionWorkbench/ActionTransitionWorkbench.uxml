@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/Editor/ActionTransitionWorkbench/ActionTransitionWorkbench.uss" />
     <ui:VisualElement name="root" class="transition-root">
-        <!-- 左侧边栏 (Workspace / Action / Targets / Inspector) -->
+        <!-- 左侧边栏 (Workspace / Action / Targets) -->
         <ui:VisualElement name="sidebar" class="transition-sidebar">
             <ui:Label text="动作过渡工作台 (Workbench)" class="sidebar-title" />
             
@@ -14,13 +14,13 @@
                 <ui:VisualElement name="workspace-popup-container" class="popup-container" />
             </ui:VisualElement>
 
-            <!-- 1. 源动作资产选择 (仅保留下拉框) -->
+            <!-- 1. 源动作资产选择 -->
             <ui:VisualElement name="source-box" class="section-box">
                 <ui:Label text="1. 源动作资产 (Source Action)" class="section-label" />
                 <ui:VisualElement name="action-popup-container" class="popup-container" />
             </ui:VisualElement>
 
-            <!-- 2. 有效转移目标列表 -->
+            <!-- 2. 有效转移目标列表 (铺满全高) -->
             <ui:VisualElement name="targets-box" class="section-box targets-box">
                 <ui:VisualElement class="section-header-row">
                     <ui:Label text="2. 有效转移目标 (Targets)" class="section-label" />
@@ -29,58 +29,83 @@
                 <uie:ToolbarSearchField name="targets-search" class="targets-search" />
                 <ui:ScrollView name="targets-scrollview" class="target-list-view" />
             </ui:VisualElement>
-
-            <!-- 3. 过渡参数微调与反向保存面板 (左侧栏紧凑卡片) -->
-            <ui:VisualElement name="inspector-box" class="section-box inspector-box">
-                <ui:Label name="inspector-header" text="当前微调: 未选择目标" class="inspector-header-label" />
-                
-                <!-- Crossfade 配置 -->
-                <ui:VisualElement class="inspector-field-group">
-                    <ui:VisualElement class="inspector-label-row">
-                        <ui:Label text="混合时间 (Crossfade):" class="inspector-field-title" />
-                        <ui:Button name="reset-fade-btn" text="恢复默认" class="mini-btn" />
-                    </ui:VisualElement>
-                    <ui:VisualElement class="inspector-control-row">
-                        <ui:Slider name="crossfade-slider" low-value="0" high-value="1" class="inspector-slider" />
-                        <uie:FloatField name="crossfade-field" class="inspector-num-field" />
-                    </ui:VisualElement>
-                </ui:VisualElement>
-
-                <!-- ExitTime 配置 -->
-                <ui:VisualElement class="inspector-field-group">
-                    <ui:VisualElement class="inspector-label-row">
-                        <ui:Toggle name="custom-exit-toggle" text="指定退出时间 (ExitTime):" class="inspector-toggle" />
-                        <ui:Button name="exit-mode-toggle-btn" text="模式: 秒 (s)" class="mini-btn" />
-                    </ui:VisualElement>
-                    <ui:VisualElement class="inspector-control-row">
-                        <uie:FloatField name="custom-exit-field" class="inspector-num-field-full" />
-                    </ui:VisualElement>
-                </ui:VisualElement>
-
-                <!-- 4. AutoRouteWindow 同步覆写配置 -->
-                <ui:VisualElement name="autoroute-sync-container" class="autoroute-sync-group">
-                    <ui:VisualElement class="inspector-label-row">
-                        <ui:Toggle name="autoroute-sync-toggle" text="同步覆写 AutoRouteWindow" class="inspector-toggle" />
-                    </ui:VisualElement>
-                    <ui:VisualElement class="autoroute-popup-row">
-                        <ui:Label text="目标窗口:" class="autoroute-popup-label" />
-                        <ui:VisualElement name="autoroute-window-popup-container" class="autoroute-popup" />
-                    </ui:VisualElement>
-                    <ui:VisualElement class="autoroute-popup-row">
-                        <ui:Label text="覆写目标:" class="autoroute-popup-label" />
-                        <ui:VisualElement name="autoroute-property-popup-container" class="autoroute-popup" />
-                    </ui:VisualElement>
-                </ui:VisualElement>
-
-                <!-- 保存按钮 -->
-                <ui:Button name="save-transition-btn" text="保存过渡配置与时间轴 (Save)" class="save-button" />
-            </ui:VisualElement>
         </ui:VisualElement>
 
         <!-- 右侧主区域 (Viewport / Toolbar / Timeline) -->
         <ui:VisualElement name="main" class="transition-main">
-            <!-- 3D 预览视口 -->
-            <ui:IMGUIContainer name="viewport-container" class="viewport-container" />
+            <!-- 3D 预览视口与右上角 Blender 风格侧边工具栏 (N-Panel) 包装层 -->
+            <ui:VisualElement name="viewport-wrapper" class="viewport-wrapper">
+                <ui:IMGUIContainer name="viewport-container" class="viewport-container" />
+
+                <!-- 右上角 N-Panel 侧边收纳容器 -->
+                <ui:VisualElement name="npanel-container" class="npanel-container">
+                    <!-- N-Panel 折叠抽屉主体 -->
+                    <ui:VisualElement name="npanel-content" class="npanel-content">
+                        <ui:VisualElement name="inspector-box" class="inspector-box">
+                            <ui:Label name="inspector-header" text="当前微调: 未选择目标" class="inspector-header-label" />
+                            
+                            <!-- BlendDuration 配置 -->
+                            <ui:VisualElement class="inspector-field-group">
+                                <ui:VisualElement class="inspector-label-row">
+                                    <ui:Label text="混合时间 (BlendDuration):" class="inspector-field-title" />
+                                    <ui:Button name="reset-fade-btn" text="恢复默认" class="mini-btn" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="inspector-control-row">
+                                    <ui:Slider name="crossfade-slider" low-value="0" high-value="1" class="inspector-slider" />
+                                    <uie:FloatField name="crossfade-field" class="inspector-num-field" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+
+                            <!-- EndTime 配置 (源动作) -->
+                            <ui:VisualElement class="inspector-field-group">
+                                <ui:VisualElement class="inspector-label-row">
+                                    <ui:Toggle name="custom-exit-toggle" text="源动作退出时间 (EndTime):" class="inspector-toggle" />
+                                    <ui:VisualElement name="exit-unit-dropdown-container" class="unit-dropdown-container" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="inspector-control-row slider-strip-row">
+                                    <ui:IMGUIContainer name="exit-mini-slider" class="mini-track-slider" />
+                                    <uie:FloatField name="custom-exit-field" class="inspector-num-field unit-aligned-field" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+
+                            <!-- StartTime 配置 (目标动作) -->
+                            <ui:VisualElement class="inspector-field-group">
+                                <ui:VisualElement class="inspector-label-row">
+                                    <ui:Toggle name="start-time-toggle" text="切入起始时间 (StartTime):" class="inspector-toggle" />
+                                    <ui:VisualElement name="start-unit-dropdown-container" class="unit-dropdown-container" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="inspector-control-row slider-strip-row">
+                                    <ui:IMGUIContainer name="start-mini-slider" class="mini-track-slider" />
+                                    <uie:FloatField name="start-time-field" class="inspector-num-field unit-aligned-field" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+
+                            <!-- 4. AutoRouteWindow 同步覆写配置 -->
+                            <ui:VisualElement name="autoroute-sync-container" class="autoroute-sync-group">
+                                <ui:VisualElement class="inspector-label-row">
+                                    <ui:Toggle name="autoroute-sync-toggle" text="同步覆写 AutoRouteWindow" class="inspector-toggle" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="autoroute-popup-row">
+                                    <ui:Label text="目标窗口:" class="autoroute-popup-label" />
+                                    <ui:VisualElement name="autoroute-window-popup-container" class="autoroute-popup" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="autoroute-popup-row">
+                                    <ui:Label text="覆写目标:" class="autoroute-popup-label" />
+                                    <ui:VisualElement name="autoroute-property-popup-container" class="autoroute-popup" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+
+                            <!-- 保存按钮 -->
+                            <ui:Button name="save-transition-btn" text="保存过渡配置与时间轴 (Save)" class="save-button" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- 右边缘竖排 Tab 标签条 -->
+                    <ui:VisualElement name="npanel-tabs-strip" class="npanel-tabs-strip">
+                        <ui:Button name="npanel-tab-btn" text="过&#10;渡&#10;配&#10;置" class="npanel-tab-btn active" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
 
             <!-- 播放控制条 -->
             <ui:VisualElement name="playback-toolbar" class="playback-toolbar">
