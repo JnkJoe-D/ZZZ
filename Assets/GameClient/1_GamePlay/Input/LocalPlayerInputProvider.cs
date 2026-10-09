@@ -48,6 +48,7 @@ namespace Game.GamePlay
         private Vector2 _residualMoveVelocity;
         private RoleConfigAsset _cachedRoleConfig;
         private readonly HashSet<int> _heldActions = new();
+        private readonly InputTapTracker _tapTracker = new();
 
         /// <summary>
         /// 绑定当前出场角色的配置，用于动态获取手感衰减阻尼参数
@@ -90,6 +91,21 @@ namespace Game.GamePlay
         {
             if (held) _heldActions.Add(actionKey);
             else _heldActions.Remove(actionKey);
+        }
+
+        public int GetTapCount(HardwareInputType actionKey, float windowSeconds)
+        {
+            return _tapTracker.GetTapCountInWindow(actionKey, windowSeconds, Time.unscaledTime);
+        }
+
+        public int GetTapCountSince(HardwareInputType actionKey, float startTime)
+        {
+            return _tapTracker.GetTapCountSince(actionKey, startTime);
+        }
+
+        public void ResetTapTracker(HardwareInputType actionKey)
+        {
+            _tapTracker.Clear(actionKey);
         }
 
         private void Awake()
@@ -148,7 +164,11 @@ namespace Game.GamePlay
             };
 
             // 闪避
-            _input.GamePlay.Evade.started += _ => OnEvadeStarted?.Invoke();
+            _input.GamePlay.Evade.started += _ =>
+            {
+                _tapTracker.RecordTap(HardwareInputType.Evade, Time.unscaledTime);
+                OnEvadeStarted?.Invoke();
+            };
             _input.GamePlay.Evade.performed += _ => OnEvadePerformed?.Invoke();
             _input.GamePlay.Evade.canceled += _ =>
             {
@@ -166,7 +186,11 @@ namespace Game.GamePlay
             };
 
             // 普通攻击
-            _input.GamePlay.LightAttack.started += _ => OnBasicAttackStarted?.Invoke();
+            _input.GamePlay.LightAttack.started += _ =>
+            {
+                _tapTracker.RecordTap(HardwareInputType.BasicAttack, Time.unscaledTime);
+                OnBasicAttackStarted?.Invoke();
+            };
             _input.GamePlay.LightAttack.performed += _ => OnBasicAttackPerformed?.Invoke();
             _input.GamePlay.LightAttack.canceled += _ =>
             {
@@ -184,7 +208,11 @@ namespace Game.GamePlay
             };
 
             // 特殊技
-            _input.GamePlay.SpecialSkill.started += _ => OnSpecialAttackStarted?.Invoke();
+            _input.GamePlay.SpecialSkill.started += _ =>
+            {
+                _tapTracker.RecordTap(HardwareInputType.SpecialAttack, Time.unscaledTime);
+                OnSpecialAttackStarted?.Invoke();
+            };
             _input.GamePlay.SpecialSkill.performed += _ => OnSpecialAttackPerformed?.Invoke();
             _input.GamePlay.SpecialSkill.canceled += _ =>
             {
@@ -201,10 +229,26 @@ namespace Game.GamePlay
                 _heldActions.Remove((int)HardwareInputType.SpecialAttack);
             };
 
-            _input.GamePlay.Ultimate.started += _ => OnUltimateStarted?.Invoke();
-            _input.GamePlay.Interact.started += _ => OnGameplayInteractStarted?.Invoke();
-            _input.GamePlay.SwitchNext.started += _ => OnSwitchNext?.Invoke();
-            _input.GamePlay.SwitchPre.started += _ => OnSwitchPre?.Invoke();
+            _input.GamePlay.Ultimate.started += _ =>
+            {
+                _tapTracker.RecordTap(HardwareInputType.Ultimate, Time.unscaledTime);
+                OnUltimateStarted?.Invoke();
+            };
+            _input.GamePlay.Interact.started += _ =>
+            {
+                _tapTracker.RecordTap(HardwareInputType.Interact, Time.unscaledTime);
+                OnGameplayInteractStarted?.Invoke();
+            };
+            _input.GamePlay.SwitchNext.started += _ =>
+            {
+                _tapTracker.RecordTap(HardwareInputType.Switch, Time.unscaledTime);
+                OnSwitchNext?.Invoke();
+            };
+            _input.GamePlay.SwitchPre.started += _ =>
+            {
+                _tapTracker.RecordTap(HardwareInputType.Switch, Time.unscaledTime);
+                OnSwitchPre?.Invoke();
+            };
         }
 
         private void OnEnable()
@@ -215,6 +259,7 @@ namespace Game.GamePlay
         private void OnDisable()
         {
             _heldActions.Clear();
+            _tapTracker.ClearAll();
             _currentMoveInput = Vector2.zero;
             _lastRawMoveInput = Vector2.zero;
             _smoothedMoveInput = Vector2.zero;

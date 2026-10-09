@@ -13,38 +13,30 @@ MonoBehaviour:
   m_Name: "\u5B89\u6BD4_\u6307\u4EE4\u96C6_6_\u5207\u4EBA_0_\u7ACB\u5373\u5207\u51FA"
   m_EditorClassIdentifier: 
   Routes:
-  - ExecuteType: 20
-    ExecuteAction: {fileID: 0}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 10
+  - Targets:
+    - rid: 6379258143149916668
     Priority: 20
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500792
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 85088c53dc4eafa41aee57c6e4818b57, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916669
     Priority: 20
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500793
     ExtraConditions: []
-  - ExecuteType: 20
-    ExecuteAction: {fileID: 11400000, guid: 85088c53dc4eafa41aee57c6e4818b57, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 40
+  - Targets:
+    - rid: 6379258143149916670
     Priority: 40
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 6379257712028942389
     ExtraConditions:
     - rid: 6379257712028942390
-  - ExecuteType: 20
-    ExecuteAction: {fileID: 0}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 45
+  - Targets:
+    - rid: 6379258143149916671
     Priority: 30
     CrossfadeOverride: -1
     TriggerStrategy:
@@ -54,6 +46,26 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916668
+      type: {class: EventRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RouteExecuteEvent: 10
+        MaxExecuteCount: 1
+    - rid: 6379258143149916669
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 85088c53dc4eafa41aee57c6e4818b57, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916670
+      type: {class: EventRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RouteExecuteEvent: 40
+        MaxExecuteCount: 1
+    - rid: 6379258143149916671
+      type: {class: EventRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RouteExecuteEvent: 45
+        MaxExecuteCount: 1
     - rid: 4681868330708500792
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

@@ -22,6 +22,9 @@ namespace Game.GamePlay
         [ComboWindowTag(typeof(BufferRouteWindow), typeof(ExecuteRouteWindow))]
         public RouteWindow RequiredWindow;
 
+        [Tooltip("多输入修饰条件之间的逻辑关系：AND (全部满足) 或 OR (任一满足)")]
+        public ConditionCombineMode ConditionCombine = ConditionCombineMode.AllMatch_AND;
+
         public List<RouteModifierCheck> InputConditions = new List<RouteModifierCheck>();
 
         public bool Evaluate(CharacterCommand command, RouteWindow activeWindow, CharacterEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
@@ -37,15 +40,7 @@ namespace Game.GamePlay
                     return false;
             }
 
-            if (InputConditions != null && InputConditions.Count > 0)
-            {
-                foreach (var mod in InputConditions)
-                {
-                    if (!mod.Evaluate(actor)) return false;
-                }
-            }
-
-            return true;
+            return CommandRouteEvaluator.MatchesInputModifiers(InputConditions, actor, ConditionCombine);
         }
     }
 
@@ -78,6 +73,10 @@ namespace Game.GamePlay
         [SerializeReference]
         [ComboWindowTag(typeof(BufferRouteWindow), typeof(ExecuteRouteWindow))]
         public RouteWindow RequiredWindow;
+
+        [Tooltip("多输入修饰条件之间的逻辑关系：AND (全部满足) 或 OR (任一满足)")]
+        public ConditionCombineMode ConditionCombine = ConditionCombineMode.AllMatch_AND;
+
         public List<RouteModifierCheck> InputConditions = new List<RouteModifierCheck>();
 
         public bool Evaluate(CharacterCommand command, RouteWindow activeWindow, CharacterEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
@@ -92,15 +91,7 @@ namespace Game.GamePlay
                     return false;
             }
 
-            if (InputConditions != null)
-            {
-                foreach (var mod in InputConditions)
-                {
-                    if (!mod.Evaluate(actor)) return false;
-                }
-            }
-
-            return true;
+            return CommandRouteEvaluator.MatchesInputModifiers(InputConditions, actor, ConditionCombine);
         }
     }
 
@@ -112,6 +103,10 @@ namespace Game.GamePlay
         [SerializeReference]
         [ComboWindowTag(typeof(AutoRouteWindow))]
         public RouteWindow RequiredWindow;
+
+        [Tooltip("多输入修饰条件之间的逻辑关系：AND (全部满足) 或 OR (任一满足)")]
+        public ConditionCombineMode ConditionCombine = ConditionCombineMode.AllMatch_AND;
+
         public List<RouteModifierCheck> InputConditions = new List<RouteModifierCheck>();
 
         public bool Evaluate(CharacterCommand command, RouteWindow activeWindow, CharacterEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
@@ -128,15 +123,7 @@ namespace Game.GamePlay
             if (Timing != timing)
                 return false;
 
-            if (InputConditions != null)
-            {
-                foreach (var mod in InputConditions)
-                {
-                    if (!mod.Evaluate(actor)) return false;
-                }
-            }
-
-            return true;
+            return CommandRouteEvaluator.MatchesInputModifiers(InputConditions, actor, ConditionCombine);
         }
     }
 
@@ -149,6 +136,10 @@ namespace Game.GamePlay
         [SerializeReference]
         [ComboWindowTag(typeof(AutoRouteWindow))]
         public RouteWindow RequiredWindow;
+
+        [Tooltip("多输入修饰条件之间的逻辑关系：AND (全部满足) 或 OR (任一满足)")]
+        public ConditionCombineMode ConditionCombine = ConditionCombineMode.AllMatch_AND;
+
         public List<RouteModifierCheck> InputConditions = new List<RouteModifierCheck>();
 
         public bool Evaluate(CharacterCommand command, RouteWindow activeWindow, CharacterEntity actor, RouteSingleModifierCheckTiming timing = RouteSingleModifierCheckTiming.EveryFrameInWindow)
@@ -168,12 +159,7 @@ namespace Game.GamePlay
             // 如果没有任何条件，直接返回 false
             if (InputConditions == null || InputConditions.Count == 0) return false;
 
-            foreach (var mod in InputConditions)
-            {
-                if (!mod.Evaluate(actor)) return false;
-            }
-
-            return true;
+            return CommandRouteEvaluator.MatchesInputModifiers(InputConditions, actor, ConditionCombine);
         }
     }
 }

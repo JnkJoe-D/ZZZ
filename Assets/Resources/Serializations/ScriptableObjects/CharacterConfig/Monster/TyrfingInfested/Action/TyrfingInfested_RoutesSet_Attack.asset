@@ -13,19 +13,15 @@ MonoBehaviour:
   m_Name: TyrfingInfested_RoutesSet_Attack
   m_EditorClassIdentifier: 
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 0c41747f46b9f8643ab55ac8d733b3a1, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916767
     Priority: 0
     CrossfadeOverride: 0
     TriggerStrategy:
       rid: 4681868330708500992
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 7481b629f257b124a8beb45e0e53abde, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916768
     Priority: 0
     CrossfadeOverride: 0
     TriggerStrategy:
@@ -34,6 +30,16 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916767
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 0c41747f46b9f8643ab55ac8d733b3a1, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916768
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 7481b629f257b124a8beb45e0e53abde, type: 2}
+        ValidateSkillRequirement: 1
     - rid: 4681868330708500992
       type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

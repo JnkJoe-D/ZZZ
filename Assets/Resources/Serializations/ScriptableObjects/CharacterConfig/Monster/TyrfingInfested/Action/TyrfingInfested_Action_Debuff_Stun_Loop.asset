@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,26 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 200121
   Name: 
-  _domainId: 0
   TimelineAsset: {fileID: 4900000, guid: c26354f9a2ba7aa43a1aba7de609fc72, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 2fda41b9e581a7c46bb6918290c1c9b1, type: 2}
+  _domainId: 0
   CompleteMode: 0
   CompleteAction: {fileID: 0}
   _transitionTable:
-    _items: []
+    _items:
+    - TargetAction: {fileID: 11400000}
+      EndTime: 1.6333333
+      HasEndTime: 1
+      BlendDuration: 0.05
+      StartTime: 0
+      HasStartTime: 0
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 3ae929b2483cd54419f4651404e453a6, type: 2}
-    ValidateSkillRequirement: 0
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6293806958974861327
     Priority: 0
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6293806958974861325
+    ExtraConditionCombine: 0
     ExtraConditions: []
   RouteSets: []
   references:
     version: 2
     RefIds:
+    - rid: 6293806958974861327
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 3ae929b2483cd54419f4651404e453a6, type: 2}
+        ValidateSkillRequirement: 0
     - rid: 6293806958974861325
       type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

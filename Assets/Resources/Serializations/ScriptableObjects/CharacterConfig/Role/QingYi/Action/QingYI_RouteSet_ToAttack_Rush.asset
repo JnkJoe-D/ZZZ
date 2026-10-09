@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: QingYI_RouteSet_ToAttack_Rush
   m_EditorClassIdentifier: 
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: c2b895ad933f78945b7a3c0fd4caa14f, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916783
     Priority: 0
     CrossfadeOverride: -1
     TriggerStrategy:
@@ -25,6 +23,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916783
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: c2b895ad933f78945b7a3c0fd4caa14f, type: 2}
+        ValidateSkillRequirement: 1
     - rid: 4681868330708500787
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

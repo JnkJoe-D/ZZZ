@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -23,7 +23,6 @@ MonoBehaviour:
   Routes: []
   RouteSets:
   - {fileID: 11400000, guid: 7c2b51488538d0541882acaddb82c10b, type: 2}
-  EnterState: 70
   InheritMode: 0
   references:
     version: 2

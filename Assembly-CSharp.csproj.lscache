@@ -118,7 +118,6 @@ Assets/GameClient/ATEditor/Runtime/
    EventTrack.cs
    HitTrack.cs
    MotionWindowTrack.cs
-   SpawnTrack.cs
    TransformTrack.cs
    VFXTrack.cs
  Enums/RuntimeEnums.cs

@@ -21,10 +21,8 @@ MonoBehaviour:
   CompleteAction: {fileID: 0}
   CompleteTransitCrossfade: -1
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: a612c721d9b3ee7488af243ae32e2a84, type: 2}
-    ValidateSkillRequirement: 0
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916621
     Priority: 0
     CrossfadeOverride: 0
     TriggerStrategy:
@@ -37,6 +35,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916621
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: a612c721d9b3ee7488af243ae32e2a84, type: 2}
+        ValidateSkillRequirement: 0
     - rid: 6379257937949097999
       type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

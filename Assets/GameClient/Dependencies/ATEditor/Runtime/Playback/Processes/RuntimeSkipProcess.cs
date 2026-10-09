@@ -5,22 +5,22 @@ namespace ATEditor
     [ProcessBinding(typeof(TimelineSkipClip), PlayMode.Runtime)]
     public class RuntimeSkipProcess : ProcessBase<TimelineSkipClip>
     {
-        public override void OnEnter()
+        public override void OnUpdate(float currentTime, float deltaTime)
         {
             if (context == null || clip == null) return;
 
-            // 检查上下文中是否包含对应的拦截 Flag
-            bool hasCancelFlag = false;
-            if (!string.IsNullOrEmpty(clip.CancelFlag) && context.Flags.Contains(clip.CancelFlag))
+            // 检查上下文中是否包含对应的Flag
+            bool timeSkipFlag = false;
+            if (!string.IsNullOrEmpty(clip.TimeSkipFlag) && context.Flags.Contains(clip.TimeSkipFlag))
             {
-                hasCancelFlag = true;
+                timeSkipFlag = true;
                 // 获取到标记后，将其消耗掉（重置），以免影响后续其他可能的同名片段
-                context.Flags.Remove(clip.CancelFlag);
+                context.Flags.Remove(clip.TimeSkipFlag);
             }
 
-            if (!hasCancelFlag)
+            if (timeSkipFlag)
             {
-                // 如果没有拦截标记，执行默认的跳跃（跳到片段的末尾时间）
+                // 如果有拦截标记，执行默认的跳跃（跳到片段的末尾时间）
                 var runnerProvider = context.UserData as IActionRunnerProvider;
                 var runner = runnerProvider?.GetRunner();
 
@@ -30,11 +30,6 @@ namespace ATEditor
                     runner.Seek(clip.EndTime, 0f);
                 }
             }
-        }
-
-        public override void OnUpdate(float currentTime, float deltaTime)
-        {
-            // 无需执行操作
         }
     }
 }

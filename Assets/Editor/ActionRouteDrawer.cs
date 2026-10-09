@@ -11,10 +11,10 @@ using Game.GamePlay;
 namespace Game.Editor.ActionConfig
 {
     /// <summary>
-    /// ActionRoute 的自定义属性绘制器。
-    /// 采用自动迭代模式：新增字段时无需修改此 Drawer。
-    /// 仅对需要特殊渲染的字段（RequiredWindowTag）进行覆盖。
-    /// 支持怪物路由中的非法输入条件检测与一键自愈修复。
+    /// 路由自定义属性绘制器
+    /// 采用自动迭代模式 新增字段时无需修改此绘制器
+    /// 仅对需要特殊渲染的字段进行覆盖
+    /// 支持怪物路由中的非法输入条件检测与一键自愈修复
     /// </summary>
     [CustomPropertyDrawer(typeof(ActionRoute))]
     public sealed class ActionRouteDrawer : PropertyDrawer
@@ -23,14 +23,20 @@ namespace Game.Editor.ActionConfig
         private const float WarningBoxHeight = 36f;
         private const float CleanButtonHeight = 20f;
 
+        private const float TargetListHeaderHeight = 20f;
+        private const float TargetCardHeaderHeight = 22f;
+        private const float TargetCardPadding = 4f;
+        private const float TargetCardSpacing = 4f;
+        private const float AddTargetButtonHeight = 22f;
+
         // 需要特殊渲染的字段名称集合
-        private static readonly HashSet<string> CustomDrawnFields = new() { "RequiredWindowTag" };
+        private static readonly HashSet<string> CustomDrawnFields = new() { "RequiredWindowTag", "Targets" };
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
 
-            // ── 折叠头部（自定义 Header，展示 Category/Tag/Target 摘要） ──
+            // 折叠头部 展示分类 标签 目标摘要
             Rect line = NextLine(ref position);
             property.isExpanded = EditorGUI.Foldout(line, property.isExpanded, BuildHeader(property), true);
             if (!property.isExpanded)
@@ -41,7 +47,7 @@ namespace Game.Editor.ActionConfig
 
             EditorGUI.indentLevel++;
 
-            // ── 怪物路由合规性检测与修复 ──
+            // 怪物路由合规性检测与修复
             if (HasMonsterRouteWarning(property, out string warningMsg))
             {
                 Rect warnRect = NextRect(ref position, WarningBoxHeight);
@@ -54,7 +60,7 @@ namespace Game.Editor.ActionConfig
                 }
             }
 
-            // ── 自动迭代所有子属性 ──
+            // 自动迭代所有子属性
             SerializedProperty endProperty = property.GetEndProperty();
             SerializedProperty iter = property.Copy();
             bool enterChildren = true;
@@ -70,6 +76,12 @@ namespace Game.Editor.ActionConfig
                 if (iter.name == "RequiredWindowTag")
                 {
                     DrawWindowTag(ref position, iter);
+                    continue;
+                }
+
+                if (iter.name == "Targets")
+                {
+                    DrawTargetsList(ref position, iter);
                     continue;
                 }
 
@@ -106,18 +118,25 @@ namespace Game.Editor.ActionConfig
             {
                 enterChildren = false;
                 if (!IsVisible(iter)) continue;
+
+                if (iter.name == "Targets")
+                {
+                    height += GetTargetsListHeight(iter) + LineGap;
+                    continue;
+                }
+
                 height += EditorGUI.GetPropertyHeight(iter, true) + LineGap;
             }
 
             return height;
         }
 
-        // ────────────────── Header 构建 ──────────────────
+        // 标题构建
 
         private static GUIContent BuildHeader(SerializedProperty property)
         {
             SerializedProperty categoryProperty = property.FindPropertyRelative("Category");
-            string category = "Route";
+            string category = "路由";
             if (categoryProperty != null &&
                 categoryProperty.enumValueIndex >= 0 &&
                 categoryProperty.enumValueIndex < categoryProperty.enumDisplayNames.Length)
@@ -141,51 +160,370 @@ namespace Game.Editor.ActionConfig
                 }
             }
             
-            string targetName = "None";
-            SerializedProperty executeTypeProp = property.FindPropertyRelative("ExecuteType");
-            if (executeTypeProp != null)
+            string targetName = "无";
+            int eventCount = 0;
+            string firstEventName = null;
+
+            SerializedProperty targetsProp = property.FindPropertyRelative("Targets");
+            if (targetsProp != null && targetsProp.isArray)
             {
-                // 用 intValue 获取底层枚举实际绑定的整数数值（如 0, 10, 20），enumValueIndex 返回的是 0, 1, 2 索引，强转会导致数值不匹配
-                ExecuteTarget target = (ExecuteTarget)executeTypeProp.intValue;
-                if (target == ExecuteTarget.Action)
+                for (int i = 0; i < targetsProp.arraySize; i++)
                 {
-                    SerializedProperty executeAction = property.FindPropertyRelative("ExecuteAction");
-                    targetName = executeAction?.objectReferenceValue != null ? executeAction.objectReferenceValue.name : "None";
-                }
-                else if (target == ExecuteTarget.Event)
-                {
-                    SerializedProperty routeExecuteEvent = property.FindPropertyRelative("RouteExecuteEvent");
-                    if (routeExecuteEvent != null &&
-                        routeExecuteEvent.enumValueIndex >= 0 &&
-                        routeExecuteEvent.enumValueIndex < routeExecuteEvent.enumDisplayNames.Length)
+                    SerializedProperty elem = targetsProp.GetArrayElementAtIndex(i);
+                    SerializedProperty actionProp = elem.FindPropertyRelative("Action");
+                    if (actionProp != null)
                     {
-                        targetName = $"[Event] {routeExecuteEvent.enumDisplayNames[routeExecuteEvent.enumValueIndex]}";
+                        if (actionProp.objectReferenceValue != null)
+                        {
+                            targetName = actionProp.objectReferenceValue.name;
+                        }
                     }
-                    else
+
+                    SerializedProperty eventProp = elem.FindPropertyRelative("RouteExecuteEvent");
+                    if (eventProp != null)
                     {
-                        targetName = "[Event] None";
+                        eventCount++;
+                        if (firstEventName == null && eventProp.enumValueIndex >= 0 && eventProp.enumValueIndex < eventProp.enumDisplayNames.Length)
+                        {
+                            firstEventName = eventProp.enumDisplayNames[eventProp.enumValueIndex];
+                        }
                     }
                 }
             }
-            else
+
+            // 若未配置动作但配置了事件 则以首个事件作为标题
+            if (targetName == "无" && firstEventName != null)
             {
-                SerializedProperty executeAction = property.FindPropertyRelative("ExecuteAction");
-                targetName = executeAction?.objectReferenceValue != null ? executeAction.objectReferenceValue.name : "None";
+                targetName = $"事件 {firstEventName}";
+            }
+
+            // 若配置了事件 在动作名后面追加事件数量摘要
+            if (eventCount > 0 && !targetName.StartsWith("事件", StringComparison.Ordinal))
+            {
+                targetName = $"{targetName} 加{eventCount}个事件";
             }
             
             if (HasMonsterRouteWarning(property, out _))
             {
-                return new GUIContent($"⚠️ [非法输入配置] {category} / {tag} -> {targetName}");
+                return new GUIContent($"非法输入配置 {category} / {tag} -> {targetName}");
             }
 
             SerializedProperty timingProp = property.FindPropertyRelative("ArbitrationTiming");
             string timingTag = string.Empty;
             if (timingProp != null && timingProp.intValue == (int)RouteArbitrationTiming.Immediate)
             {
-                timingTag = " [⚡即时]";
+                timingTag = " 即时";
             }
 
             return new GUIContent($"{category} / {tag} -> {targetName}{timingTag}");
+        }
+
+        // 目标专属卡片渲染与约束
+
+        private static void EnsureTargetsIntegrity(SerializedProperty targetsProp)
+        {
+            if (targetsProp == null || !targetsProp.isArray) return;
+
+            int actionCount = 0;
+            int primaryActionIndex = -1;
+
+            for (int i = 0; i < targetsProp.arraySize; i++)
+            {
+                var elem = targetsProp.GetArrayElementAtIndex(i);
+                if (elem == null) continue;
+                var actionProp = elem.FindPropertyRelative("Action");
+                if (actionProp != null)
+                {
+                    actionCount++;
+                    if (primaryActionIndex < 0)
+                    {
+                        primaryActionIndex = i;
+                    }
+                    else if (actionProp.objectReferenceValue != null)
+                    {
+                        var primaryElem = targetsProp.GetArrayElementAtIndex(primaryActionIndex);
+                        var primaryActionProp = primaryElem?.FindPropertyRelative("Action");
+                        if (primaryActionProp?.objectReferenceValue == null)
+                        {
+                            primaryActionIndex = i;
+                        }
+                    }
+                }
+            }
+
+            if (actionCount > 1)
+            {
+                // 多于一个动作目标 保留有效的 清理多余项
+                for (int i = targetsProp.arraySize - 1; i >= 0; i--)
+                {
+                    if (i == primaryActionIndex) continue;
+                    var elem = targetsProp.GetArrayElementAtIndex(i);
+                    if (elem != null && elem.FindPropertyRelative("Action") != null)
+                    {
+                        targetsProp.DeleteArrayElementAtIndex(i);
+                        if (i < primaryActionIndex) primaryActionIndex--;
+                    }
+                }
+                targetsProp.serializedObject.ApplyModifiedProperties();
+            }
+            else if (actionCount == 0)
+            {
+                // 没有动作目标时 自动在列表首位插入动作目标
+                targetsProp.InsertArrayElementAtIndex(0);
+                var elem = targetsProp.GetArrayElementAtIndex(0);
+                elem.managedReferenceValue = new ActionRouteTarget();
+                elem.isExpanded = true;
+                targetsProp.serializedObject.ApplyModifiedProperties();
+            }
+        }
+
+        private static float GetTargetsListHeight(SerializedProperty targetsProp)
+        {
+            if (targetsProp == null || !targetsProp.isArray) return 0f;
+
+            float height = TargetListHeaderHeight + LineGap;
+            if (!targetsProp.isExpanded)
+            {
+                return height;
+            }
+
+            for (int i = 0; i < targetsProp.arraySize; i++)
+            {
+                var elem = targetsProp.GetArrayElementAtIndex(i);
+                if (elem == null) continue;
+                float cardHeight = TargetCardHeaderHeight;
+                if (elem.isExpanded)
+                {
+                    cardHeight += (TargetCardPadding * 2f) + (EditorGUIUtility.singleLineHeight * 2f) + LineGap;
+                }
+                height += cardHeight + TargetCardSpacing;
+            }
+
+            height += AddTargetButtonHeight + LineGap;
+            return height;
+        }
+
+        private static void DrawTargetsList(ref Rect position, SerializedProperty targetsProp)
+        {
+            if (targetsProp == null || !targetsProp.isArray) return;
+
+            // 维护动作恒为一个的约束与自愈
+            EnsureTargetsIntegrity(targetsProp);
+
+            int actionCount = 0;
+            int eventCount = 0;
+            for (int i = 0; i < targetsProp.arraySize; i++)
+            {
+                var elem = targetsProp.GetArrayElementAtIndex(i);
+                if (elem == null) continue;
+                if (elem.FindPropertyRelative("Action") != null) actionCount++;
+                else if (elem.FindPropertyRelative("RouteExecuteEvent") != null) eventCount++;
+            }
+
+            // 列表折叠头部
+            Rect headerRect = NextRect(ref position, TargetListHeaderHeight);
+            string listLabel = $"执行目标列表  动作 {actionCount} 项  事件 {eventCount} 项";
+            targetsProp.isExpanded = EditorGUI.Foldout(headerRect, targetsProp.isExpanded, listLabel, true, EditorStyles.foldoutHeader);
+
+            if (!targetsProp.isExpanded)
+            {
+                return;
+            }
+
+            for (int i = 0; i < targetsProp.arraySize; i++)
+            {
+                if (i >= targetsProp.arraySize) break;
+                var elem = targetsProp.GetArrayElementAtIndex(i);
+                if (elem == null) break;
+
+                bool isAction = elem.FindPropertyRelative("Action") != null;
+
+                float cardHeight = TargetCardHeaderHeight;
+                if (elem.isExpanded)
+                {
+                    cardHeight += (TargetCardPadding * 2f) + (EditorGUIUtility.singleLineHeight * 2f) + LineGap;
+                }
+
+                Rect cardRect = NextRect(ref position, cardHeight);
+                position.y += (TargetCardSpacing - LineGap);
+
+                if (DrawTargetCard(cardRect, elem, i, targetsProp.arraySize, isAction, targetsProp))
+                {
+                    return;
+                }
+            }
+
+            // 底部添加按钮 恒定添加执行事件
+            Rect addBtnRect = NextRect(ref position, AddTargetButtonHeight);
+            addBtnRect.x += 12f;
+            addBtnRect.width -= 24f;
+
+            if (GUI.Button(addBtnRect, new GUIContent("+ 添加执行事件", "为该路由添加伴随触发的系统事件"), EditorStyles.miniButton))
+            {
+                int newIndex = targetsProp.arraySize;
+                targetsProp.InsertArrayElementAtIndex(newIndex);
+                var newElem = targetsProp.GetArrayElementAtIndex(newIndex);
+                newElem.managedReferenceValue = new EventRouteTarget
+                {
+                    RouteExecuteEvent = ExecuteEvent.None,
+                    MaxExecuteCount = 1
+                };
+                newElem.isExpanded = true;
+                targetsProp.serializedObject.ApplyModifiedProperties();
+                GUIUtility.ExitGUI();
+            }
+        }
+
+        private static bool DrawTargetCard(Rect cardRect, SerializedProperty elem, int index, int count, bool isAction, SerializedProperty targetsProp)
+        {
+            // 配色方案 动作使用科技青蓝 事件使用暖金琥珀
+            Color bgColor = isAction
+                ? (EditorGUIUtility.isProSkin ? new Color(0.12f, 0.24f, 0.35f, 0.55f) : new Color(0.80f, 0.90f, 0.98f, 0.7f))
+                : (EditorGUIUtility.isProSkin ? new Color(0.35f, 0.22f, 0.10f, 0.55f) : new Color(0.98f, 0.90f, 0.80f, 0.7f));
+
+            Color headerBg = isAction
+                ? (EditorGUIUtility.isProSkin ? new Color(0.15f, 0.32f, 0.46f, 0.85f) : new Color(0.70f, 0.85f, 0.96f, 0.9f))
+                : (EditorGUIUtility.isProSkin ? new Color(0.44f, 0.28f, 0.12f, 0.85f) : new Color(0.95f, 0.82f, 0.68f, 0.9f));
+
+            Color borderColor = isAction
+                ? (EditorGUIUtility.isProSkin ? new Color(0.20f, 0.48f, 0.70f, 0.6f) : new Color(0.50f, 0.70f, 0.85f, 0.8f))
+                : (EditorGUIUtility.isProSkin ? new Color(0.70f, 0.45f, 0.18f, 0.6f) : new Color(0.85f, 0.65f, 0.40f, 0.8f));
+
+            Color accentBarColor = isAction
+                ? new Color(0.20f, 0.65f, 0.95f, 1f)
+                : new Color(0.95f, 0.60f, 0.15f, 1f);
+
+            // 绘制底色与边框
+            EditorGUI.DrawRect(cardRect, bgColor);
+            EditorGUI.DrawRect(new Rect(cardRect.x, cardRect.y, cardRect.width, 1f), borderColor);
+            EditorGUI.DrawRect(new Rect(cardRect.x, cardRect.yMax - 1f, cardRect.width, 1f), borderColor);
+            EditorGUI.DrawRect(new Rect(cardRect.xMax - 1f, cardRect.y, 1f, cardRect.height), borderColor);
+            EditorGUI.DrawRect(new Rect(cardRect.x, cardRect.y, 4f, cardRect.height), accentBarColor);
+
+            // 头部条
+            Rect cardHeaderRect = new Rect(cardRect.x, cardRect.y, cardRect.width, TargetCardHeaderHeight);
+            EditorGUI.DrawRect(cardHeaderRect, headerBg);
+
+            // 构建标题文本
+            string titleText;
+            if (isAction)
+            {
+                var actionProp = elem.FindPropertyRelative("Action");
+                string actName = actionProp?.objectReferenceValue != null ? actionProp.objectReferenceValue.name : "未配置动作";
+                titleText = $"动作  {actName}";
+            }
+            else
+            {
+                var eventProp = elem.FindPropertyRelative("RouteExecuteEvent");
+                string evtName = "无";
+                if (eventProp != null && eventProp.enumValueIndex >= 0 && eventProp.enumValueIndex < eventProp.enumDisplayNames.Length)
+                {
+                    evtName = eventProp.enumDisplayNames[eventProp.enumValueIndex];
+                }
+                titleText = $"事件  {evtName}";
+            }
+
+            // 右侧按钮宽度
+            float btnAreaWidth = 72f;
+            Rect foldoutRect = new Rect(cardRect.x + 8f, cardRect.y + 2f, cardRect.width - btnAreaWidth - 12f, 18f);
+            elem.isExpanded = EditorGUI.Foldout(foldoutRect, elem.isExpanded, titleText, true, EditorStyles.boldLabel);
+
+            // 右侧控制按钮
+            float btnX = cardRect.xMax - btnAreaWidth - 4f;
+            Rect upBtnRect = new Rect(btnX, cardRect.y + 2f, 20f, 18f);
+            Rect downBtnRect = new Rect(btnX + 22f, cardRect.y + 2f, 20f, 18f);
+            Rect lockOrDelBtnRect = new Rect(btnX + 44f, cardRect.y + 2f, 26f, 18f);
+
+            // 上移按钮
+            using (new EditorGUI.DisabledScope(index == 0))
+            {
+                if (GUI.Button(upBtnRect, new GUIContent("▲", "在执行列表中上移"), EditorStyles.miniButtonLeft))
+                {
+                    targetsProp.MoveArrayElement(index, index - 1);
+                    targetsProp.serializedObject.ApplyModifiedProperties();
+                    GUIUtility.ExitGUI();
+                    return true;
+                }
+            }
+
+            // 下移按钮
+            using (new EditorGUI.DisabledScope(index >= count - 1))
+            {
+                if (GUI.Button(downBtnRect, new GUIContent("▼", "在执行列表中下移"), EditorStyles.miniButtonMid))
+                {
+                    targetsProp.MoveArrayElement(index, index + 1);
+                    targetsProp.serializedObject.ApplyModifiedProperties();
+                    GUIUtility.ExitGUI();
+                    return true;
+                }
+            }
+
+            // 第三个按钮 动作目标恒为锁定不可删 仅事件目标可删除
+            if (isAction)
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    GUI.Button(lockOrDelBtnRect, new GUIContent("锁", "动作目标恒定保留不可删除"), EditorStyles.miniButtonRight);
+                }
+            }
+            else
+            {
+                Color oldGuiColor = GUI.backgroundColor;
+                GUI.backgroundColor = new Color(1f, 0.45f, 0.45f, 1f);
+                if (GUI.Button(lockOrDelBtnRect, new GUIContent("删", "删除此事件目标"), EditorStyles.miniButtonRight))
+                {
+                    targetsProp.DeleteArrayElementAtIndex(index);
+                    targetsProp.serializedObject.ApplyModifiedProperties();
+                    GUIUtility.ExitGUI();
+                    return true;
+                }
+                GUI.backgroundColor = oldGuiColor;
+            }
+
+            // 卡片主体内容
+            if (elem.isExpanded)
+            {
+                float bodyY = cardHeaderRect.yMax + TargetCardPadding;
+                float contentX = cardRect.x + 14f;
+                float contentWidth = cardRect.width - 24f;
+
+                if (isAction)
+                {
+                    var actionProp = elem.FindPropertyRelative("Action");
+                    if (actionProp != null)
+                    {
+                        Rect actionRect = new Rect(contentX, bodyY, contentWidth, EditorGUIUtility.singleLineHeight);
+                        EditorGUI.PropertyField(actionRect, actionProp, new GUIContent("目标动作", "切换并播放的目标动作资产"));
+                    }
+                    bodyY += EditorGUIUtility.singleLineHeight + LineGap;
+
+                    var validateProp = elem.FindPropertyRelative("ValidateSkillRequirement");
+                    if (validateProp != null)
+                    {
+                        Rect valRect = new Rect(contentX, bodyY, contentWidth, EditorGUIUtility.singleLineHeight);
+                        EditorGUI.PropertyField(valRect, validateProp, new GUIContent("校验技能需求", "是否校验释放条件及技能消耗"));
+                    }
+                }
+                else
+                {
+                    var eventProp = elem.FindPropertyRelative("RouteExecuteEvent");
+                    if (eventProp != null)
+                    {
+                        Rect evtRect = new Rect(contentX, bodyY, contentWidth, EditorGUIUtility.singleLineHeight);
+                        EditorGUI.PropertyField(evtRect, eventProp, new GUIContent("系统事件", "命中后触发的系统路由事件"));
+                    }
+                    bodyY += EditorGUIUtility.singleLineHeight + LineGap;
+
+                    var limitProp = elem.FindPropertyRelative("_executeCountLimit");
+                    if (limitProp != null)
+                    {
+                        Rect limRect = new Rect(contentX, bodyY, contentWidth, EditorGUIUtility.singleLineHeight);
+                        EditorGUI.PropertyField(limRect, limitProp, new GUIContent("最大执行次数", "当前动作周期内最大执行次数 默认一 小于等于零表示无限制允许重复执行"));
+                    }
+                }
+            }
+
+            return false;
         }
 
         // ────────────────── 特殊字段渲染 ──────────────────
@@ -201,7 +539,7 @@ namespace Game.Editor.ActionConfig
             string[] tags = ActionTagOptions.GetComboWindowTags();
             if (tags.Length == 0)
             {
-                tagProperty.stringValue = EditorGUI.TextField(line, "Required Window Tag", tagProperty.stringValue);
+                tagProperty.stringValue = EditorGUI.TextField(line, "指定窗口标签", tagProperty.stringValue);
                 return;
             }
 
@@ -214,7 +552,7 @@ namespace Game.Editor.ActionConfig
                 GUI.color = Color.yellow;
             }
 
-            int newIndex = EditorGUI.Popup(line, "Required Window Tag", currentIndex, popupOptions);
+            int newIndex = EditorGUI.Popup(line, "指定窗口标签", currentIndex, popupOptions);
             GUI.color = oldColor;
 
             tagProperty.stringValue = newIndex <= 0 ? string.Empty : NormalizeSelectedValue(popupOptions[newIndex]);
@@ -338,14 +676,14 @@ namespace Game.Editor.ActionConfig
                 string triggerTypeName = triggerProp.managedReferenceFullTypename;
                 if (!string.IsNullOrEmpty(triggerTypeName) && triggerTypeName.Contains(nameof(IntentCommandTrigger)))
                 {
-                    warningMsg = "【非法配置】怪物路由配置了按键输入触发器 (IntentCommandTrigger)，怪物无法响应硬件输入！";
+                    warningMsg = "非法配置 怪物路由配置了按键输入触发器 怪物无法响应硬件输入";
                     return true;
                 }
 
                 SerializedProperty modifiersProp = triggerProp.FindPropertyRelative("Modifiers");
                 if (modifiersProp != null && modifiersProp.arraySize > 0)
                 {
-                    warningMsg = "【非法配置】怪物路由触发器中配置了输入修饰符 (Modifiers)，怪物没有输入组件，该条件在运行时将恒为 false！";
+                    warningMsg = "非法配置 怪物路由触发器中配置了输入修饰符 怪物没有输入组件 运行时恒为不满足";
                     return true;
                 }
             }
@@ -362,7 +700,7 @@ namespace Game.Editor.ActionConfig
                         Type t = GetTypeFromManagedReferenceFullTypename(fullTypeName);
                         if (t != null && typeof(RoleConditionBase).IsAssignableFrom(t))
                         {
-                            warningMsg = $"【非法配置】怪物路由中配置了角色专属条件 ({t.Name})，怪物无法满足此条件！";
+                            warningMsg = "非法配置 怪物路由中配置了角色专属条件 怪物无法满足此条件";
                             return true;
                         }
                     }

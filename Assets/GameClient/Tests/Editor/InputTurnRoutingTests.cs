@@ -20,8 +20,19 @@ namespace Game.Tests.InputSystem
         public bool HasRawMoveInput() => RawMovement.sqrMagnitude > 0.001f;
         public bool HasResidualMoveInput() => ResidualMovement.sqrMagnitude > 0.01f;
 
-        public bool IsHeld(int actionKey) => false;
-        public void SetHeld(int actionKey, bool held) { }
+        private readonly System.Collections.Generic.HashSet<int> _heldKeys = new();
+        public InputTapTracker TapTracker { get; } = new();
+
+        public bool IsHeld(int actionKey) => _heldKeys.Contains(actionKey);
+        public void SetHeld(int actionKey, bool held)
+        {
+            if (held) _heldKeys.Add(actionKey);
+            else _heldKeys.Remove(actionKey);
+        }
+
+        public int GetTapCount(HardwareInputType actionKey, float windowSeconds) => TapTracker.GetTapCountInWindow(actionKey, windowSeconds, Time.unscaledTime);
+        public int GetTapCountSince(HardwareInputType actionKey, float startTime) => TapTracker.GetTapCountSince(actionKey, startTime);
+        public void ResetTapTracker(HardwareInputType actionKey) => TapTracker.Clear(actionKey);
 
 #pragma warning disable CS0067
         public event Action OnSwitchNext;

@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetScope: 2
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 4fac0e6a2fd255f4099400b04a2b662a, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149917053
     Priority: 1
     TriggerStrategy:
       rid: 4681868330708500848
@@ -25,6 +23,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149917053
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 4fac0e6a2fd255f4099400b04a2b662a, type: 2}
+        ValidateSkillRequirement: 1
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4681868330708500848

@@ -49,7 +49,7 @@ MonoBehaviour:
     - rid: 4681868069779801078
   - groupId: e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b
     groupName: "\u8F93\u5165"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -60,9 +60,10 @@ MonoBehaviour:
     - rid: 6379258164158660620
     - rid: 6379258164158660670
     - rid: 4681868102985318443
+    - rid: 6293807071443025925
   - groupId: 50586f84-6bc9-4e9d-9b71-ea088a873da7
     groupName: "\u65F6\u95F4"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -603,7 +604,7 @@ MonoBehaviour:
         duration: 0.28333336
         blendInDuration: 0
         blendOutDuration: 0
-        CancelFlag: TimelineSkip
+        TimeSkipFlag: TimelineSkip
     - rid: 4681868102985318443
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -614,7 +615,7 @@ MonoBehaviour:
         isLocked: 0
         isHidden: 0
         isCollapsed: 0
-        isEnabled: 1
+        isEnabled: 0
         clips:
         - rid: 4681868102985318444
     - rid: 4681868102985318444
@@ -629,6 +630,35 @@ MonoBehaviour:
         blendOutDuration: 0
         routewindow:
           rid: 6379258143149917110
+    - rid: 6293807071443025925
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 41dfb61e-c165-4897-a9a3-e91692d2b7cf
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6293807071443025926
+    - rid: 6293807071443025926
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 4d5ba0df-7304-432e-b39b-495fb926b894
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.45000002
+        duration: 0.48333338
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6293807071443025929
+    - rid: 6293807071443025929
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto2
     - rid: 6379258143149917110
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:

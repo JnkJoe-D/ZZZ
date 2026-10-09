@@ -46,19 +46,15 @@ MonoBehaviour:
       StartTime: 0
       HasStartTime: 1
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 252b76f192268094da0cf1c1619bd95a, type: 2}
-    ValidateSkillRequirement: 0
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6293807052277415971
     Priority: 2
     ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6293807052277415959
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 01314b8f7c89159429ee37b5f4564176, type: 2}
-    ValidateSkillRequirement: 0
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6293807052277415972
     Priority: 1
     ArbitrationTiming: 0
     TriggerStrategy:
@@ -74,6 +70,16 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6293807052277415971
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 252b76f192268094da0cf1c1619bd95a, type: 2}
+        ValidateSkillRequirement: 0
+    - rid: 6293807052277415972
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 01314b8f7c89159429ee37b5f4564176, type: 2}
+        ValidateSkillRequirement: 0
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 6293807052277415959

@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -22,28 +22,33 @@ MonoBehaviour:
   _transitionTable:
     _items: []
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: b9c11e41b6f805544b4bc92c600578b5, type: 2}
-    ValidateSkillRequirement: 0
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258182230343711
     Priority: 0
     TriggerStrategy:
       rid: 6379258182230343707
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: b9c11e41b6f805544b4bc92c600578b5, type: 2}
-    ValidateSkillRequirement: 0
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258182230343712
     Priority: 0
     TriggerStrategy:
       rid: 6379258182230343709
     ExtraConditions: []
   RouteSets: []
-  EnterState: 80
   InheritMode: 0
   references:
     version: 2
     RefIds:
+    - rid: 6379258182230343711
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: b9c11e41b6f805544b4bc92c600578b5, type: 2}
+        ValidateSkillRequirement: 0
+    - rid: 6379258182230343712
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: b9c11e41b6f805544b4bc92c600578b5, type: 2}
+        ValidateSkillRequirement: 0
     - rid: 6379258182230343707
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

@@ -16,7 +16,6 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 9caeee7efc3bdf64aa269679b342a4f8, type: 3}
   TurnMode: 0
-  EnterState: 0
   CompleteMode: 0
   CompleteAction: {fileID: 0}
   Routes: []

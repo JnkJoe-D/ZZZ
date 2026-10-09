@@ -16,7 +16,6 @@ MonoBehaviour:
   Name: 
   TimelineAsset: {fileID: 4900000, guid: 9a2471fbea1929d48bffde3dbd80bed7, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 7e450fc12aaa4a14ab4e95d61a3dd9cd, type: 2}
-  EnterState: 0
   CompleteMode: 0
   CompleteAction: {fileID: 0}
   CompleteTransitCrossfade: -1

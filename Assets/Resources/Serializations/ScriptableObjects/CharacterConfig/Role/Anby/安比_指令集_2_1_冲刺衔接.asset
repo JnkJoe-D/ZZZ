@@ -13,37 +13,29 @@ MonoBehaviour:
   m_Name: "\u5B89\u6BD4_\u6307\u4EE4\u96C6_2_1_\u51B2\u523A\u8854\u63A5"
   m_EditorClassIdentifier: 
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916732
     Priority: 1
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500684
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916733
     Priority: 1
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500685
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916734
     Priority: 1
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500686
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916735
     Priority: 1
     CrossfadeOverride: -1
     TriggerStrategy:
@@ -52,6 +44,26 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916732
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916733
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916734
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916735
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: aaf80d16b32a6814a9b4088e598e08ed, type: 2}
+        ValidateSkillRequirement: 1
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4681868330708500684

@@ -9,7 +9,7 @@ namespace ATEditor
     {
         [ActionProperty("跳跃条件 (TimelineSkip)")]
         [Tooltip("如果 ProcessContext.Flags 中包含该标记，则【取消跳跃】（即有标记不跳，没标记跳）")]
-        public string CancelFlag = "TimelineSkip";
+        public string TimeSkipFlag = "TimelineSkip";
 
         public TimelineSkipClip()
         {
@@ -26,7 +26,7 @@ namespace ATEditor
                 startTime = this.startTime,
                 duration = this.duration,
                 isEnabled = this.isEnabled,
-                CancelFlag = this.CancelFlag
+                TimeSkipFlag = this.TimeSkipFlag
             };
         }
     }

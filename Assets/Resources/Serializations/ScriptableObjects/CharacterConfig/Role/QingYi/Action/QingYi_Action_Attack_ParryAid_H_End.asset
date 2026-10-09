@@ -22,10 +22,8 @@ MonoBehaviour:
   _transitionTable:
     _items: []
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: b9c11e41b6f805544b4bc92c600578b5, type: 2}
-    ValidateSkillRequirement: 0
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258182230343718
     Priority: 0
     ArbitrationTiming: 0
     TriggerStrategy:
@@ -41,6 +39,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258182230343718
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: b9c11e41b6f805544b4bc92c600578b5, type: 2}
+        ValidateSkillRequirement: 0
     - rid: 6379258182230343716
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

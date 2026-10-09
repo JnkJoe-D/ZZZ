@@ -13,28 +13,22 @@ MonoBehaviour:
   m_Name: Ellen_RouteSet_ToWalk_Start
   m_EditorClassIdentifier: 
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916611
     Priority: 0
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500681
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916612
     Priority: 0
     CrossfadeOverride: -1
     TriggerStrategy:
       rid: 4681868330708500682
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916613
     Priority: 0
     CrossfadeOverride: -1
     TriggerStrategy:
@@ -43,6 +37,21 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916611
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916612
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916613
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
+        ValidateSkillRequirement: 1
     - rid: 4681868330708500681
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

@@ -22,32 +22,21 @@ MonoBehaviour:
   _transitionTable:
     _items: []
   Routes:
-  - ExecuteType: 20
-    ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 30
-    Priority: 10
-    ArbitrationTiming: 0
-    TriggerStrategy:
-      rid: 6379258164158660725
-    ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916670
     Priority: 0
     ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500794
+    ExtraConditionCombine: 0
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916671
     Priority: 0
     ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500795
+    ExtraConditionCombine: 0
     ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
@@ -56,10 +45,21 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
   - {fileID: 11400000, guid: 36a2a976c94302b44afd0ccc5c5dd5d4, type: 2}
   - {fileID: 11400000, guid: 92b7f162e8e43ca4eb6e794b9131ff98, type: 2}
+  - {fileID: 11400000, guid: 3a9458929aa985d45af031d6f6b75d97, type: 2}
   InheritMode: 0
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916670
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916671
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
+        ValidateSkillRequirement: 1
     - rid: 4681868330708500794
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -67,6 +67,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916668
+        ConditionCombine: 0
         InputConditions: []
     - rid: 4681868330708500795
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
@@ -75,6 +76,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916669
+        ConditionCombine: 0
         InputConditions: []
     - rid: 6379258143149916668
       type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
@@ -84,15 +86,3 @@ MonoBehaviour:
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Execute1
-    - rid: 6379258164158660725
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 20
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258164158660726
-        InputConditions: []
-    - rid: 6379258164158660726
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: TimelineSkip

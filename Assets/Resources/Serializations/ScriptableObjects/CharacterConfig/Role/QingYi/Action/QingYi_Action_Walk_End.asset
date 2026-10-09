@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -28,7 +28,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d7c93611739621c439d2f53b40b72bdb, type: 2}
   - {fileID: 11400000, guid: 6b54149973a433c4797b504474e39a9c, type: 2}
   - {fileID: 11400000, guid: 7c2b51488538d0541882acaddb82c10b, type: 2}
-  EnterState: 30
   InheritMode: 0
   references:
     version: 2

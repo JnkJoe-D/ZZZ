@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: Ellen_RouteSet_ToAttack_03_TimeSkip
+  m_EditorClassIdentifier: 
+  TargetScope: 2
+  Routes:
+  - Targets:
+    - rid: 6293807071443025977
+    Priority: 10
+    ArbitrationTiming: 10
+    TriggerStrategy:
+      rid: 6293807071443025974
+    ExtraConditionCombine: 0
+    ExtraConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 6293807071443025977
+      type: {class: EventRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RouteExecuteEvent: 30
+        MaxExecuteCount: 1
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 6293807071443025974
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 0
+        RequiredWindow:
+          rid: 6293807071443025975
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 10
+          RequiredKey: 20
+          InputCondition:
+            rid: -2
+          Inverse: 1
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807071443025976
+          Inverse: 0
+    - rid: 6293807071443025975
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto2
+    - rid: 6293807071443025976
+      type: {class: KeyTapCountCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        TargetKey: 20
+        WindowMode: 0
+        WindowDuration: 0.3
+        Operator: 3
+        ThresholdCount: 0

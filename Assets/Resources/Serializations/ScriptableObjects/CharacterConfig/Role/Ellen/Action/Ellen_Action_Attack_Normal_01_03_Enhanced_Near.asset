@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,57 +14,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 140220
   Name: 
-  _domainId: 2
   TimelineAsset: {fileID: 4900000, guid: d99474f599fb49249a4615e09cc621cc, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 64cc979d79406c54c81b34771aab7b28, type: 2}
+  _domainId: 2
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
-  CompleteTransitCrossfade: -1
+  _transitionTable:
+    _items: []
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 15bac3a544be57e4fba6bcf7fe527825, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916771
     Priority: 1
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500736
+    ExtraConditionCombine: 0
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 15bac3a544be57e4fba6bcf7fe527825, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916772
     Priority: 1
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500737
+    ExtraConditionCombine: 0
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916773
     Priority: 0
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500738
+    ExtraConditionCombine: 0
     ExtraConditions: []
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916774
     Priority: 0
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500739
-    ExtraConditions: []
-  - ExecuteType: 20
-    ExecuteAction: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 30
-    Priority: 0
-    CrossfadeOverride: -1
-    TriggerStrategy:
-      rid: 4681868330708500740
+    ExtraConditionCombine: 0
     ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
@@ -72,11 +60,31 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e7673d0d9b01f31408aa6ffd1044c8bd, type: 2}
   - {fileID: 11400000, guid: 92b7f162e8e43ca4eb6e794b9131ff98, type: 2}
   - {fileID: 11400000, guid: 28756541d0888ef4da6bf0d95df720f1, type: 2}
-  EnterState: 40
+  - {fileID: 11400000, guid: 3a9458929aa985d45af031d6f6b75d97, type: 2}
   InheritMode: 0
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916771
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 15bac3a544be57e4fba6bcf7fe527825, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916772
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 15bac3a544be57e4fba6bcf7fe527825, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916773
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149916774
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: e4056cfc1a652d24b84d6a3c10adaa73, type: 2}
+        ValidateSkillRequirement: 1
     - rid: 4681868330708500736
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -84,8 +92,8 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916767
-        RequiredWindowTag: Buffer1
-        Modifiers: []
+        ConditionCombine: 0
+        InputConditions: []
     - rid: 4681868330708500737
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -93,8 +101,8 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916768
-        RequiredWindowTag: Execute1
-        Modifiers: []
+        ConditionCombine: 0
+        InputConditions: []
     - rid: 4681868330708500738
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -102,8 +110,8 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916769
-        RequiredWindowTag: Buffer1
-        Modifiers: []
+        ConditionCombine: 0
+        InputConditions: []
     - rid: 4681868330708500739
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -111,17 +119,8 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916770
-        RequiredWindowTag: Execute1
-        Modifiers: []
-    - rid: 4681868330708500740
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 20
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149917009
-        RequiredWindowTag: 
-        Modifiers: []
+        ConditionCombine: 0
+        InputConditions: []
     - rid: 6379258143149916767
       type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -138,7 +137,3 @@ MonoBehaviour:
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Execute1
-    - rid: 6379258143149917009
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: TimelineSkip

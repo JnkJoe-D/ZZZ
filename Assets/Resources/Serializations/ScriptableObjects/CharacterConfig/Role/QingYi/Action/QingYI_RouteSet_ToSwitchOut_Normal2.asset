@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetScope: 2
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: da7b615c3662da447b33adaeb1098435, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258171200110593
     Priority: 99
     CrossfadeOverride: -1
     TriggerStrategy:
@@ -27,6 +25,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258171200110593
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: da7b615c3662da447b33adaeb1098435, type: 2}
+        ValidateSkillRequirement: 1
     - rid: 4681868508892233736
       type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

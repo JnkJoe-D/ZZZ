@@ -62,6 +62,26 @@ namespace Game.GamePlay
         void SetHeld(int actionKey, bool held);
 
         // ==========================================
+        // 时域敲击/连续点击查询 (Tap Tracker)
+        // 遵循四象限时间隔离，严格使用 Time.unscaledTime
+        // ==========================================
+
+        /// <summary>
+        /// 获取指定按键在最近 windowSeconds 内的敲击/点击次数 (滑动时域)
+        /// </summary>
+        int GetTapCount(HardwareInputType actionKey, float windowSeconds);
+
+        /// <summary>
+        /// 获取自指定时间戳以来该按键的敲击次数 (基于动作/窗口起始点，单位：秒)
+        /// </summary>
+        int GetTapCountSince(HardwareInputType actionKey, float startTime);
+
+        /// <summary>
+        /// 清除指定按键的时域点击记录 (用于动作完成或消耗后的重置)
+        /// </summary>
+        void ResetTapTracker(HardwareInputType actionKey);
+
+        // ==========================================
         // 瞬间触发事件
         // ==========================================
 

@@ -14,21 +14,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 200020
   Name: 
-  _domainId: 0
   TimelineAsset: {fileID: 4900000, guid: 66c7196e4b5428947b898fd4e21ccb1a, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: e45a637301648ff47bc5e7d101c20f32, type: 2}
+  _domainId: 0
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: 730e2a8307436384484a05cde0e53450, type: 2}
   _transitionTable:
     _items:
     - TargetAction: {fileID: 11400000, guid: a40427f8c12377a4b81d6b1fa5126e0d, type: 2}
-      CrossfadeDuration: -1
-      HasCustomExitTime: 1
-      CustomExitTime: 0
+      EndTime: 0
+      HasEndTime: 1
+      BlendDuration: -1
+      StartTime: 0
+      HasStartTime: 0
     - TargetAction: {fileID: 11400000, guid: 2d54470e09bdd2f44a27d373f336ee33, type: 2}
-      CrossfadeDuration: 0.112
-      HasCustomExitTime: 0
-      CustomExitTime: 0
+      EndTime: 0
+      HasEndTime: 0
+      BlendDuration: 0.112
+      StartTime: 0
+      HasStartTime: 0
+    - TargetAction: {fileID: 11400000, guid: 730e2a8307436384484a05cde0e53450, type: 2}
+      EndTime: 1.3
+      HasEndTime: 1
+      BlendDuration: 0.05
+      StartTime: 0
+      HasStartTime: 0
   Routes: []
   RouteSets:
   - {fileID: 11400000, guid: a6f4997b6b302c64b9424978655b8a15, type: 2}

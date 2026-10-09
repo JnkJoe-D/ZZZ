@@ -52,6 +52,7 @@ MonoBehaviour:
     - rid: 6379258164158660612
     - rid: 6379258164158660678
     - rid: 4681868080418914475
+    - rid: 6293807071443025962
   - groupId: c049ddd2-da2f-47c7-939b-5c2ab38fc517
     groupName: "\u547D\u4E2D"
     isCollapsed: 0
@@ -478,7 +479,7 @@ MonoBehaviour:
         isLocked: 0
         isHidden: 0
         isCollapsed: 0
-        isEnabled: 1
+        isEnabled: 0
         clips:
         - rid: 4681868080418914476
     - rid: 4681868080418914476
@@ -516,7 +517,36 @@ MonoBehaviour:
         duration: 0.28333336
         blendInDuration: 0
         blendOutDuration: 0
-        CancelFlag: TimelineSkip
+        TimeSkipFlag: TimelineSkip
+    - rid: 6293807071443025962
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 5a42a286-cc23-4e0e-9c3c-ca6e3758a48c
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6293807071443025963
+    - rid: 6293807071443025963
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 267f430a-b53a-44e8-be9f-ce10d5a03cf3
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.45000002
+        duration: 0.48333338
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6293807071443025965
+    - rid: 6293807071443025965
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto2
     - rid: 6379258143149917092
       type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:

@@ -32,6 +32,7 @@ namespace Game.GamePlay
         private readonly List<RouteWindowData> _activeRouteWindows = new();
         private readonly List<ActionRoute> _effectiveRoutes = new();
         private readonly CommandFateTracker _fateTracker = new();
+        public RouteExecutionTracker RouteExecutionTracker { get; } = new();
 
         private int _currentPlayGeneration;
         private bool _isTransitioning;
@@ -297,6 +298,7 @@ namespace Game.GamePlay
             if (action == null || ActionPlayer == null) return false;
 
             unchecked { _currentPlayGeneration++; }
+            RouteExecutionTracker.ResetForNewAction();
 
             // 切动作时，对所有存留活跃窗口调用 OnDisable 清空状态，杜绝打断遗留出招
             if (_activeRouteWindows.Count > 0)
@@ -379,81 +381,73 @@ namespace Game.GamePlay
         {
             CharacterEntity actor = GetRouteEvalActor();
             candidate.SourceRoute?.ConsumeSkillCost(actor, _skillCostHandler);
-            // Bug #3 修复：副作用（如清除招架标记）在路由确认提交后才执行，
-            // 保证 Evaluate 阶段多路由优先级竞争期间不会提前消费一次性状态
+            // 副作用在路由确认提交后才执行 保证评估阶段多路由优先级竞争期间不会提前消费一次性状态
             candidate.SourceRoute?.CommitSideEffects(actor);
 
+            var route = candidate.SourceRoute;
+            var targets = route?.Targets;
 
-            float crossfade = -1f;
-            float transitionStartTime = 0f;
-            if (candidate.ExecuteType == ExecuteTarget.Action && candidate.NextAction != null)
+            if (targets == null || targets.Count == 0) return;
+
+            // 严格按照配置目标列表的顺序依次执行
+            for (int i = 0; i < targets.Count; i++)
             {
-                ActionConfigAsset currentAction = GetCurrentAction();
-                if (currentAction != null)
+                var target = targets[i];
+                if (target == null || !target.IsValid()) continue;
+                if (!RouteExecutionTracker.CanExecuteTarget(target)) continue;
+
+                if (target is EventRouteTarget eventTarget)
                 {
-                    var transition = currentAction.GetTransition(candidate.NextAction);
-                    if (transition != null)
+                    RecordRoute(candidate.Command?.Payload, null, CommandRouteSource.ActionRoute, candidate.RouteTag, candidate.Command?.Id ?? 0);
+                    _routeEventReceiver?.OnRouteEventExecuted(eventTarget.RouteExecuteEvent, _entity);
+                    RouteExecutionTracker.RecordExecuted(route, eventTarget);
+                }
+                else if (target is ActionRouteTarget actionTarget)
+                {
+                    float crossfade = -1f;
+                    float transitionStartTime = 0f;
+                    ActionConfigAsset currentAction = GetCurrentAction();
+                    if (currentAction != null)
                     {
-                        crossfade = transition.BlendDuration >= 0f ? transition.BlendDuration : -1f;
-                        if (transition.HasStartTime)
+                        var transition = currentAction.GetTransition(actionTarget.Action);
+                        if (transition != null)
                         {
-                            transitionStartTime = Mathf.Max(0f, transition.StartTime);
+                            crossfade = transition.BlendDuration >= 0f ? transition.BlendDuration : -1f;
+                            if (transition.HasStartTime)
+                            {
+                                transitionStartTime = Mathf.Max(0f, transition.StartTime);
+                            }
                         }
+                    }
+
+                    float startTime = transitionStartTime;
+                    if (candidate.Command?.Payload is SystemEventPayload sysPayload && sysPayload.StartTime > 0f)
+                    {
+                        startTime = sysPayload.StartTime;
+                    }
+                    else if (candidate.Command?.Payload is DirectAssetPayload directPayload && directPayload.StartTime > 0f)
+                    {
+                        startTime = directPayload.StartTime;
+                    }
+
+                    RouteExecutionTracker.RecordExecuted(route, actionTarget);
+
+                    _isTransitioning = true;
+                    try
+                    {
+                        _activeRouteWindows.Clear();
+                        _entity.RouteArbitrator?.Clear();
+
+                        if (_actionData != null) _actionData.Set(nameof(_actionData.NextActionToCast), actionTarget.Action);
+                        RecordRoute(candidate.Command?.Payload, actionTarget.Action, CommandRouteSource.ActionRoute, candidate.RouteTag, candidate.Command?.Id ?? 0);
+                        PlayAction(actionTarget.Action, crossfade, startTime);
+                    }
+                    finally
+                    {
+                        _isTransitioning = false;
                     }
                 }
             }
-
-            float startTime = transitionStartTime;
-            if (candidate.Command?.Payload is SystemEventPayload sysPayload && sysPayload.StartTime > 0f)
-            {
-                startTime = sysPayload.StartTime;
-            }
-            else if (candidate.Command?.Payload is DirectAssetPayload directPayload && directPayload.StartTime > 0f)
-            {
-                startTime = directPayload.StartTime;
-            }
-
-            Commit(candidate.Command, candidate.NextAction, candidate.RouteExecuteEvent, candidate.ExecuteType, CommandRouteSource.ActionRoute, candidate.RouteTag, crossfade, startTime);
-        }
-
-        private bool Commit(
-            CharacterCommand command,
-            ActionConfigAsset nextAction,
-            ExecuteEvent routeExecuteEvent,
-            ExecuteTarget executeType,
-            CommandRouteSource source,
-            string tag = null,
-            float crossfadeOverride = -1f,
-            float startTime = 0f)
-        {
-            if (executeType == ExecuteTarget.None) return false;
-            if (executeType == ExecuteTarget.Action && nextAction == null) return false;
-            if (executeType == ExecuteTarget.Event && routeExecuteEvent == ExecuteEvent.None) return false;
-
-            if (executeType == ExecuteTarget.Action)
-            {
-                _isTransitioning = true;
-                try
-                {
-                    _activeRouteWindows.Clear();
-                    _entity.RouteArbitrator?.Clear();
-
-                    if (_actionData != null) _actionData.Set(nameof(_actionData.NextActionToCast), nextAction);
-                    RecordRoute(command?.Payload, nextAction, source, tag, command?.Id ?? 0);
-                    PlayAction(nextAction, crossfadeOverride, startTime);
-                }
-                finally
-                {
-                    _isTransitioning = false;
-                }
-            }
-            else if (executeType == ExecuteTarget.Event)
-            {
-                RecordRoute(command?.Payload, null, source, tag, command?.Id ?? 0);
-                _routeEventReceiver?.OnRouteEventExecuted(routeExecuteEvent, _entity);
-            }
-
-            return true;
         }
 
         private void HandleActionComplete()

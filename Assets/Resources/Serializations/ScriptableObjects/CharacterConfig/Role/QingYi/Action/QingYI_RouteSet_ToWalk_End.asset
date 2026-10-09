@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: QingYI_RouteSet_ToWalk_End
   m_EditorClassIdentifier: 
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: dec652f924e4f4f4c86ea041841cbec5, type: 2}
-    ValidateSkillRequirement: 0
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916649
     Priority: 0
     CrossfadeOverride: 0
     TriggerStrategy:
@@ -25,6 +23,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916649
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: dec652f924e4f4f4c86ea041841cbec5, type: 2}
+        ValidateSkillRequirement: 0
     - rid: 6379258097012572217
       type: {class: SystemEventTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

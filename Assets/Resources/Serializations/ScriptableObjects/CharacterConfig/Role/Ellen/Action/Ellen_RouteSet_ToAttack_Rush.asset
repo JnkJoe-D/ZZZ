@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: Ellen_RouteSet_ToAttack_Rush
   m_EditorClassIdentifier: 
   Routes:
-  - ExecuteType: 10
-    ExecuteAction: {fileID: 11400000, guid: 39597b3808f14ba4e9d617ad4e2bdeb1, type: 2}
-    ValidateSkillRequirement: 1
-    RouteExecuteEvent: 0
+  - Targets:
+    - rid: 6379258143149916664
     Priority: 0
     CrossfadeOverride: -1
     TriggerStrategy:
@@ -25,6 +23,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6379258143149916664
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 39597b3808f14ba4e9d617ad4e2bdeb1, type: 2}
+        ValidateSkillRequirement: 1
     - rid: 4681868330708500787
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:

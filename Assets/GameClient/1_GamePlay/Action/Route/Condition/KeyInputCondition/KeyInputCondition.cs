@@ -8,11 +8,10 @@ namespace Game.GamePlay
     [SubclassDisplayName("是否有原始移动输入")]
     public sealed class MoveInputCondition : IKeyInputCondition
     {
-        public bool Inverse = false;
         public bool Check(RoleEntity actor)
         {
             if (actor == null || !actor.IsControlActive) return false;
-            return !Inverse && (actor.InputProvider != null && actor.InputProvider.HasRawMoveInput());
+            return actor.InputProvider != null && actor.InputProvider.HasRawMoveInput();
         }
     }
     [Serializable]
@@ -99,29 +98,26 @@ namespace Game.GamePlay
         [Tooltip("是否要求此前必须有有效输入残留（防止从完全静止起步时被误判为掉头）")]
         public bool RequireResidualInput = true;
 
-        [Tooltip("反转判定结果")]
-        public bool Inverse = false;
-
         public bool Check(RoleEntity actor)
         {
             if (actor == null || !actor.IsControlActive) return false;
             var provider = actor.InputProvider;
             if (provider == null) return false;
 
-            if (RequireRawInput && !provider.HasRawMoveInput()) return Inverse;
-            if (RequireResidualInput && !provider.HasResidualMoveInput()) return Inverse;
+            if (RequireRawInput && !provider.HasRawMoveInput()) return false;
+            if (RequireResidualInput && !provider.HasResidualMoveInput()) return false;
 
             Vector2 rawDir = provider.GetRawMovementDirection();
             Vector2 residualDir = provider.GetResidualMovementDirection();
 
             if (rawDir.sqrMagnitude < 0.001f || residualDir.sqrMagnitude < 0.001f)
             {
-                return Inverse;
+                return false;
             }
 
             float angle = Vector2.Angle(residualDir, rawDir);
             bool matched = angle >= MinAngle;
-            return Inverse ? !matched : matched;
+            return matched;
         }
     }
 
@@ -130,15 +126,12 @@ namespace Game.GamePlay
     /// 计算原生输入向量与残留缓存向量的差值 (Raw - Residual) 长度
     /// </summary>
     [Serializable]
-    [SubclassDisplayName("移动输入变化量(Delta)条件")]
+    [SubclassDisplayName("移动输入变化量条件")]
     public sealed class MoveInputDeltaCondition : IKeyInputCondition
     {
         [Tooltip("最小变化向量长度阈值（例如 180 度反向时差值最大可达 2.0）")]
         [Range(0.1f, 2f)]
         public float MinDeltaMagnitude = 1.2f;
-
-        public bool Inverse = false;
-
         public bool Check(RoleEntity actor)
         {
             if (actor == null || !actor.IsControlActive) return false;
@@ -147,7 +140,7 @@ namespace Game.GamePlay
 
             Vector2 delta = provider.GetRawMovementDirection() - provider.GetResidualMovementDirection();
             bool matched = delta.magnitude >= MinDeltaMagnitude;
-            return Inverse ? !matched : matched;
+            return matched;
         }
     }
 }
