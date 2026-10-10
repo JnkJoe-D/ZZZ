@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -17,76 +17,336 @@ MonoBehaviour:
   - Targets:
     - rid: 6379258143149917051
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500743
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917052
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258120226209848
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917053
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258120226209851
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917054
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258120226209853
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917055
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258120226209857
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917056
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
-      rid: -2
+      rid: 6293807099681439778
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917057
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258120226209883
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917058
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258120226209885
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917059
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258120226209855
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917060
     Priority: 10
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
-      rid: -2
+      rid: 6293807099681439770
+    ExtraConditionCombine: 0
     ExtraConditions: []
   references:
     version: 2
     RefIds:
+    - rid: 4681868330708500743
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917043
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439791
+          Inverse: 0
+    - rid: 6293807099681439769
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: 0
+        XMax: 0
+        YMin: -1
+        YMax: -0.01
+    - rid: 6293807099681439770
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6293807099681439772
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439774
+          Inverse: 0
+    - rid: 6293807099681439772
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6293807099681439774
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: 0
+        XMax: 0
+        YMin: 0.01
+        YMax: 1
+    - rid: 6293807099681439776
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: 0.01
+        XMax: 1
+        YMin: 0
+        YMax: 0
+    - rid: 6293807099681439777
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: -1
+        XMax: -0.01
+        YMin: 0
+        YMax: 0
+    - rid: 6293807099681439778
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 10
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6293807099681439779
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439781
+          Inverse: 0
+    - rid: 6293807099681439779
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6293807099681439781
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: 0
+        XMax: 0
+        YMin: 0.01
+        YMax: 1
+    - rid: 6293807099681439782
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: 0
+        XMax: 0
+        YMin: 0.01
+        YMax: 1
+    - rid: 6293807099681439785
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: -1
+        XMax: -0.01
+        YMin: 0.01
+        YMax: 1
+    - rid: 6293807099681439786
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: 0.01
+        XMax: 1
+        YMin: 0.01
+        YMax: 1
+    - rid: 6293807099681439791
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: -1
+        XMax: -0.01
+        YMin: -1
+        YMax: -0.01
+    - rid: 6293807099681439792
+      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        XMin: 0.01
+        XMax: 1
+        YMin: -1
+        YMax: -0.01
+    - rid: 6379258120226209848
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917044
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439792
+          Inverse: 0
+    - rid: 6379258120226209851
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917045
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439785
+          Inverse: 0
+    - rid: 6379258120226209853
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917046
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439786
+          Inverse: 0
+    - rid: 6379258120226209855
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917050
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439769
+          Inverse: 0
+    - rid: 6379258120226209857
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917047
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439782
+          Inverse: 0
+    - rid: 6379258120226209883
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917048
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439777
+          Inverse: 0
+    - rid: 6379258120226209885
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 50
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149917049
+        ConditionCombine: 0
+        InputConditions:
+        - Category: 20
+          RequiredKey: 0
+          InputCondition:
+            rid: 6293807099681439776
+          Inverse: 0
+    - rid: 6379258143149917043
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917044
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917045
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917046
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917047
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917048
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917049
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
+    - rid: 6379258143149917050
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Evade
     - rid: 6379258143149917051
       type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -137,193 +397,3 @@ MonoBehaviour:
       data:
         Action: {fileID: 11400000, guid: b2b323425f451ed47b1f7ba08c24172c, type: 2}
         ValidateSkillRequirement: 1
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 4681868330708500743
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 50
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149917043
-        RequiredWindowTag: 
-        Modifiers:
-        - Category: 20
-          RequiredKey: 10
-          InputCondition:
-            rid: 6379258120226209846
-          Inverse: 0
-    - rid: 6379258120226209846
-      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        XMin: -1
-        XMax: -0.01
-        YMin: -1
-        YMax: -0.01
-    - rid: 6379258120226209848
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 50
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149917044
-        RequiredWindowTag: 
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258120226209849
-          Inverse: 0
-    - rid: 6379258120226209849
-      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        XMin: 0.01
-        XMax: 1
-        YMin: -1
-        YMax: -0.01
-    - rid: 6379258120226209851
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 50
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149917045
-        RequiredWindowTag: 
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258120226209852
-          Inverse: 0
-    - rid: 6379258120226209852
-      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        XMin: -1
-        XMax: -0.01
-        YMin: 0.01
-        YMax: 1
-    - rid: 6379258120226209853
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 50
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149917046
-        RequiredWindowTag: 
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258120226209854
-          Inverse: 0
-    - rid: 6379258120226209854
-      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        XMin: 0.01
-        XMax: 1
-        YMin: 0.01
-        YMax: 1
-    - rid: 6379258120226209855
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 50
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149917050
-        RequiredWindowTag: 
-        Modifiers: []
-    - rid: 6379258120226209857
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 50
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149917047
-        RequiredWindowTag: 
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258120226209858
-          Inverse: 0
-    - rid: 6379258120226209858
-      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        XMin: 0
-        XMax: 0
-        YMin: 0.01
-        YMax: 1
-    - rid: 6379258120226209883
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 50
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149917048
-        RequiredWindowTag: 
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258120226209884
-          Inverse: 0
-    - rid: 6379258120226209884
-      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        XMin: -1
-        XMax: -0.01
-        YMin: 0
-        YMax: 0
-    - rid: 6379258120226209885
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 50
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149917049
-        RequiredWindowTag: 
-        Modifiers:
-        - Category: 20
-          RequiredKey: 0
-          InputCondition:
-            rid: 6379258120226209886
-          Inverse: 0
-    - rid: 6379258120226209886
-      type: {class: Vector2MoveInputCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        XMin: 0.01
-        XMax: 1
-        YMin: 0
-        YMax: 0
-    - rid: 6379258143149917043
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Evade
-    - rid: 6379258143149917044
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Evade
-    - rid: 6379258143149917045
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Evade
-    - rid: 6379258143149917046
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Evade
-    - rid: 6379258143149917047
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Evade
-    - rid: 6379258143149917048
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Evade
-    - rid: 6379258143149917049
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Evade
-    - rid: 6379258143149917050
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Evade

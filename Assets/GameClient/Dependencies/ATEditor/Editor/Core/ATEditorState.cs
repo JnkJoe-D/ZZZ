@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -83,19 +84,45 @@ namespace ATEditor.Editor
         
         public string DefaultJsonDirectory
         {
-            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_JSON_DIR, "Assets/Resources/Serializations/JSON/ActionTimelines");
-            set => UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_JSON_DIR, value);
+            get
+            {
+                var db = ATEditorWorkspaceDatabase.Instance;
+                if (db != null && !string.IsNullOrEmpty(db.JsonRootDirectory))
+                {
+                    return db.JsonRootDirectory;
+                }
+                return UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_JSON_DIR, "Assets/Resources/Serializations/JSON/ActionTimelines");
+            }
+            set
+            {
+                UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_JSON_DIR, value);
+                var db = ATEditorWorkspaceDatabase.Instance;
+                if (db != null) db.JsonRootDirectory = value;
+            }
         }
 
         public string DefaultAssetDirectory
         {
-            get => UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_ASSET_DIR, "Assets/Resources/Serializations/ScriptableObjects/ActionTimelines");
-            set => UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_ASSET_DIR, value);
+            get
+            {
+                var db = ATEditorWorkspaceDatabase.Instance;
+                if (db != null && !string.IsNullOrEmpty(db.SoRootDirectory))
+                {
+                    return db.SoRootDirectory;
+                }
+                return UnityEditor.EditorPrefs.GetString(PREF_DEFAULT_ASSET_DIR, "Assets/Resources/Serializations/ScriptableObjects/ActionTimelines");
+            }
+            set
+            {
+                UnityEditor.EditorPrefs.SetString(PREF_DEFAULT_ASSET_DIR, value);
+                var db = ATEditorWorkspaceDatabase.Instance;
+                if (db != null) db.SoRootDirectory = value;
+            }
         }
 
         public string ActiveWorkspaceId
         {
-            get => UnityEditor.EditorPrefs.GetString(PREF_ACTIVE_WORKSPACE_ID, "Player_Ellen");
+            get => UnityEditor.EditorPrefs.GetString(PREF_ACTIVE_WORKSPACE_ID, "Role_Ellen");
             set => UnityEditor.EditorPrefs.SetString(PREF_ACTIVE_WORKSPACE_ID, value);
         }
 
@@ -120,7 +147,7 @@ namespace ATEditor.Editor
             var ws = ActiveWorkspace;
             if (ws != null && !string.IsNullOrEmpty(ws.FolderName))
             {
-                return System.IO.Path.Combine(root, ws.FolderName).Replace("\\", "/");
+                return ResolveDirectoryWithLegacyFallback(root, ws.FolderName);
             }
             return root;
         }
@@ -131,9 +158,30 @@ namespace ATEditor.Editor
             var ws = ActiveWorkspace;
             if (ws != null && !string.IsNullOrEmpty(ws.FolderName))
             {
-                return System.IO.Path.Combine(root, ws.FolderName).Replace("\\", "/");
+                return ResolveDirectoryWithLegacyFallback(root, ws.FolderName);
             }
             return root;
+        }
+
+        private static string ResolveDirectoryWithLegacyFallback(string root, string folderName)
+        {
+            if (string.IsNullOrEmpty(folderName)) return root;
+            string standard = System.IO.Path.Combine(root, folderName).Replace("\\", "/");
+            if (System.IO.Directory.Exists(standard)) return standard;
+
+            // 保护现有资产：若物理目录尚为 Player/{Char}，自动兼容返回现有目录
+            if (folderName.StartsWith("Role/", StringComparison.OrdinalIgnoreCase))
+            {
+                string legacy = System.IO.Path.Combine(root, "Player" + folderName.Substring(4)).Replace("\\", "/");
+                if (System.IO.Directory.Exists(legacy)) return legacy;
+            }
+            else if (folderName.StartsWith("Player/", StringComparison.OrdinalIgnoreCase))
+            {
+                string modern = System.IO.Path.Combine(root, "Role" + folderName.Substring(6)).Replace("\\", "/");
+                if (System.IO.Directory.Exists(modern)) return modern;
+            }
+
+            return standard;
         }
 
         public string Language

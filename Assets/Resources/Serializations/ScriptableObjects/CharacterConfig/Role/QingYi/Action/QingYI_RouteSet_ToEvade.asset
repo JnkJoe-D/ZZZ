@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -17,42 +17,30 @@ MonoBehaviour:
   - Targets:
     - rid: 6379258227727269896
     Priority: 1
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500741
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258227727269897
     Priority: 1
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500742
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258227727269898
     Priority: 1
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500743
+    ExtraConditionCombine: 0
     ExtraConditions: []
   references:
     version: 2
     RefIds:
-    - rid: 6379258227727269896
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: 7f84f4b4de7b9a540b6dc10f51c1af3e, type: 2}
-        ValidateSkillRequirement: 1
-    - rid: 6379258227727269897
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: 2188fbf1ff95f1b44916b10c3e159251, type: 2}
-        ValidateSkillRequirement: 1
-    - rid: 6379258227727269898
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: 7f84f4b4de7b9a540b6dc10f51c1af3e, type: 2}
-        ValidateSkillRequirement: 1
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4681868330708500741
@@ -62,6 +50,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149917040
+        ConditionCombine: 0
         InputConditions:
         - Category: 10
           RequiredKey: 10
@@ -75,6 +64,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149917041
+        ConditionCombine: 0
         InputConditions: []
     - rid: 4681868330708500743
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
@@ -83,6 +73,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149917042
+        ConditionCombine: 0
         InputConditions:
         - Category: 20
           RequiredKey: 0
@@ -105,3 +96,18 @@ MonoBehaviour:
       type: {class: MoveInputCondition2, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         Expected: 1
+    - rid: 6379258227727269896
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 7f84f4b4de7b9a540b6dc10f51c1af3e, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258227727269897
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 2188fbf1ff95f1b44916b10c3e159251, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258227727269898
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 7f84f4b4de7b9a540b6dc10f51c1af3e, type: 2}
+        ValidateSkillRequirement: 1

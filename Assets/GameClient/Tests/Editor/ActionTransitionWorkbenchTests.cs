@@ -148,9 +148,9 @@ namespace Game.Tests.ActionSystem
             Assert.IsNotNull(workspaces);
             Assert.IsTrue(workspaces.Count > 0, "工程中应存在配置的角色工作区");
 
-            var ellenWs = Game.Editor.ActionTransition.ActionTransitionWorkspaceService.GetWorkspaceById("Player_Ellen");
+            var ellenWs = Game.Editor.ActionTransition.ActionTransitionWorkspaceService.GetWorkspaceById("Role_Ellen");
             Assert.IsNotNull(ellenWs);
-            Assert.AreEqual("Player", ellenWs.Category);
+            Assert.AreEqual("Role", ellenWs.Category);
             Assert.IsNotNull(ellenWs.PreviewPrefab, "艾莲工作区应绑定了默认预览模型");
         }
 

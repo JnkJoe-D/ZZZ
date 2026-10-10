@@ -204,6 +204,7 @@ namespace ATEditor.Editor
 
         /// <summary>
         /// 对指定 ActionTimeline 执行与 ATEditor 标准一致的双轨保存（同时更新 SO 和 JSON）
+        /// <para>直接基于工作区当前配置的 JSON/SO 前缀与角色物理子目录进行解算，内部高度内聚、零外部依赖。</para>
         /// </summary>
         /// <param name="timeline">时间轴数据根节点</param>
         /// <param name="knownAssetOrJsonPath">已知的 SO 或 JSON 资产路径（例如来自 ActionConfigAsset）</param>
@@ -223,8 +224,9 @@ namespace ATEditor.Editor
 
             if (timeline == null) return false;
 
-            string defaultJsonRoot = EditorPrefs.GetString("SkillEditor_DefaultJsonDir", "Assets/Resources/Serializations/JSON/ActionTimelines").Replace('\\', '/');
-            string defaultAssetRoot = EditorPrefs.GetString("SkillEditor_DefaultAssetDir", "Assets/Resources/Serializations/ScriptableObjects/ActionTimelines").Replace('\\', '/');
+            var db = ATEditorWorkspaceDatabase.Instance;
+            string defaultJsonRoot = db != null ? db.JsonRootDirectory : "Assets/Resources/Serializations/JSON/ActionTimelines";
+            string defaultAssetRoot = db != null ? db.SoRootDirectory : "Assets/Resources/Serializations/ScriptableObjects/ActionTimelines";
 
             string fileName = !string.IsNullOrEmpty(timeline.name) ? timeline.name : "NewTimeline";
             string jsonDir = defaultJsonRoot;
@@ -232,49 +234,60 @@ namespace ATEditor.Editor
 
             if (!string.IsNullOrEmpty(knownAssetOrJsonPath))
             {
-                string normalizedKnown = knownAssetOrJsonPath.Replace('\\', '/');
+                string normalizedKnown = knownAssetOrJsonPath.Trim().Replace('\\', '/');
                 fileName = Path.GetFileNameWithoutExtension(normalizedKnown);
                 string currentDir = Path.GetDirectoryName(normalizedKnown)?.Replace('\\', '/');
                 string ext = Path.GetExtension(normalizedKnown);
 
-                // 尝试推导工作区
-                if (workspace == null)
+                // 尝试从路径推导工作区
+                if (workspace == null && db != null)
                 {
-                    workspace = ATEditorWorkspaceDatabase.Instance?.GetWorkspaceByAssetPath(normalizedKnown);
+                    workspace = db.GetWorkspaceByAssetPath(normalizedKnown);
                 }
 
-                if (string.Equals(ext, ".json", StringComparison.OrdinalIgnoreCase))
+                if (workspace != null && !string.IsNullOrEmpty(workspace.FolderName))
+                {
+                    jsonDir = db.GetWorkspaceJsonDirectory(workspace);
+                    assetDir = db.GetWorkspaceAssetDirectory(workspace);
+                }
+                else if (string.Equals(ext, ".json", StringComparison.OrdinalIgnoreCase))
                 {
                     jsonDir = currentDir;
-                    // 推导 assetDir：若路径包含 /JSON/ActionTimelines/ 则替换为 /ScriptableObjects/ActionTimelines/
-                    if (normalizedKnown.IndexOf("/JSON/ActionTimelines/", StringComparison.OrdinalIgnoreCase) >= 0)
+                    // 若已知路径在 JSON 前缀下，推导对应的 SO 目录
+                    if (!string.IsNullOrEmpty(currentDir) && currentDir.StartsWith(defaultJsonRoot, StringComparison.OrdinalIgnoreCase))
                     {
-                        assetDir = currentDir.Replace("/JSON/ActionTimelines", "/ScriptableObjects/ActionTimelines");
+                        string sub = currentDir.Substring(defaultJsonRoot.Length).TrimStart('/');
+                        assetDir = string.IsNullOrEmpty(sub) ? defaultAssetRoot : $"{defaultAssetRoot}/{sub}";
                     }
-                    else if (workspace != null && !string.IsNullOrEmpty(workspace.FolderName))
+                    else
                     {
-                        assetDir = Path.Combine(defaultAssetRoot, workspace.FolderName).Replace('\\', '/');
+                        assetDir = defaultAssetRoot;
                     }
                 }
-                else if (string.Equals(ext, ".asset", StringComparison.OrdinalIgnoreCase))
+                else
                 {
                     assetDir = currentDir;
-                    // 推导 jsonDir：若路径包含 /ScriptableObjects/ActionTimelines/ 则替换为 /JSON/ActionTimelines/
-                    if (normalizedKnown.IndexOf("/ScriptableObjects/ActionTimelines/", StringComparison.OrdinalIgnoreCase) >= 0)
+                    // 若已知路径在 SO 前缀下，推导对应的 JSON 目录
+                    if (!string.IsNullOrEmpty(currentDir) && currentDir.StartsWith(defaultAssetRoot, StringComparison.OrdinalIgnoreCase))
                     {
-                        jsonDir = currentDir.Replace("/ScriptableObjects/ActionTimelines", "/JSON/ActionTimelines");
+                        string sub = currentDir.Substring(defaultAssetRoot.Length).TrimStart('/');
+                        jsonDir = string.IsNullOrEmpty(sub) ? defaultJsonRoot : $"{defaultJsonRoot}/{sub}";
                     }
-                    else if (workspace != null && !string.IsNullOrEmpty(workspace.FolderName))
+                    else
                     {
-                        jsonDir = Path.Combine(defaultJsonRoot, workspace.FolderName).Replace('\\', '/');
+                        jsonDir = defaultJsonRoot;
                     }
                 }
             }
-            else if (workspace != null && !string.IsNullOrEmpty(workspace.FolderName))
+            else if (workspace != null)
             {
-                jsonDir = Path.Combine(defaultJsonRoot, workspace.FolderName).Replace('\\', '/');
-                assetDir = Path.Combine(defaultAssetRoot, workspace.FolderName).Replace('\\', '/');
+                jsonDir = db != null ? db.GetWorkspaceJsonDirectory(workspace) : $"{defaultJsonRoot}/{workspace.FolderName}";
+                assetDir = db != null ? db.GetWorkspaceAssetDirectory(workspace) : $"{defaultAssetRoot}/{workspace.FolderName}";
             }
+
+            // 确保物理目录存在
+            if (!Directory.Exists(jsonDir)) Directory.CreateDirectory(jsonDir);
+            if (!Directory.Exists(assetDir)) Directory.CreateDirectory(assetDir);
 
             // 调用 ATEditor 统一的 SerializationUtility.SaveDual
             SerializationUtility.SaveDual(timeline, jsonDir, assetDir, fileName);

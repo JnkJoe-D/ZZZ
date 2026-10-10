@@ -1,0 +1,58 @@
+﻿{
+    "SchemaVersion": 1,
+    "Categories": [
+        "Role",
+        "Monster",
+        "Common"
+    ],
+    "Workspaces": [
+        {
+            "Id": "Role_Ellen",
+            "Category": "Role",
+            "DisplayName": "Ellen",
+            "FolderName": "Role/Ellen",
+            "Order": 10,
+            "Description": "初始角色 - 艾莲"
+        },
+        {
+            "Id": "Role_Anby",
+            "Category": "Role",
+            "DisplayName": "Anby",
+            "FolderName": "Role/Anby",
+            "Order": 20,
+            "Description": "初始角色 - 安比"
+        },
+        {
+            "Id": "Role_Unagi",
+            "Category": "Role",
+            "DisplayName": "Unagi",
+            "FolderName": "Role/Unagi",
+            "Order": 30,
+            "Description": "初始角色 - 星见雅"
+        },
+        {
+            "Id": "Role_QingYi",
+            "Category": "Role",
+            "DisplayName": "QingYi",
+            "FolderName": "Role/QingYi",
+            "Order": 40,
+            "Description": "初始角色 - 青衣"
+        },
+        {
+            "Id": "Monster_TyrfingInfested",
+            "Category": "Monster",
+            "DisplayName": "TyrfingInfested",
+            "FolderName": "Monster/TyrfingInfested",
+            "Order": 100,
+            "Description": "精英怪 - 侵蚀提尔锋"
+        },
+        {
+            "Id": "Common_Shared",
+            "Category": "Common",
+            "DisplayName": "通用模板 (Common)",
+            "FolderName": "Common",
+            "Order": 999,
+            "Description": "通用基础与共享模板"
+        }
+    ]
+}

@@ -13,31 +13,45 @@ MonoBehaviour:
   m_Name: WorkspaceDatabase
   m_EditorClassIdentifier: 
   categories:
-  - None
-  - Player
+  - Role
   - Monster
-  - NPC
   - Common
   workspaces:
-  - Id: Player_Ellen
-    Category: Player
-    DisplayName: "\u827E\u83B2"
-    FolderName: Player/Ellen
+  - Id: Role_Ellen
+    Category: Role
+    DisplayName: Ellen
+    FolderName: Role/Ellen
     PreviewPrefab: {fileID: 5158763610275107262, guid: 1f300285bcdc3454fbb8009c7f2ebf82,
       type: 3}
     SpawnPosition: {x: 0, y: 0, z: 0}
     SpawnRotationEuler: {x: 0, y: 0, z: 0}
-  - Id: Player_Anby
-    Category: Player
-    DisplayName: "\u5B89\u6BD4"
-    FolderName: Player/Anby
+  - Id: Role_Anby
+    Category: Role
+    DisplayName: Anby
+    FolderName: Role/Anby
     PreviewPrefab: {fileID: 6866138656870126649, guid: 58a89a85b7ed98e4885d1ebbcd76228d,
+      type: 3}
+    SpawnPosition: {x: 0, y: 0, z: 0}
+    SpawnRotationEuler: {x: 0, y: 0, z: 0}
+  - Id: Role_Unagi
+    Category: Role
+    DisplayName: Unagi
+    FolderName: Role/Unagi
+    PreviewPrefab: {fileID: 5207641375562360989, guid: 1e1583ff6f2508d45ae6203b9784d3e8,
+      type: 3}
+    SpawnPosition: {x: 0, y: 0, z: 0}
+    SpawnRotationEuler: {x: 0, y: 0, z: 0}
+  - Id: Role_QingYi
+    Category: Role
+    DisplayName: QingYi
+    FolderName: Role/QingYi
+    PreviewPrefab: {fileID: 439019796899693374, guid: 8f2bb153c5a59d44097665d18ea176c8,
       type: 3}
     SpawnPosition: {x: 0, y: 0, z: 0}
     SpawnRotationEuler: {x: 0, y: 0, z: 0}
   - Id: Monster_TyrfingInfested
     Category: Monster
-    DisplayName: "\u4FB5\u8680\u63D0\u5C14\u950B (TyrfingInfested)"
+    DisplayName: TyrfingInfested
     FolderName: Monster/TyrfingInfested
     PreviewPrefab: {fileID: 8612589450643552581, guid: 80ad4626c1b004645a3ecbc09f764e4f,
       type: 3}
@@ -50,19 +64,14 @@ MonoBehaviour:
     PreviewPrefab: {fileID: 0}
     SpawnPosition: {x: 0, y: 0, z: 0}
     SpawnRotationEuler: {x: 0, y: 0, z: 0}
-  - Id: Player_Unagi
-    Category: Player
-    DisplayName: "\u96C5"
-    FolderName: Player/Unagi
-    PreviewPrefab: {fileID: 5207641375562360989, guid: 1e1583ff6f2508d45ae6203b9784d3e8,
+  - Id: Role_NewCharacter
+    Category: Role
+    DisplayName: "\u65B0\u89D2\u8272"
+    FolderName: Role/NewCharacter
+    PreviewPrefab: {fileID: 6866138656870126649, guid: 58a89a85b7ed98e4885d1ebbcd76228d,
       type: 3}
     SpawnPosition: {x: 0, y: 0, z: 0}
     SpawnRotationEuler: {x: 0, y: 0, z: 0}
-  - Id: Player_QingYi
-    Category: Player
-    DisplayName: "\u9752\u8863"
-    FolderName: Player/QingYi
-    PreviewPrefab: {fileID: 439019796899693374, guid: 8f2bb153c5a59d44097665d18ea176c8,
-      type: 3}
-    SpawnPosition: {x: 0, y: 0, z: 0}
-    SpawnRotationEuler: {x: 0, y: 0, z: 0}
+  jsonRootDirectory: Assets/Resources/Serializations/JSON/ActionTimelines
+  soRootDirectory: Assets/Resources/Serializations/ScriptableObjects/ActionTimelines
+  sharedWorkspaceJsonPath: Assets/Editor/Settings/Workspace/SharedWorkspaces.json

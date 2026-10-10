@@ -496,7 +496,7 @@
   },
   {
     "id": 140000,
-    "name": "基础_待机",
+    "name": "Ellen_Idle",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -507,7 +507,7 @@
   },
   {
     "id": 140010,
-    "name": "基础_慢跑起步",
+    "name": "Ellen_Walk_Start",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -518,7 +518,7 @@
   },
   {
     "id": 140020,
-    "name": "基础_慢跑",
+    "name": "Ellen_Walk_Loop",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -529,7 +529,7 @@
   },
   {
     "id": 140030,
-    "name": "基础_冲刺",
+    "name": "Ellen_Run_Loop",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -540,7 +540,7 @@
   },
   {
     "id": 140040,
-    "name": "基础_特殊冲刺",
+    "name": "Ellen_Attack_Dash_Loop_01",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -551,7 +551,7 @@
   },
   {
     "id": 140050,
-    "name": "基础_慢跑停止",
+    "name": "Ellen_Walk_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -562,7 +562,7 @@
   },
   {
     "id": 140060,
-    "name": "基础_冲刺停止",
+    "name": "Ellen_Run_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -573,7 +573,7 @@
   },
   {
     "id": 140070,
-    "name": "基础_慢跑起步停止",
+    "name": "Ellen_Walk_Start_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -584,7 +584,7 @@
   },
   {
     "id": 140080,
-    "name": "基础_特殊冲刺起步_前",
+    "name": "Ellen_Attack_Dash_Start_Front",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -595,7 +595,7 @@
   },
   {
     "id": 140090,
-    "name": "基础_特殊冲刺起步_后",
+    "name": "Ellen_Attack_Dash_Start_Back",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -606,7 +606,7 @@
   },
   {
     "id": 140100,
-    "name": "闪避_前_1",
+    "name": "Ellen_Evade_Front",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -617,7 +617,7 @@
   },
   {
     "id": 140110,
-    "name": "闪避_后_1",
+    "name": "Ellen_Evade_Back",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -628,7 +628,7 @@
   },
   {
     "id": 140120,
-    "name": "切人_切入",
+    "name": "Ellen_SwitchIn_Normal",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -639,7 +639,7 @@
   },
   {
     "id": 140130,
-    "name": "切人_切出",
+    "name": "Ellen_SwitchOut_Normal",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -650,7 +650,7 @@
   },
   {
     "id": 140140,
-    "name": "攻击_普通攻击_1",
+    "name": "Ellen_Attack_Normal_01_01",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -661,7 +661,7 @@
   },
   {
     "id": 140150,
-    "name": "攻击_普通攻击_2",
+    "name": "Ellen_Attack_Normal_01_02",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -672,7 +672,7 @@
   },
   {
     "id": 140160,
-    "name": "攻击_普通攻击_3_近",
+    "name": "Ellen_Attack_Normal_01_03_Near",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -683,7 +683,7 @@
   },
   {
     "id": 140170,
-    "name": "攻击_普通攻击_3_远",
+    "name": "Ellen_Attack_Normal_01_03",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -694,7 +694,7 @@
   },
   {
     "id": 140200,
-    "name": "攻击_普通攻击_1_急冻",
+    "name": "Ellen_Attack_Normal_01_01_Ex",
     "desc": "",
     "condition": [
       {
@@ -717,7 +717,7 @@
   },
   {
     "id": 140210,
-    "name": "攻击_普通攻击_2_急冻",
+    "name": "Ellen_Attack_Normal_01_02_Ex",
     "desc": "",
     "condition": [
       {
@@ -740,7 +740,7 @@
   },
   {
     "id": 140220,
-    "name": "攻击_普通攻击_3_急冻_近",
+    "name": "Ellen_Attack_Normal_01_03_Ex_Near",
     "desc": "",
     "condition": [
       {
@@ -763,7 +763,7 @@
   },
   {
     "id": 140221,
-    "name": "攻击_普通攻击_3_急冻_远",
+    "name": "Ellen_Attack_Normal_01_03_Ex",
     "desc": "",
     "condition": [
       {
@@ -786,7 +786,7 @@
   },
   {
     "id": 140230,
-    "name": "攻击_特殊技_1",
+    "name": "Ellen_Attack_Branch",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -797,7 +797,7 @@
   },
   {
     "id": 140240,
-    "name": "攻击_特殊技_2_强化",
+    "name": "Ellen_Attack_Branch_Ex",
     "desc": "",
     "condition": [
       {
@@ -820,7 +820,7 @@
   },
   {
     "id": 140250,
-    "name": "攻击_特殊技_3_急冻",
+    "name": "Ellen_Attack_Branch_Ex_Enhanced",
     "desc": "",
     "condition": [
       {
@@ -843,7 +843,7 @@
   },
   {
     "id": 140260,
-    "name": "攻击_冲刺攻击",
+    "name": "Ellen_Attack_Rush",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -854,7 +854,7 @@
   },
   {
     "id": 140270,
-    "name": "攻击_冲刺攻击_急冻",
+    "name": "Ellen_Attack_Rush_Ex",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -865,7 +865,7 @@
   },
   {
     "id": 140280,
-    "name": "攻击_特殊冲刺攻击_蓄力前摇",
+    "name": "Ellen_Attack_Dash_Slash_01",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -876,7 +876,7 @@
   },
   {
     "id": 140290,
-    "name": "攻击_特殊冲刺攻击_蓄力前摇_快蓄",
+    "name": "Ellen_Attack_Dash_Slash_01_Fast",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -887,7 +887,7 @@
   },
   {
     "id": 140300,
-    "name": "攻击_特殊冲刺攻击_无蓄力",
+    "name": "Ellen_Attack_Dash_Cut_01_Fast",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -898,7 +898,7 @@
   },
   {
     "id": 140310,
-    "name": "攻击_特殊冲刺攻击_蓄力",
+    "name": "Ellen_Attack_Dash_Cut_01",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -909,7 +909,7 @@
   },
   {
     "id": 140320,
-    "name": "攻击_普通攻击_冰刃浪",
+    "name": "Ellen_Attack_Normal_02_345",
     "desc": "",
     "condition": [
       {
@@ -932,7 +932,7 @@
   },
   {
     "id": 140330,
-    "name": "攻击_普通攻击_霜降",
+    "name": "Ellen_Attack_Normal_Enhanced_Card",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -943,7 +943,7 @@
   },
   {
     "id": 140340,
-    "name": "攻击_招架支援_Start",
+    "name": "Ellen_Attack_ParryAid_Start",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -954,7 +954,7 @@
   },
   {
     "id": 140350,
-    "name": "攻击_招架支援_轻",
+    "name": "Ellen_Attack_ParryAid_L",
     "desc": "",
     "condition": [
       {
@@ -977,7 +977,7 @@
   },
   {
     "id": 140360,
-    "name": "攻击_招架支援_轻_End",
+    "name": "Ellen_Attack_ParryAid_L_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -988,7 +988,7 @@
   },
   {
     "id": 140370,
-    "name": "攻击_招架支援_重",
+    "name": "Ellen_Attack_ParryAid_H",
     "desc": "",
     "condition": [
       {
@@ -1011,7 +1011,7 @@
   },
   {
     "id": 140380,
-    "name": "攻击_招架支援_重_End",
+    "name": "Ellen_Attack_ParryAid_H_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1022,7 +1022,7 @@
   },
   {
     "id": 140390,
-    "name": "攻击_招架反击",
+    "name": "Ellen_Attack_AssultAid_Near",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1033,7 +1033,7 @@
   },
   {
     "id": 141000,
-    "name": "Idle",
+    "name": "QingYi_Idle",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1044,7 +1044,7 @@
   },
   {
     "id": 141010,
-    "name": "Walk_Start",
+    "name": "QingYi_Walk_Start",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1055,7 +1055,7 @@
   },
   {
     "id": 141020,
-    "name": "Walk_Start2",
+    "name": "QingYi_Walk_Start2",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1066,7 +1066,7 @@
   },
   {
     "id": 141030,
-    "name": "Walk_Loop",
+    "name": "QingYi_Walk_Loop",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1077,7 +1077,7 @@
   },
   {
     "id": 141040,
-    "name": "Walk_Start_End",
+    "name": "QingYi_Walk_Start_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1088,7 +1088,7 @@
   },
   {
     "id": 141050,
-    "name": "Walk_End",
+    "name": "QingYi_Walk_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1099,7 +1099,7 @@
   },
   {
     "id": 141060,
-    "name": "Run_Loop",
+    "name": "QingYi_Run_Loop",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1110,7 +1110,7 @@
   },
   {
     "id": 141070,
-    "name": "Run_End",
+    "name": "QingYi_Run_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1121,7 +1121,7 @@
   },
   {
     "id": 141080,
-    "name": "Evade_Front",
+    "name": "QingYi_Evade_Front",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1132,7 +1132,7 @@
   },
   {
     "id": 141081,
-    "name": "Evade_Front_Left",
+    "name": "QingYi_Evade_Front_Left",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1143,7 +1143,7 @@
   },
   {
     "id": 141082,
-    "name": "Evade_Front_LeftFoot",
+    "name": "QingYi_Evade_Front_LeftFoot",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1154,7 +1154,7 @@
   },
   {
     "id": 141083,
-    "name": "Evade_Front_Right",
+    "name": "QingYi_Evade_Front_Right",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1165,7 +1165,7 @@
   },
   {
     "id": 141084,
-    "name": "Evade_Front_RightFoot",
+    "name": "QingYi_Evade_Front_RightFoot",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1176,7 +1176,7 @@
   },
   {
     "id": 141090,
-    "name": "Evade_Back",
+    "name": "QingYi_Evade_Back",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1187,7 +1187,7 @@
   },
   {
     "id": 141091,
-    "name": "Evade_Back_Left",
+    "name": "QingYi_Evade_Back_Left",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1198,7 +1198,7 @@
   },
   {
     "id": 141092,
-    "name": "Evade_Back_LeftFoot",
+    "name": "QingYi_Evade_Back_LeftFoot",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1209,7 +1209,7 @@
   },
   {
     "id": 141093,
-    "name": "Evade_Back_Right",
+    "name": "QingYi_Evade_Back_Right",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1220,7 +1220,7 @@
   },
   {
     "id": 141094,
-    "name": "Evade_Back_RightFoot",
+    "name": "QingYi_Evade_Back_RightFoot",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1231,7 +1231,7 @@
   },
   {
     "id": 141095,
-    "name": "Evade_Left",
+    "name": "QingYi_Evade_Left",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1242,7 +1242,7 @@
   },
   {
     "id": 141096,
-    "name": "Evade_Right",
+    "name": "QingYi_Evade_Right",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1253,7 +1253,7 @@
   },
   {
     "id": 141100,
-    "name": "Attack_Normal_01",
+    "name": "QingYi_Attack_Normal_01",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1264,7 +1264,7 @@
   },
   {
     "id": 141110,
-    "name": "Attack_Normal_02",
+    "name": "QingYi_Attack_Normal_02",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1275,7 +1275,7 @@
   },
   {
     "id": 141120,
-    "name": "Attack_Normal_04",
+    "name": "QingYi_Attack_Normal_04",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1286,7 +1286,7 @@
   },
   {
     "id": 141130,
-    "name": "Attack_Normal_05",
+    "name": "QingYi_Attack_Normal_05",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1297,7 +1297,7 @@
   },
   {
     "id": 141131,
-    "name": "Attack_Normal_05_02",
+    "name": "QingYi_Attack_Normal_05_02",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1308,7 +1308,7 @@
   },
   {
     "id": 141140,
-    "name": "Attack_Normal_06",
+    "name": "QingYi_Attack_Normal_06",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1319,7 +1319,7 @@
   },
   {
     "id": 141150,
-    "name": "Attack_Normal_07",
+    "name": "QingYi_Attack_Normal_07",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1330,7 +1330,7 @@
   },
   {
     "id": 141160,
-    "name": "Attack_Branch_01",
+    "name": "QingYi_Attack_Branch_01",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1341,7 +1341,7 @@
   },
   {
     "id": 141170,
-    "name": "Attack_Branch_02",
+    "name": "QingYi_Attack_Branch_02",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1352,7 +1352,7 @@
   },
   {
     "id": 141180,
-    "name": "Attack_Special",
+    "name": "QingYi_Attack_Special",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1363,7 +1363,7 @@
   },
   {
     "id": 141190,
-    "name": "Attack_ExSpecial",
+    "name": "QingYi_Attack_ExSpecial",
     "desc": "",
     "condition": [
       {
@@ -1386,7 +1386,7 @@
   },
   {
     "id": 141200,
-    "name": "Attack_ExSpecial_02",
+    "name": "QingYi_Attack_ExSpecial_02",
     "desc": "",
     "condition": [
       {
@@ -1409,7 +1409,7 @@
   },
   {
     "id": 141210,
-    "name": "Attack_Rush",
+    "name": "QingYi_Attack_Rush",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1420,7 +1420,7 @@
   },
   {
     "id": 141220,
-    "name": "SwitchIn_Normal",
+    "name": "QingYi_SwitchIn_Normal",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1431,7 +1431,7 @@
   },
   {
     "id": 141230,
-    "name": "SwitchOut_Normal",
+    "name": "QingYi_SwitchOut_Normal",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1442,7 +1442,7 @@
   },
   {
     "id": 141240,
-    "name": "ParryAid_Start",
+    "name": "QingYi_ParryAid_Start",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1453,7 +1453,7 @@
   },
   {
     "id": 141250,
-    "name": "ParryAid_H",
+    "name": "QingYi_ParryAid_H",
     "desc": "",
     "condition": [
       {
@@ -1476,7 +1476,7 @@
   },
   {
     "id": 141260,
-    "name": "ParryAid_L",
+    "name": "QingYi_ParryAid_L",
     "desc": "",
     "condition": [
       {
@@ -1499,7 +1499,7 @@
   },
   {
     "id": 141270,
-    "name": "ParryAid_H_End",
+    "name": "QingYi_ParryAid_H_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1510,7 +1510,7 @@
   },
   {
     "id": 141280,
-    "name": "ParryAid_L_End",
+    "name": "QingYi_ParryAid_L_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1521,7 +1521,7 @@
   },
   {
     "id": 141290,
-    "name": "AssultAid",
+    "name": "QingYi_AssultAid",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1532,7 +1532,7 @@
   },
   {
     "id": 200010,
-    "name": "TryfingInfested_Idle",
+    "name": "TyrfingInfested_Idle",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1543,7 +1543,7 @@
   },
   {
     "id": 200020,
-    "name": "TryfingInfested_Run_Start",
+    "name": "TyrfingInfested_Run_Start",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1554,7 +1554,7 @@
   },
   {
     "id": 200021,
-    "name": "TryfingInfested_Run_Loop",
+    "name": "TyrfingInfested_Run_Loop",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1565,7 +1565,7 @@
   },
   {
     "id": 200022,
-    "name": "TryfingInfested_Run_End",
+    "name": "TyrfingInfested_Run_End",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1576,7 +1576,7 @@
   },
   {
     "id": 200030,
-    "name": "TryfingInfested_Walk_B",
+    "name": "TyrfingInfested_Walk_F",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1587,7 +1587,7 @@
   },
   {
     "id": 200031,
-    "name": "TryfingInfested_Walk_F",
+    "name": "TyrfingInfested_Walk_B",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1598,7 +1598,7 @@
   },
   {
     "id": 200032,
-    "name": "TryfingInfested_Walk_F_L",
+    "name": "TyrfingInfested_Walk_F_L",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1609,7 +1609,7 @@
   },
   {
     "id": 200033,
-    "name": "TryfingInfested_Walk_F_R",
+    "name": "TyrfingInfested_Walk_F_R",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1620,7 +1620,7 @@
   },
   {
     "id": 200034,
-    "name": "TryfingInfested_Walk_L",
+    "name": "TyrfingInfested_Walk_L",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1631,7 +1631,7 @@
   },
   {
     "id": 200035,
-    "name": "TryfingInfested_Walk_R",
+    "name": "TyrfingInfested_Walk_R",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1642,7 +1642,7 @@
   },
   {
     "id": 200040,
-    "name": "TryfingInfested_Attack_01",
+    "name": "TyrfingInfested_Attack_01",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1653,7 +1653,7 @@
   },
   {
     "id": 200050,
-    "name": "TryfingInfested_Attack_02",
+    "name": "TyrfingInfested_Attack_02",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1664,7 +1664,7 @@
   },
   {
     "id": 200060,
-    "name": "TryfingInfested_Attack_03",
+    "name": "TyrfingInfested_Attack_03",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1675,7 +1675,7 @@
   },
   {
     "id": 200070,
-    "name": "TryfingInfested_Attack_04",
+    "name": "TyrfingInfested_Attack_04",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1686,7 +1686,7 @@
   },
   {
     "id": 200080,
-    "name": "TryfingInfested_Attack_05",
+    "name": "TyrfingInfested_Attack_05",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1697,7 +1697,7 @@
   },
   {
     "id": 200090,
-    "name": "TryfingInfested_Attack_06",
+    "name": "TyrfingInfested_Attack_06",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1708,7 +1708,7 @@
   },
   {
     "id": 200100,
-    "name": "TryfingInfested_Hit_Front_Up",
+    "name": "TyrfingInfested_Hit_Front_Up",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1719,7 +1719,7 @@
   },
   {
     "id": 200101,
-    "name": "TryfingInfested_Hit_Shake",
+    "name": "TyrfingInfested_Hit_Shake",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1730,7 +1730,7 @@
   },
   {
     "id": 200120,
-    "name": "TryfingInfested_Stun_Start",
+    "name": "TyrfingInfested_Stun_Start",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1741,7 +1741,7 @@
   },
   {
     "id": 200121,
-    "name": "TryfingInfested_Stun_Loop",
+    "name": "TyrfingInfested_Stun_Loop",
     "desc": "",
     "condition": [],
     "cost": [],
@@ -1752,7 +1752,7 @@
   },
   {
     "id": 200122,
-    "name": "TryfingInfested_Stun_End",
+    "name": "TyrfingInfested_Stun_End",
     "desc": "",
     "condition": [],
     "cost": [],

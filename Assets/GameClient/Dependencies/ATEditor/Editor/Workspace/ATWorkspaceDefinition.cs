@@ -1,20 +1,21 @@
 using System;
 using UnityEngine;
+using Game.Editor.Workspace;
 
 namespace ATEditor.Editor
 {
     /// <summary>
     /// ATEditor 角色工作区定义
-    /// 描述单个角色或实体的编辑上下文与资源目录
-    /// 严格独立于 GamePlay 命名空间
+    /// 承载 ATEditor 编辑器专有的预览场景配置（PreviewPrefab、站位与朝向），
+    /// 并与中立公共 SharedWorkspaceDefinition 进行字段映射与双向同步。
     /// </summary>
     [Serializable]
     public class ATWorkspaceDefinition
     {
-        public string Id;                  // 唯一标识，如 "Player_Ellen"
-        public string Category;            // 分类："Player" | "Monster" | "NPC" | "Common"
+        public string Id;                  // 唯一标识，如 "Role_Ellen", "Monster_TyrfingInfested"
+        public string Category;            // 固定分类："Role" | "Monster" | "Common"
         public string DisplayName;         // UI 显示名称，如 "艾莲 (Ellen)"
-        public string FolderName;          // 相对子目录名（全英文规范），如 "Player/Ellen"
+        public string FolderName;          // 相对子目录名，如 "Role/Ellen", "Monster/TyrfingInfested"
         
         [Header("预览设置")]
         public GameObject PreviewPrefab;   // 绑定的角色预制体（唯一模型源）
@@ -30,6 +31,37 @@ namespace ATEditor.Editor
             DisplayName = displayName;
             FolderName = folderName;
             PreviewPrefab = previewPrefab;
+        }
+
+        public ATWorkspaceDefinition(SharedWorkspaceDefinition shared, GameObject previewPrefab = null)
+        {
+            if (shared != null)
+            {
+                Id = shared.Id;
+                Category = shared.Category;
+                DisplayName = shared.DisplayName;
+                FolderName = shared.FolderName;
+            }
+            PreviewPrefab = previewPrefab;
+        }
+
+        public SharedWorkspaceDefinition ToSharedDefinition()
+        {
+            return new SharedWorkspaceDefinition(
+                id: this.Id,
+                category: this.Category,
+                displayName: this.DisplayName,
+                folderName: this.FolderName
+            );
+        }
+
+        public void ApplySharedDefinition(SharedWorkspaceDefinition shared)
+        {
+            if (shared == null) return;
+            Id = shared.Id;
+            Category = shared.Category;
+            DisplayName = shared.DisplayName;
+            FolderName = shared.FolderName;
         }
 
         public ATWorkspaceDefinition Clone()

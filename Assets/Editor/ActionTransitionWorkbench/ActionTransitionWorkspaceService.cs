@@ -5,6 +5,8 @@ using UnityEditor;
 using UnityEngine;
 using ATEditor.Editor;
 using Game.GamePlay;
+using Game.Editor.Workspace;
+using Game.Editor.Workbench;
 
 namespace Game.Editor.ActionTransition
 {
@@ -91,14 +93,8 @@ namespace Game.Editor.ActionTransition
             string roleToken = Path.GetFileName(ws.FolderName.Trim('/'));
             if (string.IsNullOrEmpty(roleToken)) return results;
 
-            // 1. 优先在标准 CharacterConfig 目录下精确定位
-            string[] candidateDirs = new string[]
-            {
-                $"Assets/Resources/Serializations/ScriptableObjects/CharacterConfig/Role/{roleToken}/Action",
-                $"Assets/Resources/Serializations/ScriptableObjects/CharacterConfig/Role/{roleToken}",
-                $"Assets/Resources/Serializations/ScriptableObjects/CharacterConfig/Monster/{roleToken}/Action",
-                $"Assets/Resources/Serializations/ScriptableObjects/CharacterConfig/Monster/{roleToken}"
-            };
+            // 1. 优先使用 WorkbenchPathResolver 统一推导的候选目录精确定位
+            List<string> candidateDirs = WorkbenchPathResolver.ResolveActionConfigCandidateDirectories(ws.FolderName, ws.Category);
 
             bool foundInExplicitDir = false;
             foreach (var dir in candidateDirs)
@@ -141,6 +137,22 @@ namespace Game.Editor.ActionTransition
             // 按名称自然排序
             results.Sort((a, b) => string.Compare(a.name, b.name, StringComparison.OrdinalIgnoreCase));
             return results;
+        }
+
+        /// <summary>
+        /// 基于中立共享角色工作区定义获取动作资产列表（接入 Phase 3 统一生效配置与资产扫描管线）
+        /// </summary>
+        public static List<ActionConfigAsset> GetActionsForWorkspace(SharedWorkspaceDefinition ws)
+        {
+            if (ws == null) return new List<ActionConfigAsset>();
+            var effectiveConfig = EffectiveConfigResolver.Resolve(ws);
+            var items = WorkbenchAssetScanner.ScanActions(effectiveConfig, ws);
+            var list = new List<ActionConfigAsset>();
+            foreach (var item in items)
+            {
+                if (item.AssetObject != null) list.Add(item.AssetObject);
+            }
+            return list;
         }
 
         /// <summary>

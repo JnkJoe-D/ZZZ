@@ -10,23 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 429a74382b9739749b6c5893828d2a4b, type: 3}
-  m_Name: Ellen_Action_Attack_Rush_Enhanced
+  m_Name: Ellen_Action_Attack_Rush_Ex
   m_EditorClassIdentifier: 
   ID: 140270
-  Name: 
-  _domainId: 2
+  Name: Ellen_Action_Attack_Rush_Ex
   TimelineAsset: {fileID: 4900000, guid: 5aaecc68250c9e24cb5af1c2a7d532ef, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: e183ec6b8f152164ba54bce490ace528, type: 2}
+  _domainId: 2
   CompleteMode: 20
   CompleteAction: {fileID: 11400000, guid: c1558c3f5d18de34c953d9624ff044fa, type: 2}
-  CompleteTransitCrossfade: -1
+  _transitionTable:
+    _items: []
   Routes:
   - Targets:
     - rid: 6379258143149916623
     Priority: 0
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500716
+    ExtraConditionCombine: 0
     ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: 4873ab03aa0ec8e4d86017a236e4453d, type: 2}
@@ -36,11 +38,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 6379258143149916623
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: 4c1affe96f0c8f64da3215e776ef416d, type: 2}
-        ValidateSkillRequirement: 1
     - rid: 4681868330708500716
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -48,9 +45,14 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149916622
-        RequiredWindowTag: Buffer1
-        Modifiers: []
+        ConditionCombine: 0
+        InputConditions: []
     - rid: 6379258143149916622
       type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Buffer1
+    - rid: 6379258143149916623
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 4c1affe96f0c8f64da3215e776ef416d, type: 2}
+        ValidateSkillRequirement: 1

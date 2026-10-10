@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Game.Editor.Workspace;
 
 namespace ATEditor.Editor
 {
@@ -20,11 +21,10 @@ namespace ATEditor.Editor
         private ATWorkspaceDefinition selectedWorkspace;
         private ATWorkspaceDefinition editingBuffer;
 
-        // 新建模式与分类管理模式标记
+        // 新建模式与工作区设置模式标记
         private bool isCreatingNew = false;
-        private bool isManagingCategories = false;
+        private bool isWorkspaceSettings = false;
         private ATWorkspaceDefinition newBuffer;
-        private string newCategoryInput = string.Empty;
 
         // 错误提示信息
         private string statusMessage = string.Empty;
@@ -58,7 +58,7 @@ namespace ATEditor.Editor
         private void SelectWorkspace(ATWorkspaceDefinition ws)
         {
             isCreatingNew = false;
-            isManagingCategories = false;
+            isWorkspaceSettings = false;
             selectedWorkspace = ws;
             editingBuffer = ws != null ? ws.Clone() : null;
             statusMessage = string.Empty;
@@ -68,17 +68,27 @@ namespace ATEditor.Editor
         private void StartNewWorkspaceMode()
         {
             isCreatingNew = true;
-            isManagingCategories = false;
+            isWorkspaceSettings = false;
             selectedWorkspace = null;
             newBuffer = new ATWorkspaceDefinition
             {
-                Id = "Player_NewCharacter",
-                Category = "Player",
+                Id = "Role_NewCharacter",
+                Category = "Role",
                 DisplayName = "新角色",
-                FolderName = "Player/NewCharacter",
+                FolderName = "Role/NewCharacter",
                 SpawnPosition = Vector3.zero,
                 SpawnRotationEuler = Vector3.zero
             };
+            statusMessage = string.Empty;
+            GUI.FocusControl(null);
+        }
+
+        private void OpenWorkspaceSettingsMode()
+        {
+            isWorkspaceSettings = true;
+            isCreatingNew = false;
+            selectedWorkspace = null;
+            editingBuffer = null;
             statusMessage = string.Empty;
             GUI.FocusControl(null);
         }
@@ -127,7 +137,7 @@ namespace ATEditor.Editor
 
                 foreach (var ws in list)
                 {
-                    bool isSelected = !isCreatingNew && !isManagingCategories && selectedWorkspace != null && selectedWorkspace.Id == ws.Id;
+                    bool isSelected = !isCreatingNew && !isWorkspaceSettings && selectedWorkspace != null && selectedWorkspace.Id == ws.Id;
                     GUIStyle style = isSelected ? new GUIStyle("SelectionRect") : EditorStyles.label;
 
                     EditorGUILayout.BeginHorizontal();
@@ -146,20 +156,16 @@ namespace ATEditor.Editor
 
             EditorGUILayout.EndScrollView();
 
-            // 底部【+ 新建工作区】与【管理分类】按钮
+            // 底部【+ 新建工作区】与【设置】按钮
             EditorGUILayout.Space(4);
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+ 新建工作区", GUILayout.Height(26)))
             {
                 StartNewWorkspaceMode();
             }
-            if (GUILayout.Button("管理分类", GUILayout.Height(26), GUILayout.Width(70)))
+            if (GUILayout.Button("设置", GUILayout.Height(26), GUILayout.Width(70)))
             {
-                isManagingCategories = true;
-                isCreatingNew = false;
-                selectedWorkspace = null;
-                statusMessage = string.Empty;
-                GUI.FocusControl(null);
+                OpenWorkspaceSettingsMode();
             }
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(4);
@@ -173,9 +179,9 @@ namespace ATEditor.Editor
 
             EditorGUILayout.Space(4);
 
-            if (isManagingCategories)
+            if (isWorkspaceSettings)
             {
-                DrawCategoryManagerForm();
+                DrawWorkspaceSettingsForm();
             }
             else if (isCreatingNew)
             {
@@ -305,108 +311,220 @@ namespace ATEditor.Editor
             EditorGUILayout.EndScrollView();
         }
 
-        private void DrawCategoryManagerForm()
+        private void DrawWorkspaceSettingsForm()
         {
-            EditorGUILayout.LabelField("分类管理", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("工作区设置", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox(
-                "• 系统预设分类 'None' 恒定常驻，不可编辑、不可删除。\n" +
-                "• 删除某个分类时，该分类下的所有工作区将自动重置为 'None' 分类，绝不误删工作区及其动作资产。",
+                "• 配置全局工作区目录前缀与公共数据源。实际角色目录 = 前缀 + 角色的物理子目录 (FolderName)。\n" +
+                "• 修改前缀后，所有角色的实际时间轴读写路径将自动基于新前缀推导，灵活支持不同项目布局。\n" +
+                "• 公共工作区配置文件 (SharedWorkspaces.json) 用于跨工具共享角色定义并双向感知增删。",
                 MessageType.Info);
             EditorGUILayout.Space(6);
 
             rightScrollPos = EditorGUILayout.BeginScrollView(rightScrollPos);
 
+            // 1. 读写目录前缀配置
+            EditorGUILayout.LabelField("时间轴资产目录前缀配置", EditorStyles.boldLabel);
+            
+            // JSON 目录前缀
+            EditorGUILayout.BeginHorizontal();
+            string newJsonRoot = EditorGUILayout.TextField("JSON 目录前缀", database.JsonRootDirectory);
+            if (newJsonRoot != database.JsonRootDirectory)
+            {
+                database.JsonRootDirectory = newJsonRoot;
+            }
+            if (GUILayout.Button("选择...", GUILayout.Width(60)))
+            {
+                string defaultPath = !string.IsNullOrEmpty(database.JsonRootDirectory) ? database.JsonRootDirectory : Application.dataPath;
+                string selected = EditorUtility.OpenFolderPanel("选择 JSON 读写目录前缀", defaultPath, "");
+                if (!string.IsNullOrEmpty(selected))
+                {
+                    database.JsonRootDirectory = MakeProjectRelativePath(selected);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            // SO 目录前缀
+            EditorGUILayout.BeginHorizontal();
+            string newSoRoot = EditorGUILayout.TextField("SO 目录前缀", database.SoRootDirectory);
+            if (newSoRoot != database.SoRootDirectory)
+            {
+                database.SoRootDirectory = newSoRoot;
+            }
+            if (GUILayout.Button("选择...", GUILayout.Width(60)))
+            {
+                string defaultPath = !string.IsNullOrEmpty(database.SoRootDirectory) ? database.SoRootDirectory : Application.dataPath;
+                string selected = EditorUtility.OpenFolderPanel("选择 SO 读写目录前缀", defaultPath, "");
+                if (!string.IsNullOrEmpty(selected))
+                {
+                    database.SoRootDirectory = MakeProjectRelativePath(selected);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            // 动态合成目录实时预览
+            EditorGUILayout.Space(4);
+            EditorGUILayout.BeginVertical("box");
+            EditorGUILayout.LabelField("📁 实际目录合成预览 (前缀 + FolderName)", EditorStyles.miniBoldLabel);
+            
+            var sampleWs = database.Workspaces.Count > 0 ? database.Workspaces[0] : null;
+            if (sampleWs != null)
+            {
+                string sampleFolder = sampleWs.FolderName;
+                string sampleJsonDir = database.GetWorkspaceJsonDirectory(sampleWs);
+                string sampleSoDir = database.GetWorkspaceAssetDirectory(sampleWs);
+                bool jsonDirExists = Directory.Exists(sampleJsonDir);
+                bool soDirExists = Directory.Exists(sampleSoDir);
+
+                EditorGUILayout.LabelField($"示例角色: {sampleWs.DisplayName} [{sampleWs.Id}] (子目录: {sampleFolder})", EditorStyles.miniLabel);
+                
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField($"• JSON 完整路径: {sampleJsonDir}", EditorStyles.wordWrappedMiniLabel);
+                GUILayout.Label(jsonDirExists ? "[已存在]" : "[未创建]", jsonDirExists ? EditorStyles.miniBoldLabel : EditorStyles.miniLabel, GUILayout.Width(55));
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField($"• SO 完整路径: {sampleSoDir}", EditorStyles.wordWrappedMiniLabel);
+                GUILayout.Label(soDirExists ? "[已存在]" : "[未创建]", soDirExists ? EditorStyles.miniBoldLabel : EditorStyles.miniLabel, GUILayout.Width(55));
+                EditorGUILayout.EndHorizontal();
+            }
+            else
+            {
+                EditorGUILayout.LabelField("当前暂无已配置角色工作区", EditorStyles.miniLabel);
+            }
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Space(10);
+
+            // 2. 公共配置数据源
+            EditorGUILayout.LabelField("公共工作区数据源配置", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            string newSharedPath = EditorGUILayout.TextField("公共配置路径", database.SharedWorkspaceJsonPath);
+            if (newSharedPath != database.SharedWorkspaceJsonPath)
+            {
+                database.SharedWorkspaceJsonPath = newSharedPath;
+            }
+            if (GUILayout.Button("选择...", GUILayout.Width(60)))
+            {
+                string defaultDir = Path.GetDirectoryName(database.SharedWorkspaceJsonPath);
+                string selected = EditorUtility.OpenFilePanel("选择公共工作区配置文件 (SharedWorkspaces.json)", defaultDir, "json");
+                if (!string.IsNullOrEmpty(selected))
+                {
+                    database.SharedWorkspaceJsonPath = MakeProjectRelativePath(selected);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            // 文件状态检测
+            string fullJsonPath = SharedWorkspaceFileIO.GetFullPath(database.SharedWorkspaceJsonPath);
+            bool fileExists = File.Exists(fullJsonPath);
+            EditorGUILayout.BeginHorizontal("box");
+            if (fileExists)
+            {
+                EditorGUILayout.LabelField($"✓ 配置文件有效 (当前已加载 {database.Workspaces.Count} 个角色工作区)", EditorStyles.miniBoldLabel);
+            }
+            else
+            {
+                EditorGUILayout.LabelField($"⚠ 文件不存在 (保存时将自动创建并初始化)", EditorStyles.miniLabel);
+            }
+            EditorGUILayout.EndHorizontal();
+
+            // 重新同步按钮行
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("从公共文件重新加载", GUILayout.Height(24)))
+            {
+                database.SyncFromSharedJson(true);
+                statusMessage = "已从公共配置文件刷新工作区列表！";
+                statusMessageType = MessageType.Info;
+            }
+            if (GUILayout.Button("强制写回公共文件", GUILayout.Height(24)))
+            {
+                database.SaveToSharedJson();
+                statusMessage = "已将当前工作区配置强制写回公共文件！";
+                statusMessageType = MessageType.Info;
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(10);
+
+            // 3. 系统角色分类
+            EditorGUILayout.LabelField("系统角色分类规范 (固定)", EditorStyles.boldLabel);
             var categories = database.GetCategories();
             for (int i = 0; i < categories.Count; i++)
             {
                 string cat = categories[i];
-                bool isNone = string.Equals(cat, ATEditorWorkspaceDatabase.DefaultCategory, StringComparison.OrdinalIgnoreCase);
-
                 EditorGUILayout.BeginHorizontal("box");
-
-                if (isNone)
-                {
-                    EditorGUILayout.LabelField("📁 None  [系统预设，不可修改/删除]", EditorStyles.boldLabel);
-                }
-                else
-                {
-                    EditorGUILayout.LabelField($"📁 {cat}", EditorStyles.boldLabel, GUILayout.Width(200));
-
-                    GUILayout.FlexibleSpace();
-
-                    var oldBg = GUI.backgroundColor;
-                    GUI.backgroundColor = new Color(1f, 0.4f, 0.4f);
-                    if (GUILayout.Button("删除分类", GUILayout.Width(80)))
-                    {
-                        DeleteCategory(cat);
-                    }
-                    GUI.backgroundColor = oldBg;
-                }
-
+                string desc = cat == "Role" ? "角色分类 (用于玩家操作实体)" :
+                              cat == "Monster" ? "怪物分类 (用于敌人与Boss实体)" :
+                              cat == "Common" ? "通用模板 (用于基础共享动作)" : "固定分类";
+                EditorGUILayout.LabelField($"📁 {cat}  —  {desc}", EditorStyles.miniBoldLabel);
                 EditorGUILayout.EndHorizontal();
             }
 
             EditorGUILayout.Space(12);
-            EditorGUILayout.LabelField("新建分类", EditorStyles.boldLabel);
-            EditorGUILayout.BeginHorizontal();
-            newCategoryInput = EditorGUILayout.TextField("分类名称", newCategoryInput);
-            if (GUILayout.Button("添加分类", GUILayout.Width(90)))
-            {
-                AddNewCategory();
-            }
-            EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.Space(12);
-            if (GUILayout.Button("返回工作区编辑", GUILayout.Height(28), GUILayout.Width(130)))
+            // 4. 底部操作按钮
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("确保所有工作区物理目录存在", GUILayout.Height(28)))
             {
-                isManagingCategories = false;
+                EnsureAllWorkspaceDirectories();
+            }
+            GUILayout.Space(8);
+            if (GUILayout.Button("保存设置", GUILayout.Height(28), GUILayout.Width(90)))
+            {
+                EditorUtility.SetDirty(database);
+                AssetDatabase.SaveAssets();
+                statusMessage = "工作区设置已成功保存！";
+                statusMessageType = MessageType.Info;
+            }
+            GUILayout.Space(8);
+            if (GUILayout.Button("返回工作区编辑", GUILayout.Height(28), GUILayout.Width(110)))
+            {
+                isWorkspaceSettings = false;
                 if (database.Workspaces.Count > 0)
                 {
                     SelectWorkspace(database.Workspaces[0]);
                 }
             }
+            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.EndScrollView();
         }
 
-        private void AddNewCategory()
+        private static string MakeProjectRelativePath(string fullOrRelativePath)
         {
-            if (database.AddCategory(newCategoryInput, out string error))
+            if (string.IsNullOrEmpty(fullOrRelativePath)) return string.Empty;
+            string projectDir = Directory.GetCurrentDirectory().Replace('\\', '/');
+            string normalized = fullOrRelativePath.Replace('\\', '/');
+            if (normalized.StartsWith(projectDir, StringComparison.OrdinalIgnoreCase))
             {
-                statusMessage = $"分类 '{newCategoryInput}' 添加成功！";
-                statusMessageType = MessageType.Info;
-                newCategoryInput = string.Empty;
-                GUI.FocusControl(null);
+                string rel = normalized.Substring(projectDir.Length).TrimStart('/');
+                return rel;
             }
-            else
-            {
-                statusMessage = $"添加分类失败: {error}";
-                statusMessageType = MessageType.Error;
-            }
+            return normalized;
         }
 
-        private void DeleteCategory(string catName)
+        private void EnsureAllWorkspaceDirectories()
         {
-            int wsCount = database.GetWorkspacesByCategory(catName).Count;
-            bool confirm = EditorUtility.DisplayDialog(
-                "确认删除分类",
-                $"确定要删除分类 '{catName}' 吗？\n" +
-                $"注意：该分类下的 {wsCount} 个工作区将自动重置为 'None' 分类，不会被删除。",
-                "确定删除",
-                "取消");
-
-            if (!confirm) return;
-
-            if (database.DeleteCategory(catName, out string error))
+            if (database == null || database.Workspaces == null) return;
+            int created = 0;
+            foreach (var ws in database.Workspaces)
             {
-                statusMessage = $"分类 '{catName}' 已删除，其下工作区已归入 'None'。";
-                statusMessageType = MessageType.Info;
+                string soDir = database.GetWorkspaceAssetDirectory(ws);
+                string jsonDir = database.GetWorkspaceJsonDirectory(ws);
+                if (!Directory.Exists(soDir)) { Directory.CreateDirectory(soDir); created++; }
+                if (!Directory.Exists(jsonDir)) { Directory.CreateDirectory(jsonDir); created++; }
+            }
+            if (created > 0)
+            {
+                AssetDatabase.Refresh();
+                statusMessage = $"已检查所有工作区，新建立 {created} 个缺失物理目录。";
             }
             else
             {
-                statusMessage = $"删除分类失败: {error}";
-                statusMessageType = MessageType.Error;
+                statusMessage = "所有工作区的物理目录均已存在，无需新建。";
             }
+            statusMessageType = MessageType.Info;
         }
 
         private void SaveWorkspaceChanges()
@@ -419,8 +537,8 @@ namespace ATEditor.Editor
             // 1. 检查物理子目录是否发生变更
             if (!string.Equals(oldFolder, newFolder, StringComparison.OrdinalIgnoreCase))
             {
-                string soRoot = "Assets/Resources/Serializations/ScriptableObjects/ActionTimelines";
-                string jsonRoot = "Assets/Resources/Serializations/JSON/ActionTimelines";
+                string soRoot = database.SoRootDirectory;
+                string jsonRoot = database.JsonRootDirectory;
 
                 string oldSoDir = Path.Combine(soRoot, oldFolder).Replace("\\", "/");
                 string oldJsonDir = Path.Combine(jsonRoot, oldFolder).Replace("\\", "/");
@@ -603,11 +721,8 @@ namespace ATEditor.Editor
         {
             try
             {
-                string soRoot = "Assets/Resources/Serializations/ScriptableObjects/ActionTimelines";
-                string jsonRoot = "Assets/Resources/Serializations/JSON/ActionTimelines";
-
-                string soDir = Path.Combine(soRoot, ws.FolderName).Replace("\\", "/");
-                string jsonDir = Path.Combine(jsonRoot, ws.FolderName).Replace("\\", "/");
+                string soDir = database.GetWorkspaceAssetDirectory(ws);
+                string jsonDir = database.GetWorkspaceJsonDirectory(ws);
 
                 if (!Directory.Exists(soDir)) Directory.CreateDirectory(soDir);
                 if (!Directory.Exists(jsonDir)) Directory.CreateDirectory(jsonDir);

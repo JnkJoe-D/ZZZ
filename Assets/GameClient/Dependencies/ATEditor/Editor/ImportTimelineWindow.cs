@@ -129,7 +129,7 @@ namespace ATEditor.Editor
 
             // 初始化默认选中当前激活的工作区
             var db = ATEditorWorkspaceDatabase.Instance;
-            string currentActiveId = EditorPrefs.GetString("ATEditor_ActiveWorkspaceId", "Player_Ellen");
+            string currentActiveId = EditorPrefs.GetString("ATEditor_ActiveWorkspaceId", "Role_Ellen");
             var targetWs = db.GetWorkspaceById(currentActiveId);
             if (targetWs == null && db.Workspaces.Count > 0)
             {
