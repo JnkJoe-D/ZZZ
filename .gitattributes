@@ -1,0 +1,25 @@
+# Binary art uses Git LFS. Unity YAML (.meta/.anim/.prefab/.asset/.unity)
+# and code stay in ordinary Git for readable diffs. Ignore rules select uploads.
+Assets/**/*.[fF][bB][xX] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[bB][lL][eE][nN][dD] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[oO][bB][jJ] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[pP][nN][gG] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[jJ][pP][gG] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[jJ][pP][eE][gG] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[tT][gG][aA] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[pP][sS][dD] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[tT][iI][fF] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[tT][iI][fF][fF] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[eE][xX][rR] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[hH][dD][rR] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[wW][aA][vV] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[mM][pP]3 filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[oO][gG][gG] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[fF][lL][aA][cC] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[aA][iI][fF] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[aA][iI][fF][fF] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[mM][pP]4 filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[mM][oO][vV] filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.[aA][vV][iI] filter=lfs diff=lfs merge=lfs -text
+# Leave the excluded third-party shader plugin's existing storage unchanged.
+Assets/Resources/Shaders/lilToon/** !filter !diff !merge !text

@@ -78,5 +78,40 @@ crashlytics-build.properties
 .antigravity/
 .ai-config/
 .agent/
-.agents/
+# Keep shared rules, skills and workflows; ignore other local Agent state.
+/.agents/*
+!/.agents/rules/
+!/.agents/skills/
+!/.agents/workflows/
+/.agents/**/__pycache__/
+/.agents/**/*.pyc
+/.agents/**/.cache/
+
+# Unused / unsorted art: keep local copies, exclude assets and their folder meta.
+/Assets/RawArtAssets/Animation/Role/Anbi/
+/Assets/RawArtAssets/Animation/Role/Anbi.meta
+/Assets/RawArtAssets/Animation/Role/Anby/
+/Assets/RawArtAssets/Animation/Role/Anby.meta
+/Assets/RawArtAssets/Animation/Role/Unagi/
+/Assets/RawArtAssets/Animation/Role/Unagi.meta
+/Assets/RawArtAssets/Model/Avatar_Female_Size02_Unagi_Model/
+/Assets/RawArtAssets/Model/Avatar_Female_Size02_Unagi_Model.meta
+/Assets/Resources/Models/安比/
+/Assets/Resources/Models/安比.meta
+/Assets/Resources/Models/星见雅/
+/Assets/Resources/Models/星见雅.meta
+/Assets/Resources/Animations/Clips/安比/
+/Assets/Resources/Animations/Clips/安比.meta
+/Assets/Resources/Audio/AnBi/
+/Assets/Resources/Audio/AnBi.meta
+/Assets/Resources/Prefab/Role/Anbi/
+/Assets/Resources/Prefab/Role/Anbi.meta
+/Assets/Resources/Prefab/Role/Unagi/
+/Assets/Resources/Prefab/Role/Unagi.meta
+/Assets/Resources/Particles/Lightning VFX/
+/Assets/Resources/Particles/Lightning VFX.meta
+/Assets/Resources/Particles/VFX_Klaus/
+/Assets/Resources/Particles/VFX_Klaus.meta
+/Assets/RawArtAssets/VFX/Fire/
+/Assets/RawArtAssets/VFX/Fire.meta
 
