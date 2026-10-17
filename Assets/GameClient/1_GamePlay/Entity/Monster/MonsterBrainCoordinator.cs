@@ -25,7 +25,9 @@ namespace Game.GamePlay
                 // 2. 受击硬直中无自控
                 if (_hitData != null && _hitData.InHitReaction) return false;
 
-                // 3. 失衡倒地无自控
+                // 3. 失衡倒地无自控（处于失衡状态机或失衡槽满额）
+                if (_monster.StateMachine?.CurrentState is MonsterStunState) return false;
+
                 var attrs = _monster.StatusModule?.Attributes;
                 if (attrs != null && attrs.Has(AttributeId.Daze))
                 {

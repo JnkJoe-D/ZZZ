@@ -14,6 +14,15 @@ namespace Game.Tests.Combat
         private MonsterEntity _monster;
         private GameObject _roleGo;
         private RoleEntity _role;
+        private readonly System.Collections.Generic.List<UnityEngine.Object> _testAssets = new();
+
+        private void MakePlayable(ActionConfigAsset action)
+        {
+            var timeline = ATEditor.Test.TestTimelineBuilder.Create(1f, isLoop: true);
+            action.actionTimelineSO = timeline;
+            _testAssets.Add(action);
+            _testAssets.Add(timeline);
+        }
 
         [SetUp]
         public void SetUp()
@@ -33,6 +42,9 @@ namespace Game.Tests.Combat
         {
             if (_monsterGo != null) UnityEngine.Object.DestroyImmediate(_monsterGo);
             if (_roleGo != null) UnityEngine.Object.DestroyImmediate(_roleGo);
+            ActionManager.Instance.Shutdown();
+            foreach (var asset in _testAssets) UnityEngine.Object.DestroyImmediate(asset);
+            _testAssets.Clear();
         }
 
         [Test]
@@ -91,13 +103,13 @@ namespace Game.Tests.Combat
 
             Assert.AreEqual(RouteEventType.ParryAidStart, dispatchedEvent, "提前预判期必须派发 ParryAidStart 事件！");
 
-            // 2. 处于正式直接招架期 (isDirectClash = true)：派发 ParryAid
+            // 2. 直接碰撞期仍先派发起手，实际反击由拼刀命中结果驱动
             marker.DirectClashTimeOffset = 0f;
             dispatchedEvent = RouteEventType.None;
 
             pipe.Process(ctx);
 
-            Assert.AreEqual(RouteEventType.ParryAid, dispatchedEvent, "正式直接招架期必须派发 ParryAid 事件！");
+            Assert.AreEqual(RouteEventType.ParryAidStart, dispatchedEvent, "招架切入统一派发起手，不能绕过拼刀结算直接反击");
         }
 
         [Test]
@@ -153,7 +165,8 @@ namespace Game.Tests.Combat
 
                 // 构建测试用配置与 ActionRoot 资产
                 var mockConfig = ScriptableObject.CreateInstance<RoleConfigAsset>();
-                var mockRootAction = ScriptableObject.CreateInstance<ActionConfigAsset>();
+                var mockRootAction = ScriptableObject.CreateInstance<MonsterActionConfigAsset>();
+                MakePlayable(mockRootAction);
                 mockConfig.ActionRoot = mockRootAction;
 
                 // 验证执行 Init 前的状态（Phase 0: Awake 仅初始化引擎基础，不创建领域模块）
@@ -190,6 +203,7 @@ namespace Game.Tests.Combat
                 var role = roleGo.AddComponent<RoleEntity>();
                 var mockConfig = ScriptableObject.CreateInstance<RoleConfigAsset>();
                 var mockRootAction = ScriptableObject.CreateInstance<RoleActionConfigAsset>();
+                MakePlayable(mockRootAction);
                 mockConfig.ActionRoot = mockRootAction;
 
                 role.Init(mockConfig);
@@ -244,6 +258,7 @@ namespace Game.Tests.Combat
                 var ctx = new SwitchPipelineContext
                 {
                     Type = SwitchType.ParryAid,
+                    Manager = new TeamManager(),
                     IncomingMember = new PartyMember { SlotIndex = 0, Entity = role },
                     TargetAttacker = monster,
                     WarningMarker = marker
@@ -281,5 +296,245 @@ namespace Game.Tests.Combat
                 UnityEngine.Object.DestroyImmediate(monsterGo);
             }
         }
+
+        [Test]
+        public void Test09_MonsterActionController_GetRouteEvalActor_And_IsStunConditionEvaluatesCorrectly()
+        {
+            // 验证 MonsterActionController 正确重写了 GetRouteEvalActor，
+            // 使得 IsStunCondition 在处于 MonsterStunState 时能准确求值为 true
+            var monsterController = _monster.ActionController;
+            Assert.IsNotNull(monsterController);
+
+            var getActorMethod = typeof(MonsterActionController).GetMethod("GetRouteEvalActor",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(getActorMethod, "MonsterActionController 必须重写 GetRouteEvalActor 方法！");
+
+            var actor = getActorMethod.Invoke(monsterController, null) as CharacterEntity;
+            Assert.AreSame(_monster, actor, "MonsterActionController.GetRouteEvalActor 必须返回宿主 MonsterEntity！");
+
+            var stunCondition = new IsStunCondition();
+
+            // 1. 处于非失衡状态 (MonsterIdleState)
+            Assert.IsFalse(stunCondition.Check(actor), "怪物处于 Idle 状态时，IsStunCondition 必须求值为 false");
+
+            // 2. 切换至 MonsterStunState
+            _monster.StateMachine.ChangeState<MonsterStunState>();
+            Assert.IsTrue(stunCondition.Check(actor), "怪物处于 MonsterStunState 时，IsStunCondition 必须正确求值为 true！");
+        }
+
+        [Test]
+        public void Test10_HandleActionComplete_PrioritizesArbitratorCandidateOverRootFallback()
+        {
+            var controller = _monster.ActionController;
+            Assert.IsNotNull(controller);
+
+            var targetAction = ScriptableObject.CreateInstance<MonsterActionConfigAsset>();
+            targetAction.name = "TestStunLoop";
+            MakePlayable(targetAction);
+
+            // 模拟受击动作结束时，RouteWindowProcesser.OnExit 向仲裁器提交了通往 targetAction 的候选
+            var route = new ActionRoute
+            {
+                Priority = 10,
+                Targets = { new ActionRouteTarget { Action = targetAction } }
+            };
+            var candidate = new RouteCandidate
+            {
+                SourceRoute = route,
+                NextAction = targetAction,
+                ExecuteType = ExecuteTarget.Action,
+                Priority = 10,
+                RouteTag = "Auto1",
+                ArbitrationTiming = RouteArbitrationTiming.Deferred
+            };
+            _monster.RouteArbitrator.Submit(candidate);
+
+            Assert.IsTrue(_monster.RouteArbitrator.HasCandidates, "仲裁器中应包含有效候选");
+
+            // 触发 HandleActionComplete
+            var handleCompleteMethod = typeof(ActionController).GetMethod("HandleActionComplete",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(handleCompleteMethod);
+            var finishedAction = ScriptableObject.CreateInstance<MonsterActionConfigAsset>();
+            _testAssets.Add(finishedAction);
+            handleCompleteMethod.Invoke(controller, new object[] { new CharacterActionPlayInfo(finishedAction) });
+
+            // 验证：优先执行了仲裁器决选出的 targetAction，而非回退到 ActionRoot (Idle)
+            Assert.AreSame(targetAction, controller.CurrentPlayingAction,
+                "HandleActionComplete 必须优先采纳仲裁池中的到期决选目标，顺利切入 StunLoop，绝不能被 fallback 清空覆盖为 Idle！");
+        }
+
+        [Test]
+        public void Test11_ActionPlayer_PlayActionWithPlayInfo_BindsAndClearsEventsLifecycle()
+        {
+            var player = _monster.ActionPlayer;
+            Assert.IsNotNull(player);
+
+            bool startInvoked = false;
+            bool completeInvoked = false;
+            bool interruptInvoked = false;
+
+            var playInfo = new ActionPlayInfo
+            {
+                ActionConfig = null, // 空配置测试防御拦截
+                TransitionInfo = new ActionTransitionInfo { CrossfadeDuration = 0.2f, StartTime = 0f },
+                EventInfo = new ActionEventInfo
+                {
+                    OnActionStart = () => startInvoked = true,
+                    OnActionComplete = () => completeInvoked = true,
+                    OnActionInterrupt = () => interruptInvoked = true
+                }
+            };
+
+            // 1. 空配置或无效配置应安全拦截返回 false，且不触发任何事件
+            bool played = player.PlayAction(playInfo);
+            Assert.IsFalse(played);
+            Assert.IsFalse(startInvoked);
+            Assert.IsFalse(completeInvoked);
+            Assert.IsFalse(interruptInvoked);
+
+            // 2. 验证 ActionPlayer 的事件已被收敛为 private，无法被外部非法访问
+            var startEvent = typeof(ActionPlayer).GetEvent("OnActionStart", BindingFlags.Public | BindingFlags.Instance);
+            var completeEvent = typeof(ActionPlayer).GetEvent("OnActionComplete", BindingFlags.Public | BindingFlags.Instance);
+            var interruptEvent = typeof(ActionPlayer).GetEvent("OnActionInterrupt", BindingFlags.Public | BindingFlags.Instance);
+
+            Assert.IsNull(startEvent, "ActionPlayer.OnActionStart 必须收敛为 private！");
+            Assert.IsNull(completeEvent, "ActionPlayer.OnActionComplete 必须收敛为 private！");
+            Assert.IsNull(interruptEvent, "ActionPlayer.OnActionInterrupt 必须收敛为 private！");
+
+            // 3. 验证 ActionController 常驻事件已彻底解耦移除，杜绝全局脏监听
+            var controller = _monster.ActionController;
+            Assert.IsNull(typeof(ActionController).GetEvent("OnActionCompleted", BindingFlags.Public | BindingFlags.Instance),
+                "ActionController.OnActionCompleted 常驻事件已被彻底移除！");
+            Assert.IsNull(typeof(ActionController).GetEvent("OnActionInterrupted", BindingFlags.Public | BindingFlags.Instance),
+                "ActionController.OnActionInterrupted 常驻事件已被彻底移除！");
+        }
+
+        [Test]
+        public void Test12_CheckEarlyCompleteActionTransition_SafeguardedAgainstInterruptRaceCondition()
+        {
+            var controller = _monster.ActionController;
+            Assert.IsNotNull(controller);
+
+            var startAction = ScriptableObject.CreateInstance<MonsterActionConfigAsset>();
+            startAction.name = "StunStart";
+            startAction.CompleteMode = ActionCompleteMode.TransitToAction;
+
+            var loopAction = ScriptableObject.CreateInstance<MonsterActionConfigAsset>();
+            loopAction.name = "StunLoop";
+
+            startAction.CompleteAction = loopAction;
+            startAction.SetTransition(loopAction, blendDuration: 0.05f, hasEndTime: true, endTime: 0.8f);
+
+            var startPlayInfo = new CharacterActionPlayInfo(startAction);
+
+            var currentPlayInfoField = typeof(ActionController).GetField("_currentPlayInfo",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(currentPlayInfoField);
+            currentPlayInfoField.SetValue(controller, startPlayInfo);
+
+            // 验证切动作时 _isSwitchingAction 能够防范 HandleActionInterrupt 误杀
+            var handleInterruptMethod = typeof(ActionController).GetMethod("HandleActionInterrupt",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            var isSwitchingField = typeof(ActionController).GetField("_isSwitchingAction",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(handleInterruptMethod);
+            Assert.IsNotNull(isSwitchingField);
+
+            // 当处于主动动作切换状态时触发打断
+            isSwitchingField.SetValue(controller, true);
+            handleInterruptMethod.Invoke(controller, new object[] { startPlayInfo });
+
+            Assert.AreSame(startAction, controller.CurrentPlayingAction, "在切换动作中途触发旧动作打断时，绝不能将控制器当前动作提前抹杀置空！");
+
+            // 复位并测试非切换状态下的正常打断
+            isSwitchingField.SetValue(controller, false);
+            handleInterruptMethod.Invoke(controller, new object[] { startPlayInfo });
+            Assert.IsNull(controller.CurrentPlayingAction, "在非切换状态下的打断，控制器必须正常清空 CurrentPlayingAction 为 null！");
+        }
+
+        [Test]
+        public void Test13_HandleActionComplete_CorrectlyRoutesToCompleteAction()
+        {
+            var controller = _monster.ActionController;
+            Assert.IsNotNull(controller);
+
+            var startAction = ScriptableObject.CreateInstance<MonsterActionConfigAsset>();
+            startAction.name = "StunStart";
+            startAction.CompleteMode = ActionCompleteMode.TransitToAction;
+
+            var loopAction = ScriptableObject.CreateInstance<MonsterActionConfigAsset>();
+            loopAction.name = "StunLoop";
+            startAction.CompleteAction = loopAction;
+            MakePlayable(startAction);
+            MakePlayable(loopAction);
+
+            var startPlayInfo = new CharacterActionPlayInfo(startAction);
+            var currentPlayInfoField = typeof(ActionController).GetField("_currentPlayInfo",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(currentPlayInfoField);
+            currentPlayInfoField.SetValue(controller, startPlayInfo);
+
+            var handleCompleteMethod = typeof(ActionController).GetMethod("HandleActionComplete",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(handleCompleteMethod);
+
+            Assert.DoesNotThrow(() => handleCompleteMethod.Invoke(controller, new object[] { startPlayInfo }));
+            Assert.AreSame(loopAction, controller.CurrentPlayingAction, "自然完成必须实际播放 CompleteAction");
+        }
+
+        [Test]
+        public void Test14_ActionPlayer_ActualPlaybackCompletesAndInterruptsWithRequestEvents()
+        {
+            var controller = _monster.ActionController;
+            Assert.IsNotNull(controller);
+
+            var hitAction = ScriptableObject.CreateInstance<MonsterActionConfigAsset>();
+            hitAction.name = "TestHitAction";
+            MakePlayable(hitAction);
+            hitAction.actionTimelineSO.isLoop = false;
+
+            bool startCalled = false;
+            bool completeCalled = false;
+            bool interruptCalled = false;
+
+            var playInfo = new CharacterActionPlayInfo
+            {
+                ActionConfig = hitAction,
+                EventInfo = new ActionEventInfo
+                {
+                    OnActionStart = () => startCalled = true,
+                    OnActionComplete = () => completeCalled = true,
+                    OnActionInterrupt = () => interruptCalled = true
+                }
+            };
+
+            // 1. 通过源头指令压入封装好的 playInfo
+            var command = CharacterCommandFactory.CreateDirectAssetCommand(playInfo);
+            Assert.IsNotNull(command);
+            Assert.IsInstanceOf<DirectAssetPayload>(command.Payload);
+
+            var directPayload = (DirectAssetPayload)command.Payload;
+            Assert.AreSame(hitAction, directPayload.ActionConfig);
+            Assert.AreSame(hitAction, directPayload.TargetAsset);
+            Assert.IsNotNull(directPayload.EventInfo);
+
+            // 2. 实际驱动播放器，验证正常完成和中断结果互斥
+            var player = controller.ActionPlayer;
+            Assert.IsTrue(player.PlayAction(directPayload), "合法 SO-only 动作应可播放");
+            Assert.IsTrue(startCalled);
+            player.LogicTick(1f);
+            Assert.IsTrue(completeCalled);
+            Assert.IsFalse(interruptCalled, "自然完成不能同时报告中断");
+
+            startCalled = false;
+            completeCalled = false;
+            Assert.IsTrue(player.PlayAction(directPayload));
+            Assert.IsTrue(startCalled);
+            player.StopAction();
+            Assert.IsTrue(interruptCalled);
+            Assert.IsFalse(completeCalled, "主动停止不能同时报告自然完成");
+        }
     }
 }
+

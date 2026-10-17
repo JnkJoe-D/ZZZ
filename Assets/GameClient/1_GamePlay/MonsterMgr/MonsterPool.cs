@@ -56,19 +56,11 @@ namespace Game.GamePlay
         private void HandleReturn(GameObject go)
         {
             // 回收时，GameObjectPool 稍后会自动调用 SetActive(false)。
-            // 在此之前，强制中断可能正在播放的动作，清理行为树状态，防止脏数据残留到下一次复用。
-            var entity = go.GetComponent<MonsterEntity>();
+            // 在此之前，强制中断动作、重置血量、清理行为树状态与运行时标记，防止脏数据残留到下一次复用。
+            var entity = go?.GetComponent<MonsterEntity>();
             if (entity != null)
             {
-                if (entity.ActionPlayer != null)
-                {
-                    entity.ActionPlayer.StopAction();
-                }
-                
-                if (entity.BTRunner != null)
-                {
-                    entity.BTRunner.StopTree();
-                }
+                entity.ResetRuntimeState();
             }
         }
     }

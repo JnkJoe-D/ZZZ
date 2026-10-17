@@ -32,12 +32,21 @@ MonoBehaviour:
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917037
-    Priority: 0
+    Priority: 10
     ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258120226209792
     ExtraConditionCombine: 0
     ExtraConditions: []
+  - Targets:
+    - rid: 6379258143149917037
+    Priority: 0
+    ArbitrationTiming: 0
+    TriggerStrategy:
+      rid: 6293807116063342599
+    ExtraConditionCombine: 0
+    ExtraConditions:
+    - rid: 6293807116063342601
   RouteSets:
   - {fileID: 11400000, guid: 49f91d2a59c73d84ba596930fac286ff, type: 2}
   - {fileID: 11400000, guid: b24226d1790a13c4ab8e94253241596e, type: 2}
@@ -47,16 +56,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 6379258143149917036
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: ad925bf5dd14b244fba49285cd694f21, type: 2}
-        ValidateSkillRequirement: 0
-    - rid: 6379258143149917037
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: 7b393fefa3b85d746bf7e8741e310b51, type: 2}
-        ValidateSkillRequirement: 0
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 6293807071443025939
@@ -97,12 +96,31 @@ MonoBehaviour:
         WindowDuration: 0.3
         Operator: 4
         ThresholdCount: 0
+    - rid: 6293807116063342598
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1
+    - rid: 6293807116063342599
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 10
+        RequiredWindow:
+          rid: 6293807116063342600
+        ConditionCombine: 0
+        InputConditions: []
+    - rid: 6293807116063342600
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto2
+    - rid: 6293807116063342601
+      type: {class: SwitchOutPendingCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data: 
     - rid: 6379258120226209792
       type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
         Timing: 0
         RequiredWindow:
-          rid: 6379258143149917035
+          rid: 6293807116063342598
         ConditionCombine: 0
         InputConditions:
         - Category: 10
@@ -115,7 +133,13 @@ MonoBehaviour:
           InputCondition:
             rid: 6293807071443025939
           Inverse: 0
-    - rid: 6379258143149917035
-      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+    - rid: 6379258143149917036
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
-        Tag: Auto1
+        Action: {fileID: 11400000, guid: ad925bf5dd14b244fba49285cd694f21, type: 2}
+        ValidateSkillRequirement: 0
+    - rid: 6379258143149917037
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 7b393fefa3b85d746bf7e8741e310b51, type: 2}
+        ValidateSkillRequirement: 0

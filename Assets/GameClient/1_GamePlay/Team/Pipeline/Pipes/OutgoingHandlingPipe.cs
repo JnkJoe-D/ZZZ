@@ -19,6 +19,7 @@ namespace Game.GamePlay
             RoleEntity outEntity = ctx.OutgoingEntity;
             PartyMember outMember = ctx.OutgoingMember;
 
+
             // 1. 切断切出角色的玩家控制输入
             outEntity.SetControlActive(false);
 

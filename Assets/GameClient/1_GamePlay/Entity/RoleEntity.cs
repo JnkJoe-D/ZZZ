@@ -1,5 +1,5 @@
-using Game.Framework;
 using ATEditor;
+using Game.Framework;
 using UnityEngine;
 
 namespace Game.GamePlay
@@ -18,7 +18,6 @@ namespace Game.GamePlay
         public RoleInputAdapterModule InputAdapter { get; private set; }
         public ActionDomainContextModule DomainContext { get; private set; }
         public RoleTeamContext TeamContext { get; private set; }
-
         public IInputProvider InputProvider => InputAdapter?.BoundInputProvider ?? TeamContext?.InputProvider;
         public ICameraController CameraController => Presentation?.CameraController;
         public bool IsControlActive { get; private set; }
@@ -29,20 +28,18 @@ namespace Game.GamePlay
             Presentation?.OnComponentInit(this);
         }
 
-        protected override void Awake()
-        {
-            base.Awake();
-        }
-
         protected override void InitRequiredComponents()
         {
-            MovementComponent = GetComponent<MovementComponent>() 
+            MovementComponent = GetComponent<MovementComponent>()
+
                 ?? gameObject.AddComponent<MovementComponent>();
 
-            HitReactionComponent = GetComponent<RoleHitReactionComponent>() 
+            HitReactionComponent = GetComponent<RoleHitReactionComponent>()
+
                 ?? gameObject.AddComponent<RoleHitReactionComponent>();
 
-            LifecycleComponent = GetComponent<LifecycleComponent>() 
+            LifecycleComponent = GetComponent<LifecycleComponent>()
+
                 ?? gameObject.AddComponent<LifecycleComponent>();
 
             Presentation = GetComponent<IRolePresentation>();

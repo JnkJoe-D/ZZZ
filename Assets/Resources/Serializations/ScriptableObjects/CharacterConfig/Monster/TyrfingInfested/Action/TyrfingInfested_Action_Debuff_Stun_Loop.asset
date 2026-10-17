@@ -36,15 +36,11 @@ MonoBehaviour:
       rid: 6293806958974861325
     ExtraConditionCombine: 0
     ExtraConditions: []
-  RouteSets: []
+  RouteSets:
+  - {fileID: 11400000, guid: b62a1c3d6ad4bd24fbc4f7a928479402, type: 2}
   references:
     version: 2
     RefIds:
-    - rid: 6293806958974861327
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: 3ae929b2483cd54419f4651404e453a6, type: 2}
-        ValidateSkillRequirement: 0
     - rid: 6293806958974861325
       type: {class: DirectAssetTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -54,3 +50,8 @@ MonoBehaviour:
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: Execute1
+    - rid: 6293806958974861327
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 3ae929b2483cd54419f4651404e453a6, type: 2}
+        ValidateSkillRequirement: 0

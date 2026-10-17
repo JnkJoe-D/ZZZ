@@ -24,9 +24,15 @@ namespace ATEditor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-            if (_transformHandler == null || clip.updateFrequency == UpdateFrequency.OnceAtEnter) return;
+            if (_transformHandler == null || clip.updateFrequency != UpdateFrequency.Continuous) return;
 
             ApplyRotation(deltaTime);
+        }
+
+        public override void OnExit()
+        {
+            if (_transformHandler != null && clip.updateFrequency == UpdateFrequency.OnceAtExit && !context.IsInterrupted)
+                ApplyRotation(0f);
         }
 
         private void ApplyRotation(float deltaTime)

@@ -292,4 +292,15 @@ namespace Game.GamePlay
             // 提交后保持 LastParryWeight 供后续动作或表现层查询
         }
     }
+    [Serializable]
+    [SubclassDisplayName("是否处于失衡")]
+    public sealed class IsStunCondition : MonsterConditionBase
+    {
+        protected override bool CheckMonster(MonsterEntity monster)
+        {
+            FSMSystem<MonsterEntity> fsm = monster.StateMachine;
+            if (fsm == null) return false;
+            return fsm.CurrentState is MonsterStunState;
+        }
+    }
 }

@@ -444,9 +444,9 @@
                     "startTime": 0.0,
                     "duration": 1.350000023841858,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.18333327770233154,
+                    "blendOutDuration": 0.18333327770233155,
                     "animationClip": {
-                        "instanceID": 35120
+                        "instanceID": 35230
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -481,10 +481,10 @@
                     "isEnabled": true,
                     "startTime": 1.1666667461395264,
                     "duration": 5.050000190734863,
-                    "blendInDuration": 0.18333327770233154,
+                    "blendInDuration": 0.18333327770233155,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 35122
+                        "instanceID": 35232
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -522,7 +522,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 34590
+                        "instanceID": 34918
                     },
                     "vfxRef": {
                         "guid": "",
@@ -533,13 +533,13 @@
                     "customBoneName": "",
                     "followTarget": true,
                     "positionOffset": {
-                        "x": -0.17455250024795532,
+                        "x": -0.17455250024795533,
                         "y": 0.8265479803085327,
                         "z": 0.1559898853302002
                     },
                     "rotationOffset": {
                         "x": 332.8506774902344,
-                        "y": 171.62088012695312,
+                        "y": 171.62088012695313,
                         "z": 296.1520080566406
                     },
                     "scale": {
@@ -562,8 +562,8 @@
                     "clipId": "4842c7fd-5fab-42eb-866e-c9130fbe4e89",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.18333333730697632,
-                    "duration": 0.15000000596046448,
+                    "startTime": 0.18333333730697633,
+                    "duration": 0.15000000596046449,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "hitBoxScope": {
@@ -614,11 +614,11 @@
                             {
                                 "hitMode": 0,
                                 "multiHitCount": 3,
-                                "multiHitDuration": 0.20000000298023224,
+                                "multiHitDuration": 0.20000000298023225,
                                 "enableHitStop": true,
                                 "hitStopDuration": 0.05000000074505806,
                                 "hitStopScale": 0.0,
-                                "hitStunDuration": 0.30000001192092896,
+                                "hitStunDuration": 0.30000001192092898,
                                 "hitVFXPrefab": {
                                     "instanceID": 0
                                 },
@@ -663,8 +663,8 @@
                     "clipId": "49a6de2a-6b2d-4d81-9f58-04906018f56b",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.23333334922790527,
-                    "duration": 0.18333333730697632,
+                    "startTime": 0.23333334922790528,
+                    "duration": 0.18333333730697633,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -804,7 +804,7 @@
                     "clipName": "位移窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.2166666984558105,
+                    "duration": 6.2166666984558109,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "localDeltaFilterMode": 1,
@@ -827,10 +827,10 @@
                     "clipName": "旋转片段片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.20000000298023224,
+                    "duration": 0.20000000298023225,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "referenceDirection": 4,
+                    "referenceDirection": 2,
                     "rotationMode": 1,
                     "updateFrequency": 2,
                     "localRotationOffset": {
@@ -851,8 +851,8 @@
                     "clipId": "06d74042-2cf2-4131-b061-5fe542df61f8",
                     "clipName": "相机脉冲片段",
                     "isEnabled": true,
-                    "startTime": 0.18333333730697632,
-                    "duration": 0.15000000596046448,
+                    "startTime": 0.18333333730697633,
+                    "duration": 0.15000000596046449,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "velocity": {

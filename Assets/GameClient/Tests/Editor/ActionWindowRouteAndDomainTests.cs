@@ -14,13 +14,21 @@ namespace Game.Tests.Combat
         private RoleEntity _role;
         private GameObject _monsterGo;
         private MonsterEntity _monster;
+        private readonly List<UnityEngine.Object> _testAssets = new();
+
+        private void MakePlayable(ActionConfigAsset action)
+        {
+            var timeline = ATEditor.Test.TestTimelineBuilder.Create(1f, isLoop: true);
+            action.actionTimelineSO = timeline;
+            _testAssets.Add(action);
+            _testAssets.Add(timeline);
+        }
 
         [SetUp]
         public void SetUp()
         {
             _roleGo = new GameObject("TestRole_WindowRoute");
             _role = _roleGo.AddComponent<RoleEntity>();
-            _role.EnsureRuntimeInitialized();
 
             _monsterGo = new GameObject("TestMonster_WindowRoute");
             _monster = _monsterGo.AddComponent<MonsterEntity>();
@@ -33,6 +41,9 @@ namespace Game.Tests.Combat
         {
             if (_roleGo != null) UnityEngine.Object.DestroyImmediate(_roleGo);
             if (_monsterGo != null) UnityEngine.Object.DestroyImmediate(_monsterGo);
+            ActionManager.Instance.Shutdown();
+            foreach (var asset in _testAssets) UnityEngine.Object.DestroyImmediate(asset);
+            _testAssets.Clear();
         }
 
         [Test]
@@ -106,12 +117,12 @@ namespace Game.Tests.Combat
             var autoRoute = new ActionRoute
             {
                 TriggerStrategy = new IntentCommandTrigger { RequiredWindow = autoWindow },
-                ExecuteType = ExecuteTarget.Action
+                ExecuteAction = ScriptableObject.CreateInstance<RoleActionConfigAsset>()
             };
             var comboRoute = new ActionRoute
             {
                 TriggerStrategy = new IntentCommandTrigger { RequiredWindow = bufferWindow },
-                ExecuteType = ExecuteTarget.Action
+                ExecuteAction = ScriptableObject.CreateInstance<RoleActionConfigAsset>()
             };
 
             actionConfig.Routes.Add(autoRoute);
@@ -140,7 +151,7 @@ namespace Game.Tests.Combat
             var parentRoute = new ActionRoute
             {
                 TriggerStrategy = new IntentCommandTrigger { RequiredWindow = windowA },
-                ExecuteType = ExecuteTarget.Action
+                ExecuteAction = ScriptableObject.CreateInstance<RoleActionConfigAsset>()
             };
             parentAction.Routes.Add(parentRoute);
 
@@ -151,13 +162,18 @@ namespace Game.Tests.Combat
             var childRoute = new ActionRoute
             {
                 TriggerStrategy = new IntentCommandTrigger { RequiredWindow = windowA },
-                ExecuteType = ExecuteTarget.Action
+                ExecuteAction = ScriptableObject.CreateInstance<RoleActionConfigAsset>()
             };
             childAction.Routes.Add(childRoute);
 
-            // 模拟运行时从 parent 转移到 child
-            var data = _role.DataModule.Get<ActionRuntimeData>();
-            data.Set("CurrentPlayingAction", parentAction);
+            // 解析器读取已提交执行历史，不再读取旧的动态数据键
+            _role.EnsureRuntimeInitialized();
+            var trackerField = typeof(ActionController).GetField("_fateTracker",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            Assert.IsNotNull(trackerField);
+            var tracker = (CommandFateTracker)trackerField.GetValue(_role.ActionController);
+            tracker.Record(1, CommandRouteSource.ActionRoute, "parent", parentAction);
+            tracker.Record(2, CommandRouteSource.ActionRoute, "child", childAction);
 
             var resolved = new List<ActionRoute>();
             ActionRouteRuntimeResolver.ResolveEffectiveWindowRoutes(childAction, windowA, _role, resolved);
@@ -217,6 +233,7 @@ namespace Game.Tests.Combat
         [Test]
         public void Test05_ActionDomain_PolymorphicTransitions()
         {
+            _role.EnsureRuntimeInitialized();
             var context = _role.DomainContext;
             Assert.IsNotNull(context, "RoleEntity 必须自动装配并持有 ActionDomainContextModule");
 
@@ -306,9 +323,11 @@ namespace Game.Tests.Combat
         {
             var currentAction = ScriptableObject.CreateInstance<RoleActionConfigAsset>();
             currentAction.DomainId = ActionDomainId.Combat;
+            MakePlayable(currentAction);
 
             var hitStunAction = ScriptableObject.CreateInstance<RoleActionConfigAsset>();
             hitStunAction.DomainId = ActionDomainId.HitReaction;
+            MakePlayable(hitStunAction);
 
             // 配置一条 Immediate 即时抢占的受击路由挂在当前窗口下
             var hitRoute = new ActionRoute
@@ -343,6 +362,7 @@ namespace Game.Tests.Combat
         {
             var rootAction = ScriptableObject.CreateInstance<RoleActionConfigAsset>();
             rootAction.DomainId = ActionDomainId.Locomotion;
+            MakePlayable(rootAction);
 
             var config = ScriptableObject.CreateInstance<RoleConfigAsset>();
             config.ActionRoot = rootAction;

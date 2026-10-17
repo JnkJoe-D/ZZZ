@@ -12,10 +12,20 @@ namespace ATEditor.Editor
 
         private static bool _showBase = true;
         private static bool _showResource = true;
-        private static bool _showBindConfig = true;
-        private static bool _showLifecycle = true;
-        private static bool _showMovement = true;
-        private static bool _showAttack = true;
+
+        // 子卡片抽屉实例
+        private readonly TransformBindCardDrawer _bindCard = new TransformBindCardDrawer(isMandatory: true);
+        private readonly LifecycleCardDrawer _lifecycleCard = new LifecycleCardDrawer(isMandatory: true);
+        private readonly ProjectileMovementCardDrawer _movementCard = new ProjectileMovementCardDrawer(isMandatory: true);
+        private readonly CombatDetectionCardDrawer _combatCard = new CombatDetectionCardDrawer(isMandatory: false);
+
+        public SpawnClipDrawer()
+        {
+            _bindCard.CardKey = "SpawnClip_TransformBind";
+            _lifecycleCard.CardKey = "SpawnClip_Lifecycle";
+            _movementCard.CardKey = "SpawnClip_Movement";
+            _combatCard.CardKey = "SpawnClip_CombatDetection";
+        }
 
         public override void DrawInspector(ClipBase clip)
         {
@@ -24,11 +34,31 @@ namespace ATEditor.Editor
 
             EditorGUI.BeginChangeCheck();
 
-            // 1. 基础信息卡片
-            DrawBaseClipCard(clip, ref _showBase, "基础信息");
+            // 1. 构建卡片绘制上下文
+            CardDrawContext context = new CardDrawContext
+            {
+                Clip = spawnClip,
+                UndoContext = UndoContext,
+                State = GetEditorState(),
+                PreviewTarget = GetPreviewTarget()
+            };
 
-            // 2. 资源与标识设置卡片
-            _showResource = EditorGUILayout.Foldout(_showResource, "预制体资源与标识", true, EditorStyles.foldoutHeader);
+            // 2. 基础信息卡片 (粒子系统风格 Header，必需)
+            bool baseEnabled = true;
+            CardDrawerBase<object>.DrawParticleStyleHeader("基础信息", isMandatory: true, ref baseEnabled, ref _showBase);
+            if (_showBase)
+            {
+                EditorGUILayout.BeginVertical("box");
+                spawnClip.clipName = EditorGUILayout.TextField("片段名称", spawnClip.clipName);
+                spawnClip.isEnabled = EditorGUILayout.Toggle("启用", spawnClip.isEnabled);
+                spawnClip.StartTime = Mathf.Max(0f, EditorGUILayout.FloatField("开始时间", spawnClip.StartTime));
+                spawnClip.Duration = Mathf.Max(0.01f, EditorGUILayout.FloatField("持续时间", spawnClip.Duration));
+                EditorGUILayout.EndVertical();
+            }
+
+            // 3. 预制体资源与标识卡片 (粒子系统风格 Header，必需)
+            bool resEnabled = true;
+            CardDrawerBase<object>.DrawParticleStyleHeader("预制体资源与标识", isMandatory: true, ref resEnabled, ref _showResource);
             if (_showResource)
             {
                 EditorGUILayout.BeginVertical("box");
@@ -37,111 +67,35 @@ namespace ATEditor.Editor
                 EditorGUILayout.EndVertical();
             }
 
-            // 3. 生成与挂载设置卡片
-            _showBindConfig = EditorGUILayout.Foldout(_showBindConfig, "生成与挂载设置", true, EditorStyles.foldoutHeader);
-            if (_showBindConfig && spawnClip.bindConfig != null)
+            // 4. 生成与挂载设置卡片 (组件化抽屉，必需)
+            if (spawnClip.bindConfig != null)
             {
-                EditorGUILayout.BeginVertical("box");
-                DrawSubField(spawnClip.bindConfig, "bindPoint");
-                if (spawnClip.bindConfig.bindPoint == BindPoint.CustomBone)
-                {
-                    spawnClip.bindConfig.customBoneName = EditorGUILayout.TextField("自定义骨骼名", spawnClip.bindConfig.customBoneName);
-                }
-                DrawSubField(spawnClip.bindConfig, "positionOffset");
-                DrawSubField(spawnClip.bindConfig, "rotationOffset");
-                DrawSubField(spawnClip.bindConfig, "scale");
-                DrawSubField(spawnClip.bindConfig, "followTarget");
-                if (spawnClip.bindConfig.followTarget)
-                {
-                    DrawSubField(spawnClip.bindConfig, "followMode");
-                }
-                EditorGUILayout.EndVertical();
+                _bindCard.BindData(spawnClip.bindConfig);
+                _bindCard.DrawInspector(context);
             }
 
-            // 4. 生命周期设置卡片
-            _showLifecycle = EditorGUILayout.Foldout(_showLifecycle, "生命周期设置", true, EditorStyles.foldoutHeader);
-            if (_showLifecycle && spawnClip.lifecycleConfig != null)
+            // 5. 生命周期设置卡片 (组件化抽屉，必需)
+            if (spawnClip.lifecycleConfig != null)
             {
-                EditorGUILayout.BeginVertical("box");
-                DrawSubField(spawnClip.lifecycleConfig, "destroyOnEnd");
-                DrawSubField(spawnClip.lifecycleConfig, "maxLifeTime");
-                DrawSubField(spawnClip.lifecycleConfig, "destroyOnInterrupt");
-                DrawSubField(spawnClip.lifecycleConfig, "stopEmissionOnEnd");
-                EditorGUILayout.EndVertical();
+                _lifecycleCard.BindData(spawnClip.lifecycleConfig);
+                _lifecycleCard.DrawInspector(context);
             }
 
-            // 5. 移动与轨迹设置卡片
-            _showMovement = EditorGUILayout.Foldout(_showMovement, "移动与轨迹设置", true, EditorStyles.foldoutHeader);
-            if (_showMovement && spawnClip.movementConfig != null)
+            // 6. 移动与轨迹设置卡片 (组件化抽屉，必需)
+            if (spawnClip.movementConfig != null)
             {
-                EditorGUILayout.BeginVertical("box");
-                DrawSubField(spawnClip.movementConfig, "moveMode");
-                if (spawnClip.movementConfig.moveMode != ProjectileMoveMode.Static)
-                {
-                    DrawSubField(spawnClip.movementConfig, "initialSpeed");
-                }
-                if (spawnClip.movementConfig.moveMode == ProjectileMoveMode.StraightLine)
-                {
-                    DrawSubField(spawnClip.movementConfig, "acceleration");
-                    DrawSubField(spawnClip.movementConfig, "maxSpeed");
-                }
-                else if (spawnClip.movementConfig.moveMode == ProjectileMoveMode.TargetTracking)
-                {
-                    DrawSubField(spawnClip.movementConfig, "turnSpeed");
-                }
-                else if (spawnClip.movementConfig.moveMode == ProjectileMoveMode.Parabola)
-                {
-                    DrawSubField(spawnClip.movementConfig, "gravityScale");
-                }
-                DrawSubField(spawnClip.movementConfig, "orientToVelocity");
-                DrawSubField(spawnClip.movementConfig, "maxDistance");
-                EditorGUILayout.EndVertical();
+                _movementCard.BindData(spawnClip.movementConfig);
+                _movementCard.DrawInspector(context);
             }
 
-            // 6. 攻击检测设置卡片 (可选)
-            _showAttack = EditorGUILayout.Foldout(_showAttack, "攻击检测设置 (可选)", true, EditorStyles.foldoutHeader);
-            if (_showAttack)
-            {
-                EditorGUILayout.BeginVertical("box");
-                spawnClip.enableAttackDetection = EditorGUILayout.Toggle("启用攻击检测", spawnClip.enableAttackDetection);
-                if (spawnClip.enableAttackDetection)
-                {
-                    EditorGUILayout.Space(2);
-                    EditorGUILayout.LabelField("── 检测盒范围 ──", EditorStyles.boldLabel);
-                    if (spawnClip.hitBoxScope != null)
-                    {
-                        DrawSubField(spawnClip.hitBoxScope, "shape");
-                        DrawSubField(spawnClip.hitBoxScope, "positionOffset");
-                        DrawSubField(spawnClip.hitBoxScope, "rotationOffset");
-                        DrawSubField(spawnClip.hitBoxScope, "showHitBoxGizmos");
-                    }
-
-                    EditorGUILayout.Space(2);
-                    EditorGUILayout.LabelField("── 判定策略与效果 ──", EditorStyles.boldLabel);
-                    if (spawnClip.attackPolicy != null)
-                    {
-                        DrawSubField(spawnClip.attackPolicy, "detectFrequency");
-                        if (spawnClip.attackPolicy.detectFrequency == Frequency.Times)
-                        {
-                            DrawSubField(spawnClip.attackPolicy, "times");
-                        }
-                        DrawSubField(spawnClip.attackPolicy, "maxHitTargets");
-                        if (spawnClip.attackPolicy.maxHitTargets > 0)
-                        {
-                            DrawSubField(spawnClip.attackPolicy, "targetSortMode");
-                        }
-                        DrawSubField(spawnClip.attackPolicy, "hitDirectionMode");
-                        if (spawnClip.attackPolicy.hitDirectionMode == HitDirectionMode.OnEnterCustomRelative)
-                        {
-                            DrawSubField(spawnClip.attackPolicy, "customHitDirection");
-                        }
-                        DrawSubField(spawnClip.attackPolicy, "hitLayerMask");
-                        DrawSubField(spawnClip.attackPolicy, "isSelfImpacted");
-                        DrawSubField(spawnClip.attackPolicy, "detects");
-                    }
-                }
-                EditorGUILayout.EndVertical();
-            }
+            // 7. 攻击检测设置卡片 (组件化抽屉，可选卡片：Header 内置复选框控制启用，取消勾选时收起且停用)
+            _combatCard.IsEnabled = spawnClip.enableAttackDetection;
+            _combatCard.BindData(new CombatDetectionCardData(
+                spawnClip.hitBoxScope, 
+                spawnClip.attackPolicy, 
+                enabled => spawnClip.enableAttackDetection = enabled
+            ));
+            _combatCard.DrawInspector(context);
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -151,16 +105,6 @@ namespace ATEditor.Editor
                     foreach (var ctx in UndoContext) EditorUtility.SetDirty(ctx);
                 }
                 MarkTimelineDirty("Modify Spawn Clip");
-            }
-        }
-
-        private void DrawSubField(object target, string fieldName)
-        {
-            if (target == null) return;
-            var field = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (field != null)
-            {
-                DrawField(field, target);
             }
         }
 
@@ -181,7 +125,7 @@ namespace ATEditor.Editor
             Handles.DrawSolidDisc(pos, rot * Vector3.right, indicatorRadius);
             Handles.DrawSolidDisc(pos, rot * Vector3.forward, indicatorRadius);
 
-            // 2. 绘制朝向指示箭头与运动速度方向
+            // 2. 绘制朝向指示箭头
             Handles.color = spawnColor;
             float arrowLength = 1.5f;
             Vector3 forwardDir = rot * Vector3.forward;
@@ -197,37 +141,29 @@ namespace ATEditor.Editor
             Handles.DrawLine(arrowEnd, arrowBase + upDir * (arrowHeadSize * 0.5f));
             Handles.DrawLine(arrowEnd, arrowBase - upDir * (arrowHeadSize * 0.5f));
 
-            // 3. 若有速度且为直线位移，绘制射程参考线
-            if (clip.movementConfig != null && clip.movementConfig.moveMode == ProjectileMoveMode.StraightLine)
+            // 3. 构建卡片场景绘制上下文 (传递生成物当前运动原点)
+            CardDrawContext context = new CardDrawContext
             {
-                float range = clip.movementConfig.maxDistance > 0 ? Mathf.Min(clip.movementConfig.maxDistance, 20f) : 10f;
-                Handles.color = new Color(0f, 1f, 1f, 0.4f);
-                Handles.DrawDottedLine(pos, pos + forwardDir * range, 3f);
+                Clip = clip,
+                State = state,
+                OriginPose = new Pose(pos, rot),
+                NeedsApplyCardOffset = true,
+                PreviewTarget = state?.previewTarget
+            };
+
+            // 4. 委托移动卡片绘制射程虚线
+            if (clip.movementConfig != null)
+            {
+                _movementCard.BindData(clip.movementConfig);
+                _movementCard.DrawSceneGUI(context);
             }
 
-            // 4. 若开启攻击检测且开启 Gizmo，绘制攻击盒
-            if (clip.enableAttackDetection && clip.hitBoxScope != null && clip.hitBoxScope.showHitBoxGizmos)
+            // 5. 委托攻击检测卡片绘制检测盒 (完整支持 Sphere/Box/Capsule/Sector/Ring 全形状)
+            if (clip.enableAttackDetection && clip.hitBoxScope != null)
             {
-                Vector3 boxPos = pos + rot * clip.hitBoxScope.positionOffset;
-                Quaternion boxRot = rot * Quaternion.Euler(clip.hitBoxScope.rotationOffset);
-                Handles.color = new Color(1f, 0.2f, 0.2f, 0.6f);
-                var shape = clip.hitBoxScope.shape;
-                if (shape != null)
-                {
-                    if (shape.shapeType == HitBoxType.Sphere)
-                    {
-                        Handles.DrawWireDisc(boxPos, Vector3.up, shape.radius);
-                        Handles.DrawWireDisc(boxPos, Vector3.right, shape.radius);
-                        Handles.DrawWireDisc(boxPos, Vector3.forward, shape.radius);
-                    }
-                    else if (shape.shapeType == HitBoxType.Box)
-                    {
-                        Matrix4x4 oldMat = Handles.matrix;
-                        Handles.matrix = Matrix4x4.TRS(boxPos, boxRot, Vector3.one);
-                        Handles.DrawWireCube(Vector3.zero, shape.size);
-                        Handles.matrix = oldMat;
-                    }
-                }
+                _combatCard.IsEnabled = clip.enableAttackDetection;
+                _combatCard.BindData(new CombatDetectionCardData(clip.hitBoxScope, clip.attackPolicy));
+                _combatCard.DrawSceneGUI(context);
             }
         }
 
@@ -261,6 +197,27 @@ namespace ATEditor.Editor
                 pos = bindConfig.positionOffset;
                 rot = Quaternion.Euler(bindConfig.rotationOffset);
             }
+        }
+
+        private static ATEditorState GetEditorState()
+        {
+            if (EditorWindow.HasOpenInstances<ATEditorWindow>())
+            {
+                var window = EditorWindow.GetWindow<ATEditorWindow>(false, "动作时间轴编辑器", false);
+                return window != null ? window.GetState() : null;
+            }
+            return null;
+        }
+
+        private static GameObject GetPreviewTarget()
+        {
+            var state = GetEditorState();
+            if (state != null)
+            {
+                if (state.PreviewContext != null && state.PreviewContext.Owner != null) return state.PreviewContext.Owner;
+                return state.previewTarget;
+            }
+            return null;
         }
     }
 }

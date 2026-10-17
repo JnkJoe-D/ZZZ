@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -17,42 +17,22 @@ MonoBehaviour:
   - Targets:
     - rid: 6379258143149917031
     Priority: 0
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500810
-    ExtraConditions: []
-  - Targets:
-    - rid: 6379258143149917032
-    Priority: 0
-    CrossfadeOverride: -1
-    TriggerStrategy:
-      rid: 4681868330708500811
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149917033
     Priority: 0
-    CrossfadeOverride: -1
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 4681868330708500812
+    ExtraConditionCombine: 0
     ExtraConditions: []
   references:
     version: 2
     RefIds:
-    - rid: 6379258143149917031
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
-        ValidateSkillRequirement: 1
-    - rid: 6379258143149917032
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
-        ValidateSkillRequirement: 1
-    - rid: 6379258143149917033
-      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        Action: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
-        ValidateSkillRequirement: 1
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4681868330708500810
@@ -62,14 +42,7 @@ MonoBehaviour:
         RequiredPhase: 0
         RequiredWindow:
           rid: 6379258143149917028
-        InputConditions: []
-    - rid: 4681868330708500811
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 10
-        RequiredPhase: 10
-        RequiredWindow:
-          rid: 6379258143149917029
+        ConditionCombine: 0
         InputConditions: []
     - rid: 4681868330708500812
       type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
@@ -78,6 +51,7 @@ MonoBehaviour:
         RequiredPhase: 30
         RequiredWindow:
           rid: 6379258143149917030
+        ConditionCombine: 0
         InputConditions:
         - Category: 10
           RequiredKey: 50
@@ -88,11 +62,17 @@ MonoBehaviour:
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: BackSwing1
-    - rid: 6379258143149917029
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: BackSwing1
     - rid: 6379258143149917030
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: BackSwing1
+    - rid: 6379258143149917031
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
+        ValidateSkillRequirement: 1
+    - rid: 6379258143149917033
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: bed25e9ca0cf27d4b820f4f000126b32, type: 2}
+        ValidateSkillRequirement: 1

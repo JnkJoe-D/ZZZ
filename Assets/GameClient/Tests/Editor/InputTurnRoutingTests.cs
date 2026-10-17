@@ -33,6 +33,10 @@ namespace Game.Tests.InputSystem
         public int GetTapCount(HardwareInputType actionKey, float windowSeconds) => TapTracker.GetTapCountInWindow(actionKey, windowSeconds, Time.unscaledTime);
         public int GetTapCountSince(HardwareInputType actionKey, float startTime) => TapTracker.GetTapCountSince(actionKey, startTime);
         public void ResetTapTracker(HardwareInputType actionKey) => TapTracker.Clear(actionKey);
+        public void FireBasicAttack() => OnBasicAttackStarted?.Invoke();
+        public void FireBasicAttackRelease() => OnBasicAttackCanceled?.Invoke();
+        public void FireSwitchNext() => OnSwitchNext?.Invoke();
+        public void FireSwitchPrevious() => OnSwitchPre?.Invoke();
 
 #pragma warning disable CS0067
         public event Action OnSwitchNext;
@@ -73,9 +77,8 @@ namespace Game.Tests.InputSystem
             _role = _go.AddComponent<RoleEntity>();
             _mockInput = new MockInputProvider();
 
-            // 为实体注入 InputAdapter
-            var adapter = _role.InputAdapter;
-            adapter?.Bind(_mockInput);
+            _role.EnsureRuntimeInitialized();
+            _role.InputAdapter.SetFallbackInputProvider(_mockInput);
             _role.SetControlActive(true);
         }
 

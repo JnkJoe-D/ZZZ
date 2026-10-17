@@ -157,6 +157,7 @@ namespace Game.App
             // ── Step 11: 玩家连接层与战斗业务管理器 ────────────────
             TeamManager.Instance.Initialize();
             MonsterManager.Instance.Initialize();
+            MonsterStatusUIManager.Instance.Initialize();
 
             // 核心修复：激活主逻辑循环驱动
             IsInitialized = true;
@@ -187,6 +188,7 @@ namespace Game.App
 
             // 各子系统 Shutdown（顺序与初始化相反）
 
+            MonsterStatusUIManager.Instance?.Shutdown();
             MonsterManager.Instance?.Shutdown();
             TeamManager.Instance?.Shutdown();
             ActionManager.Instance?.Shutdown();

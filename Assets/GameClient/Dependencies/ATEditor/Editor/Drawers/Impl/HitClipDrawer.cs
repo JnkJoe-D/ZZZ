@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using ATEditor;
@@ -8,9 +9,15 @@ namespace ATEditor.Editor
     public class HitClipDrawer : ClipDrawer
     {
         private static bool _showBase = true;
-        private static bool _showHitBox = true;
-        private static bool _showDetect = true;
         private static bool _showVFX = true;
+
+        // 组件化攻击检测卡片 (HitClip 中为必要卡片，锁定打勾不可取消)
+        private readonly CombatDetectionCardDrawer _combatCard = new CombatDetectionCardDrawer(isMandatory: true);
+
+        public HitClipDrawer()
+        {
+            _combatCard.CardKey = "HitClip_CombatDetection";
+        }
 
         public override void DrawInspector(ClipBase clip)
         {
@@ -19,53 +26,31 @@ namespace ATEditor.Editor
             
             EditorGUI.BeginChangeCheck();
 
-            // 1. 基础信息卡片
-            DrawBaseClipCard(clip, ref _showBase, "基础信息");
+            // 1. 构建卡片上下文
+            CardDrawContext context = new CardDrawContext
+            {
+                Clip = hitClip,
+                UndoContext = UndoContext,
+                State = GetEditorState(),
+                PreviewTarget = GetPreviewTarget()
+            };
 
-            // 2. 检测盒与空间参数
-            _showHitBox = EditorGUILayout.Foldout(_showHitBox, "碰撞盒参数", true, EditorStyles.foldoutHeader);
-            if (_showHitBox)
+            // 2. 基础信息卡片 (粒子系统风格 Header，必需)
+            bool baseEnabled = true;
+            CardDrawerBase<object>.DrawParticleStyleHeader("基础信息", isMandatory: true, ref baseEnabled, ref _showBase);
+            if (_showBase)
             {
                 EditorGUILayout.BeginVertical("box");
-                DrawFieldByName(hitClip, "shape");
-                DrawFieldByName(hitClip, "bindPoint");
-                if (hitClip.bindPoint == BindPoint.CustomBone)
-                {
-                    DrawCustomBoneField(hitClip);
-                }
-                DrawFieldByName(hitClip, "hitBoxFollowMode");
-                DrawFieldByName(hitClip, "positionOffset");
-                DrawFieldByName(hitClip, "rotationOffset");
-                DrawFieldByName(hitClip, "showHitBoxGizmos");
+                hitClip.clipName = EditorGUILayout.TextField("片段名称", hitClip.clipName);
+                hitClip.isEnabled = EditorGUILayout.Toggle("启用", hitClip.isEnabled);
+                hitClip.StartTime = Mathf.Max(0f, EditorGUILayout.FloatField("开始时间", hitClip.StartTime));
+                hitClip.Duration = Mathf.Max(0.01f, EditorGUILayout.FloatField("持续时间", hitClip.Duration));
                 EditorGUILayout.EndVertical();
             }
 
-            // 3. 判定规则与表现
-            _showDetect = EditorGUILayout.Foldout(_showDetect, "打击判定与表现", true, EditorStyles.foldoutHeader);
-            if (_showDetect)
-            {
-                EditorGUILayout.BeginVertical("box");
-                DrawFieldByName(hitClip, "detectFrequency");
-                if (hitClip.detectFrequency == Frequency.Times)
-                    DrawFieldByName(hitClip, "times");
-                DrawFieldByName(hitClip, "maxHitTargets");
-                if (hitClip.maxHitTargets > 0)
-                    DrawFieldByName(hitClip, "targetSortMode");
-
-                EditorGUILayout.Space(2);
-                DrawFieldByName(hitClip, "hitDirectionMode");
-                if (hitClip.hitDirectionMode == HitDirectionMode.OnEnterCustomRelative)
-                {
-                    DrawFieldByName(hitClip, "customHitDirection");
-                }
-
-                EditorGUILayout.Space(2);
-                DrawFieldByName(hitClip, "hitLayerMask");
-                DrawFieldByName(hitClip, "isSelfImpacted");
-                EditorGUILayout.Space(5);
-                DrawFieldByName(hitClip, "detects");
-                EditorGUILayout.EndVertical();
-            }
+            // 3. 攻击检测设置卡片 (组件化抽屉，包含检测盒范围与判定规则表现，必需卡片)
+            _combatCard.BindData(new CombatDetectionCardData(hitClip.hitBoxScope, hitClip.attackPolicy));
+            _combatCard.DrawInspector(context);
 
             bool propertiesChanged = EditorGUI.EndChangeCheck();
 
@@ -90,10 +75,11 @@ namespace ATEditor.Editor
                 }
             }
 
-            // 4. VFX 场景句柄
+            // 4. VFX 场景句柄卡片
             if (selectedDetect != null && selectedDetect.hitVFXPrefab != null)
             {
-                _showVFX = EditorGUILayout.Foldout(_showVFX, "受击特效场景调试", true, EditorStyles.foldoutHeader);
+                bool vfxEnabled = true;
+                CardDrawerBase<object>.DrawParticleStyleHeader("受击特效场景调试", isMandatory: true, ref vfxEnabled, ref _showVFX);
                 if (_showVFX)
                 {
                     EditorGUILayout.BeginVertical("box");
@@ -133,143 +119,6 @@ namespace ATEditor.Editor
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.EndVertical();
-                }
-            }
-        }
-
-        private static readonly System.Collections.Generic.Dictionary<string, bool?> _boneValidationStatus = new System.Collections.Generic.Dictionary<string, bool?>();
-
-        private void DrawCustomBoneField(HitClip hitClip)
-        {
-            EditorGUILayout.BeginHorizontal();
-
-            string clipKey = !string.IsNullOrEmpty(hitClip.clipId) ? hitClip.clipId : hitClip.GetHashCode().ToString();
-            _boneValidationStatus.TryGetValue(clipKey, out bool? isValid);
-
-            Color oldBgColor = GUI.backgroundColor;
-            if (isValid.HasValue)
-            {
-                GUI.backgroundColor = isValid.Value 
-                    ? new Color(0.6f, 1f, 0.6f, 1f)   // 有效：绿色
-                    : new Color(1f, 0.55f, 0.55f, 1f); // 无效：红色
-            }
-
-            string newName = EditorGUILayout.TextField("自定义骨骼名称", hitClip.customBoneName);
-            if (newName != hitClip.customBoneName)
-            {
-                hitClip.customBoneName = newName;
-                _boneValidationStatus.Remove(clipKey);
-            }
-
-            GUI.backgroundColor = oldBgColor;
-
-            if (GUILayout.Button(new GUIContent("检测", "检测当前预览角色层级中是否存在该自定义骨骼"), GUILayout.Width(50), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
-            {
-                bool found = CheckBoneExists(hitClip.customBoneName, out string msg);
-                _boneValidationStatus[clipKey] = found;
-                if (found)
-                {
-                    ATLog.Info($"<color=green>[HitClip 骨骼检测通过]</color> {msg}");
-                }
-                else
-                {
-                    ATLog.Warning($"<color=red>[HitClip 骨骼检测失败]</color> {msg}");
-                }
-            }
-
-            EditorGUILayout.EndHorizontal();
-        }
-
-        private static bool CheckBoneExists(string boneName, out string message)
-        {
-            if (string.IsNullOrWhiteSpace(boneName))
-            {
-                message = "骨骼名称为空！";
-                return false;
-            }
-
-            GameObject previewTarget = null;
-            if (EditorWindow.HasOpenInstances<ATEditorWindow>())
-            {
-                var window = EditorWindow.GetWindow<ATEditorWindow>(false, "动作时间轴编辑器", false);
-                var editorState = window != null ? window.GetState() : null;
-                if (editorState != null)
-                {
-                    if (editorState.PreviewContext != null && editorState.PreviewContext.Owner != null)
-                    {
-                        previewTarget = editorState.PreviewContext.Owner;
-                    }
-                    else if (editorState.previewTarget != null)
-                    {
-                        previewTarget = editorState.previewTarget;
-                    }
-                }
-            }
-
-            if (previewTarget == null)
-            {
-                message = "未找到预览角色，请先在时间轴编辑器指定或激活预览角色！";
-                return false;
-            }
-
-            Transform found = FindBoneRecursive(previewTarget.transform, boneName.Trim());
-            if (found != null)
-            {
-                message = $"在角色 [{previewTarget.name}] 中成功找到骨骼: {found.name}";
-                return true;
-            }
-
-            message = $"在角色 [{previewTarget.name}] 层级中未找到名为 '{boneName}' 的骨骼！";
-            return false;
-        }
-
-        public static Transform FindBoneRecursive(Transform parent, string boneName)
-        {
-            if (parent == null || string.IsNullOrEmpty(boneName)) return null;
-            if (parent.name.Equals(boneName, System.StringComparison.OrdinalIgnoreCase))
-            {
-                return parent;
-            }
-
-            for (int i = 0; i < parent.childCount; i++)
-            {
-                Transform result = FindBoneRecursive(parent.GetChild(i), boneName);
-                if (result != null) return result;
-            }
-            return null;
-        }
-
-        private void DrawFieldByName(HitClip obj, string fieldName)
-        {
-            if (obj == null) return;
-
-            // 1. 尝试从 HitClip 顶层字段查找
-            var field = typeof(HitClip).GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (field != null)
-            {
-                DrawField(field, obj);
-                return;
-            }
-
-            // 2. 尝试从 hitBoxScope 查找
-            if (obj.hitBoxScope != null)
-            {
-                field = typeof(HitBoxScopeConfig).GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (field != null)
-                {
-                    DrawField(field, obj.hitBoxScope);
-                    return;
-                }
-            }
-
-            // 3. 尝试从 attackPolicy 查找
-            if (obj.attackPolicy != null)
-            {
-                field = typeof(AttackDetectionPolicy).GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (field != null)
-                {
-                    DrawField(field, obj.attackPolicy);
-                    return;
                 }
             }
         }
@@ -356,8 +205,9 @@ namespace ATEditor.Editor
                     }
                 }
             }
-            // --- 结束同步逻辑 ---
+            // --- 结束特效同步逻辑 ---
 
+            // --- 统一委托攻击检测卡片绘制检测盒 Gizmos ---
             if (damageClip.showHitBoxGizmos)
             {
                 Editor.EditorHitProcess activeProcess = null;
@@ -392,98 +242,17 @@ namespace ATEditor.Editor
                     GetMatrix(damageClip, state, out pos, out rot);
                 }
 
-                // 绘制
-                Color wireColor = isActive ? new Color(0, 1, 0, 0.8f) : new Color(0.5f, 0.5f, 0.5f, 0.5f);
-                Color solidColor = isActive ? new Color(0, 1, 0, 0.2f) : new Color(0.5f, 0.5f, 0.5f, 0.1f);
-            
-            var shape = damageClip.shape;
+                CardDrawContext context = new CardDrawContext
+                {
+                    Clip = damageClip,
+                    State = state,
+                    OriginPose = new Pose(pos, rot),
+                    NeedsApplyCardOffset = false, // pos, rot 已经包含 offset
+                    PreviewTarget = state?.previewTarget
+                };
 
-            Handles.matrix = Matrix4x4.TRS(pos, rot, Vector3.one);
-            Handles.color = wireColor;
-
-            switch (shape.shapeType)
-            {
-                case HitBoxType.Sphere:
-                    Handles.DrawWireArc(Vector3.zero, Vector3.up, Vector3.forward, 360f, shape.radius);
-                    Handles.DrawWireArc(Vector3.zero, Vector3.right, Vector3.up, 360f, shape.radius);
-                    Handles.DrawWireArc(Vector3.zero, Vector3.forward, Vector3.right, 360f, shape.radius);
-                    Handles.color = solidColor;
-                    Handles.DrawSolidDisc(Vector3.zero, Vector3.up, shape.radius);
-                    break;
-
-                case HitBoxType.Box:
-                    Handles.DrawWireCube(Vector3.zero, shape.size);
-                    break;
-
-                case HitBoxType.Capsule:
-                    float extraHeight = Mathf.Max(0, shape.height - shape.radius * 2);
-                    Vector3 upCap = Vector3.up * (extraHeight / 2f);
-                    Vector3 downCap = Vector3.down * (extraHeight / 2f);
-                    
-                    Handles.DrawWireArc(upCap, Vector3.up, Vector3.forward, 360, shape.radius);
-                    Handles.DrawWireArc(downCap, Vector3.up, Vector3.forward, 360, shape.radius);
-
-                    Handles.DrawWireArc(upCap, Vector3.right, Vector3.back, 180, shape.radius);
-                    Handles.DrawWireArc(upCap, Vector3.forward, Vector3.right, 180, shape.radius);
-
-                    Handles.DrawWireArc(downCap, Vector3.right, Vector3.forward, 180, shape.radius);
-                    Handles.DrawWireArc(downCap, Vector3.forward, Vector3.left, 180, shape.radius);
-
-                    Handles.DrawLine(upCap + Vector3.forward * shape.radius, downCap + Vector3.forward * shape.radius);
-                    Handles.DrawLine(upCap + Vector3.back * shape.radius, downCap + Vector3.back * shape.radius);
-                    Handles.DrawLine(upCap + Vector3.right * shape.radius, downCap + Vector3.right * shape.radius);
-                    Handles.DrawLine(upCap + Vector3.left * shape.radius, downCap + Vector3.left * shape.radius);
-                    break;
-
-                case HitBoxType.Sector:
-                    float hS = shape.height / 2f;
-                    Vector3 forwardDir = Vector3.forward;
-                    Vector3 rightBoundary = Quaternion.Euler(0, shape.angle / 2, 0) * forwardDir;
-                    Vector3 leftBoundary = Quaternion.Euler(0, -shape.angle / 2, 0) * forwardDir;
-                    
-                    Vector3 upCenter = Vector3.up * hS;
-                    Vector3 downCenter = Vector3.down * hS;
-
-                    Handles.DrawWireArc(upCenter, Vector3.up, leftBoundary, shape.angle, shape.radius);
-                    Handles.DrawWireArc(downCenter, Vector3.up, leftBoundary, shape.angle, shape.radius);
-
-                    Handles.DrawLine(upCenter, upCenter + rightBoundary * shape.radius);
-                    Handles.DrawLine(upCenter, upCenter + leftBoundary * shape.radius);
-                    Handles.DrawLine(downCenter, downCenter + rightBoundary * shape.radius);
-                    Handles.DrawLine(downCenter, downCenter + leftBoundary * shape.radius);
-
-                    Handles.DrawLine(upCenter, downCenter);
-                    Handles.DrawLine(upCenter + rightBoundary * shape.radius, downCenter + rightBoundary * shape.radius);
-                    Handles.DrawLine(upCenter + leftBoundary * shape.radius, downCenter + leftBoundary * shape.radius);
-
-                    Handles.color = solidColor;
-                    Handles.DrawSolidArc(upCenter, Vector3.up, leftBoundary, shape.angle, shape.radius);
-                    Handles.DrawSolidArc(downCenter, Vector3.up, leftBoundary, shape.angle, shape.radius);
-                    break;
-
-                case HitBoxType.Ring:
-                    float hR = shape.height / 2f;
-                    Vector3 upRing = Vector3.up * hR;
-                    Vector3 downRing = Vector3.down * hR;
-
-                    Handles.DrawWireArc(upRing, Vector3.up, Vector3.forward, 360f, shape.radius);
-                    Handles.DrawWireArc(downRing, Vector3.up, Vector3.forward, 360f, shape.radius);
-                    Handles.DrawWireArc(upRing, Vector3.up, Vector3.forward, 360f, shape.innerRadius);
-                    Handles.DrawWireArc(downRing, Vector3.up, Vector3.forward, 360f, shape.innerRadius);
-
-                    Handles.DrawLine(upRing + Vector3.forward * shape.radius, downRing + Vector3.forward * shape.radius);
-                    Handles.DrawLine(upRing - Vector3.forward * shape.radius, downRing - Vector3.forward * shape.radius);
-                    Handles.DrawLine(upRing + Vector3.right * shape.radius, downRing + Vector3.right * shape.radius);
-                    Handles.DrawLine(upRing - Vector3.right * shape.radius, downRing - Vector3.right * shape.radius);
-                    
-                    Handles.DrawLine(upRing + Vector3.forward * shape.innerRadius, downRing + Vector3.forward * shape.innerRadius);
-                    Handles.DrawLine(upRing - Vector3.forward * shape.innerRadius, downRing - Vector3.forward * shape.innerRadius);
-                    Handles.DrawLine(upRing + Vector3.right * shape.innerRadius, downRing + Vector3.right * shape.innerRadius);
-                    Handles.DrawLine(upRing - Vector3.right * shape.innerRadius, downRing - Vector3.right * shape.innerRadius);
-                    break;
-            }
-
-            Handles.matrix = Matrix4x4.identity;
+                _combatCard.BindData(new CombatDetectionCardData(damageClip.hitBoxScope, damageClip.attackPolicy));
+                _combatCard.DrawSceneGUI(context);
             }
         }
 
@@ -560,6 +329,27 @@ namespace ATEditor.Editor
                     }
                     break;
             }
+        }
+
+        private static ATEditorState GetEditorState()
+        {
+            if (EditorWindow.HasOpenInstances<ATEditorWindow>())
+            {
+                var window = EditorWindow.GetWindow<ATEditorWindow>(false, "动作时间轴编辑器", false);
+                return window != null ? window.GetState() : null;
+            }
+            return null;
+        }
+
+        private static GameObject GetPreviewTarget()
+        {
+            var state = GetEditorState();
+            if (state != null)
+            {
+                if (state.PreviewContext != null && state.PreviewContext.Owner != null) return state.PreviewContext.Owner;
+                return state.previewTarget;
+            }
+            return null;
         }
     }
 }

@@ -132,5 +132,25 @@ namespace Game.Framework
                 _children[i].Advance(DeltaTime);
             }
         }
+
+        public bool HasAncestor(TimeClock ancestor)
+        {
+            for (var node = this; node != null; node = node.Parent) if (node == ancestor) return true;
+            return false;
+        }
+
+        /// <summary>独立推进叶节点。delta 已属于 origin 的时间域；null 表示真实时间，祖先倍率只应用一次。</summary>
+        public float AdvanceFrom(float delta, TimeClock origin)
+        {
+            float scale = 1f;
+            for (var node = this; node != origin; node = node.Parent)
+            {
+                if (node == null) throw new ArgumentException("时间域不在当前时钟祖先链中。", nameof(origin));
+                scale *= node.LocalScale;
+            }
+            DeltaTime = delta * scale; Time += DeltaTime;
+            foreach (var child in _children) child.Advance(DeltaTime);
+            return DeltaTime;
+        }
     }
 }

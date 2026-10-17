@@ -14,9 +14,19 @@ namespace ATEditor
         {
             currentRewindCount = 0;
             isFlaggedForRewind = false;
-            
-            _eventCallback = OnEventReceived;
-            context.OnTimelineMessage += _eventCallback;
+
+            var subscribedContext = context;
+            var eventCallback = new Action<string>(OnEventReceived);
+            _eventCallback = eventCallback;
+            subscribedContext.OnTimelineMessage += eventCallback;
+            subscribedContext.RegisterCleanup(() =>
+            {
+                subscribedContext.OnTimelineMessage -= eventCallback;
+                if (ReferenceEquals(_eventCallback, eventCallback))
+                {
+                    _eventCallback = null;
+                }
+            });
         }
 
         public override void OnStop()
@@ -26,6 +36,19 @@ namespace ATEditor
                 context.OnTimelineMessage -= _eventCallback;
                 _eventCallback = null;
             }
+        }
+
+        public override void Reset()
+        {
+            if (_eventCallback != null && context != null)
+            {
+                context.OnTimelineMessage -= _eventCallback;
+                _eventCallback = null;
+            }
+
+            currentRewindCount = 0;
+            isFlaggedForRewind = false;
+            base.Reset();
         }
 
         public override void OnEnter()

@@ -29,5 +29,11 @@ namespace ATEditor
         {
             _motionWindowHandler?.DisableRotationFilter();
         }
+
+        public override void Reset()
+        {
+            _motionWindowHandler = null;
+            base.Reset();
+        }
     }
 }

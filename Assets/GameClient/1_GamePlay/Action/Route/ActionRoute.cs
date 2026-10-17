@@ -95,7 +95,7 @@ namespace Game.GamePlay
 
         public bool Evaluate(CharacterEntity actor)
         {
-            if(!(actor is RoleEntity roleEntity)) return false;
+            if (!(actor is RoleEntity roleEntity)) return false;
             switch (Category)
             {
                 case ModifierCategory.None:

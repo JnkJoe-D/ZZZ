@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Game.Editor.ActionTransition
 {
@@ -146,6 +149,11 @@ namespace Game.Editor.ActionTransition
         {
             Dispose();
             if (animator == null) return;
+
+#if UNITY_EDITOR
+            AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
+            AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+#endif
 
             _animator = animator;
             _animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
@@ -422,15 +430,40 @@ namespace Game.Editor.ActionTransition
             EvaluateAt(CurrentTime);
         }
 
+        ~ActionTransitionPreviewPlayer()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+#if UNITY_EDITOR
+            AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
+#endif
             if (_graph.IsValid())
             {
                 _graph.Destroy();
             }
-            _currentBoundClipA = null;
-            _currentBoundClipB = null;
-            _animator = null;
+
+            if (disposing)
+            {
+                _currentBoundClipA = null;
+                _currentBoundClipB = null;
+                _animator = null;
+            }
         }
+
+#if UNITY_EDITOR
+        private void OnBeforeAssemblyReload()
+        {
+            Dispose();
+        }
+#endif
     }
 }

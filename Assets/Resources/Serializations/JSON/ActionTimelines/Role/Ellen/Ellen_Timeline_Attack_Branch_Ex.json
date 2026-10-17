@@ -46,7 +46,7 @@
         {
             "groupId": "e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b",
             "groupName": "输入",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -491,7 +491,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.10000002384185791,
                     "animationClip": {
-                        "instanceID": 34738
+                        "instanceID": 34960
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -529,7 +529,7 @@
                     "blendInDuration": 0.10000002384185791,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34740
+                        "instanceID": 34962
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -562,7 +562,7 @@
                     "clipId": "c1b6a843-422d-4d08-8166-43406938b52b",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.9999997615814209,
+                    "startTime": 0.8666667342185974,
                     "duration": 0.4000000059604645,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -582,8 +582,8 @@
                     "clipId": "494b0174-391d-492e-a524-5bb03f3cf018",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.6999997496604919,
-                    "duration": 0.30000001192092896,
+                    "startTime": 0.5666667222976685,
+                    "duration": 0.30000001192092898,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -602,8 +602,8 @@
                     "clipId": "b2b11640-30c8-4d8d-bece-39877adf77e0",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.9999997615814209,
-                    "duration": 5.766666889190674,
+                    "startTime": 0.8666667342185974,
+                    "duration": 5.899999618530273,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -662,8 +662,8 @@
                     "clipId": "a3a73aa8-3cb0-4a11-9b18-b735be4e46bf",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.5,
-                    "duration": 6.266666889190674,
+                    "startTime": 0.8666667342185974,
+                    "duration": 5.900000095367432,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -682,8 +682,8 @@
                     "clipId": "76af7e45-0ee8-4086-ac6e-d69945db56b4",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.5,
-                    "duration": 6.266666889190674,
+                    "startTime": 0.8666667342185974,
+                    "duration": 5.900000095367432,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -702,7 +702,7 @@
                     "clipId": "4842c7fd-5fab-42eb-866e-c9130fbe4e89",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.45000016689300537,
+                    "startTime": 0.45000016689300539,
                     "duration": 0.10000000149011612,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -758,7 +758,7 @@
                                 "enableHitStop": true,
                                 "hitStopDuration": 0.10000000149011612,
                                 "hitStopScale": 0.0,
-                                "hitStunDuration": 0.30000001192092896,
+                                "hitStunDuration": 0.30000001192092898,
                                 "hitVFXPrefab": {
                                     "instanceID": 0
                                 },
@@ -859,7 +859,7 @@
                                 "enableHitStop": true,
                                 "hitStopDuration": 0.10000000149011612,
                                 "hitStopScale": 0.0,
-                                "hitStunDuration": 0.30000001192092896,
+                                "hitStunDuration": 0.30000001192092898,
                                 "hitVFXPrefab": {
                                     "instanceID": 0
                                 },
@@ -977,7 +977,7 @@
                     "recenterRestoreSpeed": 2.0,
                     "lookAtOffset": {
                         "x": 0.0,
-                        "y": 1.2000000476837158,
+                        "y": 1.2000000476837159,
                         "z": 0.0
                     },
                     "trackSmoothSpeed": 8.0,

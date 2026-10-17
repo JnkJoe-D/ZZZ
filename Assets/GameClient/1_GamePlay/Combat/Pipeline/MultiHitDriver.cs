@@ -16,27 +16,30 @@ namespace Game.GamePlay
             HitPipeline pipeline,
             HitPipelineContext ctx,
             float duration,
-            int totalHits)
+            int totalHits,
+            System.Func<bool> canContinue = null)
         {
             if (runner == null || !runner.gameObject.activeInHierarchy)
             {
                 // 若无宿主则直接同步打单发并回收
-                pipeline.Execute(ctx);
-                pipeline.ReleaseContext(ctx);
+                try { if (canContinue == null || canContinue()) pipeline.Execute(ctx); }
+                finally { pipeline.ReleaseContext(ctx); }
                 return;
             }
 
-            runner.StartCoroutine(ExecuteMultiHitRoutine(pipeline, ctx, duration, totalHits));
+            runner.StartCoroutine(ExecuteMultiHitRoutine(pipeline, ctx, duration, totalHits, canContinue));
         }
 
         private static IEnumerator ExecuteMultiHitRoutine(
             HitPipeline pipeline,
             HitPipelineContext ctx,
             float duration,
-            int totalHits)
+            int totalHits,
+            System.Func<bool> canContinue)
         {
             try
             {
+                if (canContinue != null && !canContinue()) yield break;
                 if (totalHits <= 1 || duration <= 0f)
                 {
                     pipeline.Execute(ctx);
@@ -46,6 +49,7 @@ namespace Game.GamePlay
                 float interval = duration / totalHits;
                 for (int i = 0; i < totalHits; i++)
                 {
+                    if (canContinue != null && !canContinue()) yield break;
                     // 若攻击者已被销毁或死亡，多段打击立即熔断终止
                     if (ctx.Attacker == null || (ctx.Attacker.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false))
                     {
@@ -70,6 +74,7 @@ namespace Game.GamePlay
                         while (elapsed < interval)
                         {
                             yield return null;
+                            if (canContinue != null && !canContinue()) yield break;
                             if (ctx.Attacker == null || (ctx.Attacker.DataModule?.Get<LifecycleRuntimeData>()?.IsDead ?? false))
                             {
                                 yield break;

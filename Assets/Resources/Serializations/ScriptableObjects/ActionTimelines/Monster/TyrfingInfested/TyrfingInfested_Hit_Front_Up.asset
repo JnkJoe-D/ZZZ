@@ -39,6 +39,7 @@ MonoBehaviour:
     tracks:
     - rid: 4681868330708500878
     - rid: 4681868330708500879
+    - rid: 6293807124541079563
   references:
     version: 2
     RefIds:
@@ -162,6 +163,35 @@ MonoBehaviour:
         blendOutDuration: 0
         routewindow:
           rid: 6379258164158660704
+    - rid: 6293807124541079563
+      type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        trackId: 29e88826-010e-4c28-bbc9-622a4af80ef4
+        trackType: RouteWindowTrack
+        trackName: "\u8F93\u5165\u6D3E\u751F\u7A97\u53E3\u8F68\u9053"
+        isMuted: 0
+        isLocked: 0
+        isHidden: 0
+        isCollapsed: 0
+        isEnabled: 1
+        clips:
+        - rid: 6293807124541079564
+    - rid: 6293807124541079564
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 36a700b2-604e-4665-a5db-8bff2f952e93
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0
+        duration: 1
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6293807124541079566
+    - rid: 6293807124541079566
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1
     - rid: 6379258164158660702
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:

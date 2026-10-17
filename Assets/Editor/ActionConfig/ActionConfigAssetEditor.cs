@@ -193,6 +193,28 @@ namespace Game.Editor.ActionConfig
             EndCard(_coreAssetsExpanded);
         }
 
+        /// <summary>
+        /// 获取当前选中的动作完成退出策略枚举
+        /// 兼容 SerializedProperty 针对非连续枚举值（0, 10, 20）的处理，避免 enumValueIndex 直接强转引发的匹配失效
+        /// </summary>
+        private ActionCompleteMode GetCurrentCompleteMode()
+        {
+            if (_completeModeProp == null) return ActionCompleteMode.Default;
+
+            // 优先通过 enumNames 与当前 enumValueIndex 下标进行名称安全解析
+            if (_completeModeProp.enumValueIndex >= 0 && _completeModeProp.enumValueIndex < _completeModeProp.enumNames.Length)
+            {
+                string selectedName = _completeModeProp.enumNames[_completeModeProp.enumValueIndex];
+                if (Enum.TryParse<ActionCompleteMode>(selectedName, out var modeByName))
+                {
+                    return modeByName;
+                }
+            }
+
+            // 兜底方案：通过 intValue 真实底层数值转换
+            return (ActionCompleteMode)_completeModeProp.intValue;
+        }
+
         // 卡片二 动作完成策略
         private void DrawCompletionCard(ActionConfigAsset asset)
         {
@@ -203,17 +225,31 @@ namespace Game.Editor.ActionConfig
                 EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(_completeModeProp, new GUIContent("完成退出策略", "当前动作播放结束自然退出时的流转逻辑"));
 
-                ActionCompleteMode mode = (ActionCompleteMode)_completeModeProp.enumValueIndex;
+                ActionCompleteMode mode = GetCurrentCompleteMode();
                 if (mode == ActionCompleteMode.TransitToAction)
                 {
                     EditorGUILayout.Space(2f);
                     using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
                     {
                         EditorGUILayout.LabelField("自动衔接后续动作配置", EditorStyles.boldLabel);
-                        EditorGUILayout.PropertyField(_completeActionProp, new GUIContent("目标动作", "动作自然播放完成后强制衔接的目标动作"));
-                        if (_completeActionProp.objectReferenceValue == null)
+                        if (_completeActionProp != null)
                         {
-                            EditorGUILayout.HelpBox("未配置目标动作 退出策略设为了衔接动作但目标动作未配置 动作结束后将失去流转目标", MessageType.Error);
+                            EditorGUILayout.PropertyField(_completeActionProp, new GUIContent("目标动作", "动作自然播放完成后强制衔接的目标动作"));
+                            if (_completeActionProp.objectReferenceValue == null)
+                            {
+                                EditorGUILayout.HelpBox("未配置目标动作 退出策略设为了衔接动作但目标动作未配置 动作结束后将失去流转目标", MessageType.Error);
+                            }
+                            else
+                            {
+                                if (_completeActionProp.objectReferenceValue == asset)
+                                {
+                                    EditorGUILayout.HelpBox("提示：目标动作为当前动作自身，自然播放结束后将循环重新播放当前动作。", MessageType.Info);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            EditorGUILayout.HelpBox("未能获取 CompleteAction 属性，请检查 ActionConfigAsset 字段定义。", MessageType.Warning);
                         }
                     }
                 }

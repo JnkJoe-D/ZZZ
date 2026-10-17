@@ -1,6 +1,6 @@
 namespace ATEditor
 {
-    /* 位移窗口本身不直接移动角色，它只负责把当前窗口策略注册到运行时状态里。 */
+    /* 位移窗口本身不直接移动角色，它只负责把当前窗口策略注册到运行时运动解算中。 */
     [ProcessBinding(typeof(MotionFilterClip), PlayMode.Runtime)]
     public class RuntimeMotionFilterProcess : ProcessBase<MotionFilterClip>
     {
@@ -8,7 +8,7 @@ namespace ATEditor
 
         public override void OnEnable()
         {
-            _motionWindowHandler =context.GetService<IMotionWindowHandler>();
+            _motionWindowHandler = context.GetService<IMotionWindowHandler>();
         }
 
         public override void OnEnter()
@@ -19,7 +19,6 @@ namespace ATEditor
 
         public override void OnUpdate(float currentTime, float deltaTime)
         {
-
         }
 
         public override void OnExit()
@@ -32,6 +31,12 @@ namespace ATEditor
         {
             _motionWindowHandler?.DisableLocalDeltaFilter();
             _motionWindowHandler?.DisableCollisionMode();
+        }
+
+        public override void Reset()
+        {
+            _motionWindowHandler = null;
+            base.Reset();
         }
     }
 }

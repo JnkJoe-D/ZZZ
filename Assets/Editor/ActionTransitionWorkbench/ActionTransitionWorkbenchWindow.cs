@@ -202,6 +202,11 @@ namespace Game.Editor.ActionTransition
             _viewport = null;
         }
 
+        private void OnDestroy()
+        {
+            OnDisable();
+        }
+
         private void TryAutoSelectInitialAssets()
         {
             var workspaces = ActionTransitionWorkspaceService.GetAllWorkspaces();

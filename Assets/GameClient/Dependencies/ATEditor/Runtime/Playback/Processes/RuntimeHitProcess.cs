@@ -72,6 +72,7 @@ namespace ATEditor
 
         private void DoHitCheck()
         {
+            if (context.IsSeeking || context.IsInterrupted) return;
             if (damageHandler == null)
             {
                 ATLog.Warning($"[HitProcess] DoHitCheck ABORT: damageHandler is NULL! Owner: {context.Owner?.name}");
@@ -240,28 +241,8 @@ namespace ATEditor
                     ? clip.detects[configIndex]
                     : new DetectConfig();
 
-                HitData hitData = new HitData()
-                {
-                    deployer = context.Owner,
-                    hitBoxCenter = center,
-                    targetsCollilders = _cachedValidHits.ToArray(),
-                    hitEffectId = detectConfig.hitEffectId,
-                    hitDirectionMode = clip.hitDirectionMode,
-                    customHitDirection = clip.customHitDirection,
-                    customWorldDirection = onEnterCustomDirection,
-                    hitMode = detectConfig.hitMode,
-                    multiHitCount = detectConfig.multiHitCount,
-                    multiHitDuration = detectConfig.multiHitDuration,
-                    enableHitStop = detectConfig.enableHitStop,
-                    hitStopDuration = detectConfig.hitStopDuration,
-                    hitStopScale = detectConfig.hitStopScale,
-                    hitVFXPrefab = detectConfig.hitVFXPrefab,
-                    hitVFXHeight = detectConfig.hitVFXHeight,
-                    hitVFXScale = detectConfig.hitVFXScale,
-                    hitAudioClip = detectConfig.hitAudioClip,
-                    hitStunDuration = detectConfig.hitStunDuration,
-                    followTarget = detectConfig.followTarget
-                };
+                HitData hitData = LegacyHitDataFactory.Create(context.Owner, center, _cachedValidHits.ToArray(),
+                    detectConfig, clip.hitDirectionMode, clip.customHitDirection, onEnterCustomDirection);
                 damageHandler.OnHitDetect(hitData);
             }
         }

@@ -181,13 +181,6 @@ namespace ATEditor.Editor
             ActionTimeline timeline = state.currentTimeline;
             if (timeline == null || timeline.Groups == null || timeline.Groups.Count == 0)
             {
-                GUIStyle watermarkStyle = new GUIStyle(EditorStyles.boldLabel)
-                {
-                    fontSize = 14,
-                    alignment = TextAnchor.MiddleCenter,
-                    normal = { textColor = new Color(0.5f, 0.5f, 0.5f, 0.5f) }
-                };
-                GUI.Label(new Rect(0, 0, rect.width, rect.height), "暂无打开的时间轴 / 点击工具栏导入或新建", watermarkStyle);
                 return;
             }
 

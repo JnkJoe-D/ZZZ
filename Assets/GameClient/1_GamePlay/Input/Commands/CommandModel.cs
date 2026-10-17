@@ -58,12 +58,79 @@ namespace Game.GamePlay
         public bool HasMovementInput;
     }
 
-    public class DirectAssetPayload : ICommandPayload
+    public class DirectAssetPayload : CharacterActionPlayInfo
     {
-        public ActionConfigAsset TargetAsset;
-        public float CrossfadeOverride = -1f;
-        public float StartTime = 0f;
-        public Action OnComplete;
+        public ActionConfigAsset TargetAsset
+        {
+            get => ActionConfig;
+            set => ActionConfig = value;
+        }
+
+        public float CrossfadeOverride
+        {
+            get => TransitionInfo?.CrossfadeDuration ?? -1f;
+            set
+            {
+                TransitionInfo ??= new ActionTransitionInfo();
+                TransitionInfo.CrossfadeDuration = value;
+            }
+        }
+
+        public float StartTime
+        {
+            get => TransitionInfo?.StartTime ?? 0f;
+            set
+            {
+                TransitionInfo ??= new ActionTransitionInfo();
+                TransitionInfo.StartTime = value;
+            }
+        }
+
+        public Action OnComplete
+        {
+            get => EventInfo?.OnActionComplete;
+            set
+            {
+                EventInfo ??= new ActionEventInfo();
+                EventInfo.OnActionComplete = value;
+            }
+        }
+
+        public Action OnInterrupt
+        {
+            get => EventInfo?.OnActionInterrupt;
+            set
+            {
+                EventInfo ??= new ActionEventInfo();
+                EventInfo.OnActionInterrupt = value;
+            }
+        }
+
+        public Action OnStart
+        {
+            get => EventInfo?.OnActionStart;
+            set
+            {
+                EventInfo ??= new ActionEventInfo();
+                EventInfo.OnActionStart = value;
+            }
+        }
+
+        public DirectAssetPayload() { }
+
+        public DirectAssetPayload(ActionConfigAsset action, float crossfade = -1f, float startTime = 0f, Action onComplete = null, Action onInterrupt = null, Action onStart = null)
+            : base(action, crossfade, startTime)
+        {
+            if (onComplete != null || onInterrupt != null || onStart != null)
+            {
+                EventInfo = new ActionEventInfo
+                {
+                    OnActionComplete = onComplete,
+                    OnActionInterrupt = onInterrupt,
+                    OnActionStart = onStart
+                };
+            }
+        }
     }
 
     public class SystemEventPayload : ICommandPayload

@@ -139,6 +139,22 @@ namespace Game.GamePlay
             monster.StatusModule.Attributes.Init(monster);
             monster.StatusModule.Buffs.Init(monster);
 
+            const float defaultMaxHp = 99999f;
+            if (!monster.StatusModule.Attributes.Has(AttributeId.MaxHp))
+            {
+                monster.StatusModule.Attributes.Register(new AttributeInstance(AttributeId.MaxHp, defaultMaxHp, 0f, float.MaxValue));
+            }
+            if (!monster.StatusModule.Attributes.Has(AttributeId.HP))
+            {
+                monster.StatusModule.Attributes.Register(new AttributeInstance(AttributeId.HP, defaultMaxHp, 0f, defaultMaxHp));
+            }
+            else
+            {
+                float maxHp = monster.StatusModule.Attributes.GetCurrent(AttributeId.MaxHp);
+                if (maxHp <= 0f) maxHp = defaultMaxHp;
+                monster.StatusModule.Attributes.SetValue(AttributeId.HP, maxHp);
+            }
+
             const float defaultMaxDaze = 100f;
             if (!monster.StatusModule.Attributes.Has(AttributeId.MaxDaze))
             {
@@ -147,6 +163,16 @@ namespace Game.GamePlay
             if (!monster.StatusModule.Attributes.Has(AttributeId.Daze))
             {
                 monster.StatusModule.Attributes.Register(new AttributeInstance(AttributeId.Daze, 0f, 0f, defaultMaxDaze));
+            }
+            else
+            {
+                monster.StatusModule.Attributes.SetValue(AttributeId.Daze, 0f);
+            }
+
+            const float defaultResilience = 0f;
+            if (!monster.StatusModule.Attributes.Has(AttributeId.Resilience))
+            {
+                monster.StatusModule.Attributes.Register(new AttributeInstance(AttributeId.Resilience, defaultResilience, 0f, float.MaxValue));
             }
         }
 
@@ -161,6 +187,13 @@ namespace Game.GamePlay
         {
             // 怪物若被请求修改小队属性，安全忽略
             if (AttributeScopeRegistry.GetScope(attrId) == AttributeScope.Team) return;
+
+            // 怪物处于失衡瘫痪状态中，禁止外部继续累加失衡值（保证失衡倒计时单向线性衰减归零）
+            if (attrId == AttributeId.Daze && delta > 0f && (_entity as MonsterEntity)?.StateMachine?.CurrentState is MonsterStunState)
+            {
+                return;
+            }
+
             base.ModifyAttribute(attrId, delta);
         }
 

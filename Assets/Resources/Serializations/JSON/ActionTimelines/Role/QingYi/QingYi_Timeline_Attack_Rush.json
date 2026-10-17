@@ -404,7 +404,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.11666667461395264,
                     "animationClip": {
-                        "instanceID": 34924
+                        "instanceID": 35104
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -442,7 +442,7 @@
                     "blendInDuration": 0.11666667461395264,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34926
+                        "instanceID": 35106
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -475,8 +475,8 @@
                     "clipId": "4f37fa8b-bd62-42d6-a9b7-c868bf9478f4",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.13333334028720856,
-                    "duration": 0.20000000298023224,
+                    "startTime": 0.04999999701976776,
+                    "duration": 0.20000000298023225,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -495,8 +495,8 @@
                     "clipId": "ac5012a8-53ae-4ec1-b8a6-35e6e5032ecf",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.33333340287208557,
-                    "duration": 5.9166669845581055,
+                    "startTime": 0.25,
+                    "duration": 6.000000476837158,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -555,8 +555,8 @@
                     "clipId": "64d92d59-525d-476a-bb18-28d266e86e32",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.33333340287208557,
-                    "duration": 5.9166669845581055,
+                    "startTime": 0.25,
+                    "duration": 6.000000476837158,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -575,8 +575,8 @@
                     "clipId": "4880edf2-4bfc-4cb0-9d28-3b44f54a69b9",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.33333340287208557,
-                    "duration": 5.9166669845581055,
+                    "startTime": 0.25,
+                    "duration": 6.000000476837158,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -595,8 +595,8 @@
                     "clipId": "f7cb2cc1-53f3-48ec-91b4-184569f5693d",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.19999998807907104,
-                    "duration": 0.20000000298023224,
+                    "startTime": 0.19999998807907105,
+                    "duration": 0.20000000298023225,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "hitBoxScope": {
@@ -647,11 +647,11 @@
                             {
                                 "hitMode": 0,
                                 "multiHitCount": 3,
-                                "multiHitDuration": 0.20000000298023224,
+                                "multiHitDuration": 0.20000000298023225,
                                 "enableHitStop": false,
                                 "hitStopDuration": 0.05000000074505806,
                                 "hitStopScale": 0.0,
-                                "hitStunDuration": 0.30000001192092896,
+                                "hitStunDuration": 0.30000001192092898,
                                 "hitVFXPrefab": {
                                     "instanceID": 0
                                 },
@@ -720,7 +720,7 @@
                     "clipName": "旋转片段片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.20000000298023224,
+                    "duration": 0.20000000298023225,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "referenceDirection": 4,

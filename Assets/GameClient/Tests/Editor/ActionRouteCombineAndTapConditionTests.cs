@@ -21,8 +21,8 @@ namespace Game.Tests.Combat
             _role = _roleGo.AddComponent<RoleEntity>();
             _mockInput = new MockInputProvider();
 
-            var adapter = _role.InputAdapter;
-            adapter?.Bind(_mockInput);
+            _role.EnsureRuntimeInitialized();
+            _role.InputAdapter.SetFallbackInputProvider(_mockInput);
             _role.SetControlActive(true);
         }
 

@@ -296,33 +296,39 @@ namespace ATEditor.Editor
         }
 
         /// <summary>
-        /// 计算整个 Timeline 的总显示高度（遍历 groups -> tracks）
+        /// 计算整个 Timeline 的纯内容高度（遍历 groups -> tracks，不含底部留白垫片）
         /// </summary>
-        public float CalculateTotalHeight()
+        public float CalculateContentHeight()
         {
             if (currentTimeline == null) return 0;
             
-            const float TIME_RULER_HEIGHT = 30f;
-            const float TRACK_HEIGHT = 40f;
-            const float GROUP_HEIGHT = 30f;
-            
-            float totalHeight = TIME_RULER_HEIGHT;
+            float totalHeight = ATEditorStyles.TIME_RULER_HEIGHT;
             
             if (currentTimeline.Groups != null)
             {
                 for (int i = 0; i < currentTimeline.Groups.Count; i++)
                 {
                     var group = currentTimeline.Groups[i];
-                    totalHeight += GROUP_HEIGHT;
+                    totalHeight += ATEditorStyles.GROUP_HEIGHT;
                     
                     if (!group.isCollapsed && group.tracks != null)
                     {
-                        totalHeight += group.tracks.Count * TRACK_HEIGHT;
+                        totalHeight += group.tracks.Count * ATEditorStyles.TRACK_HEIGHT;
                     }
                 }
             }
             
             return totalHeight;
+        }
+
+        /// <summary>
+        /// 计算整个 Timeline 的总显示与滚动高度（包含底部留白垫片）
+        /// </summary>
+        public float CalculateTotalHeight()
+        {
+            float contentHeight = CalculateContentHeight();
+            if (contentHeight <= 0) return 0;
+            return contentHeight + ATEditorStyles.LIST_FOOTER_SPACING;
         }
 
         /// <summary>

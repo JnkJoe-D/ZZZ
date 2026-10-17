@@ -677,7 +677,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.1333332657814026,
                     "animationClip": {
-                        "instanceID": 34982
+                        "instanceID": 35108
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -715,7 +715,7 @@
                     "blendInDuration": 0.1333332657814026,
                     "blendOutDuration": 0.15000009536743165,
                     "animationClip": {
-                        "instanceID": 34984
+                        "instanceID": 35110
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -753,7 +753,7 @@
                     "blendInDuration": 0.15000009536743165,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34986
+                        "instanceID": 35112
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -887,8 +887,8 @@
                     "clipId": "4475e801-57ee-4973-8f4a-1e6baaaddb26",
                     "clipName": "打击片段",
                     "isEnabled": true,
-                    "startTime": 0.36666667461395266,
-                    "duration": 0.10000000149011612,
+                    "startTime": 0.0833333358168602,
+                    "duration": 0.25,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "hitBoxScope": {
@@ -920,7 +920,7 @@
                         "showHitBoxGizmos": true
                     },
                     "attackPolicy": {
-                        "detectFrequency": 0,
+                        "detectFrequency": 1,
                         "times": 4,
                         "maxHitTargets": 0,
                         "targetSortMode": 1,
@@ -940,7 +940,7 @@
                                 "hitMode": 1,
                                 "multiHitCount": 3,
                                 "multiHitDuration": 0.20000000298023225,
-                                "enableHitStop": true,
+                                "enableHitStop": false,
                                 "hitStopDuration": 0.05000000074505806,
                                 "hitStopScale": 0.0,
                                 "hitStunDuration": 0.30000001192092898,

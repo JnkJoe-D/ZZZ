@@ -132,8 +132,8 @@ namespace ATEditor.Editor
 
             if (evt.type == EventType.MouseDown)
             {
-                float totalHeight = state.CalculateTotalHeight() - scrollOffset;
-                if (evt.mousePosition.x < ATEditorStyles.TRACK_LIST_WIDTH && evt.mousePosition.y > totalHeight)
+                float contentBottom = state.CalculateContentHeight() - scrollOffset;
+                if (evt.mousePosition.x < ATEditorStyles.TRACK_LIST_WIDTH && evt.mousePosition.y > contentBottom)
                 {
                     if (evt.button == 0)
                     {
@@ -418,6 +418,23 @@ namespace ATEditor.Editor
             menu.AddSeparator("");
             
             menu.AddItem(new GUIContent("复制分组"), false, () => CopyGroup(group));
+
+            if (state.copiedGroup != null)
+            {
+                menu.AddItem(new GUIContent($"在下方粘贴分组 ({state.copiedGroup.groupName})"), false, () =>
+                {
+                    ActionTimeline timeline = state.currentTimeline;
+                    if (timeline != null && timeline.Groups != null)
+                    {
+                        int index = timeline.Groups.IndexOf(group);
+                        PasteGroup(index >= 0 ? index + 1 : -1);
+                    }
+                });
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent("在下方粘贴分组"));
+            }
             
             if (state.copiedTrack != null)
             {
@@ -446,7 +463,7 @@ namespace ATEditor.Editor
             
             if (state.copiedGroup != null)
             {
-                menu.AddItem(new GUIContent($"粘贴分组 ({state.copiedGroup.groupName})"), false, PasteGroup);
+                menu.AddItem(new GUIContent($"粘贴分组 ({state.copiedGroup.groupName})"), false, () => PasteGroup(-1));
             }
             else
             {
@@ -874,18 +891,28 @@ namespace ATEditor.Editor
         /// <summary>
         /// 粘贴分组（树状结构：轨道直接加入新分组）
         /// </summary>
-        private void PasteGroup()
+        /// <param name="insertIndex">指定插入索引，若为 -1 则追加到末尾</param>
+        private void PasteGroup(int insertIndex = -1)
         {
             if (state.copiedGroup == null) return;
+            ActionTimeline timeline = state.currentTimeline;
+            if (timeline == null) return;
             
             window.RecordUndo("粘贴分组");
-            ActionTimeline timeline = state.currentTimeline;
             
             // 克隆分组
             Group newGroup = state.copiedGroup.Clone();
             newGroup.groupId = Guid.NewGuid().ToString();
             newGroup.tracks = new List<TrackBase>();
-            timeline.Groups.Add(newGroup);
+            
+            if (insertIndex >= 0 && insertIndex <= timeline.Groups.Count)
+            {
+                timeline.Groups.Insert(insertIndex, newGroup);
+            }
+            else
+            {
+                timeline.Groups.Add(newGroup);
+            }
             
             // 克隆并关联轨道
             foreach (var copiedTrack in state.copiedTracksForGroup)
@@ -894,9 +921,12 @@ namespace ATEditor.Editor
                 newTrack.trackId = Guid.NewGuid().ToString();
                 
                 // 修正片段 ID
-                foreach (var clip in newTrack.clips)
+                if (newTrack.clips != null)
                 {
-                    clip.clipId = Guid.NewGuid().ToString();
+                    foreach (var clip in newTrack.clips)
+                    {
+                        clip.clipId = Guid.NewGuid().ToString();
+                    }
                 }
 
                 newGroup.tracks.Add(newTrack);

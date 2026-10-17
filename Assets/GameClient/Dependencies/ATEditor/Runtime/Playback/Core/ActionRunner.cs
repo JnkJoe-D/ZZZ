@@ -9,6 +9,7 @@ namespace ATEditor
     /// </summary>
     public sealed class ActionRunner
     {
+        private static long _nextPlaybackId;
         /// <summary>
         /// 播放状态
         /// </summary>
@@ -16,7 +17,8 @@ namespace ATEditor
         {
             None,
             Playing,
-            Paused
+            Paused,
+            Prepared
         }
 
         // ─── 公开状态 ───
@@ -145,6 +147,13 @@ namespace ATEditor
         /// </summary>
         public void Play(ActionTimeline timeline, ProcessContext context,float startTime = 0f)
         {
+            Prepare(timeline, context, startTime);
+            BeginPrepared();
+        }
+
+        /// <summary>建立 Process/服务，但不执行开始事件、OnEnter 或首帧。</summary>
+        public void Prepare(ActionTimeline timeline, ProcessContext context, float startTime = 0f)
+        {
             if (CurrentState != State.None)
             {
                 InterruptInternal();
@@ -152,9 +161,11 @@ namespace ATEditor
             this.Timeline = timeline;
             this.context = context;
             this.context.IsInterrupted = false; // 重置打断状态
+            this.context.SetPresentationPlayback(this.context.PresentationPlaySpeed, false);
+            this.context.PlaybackId = System.Threading.Interlocked.Increment(ref _nextPlaybackId);
             this.context.SetSkillId(timeline.Id); // 注入技能标识
             CurrentTime = startTime < 0f ? 0f : (startTime > Timeline.Duration ? Timeline.Duration : startTime);
-            CurrentState = State.Playing;
+            CurrentState = State.Prepared;
 
             BuildProcesses();
 
@@ -162,7 +173,13 @@ namespace ATEditor
             {
                 inst.process.OnEnable();
             }
+        }
 
+        public void BeginPrepared()
+        {
+            if (CurrentState != State.Prepared) return;
+            var timeline = Timeline;
+            CurrentState = State.Playing;
             this.context.ExecuteStartActionsOnce();
 
             DispatchTimelineEvents(Timeline.beforePlayEvents);
@@ -183,6 +200,7 @@ namespace ATEditor
         {
             if (CurrentState != State.Playing) return;
             CurrentState = State.Paused;
+            context?.SetPresentationPlayback(context.PresentationPlaySpeed, true);
             for(int i = 0; i < activeProcesses.Count; i++)
             {
                 var inst = activeProcesses[i];
@@ -198,6 +216,7 @@ namespace ATEditor
         {
             if (CurrentState != State.Paused) return;
             CurrentState = State.Playing;
+            context?.SetPresentationPlayback(context.PresentationPlaySpeed, false);
             for (int i = 0; i < activeProcesses.Count; i++)
             {
                 var inst = activeProcesses[i];
@@ -223,6 +242,7 @@ namespace ATEditor
         /// </summary>
         public void Seek(float targetTime,float deltaTime)
         {
+            if (CurrentState == State.Prepared) return;
             if(Timeline == null || targetTime < 0f)
             {
                 return;
@@ -234,6 +254,15 @@ namespace ATEditor
                 _pendingSeekDelta = deltaTime;
                 return;
             }
+            var seekingContext = context;
+            bool wasSeeking = seekingContext != null && seekingContext.IsSeeking;
+            if (seekingContext != null) seekingContext.IsSeeking = true;
+            try { SeekImmediate(targetTime, deltaTime); }
+            finally { if (seekingContext != null) seekingContext.IsSeeking = wasSeeking; }
+        }
+
+        private void SeekImmediate(float targetTime, float deltaTime)
+        {
             if (targetTime > Timeline.Duration)
             {
                 targetTime = Timeline.Duration;
@@ -523,16 +552,14 @@ namespace ATEditor
         /// </summary>
         private void InterruptCleanup()
         {
-            // 级别 1: 进程级清理（仅针对当前正在激活/播放中的 Process 执行打断清理）
+            // 级别 1: 进程级清理。Play 时所有 Process 都执行过 OnEnable，
+            // 因此即使尚未进入时间区间，也必须收到 OnStop 释放预加载资源和订阅。
             for (int i = 0; i < processes.Count; i++)
             {
                 var inst = processes[i];
-                if (inst.isActive)
-                {
-                    inst.process.OnStop();
-                    inst.isActive = false;
-                    processes[i] = inst;
-                }
+                inst.process.OnStop();
+                inst.isActive = false;
+                processes[i] = inst;
             }
 
             // 级别 2: 系统级清理（此时所有 Process 字段依然完整有效）

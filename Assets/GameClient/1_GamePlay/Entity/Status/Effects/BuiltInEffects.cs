@@ -55,7 +55,11 @@ namespace Game.GamePlay
         {
             var attrSet = target?.StatusModule?.Attributes;
             var instance = attrSet?.Get(TargetAttribute);
-            if (instance == null) return;
+            if (instance == null)
+            {
+                GLog.Warning(LogTags.Combat, $"[ModifyAttributeEffect] 实体 {target?.name} 缺少属性 {TargetAttribute}，Buff 修改器未生效！");
+                return;
+            }
 
             float effectiveValue = ScaleWithStack ? Value * buff.CurrentStack : Value;
             var modifier = new AttributeModifier(Operation, effectiveValue, buff.RuntimeId);

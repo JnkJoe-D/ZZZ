@@ -10,6 +10,7 @@ namespace ATEditor{
     {
         private IAudioHandler audioHandler;
         private int playingSoundId = -1;
+        private float PlaybackPitch => clip.pitch * (clip.isAffectSpeed ? context.PresentationPlaySpeed : 1f);
 
         public override void OnEnable()
         {
@@ -26,12 +27,13 @@ namespace ATEditor{
                 var args = new AudioArgs
                 {
                     volume = clip.volume,
-                    pitch = !clip.isAffectSpeed? clip.pitch:clip.pitch * context.PresentationPlaySpeed, // 叠加表现层变速
+                    pitch = PlaybackPitch,
                     loop = clip.loop,
                     spatialBlend = clip.spatialBlend,
-                    startTime = 0f, // 总是从头播放，除非实现了 Resume 逻辑
+                    startTime = Mathf.Max(0f, context.CurrentTime - clip.StartTime) * clip.pitch,
                     position = context.Owner != null ? context.Owner.transform.position : Vector3.zero,
-                    parent = context.Owner.transform
+                    parent = context.OwnerTransform,
+                    affectedByPlaybackSpeed = clip.isAffectSpeed
                 };
                 
                 playingSoundId = audioHandler.PlaySound(selectedClip, args);
@@ -44,7 +46,7 @@ namespace ATEditor{
             // 目前仅更新各种变速后的 Pitch
             if (playingSoundId != -1 && audioHandler != null && clip.isAffectSpeed)
             {
-                float targetPitch = clip.pitch * context.PresentationPlaySpeed;
+                float targetPitch = PlaybackPitch;
                 audioHandler.UpdateSound(playingSoundId, clip.volume, targetPitch, -1f); // -1 time 表示不强制同步时间
             }
         }
@@ -55,6 +57,14 @@ namespace ATEditor{
             {
                 audioHandler.PauseSound(playingSoundId);
             }
+        }
+
+        public override void OnSeek(float targetTime)
+        {
+            if (playingSoundId == -1 || audioHandler == null) return;
+            float pitch = PlaybackPitch;
+            audioHandler.UpdateSound(playingSoundId, clip.volume, pitch,
+                Mathf.Max(0f, targetTime - clip.StartTime) * clip.pitch);
         }
 
         public override void OnResume()

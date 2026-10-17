@@ -79,7 +79,7 @@ namespace Game.GamePlay
         public SwitchExecutor(TeamManager manager)
         {
             _manager = manager;
-            _pipeline = SwitchPipeline.Default;
+            _pipeline = SwitchPipeline.CreateDefaultPipeline();
             Subscribe();
         }
 
@@ -230,11 +230,11 @@ namespace Game.GamePlay
         /// <summary>
         /// 发起切人请求（委托至 SwitchPipeline 流水线统一裁决调度）
         /// </summary>
-        public void RequestSwitch(SwitchType type, RoleEntity sourceEntity, int slotHint = -1, CharacterEntity targetAttacker = null, AttackWarningMarker warningMarker = null)
+        public bool RequestSwitch(SwitchType type, RoleEntity sourceEntity, int slotHint = -1, CharacterEntity targetAttacker = null, AttackWarningMarker warningMarker = null)
         {
-            if (sourceEntity == null) return;
+            if (sourceEntity == null) return false;
             PartyMember outgoing = _manager.FindPartyMember(sourceEntity);
-            if (outgoing == null) return;
+            if (outgoing == null) return false;
 
             var ctx = _pipeline.AllocateContext();
             ctx.Manager = _manager;
@@ -244,8 +244,8 @@ namespace Game.GamePlay
             ctx.TargetAttacker = targetAttacker;
             ctx.WarningMarker = warningMarker;
 
-            _pipeline.Execute(ctx);
-            _pipeline.ReleaseContext(ctx);
+            try { _pipeline.Execute(ctx); return !ctx.IsAborted; }
+            finally { _pipeline.ReleaseContext(ctx); }
         }
 
         /// <summary>

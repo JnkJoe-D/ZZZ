@@ -384,6 +384,22 @@ MonoBehaviour:
         animStartOffsetMode: 0
         animStartOffsetSeconds: 0
         animStartOffsetNormalized: 0
+    - rid: 6293807116063342594
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 95c43be6-2715-4559-83f3-71020f5b22aa
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.95
+        duration: 0.3
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6293807116063342596
+    - rid: 6293807116063342596
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto2
     - rid: 6379258001640914953
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -397,6 +413,7 @@ MonoBehaviour:
         isEnabled: 1
         clips:
         - rid: 6379258001640914954
+        - rid: 6293807116063342594
     - rid: 6379258001640914954
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:

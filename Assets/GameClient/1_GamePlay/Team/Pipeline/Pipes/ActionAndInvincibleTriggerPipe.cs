@@ -18,6 +18,7 @@ namespace Game.GamePlay
 
             RoleEntity inEntity = ctx.IncomingEntity;
 
+
             // 0. 处于 Pending 待切出状态切回且非招架支援：角色保持正在执行的动作，不重新播放切入动作
             if (ctx.IsIncomingPendingSwitchOut && ctx.Type != SwitchType.ParryAid)
             {

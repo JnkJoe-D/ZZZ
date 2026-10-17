@@ -25,5 +25,35 @@ namespace Game.GamePlay
         {
             VFXManager.Instance?.ReturnDelay(inst, delay);
         }
+
+        public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent, Vector3 scale)
+        {
+            var instance = Spawn(prefab, position, rotation, parent);
+            if (instance != null) instance.transform.localScale = scale;
+            return instance;
+        }
+
+        public void SetTime(GameObject instance, float time)
+        {
+            // 外部自驱动，若需强制 Seek 快进可扩展
+        }
+
+        public void ReleaseWhenFinished(GameObject instance, bool stopEmission)
+        {
+            if (instance == null) return;
+            if (stopEmission)
+            {
+                var systems = instance.GetComponentsInChildren<ParticleSystem>();
+                for (int i = 0; i < systems.Length; i++)
+                {
+                    if (systems[i] != null)
+                    {
+                        var em = systems[i].emission;
+                        em.enabled = false;
+                        systems[i].Stop(false, ParticleSystemStopBehavior.StopEmitting);
+                    }
+                }
+            }
+        }
     }
 }

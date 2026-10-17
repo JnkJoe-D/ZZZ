@@ -135,6 +135,12 @@ namespace Game.GamePlay
             MovementComponent?.Init(this);
             HitReactionComponent?.Init(this);
             MotionWindowHandler ??= new ATMotionWindowHandler(this);
+
+            if (Clock != null)
+            {
+                Clock.OnEffectiveScaleChanged -= HandleClockEffectiveScaleChanged;
+                Clock.OnEffectiveScaleChanged += HandleClockEffectiveScaleChanged;
+            }
         }
 
         protected abstract void SetupDomainModulesAndFSM();
@@ -146,15 +152,18 @@ namespace Game.GamePlay
         public virtual void OnLogicTick(float logicDeltaTime)
         {
             // 1. 推进实体自身专属时钟节点（维护本地时间戳与 DeltaTime）
-            Clock?.Advance(logicDeltaTime);
-
-            // 2. 计算经实体层级时钟（子弹时间/顿帧）缩放后的有效逻辑步长
-            float scaledDt = logicDeltaTime * (Clock != null ? Clock.EffectiveScale : 1.0f);
+            float scaledDt = AdvanceEntityTime(logicDeltaTime);
 
             // 3. 将缩放后的步长自顶向下单向传递给各领域子系统（ActionController 内部自顶向下驱动 ActionPlayer）
             ActionController?.LogicTick(scaledDt);
             StatusModule?.LogicTick(scaledDt);
             OnSubLogicTick(scaledDt);
+        }
+
+        protected virtual float AdvanceEntityTime(float logicDeltaTime)
+        {
+            Clock?.Advance(logicDeltaTime);
+            return logicDeltaTime * (Clock != null ? Clock.EffectiveScale : 1f);
         }
 
         protected virtual void OnSubLogicTick(float scaledDeltaTime)

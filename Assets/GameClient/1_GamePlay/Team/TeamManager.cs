@@ -49,6 +49,11 @@ namespace Game.GamePlay
 
         /// <summary> 小队运行时共享的逻辑上下文，控制小队内的状态同步与通信。 </summary>
         private RoleTeamContext _teamContext;
+        private bool _borrowedParty;
+        private IInputProvider _switchInput;
+        private RoleEntity _pendingSwitchSource;
+        private int _pendingSwitchSlot;
+        internal int PartyVersion { get; private set; }
 
         /// <summary> 角色生成装配工厂服务。 </summary>
         private readonly TeamCharacterSpawner _spawner = new();
@@ -136,11 +141,56 @@ namespace Game.GamePlay
             UnpossessCurrentCharacter();
         }
 
+        /// <summary>接管已装配的新动作角色；实体与上下文仍由调用方拥有，卸载只解除绑定/停止播放。</summary>
+        public void AttachRuntimeParty(RoleTeamContext context, IReadOnlyList<RoleEntity> roles, int activeIndex = 0)
+        {
+            if (_partyMembers.Count != 0) throw new System.InvalidOperationException("请先卸载现有队伍。");
+            if (context == null || context.InputProvider == null || roles == null || roles.Count < 2 || roles.Count > 3 || activeIndex < 0 || activeIndex >= roles.Count)
+                throw new System.ArgumentException("需要已初始化的上下文与 2–3 名角色，初始插槽必须有效。");
+            var unique = new HashSet<RoleEntity>();
+            foreach (var role in roles)
+                if (role == null || !unique.Add(role) || !role.gameObject.activeInHierarchy || role.transform.IsChildOf(context.transform))
+                    throw new System.ArgumentException("成员必须是互不重复且已启用的角色。");
+            foreach (var role in roles)
+            {
+                role.EnsureRuntimeInitialized();
+            }
+            PartyVersion++; _borrowedParty = true; _teamContext = context;
+            try
+            {
+                foreach (var role in roles)
+                {
+                    AssignTeamContext(role); TimeManager.Instance.RegisterRoleClock(role.Clock);
+                    _partyMembers.Add(new PartyMember { SlotIndex = _partyMembers.Count, Config = role.Config, Entity = role });
+                }
+                for (int i = 0; i < _partyMembers.Count; i++) if (i != activeIndex) SetMemberStandby(_partyMembers[i].Entity);
+                var first = _partyMembers[activeIndex];
+                ActivatePartyMember(first, first.Entity.transform.position, first.Entity.transform.rotation);
+                _switchInput = context.InputProvider; _switchInput.OnSwitchNext += SwitchNext; _switchInput.OnSwitchPre += SwitchPrevious;
+            }
+            catch { UnpossessCurrentCharacter(); throw; }
+        }
+        private void SwitchNext() => QueueSwitch(-1);
+        private void SwitchPrevious()
+        {
+            if (_partyMembers.Count > 1) QueueSwitch((_activeSlotIndex - 1 + _partyMembers.Count) % _partyMembers.Count);
+        }
+        private void QueueSwitch(int slot)
+        {
+            if (LocalCharacter == null || !LocalCharacter.IsControlActive) return;
+            _pendingSwitchSource = LocalCharacter; _pendingSwitchSlot = slot;
+        }
+
         /// <summary>
         /// 轮询更新，负责单向驱动小队角色的逻辑 Tick 以及换人执行器状态。
         /// </summary>
         public void Update(float deltaTime)
         {
+            if (_pendingSwitchSource != null)
+            {
+                var source = _pendingSwitchSource; _pendingSwitchSource = null;
+                if (source == LocalCharacter) _switchExecutor.RequestSwitch(SwitchType.NormalSwitch, source, _pendingSwitchSlot);
+            }
             _switchExecutor?.Update(deltaTime);
             _teamContext?.LogicTick(deltaTime);
 
@@ -243,6 +293,11 @@ namespace Game.GamePlay
         /// </summary>
         public void UnpossessCurrentCharacter()
         {
+            PartyVersion++;
+            _pendingSwitchSource = null;
+            if (_switchInput != null) { _switchInput.OnSwitchNext -= SwitchNext; _switchInput.OnSwitchPre -= SwitchPrevious; _switchInput = null; }
+            _switchExecutor?.Reset();
+            if (_borrowedParty) _teamContext?.SetActiveRole(null);
             foreach (PartyMember member in _partyMembers)
             {
                 if (member?.Entity == null)
@@ -251,19 +306,25 @@ namespace Game.GamePlay
                 }
 
                 // 物理销毁 GameObject 实例（动作上下文已在 Entity.OnDestroy 中自动释放）
-                Object.Destroy(member.Entity.gameObject);
+                if (_borrowedParty)
+                {
+                    member.Entity.SetControlActive(false);
+                    member.Entity.AssignTeamContext(null); member.Entity.DetachFromClock();
+                }
+                else Object.Destroy(member.Entity.gameObject);
             }
 
             _partyMembers.Clear();
             _teamConfig = null;
             EventCenter.Publish(new PartyDestroyedEvent());
-            DestroyTeamContext();
+            if (_borrowedParty) _teamContext = null; else DestroyTeamContext();
+            _borrowedParty = false;
             _activeSlotIndex = -1;
-            
+
             // 安全复位纯 C# 切人执行器的过渡状态机
             _switchExecutor?.Reset();
             CombatWarningManager.Clear();
-            
+
             LocalCharacter = null;
             GameCameraManager.Instance?.SetTarget(null);
         }
@@ -486,14 +547,14 @@ namespace Game.GamePlay
             entity.SetControlActive(true);
             UpdatePartyDebugHudVisibility(entity);
             member.ActivationVersion++;
-            
+
             LocalCharacter = entity;
             int oldSlotIndex = _activeSlotIndex;
             _activeSlotIndex = member.SlotIndex;
 
             if (oldSlotIndex != _activeSlotIndex)
             {
-                EventCenter.Publish(new ActiveRoleChangedEvent 
+                EventCenter.Publish(new ActiveRoleChangedEvent
                 {
                     OldSlotIndex = oldSlotIndex,
                     NewSlotIndex = _activeSlotIndex,

@@ -113,20 +113,18 @@ namespace ATEditor.Editor
             // 订阅选中变更事件，同步到原生 Inspector
             events.OnSelectionChanged += SyncSelectionToInspector;
 
-            // 3. 数据初始化（确保拥有合法的空动作，避免出现未打开资产时的空白断层）
-            ResetToBlankTimeline();
+            // 3. 数据初始化（默认不自动创建空白时间轴，若无资产则直接处于主菜单）
+            if (state.currentTimeline != null)
+            {
+                InitializeTrackIds();
+                InitPreview();
+            }
             
             // 绑定 Undo 回调
             Undo.undoRedoPerformed += OnUndoRedo;
             
             // 监听运行模式切换（防止从运行模式切回时当前 Timeline 被销毁导致视图空白）
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-            
-            // 初始化轨道ID
-            InitializeTrackIds();
-
-            // 初始化预览播放器
-            InitPreview();
 
             // 注册 SceneView 绘制
             SceneView.duringSceneGui += OnSceneGUI;
@@ -244,16 +242,25 @@ namespace ATEditor.Editor
 
         private void OnGUI()
         {
+            if (state == null) return;
+
+            // 若当前未打开任何动作时间轴，全屏渲染主菜单
+            if (state.currentTimeline == null)
+            {
+                DrawMainMenu();
+                return;
+            }
+
             // 自动同步 Duration (只读机制)
-            if (Event.current.type == EventType.Layout && state != null && state.currentTimeline != null)
+            if (Event.current.type == EventType.Layout && state.currentTimeline != null)
             {
                 state.currentTimeline.RecalculateDuration();
             }
 
-            // 绘制工具栀
+            // 绘制工具栏
             DrawToolbar();
 
-            // 绘制主内容区埀
+            // 绘制主内容区域
             DrawMainContent();
         }
 
@@ -337,7 +344,84 @@ namespace ATEditor.Editor
         #region UI 绘制
 
         /// <summary>
-        /// 绘制工具栀
+        /// 绘制主菜单界面（正中央从上往下依次排布：新建、打开、设置）
+        /// </summary>
+        private void DrawMainMenu()
+        {
+            // 全屏深色背景填充，参考图1统一色系
+            Rect fullRect = new Rect(0, 0, position.width, position.height);
+            EditorGUI.DrawRect(fullRect, new Color(0.1607843f, 0.1607843f, 0.1607843f));
+
+            float menuWidth = 300f;
+            float menuHeight = 260f;
+            float startX = Mathf.Max(10f, (position.width - menuWidth) * 0.5f);
+            float startY = Mathf.Max(10f, (position.height - menuHeight) * 0.5f);
+
+            GUILayout.BeginArea(new Rect(startX, startY, menuWidth, menuHeight));
+            {
+                GUILayout.Space(10);
+
+                // 标题
+                GUIStyle titleStyle = new GUIStyle(EditorStyles.boldLabel)
+                {
+                    fontSize = 18,
+                    alignment = TextAnchor.MiddleCenter,
+                    normal = { textColor = new Color(0.9f, 0.9f, 0.9f, 1f) }
+                };
+                GUILayout.Label("ATEditor 动作时间轴", titleStyle);
+
+                GUILayout.Space(6);
+
+                // 工作区副标题
+                var ws = state?.ActiveWorkspace;
+                string wsText = ws != null ? $"当前工作区: {ws.Category} / {ws.DisplayName}" : "未配置工作区";
+                GUIStyle subStyle = new GUIStyle(EditorStyles.miniLabel)
+                {
+                    fontSize = 11,
+                    alignment = TextAnchor.MiddleCenter,
+                    normal = { textColor = new Color(0.6f, 0.6f, 0.6f, 1f) }
+                };
+                GUILayout.Label(wsText, subStyle);
+
+                GUILayout.Space(26);
+
+                // 统一菜单大按钮样式
+                GUIStyle menuBtnStyle = new GUIStyle("button")
+                {
+                    fontSize = 13,
+                    fontStyle = FontStyle.Bold,
+                    fixedHeight = 40,
+                    alignment = TextAnchor.MiddleCenter,
+                    margin = new RectOffset(0, 0, 4, 4)
+                };
+
+                // 按钮 1：新建
+                if (GUILayout.Button("＋  新 建", menuBtnStyle))
+                {
+                    CreateNewTimeline();
+                }
+
+                GUILayout.Space(8);
+
+                // 按钮 2：打开
+                if (GUILayout.Button("📂  打 开", menuBtnStyle))
+                {
+                    OpenTimelineDialog();
+                }
+
+                GUILayout.Space(8);
+
+                // 按钮 3：设置
+                if (GUILayout.Button("⚙  设 置", menuBtnStyle))
+                {
+                    OpenSettingsDialog();
+                }
+            }
+            GUILayout.EndArea();
+        }
+
+        /// <summary>
+        /// 绘制工具栏
         /// </summary>
         private void DrawToolbar()
         {
@@ -466,6 +550,184 @@ namespace ATEditor.Editor
             {
                 state.currentFilePath = null;
                 state.timeIndicator = 0f;
+            }
+        }
+
+        /// <summary>
+        /// 主菜单【新建】操作
+        /// </summary>
+        public void CreateNewTimeline()
+        {
+            ResetToBlankTimeline();
+            EnsureWorkspacePreviewTarget();
+            InitPreview();
+            if (state != null)
+            {
+                state.isStopped = true;
+                state.timeIndicator = 0f;
+            }
+            Stop();
+            events?.OnRepaintRequest?.Invoke();
+            Repaint();
+        }
+
+        /// <summary>
+        /// 主菜单【打开】操作
+        /// </summary>
+        public void OpenTimelineDialog()
+        {
+            toolbarView?.OpenImportDialog();
+        }
+
+        /// <summary>
+        /// 主菜单【设置】操作
+        /// </summary>
+        public void OpenSettingsDialog()
+        {
+            ATEditorSettingsWindow.Show(state, () => {
+                events?.OnRepaintRequest?.Invoke();
+            });
+        }
+
+        /// <summary>
+        /// 关闭当前时间轴并返回主菜单，带智能未保存修改检测
+        /// </summary>
+        /// <returns>是否成功关闭（若用户选择取消则返回 false）</returns>
+        public bool CloseCurrentTimeline()
+        {
+            if (state == null || state.currentTimeline == null)
+            {
+                return true;
+            }
+
+            // 情况 1：未保存在磁盘的新建资产 (currentFilePath 为空)
+            if (string.IsNullOrEmpty(state.currentFilePath))
+            {
+                // 提示动作资产未保存是否保存，可选项-保存/不保存/取消
+                int option = EditorUtility.DisplayDialogComplex(
+                    "动作资产未保存",
+                    "动作资产未保存，是否保存？",
+                    "保存",   // 0: 对应 [文件]-[导出]
+                    "取消",   // 1: 取消关闭
+                    "不保存"  // 2: 放弃并关闭
+                );
+
+                if (option == 1) // 取消
+                {
+                    return false;
+                }
+                else if (option == 0) // 保存 (对应[文件]-[导出])
+                {
+                    if (toolbarView != null && toolbarView.ExportDualDirect(out _, out _, out _))
+                    {
+                        // 导出成功，执行关闭
+                    }
+                    else
+                    {
+                        // 用户在保存文件面板中点击了取消，放弃关闭
+                        return false;
+                    }
+                }
+                // option == 2 -> 不保存，直接往下走关闭
+            }
+            // 情况 2：已有的资产 (!string.IsNullOrEmpty(state.currentFilePath))
+            else
+            {
+                // 检测是否有修改（是否与磁盘资产有区别）
+                if (HasUnsavedChanges())
+                {
+                    int option = EditorUtility.DisplayDialogComplex(
+                        "未保存的修改",
+                        "动作资产有未保存修改，是否保存？",
+                        "保存",   // 0: 对应 [文件]-[保存]
+                        "取消",   // 1: 取消关闭
+                        "不保存"  // 2: 放弃并关闭
+                    );
+
+                    if (option == 1) // 取消
+                    {
+                        return false;
+                    }
+                    else if (option == 0) // 保存 (对应[文件]-[保存])
+                    {
+                        toolbarView?.SaveCurrentTimeline();
+                    }
+                    // option == 2 -> 不保存，直接往下走关闭
+                }
+            }
+
+            // 执行实际关闭逻辑
+            ExecuteCloseTimeline();
+            return true;
+        }
+
+        private void ExecuteCloseTimeline()
+        {
+            Stop();
+            DisposePreview();
+
+            if (state != null)
+            {
+                state.ClearSelection();
+                state.currentTimeline = null;
+                state.currentFilePath = null;
+                state.isStopped = true;
+                state.timeIndicator = 0f;
+            }
+
+            SyncSelectionToInspector();
+            events?.OnRepaintRequest?.Invoke();
+            Repaint();
+        }
+
+        /// <summary>
+        /// 检测当前内存中的时间轴是否与磁盘文件内容存在差异
+        /// </summary>
+        public bool HasUnsavedChanges()
+        {
+            if (state == null || state.currentTimeline == null) return false;
+            if (string.IsNullOrEmpty(state.currentFilePath)) return true;
+
+            string jsonPath = state.currentFilePath;
+            if (jsonPath.EndsWith(".asset", System.StringComparison.OrdinalIgnoreCase))
+            {
+                var db = ATEditorWorkspaceDatabase.Instance;
+                var matchedWs = db.GetWorkspaceByAssetPath(jsonPath) ?? state.ActiveWorkspace;
+                string jsonDir;
+                if (matchedWs != null && !string.IsNullOrEmpty(matchedWs.FolderName))
+                {
+                    jsonDir = System.IO.Path.Combine(state.DefaultJsonDirectory, matchedWs.FolderName).Replace("\\", "/");
+                }
+                else
+                {
+                    jsonDir = state.GetActiveWorkspaceJsonDirectory();
+                }
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(jsonPath);
+                jsonPath = System.IO.Path.Combine(jsonDir, fileName + ".json").Replace("\\", "/");
+            }
+
+            if (!System.IO.File.Exists(jsonPath))
+            {
+                return true;
+            }
+
+            try
+            {
+                SerializationUtility.RefreshAllGuids(state.currentTimeline);
+                string memJson = JsonUtility.ToJson(state.currentTimeline, false);
+
+                string diskRaw = System.IO.File.ReadAllText(jsonPath);
+                var tempTimeline = ScriptableObject.CreateInstance<ActionTimeline>();
+                JsonUtility.FromJsonOverwrite(diskRaw, tempTimeline);
+                SerializationUtility.RefreshAllGuids(tempTimeline);
+                string diskJson = JsonUtility.ToJson(tempTimeline, false);
+                DestroyImmediate(tempTimeline);
+
+                return memJson != diskJson;
+            }
+            catch
+            {
+                return EditorUtility.IsDirty(state.currentTimeline);
             }
         }
 

@@ -146,8 +146,8 @@ MonoBehaviour:
         isCollapsed: 0
         isEnabled: 1
         clips:
-        - rid: 4681868080418914431
         - rid: 4681868080418914432
+        - rid: 6293807214145045176
     - rid: 4681868080418914422
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -289,26 +289,14 @@ MonoBehaviour:
         animStartOffsetMode: 0
         animStartOffsetSeconds: 0
         animStartOffsetNormalized: 0
-    - rid: 4681868080418914431
-      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        clipId: c5a41784-dc4a-4c2d-b4e2-787ca2c922ba
-        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
-        isEnabled: 1
-        startTime: 0.7666669
-        duration: 0.23333332
-        blendInDuration: 0
-        blendOutDuration: 0
-        routewindow:
-          rid: 6379258143149917085
     - rid: 4681868080418914432
       type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
       data:
         clipId: c1b6a843-422d-4d08-8166-43406938b52b
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.0000002
-        duration: 5.0333333
+        startTime: 1
+        duration: 5.033334
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -343,8 +331,8 @@ MonoBehaviour:
         clipId: a3a73aa8-3cb0-4a11-9b18-b735be4e46bf
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.7666669
-        duration: 5.266667
+        startTime: 1
+        duration: 5.033334
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -378,6 +366,22 @@ MonoBehaviour:
         rotationMode: 1
         updateFrequency: 2
         localRotationOffset: {x: 0, y: 0, z: 0}
+    - rid: 6293807214145045176
+      type: {class: RouteWindowClip, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        clipId: 6b5fa9e7-7864-4d04-be62-ba4d8351fddc
+        clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
+        isEnabled: 1
+        startTime: 0.8
+        duration: 0.2
+        blendInDuration: 0
+        blendOutDuration: 0
+        routewindow:
+          rid: 6293807214145045178
+    - rid: 6293807214145045178
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer1
     - rid: 6379258143149917081
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -394,10 +398,6 @@ MonoBehaviour:
       type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
       data:
         Tag: BackSwing1
-    - rid: 6379258143149917085
-      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Buffer1
     - rid: 6379258164158660686
       type: {class: RouteWindowTrack, ns: ATEditor, asm: Assembly-CSharp}
       data:
@@ -417,8 +417,8 @@ MonoBehaviour:
         clipId: 94becd79-497f-487f-b100-4293e13eb13e
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.7666669
-        duration: 5.266667
+        startTime: 1
+        duration: 5.033334
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:

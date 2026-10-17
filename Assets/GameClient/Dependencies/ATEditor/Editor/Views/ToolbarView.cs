@@ -80,25 +80,14 @@ namespace ATEditor.Editor
             // 角色工作区选择器
             DrawWorkspaceSelector();
 
+            // 弹性留白，使资产标题居中
             GUILayout.FlexibleSpace();
 
-            // 视口控制 (右侧) - 文件名 Toggle + 缩放复原按钮
-            string displayName;
-            if (state.currentTimeline == null)
-            {
-                displayName = "未打开动作";
-            }
-            else
-            {
-                displayName = string.IsNullOrEmpty(state.currentFilePath) ? "未保存" : System.IO.Path.GetFileName(state.currentFilePath);
-            }
-            bool isSelected = GUILayout.Toggle(state.isTimelineSelected, displayName, RoundedToggleStyle, GUILayout.Width(120));
-            if (isSelected && !state.isTimelineSelected)
-            {
-                window.SelectTimeline();
-            }
-            
-            GUILayout.Space(4);
+            // 视口控制 (中间居中) - 资产名称按钮（无边框，文字加粗，动态宽度，带 hover 与选中反馈）
+            DrawAssetTitleButton();
+
+            // 弹性留白
+            GUILayout.FlexibleSpace();
 
             // 缩放复原按钮保持原有样式（用户要求不改圆角）
             if (GUILayout.Button($"{Lan.Zoom}: {state.zoom:F0}px/s", EditorStyles.toolbarButton, GUILayout.Width(100)))
@@ -112,7 +101,66 @@ namespace ATEditor.Editor
         }
 
         /// <summary>
-        /// 绘制归一化文件菜单下拉按钮（包含：导入、导出/另存、保存、设置）
+        /// 绘制居中无边框加粗资产名称按钮（动态宽度，支持 Hover 和选中状态反馈）
+        /// </summary>
+        private void DrawAssetTitleButton()
+        {
+            string displayName;
+            if (state.currentTimeline == null)
+            {
+                displayName = "未打开动作";
+            }
+            else
+            {
+                displayName = string.IsNullOrEmpty(state.currentFilePath) 
+                    ? (string.IsNullOrEmpty(state.currentTimeline.name) ? "未保存" : state.currentTimeline.name) 
+                    : System.IO.Path.GetFileName(state.currentFilePath);
+            }
+
+            GUIContent content = new GUIContent(displayName);
+            GUIStyle labelStyle = new GUIStyle(EditorStyles.boldLabel)
+            {
+                fontSize = 12,
+                alignment = TextAnchor.MiddleCenter,
+                padding = new RectOffset(10, 10, 0, 0)
+            };
+
+            Vector2 textSize = labelStyle.CalcSize(content);
+            float btnWidth = Mathf.Max(80f, textSize.x + 20f);
+            float btnHeight = 20f;
+
+            Rect rect = GUILayoutUtility.GetRect(btnWidth, btnHeight, GUILayout.ExpandWidth(false));
+
+            bool isHover = rect.Contains(Event.current.mousePosition);
+            bool isSelected = state.isTimelineSelected;
+
+            // 绘制底色反馈（无边框）：
+            // 选中状态：深蓝胶囊高亮底色
+            // Hover 状态：微弱提亮底色
+            // 默认状态：完全无边框透明
+            if (isSelected)
+            {
+                EditorGUI.DrawRect(rect, new Color(0.22f, 0.42f, 0.68f, 0.95f));
+            }
+            else if (isHover)
+            {
+                EditorGUI.DrawRect(rect, new Color(0.28f, 0.28f, 0.28f, 0.75f));
+            }
+
+            // 绘制加粗文字
+            labelStyle.normal.textColor = isSelected ? Color.white : (isHover ? Color.white : new Color(0.85f, 0.85f, 0.85f, 0.95f));
+            GUI.Label(rect, content, labelStyle);
+
+            // 处理点击事件
+            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition) && Event.current.button == 0)
+            {
+                window.SelectTimeline();
+                Event.current.Use();
+            }
+        }
+
+        /// <summary>
+        /// 绘制归一化文件菜单下拉按钮（包含：导入、导出/另存、保存、关闭、设置）
         /// </summary>
         private void DrawFileMenuDropdown()
         {
@@ -124,6 +172,8 @@ namespace ATEditor.Editor
                 menu.AddItem(new GUIContent("导入..."), false, OnImport);
                 menu.AddItem(new GUIContent("导出..."), false, OnExportDual);
                 menu.AddItem(new GUIContent(Lan.Save), false, OnSaveDual);
+                menu.AddSeparator("");
+                menu.AddItem(new GUIContent("关闭"), false, OnClose);
                 menu.AddSeparator("");
                 menu.AddItem(new GUIContent(Lan.Settings + "..."), false, OnSettings);
                 menu.ShowAsContext();
@@ -256,12 +306,37 @@ namespace ATEditor.Editor
             }, state.currentFilePath);
         }
 
+        private void OnClose()
+        {
+            window.CloseCurrentTimeline();
+        }
+
+        public void OpenImportDialog()
+        {
+            OnImport();
+        }
+
         /// <summary>
         /// 纯粹导出动作副本到指定文件（不切换工作区、不改变当前编辑文件引用、不改变当前动作名称）
         /// </summary>
         private void OnExportDual()
         {
-            if (state.currentTimeline == null) return;
+            if (ExportDualDirect(out string selectedJsonDir, out string targetAssetDir, out string fileName))
+            {
+                EditorUtility.DisplayDialog("导出完成", $"动作已成功导出副本：\nJSON: {selectedJsonDir}/{fileName}.json\nSO: {targetAssetDir}/{fileName}.asset\n\n当前编辑器继续保持编辑原有动作。", "确定");
+            }
+        }
+
+        /// <summary>
+        /// 执行直接导出，返回是否成功导出文件
+        /// </summary>
+        public bool ExportDualDirect(out string selectedJsonDir, out string targetAssetDir, out string fileName)
+        {
+            selectedJsonDir = string.Empty;
+            targetAssetDir = string.Empty;
+            fileName = string.Empty;
+
+            if (state.currentTimeline == null) return false;
             
             string targetJsonDir = state.GetActiveWorkspaceJsonDirectory();
             if (!System.IO.Directory.Exists(targetJsonDir)) System.IO.Directory.CreateDirectory(targetJsonDir);
@@ -271,14 +346,13 @@ namespace ATEditor.Editor
             
             if (!string.IsNullOrEmpty(path))
             {
-                string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
-                string selectedJsonDir = System.IO.Path.GetDirectoryName(path).Replace("\\", "/");
+                fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+                selectedJsonDir = System.IO.Path.GetDirectoryName(path).Replace("\\", "/");
 
                 // 根据导出的目标路径推导其对应的 SO 目录
                 var db = ATEditorWorkspaceDatabase.Instance;
                 var matchedWs = db.GetWorkspaceByAssetPath(path);
 
-                string targetAssetDir;
                 if (matchedWs != null && !string.IsNullOrEmpty(matchedWs.FolderName))
                 {
                     targetAssetDir = System.IO.Path.Combine(state.DefaultAssetDirectory, matchedWs.FolderName).Replace("\\", "/");
@@ -294,9 +368,9 @@ namespace ATEditor.Editor
                 // 纯副本导出：使用当前 timeline 数据写出文件，但不修改当前正在编辑的文件引用与工作区
                 SerializationUtility.SaveDual(state.currentTimeline, selectedJsonDir, targetAssetDir, fileName);
                 AssetDatabase.Refresh();
-                
-                EditorUtility.DisplayDialog("导出完成", $"动作已成功导出副本：\nJSON: {selectedJsonDir}/{fileName}.json\nSO: {targetAssetDir}/{fileName}.asset\n\n当前编辑器继续保持编辑原有动作。", "确定");
+                return true;
             }
+            return false;
         }
 
         public void SaveCurrentTimeline()

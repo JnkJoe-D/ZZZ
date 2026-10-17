@@ -148,6 +148,7 @@ namespace Game.App
 
             Game.GamePlay.TeamManager.Instance.Initialize();
             Game.GamePlay.MonsterManager.Instance.Initialize();
+            Game.UI.MonsterStatusUIManager.Instance.Initialize();
 
             // 自动挂载并初始化波次管理器 (以便测试 F1 刷怪)
             var waveManager = gameObject.GetComponent<Game.GamePlay.WaveManager>();
@@ -163,6 +164,7 @@ namespace Game.App
 
         private void OnDestroy()
         {
+            Game.UI.MonsterStatusUIManager.Instance?.Shutdown();
             Game.Presentation.VFX.CrossFlash.CrossFlashManager.Instance?.Shutdown();
             Game.GamePlay.MonsterManager.Instance?.Shutdown();
             Game.GamePlay.TeamManager.Instance?.Shutdown();

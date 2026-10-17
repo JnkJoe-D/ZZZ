@@ -31,6 +31,9 @@ namespace ATEditor.Editor
         /// <summary> 顶部/标题栏的通用高度 </summary>
         public const float HEADER_HEIGHT = 30f;
 
+        /// <summary> 轨道列表与时间轴底部的弹性滚动留白高度，保证即使分组填满也有充裕空白区进行右键操作 </summary>
+        public const float LIST_FOOTER_SPACING = 150f;
+
         // ==================== 视图设置常量 ====================
         
         public const float MIN_ZOOM = 10f;

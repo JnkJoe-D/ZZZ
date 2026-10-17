@@ -12,6 +12,7 @@ namespace ATEditor
     {
         // 使用抽象接口替代具体实现
         private IAnimationHandler animHandler;
+        private float PlaybackSpeed => clip.playbackSpeed * context.PresentationPlaySpeed;
         
         public override void OnEnable()
         {
@@ -44,10 +45,10 @@ namespace ATEditor
                 float timelineOffset = context.CurrentTime - clip.StartTime;
                 // animOffset：动画内部起始偏移（秒），由片段配置决定
                 float animOffset = clip.GetResolvedAnimStartOffsetSeconds();
-                animHandler.PlayAnimation(clip.animationClip, (int)clip.layer, actualBlendIn, clip.playbackSpeed * context.PresentationPlaySpeed, animOffset + timelineOffset);
+                animHandler.PlayAnimation(clip.animationClip, (int)clip.layer, actualBlendIn, PlaybackSpeed, animOffset + timelineOffset);
             }
             //这里的update频率比monoupdate低，所以在onenter先同步一次播放速度，确保动画按预期速度开始播放
-            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.PresentationPlaySpeed);
+            animHandler?.SetLayerSpeed((int)clip.layer, PlaybackSpeed);
 
             if (context != null)
             {
@@ -58,7 +59,7 @@ namespace ATEditor
 
         private void HandlePresentationSpeedChanged(float newSpeed)
         {
-            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * newSpeed);
+            animHandler?.SetLayerSpeed((int)clip.layer, PlaybackSpeed);
         }
 
         public override void OnSeek(float targetTime)
@@ -74,7 +75,7 @@ namespace ATEditor
         public override void OnUpdate(float currentTime, float deltaTime)
         {
             // 仅控制播放状态和速度
-            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.PresentationPlaySpeed); // 叠加表现层播放速度
+            animHandler?.SetLayerSpeed((int)clip.layer, PlaybackSpeed);
         }
         public override void OnPause()
         {
@@ -82,7 +83,7 @@ namespace ATEditor
         }
         public override void OnResume()
         {
-            animHandler?.SetLayerSpeed((int)clip.layer, clip.playbackSpeed * context.PresentationPlaySpeed);
+            animHandler?.SetLayerSpeed((int)clip.layer, PlaybackSpeed);
         }
         public override void OnExit()
         {

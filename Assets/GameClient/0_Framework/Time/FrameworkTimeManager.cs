@@ -78,10 +78,11 @@ namespace Game.Framework
             UIClock = new TimeClock("UI", RootClock);
         }
 
-        public virtual void Update()
-        {
-            float unscaledDelta = Time.unscaledDeltaTime;
+        public virtual void Update() => TickFrame(Time.unscaledDeltaTime);
 
+        /// <summary>推进一个真实渲染帧；固定逻辑事件参数已是 Gameplay 域时间，不得再乘其祖先倍率。</summary>
+        public void TickFrame(float unscaledDelta)
+        {
             OnBeforeUpdate(unscaledDelta);
 
             // 1. UI 及渲染层帧更新（受 UIClock.EffectiveScale 影响）

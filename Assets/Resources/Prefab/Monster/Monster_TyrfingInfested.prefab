@@ -55,6 +55,37 @@ CapsuleCollider:
   m_Height: 1.6
   m_Direction: 1
   m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!1 &8562946616899849424
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2513733441330337364}
+  m_Layer: 6
+  m_Name: UIPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2513733441330337364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8562946616899849424}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.18, y: -0.85, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8993056055400522751}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8883202555525432340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -395,6 +426,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6820236385317400401}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: bbdd7cde32f1b904aae7542268cb541a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2513733441330337364}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bbdd7cde32f1b904aae7542268cb541a,
         type: 3}

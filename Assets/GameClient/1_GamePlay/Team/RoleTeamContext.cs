@@ -20,9 +20,10 @@ namespace Game.GamePlay
         public CinemachineVirtualCameraBase SharedVirtualCamera => sharedVirtualCamera;
         public RoleEntity ActiveRole => _activeRole;
 
-        public void Initialize(RoleTargetFinder.RoleTargetFinderCfg targetConfig = null, TargetLockerConfig lockerConfig = null)
+        public void Initialize(RoleTargetFinder.RoleTargetFinderCfg targetConfig = null, TargetLockerConfig lockerConfig = null,
+            IInputProvider inputProvider = null)
         {
-            ResolveInputProvider();
+            if (inputProvider == null) ResolveInputProvider(); else InputProvider = inputProvider;
             ResolveSharedVirtualCamera();
             _targetLocker = new TargetLocker(lockerConfig);
             _targetFinder = new RoleTargetFinder(targetConfig, _targetLocker);

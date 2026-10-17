@@ -15,4 +15,4 @@ MonoBehaviour:
   StunStart: {fileID: 11400000, guid: 039a6160b2a32504da5d7fe75073369a, type: 2}
   StunLoop: {fileID: 11400000, guid: 7a6f5d75684c88c43b062bf67e5876d2, type: 2}
   StunEnd: {fileID: 11400000, guid: 3ae929b2483cd54419f4651404e453a6, type: 2}
-  DefaultStunDuration: 5
+  DefaultStunDuration: 15

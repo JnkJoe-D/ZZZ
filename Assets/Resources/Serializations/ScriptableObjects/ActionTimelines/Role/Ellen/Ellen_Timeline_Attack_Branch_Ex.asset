@@ -41,7 +41,7 @@ MonoBehaviour:
     - rid: 4681868069782421661
   - groupId: e4fc75b3-17ce-4c0c-bfe6-9cca88d2053b
     groupName: "\u8F93\u5165"
-    isCollapsed: 1
+    isCollapsed: 0
     isEnabled: 1
     isLocked: 0
     tracks:
@@ -311,7 +311,7 @@ MonoBehaviour:
         clipId: c1b6a843-422d-4d08-8166-43406938b52b
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.99999976
+        startTime: 0.86666673
         duration: 0.4
         blendInDuration: 0
         blendOutDuration: 0
@@ -347,8 +347,8 @@ MonoBehaviour:
         clipId: a3a73aa8-3cb0-4a11-9b18-b735be4e46bf
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.5
-        duration: 6.266667
+        startTime: 0.86666673
+        duration: 5.9
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -570,7 +570,7 @@ MonoBehaviour:
         clipId: 494b0174-391d-492e-a524-5bb03f3cf018
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.69999975
+        startTime: 0.5666667
         duration: 0.3
         blendInDuration: 0
         blendOutDuration: 0
@@ -582,8 +582,8 @@ MonoBehaviour:
         clipId: b2b11640-30c8-4d8d-bece-39877adf77e0
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.99999976
-        duration: 5.766667
+        startTime: 0.86666673
+        duration: 5.8999996
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -619,8 +619,8 @@ MonoBehaviour:
         clipId: 76af7e45-0ee8-4086-ac6e-d69945db56b4
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.5
-        duration: 6.266667
+        startTime: 0.86666673
+        duration: 5.9
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:

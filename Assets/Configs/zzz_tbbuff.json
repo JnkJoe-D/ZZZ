@@ -46,5 +46,29 @@
         "param_str1": ""
       }
     ]
+  },
+  {
+    "id": 9002,
+    "name": "韧性加成",
+    "desc": "",
+    "icon": "",
+    "tags": [],
+    "lifetime_type": 0,
+    "base_duration": -1,
+    "max_stack": 1,
+    "stack_behavior": 20,
+    "charge_count": 0,
+    "effects": [
+      {
+        "effect_type": 0,
+        "trigger_event": 0,
+        "attr_id": 290,
+        "param_int1": 0,
+        "param_float1": 5,
+        "param_float2": 0,
+        "param_bool1": false,
+        "param_str1": ""
+      }
+    ]
   }
 ]

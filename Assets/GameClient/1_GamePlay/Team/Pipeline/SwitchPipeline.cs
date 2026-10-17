@@ -33,10 +33,12 @@ namespace Game.GamePlay
         public void Execute(SwitchPipelineContext ctx)
         {
             if (ctx == null) return;
+            int version = ctx.Manager?.PartyVersion ?? 0;
 
             for (int i = 0; i < _pipes.Count; i++)
             {
                 var pipe = _pipes[i];
+                if (ctx.Manager != null && ctx.Manager.PartyVersion != version) ctx.Abort("Party was released or replaced during switch callback");
 
                 if (ctx.IsAborted)
                 {

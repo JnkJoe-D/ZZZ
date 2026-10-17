@@ -44,6 +44,22 @@ namespace Game.GamePlay
         public bool IsPlayer;
     }
 
+    /// <summary>
+    /// 怪物生成出池事件（供表现层同步血条/UI等）
+    /// </summary>
+    public struct MonsterSpawnedEvent : IGameEvent
+    {
+        public MonsterEntity Monster;
+    }
+
+    /// <summary>
+    /// 怪物回收退池事件（供表现层同步清理血条/UI等）
+    /// </summary>
+    public struct MonsterRecycledEvent : IGameEvent
+    {
+        public MonsterEntity Monster;
+    }
+
     // ============================================================
     // 玩家状态相关事件
     // ============================================================

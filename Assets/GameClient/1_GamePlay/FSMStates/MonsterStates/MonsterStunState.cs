@@ -32,6 +32,11 @@ namespace Game.GamePlay
 
             GLog.Info(LogTags.Combat, $"[MonsterStunState] 怪物 {Entity.name} 进入失衡瘫痪状态，时长: {_stunDuration:F2}s");
 
+            // 确保失衡值处于满额状态（进入时校准为 MaxDaze，以便开始单向线性衰减倒数）
+            var attrs = Entity.StatusModule?.Attributes;
+            float maxDaze = attrs != null && attrs.Has(AttributeId.MaxDaze) ? attrs.GetCurrent(AttributeId.MaxDaze) : 100f;
+            attrs?.SetValue(AttributeId.Daze, maxDaze);
+
             // 2. 播放失衡起手 StunStart (通过 OnInput 压指令)
             if (stunCfg?.StunStart != null)
             {
@@ -52,14 +57,26 @@ namespace Game.GamePlay
             }
 
             _elapsedTime += deltaTime;
-            if (_elapsedTime >= _stunDuration)
+
+            // 失衡值以 1/配置的失衡时间 速度线性衰减至 0
+            var attrs = Entity.StatusModule?.Attributes;
+            float maxDaze = attrs != null && attrs.Has(AttributeId.MaxDaze) ? attrs.GetCurrent(AttributeId.MaxDaze) : 100f;
+            float remainingRatio = _stunDuration > 0f ? Mathf.Clamp01(1f - (_elapsedTime / _stunDuration)) : 0f;
+            float currentDaze = maxDaze * remainingRatio;
+            attrs?.SetValue(AttributeId.Daze, currentDaze);
+
+            if (_elapsedTime >= _stunDuration || currentDaze <= 0f)
             {
                 _isRecovering = true;
-                GLog.Info(LogTags.Combat, $"[MonsterStunState] 怪物 {Entity.name} 失衡倒计时结束，播放 StunEnd");
+                attrs?.SetValue(AttributeId.Daze, 0f);
+                GLog.Info(LogTags.Combat, $"[MonsterStunState] 怪物 {Entity.name} 失衡槽归零，倒计时结束，播放 StunEnd");
 
                 if (_stunEndAction != null)
                 {
                     bool commandSent = SendCommand(_stunEndAction, onComplete: () =>
+                    {
+                        RecoverFromStun();
+                    }, onInterrupt: () =>
                     {
                         RecoverFromStun();
                     });
@@ -94,6 +111,7 @@ namespace Game.GamePlay
             _stunEndAction = null;
             _isRecovering = false;
             _elapsedTime = 0f;
+            Entity?.StatusModule?.Attributes?.SetValue(AttributeId.Daze, 0f);
         }
 
         public override void OnDestroy()

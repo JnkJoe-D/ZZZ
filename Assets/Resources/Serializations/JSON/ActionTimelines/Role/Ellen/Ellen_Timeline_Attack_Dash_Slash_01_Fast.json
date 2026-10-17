@@ -64,7 +64,7 @@
         {
             "groupId": "c049ddd2-da2f-47c7-939b-5c2ab38fc517",
             "groupName": "命中",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
@@ -272,7 +272,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "trackId": "6c372d50-4b7d-4af7-992f-9aff4e5fa659",
+                    "trackId": "c7e9545d-b874-448f-b517-eed07f5413d6",
                     "trackType": "CombatTrack",
                     "trackName": "战斗轨道",
                     "isMuted": false,
@@ -280,7 +280,11 @@
                     "isHidden": false,
                     "isCollapsed": false,
                     "isEnabled": true,
-                    "clips": []
+                    "clips": [
+                        {
+                            "rid": 1015
+                        }
+                    ]
                 }
             },
             {
@@ -301,7 +305,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1015
+                            "rid": 1016
                         }
                     ]
                 }
@@ -324,7 +328,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1017
                         }
                     ]
                 }
@@ -345,7 +349,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 36760
+                        "instanceID": 35516
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -383,7 +387,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1017
+                        "rid": 1018
                     }
                 }
             },
@@ -403,7 +407,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1018
+                        "rid": 1019
                     }
                 }
             },
@@ -423,7 +427,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1019
+                        "rid": 1020
                     }
                 }
             },
@@ -443,12 +447,113 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1020
+                        "rid": 1021
                     }
                 }
             },
             {
                 "rid": 1015,
+                "type": {
+                    "class": "HitClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "2d976e3d-97bb-4236-848c-91ca6add3c20",
+                    "clipName": "打击片段",
+                    "isEnabled": true,
+                    "startTime": 0.28333336114883425,
+                    "duration": 0.21666663885116578,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "hitBoxScope": {
+                        "shape": {
+                            "shapeType": 3,
+                            "size": {
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "radius": 3.0,
+                            "height": 2.0,
+                            "angle": 180.0,
+                            "innerRadius": 1.0
+                        },
+                        "bindPoint": 0,
+                        "customBoneName": "",
+                        "hitBoxFollowMode": 1,
+                        "positionOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "rotationOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "showHitBoxGizmos": true
+                    },
+                    "attackPolicy": {
+                        "detectFrequency": 0,
+                        "times": 1,
+                        "maxHitTargets": 0,
+                        "targetSortMode": 1,
+                        "hitDirectionMode": 0,
+                        "customHitDirection": {
+                            "x": 0.0,
+                            "y": 1.0
+                        },
+                        "hitLayerMask": {
+                            "serializedVersion": "2",
+                            "m_Bits": 192
+                        },
+                        "serializedHitLayerMask": 192,
+                        "isSelfImpacted": false,
+                        "detects": [
+                            {
+                                "hitMode": 0,
+                                "multiHitCount": 3,
+                                "multiHitDuration": 0.20000000298023225,
+                                "enableHitStop": true,
+                                "hitStopDuration": 0.05000000074505806,
+                                "hitStopScale": 0.0,
+                                "hitStunDuration": 0.30000001192092898,
+                                "hitVFXPrefab": {
+                                    "instanceID": 0
+                                },
+                                "hitVFXRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitVFXHeight": 1.0,
+                                "hitVFXPreviewOffsetXZ": {
+                                    "x": 0.0,
+                                    "y": 1.5
+                                },
+                                "hitVFXScale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "followTarget": true,
+                                "hitAudioClip": {
+                                    "instanceID": 0
+                                },
+                                "hitAudioRef": {
+                                    "guid": "",
+                                    "assetName": "",
+                                    "assetPath": ""
+                                },
+                                "hitEffectId": 1040000
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "rid": 1016,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -471,7 +576,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1017,
                 "type": {
                     "class": "RotationClip",
                     "ns": "ATEditor",
@@ -496,7 +601,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1018,
                 "type": {
                     "class": "BufferRouteWindow",
                     "ns": "ATEditor",
@@ -507,7 +612,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1019,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -518,7 +623,7 @@
                 }
             },
             {
-                "rid": 1019,
+                "rid": 1020,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -529,7 +634,7 @@
                 }
             },
             {
-                "rid": 1020,
+                "rid": 1021,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",

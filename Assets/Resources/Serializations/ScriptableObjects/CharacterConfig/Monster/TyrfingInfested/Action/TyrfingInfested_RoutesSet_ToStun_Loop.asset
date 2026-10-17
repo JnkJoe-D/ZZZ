@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: TyrfingInfested_RoutesSet_ToStun_Loop
+  m_EditorClassIdentifier: 
+  TargetScope: 4
+  Routes:
+  - Targets:
+    - rid: 6379258143149916799
+    Priority: 10
+    ArbitrationTiming: 0
+    TriggerStrategy:
+      rid: 6293807124541079554
+    ExtraConditionCombine: 0
+    ExtraConditions:
+    - rid: 6293807124541079558
+  references:
+    version: 2
+    RefIds:
+    - rid: 6293807124541079554
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 20
+        RequiredWindow:
+          rid: 6293807124541079555
+        ConditionCombine: 0
+        InputConditions: []
+    - rid: 6293807124541079555
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Auto1
+    - rid: 6293807124541079558
+      type: {class: IsStunCondition, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data: 
+    - rid: 6379258143149916799
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 11400000, guid: 7a6f5d75684c88c43b062bf67e5876d2, type: 2}
+        ValidateSkillRequirement: 1

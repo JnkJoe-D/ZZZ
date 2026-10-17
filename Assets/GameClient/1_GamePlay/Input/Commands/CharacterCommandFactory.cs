@@ -26,18 +26,66 @@ namespace Game.GamePlay
             };
         }
 
-        public static CharacterCommand CreateDirectAssetCommand(ActionConfigAsset actionAsset, float crossfadeOverride = -1f, float startTime = 0f, Action onComplete = null)
+        public static CharacterCommand CreateDirectAssetCommand(CharacterActionPlayInfo playInfo)
         {
+            if (playInfo == null) return null;
+
+            DirectAssetPayload payload;
+            if (playInfo is DirectAssetPayload directPayload)
+            {
+                payload = directPayload;
+            }
+            else
+            {
+                payload = new DirectAssetPayload
+                {
+                    ActionConfig = playInfo.ActionConfig,
+                    TransitionInfo = playInfo.TransitionInfo,
+                    EventInfo = playInfo.EventInfo,
+                    CommandId = playInfo.CommandId,
+                    RouteTag = playInfo.RouteTag,
+                    RouteSource = playInfo.RouteSource,
+                    SourcePayload = playInfo.SourcePayload
+                };
+            }
+
             return new CharacterCommand
             {
                 Id = ++_idCounter,
-                Payload = new DirectAssetPayload
-                {
-                    TargetAsset = actionAsset,
-                    CrossfadeOverride = crossfadeOverride,
-                    StartTime = startTime,
-                    OnComplete = onComplete
-                },
+                Payload = payload,
+                Timestamp = Time.time,
+                IsConsumed = false
+            };
+        }
+
+        public static CharacterCommand CreateDirectAssetCommand(ActionPlayInfo playInfo)
+        {
+            if (playInfo == null) return null;
+            if (playInfo is CharacterActionPlayInfo charPlayInfo)
+                return CreateDirectAssetCommand(charPlayInfo);
+
+            return CreateDirectAssetCommand(new CharacterActionPlayInfo
+            {
+                ActionConfig = playInfo.ActionConfig,
+                TransitionInfo = playInfo.TransitionInfo,
+                EventInfo = playInfo.EventInfo
+            });
+        }
+
+        public static CharacterCommand CreateDirectAssetCommand(
+            ActionConfigAsset actionAsset,
+            float crossfadeOverride = -1f,
+            float startTime = 0f,
+            Action onComplete = null,
+            Action onInterrupt = null,
+            Action onStart = null)
+        {
+            var payload = new DirectAssetPayload(actionAsset, crossfadeOverride, startTime, onComplete, onInterrupt, onStart);
+
+            return new CharacterCommand
+            {
+                Id = ++_idCounter,
+                Payload = payload,
                 Timestamp = Time.time,
                 IsConsumed = false
             };

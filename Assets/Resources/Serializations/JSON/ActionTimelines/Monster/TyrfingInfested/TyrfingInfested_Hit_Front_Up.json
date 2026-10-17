@@ -40,6 +40,9 @@
                 },
                 {
                     "rid": 1003
+                },
+                {
+                    "rid": 1004
                 }
             ]
         }
@@ -65,7 +68,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1004
+                            "rid": 1005
                         }
                     ],
                     "isMasterTrack": true,
@@ -99,7 +102,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1005
+                            "rid": 1006
                         }
                     ]
                 }
@@ -122,7 +125,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1006
+                            "rid": 1007
                         }
                     ]
                 }
@@ -145,13 +148,36 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1007
+                            "rid": 1008
                         }
                     ]
                 }
             },
             {
                 "rid": 1004,
+                "type": {
+                    "class": "RouteWindowTrack",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "trackId": "29e88826-010e-4c28-bbc9-622a4af80ef4",
+                    "trackType": "RouteWindowTrack",
+                    "trackName": "输入派生窗口轨道",
+                    "isMuted": false,
+                    "isLocked": false,
+                    "isHidden": false,
+                    "isCollapsed": false,
+                    "isEnabled": true,
+                    "clips": [
+                        {
+                            "rid": 1009
+                        }
+                    ]
+                }
+            },
+            {
+                "rid": 1005,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -166,7 +192,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 34428
+                        "instanceID": 34726
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -189,7 +215,7 @@
                 }
             },
             {
-                "rid": 1005,
+                "rid": 1006,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -212,7 +238,7 @@
                 }
             },
             {
-                "rid": 1006,
+                "rid": 1007,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -227,12 +253,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1008
+                        "rid": 1010
                     }
                 }
             },
             {
-                "rid": 1007,
+                "rid": 1008,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -247,12 +273,32 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1009
+                        "rid": 1011
                     }
                 }
             },
             {
-                "rid": 1008,
+                "rid": 1009,
+                "type": {
+                    "class": "RouteWindowClip",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "clipId": "36a700b2-604e-4665-a5db-8bff2f952e93",
+                    "clipName": "连招窗口片段",
+                    "isEnabled": true,
+                    "startTime": 0.0,
+                    "duration": 1.0,
+                    "blendInDuration": 0.0,
+                    "blendOutDuration": 0.0,
+                    "routewindow": {
+                        "rid": 1012
+                    }
+                }
+            },
+            {
+                "rid": 1010,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -263,7 +309,7 @@
                 }
             },
             {
-                "rid": 1009,
+                "rid": 1011,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -271,6 +317,17 @@
                 },
                 "data": {
                     "Tag": "Hit"
+                }
+            },
+            {
+                "rid": 1012,
+                "type": {
+                    "class": "AutoRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "Auto1"
                 }
             }
         ]

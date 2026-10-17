@@ -88,21 +88,18 @@
             "tracks": [
                 {
                     "rid": 1010
-                },
-                {
-                    "rid": 1011
                 }
             ]
         },
         {
             "groupId": "fe97c978-da0d-4d70-b973-9218b609c4bc",
             "groupName": "变换",
-            "isCollapsed": true,
+            "isCollapsed": false,
             "isEnabled": true,
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1012
+                    "rid": 1011
                 }
             ]
         },
@@ -114,7 +111,7 @@
             "isLocked": false,
             "tracks": [
                 {
-                    "rid": 1013
+                    "rid": 1012
                 }
             ]
         }
@@ -140,10 +137,10 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1014
+                            "rid": 1013
                         },
                         {
-                            "rid": 1015
+                            "rid": 1014
                         }
                     ],
                     "isMasterTrack": true,
@@ -177,7 +174,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1016
+                            "rid": 1015
                         }
                     ]
                 }
@@ -200,7 +197,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1017
+                            "rid": 1016
                         }
                     ]
                 }
@@ -261,13 +258,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
+                            "rid": 1017
+                        },
+                        {
                             "rid": 1018
                         },
                         {
                             "rid": 1019
-                        },
-                        {
-                            "rid": 1020
                         }
                     ]
                 }
@@ -290,7 +287,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1021
+                            "rid": 1020
                         }
                     ]
                 }
@@ -313,7 +310,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1022
+                            "rid": 1021
                         }
                     ]
                 }
@@ -336,7 +333,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1023
+                            "rid": 1022
                         }
                     ]
                 }
@@ -359,7 +356,7 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1024
+                            "rid": 1023
                         }
                     ]
                 }
@@ -382,39 +379,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1025
+                            "rid": 1024
                         }
                     ]
                 }
             },
             {
                 "rid": 1011,
-                "type": {
-                    "class": "TransformTrack",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "trackId": "46bd2e96-a84e-492a-9b1b-9d0fa476b7cd",
-                    "trackType": "TransformTrack",
-                    "trackName": "变换轨道",
-                    "isMuted": false,
-                    "isLocked": false,
-                    "isHidden": false,
-                    "isCollapsed": false,
-                    "isEnabled": false,
-                    "clips": [
-                        {
-                            "rid": 1026
-                        },
-                        {
-                            "rid": 1027
-                        }
-                    ]
-                }
-            },
-            {
-                "rid": 1012,
                 "type": {
                     "class": "TransformTrack",
                     "ns": "ATEditor",
@@ -431,13 +402,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1028
+                            "rid": 1025
                         }
                     ]
                 }
             },
             {
-                "rid": 1013,
+                "rid": 1012,
                 "type": {
                     "class": "CameraTrack",
                     "ns": "ATEditor",
@@ -454,13 +425,13 @@
                     "isEnabled": true,
                     "clips": [
                         {
-                            "rid": 1029
+                            "rid": 1026
                         }
                     ]
                 }
             },
             {
-                "rid": 1014,
+                "rid": 1013,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -473,9 +444,9 @@
                     "startTime": 0.0,
                     "duration": 1.683333396911621,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.16666698455810547,
+                    "blendOutDuration": 0.16666698455810548,
                     "animationClip": {
-                        "instanceID": 36060
+                        "instanceID": 35478
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -498,7 +469,7 @@
                 }
             },
             {
-                "rid": 1015,
+                "rid": 1014,
                 "type": {
                     "class": "AnimationClip",
                     "ns": "ATEditor",
@@ -508,12 +479,12 @@
                     "clipId": "910612cf-7505-42fc-99d1-bfdb9921993f",
                     "clipName": "动画片段",
                     "isEnabled": true,
-                    "startTime": 1.5166664123535156,
+                    "startTime": 1.5166664123535157,
                     "duration": 4.816667079925537,
-                    "blendInDuration": 0.16666698455810547,
+                    "blendInDuration": 0.16666698455810548,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 36062
+                        "instanceID": 35480
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -536,7 +507,7 @@
                 }
             },
             {
-                "rid": 1016,
+                "rid": 1015,
                 "type": {
                     "class": "VFXClip",
                     "ns": "ATEditor",
@@ -551,7 +522,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "effectPrefab": {
-                        "instanceID": 34590
+                        "instanceID": 34918
                     },
                     "vfxRef": {
                         "guid": "",
@@ -562,13 +533,13 @@
                     "customBoneName": "",
                     "followTarget": true,
                     "positionOffset": {
-                        "x": -0.17455250024795532,
+                        "x": -0.17455250024795533,
                         "y": 0.8265479803085327,
                         "z": 0.1559898853302002
                     },
                     "rotationOffset": {
                         "x": 332.8506774902344,
-                        "y": 171.62088012695312,
+                        "y": 171.62088012695313,
                         "z": 296.1520080566406
                     },
                     "scale": {
@@ -581,7 +552,7 @@
                 }
             },
             {
-                "rid": 1017,
+                "rid": 1016,
                 "type": {
                     "class": "HitClip",
                     "ns": "ATEditor",
@@ -592,7 +563,7 @@
                     "clipName": "打击片段",
                     "isEnabled": true,
                     "startTime": 0.7166666388511658,
-                    "duration": 0.20000004768371582,
+                    "duration": 0.20000004768371583,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "hitBoxScope": {
@@ -643,11 +614,11 @@
                             {
                                 "hitMode": 0,
                                 "multiHitCount": 3,
-                                "multiHitDuration": 0.20000000298023224,
+                                "multiHitDuration": 0.20000000298023225,
                                 "enableHitStop": true,
                                 "hitStopDuration": 0.05000000074505806,
                                 "hitStopScale": 0.0,
-                                "hitStunDuration": 0.30000001192092896,
+                                "hitStunDuration": 0.30000001192092898,
                                 "hitVFXPrefab": {
                                     "instanceID": 0
                                 },
@@ -682,7 +653,7 @@
                 }
             },
             {
-                "rid": 1018,
+                "rid": 1017,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -693,16 +664,16 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.9000000357627869,
-                    "duration": 0.18333333730697632,
+                    "duration": 0.18333333730697633,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1030
+                        "rid": 1027
                     }
                 }
             },
             {
-                "rid": 1019,
+                "rid": 1018,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -717,12 +688,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1031
+                        "rid": 1028
                     }
                 }
             },
             {
-                "rid": 1020,
+                "rid": 1019,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -737,12 +708,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1032
+                        "rid": 1029
                     }
                 }
             },
             {
-                "rid": 1021,
+                "rid": 1020,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -757,12 +728,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1033
+                        "rid": 1030
                     }
                 }
             },
             {
-                "rid": 1022,
+                "rid": 1021,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -773,16 +744,16 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 6.3333330154418945,
+                    "duration": 6.3333330154418949,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1034
+                        "rid": 1031
                     }
                 }
             },
             {
-                "rid": 1023,
+                "rid": 1022,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -797,12 +768,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1035
+                        "rid": 1032
                     }
                 }
             },
             {
-                "rid": 1024,
+                "rid": 1023,
                 "type": {
                     "class": "RouteWindowClip",
                     "ns": "ATEditor",
@@ -817,12 +788,12 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
-                        "rid": 1036
+                        "rid": 1033
                     }
                 }
             },
             {
-                "rid": 1025,
+                "rid": 1024,
                 "type": {
                     "class": "MotionFilterClip",
                     "ns": "ATEditor",
@@ -845,107 +816,7 @@
                 }
             },
             {
-                "rid": 1026,
-                "type": {
-                    "class": "MovementClip",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "dc264e7a-46f7-4ee3-890d-9fb33a477c0f",
-                    "clipName": "移动片段",
-                    "isEnabled": true,
-                    "startTime": 0.19999989867210388,
-                    "duration": 0.21666677296161652,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "referenceDestination": 0,
-                    "referenceCoordinate": 0,
-                    "targetPosition": {
-                        "x": 0.0,
-                        "y": 6.0,
-                        "z": 0.0
-                    },
-                    "targetPositionEnum": 0,
-                    "targetBaseDirection": 0,
-                    "targetAnchor": 1,
-                    "selfAnchor": 1,
-                    "offsetRadius": 0.0,
-                    "angleOffset": 0.0,
-                    "displacementType": 1,
-                    "movementCurve": 3,
-                    "enablePositionValidation": false,
-                    "candidatePositions": [],
-                    "enableSmartRadialFallback": true,
-                    "fallbackAngleStep": 30.0,
-                    "maxFallbackAngle": 180.0,
-                    "obstacleLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 1
-                    },
-                    "groundLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 1
-                    },
-                    "groundCheckDistance": 3.0,
-                    "requireGrounded": true,
-                    "faceTargetOnArrival": true,
-                    "serializedObstacleLayers": 1,
-                    "serializedGroundLayers": 1
-                }
-            },
-            {
-                "rid": 1027,
-                "type": {
-                    "class": "MovementClip",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "clipId": "6a5daa03-4295-47fb-9d03-b9f50120143d",
-                    "clipName": "移动片段",
-                    "isEnabled": true,
-                    "startTime": 0.6166666746139526,
-                    "duration": 0.05000000074505806,
-                    "blendInDuration": 0.0,
-                    "blendOutDuration": 0.0,
-                    "referenceDestination": 0,
-                    "referenceCoordinate": 0,
-                    "targetPosition": {
-                        "x": 0.0,
-                        "y": -6.0,
-                        "z": 0.0
-                    },
-                    "targetPositionEnum": 0,
-                    "targetBaseDirection": 0,
-                    "targetAnchor": 1,
-                    "selfAnchor": 1,
-                    "offsetRadius": 0.0,
-                    "angleOffset": 0.0,
-                    "displacementType": 1,
-                    "movementCurve": 0,
-                    "enablePositionValidation": false,
-                    "candidatePositions": [],
-                    "enableSmartRadialFallback": true,
-                    "fallbackAngleStep": 30.0,
-                    "maxFallbackAngle": 180.0,
-                    "obstacleLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 1
-                    },
-                    "groundLayers": {
-                        "serializedVersion": "2",
-                        "m_Bits": 1
-                    },
-                    "groundCheckDistance": 3.0,
-                    "requireGrounded": true,
-                    "faceTargetOnArrival": true,
-                    "serializedObstacleLayers": 1,
-                    "serializedGroundLayers": 1
-                }
-            },
-            {
-                "rid": 1028,
+                "rid": 1025,
                 "type": {
                     "class": "RotationClip",
                     "ns": "ATEditor",
@@ -956,10 +827,10 @@
                     "clipName": "旋转片段片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.20000000298023224,
+                    "duration": 0.20000000298023225,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
-                    "referenceDirection": 4,
+                    "referenceDirection": 2,
                     "rotationMode": 1,
                     "updateFrequency": 2,
                     "localRotationOffset": {
@@ -970,7 +841,7 @@
                 }
             },
             {
-                "rid": 1029,
+                "rid": 1026,
                 "type": {
                     "class": "CameraTargetClip",
                     "ns": "ATEditor",
@@ -980,10 +851,10 @@
                     "clipId": "d194a6ec-285a-437a-90d6-0f7d59b81fd6",
                     "clipName": "相机目标跟随片段",
                     "isEnabled": true,
-                    "startTime": 0.20000000298023224,
-                    "duration": 0.46666669845581055,
+                    "startTime": 0.20000000298023225,
+                    "duration": 0.46666669845581057,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.12666667997837067,
+                    "blendOutDuration": 0.12666667997837068,
                     "targetScope": 2,
                     "bindPoint": 5,
                     "customBoneName": "",
@@ -1060,11 +931,11 @@
                     "smoothTime": 0.07999999821186066,
                     "restoreOnExit": true,
                     "restoreOnStop": true,
-                    "interruptRestoreDuration": 0.20000000298023224
+                    "interruptRestoreDuration": 0.20000000298023225
                 }
             },
             {
-                "rid": 1030,
+                "rid": 1027,
                 "type": {
                     "class": "BufferRouteWindow",
                     "ns": "ATEditor",
@@ -1075,7 +946,7 @@
                 }
             },
             {
-                "rid": 1031,
+                "rid": 1028,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -1086,7 +957,7 @@
                 }
             },
             {
-                "rid": 1032,
+                "rid": 1029,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -1097,7 +968,7 @@
                 }
             },
             {
-                "rid": 1033,
+                "rid": 1030,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -1108,7 +979,7 @@
                 }
             },
             {
-                "rid": 1034,
+                "rid": 1031,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -1119,7 +990,7 @@
                 }
             },
             {
-                "rid": 1035,
+                "rid": 1032,
                 "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
@@ -1130,7 +1001,7 @@
                 }
             },
             {
-                "rid": 1036,
+                "rid": 1033,
                 "type": {
                     "class": "AutoRouteWindow",
                     "ns": "ATEditor",

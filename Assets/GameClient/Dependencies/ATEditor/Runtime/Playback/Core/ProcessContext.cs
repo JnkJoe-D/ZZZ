@@ -43,7 +43,14 @@ namespace ATEditor
         /// 可选扩展数据（外部注入业务相关对象）
         /// </summary>
         public object UserData { get; set; }
+        /// <summary>本次播放的请求元信息；与宿主 UserData 分离，在 Process 初始化前注入。</summary>
+        public object PlaybackMetadata { get; internal set; }
+        /// <summary>一次播放的身份；由 Runner 分配，不依赖可复用的动作 ID。</summary>
+        public long PlaybackId { get; internal set; }
+        /// <summary>重建播放位置时禁止生成战斗观察；与零 dt 的初次进入不同。</summary>
+        public bool IsSeeking { get; internal set; }
         private float _presentationPlaySpeed = 1f;
+        private bool _presentationPaused;
         /// <summary>
         /// 表现层播放速度变更事件（供动画、特效等需要即时响应顿帧/慢动作的表现层 Process 订阅）
         /// </summary>
@@ -62,6 +69,12 @@ namespace ATEditor
             }
         }
         public float CurrentTime { get; set; } = 0f; // 当前时间轴时间
+        public void SetPresentationPlayback(float scale, bool paused)
+        {
+            bool pauseChanged = _presentationPaused != paused;
+            _presentationPaused = paused;
+            PresentationPlaySpeed = scale;
+        }
         
         /// <summary>
         /// 标识当前的执行上下文是否正处于被打断清理状态
@@ -326,6 +339,7 @@ namespace ATEditor
             _componentCache.Clear();
             _layerMaskStates.Clear();
             Flags.Clear();
+            PlaybackMetadata = null;
         }
     }
 }

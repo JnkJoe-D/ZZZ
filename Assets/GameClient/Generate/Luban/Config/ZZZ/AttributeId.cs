@@ -135,7 +135,7 @@ namespace cfg.ZZZ
         /// <summary>
         /// 基础抗打断等级
         /// </summary>
-        BaseResilience = 290,
+        Resilience = 290,
         /// <summary>
         /// 支援点数
         /// </summary>

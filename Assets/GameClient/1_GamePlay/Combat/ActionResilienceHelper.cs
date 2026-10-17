@@ -49,29 +49,27 @@ namespace Game.GamePlay
 
         /// <summary>
         /// 计算实体的当前实时总抗打断韧性：
-        /// TotalResilience = BaseResilience (属性基础值) + BuffResilience (属性附加值) + ActionResilienceBonus (当前出招动作配表加成)
+        /// TotalResilience = Resilience (属性最终值，含基础值与 Buff 加成) + ActionResilienceBonus (当前出招动作配表加成)
         /// </summary>
         public static int GetTotalResilience(CharacterEntity victim)
         {
             if (victim == null) return 0;
 
-            float baseResilience = 0f;
-            float buffBonus = 0f;
+            float attrResilience = 0f;
 
             if (victim.StatusModule?.Attributes != null)
             {
-                var resAttr = victim.StatusModule.Attributes.Get(AttributeId.BaseResilience);
+                var resAttr = victim.StatusModule.Attributes.Get(AttributeId.Resilience);
                 if (resAttr != null)
                 {
-                    baseResilience = resAttr.BaseValue;
-                    buffBonus = Mathf.Max(0f, resAttr.FinalValue - resAttr.BaseValue);
+                    attrResilience = resAttr.FinalValue;
                 }
             }
 
             var actionRes = GetCurrentActionResilience(victim);
             float actionBonus = actionRes != null ? actionRes.ResilienceBonus : 0f;
 
-            return Mathf.Max(0, Mathf.RoundToInt(baseResilience + buffBonus + actionBonus));
+            return Mathf.Max(0, Mathf.RoundToInt(attrResilience + actionBonus));
         }
     }
 }

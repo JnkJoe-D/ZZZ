@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -19,11 +18,12 @@ namespace GameClient.Tests.Editor
     {
         private SharedWorkspaceDefinition _sharedWs;
         private WorkbenchWorkspaceConfig _wsConfig;
+        private string _testAssetRoot;
 
         [SetUp]
         public void SetUp()
         {
-            CleanupTestAssets();
+            _testAssetRoot = $"Assets/__ValidationTemp_WorkbenchPhase6_{System.Guid.NewGuid():N}";
 
             _sharedWs = new SharedWorkspaceDefinition
             {
@@ -36,7 +36,7 @@ namespace GameClient.Tests.Editor
 
             _wsConfig = new WorkbenchWorkspaceConfig
             {
-                ActionConfigRoot = "Assets/Resources/Serializations/ScriptableObjects/CharacterConfig",
+                ActionConfigRoot = _testAssetRoot,
                 TimelineJsonRoot = "Assets/GameClient/TimelineRoot/Json",
                 TimelineAssetRoot = "Assets/GameClient/TimelineRoot/Assets",
                 NamingTemplate = "{RoleName}_Action_{ActionName}",
@@ -50,13 +50,16 @@ namespace GameClient.Tests.Editor
             CleanupTestAssets();
         }
 
-        private static void CleanupTestAssets()
+        private void CleanupTestAssets()
         {
-            string testAssetPath = "Assets/Resources/Serializations/ScriptableObjects/CharacterConfig/Role/Ellen/Action/Ellen_Action_Attack_NewSpecial.asset";
-            if (File.Exists(testAssetPath))
+            if (string.IsNullOrEmpty(_testAssetRoot) ||
+                !_testAssetRoot.StartsWith("Assets/__ValidationTemp_WorkbenchPhase6_", System.StringComparison.Ordinal))
             {
-                AssetDatabase.DeleteAsset(testAssetPath);
+                return;
             }
+
+            AssetDatabase.DeleteAsset(_testAssetRoot);
+            _testAssetRoot = null;
         }
 
         /// <summary>

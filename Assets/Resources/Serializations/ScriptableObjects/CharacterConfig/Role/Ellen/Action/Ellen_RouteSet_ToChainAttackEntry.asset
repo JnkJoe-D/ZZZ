@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dbc65d716c54479ad3f5268d89ffc, type: 3}
+  m_Name: Ellen_RouteSet_ToChainAttackEntry
+  m_EditorClassIdentifier: 
+  TargetScope: 2
+  Routes:
+  - Targets:
+    - rid: 6293807162172899328
+    - rid: 6293807162172899331
+    Priority: 0
+    ArbitrationTiming: 10
+    TriggerStrategy:
+      rid: 6293807162172899329
+    ExtraConditionCombine: 0
+    ExtraConditions:
+    - rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 6293807162172899328
+      type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Action: {fileID: 0}
+        ValidateSkillRequirement: 1
+    - rid: 6293807162172899329
+      type: {class: AutoTransitionTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        Timing: 10
+        RequiredWindow:
+          rid: 6293807162172899330
+        ConditionCombine: 0
+        InputConditions: []
+    - rid: 6293807162172899330
+      type: {class: AutoRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: SwitchAuto
+    - rid: 6293807162172899331
+      type: {class: EventRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RouteExecuteEvent: 0
+        _executeCountLimit: 1

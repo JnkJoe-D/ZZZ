@@ -508,8 +508,8 @@ MonoBehaviour:
         clipId: 4475e801-57ee-4973-8f4a-1e6baaaddb26
         clipName: "\u6253\u51FB\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.36666667
-        duration: 0.1
+        startTime: 0.083333336
+        duration: 0.25
         blendInDuration: 0
         blendOutDuration: 0
         hitBoxScope:
@@ -527,7 +527,7 @@ MonoBehaviour:
           rotationOffset: {x: 0, y: 0, z: 0}
           showHitBoxGizmos: 1
         attackPolicy:
-          detectFrequency: 0
+          detectFrequency: 1
           times: 4
           maxHitTargets: 0
           targetSortMode: 1
@@ -542,7 +542,7 @@ MonoBehaviour:
           - hitMode: 1
             multiHitCount: 3
             multiHitDuration: 0.2
-            enableHitStop: 1
+            enableHitStop: 0
             hitStopDuration: 0.05
             hitStopScale: 0
             hitStunDuration: 0.3

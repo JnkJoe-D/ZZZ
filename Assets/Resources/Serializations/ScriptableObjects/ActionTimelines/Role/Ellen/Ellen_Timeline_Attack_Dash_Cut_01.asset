@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe87118cc86f5f46a23aece4a2ad962, type: 3}
   m_Name: Ellen_Timeline_Attack_Dash_Cut_01
   m_EditorClassIdentifier: 
-  duration: 4.2000003
+  duration: 4.200001
   isLoop: 0
   beforePlayEvents: []
   onCompleteEvents: []
@@ -253,7 +253,7 @@ MonoBehaviour:
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
         startTime: 0
-        duration: 0.40000004
+        duration: 0.25
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -264,8 +264,8 @@ MonoBehaviour:
         clipId: ac5012a8-53ae-4ec1-b8a6-35e6e5032ecf
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.40000004
-        duration: 3.8000004
+        startTime: 0.25
+        duration: 3.9500005
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -389,7 +389,7 @@ MonoBehaviour:
         clipId: 627bf4e0-6d11-439c-8372-24180a06fbb3
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.40000004
+        startTime: 0.25
         duration: 0.4
         blendInDuration: 0
         blendOutDuration: 0
@@ -455,8 +455,8 @@ MonoBehaviour:
         clipId: 8e9e44cf-7885-4f84-a84f-ee4ac13f4278
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.40000004
-        duration: 3.8000002
+        startTime: 0.25
+        duration: 3.9500003
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -484,8 +484,8 @@ MonoBehaviour:
         clipId: e4d3f170-e62f-4263-bce8-80394b71bf1d
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 0.40000004
-        duration: 3.8000002
+        startTime: 0.25
+        duration: 3.9500003
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:

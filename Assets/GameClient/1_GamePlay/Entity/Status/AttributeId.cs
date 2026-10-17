@@ -69,8 +69,12 @@ namespace Game.GamePlay
         /// <summary>以太属性抗性</summary>
         EtherRes = 280,
         
-        /// <summary>基础抗打断</summary>
-        BaseResilience = 290,
+        /// <summary>抗打断韧性</summary>
+        Resilience = 290,
+
+        /// <summary>基础抗打断（兼容旧命名，推荐使用 Resilience）</summary>
+        [System.Obsolete("已重命名为 Resilience，请优先使用 AttributeId.Resilience")]
+        BaseResilience = Resilience,
 
         /// <summary>支援点数 (全队共享)</summary>
         AssistPoint = 300,

@@ -49,8 +49,14 @@ namespace ATEditor
         /// </summary>
         public void CalculateMatrix(Transform rootTrans, IBoneGetter boneGetter, Vector3 fixedPos, Quaternion fixedRot, out Vector3 outPos, out Quaternion outRot)
         {
-            Vector3 currentPos;
-            Quaternion currentRot;
+            CaptureMatrix(rootTrans, boneGetter, out Vector3 currentPos, out Quaternion currentRot);
+            outPos = hitBoxFollowMode == HitBoxFollowMode.None || hitBoxFollowMode == HitBoxFollowMode.RotationOnly ? fixedPos : currentPos;
+            outRot = hitBoxFollowMode == HitBoxFollowMode.None || hitBoxFollowMode == HitBoxFollowMode.PositionOnly ? fixedRot : currentRot;
+        }
+
+        /// <summary>取得进入窗口时的原始姿态，尚未应用位置/旋转锁定。</summary>
+        public void CaptureMatrix(Transform rootTrans, IBoneGetter boneGetter, out Vector3 currentPos, out Quaternion currentRot)
+        {
 
             Quaternion rootRot = rootTrans != null ? rootTrans.rotation : Quaternion.identity;
             Vector3 rootPos = rootTrans != null ? rootTrans.position : Vector3.zero;
@@ -103,26 +109,6 @@ namespace ATEditor
                     break;
             }
 
-            switch (hitBoxFollowMode)
-            {
-                case HitBoxFollowMode.None:
-                    outPos = fixedPos;
-                    outRot = fixedRot;
-                    break;
-                case HitBoxFollowMode.PositionOnly:
-                    outPos = currentPos;
-                    outRot = fixedRot;
-                    break;
-                case HitBoxFollowMode.RotationOnly:
-                    outPos = fixedPos;
-                    outRot = currentRot;
-                    break;
-                case HitBoxFollowMode.Both:
-                default:
-                    outPos = currentPos;
-                    outRot = currentRot;
-                    break;
-            }
         }
     }
 }

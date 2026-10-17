@@ -10,7 +10,17 @@ namespace Game.GamePlay
     /// </summary>
     public class ATHitHandler : IHitHandler
     {
-        private static readonly HashSet<CharacterEntity> _processedVictimsCache = new(8);
+        private readonly System.Func<int, cfg.ZZZ.HitEffect> _resolveEffect;
+        private readonly HitPipeline _pipeline;
+        private readonly System.Func<long> _playbackIdentity;
+
+        public ATHitHandler(System.Func<int, cfg.ZZZ.HitEffect> resolveEffect = null, HitPipeline pipeline = null,
+            System.Func<long> playbackIdentity = null)
+        {
+            _resolveEffect = resolveEffect ?? (id => ConfigManager.Instance?.Tables?.TbHitEffect?.GetOrDefault(id));
+            _pipeline = pipeline ?? HitPipeline.Default;
+            _playbackIdentity = playbackIdentity;
+        }
 
         public void OnHitDetect(HitData hitData)
         {
@@ -20,7 +30,7 @@ namespace Game.GamePlay
                 return;
             }
 
-            var hitEffectConfig = ConfigManager.Instance?.Tables?.TbHitEffect?.GetOrDefault(hitData.hitEffectId);
+            var hitEffectConfig = _resolveEffect(hitData.hitEffectId);
             if (hitEffectConfig == null || hitEffectConfig.Effects == null)
             {
                 return;
@@ -33,9 +43,8 @@ namespace Game.GamePlay
                 attacker = hitData.deployer.GetComponent<CharacterEntity>();
             }
 
-            _processedVictimsCache.Clear();
-            try
-            {
+            // 一次分发独占去重集合，伤害/属性回调中的嵌套命中不会清空外层记录。
+            var processedVictims = new HashSet<CharacterEntity>();
                 var threatSession = attacker != null ? CombatWarningManager.GetActiveThreatSession(attacker) : null;
 
                 foreach (var collider in hitData.targetsCollilders)
@@ -46,7 +55,7 @@ namespace Game.GamePlay
                     if (victim == null) continue;
 
                     // 防止同一个实体身上的多个 Collider 被同时打中导致触发多次重复命中
-                    if (!_processedVictimsCache.Add(victim)) continue;
+                    if (!processedVictims.Add(victim)) continue;
 
                     // 检查该受击者是否已在此攻击威胁会话中被豁免（例如已触发极限闪避）
                     if (threatSession != null && threatSession.HasResolvedFor(victim)) continue;
@@ -84,7 +93,7 @@ namespace Game.GamePlay
                 hitDirection.Normalize();
 
                 // 从管道上下文池分配并填充数据
-                var pipeline = HitPipeline.Default;
+                var pipeline = _pipeline;
                 var ctx = pipeline.AllocateContext();
 
                 ctx.Attacker = attacker;
@@ -115,20 +124,17 @@ namespace Game.GamePlay
                     MonoBehaviour runner = attacker != null && attacker.gameObject.activeInHierarchy
                         ? (MonoBehaviour)attacker
                         : null;
-                    MultiHitDriver.RunMultiHit(runner, pipeline, ctx, hitData.multiHitDuration, hitData.multiHitCount);
+                    long playbackId = _playbackIdentity?.Invoke() ?? 0;
+                    MultiHitDriver.RunMultiHit(runner, pipeline, ctx, hitData.multiHitDuration, hitData.multiHitCount,
+                        _playbackIdentity == null ? null : () => playbackId != 0 && _playbackIdentity() == playbackId);
                 }
                 else
                 {
                     ctx.CurrentHitIndex = 0;
                     ctx.TotalHitCount = 1;
-                    pipeline.Execute(ctx);
-                    pipeline.ReleaseContext(ctx);
+                    try { pipeline.Execute(ctx); }
+                    finally { pipeline.ReleaseContext(ctx); }
                 }
-            }
-            }
-            finally
-            {
-                _processedVictimsCache.Clear();
             }
         }
 

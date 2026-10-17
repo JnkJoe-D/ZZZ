@@ -46,6 +46,24 @@ namespace ATEditor.Test
             return null;
         }
 
+        private static int GetTimelineMessageSubscriberCount(ProcessContext context)
+        {
+            var field = typeof(ProcessContext).GetField(
+                "OnTimelineMessage",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            var handlers = field?.GetValue(context) as System.Delegate;
+            return handlers?.GetInvocationList().Length ?? 0;
+        }
+
+        private static void InvokeContextCleanups(ProcessContext context)
+        {
+            var method = typeof(ProcessContext).GetMethod(
+                "ExecuteCleanups",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            Assert.IsNotNull(method, "ProcessContext.ExecuteCleanups 必须存在");
+            method.Invoke(context, null);
+        }
+
         [Test]
         public void Lifecycle_NaturalPlayback_ExitOnly_NeverStop()
         {
@@ -179,6 +197,23 @@ namespace ATEditor.Test
             Assert.AreEqual(0, processB.OnExitCount, "B 全程未 Exit");
             Assert.AreEqual(1, processB.OnStopCount, "未激活的片段在打断时也应收到 OnStop 释放预加载资源");
             Assert.AreEqual(0, processB.OnDisableCount, "打断未激活片段严禁触发 OnDisable");
+        }
+
+        [Test]
+        public void Lifecycle_RewindSubscription_NaturalCleanupReturnsToBaseline()
+        {
+            var process = new RuntimeRewindProcess();
+            process.Initialize(new RewindClip(), _context);
+            process.OnEnable();
+
+            Assert.AreEqual(1, GetTimelineMessageSubscriberCount(_context),
+                "Rewind Process 启用后应订阅时间轴消息");
+
+            InvokeContextCleanups(_context);
+
+            Assert.AreEqual(0, GetTimelineMessageSubscriberCount(_context),
+                "自然结束执行系统清理后，Rewind Process 不得残留消息订阅");
+            process.Reset();
         }
 
         [Test]

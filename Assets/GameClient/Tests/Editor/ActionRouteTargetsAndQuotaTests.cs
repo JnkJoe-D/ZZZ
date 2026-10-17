@@ -149,17 +149,16 @@ namespace Game.Tests.Combat
         }
 
         [Test]
-        public void Test06_ActionRoute_ActionTargetMustBeExactlyOne()
+        public void Test06_ActionRoute_ActionTargetMustBeAtMostOne()
         {
             var route = new ActionRoute();
             var action1 = ScriptableObject.CreateInstance<RoleActionConfigAsset>();
             var action2 = ScriptableObject.CreateInstance<RoleActionConfigAsset>();
 
-            // 测试若清空目标列表 完整性检查会自动补齐一个动作目标
+            // 纯事件路由是合法形态，因此清空后不能自动补一个空动作目标
             route.Targets.Clear();
             route.EnsureActionTargetIntegrity();
-            Assert.AreEqual(1, route.Targets.Count);
-            Assert.IsInstanceOf<ActionRouteTarget>(route.Targets[0]);
+            Assert.AreEqual(0, route.Targets.Count);
 
             // 测试若配置了多个动作目标 完整性检查自动保留有效项并剔除多余项
             route.Targets.Clear();

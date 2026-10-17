@@ -16,6 +16,8 @@ namespace Game.GamePlay
 
         public static object ProvideService(Type serviceType,GameObject owner)
         {
+            if (serviceType == typeof(IAttackDetectionHandler)) return new DefaultAttackDetectionHandler();
+            if (serviceType == typeof(IAttackTargetResolver)) return new ATAttackTargetResolver();
             if (serviceType == typeof(IAnimationHandler))
             {
                 return GetOrCreateCachedService(serviceType, owner,()=>

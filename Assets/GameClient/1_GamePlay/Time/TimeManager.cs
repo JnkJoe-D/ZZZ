@@ -52,7 +52,22 @@ namespace Game.GamePlay
             MonsterClock = new TimeClock("Monster", GameplayClock);
             EnvironmentClock = new TimeClock("Environment", GameplayClock);
 
-            SubscribeEvents();
+            Initialize();
+        }
+
+        public void Initialize()
+        {
+            UnsubscribeEvents(); SubscribeEvents();
+        }
+        public void Shutdown()
+        {
+            UnsubscribeEvents(); ResetToNormal();
+        }
+        private void UnsubscribeEvents()
+        {
+            EventCenter.Unsubscribe<EntityHitInterruptedEvent>(OnEntityHitInterrupted);
+            EventCenter.Unsubscribe<PerfectEvadeTriggeredEvent>(OnPerfectEvadeTriggered);
+            EventCenter.Unsubscribe<HitStopRequestEvent>(OnHitStopRequested);
         }
 
         private void SubscribeEvents()
@@ -120,14 +135,16 @@ namespace Game.GamePlay
             public TimeClock AttackerClock;
             public TimeClock VictimClock;
             public Action OnComplete;
+            public float Scale;
         }
 
         private readonly List<HitStopSession> _activeHitStops = new List<HitStopSession>();
         private int _hitStopSessionCounter = 0;
+        private readonly Dictionary<TimeClock, float> _hitStopBaseScales = new Dictionary<TimeClock, float>();
 
         /// <summary>
         /// 全局注册实体时钟的受击顿帧（Hit-Stop）。
-        /// 顿帧期间将目标时钟的 LocalScale 设为 0 (完全定格)，倒计时结束后自动还原为 1.0f 并触发 onComplete 回调。
+        /// 顿帧期间采用重叠会话中的最小倍率，全部结束后还原首次会话前的局部倍率。
         /// 在父节点处于子弹时间 (如 0.1x) 时，顿帧结束会自动链式恢复为 0.1x，零互斥状态覆盖。
         /// </summary>
         public int RegisterHitStop(TimeClock attackerClock, TimeClock victimClock, float duration, float scale = 0f, Action onComplete = null)
@@ -141,15 +158,8 @@ namespace Game.GamePlay
             _hitStopSessionCounter++;
             int sessionId = _hitStopSessionCounter;
 
-            if (attackerClock != null)
-            {
-                attackerClock.LocalScale = scale;
-            }
-
-            if (victimClock != null && victimClock != attackerClock)
-            {
-                victimClock.LocalScale = scale;
-            }
+            if (attackerClock != null && !_hitStopBaseScales.ContainsKey(attackerClock)) _hitStopBaseScales.Add(attackerClock, attackerClock.LocalScale);
+            if (victimClock != null && !_hitStopBaseScales.ContainsKey(victimClock)) _hitStopBaseScales.Add(victimClock, victimClock.LocalScale);
 
             _activeHitStops.Add(new HitStopSession
             {
@@ -157,8 +167,10 @@ namespace Game.GamePlay
                 RemainingTime = duration,
                 AttackerClock = attackerClock,
                 VictimClock = victimClock,
-                OnComplete = onComplete
+                OnComplete = onComplete,
+                Scale = Mathf.Max(0f, scale)
             });
+            ApplyHitStopScale(attackerClock); ApplyHitStopScale(victimClock);
 
             return sessionId;
         }
@@ -186,15 +198,8 @@ namespace Game.GamePlay
                     var vic = session.VictimClock;
 
                     // 检查该时钟是否还有其他未完成的顿帧会话
-                    if (atk != null && !HasOtherHitStopSession(atk))
-                    {
-                        atk.LocalScale = 1.0f; // 自然恢复！在子弹时间下，有效流速自动变回 0.1x
-                    }
-
-                    if (vic != null && vic != atk && !HasOtherHitStopSession(vic))
-                    {
-                        vic.LocalScale = 1.0f;
-                    }
+                    ApplyHitStopScale(atk);
+                    if (vic != atk) ApplyHitStopScale(vic);
 
                     // 顿帧结束，触发回调
                     session.OnComplete?.Invoke();
@@ -202,34 +207,27 @@ namespace Game.GamePlay
             }
         }
 
-        private bool HasOtherHitStopSession(TimeClock clock)
+        private void ApplyHitStopScale(TimeClock clock)
         {
+            if (clock == null || !_hitStopBaseScales.TryGetValue(clock, out float original)) return;
+            float scale = original; bool active = false;
             for (int j = 0; j < _activeHitStops.Count; j++)
             {
                 var s = _activeHitStops[j];
                 if (s.AttackerClock == clock || s.VictimClock == clock)
                 {
-                    return true;
+                    active = true; scale = Mathf.Min(scale, s.Scale);
                 }
             }
-            return false;
+            if (!active) _hitStopBaseScales.Remove(clock);
+            clock.LocalScale = scale;
         }
 
         public void ClearAllHitStops()
         {
-            for (int i = 0; i < _activeHitStops.Count; i++)
-            {
-                var session = _activeHitStops[i];
-                if (session.AttackerClock != null)
-                {
-                    session.AttackerClock.LocalScale = 1.0f;
-                }
-                if (session.VictimClock != null && session.VictimClock != session.AttackerClock)
-                {
-                    session.VictimClock.LocalScale = 1.0f;
-                }
-            }
             _activeHitStops.Clear();
+            foreach (var pair in _hitStopBaseScales) pair.Key.LocalScale = pair.Value;
+            _hitStopBaseScales.Clear();
         }
 
         // ─── 子弹时间（Bullet Time）集中管理 ───

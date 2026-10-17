@@ -10,5 +10,7 @@ namespace Game.GamePlay
             _routeEventReceiver ??= new MonsterRouteEventReceiver();
             _skillCostHandler ??= new DefaultSkillCostHandler();
         }
+
+        protected override CharacterEntity GetRouteEvalActor() => Monster;
     }
 }

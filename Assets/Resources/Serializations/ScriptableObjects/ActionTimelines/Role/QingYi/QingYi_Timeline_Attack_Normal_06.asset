@@ -371,7 +371,7 @@ MonoBehaviour:
         duration: 0.2
         blendInDuration: 0
         blendOutDuration: 0
-        referenceDirection: 4
+        referenceDirection: 2
         rotationMode: 1
         updateFrequency: 2
         localRotationOffset: {x: 0, y: 0, z: 0}

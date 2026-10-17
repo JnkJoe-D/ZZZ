@@ -7,15 +7,21 @@ namespace Game.GamePlay
     public class RoleStatusDataProvider : IStatusDataProvider
     {
         private readonly cfg.ZZZ.CharacterId _characterId;
+        private readonly cfg.Tables _tables;
 
         public RoleStatusDataProvider(cfg.ZZZ.CharacterId characterId)
         {
             _characterId = characterId;
         }
 
+        public RoleStatusDataProvider(cfg.ZZZ.CharacterId characterId, cfg.Tables tables) : this(characterId)
+        {
+            _tables = tables ?? throw new System.ArgumentNullException(nameof(tables));
+        }
+
         public IEnumerable<AttributeInstance> GetInitialAttributes(int level)
         {
-            var tables = ConfigManager.Instance?.Tables;
+            var tables = _tables ?? ConfigManager.Instance?.Tables;
             if (tables == null) yield break;
 
             if (tables.TbCharacterBase.DataMap.TryGetValue(_characterId, out var baseCfg))
@@ -64,7 +70,7 @@ namespace Game.GamePlay
 
             if (tables.TbCharacterSpecial.DataMap.TryGetValue(_characterId, out var specialCfg))
             {
-                yield return new AttributeInstance(AttributeId.BaseResilience, specialCfg.BaseResilience, 0f, float.MaxValue);
+                yield return new AttributeInstance(AttributeId.Resilience, specialCfg.BaseResilience, 0f, float.MaxValue);
 
                 if (specialCfg.CustomAttributes != null)
                 {
@@ -79,7 +85,7 @@ namespace Game.GamePlay
 
         public IEnumerable<string> GetImmuneTags()
         {
-            var tables = ConfigManager.Instance?.Tables;
+            var tables = _tables ?? ConfigManager.Instance?.Tables;
             if (tables != null && tables.TbCharacterSpecial.DataMap.TryGetValue(_characterId, out var specialCfg))
             {
                 if (specialCfg.ImmuneTags != null)
@@ -96,7 +102,7 @@ namespace Game.GamePlay
         {
             if (skillId <= 0) return 0f;
             
-            var tables = ConfigManager.Instance?.Tables;
+            var tables = _tables ?? ConfigManager.Instance?.Tables;
             if (tables == null) return 0f;
             
             var skillConfig = tables.TbSkill.GetOrDefault(skillId);

@@ -14,26 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 141110
   Name: 
-  _domainId: 2
   TimelineAsset: {fileID: 4900000, guid: 7e41fc52bb9ddc0428489ee2f598717f, type: 3}
   actionTimelineSO: {fileID: 11400000, guid: 4778452fb574b174d98f51b552fa5d93, type: 2}
+  _domainId: 2
   CompleteMode: 0
   CompleteAction: {fileID: 0}
-  CompleteTransitCrossfade: -1
+  _transitionTable:
+    _items: []
   Routes:
   - Targets:
     - rid: 6379258143149916854
     Priority: 0
-    CrossfadeOverride: 0
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258097012572299
+    ExtraConditionCombine: 0
     ExtraConditions: []
   - Targets:
     - rid: 6379258143149916855
     Priority: 0
-    CrossfadeOverride: 0
+    ArbitrationTiming: 0
     TriggerStrategy:
       rid: 6379258097012572298
+    ExtraConditionCombine: 0
     ExtraConditions: []
   RouteSets:
   - {fileID: 11400000, guid: 6af555797470828449f67cb37cdedf6f, type: 2}
@@ -42,11 +45,38 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6df26ea99b1e2ca49bf26e877d51e953, type: 2}
   - {fileID: 11400000, guid: 6b54149973a433c4797b504474e39a9c, type: 2}
   - {fileID: 11400000, guid: 1079305e8d007e04a96d5d337f6c425a, type: 2}
+  - {fileID: 11400000, guid: 807b3fb8d499de04d949afb8e12911e8, type: 2}
   - {fileID: 11400000, guid: a46bbbbf74379b147beb4e4ec5e60723, type: 2}
   InheritMode: 0
   references:
     version: 2
     RefIds:
+    - rid: 6379258097012572298
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916853
+        ConditionCombine: 0
+        InputConditions: []
+    - rid: 6379258097012572299
+      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
+      data:
+        RequiredInput: 20
+        RequiredPhase: 0
+        RequiredWindow:
+          rid: 6379258143149916852
+        ConditionCombine: 0
+        InputConditions: []
+    - rid: 6379258143149916852
+      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Buffer1
+    - rid: 6379258143149916853
+      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
+      data:
+        Tag: Execute1
     - rid: 6379258143149916854
       type: {class: ActionRouteTarget, ns: Game.GamePlay, asm: Assembly-CSharp}
       data:
@@ -57,29 +87,3 @@ MonoBehaviour:
       data:
         Action: {fileID: 11400000, guid: 3d36c0b053663af4e9a797eacca762ec, type: 2}
         ValidateSkillRequirement: 0
-    - rid: 6379258097012572298
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 20
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149916853
-        RequiredWindowTag: Execute1
-        Modifiers: []
-    - rid: 6379258097012572299
-      type: {class: IntentCommandTrigger, ns: Game.GamePlay, asm: Assembly-CSharp}
-      data:
-        RequiredInput: 20
-        RequiredPhase: 0
-        RequiredWindow:
-          rid: 6379258143149916852
-        RequiredWindowTag: Buffer1
-        Modifiers: []
-    - rid: 6379258143149916852
-      type: {class: BufferRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Buffer1
-    - rid: 6379258143149916853
-      type: {class: ExecuteRouteWindow, ns: ATEditor, asm: Assembly-CSharp}
-      data:
-        Tag: Execute1

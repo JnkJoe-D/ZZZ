@@ -131,6 +131,7 @@ namespace ATEditor.Test
             };
 
             process.Initialize(clip, _context);
+            process.OnEnable();
             process.OnEnter();
 
             // 采样在 0.7s (elapsed = 0.2s，刚好达到 100% 权重)
@@ -161,6 +162,7 @@ namespace ATEditor.Test
             };
 
             process.Initialize(clip, _context);
+            process.OnEnable();
             process.OnEnter();
             process.OnExit();
 
@@ -189,6 +191,7 @@ namespace ATEditor.Test
             };
 
             process.Initialize(clip, _context);
+            process.OnEnable();
             process.OnEnter();
             process.OnStop();
 

@@ -214,6 +214,9 @@ namespace Game.GamePlay
 
             _activeMonsters.Add(entity);
 
+            // 发布怪物出池生成事件（供表现层同步血条/UI等）
+            EventCenter.Publish(new MonsterSpawnedEvent { Monster = entity });
+
             // 兼容之前异步返回的设计需求（方便以后做按帧拆分出生特效等）
             await Task.Yield();
 
@@ -229,6 +232,10 @@ namespace Game.GamePlay
         {
             if (monster == null) return;
             
+            // 发布怪物退池回收事件（供表现层同步清理血条/UI等）
+            EventCenter.Publish(new MonsterRecycledEvent { Monster = monster });
+
+            monster.ResetRuntimeState();
             _pendingRecycleMonsters.Remove(monster);
             monster.Clock?.Detach();
             _activeMonsters.Remove(monster);

@@ -431,7 +431,7 @@
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.10000002384185791,
                     "animationClip": {
-                        "instanceID": 35038
+                        "instanceID": 38454
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -469,7 +469,7 @@
                     "blendInDuration": 0.10000002384185791,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 35040
+                        "instanceID": 38456
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -499,11 +499,11 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "c5a41784-dc4a-4c2d-b4e2-787ca2c922ba",
+                    "clipId": "c1b6a843-422d-4d08-8166-43406938b52b",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.7666668891906738,
-                    "duration": 0.23333331942558289,
+                    "startTime": 1.0,
+                    "duration": 5.033333778381348,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -519,11 +519,11 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "clipId": "c1b6a843-422d-4d08-8166-43406938b52b",
+                    "clipId": "6b5fa9e7-7864-4d04-be62-ba4d8351fddc",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 1.000000238418579,
-                    "duration": 5.0333333015441898,
+                    "startTime": 0.800000011920929,
+                    "duration": 0.20000000298023225,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -582,8 +582,8 @@
                     "clipId": "a3a73aa8-3cb0-4a11-9b18-b735be4e46bf",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.7666668891906738,
-                    "duration": 5.266666889190674,
+                    "startTime": 1.0,
+                    "duration": 5.033333778381348,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -602,8 +602,8 @@
                     "clipId": "94becd79-497f-487f-b100-4293e13eb13e",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.7666668891906738,
-                    "duration": 5.266666889190674,
+                    "startTime": 1.0,
+                    "duration": 5.033333778381348,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -662,23 +662,23 @@
             {
                 "rid": 1023,
                 "type": {
-                    "class": "BufferRouteWindow",
-                    "ns": "ATEditor",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "Tag": "Buffer1"
-                }
-            },
-            {
-                "rid": 1024,
-                "type": {
                     "class": "ExecuteRouteWindow",
                     "ns": "ATEditor",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "Tag": "BackSwing1"
+                }
+            },
+            {
+                "rid": 1024,
+                "type": {
+                    "class": "BufferRouteWindow",
+                    "ns": "ATEditor",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "Tag": "Buffer1"
                 }
             },
             {

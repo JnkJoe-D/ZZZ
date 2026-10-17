@@ -54,5 +54,7 @@ namespace ATEditor
         public float startTime;    // 起始播放时间（秒）
         public Vector3 position;   // 3D音效位置
         public Transform parent;
+        // 默认 Unity 后端是否跟随 Director 倍速；项目后端仍可自行决定时间策略。
+        public bool affectedByPlaybackSpeed;
     }
 }

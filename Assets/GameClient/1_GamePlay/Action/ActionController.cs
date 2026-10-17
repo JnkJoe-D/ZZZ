@@ -36,8 +36,10 @@ namespace Game.GamePlay
 
         private int _currentPlayGeneration;
         private bool _isTransitioning;
-        private ActionConfigAsset _currentPlayingAction;
-        public ActionConfigAsset CurrentPlayingAction => _currentPlayingAction;
+        private bool _isSwitchingAction;
+        private CharacterActionPlayInfo _currentPlayInfo;
+        public CharacterActionPlayInfo CurrentPlayInfo => _currentPlayInfo;
+        public ActionConfigAsset CurrentPlayingAction => _currentPlayInfo?.ActionConfig;
 
 
         public IReadOnlyList<ExecutionRecord> ExecutionHistory => _fateTracker.History;
@@ -52,7 +54,6 @@ namespace Game.GamePlay
         protected IRouteEventReceiver _routeEventReceiver;
         protected ISkillCostHandler _skillCostHandler;
         private ActionConfigAsset _rootAction;
-        private Action _currentActionOnComplete;
 
         public virtual void Initialize(CharacterEntity owner)
         {
@@ -69,10 +70,19 @@ namespace Game.GamePlay
         /// 专用于播放实体的根节点动作 (ActionRoot / 默认待机态)。
         /// 仅限初始化与切人待机复位调用。其余所有业务动作严禁使用本接口，一律走 OnInput 压指令流。
         /// </summary>
-        public bool PlayRootAction(float crossfadeOverride = -1f)
+        public bool PlayRootAction(CharacterActionPlayInfo playInfo = null)
         {
             if (_rootAction == null) return false;
-            return PlayAction(_rootAction, crossfadeOverride);
+            playInfo ??= new CharacterActionPlayInfo();
+            playInfo.ActionConfig = _rootAction;
+            return PlayAction(playInfo);
+        }
+
+        public bool PlayRootAction(float crossfadeOverride)
+        {
+            if (_rootAction == null) return false;
+            var playInfo = new CharacterActionPlayInfo(_rootAction, crossfadeOverride);
+            return PlayAction(playInfo);
         }
 
         public void ResetController()
@@ -88,6 +98,8 @@ namespace Game.GamePlay
             }
             _effectiveRoutes.Clear();
             _isTransitioning = false;
+            _isSwitchingAction = false;
+            _currentPlayInfo = null;
         }
 
         public ISkillCostHandler SkillCostHandler => _skillCostHandler;
@@ -115,13 +127,13 @@ namespace Game.GamePlay
             CheckEarlyCompleteActionTransition();
         }
 
-        private bool PlayAction(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
+        private bool PlayAction(CharacterActionPlayInfo playInfo)
         {
-            if (action == null) return false;
+            if (playInfo == null || playInfo.ActionConfig == null) return false;
 
-            if (PlayAndTrack(action, crossfadeOverride, startTime))
+            if (PlayAndTrack(playInfo))
             {
-                OnActionPlaySucceed(action);
+                OnActionPlaySucceed(playInfo.ActionConfig);
                 return true;
             }
             return false;
@@ -293,11 +305,12 @@ namespace Game.GamePlay
         //  核心播放
         // ═══════════════════════════════════════════
 
-        private bool PlayAndTrack(ActionConfigAsset action, float crossfadeOverride = -1f, float startTime = 0f)
+        private bool PlayAndTrack(CharacterActionPlayInfo playInfo)
         {
-            if (action == null || ActionPlayer == null) return false;
+            if (playInfo == null || playInfo.ActionConfig == null || ActionPlayer == null) return false;
 
-            unchecked { _currentPlayGeneration++; }
+            ActionConfigAsset action = playInfo.ActionConfig;
+            int gen = unchecked(++_currentPlayGeneration);
             RouteExecutionTracker.ResetForNewAction();
 
             // 切动作时，对所有存留活跃窗口调用 OnDisable 清空状态，杜绝打断遗留出招
@@ -311,25 +324,60 @@ namespace Game.GamePlay
                 _activeRouteWindows.Clear();
             }
 
-            _currentPlayingAction = action;
             if (_actionData != null)
                 _actionData.Set(nameof(_actionData.NextActionToCast), action);
 
-            ActionPlayer.OnActionComplete -= HandleActionComplete;
+            // 隔离本次播放专用的 EventInfo，与 Controller 的核心生命周期进行链式中继
+            var clientEvents = playInfo.EventInfo;
+            var underlyingPlayInfo = new ActionPlayInfo
+            {
+                ActionConfig = action,
+                TransitionInfo = playInfo.TransitionInfo,
+                EventInfo = new ActionEventInfo
+                {
+                    OnActionStart = () =>
+                    {
+                        clientEvents?.OnActionStart?.Invoke();
+                    },
+                    OnActionComplete = () =>
+                    {
+                        HandleActionComplete(playInfo);
+                        clientEvents?.OnActionComplete?.Invoke();
+                    },
+                    OnActionInterrupt = () =>
+                    {
+                        HandleActionInterrupt(playInfo);
+                        clientEvents?.OnActionInterrupt?.Invoke();
+                    }
+                }
+            };
 
-            bool success = ActionPlayer.PlayAction(action, crossfadeOverride, startTime);
-
-            if (_currentPlayingAction != action)
-                return false;
+            bool prevSwitching = _isSwitchingAction;
+            _isSwitchingAction = true;
+            bool success;
+            try
+            {
+                success = ActionPlayer.PlayAction(underlyingPlayInfo);
+            }
+            finally
+            {
+                _isSwitchingAction = prevSwitching;
+            }
 
             if (!success)
             {
-                _currentPlayingAction = null;
+                if (_currentPlayGeneration == gen)
+                {
+                    _currentPlayInfo = null;
+                }
                 return false;
             }
 
-            ActionPlayer.OnActionComplete -= HandleActionComplete;
-            ActionPlayer.OnActionComplete += HandleActionComplete;
+            // 仅在当前代数未被并发/嵌套新动作修改时确立新动作为当前动作
+            if (_currentPlayGeneration == gen)
+            {
+                _currentPlayInfo = playInfo;
+            }
 
             return true;
         }
@@ -440,7 +488,27 @@ namespace Game.GamePlay
 
                         if (_actionData != null) _actionData.Set(nameof(_actionData.NextActionToCast), actionTarget.Action);
                         RecordRoute(candidate.Command?.Payload, actionTarget.Action, CommandRouteSource.ActionRoute, candidate.RouteTag, candidate.Command?.Id ?? 0);
-                        PlayAction(actionTarget.Action, crossfade, startTime);
+
+                        var targetPlayInfo = new CharacterActionPlayInfo
+                        {
+                            ActionConfig = actionTarget.Action,
+                            TransitionInfo = new ActionTransitionInfo
+                            {
+                                CrossfadeDuration = crossfade,
+                                StartTime = startTime
+                            },
+                            CommandId = candidate.Command?.Id ?? 0,
+                            RouteTag = candidate.RouteTag,
+                            RouteSource = CommandRouteSource.ActionRoute,
+                            SourcePayload = candidate.Command?.Payload
+                        };
+
+                        if (candidate.Command?.Payload is ActionPlayInfo sourcePlayInfo)
+                        {
+                            targetPlayInfo.EventInfo = sourcePlayInfo.EventInfo;
+                        }
+
+                        PlayAction(targetPlayInfo);
                     }
                     finally
                     {
@@ -450,16 +518,27 @@ namespace Game.GamePlay
             }
         }
 
-        private void HandleActionComplete()
+        private void HandleActionInterrupt(CharacterActionPlayInfo interruptedPlayInfo)
         {
-            ActionConfigAsset finished = _currentPlayingAction;
-            _currentPlayingAction = null;
+            if (!_isSwitchingAction)
+            {
+                _currentPlayInfo = null;
+            }
+        }
 
-            var onCompleteCallback = _currentActionOnComplete;
-            _currentActionOnComplete = null;
-            onCompleteCallback?.Invoke();
+        private void HandleActionComplete(CharacterActionPlayInfo finishedPlayInfo)
+        {
+            _currentPlayInfo = null;
 
+            ActionConfigAsset finished = finishedPlayInfo?.ActionConfig;
             if (finished == null || _isTransitioning) return;
+
+            // 0. 优先仲裁：如果窗口到期结算时（如 AutoRouteWindow 在 CompleteCleanup 中 OnExit）已向仲裁器提交了有效决选，优先采纳执行
+            if (_entity?.RouteArbitrator != null && _entity.RouteArbitrator.TryResolveBest(out var best))
+            {
+                Apply(best);
+                return;
+            }
 
             ActionRouteRuntimeResolver.ResolveEffectiveWindowRoutes(finished, null, GetRouteEvalActor(), _effectiveRoutes);
             if (RouteResolver.TryResolve(_effectiveRoutes, null, null, GetRouteEvalActor(), _skillCostHandler, RouteSingleModifierCheckTiming.OnWindowExit, out var c))
@@ -477,7 +556,20 @@ namespace Game.GamePlay
                         var transition = finished.GetTransition(finished.CompleteAction);
                         float completeCrossfade = transition != null && transition.BlendDuration >= 0f ? transition.BlendDuration : -1f;
                         float completeStartTime = transition != null && transition.HasStartTime ? Mathf.Max(0f, transition.StartTime) : 0f;
-                        PlayAction(finished.CompleteAction, completeCrossfade, completeStartTime);
+
+                        var completePlayInfo = new CharacterActionPlayInfo
+                        {
+                            ActionConfig = finished.CompleteAction,
+                            TransitionInfo = new ActionTransitionInfo
+                            {
+                                CrossfadeDuration = completeCrossfade,
+                                StartTime = completeStartTime
+                            },
+                            RouteSource = CommandRouteSource.ActionComplete,
+                            RouteTag = "TransitToAction"
+                        };
+
+                        PlayAction(completePlayInfo);
                         return;
                     }
                     break;
@@ -491,7 +583,20 @@ namespace Game.GamePlay
             var rootTransition = finished != null && rootAction != null ? finished.GetTransition(rootAction) : null;
             float rootCrossfade = rootTransition != null && rootTransition.BlendDuration >= 0f ? rootTransition.BlendDuration : -1f;
             float rootStartTime = rootTransition != null && rootTransition.HasStartTime ? Mathf.Max(0f, rootTransition.StartTime) : 0f;
-            PlayAction(rootAction, rootCrossfade, rootStartTime);
+
+            var rootPlayInfo = new CharacterActionPlayInfo
+            {
+                ActionConfig = rootAction,
+                TransitionInfo = new ActionTransitionInfo
+                {
+                    CrossfadeDuration = rootCrossfade,
+                    StartTime = rootStartTime
+                },
+                RouteSource = CommandRouteSource.ActionComplete,
+                RouteTag = "RootFallback"
+            };
+
+            PlayAction(rootPlayInfo);
         }
 
         /// <summary>
@@ -500,15 +605,14 @@ namespace Game.GamePlay
         /// </summary>
         private void CheckEarlyCompleteActionTransition()
         {
-            if (_isTransitioning || _currentPlayingAction == null || ActionPlayer == null || !ActionPlayer.IsPlaying)
+            if (_isTransitioning || _currentPlayInfo == null || ActionPlayer == null || !ActionPlayer.IsPlaying)
                 return;
 
-            if (_currentPlayingAction.CompleteMode != ActionCompleteMode.TransitToAction
-
-                || _currentPlayingAction.CompleteAction == null)
+            var currentAction = _currentPlayInfo.ActionConfig;
+            if (currentAction == null || currentAction.CompleteMode != ActionCompleteMode.TransitToAction || currentAction.CompleteAction == null)
                 return;
 
-            var transition = _currentPlayingAction.GetTransition(_currentPlayingAction.CompleteAction);
+            var transition = currentAction.GetTransition(currentAction.CompleteAction);
             if (transition == null || !transition.HasEndTime)
                 return;
 
@@ -518,7 +622,7 @@ namespace Game.GamePlay
                 _isTransitioning = true;
                 try
                 {
-                    ActionConfigAsset targetAction = _currentPlayingAction.CompleteAction;
+                    ActionConfigAsset targetAction = currentAction.CompleteAction;
                     float crossfade = transition.BlendDuration >= 0f ? transition.BlendDuration : -1f;
                     float startTime = transition.HasStartTime ? Mathf.Max(0f, transition.StartTime) : 0f;
 
@@ -527,7 +631,20 @@ namespace Game.GamePlay
 
                     if (_actionData != null) _actionData.Set(nameof(_actionData.NextActionToCast), targetAction);
                     RecordRoute(null, targetAction, CommandRouteSource.ActionComplete, "TransitToAction_EarlyExit");
-                    PlayAction(targetAction, crossfade, startTime);
+
+                    var earlyPlayInfo = new CharacterActionPlayInfo
+                    {
+                        ActionConfig = targetAction,
+                        TransitionInfo = new ActionTransitionInfo
+                        {
+                            CrossfadeDuration = crossfade,
+                            StartTime = startTime
+                        },
+                        RouteSource = CommandRouteSource.ActionComplete,
+                        RouteTag = "TransitToAction_EarlyExit"
+                    };
+
+                    PlayAction(earlyPlayInfo);
                 }
                 finally
                 {
@@ -538,7 +655,7 @@ namespace Game.GamePlay
 
         private ActionConfigAsset GetCurrentAction()
         {
-            return _currentPlayingAction ?? ActionPlayer?.CurrentAction;
+            return _currentPlayInfo?.ActionConfig ?? ActionPlayer?.CurrentAction;
         }
 
         private void RecordRoute(ICommandPayload payload, ActionConfigAsset action, CommandRouteSource source, string tag, long commandId = 0)

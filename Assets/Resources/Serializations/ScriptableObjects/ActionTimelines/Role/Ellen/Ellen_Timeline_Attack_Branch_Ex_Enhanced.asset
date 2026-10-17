@@ -361,8 +361,8 @@ MonoBehaviour:
         clipId: c1b6a843-422d-4d08-8166-43406938b52b
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.2666668
-        duration: 0.4
+        startTime: 1.1666667
+        duration: 0.4333333
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -373,8 +373,8 @@ MonoBehaviour:
         clipId: 939d85f4-d501-4c8a-b400-ed460bd2da67
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.2666668
-        duration: 3.3833332
+        startTime: 1.1666667
+        duration: 3.483333
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -397,8 +397,8 @@ MonoBehaviour:
         clipId: a3a73aa8-3cb0-4a11-9b18-b735be4e46bf
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.2666668
-        duration: 3.3833332
+        startTime: 1.1666667
+        duration: 3.483333
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -702,7 +702,7 @@ MonoBehaviour:
         clipId: f591fcba-982c-4b1c-8bb1-5ae7be5b7222
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.0666667
+        startTime: 0.9666667
         duration: 0.2
         blendInDuration: 0
         blendOutDuration: 0
@@ -714,8 +714,8 @@ MonoBehaviour:
         clipId: 71f15f08-3451-4eee-b48e-4e58d9744c9b
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.2666668
-        duration: 3.3833332
+        startTime: 1.1666667
+        duration: 3.483333
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -755,8 +755,8 @@ MonoBehaviour:
         clipId: 6b8002c1-c410-41e8-a53c-0931cfa8b5d2
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.2666668
-        duration: 3.3833332
+        startTime: 1.1666667
+        duration: 3.483333
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:
@@ -784,8 +784,8 @@ MonoBehaviour:
         clipId: 0354aca7-ce7b-43ed-b287-cbb68755a55a
         clipName: "\u8FDE\u62DB\u7A97\u53E3\u7247\u6BB5"
         isEnabled: 1
-        startTime: 1.2666668
-        duration: 3.3833332
+        startTime: 1.1666667
+        duration: 3.483333
         blendInDuration: 0
         blendOutDuration: 0
         routewindow:

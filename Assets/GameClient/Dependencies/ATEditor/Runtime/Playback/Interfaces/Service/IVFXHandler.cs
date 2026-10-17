@@ -19,6 +19,9 @@ namespace ATEditor
         /// <returns>VFX 实例</returns>
         GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null);
 
+        /// <summary>从池中生成 VFX 实例（支持自定义缩放）</summary>
+        GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent, Vector3 scale);
+
         /// <summary>
         /// 归还 VFX 实例到池中
         /// </summary>
@@ -30,5 +33,11 @@ namespace ATEditor
         /// <param name="inst">VFX 实例</param>
         /// <param name="delay">延迟时间</param>
         void ReturnVFXDelay(GameObject inst, float delay);
+
+        /// <summary>设置特效实例的当前播放进度（用于 Seek 跳转）</summary>
+        void SetTime(GameObject instance, float time);
+
+        /// <summary>标记特效在粒子完全播完后自动排空回收</summary>
+        void ReleaseWhenFinished(GameObject instance, bool stopEmission);
     }
 }

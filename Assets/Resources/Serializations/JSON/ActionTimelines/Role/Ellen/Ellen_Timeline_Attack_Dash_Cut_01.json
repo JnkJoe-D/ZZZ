@@ -1,5 +1,5 @@
 {
-    "duration": 4.200000286102295,
+    "duration": 4.200000762939453,
     "isLoop": false,
     "beforePlayEvents": [],
     "onCompleteEvents": [],
@@ -428,9 +428,9 @@
                     "startTime": 0.0,
                     "duration": 0.5833333730697632,
                     "blendInDuration": 0.0,
-                    "blendOutDuration": 0.13333332538604736,
+                    "blendOutDuration": 0.13333332538604737,
                     "animationClip": {
-                        "instanceID": 36884
+                        "instanceID": 36430
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -463,12 +463,12 @@
                     "clipId": "a9e0ec45-2ed5-4cf9-ad2b-027068cb9481",
                     "clipName": "动画片段",
                     "isEnabled": true,
-                    "startTime": 0.46666669845581055,
-                    "duration": 3.7333335876464844,
-                    "blendInDuration": 0.13333332538604736,
+                    "startTime": 0.46666669845581057,
+                    "duration": 3.7333335876464845,
+                    "blendInDuration": 0.13333332538604737,
                     "blendOutDuration": 0.0,
                     "animationClip": {
-                        "instanceID": 36886
+                        "instanceID": 36432
                     },
                     "playbackSpeed": 1.0,
                     "layer": 0,
@@ -501,7 +501,7 @@
                     "clipId": "627bf4e0-6d11-439c-8372-24180a06fbb3",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.40000003576278687,
+                    "startTime": 0.25,
                     "duration": 0.4000000059604645,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
@@ -522,7 +522,7 @@
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
                     "startTime": 0.0,
-                    "duration": 0.40000003576278687,
+                    "duration": 0.25,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -541,8 +541,8 @@
                     "clipId": "ac5012a8-53ae-4ec1-b8a6-35e6e5032ecf",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.40000003576278687,
-                    "duration": 3.8000004291534424,
+                    "startTime": 0.25,
+                    "duration": 3.950000524520874,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -601,8 +601,8 @@
                     "clipId": "8e9e44cf-7885-4f84-a84f-ee4ac13f4278",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.40000003576278687,
-                    "duration": 3.8000001907348633,
+                    "startTime": 0.25,
+                    "duration": 3.950000286102295,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -621,8 +621,8 @@
                     "clipId": "e4d3f170-e62f-4263-bce8-80394b71bf1d",
                     "clipName": "连招窗口片段",
                     "isEnabled": true,
-                    "startTime": 0.40000003576278687,
-                    "duration": 3.8000001907348633,
+                    "startTime": 0.25,
+                    "duration": 3.950000286102295,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "routewindow": {
@@ -642,7 +642,7 @@
                     "clipName": "打击片段",
                     "isEnabled": true,
                     "startTime": 0.10000000149011612,
-                    "duration": 0.13333334028720856,
+                    "duration": 0.13333334028720857,
                     "blendInDuration": 0.0,
                     "blendOutDuration": 0.0,
                     "hitBoxScope": {
@@ -693,11 +693,11 @@
                             {
                                 "hitMode": 0,
                                 "multiHitCount": 3,
-                                "multiHitDuration": 0.20000000298023224,
+                                "multiHitDuration": 0.20000000298023225,
                                 "enableHitStop": false,
                                 "hitStopDuration": 0.05000000074505806,
                                 "hitStopScale": 0.0,
-                                "hitStunDuration": 0.30000001192092896,
+                                "hitStunDuration": 0.30000001192092898,
                                 "hitVFXPrefab": {
                                     "instanceID": 0
                                 },

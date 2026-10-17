@@ -15,37 +15,12 @@ namespace Game.GamePlay
         public override void Init(CharacterEntity entity)
         {
             base.Init(entity);
-            EnsureActionPlayerSubscribed();
-        }
-
-        private void EnsureActionPlayerSubscribed()
-        {
-            if (_entity?.ActionPlayer != null)
-            {
-                _entity.ActionPlayer.OnActionComplete -= HandleActionComplete;
-                _entity.ActionPlayer.OnActionComplete += HandleActionComplete;
-
-                _entity.ActionPlayer.OnActionInterrupt -= HandleActionInterrupt;
-                _entity.ActionPlayer.OnActionInterrupt += HandleActionInterrupt;
-            }
-        }
-
-        private void OnDestroy()
-        {
-            if (_entity?.ActionPlayer != null)
-            {
-                _entity.ActionPlayer.OnActionComplete -= HandleActionComplete;
-                _entity.ActionPlayer.OnActionInterrupt -= HandleActionInterrupt;
-            }
         }
 
         protected override void OnInterrupted(HitPipelineContext ctx)
         {
             // 若被打断裁决没通过或无受击表现类型，直接忽略，不阻断自控力也不产生硬直
             if (ctx.SelectedReactionType == cfg.ZZZ.HitReactionType.None) return;
-
-            // 受击时确保 ActionPlayer 事件已正确订阅（解决 Init 时 ActionPlayer 尚未初始化的时序错位问题）
-            EnsureActionPlayerSubscribed();
 
             if (_entity is MonsterEntity monster)
             {
@@ -55,7 +30,10 @@ namespace Game.GamePlay
                 if (hitAction != null && monster.ActionController != null)
                 {
                     GLog.Info(LogTags.Combat, $"怪物播放受击动作: {monster.name} → {hitAction.name} (类型: {ctx.SelectedReactionType})");
-                    var hitCommand = CharacterCommandFactory.CreateDirectAssetCommand(hitAction);
+                    var hitCommand = CharacterCommandFactory.CreateDirectAssetCommand(
+                        hitAction,
+                        onComplete: HandleActionComplete,
+                        onInterrupt: HandleActionInterrupt);
                     _isStartingHitAction = true;
                     try
                     {
@@ -117,8 +95,6 @@ namespace Game.GamePlay
         {
             if (_hitData != null && _hitData.InHitReaction)
             {
-                EnsureActionPlayerSubscribed();
-
                 if (_remainingStunTimer > 0f)
                 {
                     _remainingStunTimer -= logicDeltaTime;

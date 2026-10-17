@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine.Timeline;
@@ -28,6 +30,7 @@ namespace ATEditor
             File.WriteAllText(path, json);
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// 导出技能到 ScriptableObject 文件 (.asset)
         /// </summary>
@@ -94,6 +97,7 @@ namespace ATEditor
             ExportToSO(timeline, assetPath);
             ATLog.Info($"[ActionTimeline] 双轨保存完成:\nSO: {assetPath}\nJSON: {jsonPath}");
         }
+#endif
 
         /// <summary>
         /// 从 JSON 文件路径导入技能
@@ -216,7 +220,7 @@ namespace ATEditor
         /// 刷新所有片段的 GUID（遍历 groups → tracks → clips）
         /// 已通过 Inspector 自动同步，此处作为导出前的双重校验。
         /// </summary>
-        private static void RefreshAllGuids(ActionTimeline timeline)
+        public static void RefreshAllGuids(ActionTimeline timeline)
         {
             foreach (var track in timeline.AllTracks)
             {
@@ -402,18 +406,18 @@ namespace ATEditor
             return asset;
 #else
             // 非 Editor 的真机运行环境下，全部走适配器注入的业务管线加载
-            if (Runtime.SkillSystemContext.AssetLoader != null)
+            if (Runtime.ActionSystemContext.AssetLoader != null)
             {
                 string address = !string.IsNullOrEmpty(assetPath) ? assetPath : assetName;
 
                 if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) && 
-                    (typeof(T) == typeof(AnimationClip) || typeof(T) == typeof(AvatarMask)))
+                    (typeof(T) == typeof(UnityEngine.AnimationClip) || typeof(T) == typeof(AvatarMask)))
                 {
-                    T subAsset = await Runtime.SkillSystemContext.AssetLoader.LoadSubAssetAsync<T>(address, assetName);
+                    T subAsset = await Runtime.ActionSystemContext.AssetLoader.LoadSubAssetAsync<T>(address, assetName);
                     if (subAsset != null) return subAsset;
                 }
 
-                return await Runtime.SkillSystemContext.AssetLoader.LoadAssetAsync<T>(address);
+                return await Runtime.ActionSystemContext.AssetLoader.LoadAssetAsync<T>(address);
             }
             return null;
 #endif
@@ -453,18 +457,18 @@ namespace ATEditor
 
             return AssetDatabase.LoadAssetAtPath<T>(realAssetPath);
 #else
-            if (Runtime.SkillSystemContext.AssetLoader != null)
+            if (Runtime.ActionSystemContext.AssetLoader != null)
             {
                 string address = !string.IsNullOrEmpty(assetPath) ? assetPath : assetName;
 
                 if (!string.IsNullOrEmpty(assetPath) && !string.IsNullOrEmpty(assetName) &&
-                    (typeof(T) == typeof(AnimationClip) || typeof(T) == typeof(AvatarMask)))
+                    (typeof(T) == typeof(UnityEngine.AnimationClip) || typeof(T) == typeof(AvatarMask)))
                 {
-                    T subAsset = Runtime.SkillSystemContext.AssetLoader.LoadSubAsset<T>(address, assetName);
+                    T subAsset = Runtime.ActionSystemContext.AssetLoader.LoadSubAsset<T>(address, assetName);
                     if (subAsset != null) return subAsset;
                 }
 
-                return Runtime.SkillSystemContext.AssetLoader.LoadAsset<T>(guid, address);
+                return Runtime.ActionSystemContext.AssetLoader.LoadAsset<T>(guid, address);
             }
             return null;
 #endif

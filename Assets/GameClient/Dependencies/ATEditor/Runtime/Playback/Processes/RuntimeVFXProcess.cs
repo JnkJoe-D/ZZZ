@@ -44,32 +44,17 @@ namespace ATEditor
             Vector3 spawnPos = targetTransform != null ? targetTransform.position : Vector3.zero;
             Quaternion spawnRot = targetTransform != null ? targetTransform.rotation : Quaternion.identity;
             Transform parent = clip.followTarget ? targetTransform : null;
+            spawnPos = parent != null ? parent.TransformPoint(clip.positionOffset) : spawnPos + spawnRot * clip.positionOffset;
+            spawnRot *= Quaternion.Euler(clip.rotationOffset);
 
             if (vfxHanlder != null)
             {
-                vfxInstance = vfxHanlder.Spawn(clip.effectPrefab, spawnPos, spawnRot, parent);
+                vfxInstance = vfxHanlder.Spawn(clip.effectPrefab, spawnPos, spawnRot, parent, clip.scale);
             }
 
             if (vfxInstance == null) return;
 
             vfxInstance.transform.localScale = clip.scale;
-
-            if (clip.followTarget)
-            {
-                vfxInstance.transform.localPosition += clip.positionOffset;
-                vfxInstance.transform.localRotation *= Quaternion.Euler(clip.rotationOffset);
-            }
-            else if (targetTransform != null)
-            {
-                Vector3 finalPos = targetTransform.position + targetTransform.rotation * clip.positionOffset;
-                Quaternion finalRot = targetTransform.rotation * Quaternion.Euler(clip.rotationOffset);
-                vfxInstance.transform.SetPositionAndRotation(finalPos, finalRot);
-            }
-            else
-            {
-                vfxInstance.transform.position += clip.positionOffset;
-                vfxInstance.transform.rotation *= Quaternion.Euler(clip.rotationOffset);
-            }
 
             var systems = vfxInstance.GetComponentsInChildren<ParticleSystem>();
             particleInfos = new ParticleSpeedInfo[systems.Length];
@@ -83,6 +68,7 @@ namespace ATEditor
             }
 
             SyncSpeed(context.PresentationPlaySpeed);
+            vfxHanlder?.SetTime(vfxInstance, Mathf.Max(0f, context.CurrentTime - clip.StartTime));
 
             if (context != null)
             {
@@ -94,6 +80,12 @@ namespace ATEditor
         private void HandlePresentationSpeedChanged(float newSpeed)
         {
             SyncSpeed(newSpeed);
+        }
+
+        public override void OnSeek(float targetTime)
+        {
+            if (vfxInstance != null)
+                vfxHanlder?.SetTime(vfxInstance, Mathf.Max(0f, targetTime - clip.StartTime));
         }
 
         public override void OnUpdate(float currentTime, float deltaTime)
@@ -127,11 +119,11 @@ namespace ATEditor
 
         public override void Reset()
         {
-            base.Reset();
             if (context != null)
             {
                 context.OnPresentationSpeedChanged -= HandlePresentationSpeedChanged;
             }
+            base.Reset();
             particleInfos = null;
             vfxInstance = null;
             vfxHanlder = null;
@@ -193,25 +185,10 @@ namespace ATEditor
                 return;
             }
 
-            var particles = vfxInstance.GetComponentsInChildren<ParticleSystem>();
-            float maxLifetime = 0f;
-            foreach (var ps in particles)
-            {
-                if (stopEmissionOnEnd)
-                {
-                    ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-                }
-
-                if (ps.main.startLifetime.constantMax > maxLifetime)
-                {
-                    maxLifetime = ps.main.startLifetime.constantMax;
-                }
-            }
-
-            GameObject inst = vfxInstance;
+            GameObject instance = vfxInstance;
             vfxInstance = null;
             particleInfos = null;
-            vfxHanlder.ReturnVFXDelay(inst, maxLifetime);
+            vfxHanlder.ReleaseWhenFinished(instance, stopEmissionOnEnd);
         }
     }
 }

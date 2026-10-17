@@ -34,14 +34,38 @@ namespace Game.GamePlay
         /// <summary>
         /// 向实体动作控制器压入资产指令
         /// </summary>
-        protected bool SendCommand(ActionConfigAsset action, Action onComplete = null)
+        protected bool SendCommand(CharacterActionPlayInfo playInfo)
+        {
+            if (playInfo == null || Entity == null || Entity.ActionController == null)
+            {
+                return false;
+            }
+
+            var cmd = CharacterCommandFactory.CreateDirectAssetCommand(playInfo);
+            Entity.ActionController.OnInput(cmd);
+            return true;
+        }
+
+        protected bool SendCommand(ActionPlayInfo playInfo)
+        {
+            if (playInfo == null || Entity == null || Entity.ActionController == null)
+            {
+                return false;
+            }
+
+            var cmd = CharacterCommandFactory.CreateDirectAssetCommand(playInfo);
+            Entity.ActionController.OnInput(cmd);
+            return true;
+        }
+
+        protected bool SendCommand(ActionConfigAsset action, Action onComplete = null, Action onInterrupt = null, Action onStart = null)
         {
             if (action == null || Entity == null || Entity.ActionController == null)
             {
                 return false;
             }
 
-            var cmd = CharacterCommandFactory.CreateDirectAssetCommand(action, onComplete: onComplete);
+            var cmd = CharacterCommandFactory.CreateDirectAssetCommand(action, onComplete: onComplete, onInterrupt: onInterrupt, onStart: onStart);
             Entity.ActionController.OnInput(cmd);
             return true;
         }

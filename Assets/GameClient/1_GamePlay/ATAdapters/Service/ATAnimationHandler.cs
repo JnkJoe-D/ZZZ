@@ -1,56 +1,11 @@
-using MAnimSystem;
 using ATEditor;
-using UnityEngine;
+using MAnimSystem;
 
 namespace Game.GamePlay
 {
-    /// <summary>
-    /// AnimComponent 的适配器，实现 SkillEditor 的动画接口
-    /// </summary>
-    public class ATAnimationHandler : IAnimationHandler
+    /// <summary>旧 Gameplay 装配入口；动画实现复用 ATEditor 默认后端，保留外部时间与图所有权。</summary>
+    public class ATAnimationHandler : DefaultAnimHandler
     {
-        private readonly AnimComponent _target;
-
-        public ATAnimationHandler(AnimComponent target)
-        {
-            _target = target;
-        }
-
-        public void Initialize()
-        {
-            _target?.Initialize();
-            _target?.InitializeGraph();
-        }
-
-        public void SetLayerMask(int layerIndex, AvatarMask mask)
-        {
-            _target?.SetLayerMask(layerIndex, mask);
-        }
-
-        public AvatarMask GetLayerMask(int layerIndex)
-        {
-            return _target?.GetLayerMask(layerIndex);
-        }
-
-        public void PlayAnimation(UnityEngine.AnimationClip clip, int layerIndex, float fadeDuration, float speed, float startTime = 0f)
-        {
-            if (_target == null) return;
-            var state = _target.Play(clip, layerIndex, fadeDuration);
-            if (state != null)
-            {
-                state.Time = startTime;
-            }
-            _target.SetLayerSpeed(layerIndex, speed);
-        }
-
-        public void SetLayerSpeed(int layerIndex, float speed)
-        {
-            _target?.SetLayerSpeed(layerIndex, speed);
-        }
-
-        public void SetTime(int layerIndex, float time)
-        {
-            _target?.SetTime(layerIndex, time);
-        }
+        public ATAnimationHandler(AnimComponent target) : base(target) { }
     }
 }

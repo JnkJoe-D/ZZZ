@@ -4,7 +4,55 @@ using UnityEngine;
 
 namespace Game.GamePlay
 {
-    public class ActionPlayer : IActionRunnerProvider,IEntityModule
+    public class ActionPlayInfo
+    {
+        public ActionConfigAsset ActionConfig;
+        public ActionTransitionInfo TransitionInfo;
+        public ActionEventInfo EventInfo;
+    }
+
+    public class ActionTransitionInfo
+    {
+        public float CrossfadeDuration = -1f;
+        public float StartTime = 0f;
+    }
+
+    public class ActionEventInfo
+    {
+        public System.Action OnActionStart;
+        public System.Action OnActionComplete;
+        public System.Action OnActionInterrupt;
+    }
+
+    /// <summary>
+    /// 角色实体业务层专用的动作播放信息。
+    /// 继承自 ActionPlayer 底层所需的 ActionPlayInfo，并实现 ICommandPayload，
+    /// 打通从源头指令压入、路由仲裁、控制器到播放器的统一参数传递。
+    /// </summary>
+    public class CharacterActionPlayInfo : ActionPlayInfo, ICommandPayload
+    {
+        public long CommandId;
+        public string RouteTag;
+        public CommandRouteSource RouteSource = CommandRouteSource.None;
+        public ICommandPayload SourcePayload;
+
+        public CharacterActionPlayInfo() { }
+
+        public CharacterActionPlayInfo(ActionConfigAsset action, float crossfade = -1f, float startTime = 0f)
+        {
+            ActionConfig = action;
+            if (crossfade >= 0f || startTime > 0f)
+            {
+                TransitionInfo = new ActionTransitionInfo
+                {
+                    CrossfadeDuration = crossfade,
+                    StartTime = startTime
+                };
+            }
+        }
+    }
+
+    public class ActionPlayer : IActionRunnerProvider, IEntityModule
     {
         private CharacterEntity _entity;
         private ActionRunner _runner;
@@ -18,9 +66,9 @@ namespace Game.GamePlay
         public float Duration => _runner != null && _runner.Timeline != null ? _runner.Timeline.Duration : 0f;
         public float NormalizedTime => Duration > 0f ? Mathf.Clamp01(CurrentTime / Duration) : 0f;
 
-        public event System.Action OnActionStart;
-        public event System.Action OnActionComplete;
-        public event System.Action OnActionInterrupt;
+        private event System.Action OnActionStart;
+        private event System.Action OnActionComplete;
+        private event System.Action OnActionInterrupt;
 
         private float _externalTimeScale = 1.0f;
 
@@ -28,8 +76,9 @@ namespace Game.GamePlay
         {
             _entity = owner;
             EnsureRuntimeContext();
-            SetExternalTimeScale(_entity.Clock.EffectiveScale);
+            SetExternalTimeScale(_entity.Clock != null ? _entity.Clock.EffectiveScale : 1.0f);
         }
+
         public void LogicTick(float logicDeltaTime)
         {
             Tick(logicDeltaTime);
@@ -57,24 +106,49 @@ namespace Game.GamePlay
             }
         }
 
-        public bool PlayAction(ActionConfigAsset config, float crossfadeOverride = -1f, float startTime = 0f)
+        private void ClearActionEvents()
         {
-            if (config == null || config.TimelineAsset == null)
+            OnActionStart = null;
+            OnActionComplete = null;
+            OnActionInterrupt = null;
+        }
+
+        private void BindActionEvents(ActionEventInfo eventInfo)
+        {
+            ClearActionEvents();
+            if (eventInfo != null)
+            {
+                if (eventInfo.OnActionStart != null)
+                    OnActionStart += eventInfo.OnActionStart;
+                if (eventInfo.OnActionComplete != null)
+                    OnActionComplete += eventInfo.OnActionComplete;
+                if (eventInfo.OnActionInterrupt != null)
+                    OnActionInterrupt += eventInfo.OnActionInterrupt;
+            }
+        }
+
+        public bool PlayAction(ActionPlayInfo playInfo)
+        {
+            var config = playInfo?.ActionConfig;
+            if (config == null || (config.TimelineAsset == null && config.actionTimelineSO == null))
             {
                 GLog.Warning(LogTags.Action, "ActionPlayer: Tried to play a null config or Missing TimelineAsset.");
                 return false;
             }
 
             // 先验证 Timeline 可用性（纯只读静态资产查询），避免在确认前就清理旧动作
-            var timeline = Game.GamePlay.ActionManager.Instance.GetOrLoadTimeline(config);
+            var timeline = ActionManager.Instance.GetOrLoadTimeline(config);
             if (timeline == null)
             {
                 GLog.Warning(LogTags.Action, $"Timeline cache miss for action '{config.name}'. Skipping — keeping current action alive.");
                 return false;
             }
 
-            // Timeline 验证通过，此时才安全地清理旧动作
+            // Timeline 验证通过，此时才安全地清理旧动作（若旧动作还在播放，StopAction 会触发旧动作的打断事件并清空旧回调）
             StopAction();
+
+            // 仅在新的 PlayAction 方法中赋值以及进行订阅/反订阅操作
+            BindActionEvents(playInfo.EventInfo);
 
             EnsureRuntimeContext();
 
@@ -83,6 +157,9 @@ namespace Game.GamePlay
             {
                 _context.PresentationPlaySpeed = _externalTimeScale;
             }
+
+            float crossfadeOverride = playInfo.TransitionInfo != null ? playInfo.TransitionInfo.CrossfadeDuration : -1f;
+            float startTime = playInfo.TransitionInfo != null ? playInfo.TransitionInfo.StartTime : 0f;
 
             if (crossfadeOverride >= 0f && _context != null)
             {
@@ -118,13 +195,17 @@ namespace Game.GamePlay
         private void HandleRunnerComplete()
         {
             IsPlaying = false;
-            OnActionComplete?.Invoke();
+            var completeCallback = OnActionComplete;
+            ClearActionEvents();
+            completeCallback?.Invoke();
         }
 
         private void HandleRunnerInterrupt()
         {
             IsPlaying = false;
-            OnActionInterrupt?.Invoke();
+            var interruptCallback = OnActionInterrupt;
+            ClearActionEvents();
+            interruptCallback?.Invoke();
         }
 
         private void Tick(float deltaTime)
@@ -147,10 +228,13 @@ namespace Game.GamePlay
                 _runner.OnInterrupt -= HandleRunnerInterrupt;
                 _runner.Stop();
 
-                //如果之前处于播放状态，主动派发打断事件
+                // 如果之前处于播放状态，主动派发打断事件并清空回调
                 IsPlaying = false;
-                OnActionInterrupt?.Invoke();
+                var interruptCallback = OnActionInterrupt;
+                ClearActionEvents();
+                interruptCallback?.Invoke();
             }
+            ClearActionEvents();
             IsPlaying = false;
             CurrentAction = null;
             ActionStartTime = 0f;

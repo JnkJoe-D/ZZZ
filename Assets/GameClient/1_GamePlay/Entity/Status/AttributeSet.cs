@@ -157,6 +157,7 @@ namespace Game.GamePlay
             {
                 AttributeId.HP => AttributeId.MaxHp,
                 AttributeId.Energy => AttributeId.MaxEnergy,
+                AttributeId.Daze => AttributeId.MaxDaze,
                 _ => AttributeId.None
             };
         }

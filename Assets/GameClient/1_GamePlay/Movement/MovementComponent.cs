@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.GamePlay
 {
-    [RequireComponent(typeof(CharacterEntity), typeof(CharacterController))]
+    [RequireComponent(typeof(CharacterController))]
     public class MovementComponent : MonoBehaviour, IMovementComponent
     {
         private CharacterController _cc;

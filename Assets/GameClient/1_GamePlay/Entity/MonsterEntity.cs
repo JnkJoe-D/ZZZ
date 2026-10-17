@@ -56,6 +56,7 @@ namespace Game.GamePlay
             // 阶段 4: 领域模块、控制器中枢与状态机 (第四优先级)
             var monsterConfig = Config;
 
+            StatusModule ??= EntityModuleFactory.Create<StatusModule>(this);
             AttributeResolver = new MonsterAttributeResolver(this);
             RouteArbitrator ??= new RouteArbitrator();
 
@@ -105,6 +106,8 @@ namespace Game.GamePlay
 
         private void EnsureMinimalDomainModules()
         {
+            StatusModule ??= EntityModuleFactory.Create<StatusModule>(this);
+            AttributeResolver ??= new MonsterAttributeResolver(this);
             RouteArbitrator ??= new RouteArbitrator();
             if (ActionController == null)
             {
@@ -123,6 +126,52 @@ namespace Game.GamePlay
             BrainCoordinator?.LogicTick(scaledDeltaTime);
             BTRunner?.OnLogicTick(scaledDeltaTime);
             StateMachine?.Update(scaledDeltaTime);
+        }
+
+        /// <summary>
+        /// 重置怪物全部运行时数据与战斗状态（出池/入池时调用，防止复用残留脏数据）
+        /// </summary>
+        public void ResetRuntimeState()
+        {
+            // 1. 恢复生命周期状态标记
+            var lifecycleData = DataModule.Get<LifecycleRuntimeData>();
+            if (lifecycleData != null)
+            {
+                lifecycleData.Set(nameof(LifecycleRuntimeData.IsDead), false);
+            }
+
+            // 2. 恢复物理控制器
+            var cc = GetComponent<CharacterController>();
+            if (cc != null)
+            {
+                cc.enabled = true;
+            }
+
+            // 3. 重置血量为满额，失衡值归零，清除 Buff
+            if (StatusModule?.Attributes != null)
+            {
+                float maxHp = StatusModule.Attributes.Has(AttributeId.MaxHp) ? StatusModule.Attributes.GetCurrent(AttributeId.MaxHp) : 99999f;
+                StatusModule.Attributes.SetValue(AttributeId.HP, maxHp);
+                StatusModule.Attributes.SetValue(AttributeId.Daze, 0f);
+                StatusModule.Buffs?.Clear();
+            }
+
+            // 4. 重置受击硬直与格挡运行时数据
+            DataModule.Get<HitReactionRuntimeData>()?.Set(nameof(HitReactionRuntimeData.InHitReaction), false);
+            DataModule.Get<ParryRuntimeData>()?.Reset();
+
+            // 5. 中断动作与行为树
+            ActionPlayer?.StopAction();
+            BTRunner?.StopTree();
+
+            // 6. 重置状态机回待机态
+            if (StateMachine != null && StateMachine.CurrentState is not MonsterIdleState)
+            {
+                StateMachine.ChangeState<MonsterIdleState>();
+            }
+
+            // 7. 同步自控力
+            BrainCoordinator?.SyncBlackboardSelfControl();
         }
 
         protected override void OnDestroy()

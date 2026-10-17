@@ -1,491 +1,5 @@
 [
   {
-    "id": 1010000,
-    "name": "安比_普通攻击1",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1010001,
-    "name": "安比_普通攻击2",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1010002,
-    "name": "安比_普通攻击3",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1010003,
-    "name": "安比_普通攻击4",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1010004,
-    "name": "安比_普通攻击4_落雷",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1010005,
-    "name": "安比_特殊技",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1010006,
-    "name": "安比_特殊技_快速",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1010007,
-    "name": "安比_强化特殊技",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1010008,
-    "name": "安比_强化特殊技_快速",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1020000,
-    "name": "星见雅_普通攻击_1",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1020001,
-    "name": "星见雅_普通攻击_2",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1020002,
-    "name": "星见雅_普通攻击_3",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1020003,
-    "name": "星见雅_普通攻击_4",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1020004,
-    "name": "星见雅_普通攻击_5",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1020005,
-    "name": "星见雅_特殊技_1",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1020006,
-    "name": "星见雅_特殊技_1_无前摇",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1020007,
-    "name": "星见雅_终极技",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 1020008,
-    "name": "星见雅_冲刺攻击",
-    "desc": "",
-    "effects": [
-      {
-        "effect_type": 1,
-        "effect_target": 1,
-        "trigger_policy": 1,
-        "attr_id": 0,
-        "value": 1,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 20
-      },
-      {
-        "effect_type": 2,
-        "effect_target": 2,
-        "trigger_policy": 1,
-        "attr_id": 110,
-        "value": 5,
-        "buff_id": 0,
-        "chance": 1,
-        "hit_reaction": 0
-      }
-    ]
-  },
-  {
     "id": 1040000,
     "name": "艾莲乔_普通攻击_1",
     "desc": "",
@@ -506,6 +20,16 @@
         "trigger_policy": 1,
         "attr_id": 110,
         "value": 5,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
@@ -536,6 +60,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 1,
+        "hit_reaction": 0
       }
     ]
   },
@@ -562,6 +96,16 @@
         "value": 5,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 2,
         "hit_reaction": 0
       }
     ]
@@ -590,6 +134,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 3,
+        "hit_reaction": 0
       }
     ]
   },
@@ -616,6 +170,16 @@
         "value": 5,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 4,
         "hit_reaction": 0
       }
     ]
@@ -644,6 +208,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 5,
+        "hit_reaction": 0
       }
     ]
   },
@@ -670,6 +244,16 @@
         "value": 5,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 6,
         "hit_reaction": 0
       }
     ]
@@ -698,6 +282,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -724,6 +318,16 @@
         "value": 1,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
         "hit_reaction": 0
       }
     ]
@@ -752,6 +356,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -778,6 +392,16 @@
         "value": 5,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
         "hit_reaction": 0
       }
     ]
@@ -806,6 +430,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -823,6 +457,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -867,12 +511,22 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
   {
     "id": 1040015,
-    "name": "艾莲_普通攻击_霜降",
+    "name": "艾莲_普通攻击_霜锋",
     "desc": "",
     "effects": [
       {
@@ -893,6 +547,16 @@
         "value": 5,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
         "hit_reaction": 0
       }
     ]
@@ -955,6 +619,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -981,6 +655,16 @@
         "value": 5,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
         "hit_reaction": 0
       }
     ]
@@ -1009,6 +693,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -1035,6 +729,16 @@
         "value": 1,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
         "hit_reaction": 0
       }
     ]
@@ -1063,6 +767,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -1089,6 +803,16 @@
         "value": 5,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
         "hit_reaction": 0
       }
     ]
@@ -1117,6 +841,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -1143,6 +877,16 @@
         "value": 5,
         "buff_id": 0,
         "chance": 1,
+        "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
         "hit_reaction": 0
       }
     ]
@@ -1171,6 +915,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 0
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -1188,6 +942,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -1205,6 +969,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
@@ -1222,6 +996,16 @@
         "buff_id": 0,
         "chance": 1,
         "hit_reaction": 20
+      },
+      {
+        "effect_type": 2,
+        "effect_target": 1,
+        "trigger_policy": 1,
+        "attr_id": 310,
+        "value": 1,
+        "buff_id": 0,
+        "chance": 7,
+        "hit_reaction": 0
       }
     ]
   },
